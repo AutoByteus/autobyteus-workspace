@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin/personal`
 - Bootstrap result: Worktree created from freshly fetched `origin/personal`.
 - Bootstrap blocker: None.
-- Current solution revision ID: `SR-002`
+- Current solution revision ID: `SR-004` (draft, awaiting approval)
 - Investigation status: Root cause reproduced and confirmed with a probe on real data (SR-001). Architecture and Agent Org investigation complete (SR-002).
 
 ## Initial Request And Clarifications
@@ -144,6 +144,80 @@ Base refreshed: the worktree was fast-forwarded to `origin/personal` @ `40b1783f
 - `AgentMemoryLocationService.listTeamMemberLocations` has exactly one caller: `TeamMemoryMemberTargetBuilder`. `resolveTeamMemberLocation` has four callers: `memory-view.ts`, `skill-improvement-target-context-resolver.ts`, `application-orchestration-host-service.ts` and `application-execution-scope.ts`. The application caller passes the bound (root) team run ID.
 - `TeamRunExecutionTreeLocationService.listAgents({rootTeamRunId, configuredOnly})` exists; it reads one tree and throws on an invalid tree. Located agents carry `tree`.
 - Frontend: `pages/memory.vue` handlers `selectAgent`, `selectTeam`, `inspectAgentRun` and `inspectTeamMember` all fetch and then `router.push`; the route watcher `syncRouteState` fetches again. Store `openAgentMemory`/`openTeamMemory` exist only for that pre-fetch. Existing tests: `pages/__tests__/memory.spec.ts`, `tests/stores/memoryExplorerStore.test.ts`, `components/memory/__tests__/AgentTeamMemoryDetail.spec.ts`. The web GraphQL types are generated (`generated/graphql.ts`, `pnpm codegen`).
+
+## SR-004 Investigation: code review CRR-003 reopening (CR-002, CR-003)
+
+Source at `bd8450984` (implementation commit). The package was reopened as a Design Impact at the user's direction ("lets refactor it now, if it makes our codebase follows better design principles").
+
+### CR-002: the sources list is loaded on every route change
+
+| Source | Observation | Implication |
+| --- | --- | --- |
+| `autobyteus-web/pages/memory.vue#syncRouteState` (lines 163–196) | `selectRouteSubject()` → `await syncRouteSource()` (`explorerStore.loadSources()`, `network-only`) → `selectRouteSubject()` again → one data fetch. The watcher is `watch(route.fullPath, …, { immediate: true })` | One extra serial round trip before every view, including detail, inspector and Back. The second selection only compensates for the await |
+| `memoryExplorerStore.loadSources` / `setSelectedSourceByKey` / `resetPagesForSourceChange` | `loadSources` replaces `sources` and moves `selectedSource` to the first entry if the current one vanished; `setSelectedSourceByKey` clears selections on a change | Source-list freshness and per-route selection are mixed in one path |
+| `memoryExplorerStore.resetList` + `fetchList` | `fetchList` sets `loading = true` synchronously before its first `await` | If nothing is awaited between the selection reset and the fetch, the "No runs match this filter" frame (CR-001) cannot occur |
+| `components/memory/MemoryHome.vue` | The source `<select>` exists only on the Memory home view | Only the home view needs a fresh source list |
+| `autobyteus-server-ts/src/memory-sync/hub/*`, `memory-sync/source/memory-sync-worker.ts` | Imported sources appear on this node when another node's sync worker pushes to the hub, independently of this UI and at any time | New imports can appear while the Memory page is open; a refresh policy is a real product decision (Requirement Gap) |
+
+### CR-003: org history reads have side effects
+
+| Source | Observation | Implication |
+| --- | --- | --- |
+| `run-history/services/agent-org-run-history-catalog-service.ts#listRows` → `ensureInitialized()` | The first call waits for package readiness, rebuilds the rows from every admitted tree and **writes** `agent_org_run_history_index.json` | A read with a repair side effect |
+| `run-history/services/collaboration-root-history-service.ts#list` | The run-history sidebar (a different page) calls `orgs.listRows()` and today **relies on it** to initialize and repair the org index on first read | Making `listRows` pure requires a new explicit initialization point (startup/lifecycle) for the sidebar |
+| `agent-org-execution/services/agent-org-run-service.ts:112` | Calls `history.initialize()` explicitly before creating a run | There is an existing explicit init point, but only on the create path |
+| `agent-execution/runtime/general-process-run-supervisor.ts:254` | Constructs `AgentOrgRunHistoryCatalogService` | Candidate wiring point for startup initialization |
+| `agent-memory/services/agent-org-root-memory-source.ts` (bd8450984) | Reads `AgentOrgRunHistoryIndexStore.readIndex()` directly (read-only), as SR-002 designed | Correct and side-effect-free today; the owner bypass exists only because the owner has no pure read |
+
+Conclusion: CR-003's clean fix changes run-history lifecycle behavior for the org sidebar, which is outside this package's approved scope ("other pages"). It needs either a separate ticket or explicit user approval to widen scope.
+
+### F-001 (API/E2E, pre-verdict): org task-team members listed as member targets
+
+| Source | Observation | Implication |
+| --- | --- | --- |
+| API/E2E message and `api-e2e-execution-coverage-report.md`; kept test `autobyteus-server-ts/tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts` ("…excludes task-team members…" fails; the other 7 pass) | 22 `task_team_member` executions are listed on a real-data copy, all in nested-classroom-test runs (`StudentStudyGroup/student_*`). Org card counts are unchanged | Breaks REQ-008 and the Out-of-Scope rule "task-team members excluded" |
+| `agent-org-root-memory-source.ts:48` (`configuredPlacement !== null`); `agent-org-execution-tree-location-service.ts#toLocation` (`index.getConfiguredPlacement(agent.address)`) | Placement is looked up **by address**. Members of a task team delegated to a *configured* team address share the configured members' addresses, so they get a non-null placement | The SR-002 design mechanism does not realize the approved rule. This is the design's own escalation trigger ("the org tree shape does not support the configured-placement rule") |
+| `team-root-memory-source.ts` (`listAgents({…, configuredOnly: true})`); `team-execution-index.ts` (`executionKind: "configured" \| "task" \| "task_team_member"`) | Teams use the same address-based rule. Base `40b1783f4` behaves identically. Real team data has 0 task teams (SR-001 scan), so there is no visible impact today | The SR-002 claim "the Agent Teams rule excludes task-team members" was true only for task teams at unconfigured addresses. One kind-based rule for both families realizes the approved statement |
+| `agent-org-execution-index.ts` / `team-execution-index.ts` | Both indexes record `executionKind` per agent execution, but neither `LocatedTeamAgentExecution` nor `LocatedAgentOrgAgentExecution` exposes it | Expose `executionKind` on the located shapes; the sources select `configured` + `task` |
+| API/E2E fixture note | `agent-org-memory-explorer-service.test.ts` puts the task team at an unconfigured address (`/review_squad`), which the readiness validator would never admit | The unit fixture must use an admitted shape (task team delegated to a configured team) |
+
+### O-001 (API/E2E open item, not a design question)
+
+The built dev server on a data copy admitted 385 of 535 team roots, listing 302 SE runs. 142 rejections read "communication messages has unsupported or missing field(s)". In-process base and new code both list 367, and the live app showed about 365. The readiness rules are unchanged by this package. Owner: API/E2E next round (old vs new server on the same copy). Not yet classified as a regression.
+
+### API/E2E evidence carried forward (bd8450984)
+
+REQ-004 equivalence on a frozen copy: the team list, SE runs (367) and 6 searches are identical to base. Time: base 48.9 s / 48.0 s / 320 s vs new 1.3 s / 0.18 s / 1.1 s. Live built backend: teams 0.14–0.18 s, SE runs 0.12–0.15 s, orgs 0.02 s (QR-001 met).
+
+### CR-004: integrating origin/personal (code review CRR-004)
+
+`git fetch origin personal` on 2026-09-25 → `origin/personal` @ `589005470`, 16 commits ahead of base `40b1783f4`. Commits that overlap this package:
+
+| Commit | Change | Implication for this package |
+| --- | --- | --- |
+| `b68847a8c` (merged in `ecfc8cc0f`) | New `run-history/services/collaboration-run-history-catalog-core.ts`. `TeamRunHistoryCatalogService.listCatalogRows()` and `AgentOrgRunHistoryCatalogService.listCatalogRows()` are pure: they await package readiness, read the index once per memory dir and family, filter by admission, and never write. Repair moves to `collaboration-run-history-index-repair.ts`. The manager hook is renamed `withUnmanagedHistoryDeletion` → `withInactiveHistoryMutation`. `team-run-history-index-service.ts` was removed | **CR-003 is resolved upstream.** `AgentOrgRootMemorySource` can depend on the org history owner (symmetric with teams, admission-filtered). Both sources' stored-only managers must implement `withInactiveHistoryMutation` |
+| `49ce0d173` | The upstream team explorer (old structure) gained one tree read per root through `AgentMemoryLocationService.listTeamMemberLocationsFromTree` + `TeamRunExecutionTreeLocationService.listAgentsInTree` + `TeamMemoryMemberTargetBuilder.buildFromTree`; a root/tree-ID mismatch is skipped. Tests: "one read per admitted root … leaves all files unchanged" (explorer), "projects … from the already-read tree" (location service) | Same goal as SR-002 in the structure this branch replaces. The new APIs would have **no production caller** after the merge |
+| `40f769e0d` and others | External messaging removed; release bumps | No memory-feature file overlap (checked with `git diff --stat 40b1783f4 origin/personal` over the memory paths). The web GraphQL codegen must be rerun on the merged schema |
+
+Facts checked on the merged-to-be code:
+- `team-run-execution-tree-schema.ts:94` and `agent-org-run-execution-tree-schema.ts:103` both throw when the tree root ID differs from the expected ID. Our sources read via `listAgents({rootTeamRunId})` / `listAgents({rootRunId})` → `store.read(dir, requestedId)` → validate(expected = requestedId). So upstream's root-mismatch invariant **already holds** in this branch's structure; a mismatch throws and the catalog's skip rule applies.
+- `configuredOnly` on `TeamRunExecutionTreeLocationService.listAgents` has one caller: `team-root-memory-source.ts`.
+
+### SR-004 user decision on task executions (2026-09-25) and supporting evidence
+
+- User: the Memory explorer must show all memory, "including task agent and task agent teams … following the same structure as it is shown". F-001's exclusion direction is reversed; this becomes REQ-012.
+- Structure source: `run-history/domain/run-execution-tree-shared-records.ts`. `ConfiguredTeamExecutionNode{members, taskExecutions}`, `TaskAgentExecution{address, agentRunId, startedAt, settledAt}`, `TaskTeamExecution{address, teamRunId, members, taskExecutions, startedAt, settledAt}`, and `TaskTeamNestedTeamExecution` allow nesting at any depth.
+- Existing presentation of the same structure: `autobyteus-web/stores/runHistoryTeamExecutionRows.ts` (stable member rows + `task_agent` / `task_team` / `task_team_child` transient rows with depth); `utils/agentOrgHistoryRows.ts` (org rows `agent`, `team`, `task_agent`, `task_team`); `components/workspace/history/WorkspaceTransientExecutionRow.vue` (dashed indigo task rows, tree branches).
+- Orphan scan (command in session, 2026-09-25): team memory dirs 2158, 0 not in their tree; org memory dirs 102, **4 not referenced by their tree**, all under `nested_classroom_test_team_*` runs in `studentstudygroup_*` subfolders (probably task teams whose structure entry was never committed). → DEC-004.
+
+### DEC-004 root cause: unlisted memory folders (2026-09-25)
+
+- Example run `agent_orgs/nested_classroom_test_team_7b697dd9…`: created 2026-06-30 as a **team** run (the folder name still says `_team_`) and converted to an org run by the Sep 15 flat-team-families migration (tree and records dated Sep 15; `fs.rename` of the whole folder in `agent-org-flat-team-families-v1-app-data-migration.ts:173`, so contents stayed physically inside the run).
+- The unlisted folder `studentstudygroup_5f3c…/student_one_c08d…` holds `raw_traces_active.jsonl` and `working_context_snapshot.json` dated **2026-06-30**. The first trace says: "Your team is accountable for the delegated task below. This task-scoped team run exits after acceptance and safe settlement." So it is a **delegated task team** run.
+- The current record has **no** task executions (`rootOrg.taskExecutions` = [], team `taskExecutions` = []), and `agent_org_task_delegation_records.json` has `records: []`. The only remaining reference to `studentstudygroup_5f3c…` is inside the Teacher's own raw traces (the delegate result).
+- The configured StudentStudyGroup members in the record (`student_one_37f5…`, `student_two_25c3…`) have **no** memory folders anywhere. They never ran.
+- The Sep migration carries `taskExecutions` over unchanged (`agent-org-runtime-tree-target.ts:11`), so the task entry was already missing before September. The student folders' mtime is 2026-07-07. A July team-history migration or recovery (there is a worktree `agent-team-released-history-migration-recovery`) most likely rebuilt the record without the June task entry. **Inference, not proven.**
+- Conclusion: the memory content is real (a delegated task from June). It is physically inside its run folder but **disconnected from the run's record** because of an old data transition. Scope: 4 folders, only in `nested-classroom-test` test runs. It is not a supported product path today.
 
 ## Requirement Implications
 

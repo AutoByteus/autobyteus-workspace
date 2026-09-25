@@ -332,8 +332,8 @@ describe("AgentStreamHandler", () => {
     expect(
       broadcaster.publishToRun(
         "agent-123",
-        new ServerMessage(ServerMessageType.EXTERNAL_USER_MESSAGE, {
-          content: "hello from telegram",
+        new ServerMessage(ServerMessageType.TODO_LIST_UPDATE, {
+          todos: [],
         }),
       ),
     ).toBe(1);
@@ -341,9 +341,9 @@ describe("AgentStreamHandler", () => {
     expect(connection.send).toHaveBeenCalledTimes(3);
     const payload = JSON.parse(connection.send.mock.calls[2][0]);
     expect(payload).toMatchObject({
-      type: ServerMessageType.EXTERNAL_USER_MESSAGE,
+      type: ServerMessageType.TODO_LIST_UPDATE,
       payload: {
-        content: "hello from telegram",
+        todos: [],
       },
     });
   });

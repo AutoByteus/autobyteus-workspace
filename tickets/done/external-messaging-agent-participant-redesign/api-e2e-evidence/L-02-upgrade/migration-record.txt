@@ -1,0 +1,2 @@
+migration_id|status|attempts|summary|error_message
+20260924_remove_external_messaging_data|SUCCEEDED|1|Scanned 4; migrated 4; skipped 0; failed 0.|

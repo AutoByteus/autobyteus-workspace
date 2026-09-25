@@ -1,0 +1,19 @@
+{
+  "data": {
+    "configureMcpServer": {
+      "savedConfig": {
+        "__typename": "StdioMcpServerConfig",
+        "serverId": "e2e-token-echo",
+        "transportType": "STDIO",
+        "enabled": true,
+        "command": "/Users/normy/.local/bin/node",
+        "args": [
+          "/private/tmp/emr-e2e/mcp/token-echo-mcp-server.mjs"
+        ],
+        "env": {
+          "E2E_MCP_TOKEN": "fake-mcp-token-7f3a"
+        }
+      }
+    }
+  }
+}

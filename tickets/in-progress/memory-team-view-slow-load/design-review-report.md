@@ -2,282 +2,290 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/requirements-doc.md` (SR-002, Approved)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/requirements-doc.md` (SR-004, Approved by the user's "go" on 2026-09-25)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/investigation-notes.md`
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/design-spec.md` (SR-003, Ready; requirements unchanged at SR-002)
-- Supplemental Task Artifacts Reviewed: None exist. `handoff-result.md` was read for routing context.
-- Relevant Solution Revision IDs: SR-001, SR-002, SR-003
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/design-spec.md` (SR-004, Ready. Its "SR-004 Revision" section is authoritative where it differs from the rest.)
+- Supplemental Task Artifacts Reviewed: None are declared. For triggering evidence I read `handoff-result.md` (SR-004 section) and `code-review-report.md` (CRR-003/004: CR-001…004). I did not review the API/E2E reports as design inputs; F-001 and O-001 are covered through the investigation notes.
+- Relevant Solution Revision IDs: SR-001, SR-002, SR-003, SR-004
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: Solution Designer handoff "Revised Architecture Design Complete" (SR-003, design-only). It folds in ARCH-REV-001 REC-001…004.
-- Prior Review Round Reviewed: Round 1 (ARCH-REV-001, Pass)
-- Latest Authoritative Round: 2
-- Current-State Evidence Basis: I read the code in the worktree at `40b1783f4`. Server: `team-memory-explorer-service.ts`, `team-memory-member-target-builder.ts`, `agent-memory-location-service.ts`, `agent-memory-location.ts`, `team-run-execution-tree-location-service.ts`, `team-run-execution-tree-store.ts`, `team-run-package-catalog.ts`, `root-run-package-readiness-index.ts`, `agent-org-execution-tree-location-service.ts`, `agent-org-execution-index.ts`, `agent-org-run-history-index-store.ts`, `memory-view.ts`, `memory-explorer.ts`, `memory-explorer-schema.ts`, `models.ts`. I also grepped the callers of `resolveTeamMemberLocation`, `listTeamMemberLocations` and `TeamMemberMemoryTargetSummary`. Web: `pages/memory.vue`, `memoryExplorerStore.ts`, `memoryInspectorStore.ts`, `AgentTeamMemoryDetail.vue`, `MemoryInspector.vue`, `MemoryHome.vue`, `types/memory.ts`. I did not rerun the timing numbers; I relied on the investigation's live curl and probe evidence.
-
-- Round 2 evidence:
-  - I rechecked the SR-003 sections: Interface Boundary Mapping (`resolveTeamMemberLocation`), the `CollaborationMemoryDetail.vue` contract, the Change / Refactor Sequence step 3 gate, "Preserved Team Catalog Policy" and "Architecture Review Recommendations Incorporated".
-  - I compared the preserved policy rule by rule with the current `team-memory-explorer-service.ts` (`buildGroups`, `toRunSummary`, `compare*`, `groupMatches`/`runMatches`).
-  - I checked the in-progress `agent-memory-location-service.ts#listTeamRunAgents`, which gates the root read on `listRootTeamRunIds()`.
-  - Unaffected sections keep their round-1 evidence.
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
+- Round 4 trigger: Solution Designer resubmitted SR-004 after ARCH-REV-003 with AR-001, AR-002 and REC-005…007 addressed. I re-verified every cited location in `requirements-doc.md` and `design-spec.md`; see the "ARCH-REV-003 (round 3) findings resolved in SR-004" table in the design.
+- Trigger: Solution Designer handoff "Revised Architecture Design Complete" (SR-004). The revision contains:
+  - Delta 1: REQ-012, all agent runs shown in their execution structure;
+  - Delta 2: CR-002, the store owns the sources list and the home view refreshes it;
+  - Delta 3: CR-004, integrate `origin/personal` @ `589005470`.
+- Prior Review Round Reviewed: Round 3 (ARCH-REV-003, Fail: AR-001, AR-002)
+- Latest Authoritative Round: 4
+- Current-State Evidence Basis (round 3):
+  - **Branch:** HEAD `bd8450984`, which is the implemented SR-003. I read `collaboration-root-memory-catalog.ts` and confirmed it reads catalog entries before root IDs.
+  - **Team execution structure:** `team-execution-index.ts` (`executionKind`, `listContainingTeamAncestorsForAgent`, `visitConfiguredRoot` admits only agent members) and `run-execution-tree-shared-records.ts` (`startedAt` exists on `TaskAgentExecution`/`TaskTeamExecution` but not on `TaskTeamNestedTeamExecution`).
+  - **Upstream `589005470`:** the diff from `40b1783f4` in agent-memory and run-history (`listTeamMemberLocationsFromTree`, `listAgentsInTree`, `withInactiveHistoryMutation`, the `safeReadTree` mismatch check), plus `agent-org-run-history-catalog-service.ts`, `collaboration-run-history-catalog-core.ts` and `root-run-package-readiness-index.ts`.
+  - **Base comparison:** `40b1783f4`'s team `listCatalogRows` also awaited readiness, but it did not compact summaries.
+  - **Real-data scan (read-only) of `~/.autobyteus/server-data/memory`:**
+    - team trees: 535, of which 1 has task executions (1 task agent, 0 task teams);
+    - org trees: 23, of which 7 have task executions (1 task agent, 15 task teams, 30 task-team members, 0 nested teams).
+  - Round-1/2 evidence for unaffected sections still stands.
 
 ## Routing Classification Review
 
 - Task size: `Large`
 - Architectural risk: `High`
-- Classification rationale reviewed: about 30 files across server and web. The change adds GraphQL types and renames the shared member-target type. Public location-service APIs change, and `resolveTeamMemberLocation` has 4 production callers outside the explorer. A shared catalog core is extracted across two independent persistence families. I confirmed each point against the code.
+- Classification rationale reviewed: this is the cumulative package. SR-004 adds:
+  - a merge with conflicts in memory and run-history;
+  - additive GraphQL fields (`executionKind`, `groupPath`);
+  - public location-API removals (`configuredOnly`, `listAgentsInTree`, `listTeamMemberLocationsFromTree`);
+  - a change to frontend source ownership.
+  I confirmed each point.
 - Independent Architecture Review required by the classification: `Yes`
 - Classification evidence or correction required: None.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: Yes. This is a pure performance fix for the Agent Teams tab and team detail (REQ-001, REQ-004, REQ-005). Clicks navigate first and send one fetch (REQ-002, REQ-003). A user-directed Agent Orgs tab, org detail and org member inspector are added (REQ-006…008). Two disclosed defect corrections are included (REQ-009, REQ-010).
+- Overall Basis Status: `Confirmed` (round 4). In round 3 it was `Contradicted` by stale text; AR-001 is now resolved.
+- Approved requirements / intended behavior understood: Yes.
+  - SR-001…003 behavior still applies.
+  - REQ-011 (option (a)): the sources list is requested only by a background refresh on the Memory home, or once (awaited) for an unknown imported route key. Detail and inspector navigation never request it.
+  - REQ-012 (explicit user direction): every agent run in the execution tree that has memory is shown in its execution structure, with task agents, task teams and nested teams, for both families.
+  - DEC-004: memory folders the tree does not reference stay hidden.
+  - REQ-008's member-selection sentence is superseded.
 - Relevant existing behavior and evidence confirmed:
-  - The O(N²) cause is real. `buildGroups` calls `TeamMemoryMemberTargetBuilder.build(root)` for each root, which calls `listTeamMemberLocations`, which calls the unscoped `listAgents()`. That reads every tree for each root.
-  - The fetch-then-navigate pattern is real. Each click handler runs `openTeamMemory`/`openAgentMemory`/`inspect` and then `router.push`, and the watcher runs `syncRouteState` again.
-  - `openTeamMemory` does not reset `teamRuns.entries`.
-  - `AgentTeamMemoryDetail.vue` renders `member.memberName`, but the API returns `displayName`.
-  - `toMemberTargetSummary` uses `target.member.agentRunId`, where `member` is the configured placement, while `memory` comes from the located execution's own `memoryDir`.
-  - The org location service has no root-scoped `listAgents`, and `listRootIds` is private.
-  - The org index store's `readIndex` is read-only.
-  - Memory sync excludes orgs.
-- Scope guardrail confirmed: `In-Scope Use Cases` UC-001…006. `Out of Scope`: caching, org memory sync, task-team members, org-level artifacts, persisted-data changes, other pages. `Preserved Behavior Boundary`: BEH-005, REQ-004, AC-005. `Review Authority` is present.
-- Approved change, preserved behavior, and outside scope understood: Yes.
-- Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID: Yes. No blocking findings were raised.
-- Remaining material ambiguity: None blocking.
-  - REQ-009/010 rest on disclosed corrections plus the user's "clean design" direction, not a separate explicit approval. The handoff says a user objection routes to the Solution Designer as a `Requirement Gap`. Both restore the evident intent of existing controls: a name line that is always blank, and a badge and inspector that point at different runs. I accept them as part of the basis.
+  - `bd8450984` implements SR-003.
+  - Upstream `589005470` carries the unified catalog core (the org and team `listCatalogRows()` are pure reads of cached, admission-filtered, summary-compacted rows) and the one-read team fix, written in the old structure. The helpers that Delta 3 removes exist upstream only.
+  - The execution indexes expose everything Delta 1 needs, and team root trees have no configured sub-teams.
+  - On real team data Delta 1 changes nothing: the only task execution is a task agent at a configured address, which SR-003 already listed. Org data gains 30 task-team member rows across 15 task teams.
+- Scope guardrail confirmed: `Pass` (round 4). Out of Scope now excludes only DEC-004's unreferenced folders, and the Preserved Behavior Boundary names REQ-009, REQ-010 and REQ-012 as the only exceptions. Round-3 status was `Fail`:
+  - The `Out of Scope` list still says task-team members are excluded, which contradicts REQ-012.
+  - The `Preserved Behavior Boundary` (REQ-004, AC-005) lists only REQ-009/010 as exceptions.
+  - See AR-001.
+- Approved change, preserved behavior, and outside scope understood: Yes. The stale text is identified in AR-001.
+- Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID: Yes. AR-002 protects REQ-004/AC-005, REQ-011/AC-012/AC-013 and REQ-012/AC-014.
+- Remaining material ambiguity: None about intent. The inconsistency is textual (AR-001, AR-002).
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | Pass | Pass (curl 31.8 s; code path verified) | Pass (DS-001/DS-005: one `listAgents({rootTeamRunId, configuredOnly})` per admitted root) | Confirmed | — |
-| BEH-002 | User | Pass | Pass (`selectTeam` awaits then pushes; watcher refetches) | Pass (DS-004 → DS-001) | Confirmed | — |
-| BEH-003 | User | Pass | Pass (`inspectTeamMember`/`inspectAgentRun` double fetch; unscoped resolve) | Pass (DS-004 → DS-003; root-first resolve) | Confirmed | See REC-001 (non-blocking) |
-| BEH-004 | User | Pass | Pass (no reset in `openTeamMemory`; `requestId` guards only late responses) | Pass (identity-change reset in `setSelected*FromRoute`; `setHomeTab` and source change already null the selection, so a fresh card click still resets) | Confirmed | — |
-| BEH-005 | System | Pass | Pass (probe equivalence, 0 fallbacks) | Pass (policy moved verbatim into the catalog; the refactor gate compares against real data) | Confirmed | See REC-003 and REC-004 (non-blocking) |
-| BEH-006 | User | Pass | Pass (no org tab today; org data and index verified) | Pass (DS-002 via org source and index store) | Confirmed | — |
-| BEH-007 | User | Pass | Pass (org placement model in `AgentOrgExecutionIndex` matches the configured-placement rule) | Pass (DS-002 / DS-003; `findAgent({rootRunId, agentRunId})` is root-scoped and checks admission) | Confirmed | — |
-| BEH-008 | User | Pass | Pass (`memberName` vs `displayName` verified) | Pass (shared detail renders `displayName`; web type corrected; no fallback) | Confirmed | — |
-| BEH-009 | User | Pass | Pass (`toMemberTargetSummary` uses the configured placement's run ID) | Pass (member identity comes from the located execution's own `agentRunId`) | Confirmed | — |
+| BEH-001…004 | User | Pass | Pass | Pass. Delta 2 keeps one fetch per view and removes the awaited sources call from navigation. `resetList` and `fetchList` now run in one synchronous segment, which removes CR-001. | Confirmed | — |
+| BEH-005 | System | Pass | Pass | Pass (round 4). REQ-004/AC-005 list the REQ-012 additions and their aggregates. The gate baseline is `589005470`'s team explorer output. | Confirmed | — (AR-001/AR-002 resolved) |
+| BEH-006/007 | User | Pass | Pass | Pass. The org source reads through the history owner (`listCatalogRows`), in the same order as the team source. | Confirmed | — |
+| BEH-008/009 | User | Pass | Pass | Pass | Confirmed | — |
+| REQ-011 | User | Pass | Pass (CR-002 evidence) | Pass (Delta 2 route sync; background home refresh; awaited load only for an unknown imported key) | Confirmed | — (behavior-map row added) |
+| BEH-010 / REQ-012 | User | Pass | Pass (index APIs verified; real-data scan) | Pass. Rows are selected by tree membership plus memory; `groupPath` is derived from existing indexes with one tree read; depth-first contiguous order; frontend grouping keyed by `teamRunId`. | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
-None. The investigation notes' supplement inventory records only the disposable probe (deleted; results recorded). The package is consistent with that.
+None are declared. The code-review and API/E2E artifacts are downstream evidence, not behavior-defining supplements.
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Performance + Feature + two local Bug Fixes | — |
-| Root-cause classification is explicit and evidence-backed | Pass | Primary cause is `Boundary Or Ownership Issue`: the explorer depends on both `TeamRunExecutionTreeLocationService` and `AgentMemoryLocationService`, which wraps that same service. I verified this in the constructor and in `buildGroups`. Secondary cause is duplicated policy if orgs were added directly. | — |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | `Refactor needed now: Yes`; RSK-001 is deferred explicitly | — |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | The catalog, the sources and the removal of the builder and `listTeamMemberLocations` are all reflected in the file mapping, removal plan and sequence | — |
+| Assessment is present for the current task posture | Pass | Unchanged base assessment. SR-004 is an explicitly scoped addition (user: "only a scoped refactoring"). | — |
+| Root-cause classification is explicit and evidence-backed | Pass | CR-002 is a source-ownership issue in route sync; CR-004 is an integration overlap; REQ-012 is a user-directed feature change | — |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Refactor now for CR-002. The merge resolves by keeping this branch's structure. | — |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | Delta 2 code shape, Delta 3 resolution table | — |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Team list/runs end to end | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-002 | Org list/runs end to end | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 | Member inspector (team/org) | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DS-004 | Frontend route-sync local spine | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-001/002 | Team/org list and runs | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-003 | Member inspector | Pass | Pass | N/A | Pass | Pass | Pass | Pass (the inspector is unchanged; any tree agent resolves by `agentRunId`) |
+| DS-004 | Frontend route sync | Pass | Pass (round 4: the bounded spine loads sources only for an unknown imported key) | N/A | Pass | Pass | Pass | Pass |
 | DS-005 | Catalog local spine | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `TeamMemoryExplorerService` / `AgentOrgMemoryExplorerService` | Pass | Pass | Pass | Pass | The resolver only constructs the service with `memoryDir` |
-| `CollaborationRootMemoryCatalog` | Pass | Pass | Pass | Pass | Depends only on the source interface |
-| Family sources | Pass | Pass | Pass | Pass | Removes today's mixed dependency (the explorer used both the tree service and the wrapper) |
-| `AgentMemoryLocationService` | Pass | Pass | Pass | Pass | Remains the single inspector location boundary; the resolver must not call `findAgent` directly |
-| `AgentOrgExecutionTreeLocationService` | Pass | Pass | Pass | Pass | Root-scoped `listAgents` and public `listRootRunIds` mirror the team service |
+| Explorer facades / catalog / sources | Pass | Pass | Pass | Pass | Unchanged |
+| Org history (`AgentOrgRunHistoryCatalogService`) | Pass | Pass | Pass | Pass | Delta 3 moves the org source from the index store to the owner. This removes the bypass flagged by CR-003. |
+| `AgentMemoryLocationService` | Pass | Pass | Pass | Pass | `listTeamMemberLocationsFromTree` is removed along with its only caller |
+| `memoryExplorerStore` (sources list) / `pages/memory.vue` (route → selection → fetch) | Pass | Pass | Pass | Pass | `loadSources` no longer changes the selection |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Catalog | Pass | Pass | Pass | Pass | No team/org imports |
-| Sources | Pass | Pass | Pass | Pass | A source must not import `AgentMemoryLocationService`; the org source must not use the mutating `AgentOrgRunHistoryCatalogService` |
-| Resolvers | Pass | Pass | Pass | Pass | Only explorer services, `AgentMemoryLocationService` and `AgentMemoryService` |
-| Web page / handlers | Pass | Pass | Pass | Pass | Handlers may not call store fetch or `inspect` |
+| `AgentOrgRootMemorySource` | Pass | Pass | Pass | Pass | Round 4: the Dependency Rules now require the history owner and forbid a source reading an index store directly. They also forbid history mutation or repair calls, an awaited sources request on detail/inspector navigation, and a store import in the detail component. |
+| All others | Pass | Pass | Pass | Pass | — |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `listAgentOrgsWithMemory` / `listAgentOrgRunsWithMemory` | Pass | Pass | Pass (`orgDefinitionId`) | Low | Pass |
-| `getAgentOrgMemberRunMemoryView(orgRunId, agentRunId)` | Pass | Pass | Pass (compound) | Low | Pass |
-| `CollaborationMemberMemoryTargetSummary` | Pass | Pass | Pass (`agentRunId` = own execution) | Low | Pass |
-| `CollaborationRootMemorySource` (`listRootRunIds`, `readRoot`, `readCatalogEntries`) | Pass | Pass | Pass | Low | Pass |
-| `AgentOrgExecutionTreeLocationService.listAgents({rootRunId})` / `listRootRunIds()` | Pass | Pass | Pass | Low | Pass |
-| `AgentMemoryLocationService.resolveTeamMemberLocation` (root-first) | Pass | Pass | Pass (existing contract) | Medium (existing, unchanged) | Pass (see REC-001) |
-| `AgentMemoryLocationService.resolveAgentOrgMemberLocation` | Pass | Pass | Pass | Low | Pass |
+| `CollaborationMemberMemoryTargetSummary` + `executionKind`, `groupPath`, `startedAt` | Pass | Pass | Pass (group identity is `teamRunId`) | Low | Pass (see REC-005/006 on `startedAt` nullability and grouping key) |
+| `LocatedTeamAgentExecution` / `LocatedAgentOrgAgentExecution` + `executionKind`, `groupPath` | Pass | Pass | Pass | Low | Pass |
+| `TeamRunExecutionTreeLocationService.listAgents` without `configuredOnly` | Pass | Pass | Pass | Low | Pass |
+| `memoryExplorerStore.loadSources` / `hasSource(key)` | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Paging/search helpers | Pass | Pass | N/A | Pass | `memory-explorer-page.ts` |
-| Memory availability | Pass | Pass | N/A | Pass | `MemoryRunSummaryBuilder`, `MemoryFileStore` |
-| Team root-scoped read | Pass | Pass | N/A | Pass | `listAgents({rootTeamRunId, configuredOnly})` exists |
-| Org root-scoped read | Pass | Pass (extend) | N/A | Pass | Mirrors the team API |
-| Org history rows | Pass | Pass | N/A | Pass | Read-only `readIndex` (ENOENT → `[]`; invalid → throw → catalog warns) |
-| Shared catalog policy | Pass | Pass | Pass | Pass | No existing owner; the alternative duplicates about 200 lines |
+| Execution structure and kinds | Pass | Pass (index APIs) | N/A | Pass | — |
+| Org history rows | Pass | Pass (history owner after the upstream purity fix) | N/A | Pass | Mirrors the team source's stored-only manager |
+| Tree visual language | Pass | Pass (sidebar styling reused; data rows derived from `groupPath`) | N/A | Pass | The sidebar's row builders work on the run-history DTOs, so they cannot be reused directly on explorer DTOs |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
-| Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `server/src/agent-memory` | Pass | Pass | Pass | Pass | — |
-| `server/src/agent-org-execution` | Pass | Pass | Pass | Pass | — |
-| `server/src/api/graphql/types` | Pass | Pass | Pass | Pass | — |
-| `web` memory feature | Pass | Pass | Pass | Pass | — |
+Pass. Allocation is unchanged from round 1.
 
 ## Reusable Owned Structures Verdict
 
-| Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| Catalog policy | Pass | Pass | Pass | Pass | — |
-| Member memory targets | Pass | Pass | Pass | Pass | No placement or tree carried |
-| Member target DTO | Pass | Pass | Pass | Pass | — |
-| Detail run list UI | Pass | Pass | Pass | Pass | See REC-002 |
-| `readMemberRunMemoryView` | Pass | Pass | Pass | Pass | Resolver-local |
+Pass. `CollaborationMemoryGroup` is shared by both families. Repeating the group path on each member is an accepted, justified denormalization: it keeps search, counts and paging unchanged.
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `CollaborationMemberMemoryLocation` | Pass | Pass | Pass | N/A | Pass | One run ID |
-| `CollaborationRootMemoryRecord` | Pass | Pass | Pass | N/A | Pass | Tree-sourced name and createdAt |
-| `CollaborationRootCatalogEntry` | Pass | Pass | Pass | N/A | Pass | History-sourced; see REC-004 on `??` vs `\|\|` precedence |
-| `CollaborationRootRunMemory` | Pass | Pass | Pass | N/A | Pass | — |
-| Web `CollaborationRunMemoryRow` | Pass | Pass | Pass | Pass | Pass | Family DTOs mapped by page computeds |
+| `CollaborationMemoryGroup` | Pass | Pass | Pass | N/A | Pass | `startedAt` must be nullable: `TaskTeamNestedTeamExecution` has none (REC-005) |
+| Member target (`executionKind`, `agentDefinitionId` nullable) | Pass | Pass | Pass | N/A | Pass | — |
 
 ## File Responsibility Mapping Verdict
 
-| File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `collaboration-root-memory-catalog.ts` | Pass | Pass | Pass | Pass | Source interface + neutral types + policy in one file; still acceptable in size |
-| `collaboration-member-memory-targets.ts` | Pass | Pass | Pass | Pass | — |
-| `team-root-memory-source.ts` / `agent-org-root-memory-source.ts` | Pass | Pass | Pass | Pass | — |
-| `team-memory-explorer-service.ts` / `agent-org-memory-explorer-service.ts` | Pass | Pass | Pass | Pass | DTO mapping only |
-| `agent-memory-location-service.ts` / `agent-memory-location.ts` | Pass | Pass | N/A | Pass | — |
-| `agent-org-execution-tree-location-service.ts` | Pass | Pass | N/A | Pass | — |
-| GraphQL schema / resolvers | Pass | Pass | N/A | Pass | — |
-| Web stores / page / components / types / queries / localization | Pass | Pass | Pass | Pass | — |
+Pass. The Final File Responsibility Mapping and the Removal / Decommission Plan now include the SR-004 rows (round 4).
 
 ## Subsystem / Folder / File Placement Verdict
 
-| Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
-| --- | --- | --- | --- | --- | --- |
-| `server/src/agent-memory/services` (flat) | Pass | Pass | Low | Pass | Follows the existing convention |
-| `server/src/api/graphql/types` | Pass | Pass | Low | Pass | — |
-| `web/components/memory` | Pass | Pass | Low | Pass | — |
+Pass. Placement is unchanged.
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `team-memory-member-target-builder.ts` | Pass | Pass | Pass | Pass | — |
-| `listTeamMemberLocations` | Pass | Pass | Pass | Pass | The only caller is the builder (verified by grep); its test assertions move |
-| `TeamMemoryExplorerService` private policy + deps | Pass | Pass | Pass | Pass | — |
-| `TeamMemberMemoryTargetSummary` (server + web) | Pass | Pass | Pass | Pass | Consumers are limited to server, tests, web types/generated, the page and the detail component |
-| `openAgentMemory` / `openTeamMemory`; fetches in handlers | Pass | Pass | Pass | Pass | — |
-| `AgentTeamMemoryDetail.vue` + spec | Pass | Pass | Pass | Pass | Localization keys move |
-| Private `listRootIds` (org) | Pass | Pass | Pass | Pass | Renamed to public |
+| `configuredOnly`, `listAgentsInTree`, `listTeamMemberLocationsFromTree` + upstream test | Pass (Delta 1/3) | Pass | Pass | Pass | They are listed in the Delta sections only, not in the canonical Removal plan (AR-002) |
+| `syncRouteSource`, the pre/post `selectRouteSubject` calls, the `selectedSource` mutation in `loadSources`, the obsolete page test | Pass (Delta 2) | Pass | Pass | Pass | Same |
+| Upstream `team-memory-member-target-builder.ts` | Pass | Pass | Pass | Pass | Stays deleted |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| GraphQL type rename | No | Pass | Pass | No alias |
-| `memberName` web field | No | Pass | Pass | No fallback |
-| Store open actions / old detail component | No | Pass | Pass | — |
-| Root-first `resolveTeamMemberLocation` fallback | No | Pass | Pass | Not a compatibility path. The existing contract accepts nested team run IDs, and callers can reach that. |
+| Merge resolution | No | Pass | Pass | No upstream helper is kept alongside the branch structure |
+| Unreferenced memory folders (DEC-004) | No | Pass | Pass | No special legacy group, no directory scan |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Team/org trees, history indexes, memory files | `Not Affected` | Pass | Pass | N/A | Pass | All changed paths are read-only; the org explorer avoids the reconciling catalog service |
+| Trees, history indexes, memory files | `Not Affected` | Pass | Pass | N/A | Pass | The org source now uses the pure `listCatalogRows()`; there are no writes. DEC-004 deliberately does no data repair. |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Backend team refactor (step 3 gate: existing tests + real-data equivalence) | Pass | Pass | Pass | Pass |
-| Location boundary + org backend | Pass | Pass | Pass | Pass |
-| Web data layer / codegen / UI / localization | Pass | Pass | Pass | Pass |
+| Merge first, then Delta 1, Delta 3 org source, Delta 2, then the gate | Pass | Pass | Pass | Pass |
+| Re-validation gate | Pass | Pass | Pass | Pass (round 4). The baseline is `589005470`'s team explorer output on a frozen, mtime-preserving data copy. Allowed differences: REQ-009/010 plus the REQ-012 additions and their aggregates. |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| One read per root | Yes | Pass | Pass | Pass | — |
-| Member identity | Yes | Pass | Pass | Pass | — |
-| Org label | Yes | Pass | Pass | Pass | — |
-| Click handler / selection reset | Yes | Pass | Pass | Pass | — |
-| Catalog skip rule | Yes | Pass | Pass | Pass | — |
+| Delta 2 route sync | Yes | Pass | Pass | Pass | — |
+| Delta 1 rows (AC-014) | Yes | Pass | N/A | Pass | — |
+| "One read per root" example | Yes | Pass (round 4: `configuredOnly` removed; `toMember` carries `executionKind`/`groupPath`) | Pass | Pass | — |
 
 ## Material Premise Validation (Only When Needed)
 
-### `AR-P-001` — A non-admitted stored team root ID reaches the root-first `resolveTeamMemberLocation`
+### `AR-P-001`: a non-admitted stored team root ID reaches the root-first `resolveTeamMemberLocation`
 
-- Related approved requirement or established contract: REQ-005, AC-006; the existing root-package admission contract (`RootRunPackageReadinessIndex`, rebuilt at server startup in `server-runtime.ts`).
-- Relevant behavior ID(s): BEH-003.
-- Initiating basis kind: `User` / `System` (candidate callers).
-- Independent product-supported initiating trigger or applicable governing contract: None found that supplies a non-admitted root ID.
-  - The memory explorer lists only admitted roots (`listRootTeamRunIds` filters by admission), so an inspector route built from a member click carries an admitted ID.
-  - The application orchestration caller passes its bound live team run.
-  - Skill improvement passes a team run chosen from run history.
-- Support evidence: `team-run-execution-tree-location-service.ts#listStoredRootIds` filters by admission when the index is initialized. By contrast, `listAgents({rootTeamRunId})` does not check admission, while `findAgent` does.
-- Forward path: Memory → team card → member click → `team-inspector` route → `getTeamMemberRunMemoryView(teamRunId)`. The ID originates from the admitted-only listing.
-- Lifecycle preconditions and material consequence: a consequence would require a hand-edited URL or an excluded-but-still-present root. Neither is a supported product action.
-- Reachability: `Not Reachable` through the verified supported paths.
-- Review consequence: this is not a finding. It was recorded as the non-blocking consistency recommendation REC-001. Round 2: SR-003 now gates the root read on `listRootTeamRunIds()`, which applies the same admission filter as today's unscoped `listAgents()`, so the premise no longer applies.
+This carries over from round 1: `Not Reachable`, and moot since SR-003. Unchanged.
+
+### `AR-P-002`: a first explorer request on a non-initialized memory dir mixes admission states
+
+- Related contract: REQ-004 (local/imported handling); the root-package readiness contract.
+- Initiating basis kind: `User`.
+- Independent product-supported initiating trigger: the user selects an imported source on the Memory home and opens Agent Teams. For imported dirs the readiness index is not initialized at startup.
+- Forward path: `listAgentTeamsWithMemory(source=imported)` → catalog → `readCatalogEntries()` → `listCatalogRows()` → `awaitReady()` rebuilds readiness for that dir → then `listRootRunIds()` (admission-filtered).
+- Lifecycle preconditions and consequence: the catalog reads entries **before** root IDs (`collaboration-root-memory-catalog.ts:114–116`), the same order as base `buildGroups`. So the first request is already consistent. Imported dirs carry no orgs (sync excludes them).
+- Reachability: `Reachable` path with no inconsistent state.
+- Review consequence: no finding. Keep the entries-before-roots order (noted in REC-007).
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-None.
+| Item | Why It Matters | Required Action | Status |
+| --- | --- | --- | --- |
+| Requirements text contradicts approved REQ-012 (AR-001) | The scope guardrail is the review authority for code review and API/E2E | Reconcile the text | Resolved (round 4) |
 
 ## Review Decision
 
-`Pass`. The behavior basis is confirmed, the design can be implemented, and no in-scope machinery depends on an unsupported premise.
+`Pass` (round 4, ARCH-REV-004). AR-001, AR-002 and REC-005…007 are resolved, and no new findings were raised.
+
+Round 3 decision (kept for history): `Fail`. The approach in all three deltas is sound and needs no redesign. However, the requirements basis is internally contradictory, and the design spec keeps normative statements that contradict its own SR-004 deltas. Both must be reconciled before the package goes to implementation and downstream review.
 
 ## Findings
 
-None blocking. Round 2 status: REC-001…REC-004 are all **Resolved** in SR-003 (see `ARCH-REV-002`). No new findings.
+Round 4 status: **AR-001 Resolved; AR-002 Resolved; REC-005, REC-006 and REC-007 Resolved** (all incorporated into SR-004). No open findings. The round-3 text below is kept for traceability.
 
-Round 1 non-blocking recommendations (kept for traceability; now resolved) (all `Within Approved Scope`; none changes approved behavior):
+### AR-001: requirements doc is internally inconsistent with approved REQ-012 (Requirement Gap, blocking; text reconciliation only)
 
-- **REC-001 (Low): root-first team resolution should keep admission filtering.** Implement root-first `resolveTeamMemberLocation` so it keeps today's admission filter. Either reuse the admission-aware, active-aware `TeamRunExecutionTreeLocationService.findAgent({rootTeamRunId, agentRunId, memberAddress})`, or check `isAdmitted` before the root-scoped `listAgents`. That keeps the design's "same contract" literally true and matches the org side's "admission checked". Evidence: AR-P-001; `listAgents({rootTeamRunId})` skips admission, while `findAgent` and the unscoped `listAgents()` apply it.
-- **REC-002 (Low): make the shared detail component's contract explicit.** Today `AgentTeamMemoryDetail.vue` reads the store directly for search, retry and paging. The design makes `CollaborationMemoryDetail.vue` presentational, so give it explicit props (title, rows, loading, error, page, totalPages, search, readOnly) and emits (back, search, changePage, retry, inspectMember). The page should route those emits to the family's store actions (`setTeamRunsSearch`/`setOrgRunsSearch`, and so on). The component must not import the store.
-- **REC-003 (Info): expect REQ-010 changes to search results in the equivalence check.** Today, member search matches the configured placement's `agentRunId`. After REQ-010, a task-instance entry matches on its own run ID. Treat this as part of the REQ-010 exception in the step-3 real-data equivalence gate, alongside the `agentRunId` field difference.
-- **REC-004 (Info): preserve current team fallback behavior exactly (REQ-004).** Keep these current team behaviors exactly when moving the policy "verbatim":
-  - skip a root whose trimmed `teamDefinitionId` is empty;
-  - group name: `catalog name?.trim() || tree name || id`, including the later-row upgrade when the group name equals the ID;
-  - run-level name: `catalogRow?.teamDefinitionName ?? treeName`;
-  - `createdAt`: catalog first, then the tree.
+- Type: `Requirement Gap`. Severity: Medium (blocking).
+- Protected authority: REQ-012 / AC-014 (user direction, 2026-09-25); REQ-004 / AC-005; REQ-008's performance clause; QR-001/QR-002.
+- Scope status: `Within Approved Scope`.
+- Changes approved behavior: `No`. This only aligns stale text with what the user approved. The Solution Designer should confirm that the user's "go" covered REQ-012's effect on the preserved-behavior exceptions.
+- Evidence (all in `requirements-doc.md`):
+  1. **Out of Scope** (line 60) still reads "Showing members of delegated task teams (task-team members). The Agent Teams rule excludes them, and it is kept for orgs." REQ-012 requires the opposite. This is the same statement that grounded F-001.
+  2. **REQ-004, AC-005, BEH-005, Preserved Behavior Boundary and Desired outcome** name only REQ-009/010 as exceptions. REQ-012 adds rows, and with them the run and definition aggregates derived from members (badges, `lastUpdatedAt`, sort position, member counts, and newly visible runs whose only memory is in task-team members). On real data this affects only org runs (team data: 0 task teams), but it is still an approved exception and must be listed.
+  3. **REQ-008** is marked wholesale "Superseded by REQ-012". Only its member-selection sentence is superseded. Its "linear + QR-001 for orgs" clause is still cited by AC-003, AC-007, QR-001 and QR-002.
+  4. **REQ-012 cites BEH-010**, which is not defined in the behavior table.
+  5. **Traceability** does not cover REQ-011, REQ-012 or AC-012…014.
+  6. **DEC-003's** status column still says "Pending user decision" while its text says Resolved.
+- Required update: fix items 1–6 in place. No design change and no new product policy.
+- Proportionality: small text edits. The scope guardrail governs code review and API/E2E, and a stale exclusion here already caused one full reversal cycle (F-001).
+- Recommended recipient: `/solution_designer`.
+
+### AR-002: design spec keeps normative base-section statements that contradict the SR-004 deltas, and the gate baseline is unstated (Design Impact, blocking; text only)
+
+- Type: `Design Impact`. Severity: Medium (blocking).
+- Protected authority: REQ-012/AC-014 (member rule), REQ-011/AC-012/AC-013 (sources ownership), REQ-004/AC-005 (equivalence gate), and CR-003's in-package half (org history owner).
+- Scope status: `Within Approved Scope`. Changes approved behavior: `No`.
+- Evidence (`design-spec.md`). The precedence clause at line 5 exists, but these statements are still normative and downstream reviewers check against them:
+  - **Dependency Rules** (lines 318–319): the Allowed list names `AgentOrgRunHistoryIndexStore`, and the Forbidden list bans "the org explorer using `AgentOrgRunHistoryCatalogService`". Delta 3 requires that service. A compliant implementation would fail a review against this rule.
+  - **Ownership Map** (line 255): the sources own "the configured-placement member rule … (history index)". **Terminology** (line 201) defines "Member memory location" as having a configured placement. Delta 1 removes that rule.
+  - **Bounded Local Spine DS-004** (line 287): `syncRouteState → loadSources → …` on every sync. Delta 2 removes this.
+  - **Off-Spine** (line 297), **Reuse** (lines 364, 366) and the **"One read per root" example** (line 456): these still show the org index store and `configuredOnly: true`.
+  - **Behavior map** (lines 50–62) has no rows for REQ-011 or REQ-012. The **escalation trigger** (line 27) allows only REQ-009/010 differences.
+  - **Removal / Decommission Plan** (line 267 onward) omits the SR-004 removals, which appear only inside the Delta sections.
+  - **Re-validation gate** (line 182): the comparison baseline is not stated. Upstream `589005470`'s unified catalog core compacts team summaries in `listCatalogRows()`, and `40b1783f4` did not. The baseline must be `origin/personal @ 589005470`'s team explorer output (or the merge-base tip actually used). The allowed differences must then be REQ-009/010 plus the REQ-012 additions **and their derived run/definition aggregates**.
+- Required update: bring each listed statement in line with SR-004, either in place or by striking it with a pointer to the governing Delta. Add REQ-011/REQ-012 behavior-map rows. Fold the SR-004 removals into the canonical Removal plan. State the gate baseline and the aggregate exceptions.
+- Proportionality: these are text edits, and no architecture change is requested. Contradictory normative rules inside the authority document are how F-001 happened. They would also make a correct implementation fail the Dependency Rules at code review.
+- Recommended recipient: `/solution_designer`.
+
+### Non-blocking recommendations (Within Approved Scope; no behavior change)
+
+- **REC-005 (Low): state the member order as a precise depth-first rule.**
+  - Each group's rows must be contiguous. Within a group: its agents first (by `displayName`, then kind: configured before task, task by `startedAt`), then configured child teams in tree order, then task child teams by `startedAt`. Nested task-team members have no `startedAt`, so they follow tree order.
+  - `CollaborationMemoryGroup.startedAt` is nullable.
+  - This matches AC-014 (`Teacher` first, then the configured group, then the task group).
+- **REC-006 (Low): the frontend tree builder must group by `groupPath[].teamRunId`, not by address.**
+  - A task team delegated to a configured team address has the same `address` and `displayName` (`StudentStudyGroup`) as the configured team. AC-014 shows two distinct groups.
+  - Build group headers from consecutive `groupPath` prefixes keyed by `teamRunId`.
+- **REC-007 (Info): keep the catalog order of catalog entries before root IDs** (`collaboration-root-memory-catalog.ts:114–116`) through the merge. `listCatalogRows()` awaits readiness, so this order keeps admission consistent on the first request for a non-initialized imported dir (AR-P-002).
 
 ## Classification
 
-N/A. The result is Pass.
+- AR-001: `Requirement Gap` (text reconciliation of an approved basis; no new approval expected).
+- AR-002: `Design Impact` (design-document consistency; the architecture itself is unchanged).
 
 ## Recommended Recipient
 
-`/implementation_engineer`, per the handoff rules. `/solution_designer` receives an informational notice.
+`/solution_designer`.
 
 ## Residual Risks
 
-- RSK-001 (accepted): per-request memory-file stats with no caching.
-- Codegen and the zh-CN glossary test must be updated consistently (the design already notes this).
-- REQ-009/010 rest on disclosed corrections. A later user objection is a `Requirement Gap` for the Solution Designer, not a design defect.
-- REQ-002's "exactly one data request" is interpreted per target view. The route sync still calls `listMemoryExplorerSources` (about 12 ms) on every route change, and that call is not counted. The design's test wording ("exactly one runs/view request") matches this reading.
+- RSK-001 (accepted): no caching. Delta 1 adds file stats for about 30 org task-team members, which is negligible.
+- O-001 (API/E2E): readiness admission counts on the built server (a validation failure on communication messages). Readiness rules are unchanged by this package.
+- REQ-012 says "the same structure the run-history sidebar shows". The design keeps alphabetical order within a group (to preserve REQ-004), so sibling order can differ from the sidebar's tree order. This is structure-equivalent, not order-identical.
+- Upstream catalog rows are cached per memory dir for the process lifetime. The same was true of base team behavior. Imported sources carry no orgs.
+- Codegen: upstream removed the external-messaging schema, so the regenerated `generated/graphql.ts` will shrink beyond this package's additions.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass` (round 2, ARCH-REV-002; confirms SR-003)
-- Material-Premise Gate: `Pass` (AR-P-001 `Not Reachable`; SR-003 also makes it moot)
-- Notes: REC-001…004 resolved in SR-003. No open findings. SR-003 is the authoritative design for implementation.
+- Review Decision: `Pass` (ARCH-REV-004, round 4, SR-004). Round 3 was `Fail`.
+- Material-Premise Gate: `Pass` (AR-P-001 `Not Reachable`/moot; AR-P-002 reachable but consistent)
+- Notes:
+  - Round 4: AR-001, AR-002 and REC-005…007 are resolved and verified in place. SR-004 is the authoritative design for implementation.
+  - Round 3: AR-001 and AR-002 were blocking, but they were text reconciliations only. The approach in Delta 1, 2 and 3 passes the structural checks.
+  - REC-005…007 are non-blocking.
+  - The prior recommendations REC-001…004 stay resolved.

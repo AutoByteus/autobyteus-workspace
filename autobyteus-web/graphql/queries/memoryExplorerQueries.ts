@@ -124,6 +124,15 @@ export const LIST_AGENT_TEAM_RUNS_WITH_MEMORY = gql`
           displayName
           agentRunId
           agentDefinitionId
+          executionKind
+          startedAt
+          groupPath {
+            teamRunId
+            address
+            displayName
+            kind
+            startedAt
+          }
           lastUpdatedAt
           memory {
             latestMemoryAt
@@ -193,6 +202,15 @@ export const LIST_AGENT_ORG_RUNS_WITH_MEMORY = gql`
           displayName
           agentRunId
           agentDefinitionId
+          executionKind
+          startedAt
+          groupPath {
+            teamRunId
+            address
+            displayName
+            kind
+            startedAt
+          }
           lastUpdatedAt
           memory {
             latestMemoryAt

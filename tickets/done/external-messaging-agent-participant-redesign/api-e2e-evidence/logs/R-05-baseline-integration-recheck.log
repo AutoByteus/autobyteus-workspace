@@ -1,0 +1,1101 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+
+(node:95307) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-O9QdRB/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-ea7Xmw/app-data
+
+stdout | tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-brief-studio-EJN9tR/app-data
+
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts (3 tests | 3 failed) 11ms
+     × discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS 7ms
+     × preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount 1ms
+     × rejects unexpected Brief Studio producers without committing projection state 1ms
+stdout | tests/integration/agent/agent-websocket.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+Created agent session e8f9ce1d-94c6-4e0c-b43d-cb231ec34d3e for run agent-e2e
+Agent WebSocket connected: session=e8f9ce1d-94c6-4e0c-b43d-cb231ec34d3e, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Closed agent session e8f9ce1d-94c6-4e0c-b43d-cb231ec34d3e
+Agent WebSocket disconnected: e8f9ce1d-94c6-4e0c-b43d-cb231ec34d3e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > does not downgrade an already-running standalone send to initializing
+Agent websocket attached for run agent-e2e
+Created agent session 19bcca33-6bad-4c03-bbbf-347ab21cadab for run agent-e2e
+Agent WebSocket connected: session=19bcca33-6bad-4c03-bbbf-347ab21cadab, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Closed agent session 19bcca33-6bad-4c03-bbbf-347ab21cadab
+Agent WebSocket disconnected: 19bcca33-6bad-4c03-bbbf-347ab21cadab
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > activates a prepared identity through SEND_MESSAGE rather than websocket connect
+Created agent session a289f9ac-6ed5-4f41-8699-e137386f0e04 for run agent-e2e
+Agent WebSocket connected: session=a289f9ac-6ed5-4f41-8699-e137386f0e04, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Closed agent session a289f9ac-6ed5-4f41-8699-e137386f0e04
+Agent WebSocket disconnected: a289f9ac-6ed5-4f41-8699-e137386f0e04
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Agent websocket attached for run agent-e2e
+Created agent session 01f9aa75-7442-4268-b144-8ad1e38a5573 for run agent-e2e
+Agent WebSocket connected: session=01f9aa75-7442-4268-b144-8ad1e38a5573, run=agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Closed agent session 01f9aa75-7442-4268-b144-8ad1e38a5573
+Agent WebSocket disconnected: 01f9aa75-7442-4268-b144-8ad1e38a5573
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+Created agent session b5943fb3-8c60-4d85-94f0-4fd68f07a20f for run agent-e2e
+Agent WebSocket connected: session=b5943fb3-8c60-4d85-94f0-4fd68f07a20f, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > publishes error status and failed ACK when prepared activation fails
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+Closed agent session b5943fb3-8c60-4d85-94f0-4fd68f07a20f
+Agent WebSocket disconnected: b5943fb3-8c60-4d85-94f0-4fd68f07a20f
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+Agent websocket attached for run agent-interrupt-ack
+Created agent session 1f5cda80-92db-4a81-900e-f8e631dd73d4 for run agent-interrupt-ack
+Agent WebSocket connected: session=1f5cda80-92db-4a81-900e-f8e631dd73d4, run=agent-interrupt-ack
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns exact same-socket interrupt acknowledgements without publishing lifecycle state
+INTERRUPT_GENERATION rejected for agent run agent-interrupt-ack: [NO_ACTIVE_TURN] The provider has no active turn to interrupt.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Closed agent session 1f5cda80-92db-4a81-900e-f8e631dd73d4
+Agent WebSocket disconnected: 1f5cda80-92db-4a81-900e-f8e631dd73d4
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Agent websocket attached for run agent-e2e
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+Created agent session 771d2cd0-5066-428c-bbf7-ef004cfcf34b for run agent-e2e
+Agent WebSocket connected: session=771d2cd0-5066-428c-bbf7-ef004cfcf34b, run=agent-e2e
+
+stderr | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > keeps non-SEND commands active-only after identity-only connect
+INTERRUPT_GENERATION rejected for missing agent run agent-e2e.
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Closed agent session 771d2cd0-5066-428c-bbf7-ef004cfcf34b
+Agent WebSocket disconnected: 771d2cd0-5066-428c-bbf7-ef004cfcf34b
+
+stdout | tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns SESSION_NOT_READY when command arrives before connect handshake
+Agent websocket attached for run any-agent
+
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts (8 tests | 2 failed) 2196ms
+     × connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK 54ms
+     ✓ does not downgrade an already-running standalone send to initializing 16ms
+     ✓ activates a prepared identity through SEND_MESSAGE rather than websocket connect 25ms
+     × returns duplicate and busy ACKs for same and different in-flight command ids 2026ms
+     ✓ publishes error status and failed ACK when prepared activation fails 20ms
+     ✓ returns exact same-socket interrupt acknowledgements without publishing lifecycle state 26ms
+     ✓ keeps non-SEND commands active-only after identity-only connect 14ms
+     ✓ returns SESSION_NOT_READY when command arrives before connect handshake 14ms
+(node:95320) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts (1 test | 1 failed) 6ms
+     × lists and executes the shipped Brief Studio handler over tokenless MCP with exact Team binding isolation 5ms
+stdout | tests/integration/api/run-file-changes-api.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:95328) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-zs65PJ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-zs65PJ/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-zs65PJ/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-zs65PJ/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-zs65PJ
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-zs65PJ/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-zs65PJ/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-zs65PJ/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-file-changes-api-appdata-zs65PJ/memory
+============================================================
+AppConfig initialization completed successfully
+
+ ❯ tests/integration/api/run-file-changes-api.integration.test.ts (5 tests | 3 failed) 125ms
+     × hydrates unified rows through GraphQL and serves current text/media bytes through the run-scoped route 46ms
+     × does not hydrate legacy-only persisted runs after the clean-cut removal 4ms
+     × hydrates historical AutoByteus team-member file changes through GraphQL and REST 4ms
+     ✓ returns 404 for historical rows whose files no longer exist 4ms
+     ✓ returns 409 for active runs when an indexed pending file has not been written yet 2ms
+stdout | tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/team-communication-api-appdata-kj2SiB
+AppConfig instance created.
+
+stdout | tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+AgentFactory (Singleton) initialized.
+
+(node:95337) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ❯ tests/integration/api/team-communication-api.integration.test.ts (3 tests | 3 skipped) 1117ms
+     ↓ hydrates historical messages through GraphQL and serves reference content through the message-owned REST route
+     ↓ does not hydrate unmigrated old flat projections through a runtime compatibility fallback
+     ↓ maps unreadable reference content failures to a graceful 403 REST response
+ ❯ tests/integration/api/rest/context-files.integration.test.ts (8 tests | 2 failed) 113ms
+     ✓ uploads, serves, and finalizes standalone draft attachments into run-owned storage 36ms
+     ✓ supports direct Team-member draft delete and exact final Team-member read 21ms
+     ✓ maps known final Team failures exactly and keeps serving the valid same-owner file 16ms
+     ✓ does not convert an unexpected final Team access fault into a client error 5ms
+     × finalizes a nested member through its exact containing TeamRun and canonical address 10ms
+     × rejects basename and sibling addresses instead of guessing a nested owner 7ms
+     ✓ preserves the original display name while sanitizing the stored filename 11ms
+     ✓ prunes expired draft attachments before serving them 7ms
+stdout | tests/integration/agent-definition/md-centric-provider.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > throws AgentMdParseError when agent.md is malformed
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+stdout | tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > preserves unknown agent-config fields across update round-trips
+Initialized server settings service with 20 predefined settings
+
+ ❯ tests/integration/agent-definition/md-centric-provider.integration.test.ts (7 tests | 2 failed) 88ms
+     ✓ throws AgentMdParseError when agent.md is malformed 5ms
+     ✓ preserves unknown agent-config fields across update round-trips 40ms
+     ✓ persists defaultLaunchConfig when creating a shared agent definition 16ms
+     ✓ updates imported definitions in place without inferring bundled skills when config skillNames are empty 19ms
+     ✓ keeps explicit skillNames authoritative when a bundled skill is also present 2ms
+     × does not silently skip malformed application-owned agents during catalog reads 4ms
+     × updates application-owned agent defaultLaunchConfig in place 2ms
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts (4 tests | 4 failed) 7ms
+     × ships source and packaged team configs with the research-first coordinator handoff 3ms
+     × ships source and packaged agent configs with the intended research-first tool split 1ms
+     × ships source and packaged role prompts with context-first validation and publication ordering 1ms
+     × ships source and packaged team/launch reinforcement without replacing role-local ownership 1ms
+stdout | tests/integration/application-backend/standalone-application-server.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts (2 tests | 2 failed) 8ms
+     × selects one current package, exposes only its confined surface, and leaves package bytes immutable 3ms
+     × fails before server construction for invalid roots and missing explicit selections 4ms
+stdout | tests/integration/application-backend/brief-package-team-prompt.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts (1 test | 1 failed) 4ms
+     × composes the exact graph-local package team and member semantics through Codex bootstrap 3ms
+stdout | tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a file and serves it from /rest/files
+File saved successfully to persistent storage: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-upload-V5Zc0g/media/documents/a5ddf79c-67eb-4980-a4de-d658aae5ac9a.txt
+Returning file URL: /rest/files/documents/a5ddf79c-67eb-4980-a4de-d658aae5ac9a.txt
+
+stdout | tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a dummy PNG image and stores it under /images
+File saved successfully to persistent storage: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-upload-4vQPdX/media/images/670fdb55-0b16-4407-9b55-30226722c61b.png
+Returning file URL: /rest/files/images/670fdb55-0b16-4407-9b55-30226722c61b.png
+
+stderr | tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > rejects unsupported file types
+Unsupported file type: application/zip
+
+stderr | tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > returns 413 and does not persist truncated files when upload exceeds file size limit
+Uploaded file exceeded multipart size limit and was truncated: oversized-avatar.png
+
+ ❯ tests/integration/api/rest/upload-file.integration.test.ts (5 tests | 2 failed) 45ms
+     × uploads a file and serves it from /rest/files 25ms
+     × uploads a dummy PNG image and stores it under /images 6ms
+     ✓ rejects unsupported file types 4ms
+     ✓ returns 400 when no file is provided 4ms
+     ✓ returns 413 and does not persist truncated files when upload exceeds file size limit 5ms
+stdout | tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts > Codex MCP tool arguments memory/projection integration > persists an early MCP call plus minimal result and projects both UI surfaces
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-mcp-projection-aqvuTz/working_context_snapshot.json
+
+ ❯ tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts (1 test | 1 failed) 11ms
+     × persists an early MCP call plus minimal result and projects both UI surfaces 10ms
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-iMoy97/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL
+Processing media source URI: https://example.com/remote_image.png...
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL
+Successfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-iMoy97/media/images/remote_image_1.png. Server URL: /rest/files/images/remote_image_1.png
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > propagates download failures and leaves no files
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-GqG1zW/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > propagates download failures and leaves no files
+Processing media source URI: https://example.com/remote_image.png...
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-AF6Lq5/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+Processing media source URI: data:text/plain;base64,SGVsbG8sIFdvcmxkIQ==...
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+Successfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-AF6Lq5/media/documents/hello_text.txt. Server URL: /rest/files/documents/hello_text.txt
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-WyL1vQ/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+Processing media source URI: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-WyL1vQ/source.txt...
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+Successfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-WyL1vQ/media/documents/source.txt. Server URL: /rest/files/documents/source.txt
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files without category filter
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-bwBmwN/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files without category filter
+Listing media files for category 'undefined' - Page: 1, Limit: 10
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files by category
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-5s4vIC/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files by category
+Listing media files for category 'images' - Page: 1, Limit: 10
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > paginates media files
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-JwSATb/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > paginates media files
+Listing media files for category 'undefined' - Page: 1, Limit: 1
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > paginates media files
+Listing media files for category 'undefined' - Page: 2, Limit: 1
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > deletes media files
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-RYqE0H/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > deletes media files
+Attempting to delete media file: 'test_image.png' from category: 'images'
+Successfully deleted file: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-RYqE0H/media/images/test_image.png
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for missing media files
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-EIi21z/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for missing media files
+Attempting to delete media file: 'missing.png' from category: 'images'
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for invalid categories
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-tOJkAB/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for invalid categories
+Attempting to delete media file: 'file.txt' from category: 'aliens'
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for path traversal attempts
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/media-storage-D8R41U/media
+
+stdout | tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > throws for path traversal attempts
+Attempting to delete media file: '../../../etc/passwd' from category: 'images'
+
+ ❯ tests/integration/services/media-storage-service.integration.test.ts (11 tests | 4 failed) 45ms
+     × saves media from a remote URL 7ms
+     ✓ propagates download failures and leaves no files 3ms
+     × saves media from a data URI 3ms
+     × saves media from a local file path 17ms
+     ✓ lists media files without category filter 2ms
+     × lists media files by category 2ms
+     ✓ paginates media files 2ms
+     ✓ deletes media files 1ms
+     ✓ throws for missing media files 2ms
+     ✓ throws for invalid categories 1ms
+     ✓ throws for path traversal attempts 2ms
+stdout | tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts (9 tests | 9 failed) 12ms
+     × validates the real Brief package with exact token tuning and typed pricing 4ms
+     × rejects a real Brief package containing nested server_url without echoing its value 1ms
+     × rejects a real Brief package containing nested api_url without echoing its value 1ms
+     × rejects a real Brief package containing nested connection_string without echoing its value 1ms
+     × rejects a real Brief package containing nested access_key without echoing its value 1ms
+     × rejects a real Brief package containing nested baseUri without echoing its value 0ms
+     × rejects a real Brief package containing nested service_address without echoing its value 0ms
+     × rejects a real Brief package containing nested client_key without echoing its value 2ms
+     × rejects a real Brief package containing nested auth_config without echoing its value 1ms
+stdout | tests/integration/app-data-migrations/agent-org-token-batch-boundaries.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/app-data-migrations/agent-org-token-batch-boundaries.integration.test.ts (2 tests | 2 failed) 91ms
+     × enumerates 501 exact claimed roots over three pages without duplicates or omissions 71ms
+     × rolls back an exact root when member 251 has a contradictory claim, then corrects all 501 members and validates current readiness 19ms
+ ❯ tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts (1 test | 1 failed) 7ms
+     × preserves one enriched provider-shaped failure through standalone and Team wire paths 6ms
+ ❯ tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts (1 test | 1 failed) 5ms
+     × returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move 5ms
+ ❯ tests/integration/file-explorer/file-explorer.integration.test.ts (6 tests | 6 failed) 11ms
+     × builds tree and lists file paths 4ms
+     × writes new file and emits ADD change 2ms
+     × modifies existing file and emits MODIFY change 1ms
+     × renames file and emits RENAME change 1ms
+     × moves file and emits MOVE change 1ms
+     × removes file and emits DELETE change 1ms
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/api/team-communication-api.integration.test.ts > Team communication API integration
+Error: The process AgentTeamRunManager is not initialized.
+ ❯ Function.getInstance src/agent-team-execution/services/agent-team-run-manager.ts:77:13
+     75|   static getInstance(): AgentTeamRunManager {
+     76|     if (!AgentTeamRunManager.instance) {
+     77|       throw new Error("The process AgentTeamRunManager is not initiali…
+       |             ^
+     78|     }
+     79|     return AgentTeamRunManager.instance;
+ ❯ new TeamCommunicationProjectionService src/services/team-communication/team-communication-projection-service.ts:32:66
+ ❯ getTeamCommunicationProjectionService src/services/team-communication/team-communication-projection-service.ts:80:31
+ ❯ new TeamCommunicationContentService src/services/team-communication/team-communication-content-service.ts:73:7
+ ❯ getTeamCommunicationContentService src/services/team-communication/team-communication-content-service.ts:133:28
+ ❯ registerTeamCommunicationRoutes src/api/rest/team-communication.ts:28:52
+ ❯ tests/integration/api/team-communication-api.integration.test.ts:215:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/57]⎯
+
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 46 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > connects to an inactive identity without restore, then publishes initializing before slow restore and SEND_MESSAGE ACK
+AssertionError: expected { command_type: 'SEND_MESSAGE', …(7) } to match object { command_type: 'SEND_MESSAGE', …(7) }
+
+- Expected
++ Received
+
+@@ -6,8 +6,8 @@
+    "message_id": "msg-restore-1",
+    "run_id": "agent-e2e",
+    "state": "accepted",
+    "status": {
+      "agent_id": "agent-e2e",
+-     "status": "running",
++     "status": "offline",
+    },
+  }
+
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts:355:27
+    353|         2,
+    354|       );
+    355|       expect(ack.payload).toMatchObject({
+       |                           ^
+    356|         command_type: "SEND_MESSAGE",
+    357|         run_id: runId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/57]⎯
+
+ FAIL  tests/integration/agent/agent-websocket.integration.test.ts > Agent websocket backend-owned command lifecycle integration > returns duplicate and busy ACKs for same and different in-flight command ids
+Error: Timed out waiting for matching websocket message
+ ❯ waitForMessageMatching tests/integration/agent/agent-websocket.integration.test.ts:183:9
+    181|     await new Promise((resolve) => setTimeout(resolve, 10));
+    182|   }
+    183|   throw new Error("Timed out waiting for matching websocket message");
+       |         ^
+    184| };
+    185| 
+ ❯ tests/integration/agent/agent-websocket.integration.test.ts:516:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/57]⎯
+
+ FAIL  tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > does not silently skip malformed application-owned agents during catalog reads
+Error: The property "getInstance" is not defined on the function.
+ ❯ tests/integration/agent-definition/md-centric-provider.integration.test.ts:272:8
+    270|     };
+    271| 
+    272|     vi.spyOn(ApplicationBundleService, "getInstance").mockReturnValue({
+       |        ^
+    273|       listApplicationOwnedAgentSources: vi.fn(async () => [source]),
+    274|       getApplicationOwnedAgentSourceById: vi.fn(async (requestedId: st…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/57]⎯
+
+ FAIL  tests/integration/agent-definition/md-centric-provider.integration.test.ts > md-centric provider integration > updates application-owned agent defaultLaunchConfig in place
+Error: The property "getInstance" is not defined on the function.
+ ❯ tests/integration/agent-definition/md-centric-provider.integration.test.ts:317:8
+    315|     await fs.writeFile(path.join(agentDir, "agent-config.json"), "{}\n…
+    316| 
+    317|     vi.spyOn(ApplicationBundleService, "getInstance").mockReturnValue({
+       |        ^
+    318|       getApplicationOwnedAgentSourceById: vi.fn(async (requestedId: st…
+    319|         requestedId === definitionId
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/57]⎯
+
+ FAIL  tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts > Codex command failure transport integration > preserves one enriched provider-shaped failure through standalone and Team wire paths
+Error: Collaboration member execution identity accepts exactly agentRunId, memberAddress, root.
+ ❯ exactKeys src/agent-collaboration/execution/domain/root-execution-identity.ts:41:11
+     39|   const keys = [...expected].sort();
+     40|   if (actual.length !== keys.length || actual.some((key, index) => key…
+     41|     throw new Error(`${label} accepts exactly ${keys.join(", ")}.`);
+       |           ^
+     42|   }
+     43| };
+ ❯ createCollaborationMemberExecutionIdentity src/agent-collaboration/execution/domain/root-execution-identity.ts:97:3
+ ❯ createTeamAgentExecutionBinding src/agent-team-execution/domain/team-agent-execution-binding.ts:11:33
+ ❯ tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts:57:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/57]⎯
+
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration > hydrates unified rows through GraphQL and serves current text/media bytes through the run-scoped route
+AssertionError: expected [ { …(3) } ] to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+[
+  {
+    "locations": [
+      {
+        "column": 9,
+        "line": 2,
+      },
+    ],
+    "message": "The process AgentRunManager is not initialized.",
+    "path": [
+      "getRunFileChanges",
+    ],
+  },
+]
+
+ ❯ execGraphql tests/integration/api/run-file-changes-api.integration.test.ts:143:25
+    141|     expect(response.statusCode).toBe(200);
+    142|     const body = response.json() as { data?: T; errors?: Array<{ messa…
+    143|     expect(body.errors).toBeUndefined();
+       |                         ^
+    144|     if (!body.data) {
+    145|       throw new Error("Expected GraphQL response data.");
+ ❯ tests/integration/api/run-file-changes-api.integration.test.ts:233:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/57]⎯
+
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration > does not hydrate legacy-only persisted runs after the clean-cut removal
+AssertionError: expected [ { …(3) } ] to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+[
+  {
+    "locations": [
+      {
+        "column": 9,
+        "line": 2,
+      },
+    ],
+    "message": "The process AgentRunManager is not initialized.",
+    "path": [
+      "getRunFileChanges",
+    ],
+  },
+]
+
+ ❯ execGraphql tests/integration/api/run-file-changes-api.integration.test.ts:143:25
+    141|     expect(response.statusCode).toBe(200);
+    142|     const body = response.json() as { data?: T; errors?: Array<{ messa…
+    143|     expect(body.errors).toBeUndefined();
+       |                         ^
+    144|     if (!body.data) {
+    145|       throw new Error("Expected GraphQL response data.");
+ ❯ tests/integration/api/run-file-changes-api.integration.test.ts:338:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/57]⎯
+
+ FAIL  tests/integration/api/run-file-changes-api.integration.test.ts > Run file changes API integration > hydrates historical AutoByteus team-member file changes through GraphQL and REST
+AssertionError: expected [ { …(3) } ] to be undefined
+
+- Expected: 
+undefined
+
++ Received: 
+[
+  {
+    "locations": [
+      {
+        "column": 9,
+        "line": 2,
+      },
+    ],
+    "message": "The process AgentRunManager is not initialized.",
+    "path": [
+      "getRunFileChanges",
+    ],
+  },
+]
+
+ ❯ execGraphql tests/integration/api/run-file-changes-api.integration.test.ts:143:25
+    141|     expect(response.statusCode).toBe(200);
+    142|     const body = response.json() as { data?: T; errors?: Array<{ messa…
+    143|     expect(body.errors).toBeUndefined();
+       |                         ^
+    144|     if (!body.data) {
+    145|       throw new Error("Expected GraphQL response data.");
+ ❯ tests/integration/api/run-file-changes-api.integration.test.ts:394:18
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/57]⎯
+
+ FAIL  tests/integration/app-data-migrations/agent-org-token-batch-boundaries.integration.test.ts > Org token migration SQL batch boundaries > enumerates 501 exact claimed roots over three pages without duplicates or omissions
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/integration/app-data-migrations/agent-org-token-batch-boundaries.integration.test.ts:17:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/57]⎯
+
+ FAIL  tests/integration/app-data-migrations/agent-org-token-batch-boundaries.integration.test.ts > Org token migration SQL batch boundaries > rolls back an exact root when member 251 has a contradictory claim, then corrects all 501 members and validates current readiness
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/integration/app-data-migrations/agent-org-token-batch-boundaries.integration.test.ts:32:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/57]⎯
+
+ FAIL  tests/integration/application-backend/brief-package-team-prompt.integration.test.ts > Brief package team prompt authority > composes the exact graph-local package team and member semantics through Codex bootstrap
+Error: Standalone package root is not a directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package
+ ❯ StandaloneApplicationSelectionService.resolve src/standalone-application-host/services/standalone-application-selection-service.ts:56:13
+     54|     const packageStat = await fs.stat(config.packageRoot).catch(() => …
+     55|     if (!packageStat?.isDirectory()) {
+     56|       throw new Error(`Standalone package root is not a directory: ${c…
+       |             ^
+     57|     }
+     58|     const provider = new SelectedApplicationBundleProvider(config.loca…
+ ❯ validateStandaloneApplicationPackage src/application-platform/launch-configuration/application-standalone-package-validator.ts:67:27
+ ❯ tests/integration/application-backend/brief-package-team-prompt.integration.test.ts:28:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/57]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts > Brief Studio production application Agent Tool through MCP > lists and executes the shipped Brief Studio handler over tokenless MCP with exact Team binding isolation
+AssertionError: promise rejected "Error: ENOENT: no such file or directory,… { …(4) }" instead of resolving
+ ❯ tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts:170:50
+    168| 
+    169|   it("lists and executes the shipped Brief Studio handler over tokenle…
+    170|     await expect(fs.stat(IMPORTABLE_PACKAGE_ROOT)).resolves.toBeDefine…
+       |                                                  ^
+    171|     const builtInRoot = path.join(tempRoot, "built-in");
+    172|     const appDataRoot = path.join(tempRoot, "app-data");
+
+Caused by: Error: ENOENT: no such file or directory, stat '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package'
+ ❯ tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts:170:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'stat', path: '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/57]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+Error: Expected Brief Studio bundle to be discoverable from the importable package root.
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:485:13
+    483|     const [bundle] = await bundleService.listApplications();
+    484|     if (!bundle) {
+    485|       throw new Error("Expected Brief Studio bundle to be discoverable…
+       |             ^
+    486|     }
+    487|     applicationId = bundle.id;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/57]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > discovers Brief Studio as an imported package, drives the app-owned GraphQL API, and projects live execution events through REST/WS
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > preserves same-binding early final projection when the packaged Brief Studio GraphQL client launches through the hosted backend mount
+ FAIL  tests/integration/application-backend/brief-studio-imported-package.integration.test.ts > Brief Studio imported package integration > rejects unexpected Brief Studio producers without committing projection state
+TypeError: Cannot read properties of undefined (reading 'stop')
+ ❯ tests/integration/application-backend/brief-studio-imported-package.integration.test.ts:879:21
+    877|       await engineRuntime.engineLauncher.stop(applicationId);
+    878|     }
+    879|     dispatchService.stop();
+       |                     ^
+    880|     engineRuntime.backendGateway.dispose();
+    881|     if (app) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/57]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team configs with the research-first coordinator handoff
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team-config.json'
+ ❯ readJson tests/integration/application-backend/brief-studio-team-config.integration.test.ts:43:14
+     41| 
+     42| const readJson = async <T>(filePath: string): Promise<T> =>
+     43|   JSON.parse(await fs.readFile(filePath, "utf8")) as T;
+       |              ^
+     44| 
+     45| const readText = async (filePath: string): Promise<string> => fs.readF…
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:77:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/57]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged agent configs with the intended research-first tool split
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent-config.json'
+ ❯ readJson tests/integration/application-backend/brief-studio-team-config.integration.test.ts:43:14
+     41| 
+     42| const readJson = async <T>(filePath: string): Promise<T> =>
+     43|   JSON.parse(await fs.readFile(filePath, "utf8")) as T;
+       |              ^
+     44| 
+     45| const readText = async (filePath: string): Promise<string> => fs.readF…
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:94:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/57]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged role prompts with context-first validation and publication ordering
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/agents/researcher/agent.md'
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:143:38
+    141|       path.join(applicationRoot, "agent-teams", "brief-studio-team", "…
+    142|     );
+    143|     const packagedResearcherPrompt = await readText(
+       |                                      ^
+    144|       path.join(packagedApplicationRoot, "agent-teams", "brief-studio-…
+    145|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/57]⎯
+
+ FAIL  tests/integration/application-backend/brief-studio-team-config.integration.test.ts > Brief Studio team package config > ships source and packaged team/launch reinforcement without replacing role-local ownership
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team.md'
+ ❯ tests/integration/application-backend/brief-studio-team-config.integration.test.ts:210:32
+    208|       path.join(applicationRoot, "agent-teams", "brief-studio-team", "…
+    209|     );
+    210|     const packagedTeamPrompt = await readText(
+       |                                ^
+    211|       path.join(packagedApplicationRoot, "agent-teams", "brief-studio-…
+    212|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/57]⎯
+
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > selects one current package, exposes only its confined surface, and leaves package bytes immutable
+Error: ENOENT: no such file or directory, scandir '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package'
+ ❯ visit tests/integration/application-backend/standalone-application-server.integration.test.ts:20:21
+     18|   const hash = createHash("sha256");
+     19|   const visit = async (directory: string): Promise<void> => {
+     20|     const entries = await fs.readdir(directory, { withFileTypes: true …
+       |                     ^
+     21|     entries.sort((left, right) => left.name.localeCompare(right.name));
+     22|     for (const entry of entries) {
+ ❯ hashTree tests/integration/application-backend/standalone-application-server.integration.test.ts:33:3
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts:67:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/57]⎯
+
+ FAIL  tests/integration/application-backend/standalone-application-server.integration.test.ts > standalone application server > fails before server construction for invalid roots and missing explicit selections
+AssertionError: expected [Function] to throw error including 'Standalone application \'missing-app\…' but got 'Standalone package root is not a dire…'
+
+Expected: "Standalone application 'missing-app' was not found"
+Received: "Standalone package root is not a directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package"
+
+ ❯ tests/integration/application-backend/standalone-application-server.integration.test.ts:270:5
+    268|     ).rejects.toThrow("Standalone package root is not a directory");
+    269| 
+    270|     await expect(
+       |     ^
+    271|       new StandaloneApplicationSelectionService().resolve(
+    272|         resolveStandaloneApplicationHostConfig({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/57]⎯
+
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > validates the real Brief package with exact token tuning and typed pricing
+Error: ENOENT: no such file or directory, lstat '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package'
+ ❯ copyBriefPackage tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:36:5
+     34|     tempRoots.push(root);
+     35|     const packageRoot = path.join(root, "package");
+     36|     await fs.cp(sourcePackageRoot, packageRoot, { recursive: true });
+       |     ^
+     37|     return {
+     38|       packageRoot,
+ ❯ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:59:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/57]⎯
+
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested server_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested api_url without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested connection_string without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested access_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested baseUri without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested service_address without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested client_key without echoing its value
+ FAIL  tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts > standalone package portable launch defaults > rejects a real Brief package containing nested auth_config without echoing its value
+Error: ENOENT: no such file or directory, lstat '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/applications/brief-studio/dist/importable-package'
+ ❯ copyBriefPackage tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:36:5
+     34|     tempRoots.push(root);
+     35|     const packageRoot = path.join(root, "package");
+     36|     await fs.cp(sourcePackageRoot, packageRoot, { recursive: true });
+       |     ^
+     37|     return {
+     38|       packageRoot,
+ ❯ tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts:109:46
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/57]⎯
+
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > builds tree and lists file paths
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > writes new file and emits ADD change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > modifies existing file and emits MODIFY change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > renames file and emits RENAME change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > moves file and emits MOVE change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > removes file and emits DELETE change
+TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+ ❯ tests/integration/file-explorer/file-explorer.integration.test.ts:21:16
+     19|   beforeEach(async () => {
+     20|     workspace = await createTempWorkspace();
+     21|     explorer = new FileExplorer(workspace);
+       |                ^
+     22|     await explorer.buildWorkspaceDirectoryTree();
+     23|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/57]⎯
+
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > builds tree and lists file paths
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > writes new file and emits ADD change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > modifies existing file and emits MODIFY change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > renames file and emits RENAME change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > moves file and emits MOVE change
+ FAIL  tests/integration/file-explorer/file-explorer.integration.test.ts > FileExplorer integration > removes file and emits DELETE change
+TypeError: Cannot read properties of undefined (reading 'close')
+ ❯ tests/integration/file-explorer/file-explorer.integration.test.ts:26:20
+     24| 
+     25|   afterEach(async () => {
+     26|     await explorer.close();
+       |                    ^
+     27|     await fs.rm(workspace, { recursive: true, force: true });
+     28|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/57]⎯
+
+ FAIL  tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor
+ ❯ tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts:66:16
+     64|   beforeEach(async () => {
+     65|     workspace = await createTempWorkspace();
+     66|     explorer = new FileExplorer(workspace);
+       |                ^
+     67|     await explorer.buildWorkspaceDirectoryTree();
+     68|     await explorer.startWatcher();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/57]⎯
+
+ FAIL  tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts > Nested folder move watcher integration > returns one direct move event and suppresses watcher self-echoes for a nested ticket folder move
+TypeError: Cannot read properties of undefined (reading 'close')
+ ❯ tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts:72:20
+     70| 
+     71|   afterEach(async () => {
+     72|     await explorer.close();
+       |                    ^
+     73|     await fs.rm(workspace, { recursive: true, force: true });
+     74|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/57]⎯
+
+ FAIL  tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts > Codex MCP tool arguments memory/projection integration > persists an early MCP call plus minimal result and projects both UI surfaces
+AssertionError: expected [ 'tool_call', 'tool_result' ] to deeply equal [ 'reasoning', 'tool_call', …(1) ]
+
+- Expected
++ Received
+
+  [
+-   "reasoning",
+    "tool_call",
+    "tool_result",
+  ]
+
+ ❯ tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts:122:52
+    120| 
+    121|     const traces = readRawTraces(memoryDir);
+    122|     expect(traces.map((trace) => trace.traceType)).toEqual(["reasoning…
+       |                                                    ^
+    123|     expect(traces[0]).toMatchObject({
+    124|       traceType: "reasoning",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/57]⎯
+
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a remote URL
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/services/media-storage-service.integration.test.ts:49:78
+     47|     const localUrl = await service.storeMediaAndGetUrl(TEST_REMOTE_URL…
+     48| 
+     49|     expect(localUrl.startsWith("http://testserver:8000/rest/files/imag…
+       |                                                                              ^
+     50|     expect(localUrl.endsWith(".png")).toBe(true);
+     51| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/57]⎯
+
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a data URI
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/services/media-storage-service.integration.test.ts:72:81
+     70|     const localUrl = await service.storeMediaAndGetUrl(SIMPLE_DATA_URI…
+     71| 
+     72|     expect(localUrl.startsWith("http://testserver:8000/rest/files/docu…
+       |                                                                                 ^
+     73|     expect(localUrl.endsWith(".txt")).toBe(true);
+     74|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/57]⎯
+
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > saves media from a local file path
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/integration/services/media-storage-service.integration.test.ts:81:81
+     79| 
+     80|     const localUrl = await service.storeMediaAndGetUrl(sourceFile, "so…
+     81|     expect(localUrl.startsWith("http://testserver:8000/rest/files/docu…
+       |                                                                                 ^
+     82|     expect(localUrl.endsWith(".txt")).toBe(true);
+     83|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/57]⎯
+
+ FAIL  tests/integration/services/media-storage-service.integration.test.ts > MediaStorageService integration > lists media files by category
+AssertionError: expected '/rest/files/images/test_image.png' to be 'http://testserver:8000/rest/files/ima…' // Object.is equality
+
+Expected: "http://testserver:8000/rest/files/images/test_image.png"
+Received: "/rest/files/images/test_image.png"
+
+ ❯ tests/integration/services/media-storage-service.integration.test.ts:115:34
+    113|     expect(result.files[0]?.category).toBe("images");
+    114|     expect(result.files[0]?.filename).toBe("test_image.png");
+    115|     expect(result.files[0]?.url).toBe(
+       |                                  ^
+    116|       "http://testserver:8000/rest/files/images/test_image.png",
+    117|     );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/57]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > finalizes a nested member through its exact containing TeamRun and canonical address
+Error: Team V2 cannot contain configured Team '/C'.
+ ❯ src/agent-team-execution/services/team-run-execution-tree-builder.ts:53:42
+     51|     defaultLaunchConfiguration: launchConfiguration(input.config.rootT…
+     52|     members: input.config.rootTeam.children.map((member) => {
+     53|       if (member.kind !== "agent") throw new Error(`Team V2 cannot con…
+       |                                          ^
+     54|       return toAgent(member);
+     55|     }),
+ ❯ buildInitialTeamRunExecutionTree src/agent-team-execution/services/team-run-execution-tree-builder.ts:52:45
+ ❯ Module.testExecutionTree tests/fixtures/current-team-run-fixtures.ts:162:37
+ ❯ writeExecutionTree tests/integration/api/rest/context-files.integration.test.ts:141:16
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:304:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/57]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects basename and sibling addresses instead of guessing a nested owner
+Error: Team V2 cannot contain configured Team '/C'.
+ ❯ src/agent-team-execution/services/team-run-execution-tree-builder.ts:53:42
+     51|     defaultLaunchConfiguration: launchConfiguration(input.config.rootT…
+     52|     members: input.config.rootTeam.children.map((member) => {
+     53|       if (member.kind !== "agent") throw new Error(`Team V2 cannot con…
+       |                                          ^
+     54|       return toAgent(member);
+     55|     }),
+ ❯ buildInitialTeamRunExecutionTree src/agent-team-execution/services/team-run-execution-tree-builder.ts:52:45
+ ❯ Module.testExecutionTree tests/fixtures/current-team-run-fixtures.ts:162:37
+ ❯ writeExecutionTree tests/integration/api/rest/context-files.integration.test.ts:141:16
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:329:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/57]⎯
+
+ FAIL  tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a file and serves it from /rest/files
+TypeError: Invalid URL
+ ❯ tests/integration/api/rest/upload-file.integration.test.ts:138:22
+    136|     expect(uploadJson.fileUrl).toContain("/rest/files/");
+    137| 
+    138|     const filePath = new URL(uploadJson.fileUrl).pathname;
+       |                      ^
+    139|     const fileResponse = await app.inject({
+    140|       method: "GET",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/57]⎯
+
+ FAIL  tests/integration/api/rest/upload-file.integration.test.ts > REST upload-file route > uploads a dummy PNG image and stores it under /images
+TypeError: Invalid URL
+ ❯ tests/integration/api/rest/upload-file.integration.test.ts:187:23
+    185|     expect(uploadJson.fileUrl.endsWith(".png")).toBe(true);
+    186| 
+    187|     const imagePath = new URL(uploadJson.fileUrl).pathname;
+       |                       ^
+    188|     const fileResponse = await app.inject({
+    189|       method: "GET",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/57]⎯
+
+
+ Test Files  18 failed (18)
+      Tests  46 failed | 29 passed | 3 skipped (78)
+   Start at  16:55:23
+   Duration  19.70s (transform 4.95s, setup 95ms, import 13.72s, tests 3.90s, environment 1ms)
+

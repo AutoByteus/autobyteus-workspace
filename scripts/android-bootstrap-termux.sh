@@ -10,7 +10,6 @@ SKIP_BUILD=0
 ANDROID_INSTALL_FILTERS=(
   "--filter=./autobyteus-ts..."
   "--filter=./autobyteus-server-ts..."
-  "--filter=./autobyteus-message-gateway..."
 )
 
 usage() {
@@ -160,7 +159,7 @@ fi
 cd "$WORKSPACE_ROOT"
 
 if [[ $SKIP_WORKSPACE_INSTALL -eq 0 ]]; then
-  echo "Running Android workspace install (server/core/gateway only)..."
+  echo "Running Android workspace install (server/core only)..."
   pnpm install --no-optional --frozen-lockfile=false "${ANDROID_INSTALL_FILTERS[@]}"
 else
   echo "Skipping workspace install (--skip-workspace-install)."

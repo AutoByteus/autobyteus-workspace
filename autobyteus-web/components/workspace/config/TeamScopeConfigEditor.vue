@@ -80,7 +80,9 @@
           {{ t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools') }}
         </label>
         <p class="mt-1 text-xs leading-relaxed text-gray-500">
-          {{ t('workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help') }}
+          {{ t(scope.effectiveConfig.runtimeKind === 'antigravity_cli'
+            ? 'workspace.components.workspace.config.TeamRunConfigForm.agy_auto_approve_tools_help'
+            : 'workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help') }}
         </p>
       </div>
       <AutoApproveSwitch
@@ -257,6 +259,7 @@ import type { RuntimeModelConfigSchemaState } from '~/types/agent/RuntimeModelCo
 import type { TeamScopeFormModel } from '~/types/agent/TeamRunFormModel'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import { hasMeaningfulLaunchOverride, modelConfigsEqual } from '~/utils/teamRunConfigUtils'
+import { withNewRuntimeOverridePolicy } from '~/utils/agentRunRuntimeDraftPolicy'
 
 const props = withDefaults(defineProps<{
   scope: Readonly<TeamScopeFormModel>
@@ -327,8 +330,12 @@ const updateField = (field: 'runtime' | 'model' | 'llmConfig' | 'auto', value: u
   if (existingScope.value) return
   if (!editableScope.value) return
   if (props.isRoot) { emit('update-root', field, value); return }
-  const next = { ...pendingOverride.value }
-  if (field === 'runtime') next.runtimeKind = value as TeamScopeConfigOverride['runtimeKind']
+  let next = { ...pendingOverride.value }
+  if (field === 'runtime') {
+    next.runtimeKind = value as TeamScopeConfigOverride['runtimeKind']
+    // Runtime selection emits model/config resets before parent props can reconcile.
+    next = withNewRuntimeOverridePolicy(editableScope.value.override, next)!
+  }
   else if (field === 'model') next.llmModelIdentifier = value as string
   else if (field === 'llmConfig') next.llmConfig = value as Record<string, unknown> | null
   else next.autoExecuteTools = value as boolean

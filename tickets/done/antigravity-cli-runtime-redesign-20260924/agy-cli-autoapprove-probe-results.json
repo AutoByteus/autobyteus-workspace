@@ -1,0 +1,25 @@
+{
+  "cliExit": 0,
+  "permissionMode": "always-proceed",
+  "tools": [
+    {
+      "name": "run_command",
+      "state": "ACTIVE",
+      "command": "printf AUTOAPPROVE-PROBE",
+      "output": null,
+      "error": null
+    },
+    {
+      "name": "run_command",
+      "state": "DONE",
+      "command": "printf AUTOAPPROVE-PROBE",
+      "output": "AUTOAPPROVE-PROBE",
+      "error": null
+    }
+  ],
+  "resultStatus": "SUCCESS",
+  "resultResponse": "The command output is:\n\n```text\nAUTOAPPROVE-PROBE\n```\n",
+  "stderrTail": "",
+  "sandboxUsed": true,
+  "dangerouslySkipPermissionsUsed": true
+}

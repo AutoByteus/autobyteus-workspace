@@ -1,0 +1,9 @@
+== autobyteus-ts/src/external-channel tracked files: 0 ; on disk: ls: autobyteus-ts/src/external-channel: No such file or directory
+== gateway src/external-channel files: 12; tests: 6
+== gateway files still importing autobyteus-ts (src/tests):
+== gateway package.json autobyteus-ts refs:
+== gateway vitest.config.ts autobyteus-ts refs:
+== relative external-channel imports resolve:
+imports: 134 unresolved/non-relative: 0
+== main-product imports of the gateway package:
+== autobyteus-ts package.json exports mention external-channel:

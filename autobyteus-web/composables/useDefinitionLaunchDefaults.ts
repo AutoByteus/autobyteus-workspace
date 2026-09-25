@@ -1,3 +1,4 @@
+import { autoExecuteForNewRuntimeSelection } from '~/utils/agentRunRuntimeDraftPolicy'
 import type { AgentDefinition } from '~/stores/agentDefinitionStore'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
@@ -132,7 +133,7 @@ export const buildAgentRunTemplate = (
     runtimeKind: normalizeRuntimeKind(defaults?.runtimeKind),
     workspaceId: null,
     workspaceMetadata: null,
-    autoExecuteTools: false,
+    autoExecuteTools: autoExecuteForNewRuntimeSelection(normalizeRuntimeKind(defaults?.runtimeKind), false),
     skillAccessMode: 'PRELOADED_ONLY',
     isLocked: false,
     llmConfig: normalizeModelConfig(defaults?.llmConfig),
@@ -150,7 +151,7 @@ export const buildTeamRunTemplate = (
       workspace: { workspaceId: null, workspaceMetadata: null },
       llmModelIdentifier: normalizeModelIdentifier(defaults?.llmModelIdentifier),
       llmConfig: normalizeModelConfig(defaults?.llmConfig),
-      autoExecuteTools: false,
+      autoExecuteTools: autoExecuteForNewRuntimeSelection(normalizeRuntimeKind(defaults?.runtimeKind), false),
       skillAccessMode: 'PRELOADED_ONLY',
     },
     teamOverrides: {},

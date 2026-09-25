@@ -135,13 +135,17 @@ function sourceQuery(): string | undefined {
   return explorerStore.selectedSourceQueryValue;
 }
 
-async function syncRouteSource(): Promise<void> {
+/** Drops an unknown imported source from the URL; the replace triggers the next sync on Local. */
+const replaceUnknownSource = () => router.replace({
+  path: '/memory',
+  query: cleanQuery({ ...(route.query as Record<string, string | undefined>), source: undefined }),
+});
+
+/** The home view is where the source selector lives: refresh the list in the background, never delaying the list. */
+async function refreshSourcesForHome(): Promise<void> {
   await explorerStore.loadSources();
-  const valid = explorerStore.setSelectedSourceByKey(routeSourceKey());
-  if (!valid && queryValue('source')) {
-    const nextQuery = { ...(route.query as Record<string, string | undefined>), source: undefined };
-    await router.replace({ path: '/memory', query: cleanQuery(nextQuery) });
-  }
+  const key = routeSourceKey();
+  if (currentView.value === 'home' && key !== 'local' && !explorerStore.hasSource(key)) await replaceUnknownSource();
 }
 
 /**
@@ -159,16 +163,27 @@ function selectRouteSubject(): void {
   }
 }
 
-/** The single fetch owner: every route-driven view loads its data here exactly once per route change. */
+/**
+ * The single fetch owner: every route-driven view loads its data here exactly once per route change. The sources
+ * list is only awaited for an imported source the loaded list does not know yet; detail and inspector navigation
+ * never request it.
+ */
 async function syncRouteState() {
-  // Select before the sources load so the first paint of the new view already shows the routed subject.
+  const key = routeSourceKey();
+  if (key !== 'local' && !explorerStore.hasSource(key)) {
+    await explorerStore.loadSources();
+    if (!explorerStore.hasSource(key)) {
+      await replaceUnknownSource();
+      return;
+    }
+  }
+  explorerStore.setSelectedSourceByKey(key);
   selectRouteSubject();
-  await syncRouteSource();
-  // A source change clears selections; re-apply the routed subject (a no-op when the source is unchanged).
-  selectRouteSubject();
-
+  // No `await` between the selection above and the fetch start below, so the new view shows its loading state
+  // in the same render that dropped the previous selection's list.
   if (currentView.value === 'home') {
     inspectorStore.clear();
+    void refreshSourcesForHome();
     await explorerStore.fetchHomeTab(routeHomeTab());
     return;
   }

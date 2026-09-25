@@ -119,42 +119,6 @@ describe('AgentStreamingService', () => {
         }
     });
 
-    it('mirrors external user messages into the open conversation', () => {
-        (service as any).dispatchMessage(
-            {
-                type: 'EXTERNAL_USER_MESSAGE',
-                payload: {
-                    content: 'hello from telegram',
-                    received_at: '2026-03-09T11:22:33.000Z',
-                    context_file_paths: [
-                        {
-                            path: 'https://example.com/voice.wav',
-                            type: 'Audio',
-                        },
-                    ],
-                },
-            },
-            mockAgentContext,
-        );
-
-        expect(mockConversation.messages).toHaveLength(1);
-        expect(mockConversation.messages[0]).toMatchObject({
-            type: 'user',
-            text: 'hello from telegram',
-            contextFilePaths: [
-                expect.objectContaining({
-                    kind: 'external_url',
-                    locator: 'https://example.com/voice.wav',
-                    displayName: 'voice.wav',
-                    type: 'Audio',
-                }),
-            ],
-        });
-        expect(mockConversation.messages[0].timestamp.toISOString()).toBe('2026-03-09T11:22:33.000Z');
-        expect(mockConversation.updatedAt).toBeTruthy();
-        expect(mockAgentContext.submissionPending).toBe(false);
-    });
-
     it('routes successful tool execution through the browser-owned post-success handler', () => {
         const payload = {
             invocation_id: 'call-1',

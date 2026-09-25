@@ -1,0 +1,70 @@
+{
+  "model": "gemini-3.8-flash-low",
+  "agentName": "autobyteus-identity-probe",
+  "expectedCodeWord": "ORBIT-SAFFRON",
+  "expectedNonce": "amber-47",
+  "stream": {
+    "exitCode": 0,
+    "durationSeconds": 6.67,
+    "stderrTail": "",
+    "stdoutTailIfNotJson": null,
+    "init": {
+      "conversation_id": "490539dd-af0a-4482-985b-b62b6eaf15d8",
+      "agent": "autobyteus-identity-probe",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-probe-q8z_7u6g/primary"
+    },
+    "results": [
+      {
+        "conversation_id": "490539dd-af0a-4482-985b-b62b6eaf15d8",
+        "status": "SUCCESS",
+        "response": "ORBIT-SAFFRON/amber-47\n",
+        "num_turns": 1,
+        "error": null
+      },
+      {
+        "conversation_id": "490539dd-af0a-4482-985b-b62b6eaf15d8",
+        "status": "SUCCESS",
+        "response": "amber-47\n",
+        "num_turns": 2,
+        "error": null
+      }
+    ],
+    "eventTypes": [
+      "init",
+      "step_update",
+      "step_update",
+      "step_update",
+      "result",
+      "step_update",
+      "step_update",
+      "result"
+    ]
+  },
+  "exactResume": {
+    "exitCode": 0,
+    "durationSeconds": 4.38,
+    "stderrTail": "",
+    "stdoutTailIfNotJson": null,
+    "init": {
+      "conversation_id": "490539dd-af0a-4482-985b-b62b6eaf15d8",
+      "agent": "autobyteus-identity-probe",
+      "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-probe-q8z_7u6g/primary"
+    },
+    "results": [
+      {
+        "conversation_id": "490539dd-af0a-4482-985b-b62b6eaf15d8",
+        "status": "SUCCESS",
+        "response": "amber-47\n",
+        "num_turns": 3,
+        "error": null
+      }
+    ],
+    "eventTypes": [
+      "init",
+      "step_update",
+      "step_update",
+      "step_update",
+      "result"
+    ]
+  }
+}

@@ -7,7 +7,6 @@ Monorepo workspace for the AutoByteus TypeScript platform.
 - `autobyteus-web`
 - `autobyteus-server-ts`
 - `autobyteus-ts`
-- `autobyteus-message-gateway`
 - `autobyteus-android` native wrapper for the existing `/mobile` shell
 - `autobyteus-ios` native wrapper for the existing `/mobile` shell
 - `autobyteus-application-sdk-contracts`
@@ -324,7 +323,6 @@ Full guide:
 ```bash
 pnpm --filter autobyteus-web build
 pnpm --filter autobyteus-server-ts build
-pnpm --filter autobyteus-message-gateway build
 ```
 
 ## Packaged Electron API/E2E testing
@@ -528,7 +526,6 @@ pnpm android:server:stop
   - `.github/workflows/release-desktop.yml`
   - `.github/workflows/release-android.yml`
   - `.github/workflows/release-ios.yml`
-  - `.github/workflows/release-messaging-gateway.yml`
   - `.github/workflows/release-server-docker.yml`
 - Triggers:
   - push tag `v*` (for example: `v1.1.8`)
@@ -540,16 +537,15 @@ pnpm android:server:stop
   - Linux ARM64 AppImage + `latest-linux-arm64.yml` metadata with embedded AppImage `blockMapSize`
   - signed Android APK on the same GitHub Release
   - iOS simulator build/test workflow artifacts, plus signed `.ipa` upload to App Store Connect/TestFlight when iOS publish secrets are configured
-  - managed messaging runtime package assets on the same GitHub Release
   - Docker Hub server image for `linux/amd64,linux/arm64`
 - Release notes:
   - GitHub Releases use curated user-facing notes from `.github/release-notes/release-notes.md` when that file exists in the tagged revision.
   - The release helper prepares that file from the ticket `release-notes.md`.
   - Historical tags that predate the curated file fall back to GitHub generated notes during manual republish.
 - Version/tag sync is mandatory:
-  - `autobyteus-web/package.json` and `autobyteus-message-gateway/package.json` versions must both match the release tag version (`vX.Y.Z`).
-  - The release helper synchronizes both package versions and the bundled managed messaging manifest before tagging.
-  - The desktop, Android, and messaging-gateway release workflows enforce those checks and fail on mismatch.
+  - `autobyteus-web/package.json` version must match the release tag version (`vX.Y.Z`).
+  - The release helper synchronizes that package version before tagging.
+  - The desktop and Android release workflows enforce that check and fail on mismatch.
 - Desktop Electron runtime baseline validation is mandatory:
   - `autobyteus-web/package.json` pins the reviewed Electron runtime exactly, and the root `pnpm-lock.yaml` is the canonical workspace lockfile.
   - Electron baseline changes must be validated with native-module rebuild evidence, focused Electron tests, and a desktop package smoke build because Chromium, Node.js, native-module ABI, packaging, and updater behavior change together.
@@ -616,8 +612,8 @@ Use the release helper script from repo root:
 # Normal new personal release:
 # 1) Write short functional release notes in the ticket, for example:
 #    tickets/done/<ticket-name>/release-notes.md
-# 2) Prepare the release (bump desktop + gateway package versions, sync curated notes and managed messaging manifest, commit, create tag, push branch+tag)
-#    This starts the desktop, Android APK, iOS, messaging-gateway, and server Docker release workflows because the pushed tag matches v*.
+# 2) Prepare the release (bump desktop package version, sync curated notes, commit, create tag, push branch+tag)
+#    This starts the desktop, Android APK, iOS, and server Docker release workflows because the pushed tag matches v*.
 pnpm release 1.2.7 -- --release-notes tickets/done/<ticket-name>/release-notes.md
 
 # Optional manual build-only validation (no GitHub release publish)
@@ -631,7 +627,7 @@ pnpm release:manual-dispatch v1.2.7 --ref personal
 Important:
 
 - Do not run `release:manual-dispatch` immediately after a fresh `release` for the same version.
-- `release` already pushes `vX.Y.Z`, and the tag push starts `.github/workflows/release-desktop.yml`, `.github/workflows/release-android.yml`, `.github/workflows/release-ios.yml`, `.github/workflows/release-messaging-gateway.yml`, and `.github/workflows/release-server-docker.yml`.
+- `release` already pushes `vX.Y.Z`, and the tag push starts `.github/workflows/release-desktop.yml`, `.github/workflows/release-android.yml`, `.github/workflows/release-ios.yml`, and `.github/workflows/release-server-docker.yml`.
 - `release:manual-dispatch` is the manual recovery / re-publish path for an existing tag, not the normal second step of a new release.
 - Curated release notes should stay user-facing and functional only; use `.github/release-notes/template.md` as the repo-level format reference.
 

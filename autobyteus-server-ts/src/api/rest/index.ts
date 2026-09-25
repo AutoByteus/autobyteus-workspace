@@ -5,7 +5,6 @@ import { registerMediaRoutes } from "./media.js";
 import { registerUploadRoutes } from "./upload-file.js";
 import { registerWorkspaceRoutes } from "./workspaces.js";
 import { registerContextFileRoutes } from "./context-files.js";
-import { registerDefaultChannelIngressRoutes } from "./channel-ingress.js";
 import { registerRunFileChangeRoutes } from "./run-file-changes.js";
 import { registerTeamCommunicationRoutes } from "./team-communication.js";
 import { registerTaskDelegationRoutes } from "./task-delegation.js";
@@ -37,7 +36,6 @@ export async function registerRestRoutes(
   await registerTeamCommunicationRoutes(app);
   await registerTaskDelegationRoutes(app);
   await registerAgentOrgReferenceRoutes(app);
-  await registerDefaultChannelIngressRoutes(app);
   await registerApplicationBundleRoutes(app, dependencies.application.assets);
   await registerApplicationBackendRoutes(app, {
     gateway: dependencies.application.backend,

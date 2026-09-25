@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest';
-import { handleExternalUserMessage } from '../externalUserMessageHandler';
 import { handleMemberInputMessage } from '../memberInputMessageHandler';
 import { hydrateContextAttachment } from '~/utils/contextFiles/contextAttachmentModel';
 
@@ -107,22 +106,5 @@ describe('handleMemberInputMessage', () => {
       locator: 'local-file://opaque-context-file',
       type: 'Image',
     });
-  });
-
-  it('keeps external-user identity replacement incoming-authoritative', () => {
-    const context = buildContext([unsupportedImage()]);
-
-    handleExternalUserMessage(
-      {
-        content: 'external replacement',
-        message_id: 'msg-1',
-        dedupe_key: 'dedupe-msg-1',
-        context_file_paths: [],
-      },
-      context,
-    );
-
-    expect(context.conversation.messages).toHaveLength(1);
-    expect(context.conversation.messages[0].contextFilePaths).toEqual([]);
   });
 });

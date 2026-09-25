@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
 import { RunModelSelectionService } from '../../../src/llm-management/services/run-model-selection-service.js';
+import { AgyDiscoveryError } from '../../../src/runtime-management/antigravity-cli-capability.js';
 const context = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, currentModelIdentifier: 'current', workspaceRootPath: '/workspace' };
 const selection = { llmModelIdentifier: 'target', llmConfig: null };
 const known = (tokens: number) => ({ kind: 'known', tokens, source: 'provider' });
@@ -10,6 +11,20 @@ const harness = (current: unknown = known(128000), target: unknown = known(12800
   return { service: new RunModelSelectionService(catalog, capacity), catalog, capacity };
 };
 describe('RunModelSelectionService', () => {
+  it('retains only a safe AGY discovery diagnostic, distinct from a valid missing slug', async () => {
+    const { service, catalog } = harness();
+    const agy = { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, currentModelIdentifier: 'target', workspaceRootPath: '/workspace' };
+    catalog.listLlmModels.mockRejectedValue(new AgyDiscoveryError('AGY_MODEL_DISCOVERY_TIMEOUT'));
+    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable',
+      catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_TIMEOUT', message: 'Antigravity model discovery timed out; check the CLI and retry.' } });
+    catalog.listLlmModels.mockRejectedValue(new Error('secret /private/token'));
+    await expect(service.validate({ context: agy, selection })).resolves.toMatchObject({ kind: 'model_unavailable',
+      catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_FAILED' } });
+    await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_unavailable' });
+    catalog.listLlmModels.mockResolvedValue([]);
+    await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable' });
+  });
+
   it.each([128000, 272000])('accepts a verified equal/larger context %s', async target => {
     const { service } = harness(known(128000), known(target));
     await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'valid', selection });

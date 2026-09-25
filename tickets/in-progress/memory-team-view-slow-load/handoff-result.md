@@ -86,3 +86,27 @@ Independent architecture review of `design-spec.md` against the approved require
 
 - 2026-09-24: `/architecture_reviewer` reported **Pass** for round 2, confirming SR-003. REC-001…004 are all Resolved. No new findings or recommendations. Solution Designer checked the report and the revision record for new items and found none; residual risks are unchanged (RSK-001, codegen/zh-CN consistency, REQ-009/010 disclosure).
 - SR-003 is the authoritative design. The reviewer delivered the package to `/implementation_engineer`. Solution Designer takes no forwarding action.
+
+## SR-004: Revised Architecture Design Complete (2026-09-25)
+
+- Result: `Architecture Design Complete` (revised). `task_size=Large`, `architectural_risk=High` (unchanged).
+- Approval: requirements `Approved` @ SR-004, with the user's explicit "go" on 2026-09-25. REQ-011 option (a), sources refresh only on Memory home. REQ-009/010 kept. REQ-012 (every agent run with memory, shown in the execution structure: configured, task agents, task teams, nested) was the user's direction. DEC-004: memory folders not referenced by the execution tree are left out (user decision). DEC-003 was resolved upstream.
+- Triggers folded in: code review CRR-003 (CR-002 route-sync source ownership; CR-001 subsumed), CRR-004 (integrate `origin/personal` @ `589005470`: unified run-history catalog `b68847a8c`, overlapping team-memory fix `49ce0d173`), and API/E2E pre-verdict F-001 (task-team members), whose direction the user reversed via REQ-012.
+- Design: `design-spec.md` → "SR-004 Revision":
+  - Delta 1: `executionKind` + `groupPath` on member targets and the tree rendering; remove `configuredOnly`.
+  - Delta 2: sources list owned by the store; the route sync fetches exactly once; the home view refreshes in the background.
+  - Delta 3: merge resolution table (this branch's structure wins; remove `listTeamMemberLocationsFromTree` and `listAgentsInTree`; the org source reads `AgentOrgRunHistoryCatalogService.listCatalogRows()`; `withInactiveHistoryMutation`; root-mismatch test; codegen; equivalence gate).
+- Current code: `bd8450984` (reviewed Pass before reopening). Untracked API/E2E artifacts, including `tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts`, must be preserved through the merge.
+- Open item for API/E2E: O-001 (admission counts on the built server).
+- Applied handoff rule: "completed or revised architecture package … Large or High" → `/architecture_reviewer`.
+
+## SR-004 resubmission after ARCH-REV-003 Fail (2026-09-25)
+
+- AR-001 and AR-002 were text-only contradictions. They are fixed in `requirements-doc.md` and `design-spec.md` (see the design's section "ARCH-REV-003 (round 3) findings resolved in SR-004"). REC-005/006/007 were incorporated.
+- Approval confirmation requested by AR-001: before "go", the user was told that teams without delegated tasks look unchanged and only runs with delegated tasks gain rows. The derived aggregates follow from the user's own "show all memory" instruction, and on real team data they produce no change (1 task-agent run, already aggregated at the baseline; 0 task teams). Recorded in the requirements Document Status.
+- The requirements basis is unchanged in intent (SR-004 approved). Classification Large/High. Applied rule → `/architecture_reviewer`.
+
+## Architecture Review Notification: ARCH-REV-004 (informational)
+
+- 2026-09-25: `/architecture_reviewer` reported **Pass** for round 4 on SR-004. AR-001, AR-002 and REC-005…007 are resolved; there are no open findings. Solution Designer checked the report for new recommendations.
+- The reviewer delivered the package to `/implementation_engineer`. Solution Designer takes no forwarding action.

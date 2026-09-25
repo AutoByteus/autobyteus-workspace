@@ -1,3 +1,4 @@
+import { autoExecuteForNewRuntimeSelection } from '~/utils/agentRunRuntimeDraftPolicy'
 import { defineStore } from 'pinia';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
 import { buildAgentRunTemplate } from '~/composables/useDefinitionLaunchDefaults';
@@ -102,6 +103,9 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
      */
     updateAgentConfig(updates: Partial<AgentRunConfig>) {
       if (this.config) {
+        if (updates.runtimeKind && updates.runtimeKind !== this.config.runtimeKind && !this.config.isLocked) {
+          updates = { ...updates, autoExecuteTools: autoExecuteForNewRuntimeSelection(updates.runtimeKind, this.config.autoExecuteTools) };
+        }
         Object.assign(this.config, updates);
         if ('workspaceId' in updates && !('workspaceMetadata' in updates)) {
           this.config.workspaceMetadata = null;

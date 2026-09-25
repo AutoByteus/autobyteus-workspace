@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, type TeamAgentMessageType } from "./team-agent-message-dtos.js";
-import { teamCommunicationMessagePayloadSchema, teamExternalUserMessagePayloadSchema, teamMemberInputMessagePayloadSchema } from "./team-collaboration-message-dtos.js";
+import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
 import { teamTaskDelegationPayloadSchema } from "./team-task-message-dtos.js";
 export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
@@ -1338,24 +1338,6 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         parent_communication_message_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
-    type: z.ZodLiteral<"EXTERNAL_USER_MESSAGE">;
-    payload: z.ZodObject<{
-        agent_run_id: z.ZodString;
-        member_address: z.ZodString;
-        content: z.ZodString;
-        received_at: z.ZodString;
-        provider: z.ZodString;
-        transport: z.ZodString;
-        account_id: z.ZodString;
-        peer_id: z.ZodString;
-        thread_id: z.ZodNullable<z.ZodString>;
-        external_message_id: z.ZodString;
-        context_file_paths: z.ZodArray<z.ZodObject<{
-            path: z.ZodString;
-            type: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>>;
-    }, z.core.$strict>;
-}, z.core.$strict>, z.ZodObject<{
     type: z.ZodLiteral<"ERROR">;
     payload: z.ZodUnion<readonly [z.ZodObject<{
         error_scope: z.ZodNull;
@@ -1425,9 +1407,6 @@ export type TeamStreamServerMessage = TeamAgentServerMessage | Readonly<{
 }> | Readonly<{
     type: "MEMBER_INPUT_MESSAGE";
     payload: z.infer<typeof teamMemberInputMessagePayloadSchema>;
-}> | Readonly<{
-    type: "EXTERNAL_USER_MESSAGE";
-    payload: z.infer<typeof teamExternalUserMessagePayloadSchema>;
 }> | Readonly<{
     type: "ERROR";
     payload: z.infer<typeof teamAgentErrorPayloadSchema>;

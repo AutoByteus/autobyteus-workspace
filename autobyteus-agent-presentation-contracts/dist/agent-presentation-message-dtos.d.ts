@@ -420,20 +420,6 @@ export declare const agentPresentationPayloadSchemas: {
         sender_agent_run_id: z.ZodNullable<z.ZodString>;
         parent_communication_message_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
-    readonly EXTERNAL_USER_MESSAGE: z.ZodObject<{
-        content: z.ZodString;
-        received_at: z.ZodString;
-        provider: z.ZodString;
-        transport: z.ZodString;
-        account_id: z.ZodString;
-        peer_id: z.ZodString;
-        thread_id: z.ZodNullable<z.ZodString>;
-        external_message_id: z.ZodString;
-        context_file_paths: z.ZodArray<z.ZodObject<{
-            path: z.ZodString;
-            type: z.ZodNullable<z.ZodString>;
-        }, z.core.$strict>>;
-    }, z.core.$strict>;
 };
 export declare const agentPresentationErrorPayloadSchemas: {
     readonly unscoped: z.ZodObject<{

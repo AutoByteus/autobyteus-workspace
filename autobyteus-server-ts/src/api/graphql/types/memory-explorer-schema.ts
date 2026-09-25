@@ -18,6 +18,25 @@ registerEnumType(MemoryExplorerSourceType, {
   name: "MemoryExplorerSourceType",
 });
 
+export enum CollaborationMemberExecutionKind {
+  CONFIGURED = "CONFIGURED",
+  TASK_AGENT = "TASK_AGENT",
+  TASK_TEAM_MEMBER = "TASK_TEAM_MEMBER",
+}
+
+registerEnumType(CollaborationMemberExecutionKind, {
+  name: "CollaborationMemberExecutionKind",
+});
+
+export enum CollaborationMemoryGroupKind {
+  CONFIGURED_TEAM = "CONFIGURED_TEAM",
+  TASK_TEAM = "TASK_TEAM",
+}
+
+registerEnumType(CollaborationMemoryGroupKind, {
+  name: "CollaborationMemoryGroupKind",
+});
+
 @InputType()
 export class MemoryExplorerSourceInput {
   @Field(() => MemoryExplorerSourceType)
@@ -211,6 +230,24 @@ export class AgentTeamWithMemoryPage {
 }
 
 @ObjectType()
+export class CollaborationMemoryGroup {
+  @Field(() => String)
+  teamRunId!: string;
+
+  @Field(() => String)
+  address!: string;
+
+  @Field(() => String)
+  displayName!: string;
+
+  @Field(() => CollaborationMemoryGroupKind)
+  kind!: CollaborationMemoryGroupKind;
+
+  @Field(() => String, { nullable: true })
+  startedAt?: string | null;
+}
+
+@ObjectType()
 export class CollaborationMemberMemoryTargetSummary {
   @Field(() => String)
   memberAddress!: string;
@@ -223,6 +260,15 @@ export class CollaborationMemberMemoryTargetSummary {
 
   @Field(() => String, { nullable: true })
   agentDefinitionId?: string | null;
+
+  @Field(() => CollaborationMemberExecutionKind)
+  executionKind!: CollaborationMemberExecutionKind;
+
+  @Field(() => String, { nullable: true })
+  startedAt?: string | null;
+
+  @Field(() => [CollaborationMemoryGroup])
+  groupPath!: CollaborationMemoryGroup[];
 
   @Field(() => String, { nullable: true })
   lastUpdatedAt?: string | null;

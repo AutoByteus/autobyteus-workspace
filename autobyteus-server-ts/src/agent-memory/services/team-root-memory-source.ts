@@ -1,11 +1,10 @@
-import { getAgentTeamAddressBasename } from "../../agent-collaboration/domain/agent-team-address.js";
+import { getAgentTeamAddressBasename, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import {
   createStoredTeamRunExecutionTreeLocationService,
-  type LocatedTeamAgentExecution,
   type TeamRunExecutionTreeLocationService,
 } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import { TeamRunHistoryCatalogService } from "../../run-history/services/team-run-history-catalog-service.js";
-import type { CollaborationMemberMemoryLocation } from "./collaboration-member-memory-targets.js";
+import { toCollaborationMemberMemoryLocation } from "./collaboration-member-memory-targets.js";
 import type {
   CollaborationRootCatalogEntry,
   CollaborationRootMemoryRecord,
@@ -15,15 +14,15 @@ import type {
 type TeamLocations = Pick<TeamRunExecutionTreeLocationService, "listRootTeamRunIds" | "listAgents">;
 type TeamCatalogRows = Pick<TeamRunHistoryCatalogService, "listCatalogRows">;
 
+/** Stored-only history manager: the explorer never manages live runs and only reads history. */
 const STORED_HISTORY_MANAGER = Object.freeze({
-  hasManagedTeamRun: () => false,
-  withUnmanagedHistoryDeletion: async <T>(_teamRunId: string, operation: () => Promise<T>) => ({
+  withInactiveHistoryMutation: async <T>(_teamRunId: string, operation: () => Promise<T>) => ({
     kind: "completed" as const,
     value: await operation(),
   }),
 });
 
-/** Reads stored root team runs for the memory catalog: one tree read per root. */
+/** Reads stored root team runs for the memory catalog: one tree read per root, every agent execution in it. */
 export class TeamRootMemorySource implements CollaborationRootMemorySource {
   readonly familyLabel = "team run";
   private readonly locations: TeamLocations;
@@ -44,7 +43,7 @@ export class TeamRootMemorySource implements CollaborationRootMemorySource {
   }
 
   async readRoot(rootRunId: string): Promise<CollaborationRootMemoryRecord | null> {
-    const located = await this.locations.listAgents({ rootTeamRunId: rootRunId, configuredOnly: true });
+    const located = await this.locations.listAgents({ rootTeamRunId: rootRunId });
     const tree = located[0]?.tree;
     if (!tree) return null;
     return {
@@ -52,7 +51,7 @@ export class TeamRootMemorySource implements CollaborationRootMemorySource {
       definitionId: tree.rootTeam.teamDefinitionId.trim(),
       definitionName: tree.rootTeam.teamDefinitionName,
       createdAt: tree.createdAt ?? null,
-      members: located.map(toMemberLocation),
+      members: located.map((item) => toCollaborationMemberMemoryLocation(item, toTeamDisplayName)),
     };
   }
 
@@ -67,10 +66,6 @@ export class TeamRootMemorySource implements CollaborationRootMemorySource {
   }
 }
 
-const toMemberLocation = (located: LocatedTeamAgentExecution): CollaborationMemberMemoryLocation => ({
-  memberAddress: located.memberAddress,
-  displayName: getAgentTeamAddressBasename(located.memberAddress) ?? located.memberAddress,
-  agentRunId: located.agentRunId,
-  agentDefinitionId: located.configuredPlacement?.agentDefinitionId ?? null,
-  memoryDir: located.memoryDir,
-});
+/** Team members and groups are labeled by their address basename (REQ-004). */
+const toTeamDisplayName = (address: string): string =>
+  getAgentTeamAddressBasename(address as AgentTeamAddress) ?? address;

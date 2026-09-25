@@ -10,6 +10,9 @@ import { TeamCommunicationV1Store } from "../../../../src/services/team-communic
 import { AgentOrgRunExecutionTreeStore } from "../../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { TeamRunExecutionTreeStore } from "../../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../../src/run-history/store/team-run-history-index-store.js";
+import { AgentOrgRunHistoryIndexStore } from "../../../../src/run-history/store/agent-org-run-history-index-store.js";
+import { projectAgentOrgRunHistoryRow } from "../../../../src/run-history/services/agent-org-run-history-row-projector.js";
+import { resetCollaborationRunHistoryCatalogState } from "../../../../src/run-history/services/collaboration-run-history-catalog-core.js";
 import { AgentOrgRunHistoryCatalogService } from "../../../../src/run-history/services/agent-org-run-history-catalog-service.js";
 import { CollaborationRootHistoryService } from "../../../../src/run-history/services/collaboration-root-history-service.js";
 import {
@@ -30,6 +33,7 @@ afterEach(async () => {
   vi.restoreAllMocks();
   for (const memoryDir of roots.splice(0)) {
     resetTeamRunHistoryCatalogState(memoryDir);
+    resetCollaborationRunHistoryCatalogState(memoryDir, "agent_org");
     resetRootRunPackageReadinessIndex(memoryDir);
     await fs.rm(memoryDir, { recursive: true, force: true });
   }
@@ -102,6 +106,8 @@ describe("first mixed collaboration history after restart", () => {
       }),
     ]);
 
+    await new AgentOrgRunHistoryIndexStore(memoryDir).writeIndex([projectAgentOrgRunHistoryRow(orgTree)]);
+
     let releaseOrgValidation!: () => void;
     let reportOrgValidationStarted!: () => void;
     const orgValidationGate = new Promise<void>((resolve) => { releaseOrgValidation = resolve; });
@@ -123,7 +129,7 @@ describe("first mixed collaboration history after restart", () => {
 
     const teamManager = {
       hasManagedTeamRun: vi.fn(() => false),
-      withUnmanagedHistoryDeletion: vi.fn(),
+      withInactiveHistoryMutation: vi.fn(),
     };
     const teamCatalog = new TeamRunHistoryCatalogService(memoryDir, { teamRunManager: teamManager });
     const teamHistory = new TeamRunHistoryService(memoryDir, {

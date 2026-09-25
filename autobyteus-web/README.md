@@ -42,73 +42,6 @@ ENABLE_APPLICATIONS=false
 > main process supplies that active endpoint to the renderer. See
 > [Packaged Electron E2E Launches](#packaged-electron-e2e-launches).
 
-### Messaging Setup
-
-The default messaging flow is now server-managed. `autobyteus-web` no longer needs
-`MESSAGE_GATEWAY_BASE_URL` or `MESSAGE_GATEWAY_ADMIN_TOKEN` in `.env.local` for the
-standard setup path.
-
-When a user enables messaging from `Settings -> Messaging`, the selected node's
-server:
-
-1. resolves the compatible `autobyteus-message-gateway` artifact for that server version
-2. downloads it on demand if it is not already installed
-3. verifies and extracts it into server-owned storage
-4. starts it as a managed child process
-5. reports lifecycle state, version, and diagnostics back to the frontend
-
-## Managed Messaging Setup (Discord, Telegram)
-
-For a user-facing managed setup guide, including the recommended Telegram polling flow, see:
-
-- `docs/messaging.md`
-
-1. Start the target AutoByteus node.
-   - For Electron, this is the bundled local server.
-   - For a remote deployment, use the node you want the window to control.
-
-2. Start the frontend:
-
-```bash
-pnpm dev
-```
-
-3. Open `Settings -> Messaging`.
-
-4. In `Managed Messaging Gateway`:
-   - click `Install and Start Gateway` or `Start Gateway`
-   - wait for the lifecycle state to move through `INSTALLING` and `STARTING`
-   - confirm the card reports `RUNNING`
-
-5. Enter provider configuration in the provider card directly below the provider selector and save it.
-   - Discord requires bot token plus account id.
-   - Telegram requires bot token plus a stable account label such as `telegram-main`.
-   - Managed Telegram is polling-only in the product flow.
-
-6. Use `Channel Binding Setup` to bind provider accounts or discovered peers to AutoByteus targets.
-   - Discord and Telegram peer discovery are available through the managed server boundary.
-   - Bound team channels deliver eligible coordinator or entry-node outputs while the linked run remains active, including follow-up outputs triggered by internal team handoffs.
-
-7. If troubleshooting is needed, use the managed gateway diagnostics shown in the UI.
-   - The port, bind address, active version, and lifecycle message are read-only diagnostics.
-   - Users should not need to enter raw gateway connection details in the normal flow.
-
-## Telegram Setup Summary
-
-For most users, Telegram setup should stay close to a fully in-app flow:
-
-1. Create a bot in BotFather and copy the bot token.
-2. Open `Settings -> Messaging`.
-3. Start the managed gateway from the top runtime card.
-4. Select `Telegram Bot`.
-5. Paste the bot token and enter a stable account label.
-6. Save configuration, send a real Telegram message to the bot, then use `Refresh Peers`.
-7. Create a channel binding by selecting the target agent or team definition and launch preset.
-8. Team bindings deliver eligible coordinator or entry-node outputs back to Telegram while the linked run remains active.
-9. Run setup verification.
-
-The main thing users still do outside AutoByteus is the initial Telegram bot creation. The gateway install, runtime lifecycle, provider configuration, binding flow, runtime preset selection, and verification are handled from the app.
-
 ## Localization
 
 AutoByteus Web now ships with a client-side localization foundation for product UI copy.
@@ -125,26 +58,6 @@ AutoByteus Web now ships with a client-side localization foundation for product 
 For runtime details and contributor workflow, see:
 
 - `docs/localization.md`
-
-## Delivery Reliability
-
-The managed runtime summary now shows delivery reliability information from the gateway:
-
-- queue heartbeat timestamps
-- inbound dead-letter count
-- inbound unbound count
-- outbound dead-letter count
-
-Under the hood, the gateway persists inbound and outbound queues, retries transient failures, and surfaces lock-loss as a critical runtime state.
-
-## Unsupported Or Non-Default Messaging Flows
-
-- WhatsApp Business and WeCom App are excluded from the current default managed
-  messaging setup because these provider flows are not currently available in
-  the managed distribution.
-- WeChat is excluded from the managed messaging capability described above.
-- The old direct gateway URL/token setup flow is no longer the default product path.
-- Personal-session messaging flows are not part of this managed setup.
 
 ## Server Modes
 

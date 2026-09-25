@@ -1,6 +1,10 @@
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type {
+  LocatedExecutionGroup,
+  LocatedExecutionKind,
+} from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
 import { getAgentOrgRunExecutionTreePath } from "../../run-history/store/agent-org-run-execution-tree-path.js";
@@ -20,6 +24,11 @@ export type LocatedAgentOrgAgentExecution = Readonly<{
   memberAddress: AgentTeamAddress;
   platformAgentRunId: string | null;
   configuredPlacement: ConfiguredAgentExecutionNode | null;
+  executionKind: LocatedExecutionKind;
+  /** Task agents only. */
+  startedAt: string | null;
+  /** Teams from the org root (exclusive) down to the hosting team, outermost first. */
+  groupPath: readonly LocatedExecutionGroup[];
   memoryDir: string;
   tree: AgentOrgRunExecutionTreeSnapshot;
   isActive: boolean;
@@ -116,6 +125,14 @@ export class AgentOrgExecutionTreeLocationService {
     const agent = index.requireAgent(agentRunId);
     const scope = index.getPhysicalScopeForAgent(agentRunId);
     const configured = index.getConfiguredPlacement(agent.address);
+    const groupPath = agent.host.hostKind === "team"
+      ? [...index.listTeamAncestorsDeepestFirst(agent.host.hostRunId)].reverse().map((team): LocatedExecutionGroup => Object.freeze({
+        teamRunId: team.teamRunId,
+        address: team.address,
+        executionKind: team.executionKind,
+        startedAt: "startedAt" in team.source ? team.source.startedAt : null,
+      }))
+      : [];
     return Object.freeze({
       rootSubjectKind: "agent_org",
       rootRunId: tree.rootOrg.orgRunId,
@@ -125,6 +142,9 @@ export class AgentOrgExecutionTreeLocationService {
       memberAddress: agent.address,
       platformAgentRunId: agent.source.platformAgentRunId,
       configuredPlacement: configured && "agentRunId" in configured ? configured : null,
+      executionKind: agent.executionKind,
+      startedAt: "startedAt" in agent.source ? agent.source.startedAt : null,
+      groupPath: Object.freeze(groupPath),
       memoryDir: this.layout.getRootedAgentRunDirPath(scope, agentRunId),
       tree,
       isActive: isActive && index.isLiveAgent(agentRunId),

@@ -23,11 +23,16 @@ the Team runtime.
   is a task-scoped runtime execution beneath its exact host and does not mutate
   configured membership or become a persistent configured child.
 - Per-Agent runtime selection stays below the Team boundary. `AgentRunManager`
-  selects the AutoByteus, Codex, or Claude backend from each launch setting.
+  selects the AutoByteus, Codex, Claude, or AGY backend from each launch setting.
   Each execution family injects its own provider factories, definition
   services, session authority, memory/context environment, and task-execution
   identity capabilities; Team execution never reaches across to another
   family's manager or identity allocator.
+
+`antigravity_cli` is also a selectable external member runtime. It retains
+the same exact Team member execution address and root-owned provider binding;
+its capsule, permissions, and trace behavior are documented in
+[Antigravity CLI Runtime](./antigravity_cli_runtime.md).
 
 ## Launch-Time Identity
 
@@ -312,10 +317,11 @@ The root lifecycle and stored-history lifecycle are intentionally separate:
    **Delete**. Delete is a new user decision with permanent-deletion
    confirmation; Stop never opens that confirmation and never invokes Delete.
 5. `TeamRunHistoryService.deleteStoredTeamRun(...)` delegates physical removal
-   to the history catalog. `AgentTeamRunManager.withUnmanagedHistoryDeletion(...)`
-   serializes the exact-ID exclusion through the complete catalog/package
-   transition, rejects active or stopping roots, and lets compensated storage
-   failure preserve a truthful inactive retry target.
+   to the history catalog. Archive, unarchive, and delete acquire the catalog
+   queue before `AgentTeamRunManager.withInactiveHistoryMutation(...)` checks
+   the exact root inside the same transition lane as restore. Active or stopping
+   roots are rejected; compensated storage failure preserves a truthful inactive
+   retry target.
 
 Thus the supported journey is `Stop -> terminal retained inactive history ->`
 an optional, separately confirmed `Delete`. There is no combined
@@ -480,8 +486,7 @@ Team-only events retain their own strict identities:
 - `TASK_DELEGATION_EVENT` carries exact execution and participant addresses;
 - `TEAM_COMMUNICATION_MESSAGE` carries exact sender/receiver addresses;
 - `MEMBER_INPUT_MESSAGE` carries its execution, optional sender, stable message
-  identity, origin, and context files;
-- `EXTERNAL_USER_MESSAGE` carries its exact execution address; and
+  identity, origin, and context files; and
 - `TEAM_RUN_LIFECYCLE` carries root liveness only.
 
 Multiple WebSocket/API subscribers do not create duplicate runtime listeners,

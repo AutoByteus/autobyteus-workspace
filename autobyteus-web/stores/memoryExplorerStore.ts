@@ -48,6 +48,8 @@ interface MemoryExplorerState {
   homeTab: MemoryHomeTab;
   sources: MemoryExplorerSourceOption[];
   selectedSource: MemoryExplorerSourceOption;
+  /** True once a sources request has succeeded; the list is page-lifetime state. */
+  sourcesLoaded: boolean;
   sourceLoading: boolean;
   sourceError: string | null;
   agents: ListState<AgentWithMemorySummary>;
@@ -115,11 +117,15 @@ const sourceInputFor = (source: MemoryExplorerSourceOption): MemoryExplorerSourc
     : { type: 'LOCAL' }
 );
 
+/** In-flight sources request per store instance, so concurrent `loadSources()` calls share one request. */
+const sourcesRequests = new WeakMap<object, Promise<MemoryExplorerSourceOption[]>>();
+
 export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
   state: (): MemoryExplorerState => ({
     homeTab: 'agents',
     sources: [localSource()],
     selectedSource: localSource(),
+    sourcesLoaded: false,
     sourceLoading: false,
     sourceError: null,
     agents: createListState<AgentWithMemorySummary>(25),
@@ -148,7 +154,19 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
   },
 
   actions: {
-    async loadSources(): Promise<MemoryExplorerSourceOption[]> {
+    /**
+     * Replaces the sources list only; the selected source is derived from the route by the page. Concurrent calls
+     * share one request. A failure keeps the previously loaded list (Local only if nothing was ever loaded).
+     */
+    loadSources(): Promise<MemoryExplorerSourceOption[]> {
+      const inFlight = sourcesRequests.get(this);
+      if (inFlight) return inFlight;
+      const request = this.requestSources().finally(() => { sourcesRequests.delete(this); });
+      sourcesRequests.set(this, request);
+      return request;
+    },
+
+    async requestSources(): Promise<MemoryExplorerSourceOption[]> {
       this.sourceLoading = true;
       this.sourceError = null;
       try {
@@ -157,20 +175,19 @@ export const useMemoryExplorerStore = defineStore('memoryExplorerStore', {
           fetchPolicy: 'network-only',
         });
         if (errors?.length) throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-        const sources = data?.listMemoryExplorerSources?.length ? data.listMemoryExplorerSources : [localSource()];
-        this.sources = sources;
-        if (!this.sources.some((source) => source.key === this.selectedSource.key)) {
-          this.selectedSource = this.sources[0] || localSource();
-        }
+        this.sources = data?.listMemoryExplorerSources?.length ? data.listMemoryExplorerSources : [localSource()];
+        this.sourcesLoaded = true;
         return this.sources;
       } catch (error: any) {
         this.sourceError = error?.message || 'Failed to load memory sources.';
-        this.sources = [localSource()];
-        this.selectedSource = this.sources[0];
         return this.sources;
       } finally {
         this.sourceLoading = false;
       }
+    },
+
+    hasSource(key: string): boolean {
+      return this.sources.some((source) => source.key === key);
     },
 
     setSelectedSourceByKey(key?: string | null): boolean {

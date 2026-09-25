@@ -47,6 +47,7 @@ import {
 } from './autobyteus-remote-model-discovery-service.js';
 import { getClaudeModelCatalog, type ClaudeModelCatalog } from './claude-model-catalog.js';
 import { getCodexModelCatalog, type CodexModelCatalog } from './codex-model-catalog.js';
+import { AntigravityModelCatalog } from './antigravity-model-catalog.js';
 import {
   DynamicModelSourceLifecycle,
   type DynamicSourceSpec,
@@ -78,6 +79,7 @@ export class ModelCatalogService {
       getAutobyteusRemoteModelDiscoveryService(),
     private readonly claudeModelCatalog: ClaudeModelCatalog = getClaudeModelCatalog(),
     private readonly codexModelCatalog: CodexModelCatalog = getCodexModelCatalog(),
+    private readonly antigravityModelCatalog = new AntigravityModelCatalog(),
   ) {}
 
   async listProviderModelCatalogSnapshots(
@@ -200,6 +202,8 @@ export class ModelCatalogService {
     const runtime = normalizeRuntime(runtimeKind);
     if (runtime === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeModelCatalog.listModels();
     if (runtime === RuntimeKind.CODEX_APP_SERVER) return this.codexModelCatalog.listModels(workspaceRootPath);
+    if (runtime === RuntimeKind.ANTIGRAVITY_CLI) return this.antigravityModelCatalog.listModels();
+    if (runtime !== RuntimeKind.AUTOBYTEUS) throw new Error(`Unsupported runtime: ${runtime}`);
     return LLMFactory.listAvailableModels();
   }
 
@@ -370,7 +374,11 @@ export class ModelCatalogService {
   private async listExternalRuntimeSnapshots(runtime: RuntimeKind): Promise<LocalProviderModelCatalogSnapshot[]> {
     const models = runtime === RuntimeKind.CLAUDE_AGENT_SDK
       ? await this.claudeModelCatalog.listModels()
-      : await this.codexModelCatalog.listModels();
+      : runtime === RuntimeKind.CODEX_APP_SERVER
+        ? await this.codexModelCatalog.listModels()
+        : runtime === RuntimeKind.ANTIGRAVITY_CLI
+          ? await this.antigravityModelCatalog.listModels()
+          : (() => { throw new Error(`Unsupported external runtime: ${runtime}`); })();
     const grouped = new Map<string, ModelInfo[]>();
     for (const model of models) grouped.set(model.provider_id, [
       ...(grouped.get(model.provider_id) ?? []),

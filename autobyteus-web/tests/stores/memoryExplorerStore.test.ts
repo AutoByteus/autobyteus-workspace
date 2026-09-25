@@ -204,4 +204,49 @@ describe('memoryExplorerStore', () => {
     expect(store.teamRuns.error).toBe('boom');
     expect(store.teamRuns.entries[0]?.teamRunId).toBe('team-keep');
   });
+
+  it('loadSources only replaces the list: it never changes the selected source, and a failure keeps the previous list (REQ-011)', async () => {
+    const local = { key: 'local', type: 'LOCAL', label: 'Local Memory', sourceNodeId: null, displayName: null, readOnly: false, lastImportedAt: null, lastSyncStatus: null };
+    const imported = { ...local, key: 'imported:finance', type: 'IMPORTED', label: 'Imported: Finance', sourceNodeId: 'finance', readOnly: true };
+    const queryMock = vi.fn()
+      .mockResolvedValueOnce({ data: { listMemoryExplorerSources: [local, imported] } })
+      .mockResolvedValueOnce({ data: { listMemoryExplorerSources: [local] } })
+      .mockRejectedValueOnce(new Error('hub offline'));
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
+    const store = useMemoryExplorerStore();
+    expect(store.sourcesLoaded).toBe(false);
+    expect(store.hasSource('local')).toBe(true);
+
+    await store.loadSources();
+    expect(store.sourcesLoaded).toBe(true);
+    expect(store.hasSource('imported:finance')).toBe(true);
+    expect(store.setSelectedSourceByKey('imported:finance')).toBe(true);
+
+    await store.loadSources();
+    expect(store.hasSource('imported:finance')).toBe(false);
+    expect(store.selectedSource.key).toBe('imported:finance');
+
+    await store.loadSources();
+    expect(store.sourceError).toBe('hub offline');
+    expect(store.sources.map((source) => source.key)).toEqual(['local']);
+    expect(store.selectedSource.key).toBe('imported:finance');
+    expect(store.sourceLoading).toBe(false);
+  });
+
+  it('shares one in-flight sources request between concurrent loadSources calls', async () => {
+    let resolveSources!: (value: unknown) => void;
+    const queryMock = vi.fn().mockReturnValue(new Promise((resolve) => { resolveSources = resolve; }));
+    vi.mocked(getApolloClient).mockReturnValue({ query: queryMock } as any);
+    const store = useMemoryExplorerStore();
+
+    const first = store.loadSources();
+    const second = store.loadSources();
+    expect(queryMock).toHaveBeenCalledTimes(1);
+    resolveSources({ data: { listMemoryExplorerSources: [] } });
+    expect(await first).toBe(await second);
+
+    queryMock.mockResolvedValueOnce({ data: { listMemoryExplorerSources: [] } });
+    await store.loadSources();
+    expect(queryMock).toHaveBeenCalledTimes(2);
+  });
 });

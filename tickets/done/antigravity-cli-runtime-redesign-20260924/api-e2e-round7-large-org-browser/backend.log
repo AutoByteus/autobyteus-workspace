@@ -1,0 +1,234 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:49985
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:49985
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "r7.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/db/r7.db"
+
+25 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:42407) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-25T05:26:14.740Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 50 items.
+Populating agent definition cache for the first time...
+[2026-09-25T05:26:15.230Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-25T05:26:15.237Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+Agent definition cache populated with 50 items.
+{"level":30,"time":1790313975246,"pid":42407,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:50014"}
+{"level":30,"time":1790313975273,"pid":42407,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:49985"}
+[2026-09-25T05:26:15.273Z] [INFO] [server.runtime] Server listening on 127.0.0.1:49985
+[2026-09-25T05:26:15.274Z] [INFO] [server.runtime] Server internal base URL configured to: http://127.0.0.1:49985
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID agy-r7-agent-01-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-01-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-02-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-02-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-03-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-03-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-04-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-04-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-05-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-05-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-06-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-06-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-07-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-07-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-08-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-08-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-09-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-09-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-10-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-10-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-11-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-11-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-12-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-12-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-13-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-13-e0476c9a
+In-memory cache: Added new agent definition with ID agy-r7-agent-14-e0476c9a.
+Agent Definition created successfully with ID: agy-r7-agent-14-e0476c9a
+[2026-09-25T05:26:18.160Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-r7-team-1-e0476c9a.
+Agent Team Definition created successfully with ID: agy-r7-team-1-e0476c9a
+[2026-09-25T05:26:18.177Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-r7-team-2-e0476c9a.
+Agent Team Definition created successfully with ID: agy-r7-team-2-e0476c9a
+[2026-09-25T05:26:18.195Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-r7-team-3-e0476c9a.
+Agent Team Definition created successfully with ID: agy-r7-team-3-e0476c9a
+Created terminal session 74fbe939-d0c6-4ea5-99e9-9f88d2c48488 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: 74fbe939-d0c6-4ea5-99e9-9f88d2c48488
+Terminal websocket attached for cwd /Users/normy
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace.
+Created and registered workspace ID: agent_ws_20728f2682a8fb04abc9f2226d69d9d7d952cdd90b7d723ed7a734ccd5194f73
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace.
+Reusing registered workspace ID: agent_ws_20728f2682a8fb04abc9f2226d69d9d7d952cdd90b7d723ed7a734ccd5194f73
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_agent_01_e0476c9a_d40e5bb062ad41519cdb102cf17d0470/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_agent_02_e0476c9a_20e16c63fab5448d99f51807136b765f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_1_e0476c9a_502c87a5bda349d48a06d6a2d073492d/agy_r7_agent_03_e0476c9a_32fcd26d9d2a4c0fb7182220b5ee25bf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_1_e0476c9a_502c87a5bda349d48a06d6a2d073492d/agy_r7_agent_04_e0476c9a_db415a4f4c954d92a15d4646fcef4468/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_1_e0476c9a_502c87a5bda349d48a06d6a2d073492d/agy_r7_agent_05_e0476c9a_ad9d9f4e1e7145f9b1fbe7d627b84b16/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_1_e0476c9a_502c87a5bda349d48a06d6a2d073492d/agy_r7_agent_06_e0476c9a_cad15391e1a6495ba6b2da5127201eba/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_2_e0476c9a_d727622de55c44e89290053d565e7555/agy_r7_agent_08_e0476c9a_d36e3339008446ce9167fd71f0e51f5f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_2_e0476c9a_d727622de55c44e89290053d565e7555/agy_r7_agent_09_e0476c9a_375315570ea74de2b2e4f6d7dc640b76/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_2_e0476c9a_d727622de55c44e89290053d565e7555/agy_r7_agent_10_e0476c9a_7e5986228baa4a768d2c479ea60e843b/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_3_e0476c9a_4aa9ca933699421998b035805c63901c/agy_r7_agent_11_e0476c9a_15feb1519d5d49e2ba1770c2611c8c06/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_2_e0476c9a_d727622de55c44e89290053d565e7555/agy_r7_agent_07_e0476c9a_3b11d72f1a3f4290834efcdbdd029ae4/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_3_e0476c9a_4aa9ca933699421998b035805c63901c/agy_r7_agent_13_e0476c9a_332ef8f5b7314c0687581bdd71e44ba8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_3_e0476c9a_4aa9ca933699421998b035805c63901c/agy_r7_agent_14_e0476c9a_8560f518af224c1db38af0a250c79b5d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_3_e0476c9a_4aa9ca933699421998b035805c63901c/agy_r7_agent_12_e0476c9a_3c68b29de2f94a82ad1c4db112e2a452/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_agent_01_e0476c9a_d40e5bb062ad41519cdb102cf17d0470/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_agent_02_e0476c9a_20e16c63fab5448d99f51807136b765f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_1_e0476c9a_502c87a5bda349d48a06d6a2d073492d/agy_r7_agent_03_e0476c9a_32fcd26d9d2a4c0fb7182220b5ee25bf/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_1_e0476c9a_502c87a5bda349d48a06d6a2d073492d/agy_r7_agent_04_e0476c9a_db415a4f4c954d92a15d4646fcef4468/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_2_e0476c9a_d727622de55c44e89290053d565e7555/agy_r7_agent_08_e0476c9a_d36e3339008446ce9167fd71f0e51f5f/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_2_e0476c9a_d727622de55c44e89290053d565e7555/agy_r7_agent_09_e0476c9a_375315570ea74de2b2e4f6d7dc640b76/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_1_e0476c9a_502c87a5bda349d48a06d6a2d073492d/agy_r7_agent_05_e0476c9a_ad9d9f4e1e7145f9b1fbe7d627b84b16/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_1_e0476c9a_502c87a5bda349d48a06d6a2d073492d/agy_r7_agent_06_e0476c9a_cad15391e1a6495ba6b2da5127201eba/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_2_e0476c9a_d727622de55c44e89290053d565e7555/agy_r7_agent_07_e0476c9a_3b11d72f1a3f4290834efcdbdd029ae4/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_3_e0476c9a_4aa9ca933699421998b035805c63901c/agy_r7_agent_11_e0476c9a_15feb1519d5d49e2ba1770c2611c8c06/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_3_e0476c9a_4aa9ca933699421998b035805c63901c/agy_r7_agent_12_e0476c9a_3c68b29de2f94a82ad1c4db112e2a452/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_3_e0476c9a_4aa9ca933699421998b035805c63901c/agy_r7_agent_13_e0476c9a_332ef8f5b7314c0687581bdd71e44ba8/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_3_e0476c9a_4aa9ca933699421998b035805c63901c/agy_r7_agent_14_e0476c9a_8560f518af224c1db38af0a250c79b5d/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/server-data/memory/agent_orgs/agy_r7_large_org_e0476c9a_ac665da73d5f459da56ec6bcf2005e72/agy_r7_team_2_e0476c9a_d727622de55c44e89290053d565e7555/agy_r7_agent_10_e0476c9a_7e5986228baa4a768d2c479ea60e843b/raw_traces_active.jsonl
+Closed PTY session 74fbe939-d0c6-4ea5-99e9-9f88d2c48488
+Terminal WebSocket disconnected: 74fbe939-d0c6-4ea5-99e9-9f88d2c48488
+Created terminal session a84eb37f-1475-49a2-aa45-5fa75a42a264 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: a84eb37f-1475-49a2-aa45-5fa75a42a264
+Terminal websocket attached for cwd /Users/normy
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace.
+Reusing registered workspace ID: agent_ws_20728f2682a8fb04abc9f2226d69d9d7d952cdd90b7d723ed7a734ccd5194f73
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace.
+Reusing registered workspace ID: agent_ws_20728f2682a8fb04abc9f2226d69d9d7d952cdd90b7d723ed7a734ccd5194f73
+Closed PTY session a84eb37f-1475-49a2-aa45-5fa75a42a264
+Terminal WebSocket disconnected: a84eb37f-1475-49a2-aa45-5fa75a42a264
+Created terminal session a9eab736-fd90-4883-935b-f203212423d0 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: a9eab736-fd90-4883-935b-f203212423d0
+Terminal websocket attached for cwd /Users/normy
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace.
+Reusing registered workspace ID: agent_ws_20728f2682a8fb04abc9f2226d69d9d7d952cdd90b7d723ed7a734ccd5194f73
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace.
+Reusing registered workspace ID: agent_ws_20728f2682a8fb04abc9f2226d69d9d7d952cdd90b7d723ed7a734ccd5194f73
+Closed PTY session a9eab736-fd90-4883-935b-f203212423d0
+Terminal WebSocket disconnected: a9eab736-fd90-4883-935b-f203212423d0
+Created terminal session dceaee0f-eb19-4855-bf75-f5f2efb28e27 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: dceaee0f-eb19-4855-bf75-f5f2efb28e27
+Terminal websocket attached for cwd /Users/normy
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace.
+Reusing registered workspace ID: agent_ws_20728f2682a8fb04abc9f2226d69d9d7d952cdd90b7d723ed7a734ccd5194f73
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-r7-large-org-3RfHyr/selected-workspace.
+Reusing registered workspace ID: agent_ws_20728f2682a8fb04abc9f2226d69d9d7d952cdd90b7d723ed7a734ccd5194f73
+[2026-09-25T05:27:07.154Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-25T05:27:07.173Z] [INFO] [server.runtime] Server closed cleanly.

@@ -14,6 +14,8 @@ import type {
   ApplicationCurrentModelSelectionPolicy,
 } from "./application-current-model-selection-policy.js";
 import { ApplicationModelAvailabilityError } from "./application-current-model-selection-policy.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { toAgyDiscoveryDiagnostic } from "../../runtime-management/antigravity-cli-capability.js";
 
 type RuntimeAvailabilityReader = Pick<
   RuntimeAvailabilityService,
@@ -69,7 +71,7 @@ export class ApplicationLaunchHostCapabilityValidator {
         ));
         continue;
       }
-      const availability = this.dependencies.runtimeAvailabilityService
+      const availability = await this.dependencies.runtimeAvailabilityService
         .getRuntimeAvailability(runtimeKind);
       if (!availability.enabled) {
         issues.push(issue(
@@ -114,7 +116,8 @@ export class ApplicationLaunchHostCapabilityValidator {
           configuration,
           leaf,
           "RUNTIME_AUTHENTICATION_UNAVAILABLE",
-          `Runtime '${runtimeKind}' could not provide its authenticated model catalog: ${failure.message}`,
+          `Runtime '${runtimeKind}' could not provide its authenticated model catalog: ${runtimeKind === RuntimeKind.ANTIGRAVITY_CLI
+            ? toAgyDiscoveryDiagnostic(error).message : failure.message}`,
         ));
         continue;
       }

@@ -17,7 +17,6 @@ import { AgentSessionManager } from "./agent-session-manager.js";
 import { parseCommandAgentRunId, TEAM_COMMAND_INVALID_TARGET_CODE, TEAM_COMMAND_INVALID_TARGET_MESSAGE } from "./team-agent-run-command-parser.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "./team-execution-view-projector.js";
 import { handleTeamInterruptGenerationCommand } from "./team-interrupt-generation-command-handler.js";
-import { TeamStreamBroadcaster, getTeamStreamBroadcaster } from "./team-stream-broadcaster.js";
 import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
 import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
 
@@ -53,7 +52,6 @@ export class AgentTeamStreamHandler {
   constructor(
     private readonly sessionManager: AgentSessionManager = new AgentSessionManager(AgentTeamSession),
     private readonly teamRunService: TeamRunService = getTeamRunService(),
-    private readonly broadcaster: TeamStreamBroadcaster = getTeamStreamBroadcaster(),
     private readonly teamRunManager: Pick<AgentTeamRunManager, "getLifecycleSnapshot" | "subscribeToLifecycle"> = AgentTeamRunManager.getInstance(),
   ) {}
 
@@ -84,7 +82,6 @@ export class AgentTeamStreamHandler {
       return null;
     }
     this.activeTasks.set(sessionId, Promise.resolve());
-    this.broadcaster.registerConnection(sessionId, teamRunId, egress);
     console.info(`Agent Team WebSocket connected: session=${sessionId}, run=${teamRunId}`);
     return sessionId;
   }
@@ -113,7 +110,6 @@ export class AgentTeamStreamHandler {
   }
 
   async disconnect(sessionId: string): Promise<void> {
-    this.broadcaster.unregisterConnection(sessionId);
     const task = this.activeTasks.get(sessionId);
     this.activeTasks.delete(sessionId);
     this.cleanupSession(sessionId);

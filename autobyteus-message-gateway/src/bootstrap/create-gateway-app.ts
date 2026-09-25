@@ -1,7 +1,7 @@
 import Fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import path from "node:path";
-import type { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
+import type { ExternalChannelProvider } from "../external-channel/provider.js";
 import type { GatewayRuntimeConfig } from "../config/runtime-config.js";
 import { AutobyteusServerClient } from "../infrastructure/server-api/autobyteus-server-client.js";
 import { WhatsAppBusinessAdapter } from "../infrastructure/adapters/whatsapp-business/whatsapp-business-adapter.js";

@@ -41,6 +41,7 @@ export type AgentRunManagerOptions = Readonly<{
   autoByteusBackendFactory: AgentRunBackendFactory;
   codexBackendFactory: AgentRunBackendFactory;
   claudeBackendFactory: AgentRunBackendFactory;
+  agyBackendFactory: AgentRunBackendFactory;
   activationRegistry: AgentRunActivationRegistry;
   memoryRecorder: AgentRunMemoryRecorder;
   providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
@@ -52,6 +53,7 @@ export class AgentRunManager {
   private readonly autoByteusBackendFactory: AgentRunBackendFactory;
   private readonly codexBackendFactory: AgentRunBackendFactory;
   private readonly claudeBackendFactory: AgentRunBackendFactory;
+  private readonly agyBackendFactory: AgentRunBackendFactory;
   private readonly activationRegistry: AgentRunActivationRegistry;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
   private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
@@ -91,13 +93,14 @@ export class AgentRunManager {
       options?.autoByteusBackendFactory,
       options?.codexBackendFactory,
       options?.claudeBackendFactory,
+      options?.agyBackendFactory,
       options?.activationRegistry,
       options?.memoryRecorder,
       options?.providerInputNormalizer,
       options?.agentToolMcpRunSessionDeactivator,
     ];
     if (required.some((value) => !value)) {
-      throw new Error("AgentRunManager requires all seven execution-family dependencies.");
+      throw new Error("AgentRunManager requires all execution-family dependencies.");
     }
     if (typeof options.providerInputNormalizer.normalizeForProvider !== "function") {
       throw new Error("AgentRunManager provider input normalizer is invalid.");
@@ -105,6 +108,7 @@ export class AgentRunManager {
     this.autoByteusBackendFactory = options.autoByteusBackendFactory;
     this.codexBackendFactory = options.codexBackendFactory;
     this.claudeBackendFactory = options.claudeBackendFactory;
+    this.agyBackendFactory = options.agyBackendFactory;
     this.memoryRecorder = options.memoryRecorder;
     this.providerInputNormalizer = options.providerInputNormalizer;
     this.agentToolMcpRunSessionDeactivator =
@@ -505,6 +509,7 @@ export class AgentRunManager {
     if (runtimeKind === RuntimeKind.AUTOBYTEUS) return this.autoByteusBackendFactory;
     if (runtimeKind === RuntimeKind.CODEX_APP_SERVER) return this.codexBackendFactory;
     if (runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeBackendFactory;
+    if (runtimeKind === RuntimeKind.ANTIGRAVITY_CLI) return this.agyBackendFactory;
     return null;
   }
 

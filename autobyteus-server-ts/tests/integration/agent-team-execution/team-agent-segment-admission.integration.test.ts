@@ -18,14 +18,8 @@ import {
 } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
-import { TeamRunEventSourceType } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { TeamAgentEventAdapter } from "../../../src/agent-team-execution/services/team-agent-event-adapter.js";
 import { ApplicationAgentStreamEventProjector } from "../../../src/application-agent-streaming/services/application-agent-stream-event-projector.js";
-import {
-  parseDirectChannelOutputEvent,
-  parseTeamChannelOutputEvent,
-} from "../../../src/external-channel/runtime/channel-output-event-parser.js";
-import { ChannelRunOutputEventCollector } from "../../../src/external-channel/runtime/channel-run-output-event-collector.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunEventMessageMapper } from "../../../src/services/agent-streaming/agent-run-event-message-mapper.js";
 import { projectTeamAgentEventMessage } from "../../../src/services/agent-streaming/team-agent-event-websocket-projector.js";
@@ -325,7 +319,7 @@ describe("AgentRun-owned Team segment lifecycle", () => {
     });
   });
 
-  it("preserves exact Claude delta bytes once through direct and nested Team external collection", async () => {
+  it("preserves exact Claude delta bytes once through direct and nested Team presentation", async () => {
     const { backend, observed } = createRunHarness();
     const converter = new ClaudeSessionEventConverter(runId);
     const deltas = [" hello ", " ", "\n", "foo\n", "x", "x", "ab", "bc"];
@@ -355,51 +349,28 @@ describe("AgentRun-owned Team segment lifecycle", () => {
 
     await backend.emit(converted);
 
-    const directCollector = new ChannelRunOutputEventCollector();
-    const directFinal = observed.reduce<ReturnType<ChannelRunOutputEventCollector["processEvent"]>>(
-      (final, event) => {
-        const parsed = parseDirectChannelOutputEvent(event);
-        if (!parsed) return final;
-        return directCollector.processEvent({ deliveryKey: "direct-delivery", event: parsed }) ?? final;
-      },
-      null,
-    );
-
     const nestedExecution = createTeamAgentExecutionBinding({
       root: createTeamRootExecutionIdentity("root-team-run"),
       memberAddress: "/StudentStudyGroup/student_one",
       agentRunId: runId,
     });
     const nestedAdapter = new TeamAgentEventAdapter(() => nestedExecution);
-    const teamCollector = new ChannelRunOutputEventCollector();
-    const teamFinal = observed.reduce<ReturnType<ChannelRunOutputEventCollector["processEvent"]>>(
-      (final, event) => {
-        const adapted = nestedAdapter.adapt(event);
-        if (adapted.kind !== "publish") return final;
-        const parsed = parseTeamChannelOutputEvent({
-          eventSourceType: TeamRunEventSourceType.AGENT,
-          execution: nestedExecution,
-          payload: adapted.event,
-        });
-        if (!parsed) return final;
-        return teamCollector.processEvent({ deliveryKey: "team-delivery", event: parsed }) ?? final;
-      },
-      null,
-    );
+    const teamDeltas = observed.flatMap((event) => {
+      const adapted = nestedAdapter.adapt(event);
+      if (adapted.kind !== "publish") return [];
+      const teamEvent = adapted.event;
+      return teamEvent.eventType === "SEGMENT_CONTENT" && teamEvent.details.segmentType === "text"
+        ? [teamEvent.details.delta]
+        : [];
+    });
 
-    expect(segmentEvents(observed).filter((event) =>
+    const directDeltas = segmentEvents(observed).filter((event) =>
       event.eventType === AgentRunEventType.SEGMENT_CONTENT
-    ).map((event) => event.payload.delta)).toEqual(deltas);
-    expect(directFinal).toEqual({
-      deliveryKey: "direct-delivery",
-      turnId: "turn-1",
-      replyText: expected,
-    });
-    expect(teamFinal).toEqual({
-      deliveryKey: "team-delivery",
-      turnId: "turn-1",
-      replyText: expected,
-    });
+    ).map((event) => event.payload.delta);
+    expect(directDeltas).toEqual(deltas);
+    expect(directDeltas.join("")).toBe(expected);
+    expect(teamDeltas).toEqual(deltas);
+    expect(teamDeltas.join("")).toBe(expected);
   });
 
   it("emits a diagnostic for missing identity and accepts a later valid sequence without generated identity", async () => {

@@ -1,0 +1,17 @@
+15d14
+< ./download/messaging-gateway/autobyteus-message-gateway-1.4.0.tgz
+17,21d15
+< ./extensions/messaging-gateway/config/gateway.env
+< ./extensions/messaging-gateway/config/provider-config.json
+< ./extensions/messaging-gateway/runtime-data/inbox/inbox.json
+< ./extensions/messaging-gateway/state/managed-gateway-state.json
+< ./extensions/messaging-gateway/versions/1.4.0/dist/index.js
+23,26d16
+< ./external-channel/bindings.json
+< ./external-channel/gateway-callback-outbox.json
+< ./external-channel/message-receipts.json
+< ./external-channel/run-output-deliveries.json
+47c37
+< ./logs/messaging-gateway/gateway.log
+---
+> ./logs/app-data-migrations/20260924_remove_external_messaging_data-2026-09-24T14-56-38-612Z.log

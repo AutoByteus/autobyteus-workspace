@@ -1,12 +1,12 @@
 import type { SignatureResult } from "../../../domain/models/provider-adapter.js";
 import type { InboundHttpRequest } from "../../../domain/models/inbound-http-request.js";
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
-import { ExternalPeerType } from "autobyteus-ts/external-channel/peer-type.js";
+import { ExternalChannelProvider } from "../../../external-channel/provider.js";
+import { ExternalChannelTransport } from "../../../external-channel/channel-transport.js";
+import { ExternalPeerType } from "../../../external-channel/peer-type.js";
 import {
   parseExternalMessageEnvelope,
   type ExternalMessageEnvelope,
-} from "autobyteus-ts/external-channel/external-message-envelope.js";
+} from "../../../external-channel/external-message-envelope.js";
 import { WeComAdapter } from "./wecom-adapter.js";
 import { normalizeInboundMessageId } from "./wecom-inbound-message-id-normalizer.js";
 

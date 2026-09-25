@@ -27,10 +27,6 @@ export {
 } from './agentStatusHandler';
 
 export {
-  handleExternalUserMessage,
-} from './externalUserMessageHandler';
-
-export {
   handleMemberInputMessage,
 } from './memberInputMessageHandler';
 

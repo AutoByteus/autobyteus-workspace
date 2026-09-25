@@ -1,0 +1,4 @@
+
+> autobyteus-message-gateway@1.4.79 typecheck /private/tmp/emr-gw/autobyteus-message-gateway
+> tsc -p tsconfig.json --noEmit
+

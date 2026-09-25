@@ -61,11 +61,27 @@ export interface AgentTeamWithMemorySummary {
   memory: MemoryAvailabilitySummary;
 }
 
+export type CollaborationMemberExecutionKind = 'CONFIGURED' | 'TASK_AGENT' | 'TASK_TEAM_MEMBER';
+
+/** A configured or task team on a member's path; `teamRunId` identifies it (a task team may share an address). */
+export interface CollaborationMemoryGroup {
+  teamRunId: string;
+  address: string;
+  displayName: string;
+  kind: 'CONFIGURED_TEAM' | 'TASK_TEAM';
+  startedAt?: string | null;
+}
+
 export interface CollaborationMemberMemoryTargetSummary {
   memberAddress: string;
   displayName: string;
   agentRunId: string;
   agentDefinitionId?: string | null;
+  executionKind: CollaborationMemberExecutionKind;
+  /** Task agents only. */
+  startedAt?: string | null;
+  /** Outermost first; the root team or org is never a group. */
+  groupPath: CollaborationMemoryGroup[];
   lastUpdatedAt?: string | null;
   memory: MemoryAvailabilitySummary;
 }

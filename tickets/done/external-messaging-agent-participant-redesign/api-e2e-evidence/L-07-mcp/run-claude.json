@@ -1,0 +1,33 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "runId": "mcp_token_probe_f1f403176eef46cab43366ab5703e9d1",
+  "nonce": "N-claude_agent_sdk-779e30d5",
+  "eventTypes": {
+    "CONNECTED": 1,
+    "AGENT_STATUS": 4,
+    "AGENT_COMMAND_ACK": 1,
+    "TURN_STARTED": 1,
+    "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+    "SEGMENT_START": 2,
+    "TOOL_EXECUTION_STARTED": 1,
+    "SEGMENT_END": 2,
+    "TOOL_EXECUTION_SUCCEEDED": 1,
+    "SEGMENT_CONTENT": 1,
+    "TOKEN_USAGE_UPDATED": 1,
+    "TURN_COMPLETED": 1
+  },
+  "toolEvents": [
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "snippet": "{\"invocation_id\":\"toolu_01NMo8f6oWnXiKTQ69svrm7t\",\"tool_name\":\"verify_e2e_token\",\"turn_id\":\"mcp_token_probe_f1f403176eef46cab43366ab5703e9d1:turn:1790262430347\",\"arguments\":{\"nonce\":\"N-claude_agent_sdk-779e30d5\"}}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "snippet": "{\"invocation_id\":\"toolu_01NMo8f6oWnXiKTQ69svrm7t\",\"tool_name\":\"verify_e2e_token\",\"turn_id\":\"mcp_token_probe_f1f403176eef46cab43366ab5703e9d1:turn:1790262430347\",\"arguments\":{\"nonce\":\"N-claude_agent_sdk-779e30d5\"},\"result\":[{\"type\":\"text\",\"text\":\"TOKEN_PRESENT=true TOKEN_SHA8=abf32337 NONCE=N-claude_"
+    }
+  ],
+  "assistantTextContainsNonce": true,
+  "anyEventContainsToolResult": true,
+  "errors": []
+}

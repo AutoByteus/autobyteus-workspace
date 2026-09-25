@@ -103,7 +103,6 @@ const mocks = vi.hoisted(() => {
     buildApplicationPlatformRuntime: vi.fn(() => ({ lifecycle: applicationLifecycle })),
     buildStandaloneApplicationServer: vi.fn(async () => app),
     configureDeniedPaths: vi.fn(),
-    seedInternalBaseUrl: vi.fn(),
     loggerWarn: vi.fn(),
   };
 });
@@ -223,9 +222,6 @@ vi.mock("../../../src/compositions/build-standalone-application-server.js", () =
 }));
 vi.mock("autobyteus-ts/tools/file/workspace-path-utils.js", () => ({
   configureFileToolDeniedPaths: mocks.configureDeniedPaths,
-}));
-vi.mock("../../../src/config/server-runtime-endpoints.js", () => ({
-  seedInternalServerBaseUrlFromListenAddress: mocks.seedInternalBaseUrl,
 }));
 
 import { startStandaloneApplicationHost } from "../../../src/standalone-application-host/start-standalone-application-host.js";

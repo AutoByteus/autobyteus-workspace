@@ -53,7 +53,7 @@ export class AgentOrgRunService {
     admission: Pick<DefinitionAdmissionService, "requireAvailable">;
     modelSelectionValidator: RunModelSelectionValidator;
     modelSelectionOptions: Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
-    history: Pick<AgentOrgRunHistoryCatalogService, "initialize" | "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary" | "archiveStored" | "deleteStored">;
+    history: Pick<AgentOrgRunHistoryCatalogService, "recordCreated" | "recordRestored" | "recordTerminated" | "recordRunSummary" | "archiveStored" | "deleteStored">;
   }>) {}
 
   getRunConfig(orgRunId: string) {
@@ -106,10 +106,6 @@ export class AgentOrgRunService {
       agentOverrides,
       applicationBinding: command.applicationBinding ?? null,
     });
-    // Establish the derived history baseline before the new current package is
-    // published, otherwise a first-ever history read would discover that same
-    // package and misclassify recordCreated as a duplicate.
-    await this.dependencies.history.initialize();
     const run = await this.dependencies.manager.create(tree);
     try {
       await this.dependencies.history.recordCreated(run.getExecutionTreeSnapshot());
@@ -132,22 +128,29 @@ export class AgentOrgRunService {
       if (!configuration.workspaceRootPath?.trim()) {
         throw coded("AGENT_ORG_WORKSPACE_REQUIRED", `Workspace is required for AgentOrg placement '${address}'.`);
       }
-      const result = await this.dependencies.modelSelectionValidator.validate({
-        context: {
-          runtimeKind: configuration.runtimeKind,
-          currentModelIdentifier: configuration.llmModelIdentifier,
-          workspaceRootPath: configuration.workspaceRootPath,
-        },
-        selection: {
-          llmModelIdentifier: configuration.llmModelIdentifier,
-          llmConfig: configuration.llmConfig,
-        },
-      });
+    }
+    const results = await this.dependencies.modelSelectionValidator.validateMany(entries.map(([, configuration]) => ({
+      context: {
+        runtimeKind: configuration.runtimeKind,
+        currentModelIdentifier: configuration.llmModelIdentifier,
+        workspaceRootPath: configuration.workspaceRootPath!,
+      },
+      selection: {
+        llmModelIdentifier: configuration.llmModelIdentifier,
+        llmConfig: configuration.llmConfig,
+      },
+    })));
+    if (results.length !== entries.length) {
+      const address = results.length < entries.length ? entries[results.length]![0] : "/";
+      throw coded("AGENT_ORG_CONFIGURATION_INVALID", `Invalid configuration for '${address}': Model validation returned an incomplete result.`);
+    }
+    for (const [index, [address]] of entries.entries()) {
+      const result = results[index]!;
       if (result.kind !== "valid") {
         const detail = result.kind === "invalid"
           ? result.errors.map((error) => `${error.path}: ${error.message}`).join("; ")
           : result.kind === "model_unavailable"
-            ? "The selected model is unavailable."
+            ? result.catalogDiagnostic?.message ?? "The selected model is unavailable."
             : "The selected model configuration schema is unavailable.";
         throw coded("AGENT_ORG_CONFIGURATION_INVALID", `Invalid configuration for '${address}': ${detail}`);
       }

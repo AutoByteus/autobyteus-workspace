@@ -22,7 +22,6 @@ import { McpServerResolver } from './types/mcp-server.js';
 import { MemoryExplorerResolver } from './types/memory-explorer.js';
 import { MemoryViewResolver } from './types/memory-view.js';
 import { MemorySyncResolver } from './types/memory-sync.js';
-import { ExternalChannelSetupResolver } from './types/external-channel-setup.js';
 import { RunHistoryResolver } from './types/run-history.js';
 import { RunFileChangesResolver } from './types/run-file-changes.js';
 import { TeamCommunicationResolver } from './types/team-communication.js';
@@ -31,7 +30,6 @@ import { TeamRunHistoryResolver } from './types/team-run-history.js';
 import { RuntimeAvailabilityResolver } from './types/runtime-availability.js';
 import { AgentPackageResolver } from './types/agent-packages.js';
 import { ApplicationPackageResolver } from './types/application-packages.js';
-import { ManagedMessagingGatewayResolver } from './types/managed-messaging-gateway.js';
 import { AppDataMigrationResolver } from './types/app-data-migrations.js';
 import { SkillImprovementResolver } from './types/skill-improvement.js';
 import { DateTimeScalar } from './scalars/date-time.js';
@@ -65,7 +63,6 @@ export async function buildGraphqlSchema() {
       MemoryExplorerResolver,
       MemoryViewResolver,
       MemorySyncResolver,
-      ExternalChannelSetupResolver,
       RunHistoryResolver,
       RunFileChangesResolver,
       TeamCommunicationResolver,
@@ -74,7 +71,6 @@ export async function buildGraphqlSchema() {
       RuntimeAvailabilityResolver,
       AgentPackageResolver,
       ApplicationPackageResolver,
-      ManagedMessagingGatewayResolver,
       AppDataMigrationResolver,
       SkillImprovementResolver,
       SecretStorageResolver,

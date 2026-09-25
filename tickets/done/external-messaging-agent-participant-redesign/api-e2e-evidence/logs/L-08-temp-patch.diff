@@ -1,0 +1,15 @@
+16a17,19
+> # API/E2E TEMP PATCH (pre-existing gap, not part of the change): copy the contract packages the server/web depend on
+> COPY autobyteus-agent-presentation-contracts/package.json autobyteus-agent-presentation-contracts/tsconfig.build.json autobyteus-agent-presentation-contracts/tsconfig.json ./autobyteus-agent-presentation-contracts/
+> COPY autobyteus-collaboration-stream-contracts/package.json autobyteus-collaboration-stream-contracts/tsconfig.build.json autobyteus-collaboration-stream-contracts/tsconfig.json ./autobyteus-collaboration-stream-contracts/
+23a27,28
+> COPY autobyteus-agent-presentation-contracts ./autobyteus-agent-presentation-contracts
+> COPY autobyteus-collaboration-stream-contracts ./autobyteus-collaboration-stream-contracts
+31a37,38
+>   --filter @autobyteus/agent-presentation-contracts... \
+>   --filter @autobyteus/collaboration-stream-contracts... \
+33a41
+> RUN pnpm -C autobyteus-agent-presentation-contracts build && pnpm -C autobyteus-collaboration-stream-contracts build
+55a64,65
+> COPY --from=builder /app/autobyteus-agent-presentation-contracts ./autobyteus-agent-presentation-contracts
+> COPY --from=builder /app/autobyteus-collaboration-stream-contracts ./autobyteus-collaboration-stream-contracts

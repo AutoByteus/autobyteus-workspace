@@ -303,6 +303,11 @@ describe("SkillService", () => {
       path.resolve(path.join(agentDir, "skills", "tone")),
       path.resolve(path.join(agentDir, "skills", "outline")),
     ]);
+    expect(service.resolveConfiguredSkillBindingsForAgent(new AgentDefinition({
+      name: "Writer", description: "Writes", instructions: "", skillNames: ["tone"],
+      sourceInfo: { agentDirPath: agentDir },
+    }))[0]).toMatchObject({ kind: "resolved", source: { origin: "agent_private",
+      trustedRoot: fs.realpathSync(agentDir) } });
   });
 
   it("resolves team-shared skills after agent-private candidates", () => {
@@ -352,6 +357,30 @@ describe("SkillService", () => {
     expect(resolved).toHaveLength(1);
     expect(resolved[0]?.description).toBe("Review style");
     expect(resolved[0]?.rootPath).toBe(path.resolve(skillDir));
+  });
+
+  it("records the winning private, team-shared and global source boundaries", () => {
+    const teamDir = path.join(tempRoot, "package-root", "agent-teams", "editorial");
+    const agentDir = path.join(teamDir, "agents", "reviewer");
+    const privateRoot = writeSkillDirectory(path.join(agentDir, "skills", "style"), "style", "Private", "Private content");
+    writeSkillDirectory(path.join(teamDir, "skills", "style"), "style", "Shared", "Shared content");
+    writeSkill(skillsDir, "style", "Global", "Global content");
+    const teamRoot = writeSkillDirectory(path.join(teamDir, "skills", "rubric"), "rubric", "Shared", "Shared content");
+    const globalRoot = writeSkill(skillsDir, "fallback", "Global", "Global content");
+    const definition = new AgentDefinition({ name: "Reviewer", description: "Reviews", instructions: "",
+      skillNames: ["style", "rubric", "fallback"], sourceInfo: { agentDirPath: agentDir, teamDirPath: teamDir } });
+    const bindings = service.resolveConfiguredSkillBindingsForAgent(definition);
+    expect(bindings.map((binding) => binding.kind === "resolved" ? binding.source : null)).toEqual([
+      { origin: "agent_private", sourceRoot: fs.realpathSync(privateRoot), trustedRoot: fs.realpathSync(teamDir) },
+      { origin: "team_shared", sourceRoot: fs.realpathSync(teamRoot), trustedRoot: fs.realpathSync(teamDir) },
+      { origin: "global", sourceRoot: fs.realpathSync(globalRoot), trustedRoot: fs.realpathSync(globalRoot) },
+    ]);
+    const standalone = service.resolveConfiguredSkillBindingsForAgent(new AgentDefinition({
+      name: "Writer", description: "Writes", instructions: "", skillNames: ["style"],
+      sourceInfo: { agentDirPath: path.join(tempRoot, "standalone") },
+    }));
+    expect(standalone[0]).toMatchObject({ kind: "resolved", source: { origin: "global",
+      trustedRoot: fs.realpathSync(path.join(skillsDir, "style")) } });
   });
 
   it("does not resolve a configured root-level agent SKILL.md from source context", () => {

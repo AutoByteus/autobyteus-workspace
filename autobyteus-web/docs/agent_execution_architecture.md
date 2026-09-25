@@ -4,6 +4,28 @@
 
 This document outlines the end-to-end architecture of how Agent and Agent Team executions are managed in the frontend. The architecture has evolved to offload complex parsing to the backend. The frontend now acts as a **Renderer** of structured events rather than a parser of raw text.
 
+For `antigravity_cli`, the backend converts provider steps into these same
+structured events; the frontend does not parse AGY stream-JSON. New editable
+AGY launch selections default `autoExecuteTools` on and preserve a subsequent
+explicit off choice. AGY tool `DONE` without explicit error renders canonical
+success, but must not be labeled as a verified shell exit-zero; explicit
+denial/error remains non-green. The server-owned runtime contract is in
+[Antigravity CLI Runtime](../../autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md).
+The opt-in web-equivalent restart journey has also verified that a fresh
+browser can focus the original Team/direct Org/nested Org member after a clean
+backend process restart, display its old answer, send a new message, and keep
+both answers visible. This does not assert Electron-shell or crash recovery.
+For a large AGY AgentOrg launch, the backend validates every placement with
+request-local catalog sharing and an asynchronous bounded CLI probe; the
+frontend does not run discovery itself. A failed probe is reported as a safe,
+addressed `createAgentOrgRun` message and rendered in the existing launch
+alert, distinct from a valid catalog missing the selected model. The launch
+control leaves its loading state after either failure. A real-browser
+18-placement regression observed active persisted topology and responsive
+health during delayed discovery, plus finite safe timeout/nonzero/missing-
+model alerts. This remains web-equivalent evidence, not a manual packaged
+Electron journey.
+
 The data flow follows a top-down approach:
 
 1.  **Orchestration Layer (Stores)**: Manages lifecycle, user input, and WebSocket streaming connections.
@@ -1185,7 +1207,7 @@ off payload.
 Runtime-scoped model catalog rows can also carry an optional plain-text
 description independently from their display name and executable identifier.
 Every LLM model picker (run config, team member override, existing-run
-Settings, messaging binding, application launch profile) builds its options
+Settings, application launch profile) builds its options
 through the single `buildModelSelectionGroups` owner in
 `utils/modelSelectionOptions.ts` and renders them with the shared
 `SearchableGroupedSelect`: the open option list renders a wrapping secondary
@@ -1465,7 +1487,6 @@ Incoming events are routed based on their `type`:
 | `TOOL_LOG`                | `toolLifecycleHandler.handleToolLog`               | Appends diagnostic execution logs only.                         |
 | `ARTIFACT_PERSISTED`      | inline no-op compatibility                         | Ignored by the current client; published artifacts are not displayed in the current web UI. |
 | `FILE_CHANGE`             | `fileChangeHandler.handleFileChange`        | Syncs touched files and generated outputs into the run-scoped Agent Artifact store. |
-| `EXTERNAL_USER_MESSAGE`   | `externalUserMessageHandler.handleExternalUserMessage` | Inserts or updates a user/input row for true external-channel ingress by backend `message_id` / `dedupe_key`. It remains external-channel-specific; repeated rows with no identity remain separate. |
 | `MEMBER_INPUT_MESSAGE`    | `memberInputMessageHandler.handleMemberInputMessage` | Inserts or updates an accepted team/member input row by backend `message_id` / `dedupe_key`, including local team sends and parent-to-task-Team delivery prompts in the target leaf transcript before assistant output. Deduped local submissions preserve existing non-empty `contextFilePaths` when a lower-fidelity echo omits attachments, while incoming non-empty context-file locators update the row. |
 | `SYSTEM_TASK_NOTIFICATION` | `systemTaskNotificationHandler.handleSystemTaskNotification` | Appends backend-provided system-task notification content as a `system_task_notification` AI message segment without rewriting the display text. |
 | `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |

@@ -1,0 +1,1548 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+
+stdout | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > closes the usable query without iteration when post-handoff persistence fails
+Claude runtime turn failed for run 'run-1': Error: persist failed
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:319:36)
+    at Object.Mock [as capture] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at captureClaudeSystemInstructions (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-system-instruction-capture.ts:14:75)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:439:7)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > enriches generic Claude process exits with bounded redacted stderr diagnostics
+Claude runtime turn failed for run 'run-1': Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:499:13)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > classifies Claude terminal auth result chunks as runtime errors instead of completed turns
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:479:17)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > rejects a foreign interrupt turn without mutating the active query
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_UNCONFIRMED: Claude turn completed without provider identity confirmation.
+    at ClaudeProviderSessionLifecycle.assertCurrentQueryConfirmed (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:85:13)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:517:37)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a turn when Claude reports a conflicting provider UUID
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+    at ClaudeProviderSessionLifecycle.confirmProviderSessionId (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:74:13)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:465:41)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stderr | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > fails a successful-looking turn that never confirms the provider UUID
+Claude runtime turn failed for run 'run-1': Error: CLAUDE_PROVIDER_SESSION_ID_UNCONFIRMED: Claude turn completed without provider identity confirmation.
+    at ClaudeProviderSessionLifecycle.assertCurrentQueryConfirmed (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:85:13)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:517:37)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts (25 tests | 1 failed) 55ms
+     ✓ forwards persisted thinking and effort on a restored session turn 5ms
+     ✓ captures and publishes the exact SDK systemPrompt after a usable query is returned 2ms
+     ✓ closes the usable query without iteration when post-handoff persistence fails 5ms
+     ✓ defensively rejects an impossible explicit start while another turn is active 1ms
+     ✓ does not clear an identified active turn for missing or mismatched completion identity 0ms
+     ✓ caches and sends local context file reference paths in user content 1ms
+     ✓ caches and sends an already-normalized finalized context-file path 0ms
+     ✓ applies idle status before emitting normal turn completion 2ms
+     ✓ auto-approves workspace and safe outside-scratch write/delete/shell requests under default permission mode 8ms
+     ✓ keeps manual mode gated for a safe outside-scratch permission request until approval resolves 7ms
+     ✓ enriches generic Claude process exits with bounded redacted stderr diagnostics 1ms
+     ✓ classifies Claude terminal auth result chunks as runtime errors instead of completed turns 1ms
+     ✓ settles an interrupted active turn before emitting TURN_INTERRUPTED 3ms
+     ✓ keeps manager-owned closure cleanup idempotent without an active turn execution 0ms
+     ✓ rejects a foreign interrupt turn without mutating the active query 1ms
+     ✓ delegates terminate to the session manager dependency 0ms
+     ✓ exposes the caller-reserved provider UUID before the first query 0ms
+     ✓ resumes an interrupted incomplete turn using its immutable reserved provider UUID 2ms
+     × switches an opened but unconfirmed first query to exact resume after interrupt 3ms
+     ✓ uses SDK sessionId for the first turn and resume for every completed follow-up 2ms
+     ✓ continues to resume restored Claude runs with the restored provider session id 0ms
+     ✓ fails a turn when Claude reports a conflicting provider UUID 2ms
+     ✓ fails a successful-looking turn that never confirms the provider UUID 2ms
+     ✓ emits provider-derived text segment ids and preserves text-tool-text order 3ms
+     ✓ coalesces partial stream_event text deltas by message and content block 1ms
+stdout | tests/unit/secret-management/live-e2e-harness.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/secret-management/live-e2e-harness.test.ts (19 tests | 1 failed) 87ms
+     ✓ keeps the tracked template exact, non-secret, and inside the ignored test DB root 2ms
+     ✓ matches one database target by normalized path rather than file URL spelling 0ms
+     × adapts the raw product backend through the canonical AgentRun event facade 5ms
+     ✓ accepts only the fixed launch schema and rejects unknown, duplicate, dynamic, or unsafe values 1ms
+     ✓ materializes fixed keys into an ordinary runtime .env while preserving mutable Settings 4ms
+     ✓ constructs a clean child environment without database or provider aliases 0ms
+     ✓ masks Vitest database aliases only while selecting the persistent live-E2E vault 1ms
+     ✓ keeps all native model fixtures in code and mapped to their static product factories 2ms
+     ✓ selects only known code-owned scenarios 0ms
+     ✓ registers managed DeepSeek compaction as a five-percent real agent flow 0ms
+     ✓ registers local Qwen compaction without a provider secret 0ms
+     ✓ accepts a final correction run as the second bounded sibling of one compaction 0ms
+     ✓ counts only runs beyond the initial-plus-one-correction bound as descendants 0ms
+     ✓ classifies only the exact value-free AutoByteus discovery-unavailable boundary 0ms
+     ✓ executes every declared agent operation and returns only value-free summaries 2ms
+     ✓ rejects an invalid agent operation before backend provisioning 0ms
+     ✓ detects exact, encoded, and structural synthetic leaks 1ms
+     ✓ captures and releases clean full-run output through the canonical process boundary 34ms
+     ✓ fails the canonical capture/artifact path without echoing seeded content 33ms
+(node:95229) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts (3 tests | 3 failed) 174ms
+     × normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup 82ms
+     × rolls back an injected cleanup failure and succeeds through the same ordinary retry 33ms
+     × returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file 58ms
+(node:95232) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts (6 tests | 2 failed) 205ms
+     ✓ does not create platform or journal state while inspecting absent recovery state 3ms
+     ✓ leaves an existing database without journal state byte-for-byte unchanged 6ms
+     ✓ reads an appended pending record through a new read-only store without changing SQLite bytes 112ms
+     ✓ projects old binding and producer supersets, then dispatches and acknowledges them 64ms
+     × lets lifecycle restart recovery reach ready and dispatch an existing pending event 11ms
+     × lets reload/reentry inspect and dispatch existing journal state before activation 8ms
+ ❯ tests/unit/run-history/services/agent-run-history-catalog-service.test.ts (11 tests | 1 failed) 246ms
+     ✓ records prepared metadata and one V2 catalog row through one boundary 55ms
+     ✓ does not flush the index for a normal start/activity metadata update 39ms
+     × commits only llmConfig through the serialized catalog 38ms
+     ✓ updates first summary only and does not rewrite on ordinary later activity 6ms
+     ✓ serializes concurrent prepared-run catalog mutations 60ms
+     ✓ refuses to cancel a run after the serialized catalog start mutation 37ms
+     ✓ rejects unsafe delete identities inside the catalog boundary 1ms
+     ✓ rolls back archive state in memory when the index flush fails 3ms
+     ✓ rolls back first summary and termination state in memory when index flushes fail 2ms
+     ✓ rolls back delete state and leaves the run directory when the index flush fails 2ms
+     ✓ rolls back cancel state and leaves prepared metadata when the index flush fails 2ms
+stdout | tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > adds large excluded histories without any history-content I/O or index writes; flat task Teams do not change classification
+FAMILY_MIGRATION_IO_ONLY {"addedExcludedBytes":22020096,"small":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":3.296375000000012},"large":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":1.5694999999999482}}
+
+ ❯ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts (11 tests | 8 failed) 701ms
+     ✓ adds large excluded histories without any history-content I/O or index writes; flat task Teams do not change classification 74ms
+     ✓ reconciles only a retained Team index row without reopening current Org history 109ms
+     × retains source evidence and exact usage through authority interruption, then retries 49ms
+     × retains source evidence and exact usage through rename-before interruption, then retries 50ms
+     × retains source evidence and exact usage through rename-after interruption, then retries 65ms
+     × retains source evidence and exact usage through org-index-after interruption, then retries 40ms
+     × retains source evidence and exact usage through team-index-before interruption, then retries 48ms
+     × retains source evidence and exact usage through team-index-after interruption, then retries 42ms
+     × retains source evidence and exact usage through retirement interruption, then retries 43ms
+     × retains referrer markers when a cross-candidate token dependency fails, including cycles 24ms
+     ✓ retains referrer markers when a cross-candidate sidecar dependency fails, including cycles 159ms
+stdout | tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts (11 tests | 11 failed) 372ms
+     × changes exactly three fields, preserves accounting/checkpoint bytes and negative controls, and keeps replay/advancement neutral 34ms
+     × finds stale SQL after all history sources are gone and performs zero history-content or index writes 96ms
+     × warning-classifies wrong-root source data after whole-root rollback and keeps the local readiness guard 20ms
+     × warning-classifies mixed-summary source data after whole-root rollback and keeps the local readiness guard 19ms
+     × warning-classifies scalar-only source data after whole-root rollback and keeps the local readiness guard 18ms
+     × warning-classifies extra-claimant source data after whole-root rollback and keeps the local readiness guard 18ms
+     × warning-classifies malformed source data after whole-root rollback and keeps the local readiness guard 18ms
+     × includes settled direct-task and task-Team members without materializing runtimes 21ms
+     × rolls back an actual SQLite UPDATE failure after an earlier member update 20ms
+     × uses the current token boundary after real package loading and rejects before scope build; inspection stays available 82ms
+     × does not normalize a malformed current attribution into a ready result 24ms
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+
+Node.js v22.21.1
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+
+Node.js v22.21.1
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+
+Node.js v22.21.1
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+
+Node.js v22.21.1
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+
+Node.js v22.21.1
+ ❯ tests/unit/logging/prisma-query-log-policy.test.ts (11 tests | 6 failed) 562ms
+     × installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code 4ms
+     × esm import acquires no Prisma client or datasource 62ms
+     ✓ cjs import acquires no Prisma client or datasource 33ms
+     × esm defaults to non-query log kinds 63ms
+     ✓ cjs defaults to non-query log kinds 32ms
+     × esm honors explicit environment query-log policy only 63ms
+     ✓ cjs honors explicit environment query-log policy only 63ms
+     × esm honors typed policy and typed-false precedence 70ms
+     ✓ cjs honors typed policy and typed-false precedence 69ms
+     × esm rejects a conflicting post-bind logging policy 68ms
+     ✓ cjs rejects a conflicting post-bind logging policy 32ms
+(node:95265) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts (8 tests | 1 failed) 287ms
+     × imports later JSON integers after four leading NULLs in the same real Prisma batch 53ms
+     ✓ rejects 'JSON real' and rolls the real migration transaction back 32ms
+     ✓ rejects 'JSON text' and rolls the real migration transaction back 32ms
+     ✓ rejects 'JSON true' and rolls the real migration transaction back 31ms
+     ✓ rejects 'JSON array' and rolls the real migration transaction back 31ms
+     ✓ rejects 'JSON object' and rolls the real migration transaction back 31ms
+     ✓ rejects 'negative JSON integer' and rolls the real migration transaction back 45ms
+     ✓ rejects 'integer above SafeInt' and rolls the real migration transaction back 30ms
+stdout | tests/unit/workspaces/workspace-manager.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-vjznoi
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-vjznoi.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Created and registered workspace ID: agent_ws_c43035edc1f6effa83dd71414b06283d6e01ec3cb6f8c1d44b6af25adcb22f2e
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates and registers a workspace
+Closing FileSystemWorkspace agent_ws_c43035edc1f6effa83dd71414b06283d6e01ec3cb6f8c1d44b6af25adcb22f2e
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-6oXBLb
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-6oXBLb.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Created and registered workspace ID: agent_ws_97f65dc6614b583723d7b19cab59e3284dd4e3d39bff7a35f264ecd85caa89ef
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-6oXBLb
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-6oXBLb.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Reusing registered workspace ID: agent_ws_97f65dc6614b583723d7b19cab59e3284dd4e3d39bff7a35f264ecd85caa89ef
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace with the same config
+Closing FileSystemWorkspace agent_ws_97f65dc6614b583723d7b19cab59e3284dd4e3d39bff7a35f264ecd85caa89ef
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-clDVnn
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-clDVnn.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Created and registered workspace ID: agent_ws_0e997ea2255e7366a5b607b859bdb445f9efbafd785a4f5a36a5fca19d128588
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-clDVnn/.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-clDVnn.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Reusing registered workspace ID: agent_ws_0e997ea2255e7366a5b607b859bdb445f9efbafd785a4f5a36a5fca19d128588
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > reuses an existing workspace when equivalent root paths normalize to the same workspace ID
+Closing FileSystemWorkspace agent_ws_0e997ea2255e7366a5b607b859bdb445f9efbafd785a4f5a36a5fca19d128588
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CIHuiP/.
+Resolved configured temp workspace root to TempWorkspace.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CIHuiP
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CIHuiP.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CIHuiP with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > routes the configured temp root to TempWorkspace instead of registering a filesystem workspace
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-4IQOPb.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Removed 1 persisted filesystem registry entry for the configured temp workspace root.
+Closing FileSystemWorkspace agent_ws_6ab24572d4553fa7d24c4adebed4ae9671bea230cc4089a4b88a5cc300fa054c
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-4IQOPb
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-4IQOPb.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-4IQOPb with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-VJRTGw.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > decommissions persisted filesystem entries for the configured temp root
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-TtZEsb
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-TtZEsb.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Created and registered workspace ID: agent_ws_1a0d2356e366bba1fecb81a24db14ddcaaaef8af92b3a48fb0268c6dd24d0fd3
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-kyB17L
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-kyB17L.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Created and registered workspace ID: agent_ws_e1fc5750dee554a1359166979609f684f7e413f48dcf669ad21618dafca089c7
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Closing FileSystemWorkspace agent_ws_1a0d2356e366bba1fecb81a24db14ddcaaaef8af92b3a48fb0268c6dd24d0fd3
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns all active workspaces
+Closing FileSystemWorkspace agent_ws_e1fc5750dee554a1359166979609f684f7e413f48dcf669ad21618dafca089c7
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CPRX33
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CPRX33.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-CPRX33 with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > creates the temp workspace on first call
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-m4lbbU
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-m4lbbU.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-m4lbbU with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > returns cached temp workspace on subsequent calls
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Ik4vdh
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Ik4vdh.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Created and registered workspace ID: agent_ws_b464377d138718d51822e0e5adefbdcc27d2be55d45fbae9eb65cb867683eb1b
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Closing FileSystemWorkspace agent_ws_b464377d138718d51822e0e5adefbdcc27d2be55d45fbae9eb65cb867683eb1b
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Ik4vdh
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-Ik4vdh.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Created and registered workspace ID: agent_ws_b464377d138718d51822e0e5adefbdcc27d2be55d45fbae9eb65cb867683eb1b
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates an ordinary filesystem workspace from its deterministic ID after restart
+Closing FileSystemWorkspace agent_ws_b464377d138718d51822e0e5adefbdcc27d2be55d45fbae9eb65cb867683eb1b
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-5cwgoV
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-5cwgoV.
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Created and registered workspace ID: agent_ws_f30430a6f40efa9969d821551a4a89c9cc432717929e8010ab34bfa8c81007d2
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Closing FileSystemWorkspace agent_ws_f30430a6f40efa9969d821551a4a89c9cc432717929e8010ab34bfa8c81007d2
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-VHvr2M
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-VHvr2M.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-ws-VHvr2M with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > recreates the temp workspace from its stable workspace ID
+Closing FileSystemWorkspace temp_ws_default
+
+ ❯ tests/unit/workspaces/workspace-manager.test.ts (12 tests | 1 failed) 30ms
+     ✓ creates and registers a workspace 6ms
+     ✓ reuses an existing workspace with the same config 4ms
+     ✓ reuses an existing workspace when equivalent root paths normalize to the same workspace ID 2ms
+     ✓ routes the configured temp root to TempWorkspace instead of registering a filesystem workspace 2ms
+     ✓ decommissions persisted filesystem entries for the configured temp root 3ms
+     ✓ returns undefined for unknown workspace IDs 0ms
+     ✓ returns all active workspaces 3ms
+     ✓ creates the temp workspace on first call 1ms
+     ✓ returns cached temp workspace on subsequent calls 1ms
+     ✓ recreates an ordinary filesystem workspace from its deterministic ID after restart 2ms
+     × removes a registered workspace entry without deleting workspace files 5ms
+     ✓ recreates the temp workspace from its stable workspace ID 1ms
+stdout | tests/unit/agent-execution/agent-run-provisioning-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/agent-execution/agent-run-provisioning-service.test.ts (4 tests | 1 failed) 14ms
+     ✓ prepares a standalone run identity through the catalog without persisted live status 7ms
+     × does not persist activation failure state and permits retry from prepared facts 3ms
+     ✓ delegates prepared cancellation to the catalog boundary 1ms
+     ✓ cleans up only expired prepared identities 2ms
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts (5 tests | 4 failed) 15ms
+     × retains exact tool identity across a retry diagnostic 9ms
+     × correlates started/local-completed/raw output and admits it through the strict Team boundary 2ms
+     × uses an exact direct raw provider tool name without inventing correlation 1ms
+     × suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output 1ms
+     ✓ fails closed when lifecycle facts conflict for the same invocation 0ms
+stdout | tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts > MediaUrlTransformerProcessor > derives filenames from clean URLs
+Agent run 'test_agent': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts > MediaUrlTransformerProcessor > falls back to media UUID for opaque URLs
+Agent run 'test_agent': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts > MediaUrlTransformerProcessor > processes multiple URLs concurrently
+Agent run 'test_agent': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts > MediaUrlTransformerProcessor > emits media segment events
+Agent run 'test_agent': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+ ❯ tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts (4 tests | 1 failed) 7ms
+     ✓ derives filenames from clean URLs 2ms
+     ✓ falls back to media UUID for opaque URLs 1ms
+     ✓ processes multiple URLs concurrently 0ms
+     × emits media segment events 4ms
+stdout | tests/unit/run-history/services/published-artifact-projection-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/run-history/services/published-artifact-projection-service.test.ts (1 test | 1 failed) 8ms
+     × reads historical published-artifact summaries and revision text from durable projection storage 7ms
+ ❯ tests/unit/file-explorer/file-explorer.test.ts (7 tests | 7 failed) 6ms
+     × builds the workspace directory tree 3ms
+     × reads file content within size limits 1ms
+     × throws when reading a file that exceeds max size 0ms
+     × returns the root tree node 1ms
+     × serializes the tree to JSON 0ms
+     × rejects reading files outside the workspace 0ms
+     × produces shallow JSON with limited depth 0ms
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts (4 tests | 1 failed) 7ms
+     ✓ preserves the pre-ticket external Codex environment and real home selection 2ms
+     × uses an explicitly supplied Codex environment without applying the governed-launcher policy 3ms
+     ✓ includes descriptor pressure and runtime context for EBADF failures 1ms
+     ✓ keeps non-descriptor spawn errors distinguishable 0ms
+ ❯ tests/unit/api/graphql/studio-application-api-services.test.ts (10 tests | 1 failed) 6ms
+     × publishes one exact service set and releases it idempotently 3ms
+     ✓ rejects a missing agentDefinitionService before publishing any service 1ms
+     ✓ rejects a missing agentTeamDefinitionService before publishing any service 0ms
+     ✓ rejects a missing agentRunService before publishing any service 0ms
+     ✓ rejects a missing teamRunService before publishing any service 0ms
+     ✓ rejects a missing runModelConfigService before publishing any service 0ms
+     ✓ rejects a missing bundleService before publishing any service 0ms
+     ✓ rejects a missing capabilityService before publishing any service 0ms
+     ✓ rejects a missing packageQueries before publishing any service 0ms
+     ✓ rejects a missing packageCommands before publishing any service 0ms
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a remote URL
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-chaZrP/media
+
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a remote URL
+Processing media source URI: https://example.com/remote_image.png...
+
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a remote URL
+Successfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-chaZrP/media/images/downloaded.png. Server URL: /rest/files/images/downloaded.png
+
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a data URI
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-9nV3JE/media
+
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a data URI
+Processing media source URI: data:image/png;base64,SGVsbG8sIFdvcmxkIQ==...
+
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a data URI
+Successfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-9nV3JE/media/images/hello.png. Server URL: /rest/files/images/hello.png
+
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a local file path
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-uEGqES/media
+
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a local file path
+Processing media source URI: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-uEGqES/local_file.jpg...
+
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a local file path
+Successfully saved media to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-uEGqES/media/images/local_file.jpg. Server URL: /rest/files/images/local_file.jpg
+
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > throws for unsupported sources
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-media-QLoOtV/media
+
+stdout | tests/unit/services/media-storage-service.test.ts > MediaStorageService > throws for unsupported sources
+Processing media source URI: ftp://example.com/file.txt...
+
+stderr | tests/unit/services/media-storage-service.test.ts > MediaStorageService > throws for unsupported sources
+Unrecognized or non-existent media source: ftp://example.com/file.txt
+
+ ❯ tests/unit/services/media-storage-service.test.ts (4 tests | 1 failed) 15ms
+     × stores media from a remote URL 7ms
+     ✓ stores media from a data URI 3ms
+     ✓ stores media from a local file path 2ms
+     ✓ throws for unsupported sources 2ms
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > creates and initializes a SkillWorkspace for skill_ws_ IDs
+Creating on-demand SkillWorkspace for: MySkill
+
+stdout | tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > throws for unknown workspace IDs
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+ ❯ tests/unit/workspaces/workspace-manager-skill-integration.test.ts (3 tests | 1 failed) 9ms
+     ✓ returns existing workspace from cache 2ms
+     × creates and initializes a SkillWorkspace for skill_ws_ IDs 4ms
+     ✓ throws for unknown workspace IDs 2ms
+ ❯ tests/unit/agent-packages/package-root-summary.test.ts (2 tests | 1 failed) 11ms
+     × validates package roots and counts shared agents, team-local agents, and teams 9ms
+     ✓ rejects directories that do not contain package content 1ms
+ ❯ tests/unit/api/graphql/converters/workspace-converter.test.ts (2 tests | 2 failed) 3ms
+     × sets isTemp false for regular workspace IDs 2ms
+     × sets isTemp true for temp workspace ID 0ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 56 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > does not persist activation failure state and permits retry from prepared facts
+TypeError: service.activatePreparedRun is not a function
+ ❯ tests/unit/agent-execution/agent-run-provisioning-service.test.ts:169:26
+    167|     const service = buildService();
+    168| 
+    169|     await expect(service.activatePreparedRun(runId)).rejects.toThrow("…
+       |                          ^
+    170|     expect(historyCatalogService.recordRunStarted).not.toHaveBeenCalle…
+    171|     expect(metadataByRunId.get(runId)).toMatchObject({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/56]⎯
+
+ FAIL  tests/unit/agent-packages/package-root-summary.test.ts > package-root-summary > validates package roots and counts shared agents, team-local agents, and teams
+AssertionError: expected { sharedAgentCount: 1, …(3) } to deeply equal { sharedAgentCount: 1, …(2) }
+
+- Expected
++ Received
+
+  {
+    "agentTeamCount": 1,
++   "applicationCount": 0,
+    "sharedAgentCount": 1,
+    "teamLocalAgentCount": 1,
+  }
+
+ ❯ tests/unit/agent-packages/package-root-summary.test.ts:59:43
+     57| 
+     58|     expect(validatePackageRoot(rootPath)).toBe(rootPath);
+     59|     expect(buildPackageSummary(rootPath)).toEqual({
+       |                                           ^
+     60|       sharedAgentCount: 1,
+     61|       teamLocalAgentCount: 1,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through authority interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through rename-before interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through rename-after interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through org-index-after interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through team-index-before interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through team-index-after interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through retirement interruption, then retries
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts:75:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains referrer markers when a cross-candidate token dependency fails, including cycles
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts:120:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > changes exactly three fields, preserves accounting/checkpoint bytes and negative controls, and keeps replay/advancement neutral
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:27:153
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > finds stale SQL after all history sources are gone and performs zero history-content or index writes
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:59:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies wrong-root source data after whole-root rollback and keeps the local readiness guard
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies mixed-summary source data after whole-root rollback and keeps the local readiness guard
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies scalar-only source data after whole-root rollback and keeps the local readiness guard
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies extra-claimant source data after whole-root rollback and keeps the local readiness guard
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies malformed source data after whole-root rollback and keeps the local readiness guard
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:71:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > includes settled direct-task and task-Team members without materializing runtimes
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:114:63
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > rolls back an actual SQLite UPDATE failure after an earlier member update
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:124:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > uses the current token boundary after real package loading and rejects before scope build; inspection stays available
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:134:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > does not normalize a malformed current attribution into a ready result
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:146:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup
+AssertionError: expected '\nInvalid `this.transaction.tokenUsag…' to be null
+
+- Expected: 
+null
+
++ Received: 
+"
+Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
+
+  176 }
+  177 
+  178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
+→ 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
+The column `claude_sdk_usage_state_json` does not exist in the current database."
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:175:35
+    173| 
+    174|       const result = await migration.execute();
+    175|       expect(result.errorMessage).toBeNull();
+       |                                   ^
+    176|       expect(result).toMatchObject({
+    177|         status: "SUCCEEDED",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > rolls back an injected cleanup failure and succeeds through the same ordinary retry
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'FAILED', …(2) }
+
+- Expected
++ Received
+
+@@ -1,7 +1,15 @@
+  {
+-   "errorMessage": "injected cleanup failure",
++   "errorMessage": "
++ Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
++ /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
++
++   176 }
++   177 
++   178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
++ → 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
++ The column `claude_sdk_usage_state_json` does not exist in the current database.",
+    "status": "FAILED",
+    "summary": {
+      "failedCount": 1,
+      "migratedCount": 0,
+    },
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:279:22
+    277|       };
+    278|       const failed = await new TokenUsageRunRecordsV1AppDataMigration(…
+    279|       expect(failed).toMatchObject({
+       |                      ^
+    280|         status: "FAILED",
+    281|         errorMessage: "injected cleanup failure",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'SUCCEEDED', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "SUCCEEDED",
++   "status": "FAILED",
+    "summary": {
+-     "failedCount": 0,
+-     "migratedCount": 6,
+-     "scannedCount": 403,
++     "failedCount": 1,
++     "migratedCount": 0,
++     "scannedCount": 0,
+    },
+  }
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:311:22
+    309|         new LegacyTokenUsageConsolidationRepository(prisma),
+    310|       ).execute();
+    311|       expect(result).toMatchObject({
+       |                      ^
+    312|         status: "SUCCEEDED",
+    313|         summary: { scannedCount: 403, migratedCount: 6, failedCount: 0…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/56]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts > token usage consolidation source-token decoding > imports later JSON integers after four leading NULLs in the same real Prisma batch
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'SUCCEEDED', …(2) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "errorMessage": null,
+-   "status": "SUCCEEDED",
++   "errorMessage": "
++ Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
++ /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
++
++   176 }
++   177 
++   178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
++ → 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
++ The column `claude_sdk_usage_state_json` does not exist in the current database.",
++   "status": "FAILED",
+    "summary": {
+-     "failedCount": 0,
+-     "migratedCount": 1,
+-     "scannedCount": 6,
++     "failedCount": 1,
++     "migratedCount": 0,
++     "scannedCount": 0,
+    },
+  }
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:142:22
+    140| 
+    141|       const result = await new TokenUsageRunRecordsV1AppDataMigration(…
+    142|       expect(result).toMatchObject({
+       |                      ^
+    143|         status: "SUCCEEDED",
+    144|         errorMessage: null,
+ ❯ withFixture tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:118:5
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:127:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/56]⎯
+
+ FAIL  tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets lifecycle restart recovery reach ready and dispatch an existing pending event
+TypeError: Cannot read properties of undefined (reading 'initializeFromBundleSnapshot')
+ ❯ ApplicationPlatformLifecycle.runPreparation src/application-platform/runtime/application-platform-lifecycle.ts:48:10
+     46|       this.assertSelectedCatalogIsValid(snapshot);
+     47|       this.dependencies.applicationAgentToolCatalog
+     48|         .initializeFromBundleSnapshot(snapshot);
+       |          ^
+     49|       this.catalogSnapshot = snapshot;
+     50|       this.state = "catalog_ready";
+ ❯ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts:298:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/56]⎯
+
+ FAIL  tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets reload/reentry inspect and dispatch existing journal state before activation
+TypeError: service.reloadAndReenter is not a function
+ ❯ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts:341:26
+    339|     });
+    340| 
+    341|     await expect(service.reloadAndReenter(APPLICATION_ID)).resolves.to…
+       |                          ^
+    342|       state: "ACTIVE",
+    343|       detail: null,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/56]⎯
+
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code
+AssertionError: expected '1.0.10' to be '1.0.9' // Object.is equality
+
+Expected: "1.0.9"
+Received: "1.0.10"
+
+ ❯ tests/unit/logging/prisma-query-log-policy.test.ts:200:30
+    198| 
+    199|   it('installs exact unpatched 1.0.9 entrypoints without dotenv acquis…
+    200|     expect(manifest.version).toBe('1.0.9');
+       |                              ^
+    201|     expect(manifest.dependencies).not.toHaveProperty('dotenv');
+    202|     for (const entrypoint of Object.values(entrypoints)) {
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/56]⎯
+
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm import acquires no Prisma client or datasource
+Error: Command failed: /Users/normy/.nvm/versions/node/v22.21.1/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/synthetic-prisma-loader.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs import-only
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+
+Node.js v22.21.1
+
+ ❯ ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+ ❯ runProbe tests/unit/logging/prisma-query-log-policy.test.ts:185:20
+    183|       ? ['--no-warnings', '--experimental-loader', esmLoaderPath, esmP…
+    184|       : ['--require', cjsPreloadPath, cjsProbePath];
+    185|     const output = execFileSync(
+       |                    ^
+    186|       process.execPath,
+    187|       [...formatArguments, entrypoints[format], scenario],
+ ❯ tests/unit/logging/prisma-query-log-policy.test.ts:211:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/56]⎯
+
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm defaults to non-query log kinds
+Error: Command failed: /Users/normy/.nvm/versions/node/v22.21.1/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/synthetic-prisma-loader.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs default
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+
+Node.js v22.21.1
+
+ ❯ ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+ ❯ runProbe tests/unit/logging/prisma-query-log-policy.test.ts:185:20
+    183|       ? ['--no-warnings', '--experimental-loader', esmLoaderPath, esmP…
+    184|       : ['--require', cjsPreloadPath, cjsProbePath];
+    185|     const output = execFileSync(
+       |                    ^
+    186|       process.execPath,
+    187|       [...formatArguments, entrypoints[format], scenario],
+ ❯ tests/unit/logging/prisma-query-log-policy.test.ts:222:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/56]⎯
+
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm honors explicit environment query-log policy only
+Error: Command failed: /Users/normy/.nvm/versions/node/v22.21.1/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/synthetic-prisma-loader.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs environment
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+
+Node.js v22.21.1
+
+ ❯ ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+ ❯ runProbe tests/unit/logging/prisma-query-log-policy.test.ts:185:20
+    183|       ? ['--no-warnings', '--experimental-loader', esmLoaderPath, esmP…
+    184|       : ['--require', cjsPreloadPath, cjsProbePath];
+    185|     const output = execFileSync(
+       |                    ^
+    186|       process.execPath,
+    187|       [...formatArguments, entrypoints[format], scenario],
+ ❯ tests/unit/logging/prisma-query-log-policy.test.ts:232:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/56]⎯
+
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm honors typed policy and typed-false precedence
+Error: Command failed: /Users/normy/.nvm/versions/node/v22.21.1/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/synthetic-prisma-loader.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs typed-true
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+
+Node.js v22.21.1
+
+ ❯ ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+ ❯ runProbe tests/unit/logging/prisma-query-log-policy.test.ts:185:20
+    183|       ? ['--no-warnings', '--experimental-loader', esmLoaderPath, esmP…
+    184|       : ['--require', cjsPreloadPath, cjsProbePath];
+    185|     const output = execFileSync(
+       |                    ^
+    186|       process.execPath,
+    187|       [...formatArguments, entrypoints[format], scenario],
+ ❯ tests/unit/logging/prisma-query-log-policy.test.ts:247:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/56]⎯
+
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm rejects a conflicting post-bind logging policy
+Error: Command failed: /Users/normy/.nvm/versions/node/v22.21.1/bin/node --no-warnings --experimental-loader /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/synthetic-prisma-loader.mjs /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs conflict
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/node_modules/.pnpm/repository_prisma@1.0.10_@prisma+client@5.22.0_prisma@5.22.0_/node_modules/repository_prisma/dist/index.mjs:109
+import PrismaClientPackage from "@prisma/client";
+       ^^^^^^^^^^^^^^^^^^^
+SyntaxError: The requested module '@prisma/client' does not provide an export named 'default'
+    at ModuleJob._instantiate (node:internal/modules/esm/module_job:226:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:335:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+
+Node.js v22.21.1
+
+ ❯ ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/repository-prisma-policy-LMKtml/probe.mjs:57:20
+ ❯ runProbe tests/unit/logging/prisma-query-log-policy.test.ts:185:20
+    183|       ? ['--no-warnings', '--experimental-loader', esmLoaderPath, esmP…
+    184|       : ['--require', cjsPreloadPath, cjsProbePath];
+    185|     const output = execFileSync(
+       |                    ^
+    186|       process.execPath,
+    187|       [...formatArguments, entrypoints[format], scenario],
+ ❯ tests/unit/logging/prisma-query-log-policy.test.ts:262:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[23/56]⎯
+
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > builds the workspace directory tree
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > reads file content within size limits
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > throws when reading a file that exceeds max size
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > returns the root tree node
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > serializes the tree to JSON
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > rejects reading files outside the workspace
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > produces shallow JSON with limited depth
+TypeError: __vite_ssr_import_4__.FileExplorer is not a constructor
+ ❯ tests/unit/file-explorer/file-explorer.test.ts:16:16
+     14|   beforeEach(async () => {
+     15|     tempDir = createTempDir();
+     16|     explorer = new FileExplorer(tempDir);
+       |                ^
+     17|     await explorer.buildWorkspaceDirectoryTree();
+     18|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[24/56]⎯
+
+ FAIL  tests/unit/secret-management/live-e2e-harness.test.ts > one-database live E2E runtime and evidence boundary > adapts the raw product backend through the canonical AgentRun event facade
+Error: AgentRun provider input normalizer is required.
+ ❯ new AgentRun src/agent-execution/domain/agent-run.ts:77:13
+     75|     this.backend = options.backend;
+     76|     if (!options.providerInputNormalizer || typeof options.providerInp…
+     77|       throw new Error("AgentRun provider input normalizer is required.…
+       |             ^
+     78|     this.providerInputNormalizer = options.providerInputNormalizer;
+     79|     this.commandObservers = [...(options.commandObservers ?? [])];
+ ❯ wrapProductAgentBackendForLiveE2e ../test-support/live-e2e/live-e2e-harness.ts:92:27
+ ❯ tests/unit/secret-management/live-e2e-harness.test.ts:144:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[25/56]⎯
+
+ FAIL  tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a remote URL
+AssertionError: expected '/rest/files/images/downloaded.png' to be 'http://unittest.server:8000/rest/file…' // Object.is equality
+
+Expected: "http://unittest.server:8000/rest/files/images/downloaded.png"
+Received: "/rest/files/images/downloaded.png"
+
+ ❯ tests/unit/services/media-storage-service.test.ts:50:17
+     48|       destinationDir,
+     49|     );
+     50|     expect(url).toBe("http://unittest.server:8000/rest/files/images/do…
+       |                 ^
+     51|   });
+     52| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[26/56]⎯
+
+ FAIL  tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > creates and initializes a SkillWorkspace for skill_ws_ IDs
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/workspaces/workspace-manager-skill-integration.test.ts:60:38
+     58|     expect(result).toBe(mockWorkspace);
+     59|     expect(createSpy).toHaveBeenCalledWith(skillName);
+     60|     expect(mockWorkspace.initialize).toHaveBeenCalledTimes(1);
+       |                                      ^
+     61| 
+     62|     const cached = (manager as unknown as { activeWorkspaces: Map<stri…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[27/56]⎯
+
+ FAIL  tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace files
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:72:13
+     70|   static getInstance(): AgentRunManager {
+     71|     if (!AgentRunManager.instance) {
+     72|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     73|     }
+     74|     return AgentRunManager.instance;
+ ❯ WorkspaceRemovalGuard.checkWorkspaceCanBeRemoved src/workspaces/workspace-removal-guard.ts:35:69
+ ❯ WorkspaceManager.removeRegisteredWorkspace src/workspaces/workspace-manager.ts:199:58
+ ❯ tests/unit/workspaces/workspace-manager.test.ts:191:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[28/56]⎯
+
+ FAIL  tests/unit/api/graphql/studio-application-api-services.test.ts > Studio application API service registration > publishes one exact service set and releases it idempotently
+Error: Complete Studio application API services are required.
+ ❯ configureStudioApplicationApiServices src/api/graphql/studio-application-api-services.ts:51:11
+     49|     || !services.packageCommands
+     50|   ) {
+     51|     throw new Error("Complete Studio application API services are requ…
+       |           ^
+     52|   }
+     53|   if (configuredServices) {
+ ❯ tests/unit/api/graphql/studio-application-api-services.test.ts:39:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[29/56]⎯
+
+ FAIL  tests/unit/run-history/services/agent-run-history-catalog-service.test.ts > AgentRunHistoryCatalogService > commits only llmConfig through the serialized catalog
+AssertionError: expected { kind: 'failed', metadata: { …(14) } } to match object { kind: 'committed', …(1) }
+
+- Expected
++ Received
+
+@@ -1,13 +1,13 @@
+  {
+-   "kind": "committed",
++   "kind": "failed",
+    "metadata": {
+      "agentDefinitionId": "agent-def-1",
+      "applicationExecutionContext": null,
+      "autoExecuteTools": false,
+      "llmConfig": {
+-       "effort": "high",
++       "effort": "low",
+      },
+      "llmModelIdentifier": "model-1",
+      "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-catalog-E8VKro/agents/run-1",
+      "platformAgentRunId": null,
+      "preparedAt": "2026-03-26T10:00:00.000Z",
+
+ ❯ tests/unit/run-history/services/agent-run-history-catalog-service.test.ts:184:5
+    182|     const storedBefore = JSON.parse(await fs.readFile(metadataPath, "u…
+    183| 
+    184|     await expect(service.commitRunModelConfig({
+       |     ^
+    185|       runId: "run-1",
+    186|       llmConfig: { effort: "high" },
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[30/56]⎯
+
+ FAIL  tests/unit/run-history/services/published-artifact-projection-service.test.ts > PublishedArtifactProjectionService > reads historical published-artifact summaries and revision text from durable projection storage
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:72:13
+     70|   static getInstance(): AgentRunManager {
+     71|     if (!AgentRunManager.instance) {
+     72|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     73|     }
+     74|     return AgentRunManager.instance;
+ ❯ new PublishedArtifactProjectionService src/run-history/services/published-artifact-projection-service.ts:41:71
+ ❯ tests/unit/run-history/services/published-artifact-projection-service.test.ts:70:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[31/56]⎯
+
+ FAIL  tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts > MediaUrlTransformerProcessor > emits media segment events
+AssertionError: expected false to be true // Object.is equality
+
+- Expected
++ Received
+
+- true
++ false
+
+ ❯ tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts:115:7
+    113|           event.payload?.metadata?.urls?.[0] === "http://server/happy_…
+    114|       ),
+    115|     ).toBe(true);
+       |       ^
+    116|     expect(
+    117|       startEvents.some(
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[32/56]⎯
+
+ FAIL  tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > sets isTemp false for regular workspace IDs
+TypeError: Cannot read properties of undefined (reading 'workspaceId')
+ ❯ Function.toGraphql src/api/graphql/converters/workspace-converter.ts:8:29
+      6|     const metadata = workspace.metadata;
+      7|     return {
+      8|       workspaceId: metadata.workspaceId,
+       |                             ^
+      9|       name: metadata.name,
+     10|       displayName: metadata.name,
+ ❯ tests/unit/api/graphql/converters/workspace-converter.test.ts:17:43
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[33/56]⎯
+
+ FAIL  tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > sets isTemp true for temp workspace ID
+TypeError: Cannot read properties of undefined (reading 'workspaceId')
+ ❯ Function.toGraphql src/api/graphql/converters/workspace-converter.ts:8:29
+      6|     const metadata = workspace.metadata;
+      7|     return {
+      8|       workspaceId: metadata.workspaceId,
+       |                             ^
+      9|       name: metadata.name,
+     10|       displayName: metadata.name,
+ ❯ tests/unit/api/graphql/converters/workspace-converter.test.ts:34:43
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[34/56]⎯
+
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts > CodexAppServerClient spawn diagnostics > uses an explicitly supplied Codex environment without applying the governed-launcher policy
+AssertionError: expected { …(3) } to be { …(3) } // Object.is equality
+
+If it should pass with deep equality, replace "toBe" with "toStrictEqual"
+
+Expected: { …(3) }
+Received: serializes to the same string
+
+
+Compared values have no visual difference.
+
+ ❯ tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts:69:47
+     67|     }).start();
+     68| 
+     69|     expect(spawnMock.mock.calls[0]?.[2]?.env).toBe(explicitEnvironment…
+       |                                               ^
+     70|   });
+     71| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[35/56]⎯
+
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > switches an opened but unconfirmed first query to exact resume after interrupt
+AssertionError: expected "vi.fn()" to not be called at all, but actually been called 1 times
+
+Received: 
+
+  1st vi.fn() call:
+
+    Array [
+      Object {
+        "close": [Function Mock],
+        "interrupt": [Function Mock],
+        Symbol(Symbol.asyncIterator): [Function [Symbol.asyncIterator]],
+      },
+    ]
+
+
+Number of calls: 1
+
+ ❯ tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:863:28
+    861|       "placeholder interrupt abort signal",
+    862|     );
+    863|     expect(closeQuery).not.toHaveBeenCalled();
+       |                            ^
+    864|     firstQuery.release();
+    865|     await interruptPromise;
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[36/56]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > retains exact tool identity across a retry diagnostic
+AssertionError: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "publish",
++   "kind": "rejected",
+  }
+
+ ❯ expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:12:44
+     10| const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+     11|   for (const event of events) {
+     12|     expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+       |                                            ^
+     13|   }
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:92:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[37/56]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > correlates started/local-completed/raw output and admits it through the strict Team boundary
+AssertionError: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "publish",
++   "kind": "rejected",
+  }
+
+ ❯ expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:12:44
+     10| const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+     11|   for (const event of events) {
+     12|     expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+       |                                            ^
+     13|   }
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:134:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[38/56]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > uses an exact direct raw provider tool name without inventing correlation
+AssertionError: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "publish",
++   "kind": "rejected",
+  }
+
+ ❯ expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:12:44
+     10| const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+     11|   for (const event of events) {
+     12|     expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+       |                                            ^
+     13|   }
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:188:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39/56]⎯
+
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output
+AssertionError: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "kind": "publish",
++   "kind": "rejected",
+  }
+
+ ❯ expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:12:44
+     10| const expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+     11|   for (const event of events) {
+     12|     expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+       |                                            ^
+     13|   }
+     14| };
+ ❯ tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:216:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[40/56]⎯
+
+
+ Test Files  21 failed (21)
+      Tests  56 failed | 107 passed (163)
+   Start at  16:55:04
+   Duration  18.03s (transform 3.61s, setup 112ms, import 12.73s, tests 2.82s, environment 2ms)
+

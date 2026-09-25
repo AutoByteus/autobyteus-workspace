@@ -1,4 +1,6 @@
 import { isDeepStrictEqual } from "node:util";
+import path from "node:path";
+import { resetCollaborationRunHistoryCatalogState } from "../../../run-history/services/collaboration-run-history-catalog-core.js";
 import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-history-index-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../run-history/store/agent-org-run-history-index-store.js";
 import type { HistoryCandidatePlan, HistoryCandidateSelection } from "./agent-org-history-candidate-plan.js";
@@ -34,6 +36,10 @@ export class AgentOrgHistoryIndexTransition {
     if (!sameOrgs(await this.orgStore.readIndex())) throw new Error("Org index strict reread differs from selected update.");
     if (!isDeepStrictEqual(teamSnapshot.rows, nextTeams)) await this.teamStore.writeIndex(nextTeams);
     if (!isDeepStrictEqual((await this.teamStore.readIndexStrict()).rows, nextTeams)) throw new Error("Team index strict reread differs from selected update.");
+    // This one-time migration writes beneath the normal catalog boundary.
+    const memoryDir = path.dirname(this.orgStore.filePath);
+    resetCollaborationRunHistoryCatalogState(memoryDir, "agent_org");
+    resetCollaborationRunHistoryCatalogState(memoryDir, "agent_team");
     return teamSnapshot.rows.length - nextTeams.length;
   }
 }

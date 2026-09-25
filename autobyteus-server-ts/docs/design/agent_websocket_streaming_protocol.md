@@ -79,9 +79,9 @@ include:
 - Agent events: turn, segment, Agent status, compaction, token usage, assistant
   completion, tool lifecycle/log, todo, task notification, artifact, and file
   change, each with exact `agent_execution`;
-- Team-only events: `TASK_DELEGATION_EVENT`, `TEAM_COMMUNICATION_MESSAGE`,
-  `MEMBER_INPUT_MESSAGE`, and `EXTERNAL_USER_MESSAGE` with their explicit exact
-  execution/participant addresses;
+- Team-only events: `TASK_DELEGATION_EVENT`, `TEAM_COMMUNICATION_MESSAGE`, and
+  `MEMBER_INPUT_MESSAGE` with their explicit exact execution/participant
+  addresses;
 - control: `CONNECTED`, `TEAM_RUN_LIFECYCLE`, `AGENT_COMMAND_ACK`; and
 - `ERROR`, either correlated to an `agent_execution` or explicitly uncorrelated.
 

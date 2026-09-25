@@ -1,6 +1,10 @@
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type {
+  LocatedExecutionGroup,
+  LocatedExecutionKind,
+} from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import type { AgentTeamRunManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
 import { AgentTeamRunManager as DefaultManager } from "../../agent-team-execution/services/agent-team-run-manager.js";
@@ -19,6 +23,11 @@ export type LocatedTeamAgentExecution = Readonly<{
   agentRunId: string;
   memberAddress: AgentTeamAddress;
   configuredPlacement: ConfiguredAgentExecutionNode | null;
+  executionKind: LocatedExecutionKind;
+  /** Task agents only. */
+  startedAt: string | null;
+  /** Teams from the root (exclusive) down to the containing team, outermost first. */
+  groupPath: readonly LocatedExecutionGroup[];
   memoryDir: string;
   tree: TeamRunExecutionTreeSnapshot;
   isActive: boolean;
@@ -72,7 +81,6 @@ export class TeamRunExecutionTreeLocationService {
   async listAgents(input: {
     rootTeamRunId?: string | null;
     containingTeamRunId?: string | null;
-    configuredOnly?: boolean;
   } = {}): Promise<LocatedTeamAgentExecution[]> {
     const requestedRootId = input.rootTeamRunId?.trim() || null;
     const rootIds = requestedRootId ? [requestedRootId] : await this.listRootTeamRunIds();
@@ -82,12 +90,12 @@ export class TeamRunExecutionTreeLocationService {
       const tree = activeRoot?.getExecutionTreeSnapshot() ?? await this.readStoredTree(rootTeamRunId);
       if (!tree) continue;
       output.push(...this.listInTree(tree, Boolean(activeRoot)).filter((item) =>
-        (!input.containingTeamRunId || item.containingTeamRunId === input.containingTeamRunId) &&
-        (!input.configuredOnly || item.configuredPlacement !== null)));
+        !input.containingTeamRunId || item.containingTeamRunId === input.containingTeamRunId));
     }
     return output;
   }
 
+  /** Project locations from an already validated root snapshot; no store or manager I/O. */
   async containsRunId(runId: string): Promise<boolean> {
     const normalized = runId.trim();
     if (!normalized) throw new Error("runId is required.");
@@ -185,6 +193,13 @@ export class TeamRunExecutionTreeLocationService {
     const scope = index.getTeamRunPhysicalScope(agent.containingTeamRunId);
     const configured = index.getConfiguredPlacement(agent.address);
     const configuredPlacement = configured && "agentRunId" in configured ? configured : null;
+    const groupPath = [...index.listContainingTeamAncestorsForAgent(agent.agentRunId)].reverse().slice(1)
+      .map((team): LocatedExecutionGroup => Object.freeze({
+        teamRunId: team.teamRunId,
+        address: team.address,
+        executionKind: team.executionKind,
+        startedAt: "startedAt" in team.source ? team.source.startedAt : null,
+      }));
     return Object.freeze({
       rootTeamRunId: scope.root.rootRunId,
       containingTeamRunId: agent.containingTeamRunId,
@@ -192,6 +207,9 @@ export class TeamRunExecutionTreeLocationService {
       agentRunId: agent.agentRunId,
       memberAddress: agent.address,
       configuredPlacement,
+      executionKind: agent.executionKind,
+      startedAt: "startedAt" in agent.source ? agent.source.startedAt : null,
+      groupPath: Object.freeze(groupPath),
       memoryDir: this.layout.getRootedAgentRunDirPath(scope, agent.agentRunId),
       tree,
       isActive,

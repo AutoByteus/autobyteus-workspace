@@ -4,11 +4,12 @@ import { createTestingPinia } from '@pinia/testing';
 import { nextTick } from 'vue';
 import { useMemoryExplorerStore } from '~/stores/memoryExplorerStore';
 import { useMemoryInspectorStore } from '~/stores/memoryInspectorStore';
+import { getApolloClient } from '~/utils/apolloClient';
 import MemoryPage from '../memory.vue';
 
 const { routeMock, routerMock } = vi.hoisted(() => ({
   routeMock: { query: {} as Record<string, unknown>, fullPath: '/memory' },
-  routerMock: { push: vi.fn().mockResolvedValue(undefined) },
+  routerMock: { push: vi.fn().mockResolvedValue(undefined), replace: vi.fn().mockResolvedValue(undefined) },
 }));
 
 vi.mock('vue-router', () => ({
@@ -16,11 +17,14 @@ vi.mock('vue-router', () => ({
   useRouter: () => routerMock,
 }));
 
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn() }));
+
 describe('memory page', () => {
   beforeEach(() => {
     routeMock.query = {};
     routeMock.fullPath = '/memory';
     routerMock.push.mockClear();
+    routerMock.replace.mockClear();
   });
 
   it('fetches the agent Memory catalog on home mount', async () => {
@@ -195,7 +199,7 @@ describe('memory page', () => {
       workspaceRootPath: '/tmp/team-project',
       lastUpdatedAt: '2026-06-19T10:06:04.000Z',
       memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false },
-      memberTargets: [{ memberAddress: '/lead', displayName: 'Lead', agentRunId: 'member-1', memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false } }],
+      memberTargets: [{ memberAddress: '/lead', displayName: 'Lead', agentRunId: 'member-1', executionKind: 'CONFIGURED', groupPath: [], memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: true, hasRawArchive: false } }],
     }];
 
     const wrapper = mount(MemoryPage, { global: { plugins: [pinia] } });
@@ -281,7 +285,7 @@ describe('memory page', () => {
       workspaceRootPath: null,
       lastUpdatedAt: '2026-09-01T01:00:00.000Z',
       memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false },
-      memberTargets: [{ memberAddress: '/engineering/solution_designer', displayName: 'engineering/solution_designer', agentRunId: 'designer-run', memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false } }],
+      memberTargets: [{ memberAddress: '/engineering/solution_designer', displayName: 'engineering/solution_designer', agentRunId: 'designer-run', executionKind: 'CONFIGURED', groupPath: [], memory: { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false } }],
     }];
 
     const wrapper = mount(MemoryPage, { global: { plugins: [detailPinia] } });
@@ -366,22 +370,132 @@ describe('memory page', () => {
       kind: 'team_member_run', teamRunId: 'team-run-1', agentRunId: 'task-run', memberName: 'Lead',
     }));
   });
+});
 
-  it('applies the routed team selection before the memory sources load, so no stale runs paint (REQ-003)', async () => {
-    routeMock.query = { view: 'team-detail', teamDefinitionId: 'team-b', teamName: 'Team B' };
-    routeMock.fullPath = '/memory?view=team-detail&teamDefinitionId=team-b&teamName=Team%20B';
-    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
+type Operation = { name: string; variables: Record<string, unknown> };
+const memory = { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false };
+const page = <T>(entries: T[]) => ({ entries, total: entries.length, page: 1, pageSize: 25, totalPages: 1 });
+const localSourceOption = { key: 'local', type: 'LOCAL', label: 'Local Memory', sourceNodeId: null, displayName: null, readOnly: false, lastImportedAt: null, lastSyncStatus: null };
+const importedSourceOption = { ...localSourceOption, key: 'imported:finance', type: 'IMPORTED', label: 'Imported: Finance', sourceNodeId: 'finance', readOnly: true };
+
+/**
+ * Real store actions over a recording Apollo client: each mount is one route sync, so the recorded operations are
+ * exactly the network requests of one navigation (AC-012, AC-013).
+ */
+const recordOperations = (responses: Record<string, () => Promise<unknown>>) => {
+  const operations: Operation[] = [];
+  const query = vi.fn(({ query: document, variables }: { query: { definitions: Array<{ name?: { value: string } }> }; variables?: Record<string, unknown> }) => {
+    const name = document.definitions[0]?.name?.value ?? 'unknown';
+    operations.push({ name, variables: variables ?? {} });
+    const respond = responses[name];
+    return respond ? respond().then((data) => ({ data })) : new Promise(() => undefined);
+  });
+  vi.mocked(getApolloClient).mockReturnValue({ query } as never);
+  return operations;
+};
+
+const setRoute = (query: Record<string, string>) => {
+  routeMock.query = query;
+  routeMock.fullPath = `/memory?${new URLSearchParams(query).toString()}`;
+};
+
+describe('memory page route sync request ownership (REQ-011)', () => {
+  beforeEach(() => {
+    routeMock.query = {};
+    routeMock.fullPath = '/memory';
+    routerMock.push.mockClear();
+    routerMock.replace.mockClear();
+    vi.mocked(getApolloClient).mockReset();
+  });
+
+  const mountWithRealStores = () => {
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
+    const wrapper = mount(MemoryPage, { global: { plugins: [pinia] } });
+    return { wrapper, store: useMemoryExplorerStore() };
+  };
+
+  it('sends exactly one request and no sources request for detail and inspector navigation (AC-012)', async () => {
+    const runs = () => Promise.resolve({ listAgentTeamRunsWithMemory: page([]), listAgentOrgRunsWithMemory: page([]), listAgentRunsWithMemory: page([]) });
+    const view = () => Promise.resolve({ getTeamMemberRunMemoryView: { runId: 'm' }, getAgentOrgMemberRunMemoryView: { runId: 'm' }, getAgentRunMemoryView: { runId: 'm' } });
+    const routes: Array<[Record<string, string>, string]> = [
+      [{ view: 'team-detail', teamDefinitionId: 'team', teamName: 'Team' }, 'ListAgentTeamRunsWithMemory'],
+      [{ view: 'org-detail', orgDefinitionId: 'org', orgName: 'Org' }, 'ListAgentOrgRunsWithMemory'],
+      [{ view: 'agent-detail', agentAttribution: 'DEFINITION', agentDefinitionId: 'codex', agentName: 'Codex' }, 'ListAgentRunsWithMemory'],
+      [{ view: 'team-inspector', teamRunId: 'team-run', agentRunId: 'member' }, 'GetTeamMemberRunMemoryView'],
+      [{ view: 'org-inspector', orgRunId: 'org-run', agentRunId: 'member' }, 'GetAgentOrgMemberRunMemoryView'],
+      [{ view: 'agent-inspector', runId: 'run-1' }, 'GetAgentRunMemoryView'],
+    ];
+    for (const [query, expected] of routes) {
+      const operations = recordOperations({
+        ListAgentTeamRunsWithMemory: runs, ListAgentOrgRunsWithMemory: runs, ListAgentRunsWithMemory: runs,
+        GetTeamMemberRunMemoryView: view, GetAgentOrgMemberRunMemoryView: view, GetAgentRunMemoryView: view,
+      });
+      setRoute(query);
+      mountWithRealStores();
+      await flushPromises();
+      expect(operations.map((operation) => operation.name)).toEqual([expected]);
+    }
+  });
+
+  it('shows "Loading runs" in the first render after a new team selection, never the empty state (AC-012, CR-001)', async () => {
+    recordOperations({});
+    setRoute({ view: 'team-detail', teamDefinitionId: 'team-b', teamName: 'Team B' });
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: false });
     const store = useMemoryExplorerStore();
-    let resolveSources!: () => void;
-    vi.mocked(store.loadSources).mockReturnValue(new Promise((resolve) => { resolveSources = () => resolve([]); }) as never);
+    store.selectedTeam = { teamDefinitionId: 'team-a', teamDefinitionName: 'Team A', teamRunCount: 1, memberMemoryCount: 1, memory };
+    store.teamRuns.entries = [{ teamRunId: 'team-a-run', teamDefinitionId: 'team-a', teamDefinitionName: 'Team A', memory, memberTargets: [] }];
 
-    shallowMount(MemoryPage, { global: { plugins: [pinia] } });
+    const wrapper = mount(MemoryPage, { global: { plugins: [pinia] } });
 
-    expect(store.setSelectedTeamFromRoute).toHaveBeenCalledWith('team-b', 'Team B');
-    expect(store.fetchTeamRuns).not.toHaveBeenCalled();
-    resolveSources();
+    expect(wrapper.text()).toMatch(/loading runs/i);
+    expect(wrapper.text()).not.toMatch(/no runs match/i);
+    expect(wrapper.text()).not.toContain('team-a-run');
+  });
+
+  it('refreshes sources in the background on the home view without delaying the home list (AC-013)', async () => {
+    let resolveSources!: (value: unknown) => void;
+    const operations = recordOperations({
+      ListMemoryExplorerSources: () => new Promise((resolve) => { resolveSources = resolve; }),
+      ListAgentsWithMemory: () => Promise.resolve({ listAgentsWithMemory: page([{ attribution: 'DEFINITION', agentDefinitionId: 'codex', displayName: 'Codex', stableId: 'codex', runCount: 1, memory }]) }),
+    });
+    setRoute({ view: 'home', tab: 'agents' });
+    const { wrapper, store } = mountWithRealStores();
     await flushPromises();
-    expect(store.fetchTeamRuns).toHaveBeenCalledTimes(1);
-    expect(store.fetchTeamRuns).toHaveBeenCalledWith('team-b');
+
+    expect(operations.map((operation) => operation.name).sort()).toEqual(['ListAgentsWithMemory', 'ListMemoryExplorerSources']);
+    expect(wrapper.text()).toContain('Codex');
+    expect(store.sourceLoading).toBe(true);
+
+    resolveSources({ listMemoryExplorerSources: [localSourceOption, importedSourceOption] });
+    await flushPromises();
+    expect(store.sources.map((source) => source.key)).toEqual(['local', 'imported:finance']);
+    expect(store.selectedSource.key).toBe('local');
+    expect(routerMock.replace).not.toHaveBeenCalled();
+  });
+
+  it('awaits one sources request for an unknown imported source, then falls back to Local (AC-012 alternate)', async () => {
+    const operations = recordOperations({
+      ListMemoryExplorerSources: () => Promise.resolve({ listMemoryExplorerSources: [localSourceOption] }),
+    });
+    setRoute({ view: 'team-detail', teamDefinitionId: 'team', teamName: 'Team', source: 'imported:ghost' });
+    mountWithRealStores();
+    await flushPromises();
+
+    expect(operations.map((operation) => operation.name)).toEqual(['ListMemoryExplorerSources']);
+    expect(routerMock.replace).toHaveBeenCalledWith({ path: '/memory', query: { view: 'team-detail', teamDefinitionId: 'team', teamName: 'Team' } });
+  });
+
+  it('uses an imported source found by the awaited sources request, then fetches once with it', async () => {
+    const operations = recordOperations({
+      ListMemoryExplorerSources: () => Promise.resolve({ listMemoryExplorerSources: [localSourceOption, importedSourceOption] }),
+      ListAgentTeamRunsWithMemory: () => Promise.resolve({ listAgentTeamRunsWithMemory: page([]) }),
+    });
+    setRoute({ view: 'team-detail', teamDefinitionId: 'team', teamName: 'Team', source: 'imported:finance' });
+    mountWithRealStores();
+    await flushPromises();
+
+    expect(operations.map((operation) => operation.name)).toEqual(['ListMemoryExplorerSources', 'ListAgentTeamRunsWithMemory']);
+    expect(operations[1]?.variables.source).toEqual({ type: 'IMPORTED', sourceNodeId: 'finance' });
+    expect(routerMock.replace).not.toHaveBeenCalled();
   });
 });

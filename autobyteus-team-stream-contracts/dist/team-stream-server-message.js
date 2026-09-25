@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, } from "./team-agent-message-dtos.js";
-import { teamCommunicationMessagePayloadSchema, teamExternalUserMessagePayloadSchema, teamMemberInputMessagePayloadSchema, } from "./team-collaboration-message-dtos.js";
+import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema, } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
 import { teamTaskDelegationPayloadSchema } from "./team-task-message-dtos.js";
 import { readonlyParsed } from "./schema-helpers.js";
@@ -47,7 +47,6 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
     z.object({ type: z.literal("TASK_DELEGATION_EVENT"), payload: teamTaskDelegationPayloadSchema }).strict(),
     z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
     z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
-    z.object({ type: z.literal("EXTERNAL_USER_MESSAGE"), payload: teamExternalUserMessagePayloadSchema }).strict(),
     z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),
 ]);
 export const parseTeamStreamServerMessage = (value) => {

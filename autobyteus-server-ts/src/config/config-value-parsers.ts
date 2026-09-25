@@ -14,13 +14,6 @@ export const normalizeOptionalConfigString = (
   return normalized.length > 0 ? normalized : null;
 };
 
-export const normalizeOptionalUrlBase = (
-  value: string | null | undefined,
-): string | null => {
-  const normalized = normalizeOptionalConfigString(value);
-  return normalized ? normalized.replace(/\/+$/, "") : null;
-};
-
 export const resolveConfiguredDirectoryPath = ({
   configuredPath,
   dataDir,
@@ -114,26 +107,4 @@ export const listExistingAbsoluteDirectoryPaths = ({
   }
 
   return roots;
-};
-
-export const parsePositiveNumberConfig = ({
-  rawValue,
-  envName,
-  defaultValue,
-}: {
-  rawValue: string | null | undefined;
-  envName: string;
-  defaultValue: number;
-}): number => {
-  const normalized = normalizeOptionalConfigString(rawValue);
-  if (!normalized) {
-    return defaultValue;
-  }
-
-  const parsed = Number(normalized);
-  if (!Number.isFinite(parsed) || parsed <= 0) {
-    throw new Error(`${envName} must be a positive number.`);
-  }
-
-  return parsed;
 };

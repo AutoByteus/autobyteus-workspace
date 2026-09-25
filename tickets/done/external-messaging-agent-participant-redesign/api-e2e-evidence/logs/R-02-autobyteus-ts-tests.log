@@ -1,0 +1,130 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-ts
+
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts (6 tests) 5ms
+ ✓ tests/unit/tools/mcp/types.test.ts (21 tests) 8ms
+stderr | tests/unit/tools/mcp/config-service.test.ts > McpConfigService > adds configs and overwrites existing config
+Overwriting existing MCP config with server_id 'common_server'.
+
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts (11 tests) 11ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts (9 tests) 16ms
+ ✓ tests/unit/tools/mcp/tool.test.ts (4 tests) 7ms
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > loads and registers tools from pdf_mcp
+Overwriting existing MCP config with server_id 'pdf-mcp'.
+
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts (6 tests) 8ms
+ ✓ tests/unit/tools/mcp/websocket-managed-mcp-server.test.ts (1 test) 7ms
+ ✓ tests/unit/tools/mcp/proxy.test.ts (3 tests) 3ms
+(node:70391) Warning: Setting the NODE_TLS_REJECT_UNAUTHORIZED environment variable to '0' makes TLS connections and HTTPS requests insecure by disabling certificate verification.
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts (1 test) 2ms
+stderr | tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > executes a registered MCP tool via the registry
+Overwriting existing MCP config with server_id 'pdf-mcp-exec'.
+
+ ✓ tests/unit/agent/message/context-file-reference-section.test.ts (7 tests) 4ms
+ ❯ tests/integration/tools/mcp/tool-registrar.test.ts (3 tests | 3 failed) 223ms
+     × loads and registers tools from pdf_mcp 215ms
+     × executes a registered MCP tool via the registry 2ms
+     × previews tools without registering them 3ms
+ ❯ tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts (1 test | 1 failed) 215ms
+     × lists tools and executes image_to_pdf_page 215ms
+ ✓ tests/unit/tools/mcp/factory.test.ts (2 tests) 3ms
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts (1 test) 5ms
+ ✓ tests/unit/agent/message/context-file-type.test.ts (5 tests) 3ms
+ ✓ tests/unit/agent/message/inter-agent-message.test.ts (4 tests) 3ms
+ ✓ tests/unit/agent/message/context-file.test.ts (5 tests) 3ms
+ ✓ tests/unit/agent/message/agent-input-user-message.test.ts (4 tests) 3ms
+ ✓ tests/unit/agent/message/multimodal-message-builder.test.ts (3 tests) 3ms
+ ✓ tests/unit/agent/message/tool-continuation-display-text.test.ts (3 tests) 2ms
+ ✓ tests/unit/tools/mcp/server-instance-manager.test.ts (1 test) 2ms
+stdout | tests/unit/agent/shutdown-steps/mcp-server-cleanup-step.test.ts > McpServerCleanupStep > succeeds when instance manager cleanup succeeds
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/shutdown-steps/mcp-server-cleanup-step.test.ts > McpServerCleanupStep > fails when instance manager cleanup throws
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/shutdown-steps/mcp-server-cleanup-step.test.ts (2 tests) 4ms
+stdout | tests/integration/public-surface/cli-tui-removal.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/public-surface/cli-tui-removal.test.ts (8 tests) 11ms
+ ❯ tests/integration/tools/mcp/http-managed-mcp-server.test.ts (1 test | 1 skipped) 32060ms
+     ↓ lists tools and calls echo_text + server_time
+ ❯ tests/integration/tools/mcp/websocket-managed-mcp-server.test.ts (1 test | 1 skipped) 62009ms
+     ↓ lists tools and calls echo_text + server_time
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer integration (streamable_http_mcp_toy)
+Error: Streamable HTTP MCP server did not become ready: TypeError: fetch failed
+ ❯ waitForServerReady tests/integration/tools/mcp/http-managed-mcp-server.test.ts:81:9
+     79|   }
+     80| 
+     81|   throw new Error(`Streamable HTTP MCP server did not become ready: ${…
+       |         ^
+     82| }
+     83| 
+ ❯ tests/integration/tools/mcp/http-managed-mcp-server.test.ts:98:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/integration/tools/mcp/websocket-managed-mcp-server.test.ts > WebsocketManagedMcpServer integration (wss_mcp_toy)
+Error: Hook timed out in 60000ms.
+If this is a long-running hook, pass a timeout value as the last argument or configure it globally with "hookTimeout".
+ ❯ tests/integration/tools/mcp/websocket-managed-mcp-server.test.ts:92:3
+     90|   let originalTlsSetting: string | undefined;
+     91| 
+     92|   beforeAll(async () => {
+       |   ^
+     93|     originalTlsSetting = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
+     94|     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/tools/mcp/stdio-managed-mcp-server.test.ts > StdioManagedMcpServer integration (pdf_mcp) > lists tools and executes image_to_pdf_page
+ FAIL  tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > loads and registers tools from pdf_mcp
+ FAIL  tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > executes a registered MCP tool via the registry
+ FAIL  tests/integration/tools/mcp/tool-registrar.test.ts > McpToolRegistrar integration (pdf_mcp) > previews tools without registering them
+Error: spawn /opt/homebrew/bin/uv ENOENT
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯ Uncaught Exception ⎯⎯⎯⎯⎯
+Error: spawn /opt/homebrew/bin/uv ENOENT
+ ❯ Process.ChildProcess._handle.onexit node:internal/child_process:285:19
+ ❯ onErrorNT node:internal/child_process:483:16
+ ❯ processTicksAndRejections node:internal/process/task_queues:90:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'spawn /opt/homebrew/bin/uv', path: '/opt/homebrew/bin/uv', spawnargs: [ 'run', 'python', 'src/streamable_http_mcp_toy/server.py', '--host', '127.0.0.1', '--port', '8764' ] }
+This error originated in "tests/integration/tools/mcp/http-managed-mcp-server.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+
+⎯⎯⎯⎯⎯ Uncaught Exception ⎯⎯⎯⎯⎯
+Error: spawn /opt/homebrew/bin/uv ENOENT
+ ❯ Process.ChildProcess._handle.onexit node:internal/child_process:285:19
+ ❯ onErrorNT node:internal/child_process:483:16
+ ❯ processTicksAndRejections node:internal/process/task_queues:90:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { errno: -2, code: 'ENOENT', syscall: 'spawn /opt/homebrew/bin/uv', path: '/opt/homebrew/bin/uv', spawnargs: [ 'run', 'python', 'src/wss_mcp_toy/server.py', '--cert', 'certs/dev-cert.pem', '--key', 'certs/dev-key.pem', '--host', '127.0.0.1', '--port', '8765', '--allowed-origin', '*' ] }
+This error originated in "tests/integration/tools/mcp/websocket-managed-mcp-server.test.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  4 failed | 21 passed (25)
+      Tests  4 failed | 107 passed | 2 skipped (113)
+     Errors  2 errors
+   Start at  16:44:48
+   Duration  62.30s (transform 2.93s, setup 282ms, import 4.73s, tests 94.62s, environment 2ms)
+

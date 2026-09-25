@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
-import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
+import type { ExternalMessageEnvelope } from "../../../../../src/external-channel/external-message-envelope.js";
+import type { ExternalOutboundEnvelope } from "../../../../../src/external-channel/external-outbound-envelope.js";
 import type { DiscordGatewayMessageCreateEvent } from "../../../../../src/infrastructure/adapters/discord-business/discord-gateway-client.js";
 import { DiscordBusinessAdapter } from "../../../../../src/infrastructure/adapters/discord-business/discord-business-adapter.js";
 import { DiscordRestClientError } from "../../../../../src/infrastructure/adapters/discord-business/discord-rest-client.js";

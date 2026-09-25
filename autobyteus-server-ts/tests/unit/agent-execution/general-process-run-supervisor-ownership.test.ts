@@ -29,7 +29,7 @@ const createAuthority = (): ScopedAgentToolMcpSessionAuthority => ({
 });
 
 const createProviderBuilder = (): AgentProviderFactoryBuilder => ({
-  createForExecution: vi.fn(() => ({ autoByteus: {} as never, codex: {} as never, claude: {} as never })),
+  createForExecution: vi.fn(() => ({ autoByteus: {} as never, codex: {} as never, claude: {} as never, antigravity: {} as never })),
 });
 
 const createSupervisorInput = () => {
