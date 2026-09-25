@@ -292,7 +292,7 @@ describe('RuntimeModelConfigFields stored historical values', () => {
       wrapper.unmount()
     })
 
-    it('keeps the aliased option for an existing run saved with default and adds no raw saved row', async () => {
+    it('keeps only the exact saved alias when its sibling is not server-offered', async () => {
       const wrapper = mount(RuntimeModelConfigFields, {
         props: {
           runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'default', llmConfig: null,
@@ -303,13 +303,37 @@ describe('RuntimeModelConfigFields stored historical values', () => {
         },
       })
       await flushPromises()
-
       const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
-      expect(picker.props('options')).toEqual([expect.objectContaining({
-        label: 'Anthropic',
-        items: [expect.objectContaining({ id: 'opus[1m]', aliasIds: ['default'] })],
-      })])
-      expect(picker.text()).toContain('Anthropic / claude-opus-5-5[1m]')
+      expect(picker.props('options').flatMap((group: any) => group.items.map((item: any) => item.id))).toEqual(['default'])
+      expect(wrapper.emitted('selection-change')).toBeUndefined()
+      wrapper.unmount()
+    })
+
+    it.each([
+      { saved: 'default', offered: 'opus[1m]' },
+      { saved: 'opus[1m]', offered: 'default' },
+    ])('selects exact server-offered Claude identifier $saved → $offered', async ({ saved, offered }) => {
+      const wrapper = mount(RuntimeModelConfigFields, {
+        props: {
+          runtimeKind: 'claude_agent_sdk', llmModelIdentifier: saved, llmConfig: null,
+          originalModelIdentifier: saved, runtimeSelectionLocked: true,
+          modelOptions: { status: 'ready', options: {
+            currentModelIdentifier: saved, replacements: [{ llmModelIdentifier: offered }], unavailableReason: null,
+          } },
+        },
+      })
+      await flushPromises()
+      const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
+      const items = picker.props('options').flatMap((group: any) => group.items)
+      expect(items.map((item: any) => item.id)).toEqual(['default', 'opus[1m]'])
+      expect(items.every((item: any) => !item.aliasIds?.length)).toBe(true)
+      expect(wrapper.emitted('selection-change')).toBeUndefined()
+      await picker.get('button').trigger('click')
+      const options = [...document.body.querySelectorAll<HTMLElement>('[role="option"]')]
+      expect(options).toHaveLength(2)
+      options[items.findIndex((item: any) => item.id === offered)]!.click()
+      await wrapper.vm.$nextTick()
+      expect(wrapper.emitted('selection-change')?.at(-1)).toEqual([{ llmModelIdentifier: offered, llmConfig: null }, true])
       wrapper.unmount()
     })
   })

@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` / initial implementation | N/A | Initial Baseline | SR-002, SR-003; ARCH-REV-001; CRR/API-REV/DR N/A | Implementation complete for independent source review |
+| IR-002 | Code Reviewer / `code-review-report.md` / round 1 | F-001 | Local Fix | SR-002, SR-003; ARCH-REV-001; CRR-001; API-REV/DR N/A | Exact stopped-run Claude identifiers selectable; return for source re-review |
 
 ## Revision Entries
 
@@ -27,3 +28,18 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 - Local validation: Server TypeScript build-config typecheck passed after shared build and Prisma generation; five focused server suites passed (41 tests), then revised selection/native suites passed (14 tests). Four focused Web suites passed (52 tests) before final localized-label polish, with the affected component suite passing again (12 tests). Nuxt production build, GraphQL codegen, Web/localization guards, literal audit and `git diff --check` passed. Full `nuxi typecheck` did not run because its npx-installed vue-tsc/typescript pair failed with `ERR_PACKAGE_PATH_NOT_EXPORTED`; Nuxt production build passed. Temporary local Web preview remained blank because `/rest/health` proxy had no backend, so no browser visual/interaction pass is claimed.
 - Next recipient / routing: `get_handoff_rules` selected `/code_reviewer` for High-risk independent source review.
 - Remaining limitations / risks: Real smaller-window provider continuation unverified; separately loaded Web display/schema catalog may lag server options (visible fallback/retry and schema-unavailable block implemented); external GraphQL consumers, if any, remain a review concern. API/E2E owns executable system/provider validation and final coverage classification.
+
+## IR-002 — Preserve exact Claude catalog IDs in stopped-run picker
+
+- Triggering role, report path, and round: Code Reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/code-review-report.md`, round 1 (CRR-001).
+- Triggering finding IDs: F-001.
+- Classification: Local Fix; `task_size=Medium`, `architectural_risk=High` reconfirmed.
+- Prior authoritative result: CRR-001 Fail — Local Fix; stopped-run Claude alias and explicit sibling collapsed to one picker item.
+- Current authoritative result: Both exact server-offered IDs remain separately selectable in stopped-run Settings; implementation returns for independent source re-review.
+- Related solution revision IDs: SR-002, SR-003. Architecture review: ARCH-REV-001. Code review: CRR-001. API/E2E and delivery revisions: N/A.
+- Why revised: REQ-002 and AC-001/002 require every external runtime-catalog identifier as a replacement, even when Claude's launch presentation treats one identifier as an alias of another.
+- Approved behavior / requirement IDs: BEH-001, BEH-005; REQ-002, REQ-007; AC-001/002; SCN-001-A.
+- Implementation delta: `RuntimeModelConfigFields.vue` now filters existing-run options by exact server identifiers, removes launch-only `aliasIds` from those picker items, and supplies an exact-ID row for any ID folded or missing in the separately loaded Web display catalog. New component tests click the real grouped picker in both `default → opus[1m]` and reverse directions; unchanged launch test verifies alias folding remains there. `autobyteus-web/docs/settings.md` describes this distinction. No server policy, GraphQL, Save owner, provider/history or in-editor server-option retry machinery changed.
+- Local validation and result: Focused Web component suite 14/14; four related Web suites 54/54; Nuxt production build passed. No real browser stopped-run visual or API/E2E pass claimed; local dev bootstrap still requires an available backend.
+- Next recipient or routing: `get_handoff_rules` selected `/code_reviewer` under the Medium/High implementation-owned Local Fix rule.
+- Remaining limitations or risks: Real smaller-window provider continuation, browser stopped-run inspection, separately fetched Web catalog lag, external GraphQL consumers and `nuxi typecheck` toolchain issue remain as in IR-001. No new behavior or design decision was introduced.

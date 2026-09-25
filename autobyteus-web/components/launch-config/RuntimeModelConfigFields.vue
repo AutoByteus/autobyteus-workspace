@@ -101,7 +101,6 @@ import {
   useRuntimeScopedModelSelection,
 } from '~/composables/useRuntimeScopedModelSelection'
 import { projectHistoricalModelConfigFields } from '~/utils/historicalModelConfigFields'
-import { selectItemMatches } from '~/utils/selectItemMatch'
 import { validateUiModelConfig, type UiModelConfigValidationIssue } from '~/utils/llmConfigSchema'
 import { useLocalization } from '~/composables/useLocalization'
 import type { RuntimeModelConfigSchemaState } from '~/types/agent/RuntimeModelConfigSchemaState'
@@ -194,11 +193,16 @@ const {
 const selectableModelOptions = computed(() => {
   if (props.originalModelIdentifier === undefined) return groupedModelOptions.value
   const ids = new Set([props.originalModelIdentifier, ...(props.modelOptions?.options?.replacements.map((row) => row.llmModelIdentifier) ?? [])])
-  const groups = groupedModelOptions.value.map((group) => ({ ...group, items: group.items.filter((item) => [item.id, ...(item.aliasIds ?? [])].some((id) => ids.has(id))) })).filter((group) => group.items.length)
-  const missing = [...ids].filter((id) => !groups.some((group) => group.items.some((item) => selectItemMatches(item, id))))
+  // A stopped run saves an exact runtime catalog ID. A launch alias may represent a sibling,
+  // but it must not hide that sibling or turn its selection into a no-op here.
+  const groups = groupedModelOptions.value.map((group) => ({ ...group, items: group.items
+    .filter((item) => ids.has(item.id))
+    .map((item) => { const exactItem = { ...item }; delete exactItem.aliasIds; return exactItem })
+  })).filter((group) => group.items.length)
+  const missing = [...ids].filter((id) => !groups.some((group) => group.items.some((item) => item.id === id)))
   if (missing.length) groups.unshift({ label: t('workspace.runModelConfig.savedOrOfferedGroup'), items: missing.map((id) => ({ id, name: id, selectedLabel: id, description: null })) })
   const selected = props.llmModelIdentifier
-  if (selected && !groups.some((group) => group.items.some((item) => selectItemMatches(item, selected)))) {
+  if (selected && !groups.some((group) => group.items.some((item) => item.id === selected))) {
     groups.unshift({ label: t('workspace.runModelConfig.selectedGroup'), items: [{ id: selected, name: selected, selectedLabel: selected, description: null }] })
   }
   return groups

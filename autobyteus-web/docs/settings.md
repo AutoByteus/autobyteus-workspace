@@ -1009,7 +1009,10 @@ catalog/schema and editability checks pass, without a replacement-capacity
 check. Save rechecks the fresh runtime catalog and target schema. A separately
 loaded display/schema catalog can lag the server's options; the picker keeps a
 server-offered identifier visible and shows unavailable/retry feedback rather
-than hiding it or inventing a schema. Provider-native continuation may still
+than hiding it or inventing a schema. Distinct runtime-catalog identifiers,
+including a Claude `default` alias and its explicit sibling, remain separately
+selectable in stopped-run Settings even though the new-run picker may present
+them as one launch option. Provider-native continuation may still
 reject a smaller-window history; the failure remains visible and saved history
 is not reset.
 
