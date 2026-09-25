@@ -5,10 +5,13 @@ import { isContextCapacity, type RuntimeModelCapacities } from "../domain/runtim
 import type { ModelCatalogService } from "./model-catalog-service.js";
 import { validateModelConfigSchema } from "./model-config-schema-validation.js";
 import { RuntimeModelCapacityService } from "./runtime-model-capacity-service.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import { toAgyDiscoveryDiagnostic, type AgyDiscoveryDiagnostic } from "../../runtime-management/antigravity-cli-capability.js";
 
 export type RunModelSelectionValidationResult =
   | Readonly<{ kind: "valid"; selection: RunModelSelection }>
-  | Readonly<{ kind: "model_unavailable" | "schema_unavailable" }>
+  | Readonly<{ kind: "model_unavailable"; catalogDiagnostic?: AgyDiscoveryDiagnostic }>
+  | Readonly<{ kind: "schema_unavailable" }>
   | Readonly<{ kind: "invalid"; errors: readonly RunModelConfigFieldError[] }>;
 type SelectionInput = { context: RunModelSelectionContext; selection: { llmModelIdentifier: string; llmConfig: unknown } };
 type SelectionEvidence = {
@@ -37,7 +40,9 @@ export class RunModelSelectionService {
     if (typeof selection.llmModelIdentifier !== "string" || !selection.llmModelIdentifier.trim()) return invalid("Select a model.");
     let models: ModelInfo[];
     try { models = await evidence.catalog.listLlmModels(context.runtimeKind, context.workspaceRootPath); }
-    catch { return { kind: "model_unavailable" }; }
+    catch (error) { return context.runtimeKind === RuntimeKind.ANTIGRAVITY_CLI
+      ? { kind: "model_unavailable", catalogDiagnostic: toAgyDiscoveryDiagnostic(error) }
+      : { kind: "model_unavailable" }; }
     const model = models.find((row) => row.model_identifier === selection.llmModelIdentifier);
     if (!model) return { kind: "model_unavailable" };
     if (selection.llmModelIdentifier !== context.currentModelIdentifier) {

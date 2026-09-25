@@ -4,7 +4,7 @@ import { listAntigravityModels } from "../../runtime-management/antigravity-cli-
 
 export class AntigravityModelCatalog {
   async listModels(): Promise<ModelInfo[]> {
-    return listAntigravityModels().map(({ id, name }) => {
+    return (await listAntigravityModels()).map(({ id, name }) => {
       const provider = id.startsWith("claude-") ? LLMProvider.ANTHROPIC
         : id.startsWith("gpt-") ? LLMProvider.OPENAI : LLMProvider.GEMINI;
       return ({

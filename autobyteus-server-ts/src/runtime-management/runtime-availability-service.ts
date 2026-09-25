@@ -1,7 +1,7 @@
 import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { RuntimeKind } from "./runtime-kind-enum.js";
-import { probeAntigravityCli, listAntigravityModels } from "./antigravity-cli-capability.js";
+import { listAntigravityModels, toAgyDiscoveryDiagnostic } from "./antigravity-cli-capability.js";
 import { resolveClaudeCodeExecutablePath } from "./claude/client/claude-sdk-executable-path.js";
 import { resolveLaunchCommand } from "./codex/client/codex-app-server-launch-config.js";
 
@@ -13,7 +13,7 @@ export interface RuntimeAvailability {
 
 export interface RuntimeAvailabilityProvider {
   readonly runtimeKind: RuntimeKind;
-  getRuntimeAvailability(): RuntimeAvailability;
+  getRuntimeAvailability(): RuntimeAvailability | Promise<RuntimeAvailability>;
 }
 
 const COMMAND_DISCOVERY_TOOL = process.platform === "win32" ? "where" : "which";
@@ -98,11 +98,9 @@ const createClaudeAvailabilityProvider = (): RuntimeAvailabilityProvider => ({
 
 const createAntigravityAvailabilityProvider = (): RuntimeAvailabilityProvider => ({
   runtimeKind: RuntimeKind.ANTIGRAVITY_CLI,
-  getRuntimeAvailability: () => {
-    const capability = probeAntigravityCli();
-    if (!capability.available) return createCapability(RuntimeKind.ANTIGRAVITY_CLI, false, capability.reason);
-    try { listAntigravityModels(); return createCapability(RuntimeKind.ANTIGRAVITY_CLI, true); }
-    catch (error) { return createCapability(RuntimeKind.ANTIGRAVITY_CLI, false, String(error)); }
+  getRuntimeAvailability: async () => {
+    try { await listAntigravityModels(); return createCapability(RuntimeKind.ANTIGRAVITY_CLI, true); }
+    catch (error) { return createCapability(RuntimeKind.ANTIGRAVITY_CLI, false, toAgyDiscoveryDiagnostic(error).message); }
   },
 });
 
@@ -122,14 +120,14 @@ export class RuntimeAvailabilityService {
     this.providers.set(provider.runtimeKind, provider);
   }
 
-  listRuntimeAvailabilities(): RuntimeAvailability[] {
-    return Array.from(this.providers.values()).map((provider) =>
+  async listRuntimeAvailabilities(): Promise<RuntimeAvailability[]> {
+    return Promise.all(Array.from(this.providers.values()).map((provider) =>
       provider.getRuntimeAvailability(),
-    );
+    ));
   }
 
-  getRuntimeAvailability(runtimeKind: RuntimeKind): RuntimeAvailability {
-    return (
+  async getRuntimeAvailability(runtimeKind: RuntimeKind): Promise<RuntimeAvailability> {
+    return await (
       this.providers.get(runtimeKind)?.getRuntimeAvailability() ??
       createCapability(runtimeKind, false, `Runtime '${runtimeKind}' is not configured.`)
     );

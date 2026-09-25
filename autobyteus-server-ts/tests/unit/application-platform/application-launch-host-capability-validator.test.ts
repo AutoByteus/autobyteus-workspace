@@ -54,7 +54,7 @@ const credentialPort = (input?: {
 };
 
 const enabledRuntimeAvailability = {
-  getRuntimeAvailability: (runtimeKind: RuntimeKind) => ({
+  getRuntimeAvailability: async (runtimeKind: RuntimeKind) => ({
     runtimeKind,
     enabled: true,
     reason: null,
@@ -68,6 +68,46 @@ const model = (modelIdentifier: string, providerId: string, runtime: LLMRuntime)
 }) as never;
 
 describe("ApplicationLaunchHostCapabilityValidator current model readiness", () => {
+  it("awaits an AGY availability probe before any application model lookup", async () => {
+    const listLlmModels = vi.fn(async () => []);
+    const validator = new ApplicationLaunchHostCapabilityValidator({
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
+        requireCurrentAutoByteusModelIdentifier: async () => undefined,
+      }),
+      runtimeAvailabilityService: { getRuntimeAvailability: async () => ({
+        runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, enabled: false,
+        reason: "Antigravity model discovery timed out; check the CLI and retry.",
+      }) },
+      modelCatalogService: { listLlmModels },
+      providerCredentialReadiness: credentialPort(),
+    });
+    const issues = await validator.validate(configuration([{
+      runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, llmModelIdentifier: "gemini-test",
+    }]));
+    expect(issues).toEqual([expect.objectContaining({ code: "RUNTIME_UNAVAILABLE",
+      message: "Antigravity model discovery timed out; check the CLI and retry." })]);
+    expect(listLlmModels).not.toHaveBeenCalled();
+  });
+
+  it("does not expose an unexpected AGY catalog error through application launch issues", async () => {
+    const validator = new ApplicationLaunchHostCapabilityValidator({
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
+        requireCurrentAutoByteusModelIdentifier: async () => undefined,
+      }),
+      runtimeAvailabilityService: enabledRuntimeAvailability,
+      modelCatalogService: { listLlmModels: async () => { throw new Error("secret /private/credential-path"); } },
+      providerCredentialReadiness: credentialPort(),
+    });
+    const issues = await validator.validate(configuration([{
+      runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, llmModelIdentifier: "gemini-test",
+    }]));
+    expect(issues).toEqual([expect.objectContaining({ code: "RUNTIME_AUTHENTICATION_UNAVAILABLE",
+      message: "Runtime 'antigravity_cli' could not provide its authenticated model catalog: Antigravity model discovery failed; check authentication or network and retry.",
+    })]);
+  });
+
   it("rejects exact stale Gemini 3.7 through the production current-model registry", async () => {
     const listLlmModels = vi.fn(async () => []);
     const credentials = credentialPort();

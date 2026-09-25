@@ -29,9 +29,9 @@ export class RuntimeAvailabilityResolver {
   private readonly runtimeAvailabilityService = getRuntimeAvailabilityService();
 
   @Query(() => [RuntimeAvailabilityObject])
-  runtimeAvailabilities(): RuntimeAvailabilityObject[] {
-    return this.runtimeAvailabilityService
-      .listRuntimeAvailabilities()
+  async runtimeAvailabilities(): Promise<RuntimeAvailabilityObject[]> {
+    return (await this.runtimeAvailabilityService
+      .listRuntimeAvailabilities())
       .map(toGraphqlRuntimeAvailability);
   }
 }
