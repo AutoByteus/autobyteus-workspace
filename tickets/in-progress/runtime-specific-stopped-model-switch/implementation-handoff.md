@@ -2,7 +2,7 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Independent architecture review selected and passed (ARCH-REV-001). Downstream routing pending `get_handoff_rules` at this handoff.
+- Upstream review applicability and handoff-rule result: Independent architecture review selected and passed (ARCH-REV-001). `get_handoff_rules` selected the completed Medium/High implementation route to `/code_reviewer`.
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/requirements-doc.md` (approved SR-002).
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/investigation-notes.md`.
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/solution-revision-record.md`.
@@ -26,7 +26,7 @@
 
 - Task size: **Medium**; architecture risk: **High**.
 - Basis: `design-spec.md` Task Size And Architectural Risk; confirmed by shared eligibility/GraphQL contract, three Settings surfaces, and no persistence/restore schema change.
-- Classification: Confirmed, not downgraded. Selected route: **Code Review** under the High-risk condition, subject to exact `get_handoff_rules` result.
+- Classification: Confirmed, not downgraded. Selected route: **Code Review** under the High-risk condition, confirmed by `get_handoff_rules`.
 - Lightweight direct-route self-review: Not Applicable; independent review required.
 - New design impact / escalation trigger: None found. No external GraphQL consumer was found in-repo; external consumers remain a residual contract risk.
 
