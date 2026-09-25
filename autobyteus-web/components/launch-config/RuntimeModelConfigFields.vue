@@ -36,7 +36,7 @@
         :model-value="llmModelIdentifier || ''"
         @update:modelValue="updateModel"
         :options="selectableModelOptions"
-        :disabled="modelSelectionLockedComputed || !availableProviderGroups.length"
+        :disabled="modelSelectionLockedComputed || !selectableModelOptions.length"
         :placeholder="modelPlaceholderText"
         search-placeholder="Search models..."
         :variant="controlVariant"
@@ -48,6 +48,7 @@
         :data-test="historicalModelConfig ? 'historical-model-unavailable' : 'selected-model-unavailable'"
       >
         {{ selectedModelUnavailableMessage }}
+        <button v-if="!historicalModelConfig" type="button" class="ml-1 font-semibold underline" :disabled="disabledComputed" @click="retryModelCatalog">{{ t('workspace.runModelConfig.retry') }}</button>
       </p>
       <p v-if="isLoadingModels" role="status" class="mt-1 text-xs text-blue-700">
         {{ t('workspace.runModelConfig.loadingModels') }}
@@ -58,7 +59,7 @@
       </div>
     </div>
 
-    <p v-if="modelOptionsMessage" role="status" class="text-xs text-amber-700" data-test="model-capacity-status">{{ modelOptionsMessage }}</p>
+    <p v-if="modelOptionsMessage" role="status" class="text-xs text-amber-700" data-test="model-options-status">{{ modelOptionsMessage }}</p>
     <ModelConfigSection
       :key="llmModelIdentifier || ''"
       :schema="modelConfigSchema"
@@ -174,7 +175,6 @@ const nativeSelectClass = computed(() => [
 ])
 
 const {
-  availableProviderGroups,
   effectiveRuntimeKind,
   ensureModelsForRuntime,
   groupedModelOptions,
@@ -195,20 +195,23 @@ const selectableModelOptions = computed(() => {
   if (props.originalModelIdentifier === undefined) return groupedModelOptions.value
   const ids = new Set([props.originalModelIdentifier, ...(props.modelOptions?.options?.replacements.map((row) => row.llmModelIdentifier) ?? [])])
   const groups = groupedModelOptions.value.map((group) => ({ ...group, items: group.items.filter((item) => [item.id, ...(item.aliasIds ?? [])].some((id) => ids.has(id))) })).filter((group) => group.items.length)
-  const current = props.llmModelIdentifier
-  if (current && !groups.some((group) => group.items.some((item) => selectItemMatches(item, current)))) {
-    groups.unshift({ label: 'Saved / selected model', items: [{ id: current, name: current, selectedLabel: current, description: null }] })
+  const missing = [...ids].filter((id) => !groups.some((group) => group.items.some((item) => selectItemMatches(item, id))))
+  if (missing.length) groups.unshift({ label: t('workspace.runModelConfig.savedOrOfferedGroup'), items: missing.map((id) => ({ id, name: id, selectedLabel: id, description: null })) })
+  const selected = props.llmModelIdentifier
+  if (selected && !groups.some((group) => group.items.some((item) => selectItemMatches(item, selected)))) {
+    groups.unshift({ label: t('workspace.runModelConfig.selectedGroup'), items: [{ id: selected, name: selected, selectedLabel: selected, description: null }] })
   }
   return groups
 })
+const isNativeRun = computed(() => effectiveRuntimeKind.value === 'autobyteus')
 const modelOptionsMessage = computed(() => {
   if (props.originalModelIdentifier === undefined || modelSelectionLockedComputed.value) return null
   const state = props.modelOptions
-  if (!state || state.status === 'loading') return t('workspace.runModelConfig.loadingCapacity')
-  if (state.status === 'unavailable') return t('workspace.runModelConfig.capacityUnavailable')
+  if (!state || state.status === 'loading') return t(isNativeRun.value ? 'workspace.runModelConfig.loadingCapacity' : 'workspace.runModelConfig.loadingOptions')
+  if (state.status === 'unavailable') return t('workspace.runModelConfig.optionsUnavailable')
   if (state.options?.unavailableReason) return state.options.unavailableReason
-  if (props.llmModelIdentifier !== props.originalModelIdentifier && !state.options?.replacements.some((row) => row.llmModelIdentifier === props.llmModelIdentifier)) return t('workspace.runModelConfig.capacityInvalid')
-  return state.options?.replacements.length ? null : t('workspace.runModelConfig.noReplacements')
+  if (props.llmModelIdentifier !== props.originalModelIdentifier && !state.options?.replacements.some((row) => row.llmModelIdentifier === props.llmModelIdentifier)) return t('workspace.runModelConfig.replacementInvalid')
+  return state.options?.replacements.length ? null : t(isNativeRun.value ? 'workspace.runModelConfig.noNativeReplacements' : 'workspace.runModelConfig.noCatalogReplacements')
 })
 
 watch(

@@ -222,8 +222,10 @@ The existing-run form permits a stopped standalone Team root or exact direct
 Agent to edit its model/settings pair while runtime, workspace, approval policy,
 addresses, and execution/provider identities remain locked. Model options are
 advisory: Save revalidates every affected scope against its original saved model
-and requires verified target context capacity at least that baseline. Same-model
-settings still require a current model/schema, but no replacement-capacity check.
+and validates current catalog membership and target schema. External runtime
+models are not capacity-gated; AutoByteus still requires verified positive
+non-decreasing context capacity. Same-model settings require a current
+model/schema, but no replacement-capacity check.
 
 Root pair changes propagate only to Agents linked by draft-start
 runtime/model/settings equality. Divergent or directly edited Agents remain

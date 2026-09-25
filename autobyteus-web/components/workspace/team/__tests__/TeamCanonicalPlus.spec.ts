@@ -49,7 +49,7 @@ beforeEach(async () => {
   io.query.mockImplementation(async ({ query, variables }) => {
     const name = query.definitions.find((d: any) => d.name)?.name.value
     if (name === 'GetTeamRunResumeConfig') return resume(variables.teamRunId === 'new-team' ? createdTree : canonical)
-    if (name === 'TeamRunModelOptions') return { data: { teamRunModelOptions: ['/', '/lead'].map(scopeAddress => ({ scopeAddress, currentModelIdentifier: 'model', currentContextTokens: 100, replacements: [{ llmModelIdentifier: 'replacement-model', contextTokens: 200 }], unavailableReason: null })) } }
+    if (name === 'TeamRunModelOptions') return { data: { teamRunModelOptions: ['/', '/lead'].map(scopeAddress => ({ scopeAddress, currentModelIdentifier: 'model', replacements: [{ llmModelIdentifier: 'replacement-model' }], unavailableReason: null })) } }
     if (variables.agentRunId) return { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
     throw new Error('Unexpected query: ' + name)
   })

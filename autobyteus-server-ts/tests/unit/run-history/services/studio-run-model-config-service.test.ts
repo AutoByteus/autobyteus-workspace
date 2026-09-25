@@ -56,7 +56,7 @@ const harness = () => {
   const getTeamRunResumeConfig = vi.fn(async () => teamResume);
   const updateStoppedModelConfig = vi.fn(async () => ({ subject: "agent-general" }));
   const updateStoppedModelConfigs = vi.fn(async () => ({ subject: "team-general" }));
-  const listOptionsMany = vi.fn(async (contexts) => contexts.map(context => ({ currentModelIdentifier: context.currentModelIdentifier, currentContextTokens: 128000, replacements: [], unavailableReason: null })));
+  const listOptionsMany = vi.fn(async (contexts) => contexts.map(context => ({ currentModelIdentifier: context.currentModelIdentifier, replacements: [], unavailableReason: null })));
   return {
     listOptionsMany,
     hasLiveRunOwnership,

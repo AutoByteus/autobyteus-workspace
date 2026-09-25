@@ -33,9 +33,9 @@
       :model-config-disabled="isInteractionDisabled"
       :model-config-read-only="isInteractionDisabled"
       :historical-model-config="scope.mode === 'existing' && scope.originalModelIdentifier === scope.effectiveConfig.llmModelIdentifier"
-      :runtime-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by')"
+      :runtime-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedRuntime') : t('workspace.components.workspace.config.TeamRunConfigForm.selects_the_runtime_backend_used_by')"
       :model-label="t('workspace.components.workspace.config.TeamRunConfigForm.default_llm_model_global')"
-      :model-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by')"
+      :model-help-text="scope.mode === 'existing' ? t(existingRunModelHelpKey(scope.effectiveConfig.runtimeKind)) : t('workspace.components.workspace.config.TeamRunConfigForm.this_model_will_be_used_by')"
       :id-prefix="inputIdPrefix"
       :advanced-initially-expanded="scope.mode === 'existing'"
       :historical-value-unavailable-message="historicalUnavailableMessage"
@@ -185,9 +185,9 @@
         :model-config-disabled="isInteractionDisabled"
         :model-config-read-only="isInteractionDisabled"
         :historical-model-config="scope.mode === 'existing' && scope.originalModelIdentifier === scope.effectiveConfig.llmModelIdentifier"
-        :runtime-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : t('workspace.components.workspace.config.TeamScopeConfigEditor.runtime_help')"
+        :runtime-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedRuntime') : t('workspace.components.workspace.config.TeamScopeConfigEditor.runtime_help')"
         :model-label="t('workspace.components.workspace.config.TeamScopeConfigEditor.team_default_model')"
-        :model-help-text="scope.mode === 'existing' ? t('workspace.runModelConfig.fixedIdentity') : teamModelHelpText || t('workspace.components.workspace.config.TeamScopeConfigEditor.model_help')"
+        :model-help-text="scope.mode === 'existing' ? t(existingRunModelHelpKey(scope.effectiveConfig.runtimeKind)) : teamModelHelpText || t('workspace.components.workspace.config.TeamScopeConfigEditor.model_help')"
         :id-prefix="inputIdPrefix"
         :advanced-initially-expanded="scope.mode === 'existing'"
         :historical-value-unavailable-message="historicalUnavailableMessage"
@@ -248,6 +248,7 @@
 </template>
 
 <script setup lang="ts">
+import { existingRunModelHelpKey } from '~/utils/existingRunModelHelp'
 import type { ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
 import { computed, ref, watch } from 'vue'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'

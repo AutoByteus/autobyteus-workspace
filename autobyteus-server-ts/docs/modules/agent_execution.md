@@ -222,8 +222,10 @@ conversation identity, tool policy, and local run ID fixed. It requires a
 current, cataloged, unarchived, manager-inactive run; validates the submitted
 `llmModelIdentifier` + `llmConfig` against the selected model's current schema
 within that fixed runtime; and writes/rereads the pair together. Replacement
-requires verified target context capacity at least the fresh saved-model
-capacity. Same-model settings updates bypass that replacement comparison, not
+requires fresh runtime-catalog membership and target-schema validity. Only
+AutoByteus additionally requires verified positive target context capacity at
+least the fresh saved-model capacity. Same-model settings updates bypass that
+replacement comparison, not
 ordinary availability/schema checks. No-op and canonical confirmation compare
 both fields. See [LLM Management](./llm_management.md#persisted-run-model-selection-validation).
 
@@ -482,8 +484,7 @@ applied, Bash has no `run_in_background` option and no auto-backgrounding: a lon
 command runs in the foreground inside the turn and either completes or ends with a
 visible timeout error. A single command may run up to 30 minutes when the model
 requests that `timeout`; the per-call default stays the CLI default (2 minutes,
-`BASH_DEFAULT_TIMEOUT_MS` is not set). Model-discovery and context-capacity probes
-do not receive this policy. A user-level `~/.claude/settings.json` `env` block can
+`BASH_DEFAULT_TIMEOUT_MS` is not set). Model-discovery probes do not receive this policy. A user-level `~/.claude/settings.json` `env` block can
 still override these values inside the CLI. Both variables are documented Claude
 Code CLI env contracts; re-check them after Claude CLI or Agent SDK version bumps.
 This policy is temporary and must be removed when the Claude backend moves to SDK

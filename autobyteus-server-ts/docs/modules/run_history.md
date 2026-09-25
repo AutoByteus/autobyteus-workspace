@@ -172,7 +172,7 @@ multi-writer compatibility field. Current metadata and Team V2 packages are
 updated in place, so no persisted-data migration is required. Frontend/backend
 must use the complete-pair API together; there is no old-client fallback.
 See [LLM Management](./llm_management.md#persisted-run-model-selection-validation)
-for runtime-specific capacity evidence and its fail-closed limits.
+for runtime-specific catalog/schema validation and the AutoByteus capacity limit.
 
 ## Default History Visibility, Archive, And Delete Semantics
 

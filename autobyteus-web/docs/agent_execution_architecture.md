@@ -1191,7 +1191,7 @@ Save-time compaction, history conversion, or reset. Existing runtime compaction
 algorithms remain; future model-specific budgets/timing need not be identical.
 Frontend and backend use the complete-pair API together, without an old-client
 adapter or persisted-data migration. See [Settings](./settings.md#existing-run-model-configuration)
-for the user workflow and [server capacity evidence](../../autobyteus-server-ts/docs/modules/llm_management.md#persisted-run-model-selection-validation)
+for the user workflow and [server model-selection policy](../../autobyteus-server-ts/docs/modules/llm_management.md#persisted-run-model-selection-validation)
 for runtime-specific authority and uncertainty limits.
 
 The model-config surface is schema-driven, not thinking-only. It renders

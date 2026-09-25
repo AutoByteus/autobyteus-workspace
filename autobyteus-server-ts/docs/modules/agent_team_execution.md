@@ -164,9 +164,10 @@ null. It cannot change runtime kind,
 workspace, automatic-tool policy, concrete run IDs, provider bindings, task
 nodes, hierarchy, or addresses. Every intended scope validates against its own
 original saved selection and fixed runtime before the single tree write. A
-replacement needs verified target context capacity at least that scope's fresh
-saved-model capacity plus valid target-schema settings. Same-model settings
-skip replacement-capacity comparison only. An incompatible descendant blocks
+replacement needs fresh runtime-catalog membership and valid target-schema
+settings. AutoByteus additionally needs verified positive non-decreasing
+context capacity; external runtimes do not. Same-model settings skip the
+AutoByteus replacement-capacity comparison only. An incompatible descendant blocks
 the whole Save; it is not silently omitted. See
 [LLM Management](./llm_management.md#persisted-run-model-selection-validation).
 

@@ -999,15 +999,19 @@ disclosures remain usable while locked so users can inspect the persisted
 hierarchy and fields. There is no existing-run runtime selector, launch button,
 per-Agent workspace editor, or Reset action.
 
-Replacement choices come from server-owned options for the saved run/scope:
-both current and target context capacities must be verified, and the target
-must be at least as large. Smaller or unknown-capacity replacements are not
-offered; unavailable metadata keeps the saved model visible with an explanation.
-Same-model settings remain available when the normal catalog/schema and
-editability checks pass, even if replacement capacity is unavailable. Save
-revalidates against the fresh saved model, so after an upgrade a smaller former
-model is not automatically eligible. There is no additional output/input-budget,
-tokenizer, or compaction-threshold matching requirement.
+Replacement choices come from server-owned options for the saved run/scope.
+For Claude Agent SDK, Codex App Server, and Antigravity CLI, every model in the
+runtime's current catalog is offered without a platform context-capacity gate,
+including smaller or unknown-capacity models. AutoByteus still requires
+verified positive capacities for the saved and target models, with the target
+at least as large. Same-model settings remain available when normal
+catalog/schema and editability checks pass, without a replacement-capacity
+check. Save rechecks the fresh runtime catalog and target schema. A separately
+loaded display/schema catalog can lag the server's options; the picker keeps a
+server-offered identifier visible and shows unavailable/retry feedback rather
+than hiding it or inventing a schema. Provider-native continuation may still
+reject a smaller-window history; the failure remains visible and saved history
+is not reset.
 
 Selecting a different model changes one draft pair, clears the former model's
 explicit settings using the existing picker convention, and displays the

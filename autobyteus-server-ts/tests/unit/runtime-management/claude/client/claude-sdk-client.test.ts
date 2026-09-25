@@ -430,23 +430,6 @@ describe("ClaudeSdkClient", () => {
     expect(discoveryCall.options).not.toHaveProperty("disallowedTools");
   });
 
-  it("keeps the context-capacity discovery query tool-free instead of applying the turn tool policy", async () => {
-    const client = new ClaudeSdkClient();
-    const queryFn = vi.fn(async (_input: unknown) => ({ close: vi.fn(() => undefined) }));
-    client.setCachedModuleForTesting({ query: queryFn });
-
-    await client.resolveContextCapacities("/tmp/claude-client-capacity", ["haiku"]);
-
-    const capacityCall = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> };
-    expect(capacityCall.options).toEqual(expect.objectContaining({
-      maxTurns: 0,
-      permissionMode: "plan",
-      tools: [],
-      mcpServers: {},
-    }));
-    expect(capacityCall.options).not.toHaveProperty("disallowedTools");
-  });
-
   it("lists every SDK row with its canonical model ID and picker presentation hint", async () => {
     const client = new ClaudeSdkClient();
     const control = {

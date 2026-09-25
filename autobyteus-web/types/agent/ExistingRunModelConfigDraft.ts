@@ -36,8 +36,7 @@ export type ExistingRunModelSelection = Readonly<{
 }>
 export type ExistingRunModelOptions = Readonly<{
   currentModelIdentifier: string
-  currentContextTokens: number | null
-  replacements: readonly { llmModelIdentifier: string; contextTokens: number }[]
+  replacements: readonly { llmModelIdentifier: string }[]
   unavailableReason: string | null
 }>
 export type ExistingRunModelOptionsState = Readonly<{

@@ -191,31 +191,23 @@ returns distinct model-unavailable, schema-unavailable, and field-validation
 results; it does not guess a replacement model, silently drop an unsupported
 key, or write a rendered default merely because the UI displayed it.
 
-Replacement requires verified positive finite safe-integer context capacities
-for both the fresh saved model and target, with target >= saved capacity. A
-subsequent Save compares against the newly saved model, not the original launch
-model or a stale picker choice. Smaller or unknown comparisons return
-field-addressed validation failure. Same-model settings bypass capacity lookup
-and comparison, retaining ordinary model/schema availability and validation.
-No extra input-budget, output-reservation, tokenizer, threshold, or compaction-
-ratio equality gate is imposed.
+Replacement for Claude Agent SDK, Codex App Server, and Antigravity CLI
+requires fresh membership in that runtime/workspace catalog and target-schema
+validation, not a platform context-capacity comparison. AutoByteus replacement
+continues to require verified positive saved and target context capacities with
+target >= saved capacity; the focused native evidence resolver accepts only
+live or static-definition provenance and a valid active context no greater than
+the evidenced maximum. Same-model settings bypass native capacity lookup but
+still require ordinary catalog/schema validation.
 
-`RuntimeModelCapacityService` delegates evidence acquisition by saved runtime:
-
-| Runtime | Capacity evidence and uncertainty boundary |
-| --- | --- |
-| AutoByteus | Exact catalog metadata with live or static-definition provenance; verified positive active context when supplied and no greater than the evidenced maximum, otherwise verified maximum context. Unknown or inferred provenance is not proof. |
-| Codex | Existing client for saved cwd; current `model/list`, effective `config/read`, and actual launch command/environment locate the matching runtime catalog. Default cache requires matching CLI version and freshness (five minutes); exact slug and positive `context_window` are required. An effective context override must fit the catalog-evidenced ceiling. Unsupported provenance, wrong home/profile, malformed/stale metadata, or unverified custom endpoint yields unknown, not a guessed model-name limit. |
-| Claude | Bounded metadata-only SDK control using production runtime settings/auth/cwd, zero turns and no saved session binding. Exact supported alias, resolved model, and `getContextUsage().rawMaxTokens` must agree. Missing APIs, timeout, or inconsistent identity yields unknown; controls close on completion. |
-
-This evidence is selection-specific, not new global catalog enrichment or a
-compaction-budget override. Reads may be shared inside one request for equal
-runtime/workspace contexts, never reused as Save authority across requests.
-`agentRunModelOptions` and configured-scope `teamRunModelOptions` expose eligible
-replacements and current-capacity/availability facts through the Studio subject
-owner. Choices are advisory; lifecycle owners reread canonical state and
-revalidate on Save. Missing capacity leaves the saved model visible and does
-not newly disable otherwise valid same-model settings.
+Catalog reads can be shared inside one options or Save request for matching
+runtime/workspace contexts, never reused across Saves. Agent, Team, and Org
+options expose current ID, replacement IDs, and an unavailability reason, not
+numeric context fields. The existing stopped lifecycle owners reread canonical
+state and validate every intended scope before writing. A missing catalog
+keeps the saved model visible and blocks a false replacement; provider-native
+continuation may later reject a smaller-window history without a Save-time
+reset or silent new conversation.
 
 Standalone and Team updates share this boundary. Every intended Team patch
 validates against its own original saved selection before any tree write. Only

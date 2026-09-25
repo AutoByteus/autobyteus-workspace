@@ -113,7 +113,7 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     await wrapper.vm.$nextTick()
 
     expect(wrapper.get('[data-test="selected-model-unavailable"]').text())
-      .toBe('The selected model is unavailable for the current runtime.')
+      .toContain('The selected model is unavailable for the current runtime.')
     expect(wrapper.emitted('schema-state')?.at(-1)).toEqual([{
       status: 'unavailable',
       message: 'The selected model is unavailable for the current runtime.',
@@ -190,8 +190,7 @@ describe('RuntimeModelConfigFields stored historical values', () => {
         runtimeKind: 'autobyteus', llmModelIdentifier: 'saved', llmConfig: { old: true },
         originalModelIdentifier: 'saved', runtimeSelectionLocked: true,
         modelOptions: { status: 'ready', options: {
-          currentModelIdentifier: 'saved', currentContextTokens: 128000,
-          replacements: [{ llmModelIdentifier: 'larger', contextTokens: 272000 }], unavailableReason: null,
+          currentModelIdentifier: 'saved', replacements: [{ llmModelIdentifier: 'larger' }], unavailableReason: null,
         } },
       },
     })
@@ -204,11 +203,36 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     expect(wrapper.emitted('selection-change')?.at(-1)).toEqual([{ llmModelIdentifier: 'larger', llmConfig: null }, true])
     await wrapper.setProps({ modelOptions: { status: 'unavailable', options: null } })
     expect(picker.props('options').flatMap((group: any) => group.items.map((item: any) => item.id))).toEqual(['saved'])
-    expect(wrapper.get('[data-test="model-capacity-status"]').text()).toContain('Current-model settings can still be edited')
+    expect(wrapper.get('[data-test="model-options-status"]').text()).toContain('current-model settings remain available')
     await wrapper.setProps({ modelSelectionLocked: true, modelOptions: undefined })
     expect(picker.props('disabled')).toBe(true)
-    expect(wrapper.find('[data-test="model-capacity-status"]').exists()).toBe(false)
+    expect(wrapper.find('[data-test="model-options-status"]').exists()).toBe(false)
     expect(picker.props('modelValue')).toBe('saved')
+    wrapper.unmount()
+  })
+
+  it('keeps a server-offered external model visible when the separate display catalog lags', async () => {
+    providers = [{
+      provider: { id: 'ANTHROPIC', name: 'Anthropic', providerType: 'ANTHROPIC', isCustom: false },
+      models: [{ modelIdentifier: 'saved', name: 'saved', value: 'saved', canonicalName: 'saved',
+        providerId: 'ANTHROPIC', providerName: 'Anthropic', providerType: 'ANTHROPIC', runtime: 'claude_agent_sdk', configSchema: null }],
+    }]
+    const wrapper = mount(RuntimeModelConfigFields, { props: {
+      runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'saved', llmConfig: null,
+      originalModelIdentifier: 'saved', runtimeSelectionLocked: true,
+      modelOptions: { status: 'ready', options: { currentModelIdentifier: 'saved',
+        replacements: [{ llmModelIdentifier: 'new-runtime-model' }], unavailableReason: null } },
+    } })
+    await flushPromises()
+    const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
+    expect(picker.props('options').flatMap((group: any) => group.items.map((item: any) => item.id)))
+      .toContain('new-runtime-model')
+    picker.vm.$emit('update:modelValue', 'new-runtime-model')
+    expect(wrapper.emitted('selection-change')?.at(-1)).toEqual([{ llmModelIdentifier: 'new-runtime-model', llmConfig: null }, true])
+    await wrapper.setProps({ llmModelIdentifier: 'new-runtime-model' })
+    await flushPromises()
+    expect(wrapper.get('[data-test="selected-model-unavailable"]').text()).toContain('Retry')
+    expect(wrapper.emitted('schema-state')?.at(-1)?.[0]).toMatchObject({ status: 'unavailable' })
     wrapper.unmount()
   })
 
@@ -274,8 +298,7 @@ describe('RuntimeModelConfigFields stored historical values', () => {
           runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'default', llmConfig: null,
           originalModelIdentifier: 'default', runtimeSelectionLocked: true,
           modelOptions: { status: 'ready', options: {
-            currentModelIdentifier: 'default', currentContextTokens: 1000000,
-            replacements: [], unavailableReason: null,
+            currentModelIdentifier: 'default', replacements: [], unavailableReason: null,
           } },
         },
       })

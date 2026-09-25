@@ -1,5 +1,5 @@
 import { GraphQLJSON } from "graphql-scalars";
-import { Field, Float, ObjectType } from "type-graphql";
+import { Field, ObjectType } from "type-graphql";
 
 @ObjectType()
 export class RunModelConfigEditabilityObject {
@@ -31,15 +31,11 @@ export class RunModelSelectionObject {
 export class RunModelOptionObject {
   @Field(() => String)
   llmModelIdentifier!: string;
-  @Field(() => Float)
-  contextTokens!: number;
 }
 @ObjectType()
 export class RunModelOptionsObject {
   @Field(() => String)
   currentModelIdentifier!: string;
-  @Field(() => Float, { nullable: true })
-  currentContextTokens!: number | null;
   @Field(() => [RunModelOptionObject])
   replacements!: readonly RunModelOptionObject[];
   @Field(() => String, { nullable: true })

@@ -300,10 +300,9 @@ const operationResponse = async (operationName, variables) => {
     } } }
   }
   const options = (current) => ({ __typename: 'RunModelOptionsObject', currentModelIdentifier: current,
-    currentContextTokens: state.replacementsEnabled ? (current === 'browser-larger-model' ? 272000 : 128000) : null,
     replacements: state.replacementsEnabled && current !== 'browser-larger-model'
-      ? [{ llmModelIdentifier: 'browser-larger-model', contextTokens: 272000 }] : [],
-    unavailableReason: state.replacementsEnabled ? null : 'Fixture has no replacement metadata.' })
+      ? [{ llmModelIdentifier: 'browser-larger-model' }] : [],
+    unavailableReason: state.replacementsEnabled ? null : 'Fixture has no replacement model options.' })
   if (operationName === 'AgentRunModelOptions') return { data: { agentRunModelOptions: options(state.agentModel) } }
   if (operationName === 'TeamRunModelOptions') return { data: { teamRunModelOptions:
     ['/', ...state.teamTree.root_team.members.map(member => member.address)].map(scopeAddress => {

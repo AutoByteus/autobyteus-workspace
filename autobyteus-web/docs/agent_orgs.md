@@ -303,8 +303,8 @@ metadata cannot be loaded, Files shows unavailable feedback rather than the old
 workspace or an unrelated launch draft; reopening Settings retries canonical
 metadata without repeating Save. Existing launch drafts are preserved.
 While the enclosing Org is stopped, explicit **Save** can also change compatible
-same-runtime models (verified
-equal/larger context capacity) and schema-valid parameters across configured
+same-runtime models (all current external-runtime catalog choices, or verified
+equal/larger context capacity for AutoByteus) and schema-valid parameters across configured
 scopes. Parent-linked scopes follow root or Team edits until directly edited;
 pre-existing and directly edited overrides stay independent.
 Active/unknown, archived and application-owned roots stay noneditable; task
