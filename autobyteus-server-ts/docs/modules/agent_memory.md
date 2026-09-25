@@ -14,6 +14,7 @@ Memory files live under the configured memory root:
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
 - Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`; deeper nesting appends each physical ancestor TeamRun id before the AgentRun id
 - Task-Agent runs: `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<taskAgentRunId>/...` using the logical member's physical Team memory scope
+- Agent org members: `memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/...` (composed by `AgentMemoryLayout`, resolved by `AgentOrgExecutionTreeLocationService`)
 - Imported Memory Sync sources: `memory/imports/<sourceNodeId>/agents/...` and
   `memory/imports/<sourceNodeId>/agent_teams/...`, with source metadata in
   `source-node.json` and sync state in `sync-manifest.json`.
@@ -410,7 +411,7 @@ source evidence.
 
 ## Memory Explorer Read Model
 
-The memory explorer is a backend-for-frontend read model for the `/memory` UI. It is memory-derived: configured agents or teams with no persisted memory do not appear.
+The memory explorer is a backend-for-frontend read model for the `/memory` UI. It is memory-derived: configured agents, teams, or orgs with no persisted memory do not appear.
 
 Explorer services scan persisted memory roots at request time, derive memory availability flags, enrich with run-history metadata when available, sort by latest memory update, and paginate server-side.
 
@@ -423,27 +424,54 @@ Explorer services scan persisted memory roots at request time, derive memory ava
 
 Agent explorer summaries include display name, stable ID, run count, latest memory timestamp, and merged memory availability. Agent-run summaries include run ID, optional agent metadata, workspace path, created/updated timestamps, and per-run memory availability.
 
-### Agent Teams
+### Agent Teams And Agent Orgs
 
-`TeamMemoryExplorerService` queries the Team catalog owner for optional display
-metadata, then reads each admitted V2 Team execution tree once per list request
-and builds member memory targets from that same tree snapshot. It includes a
-team run only when at least one member target has inspectable memory. Team
-groups use `teamDefinitionId`; each summary includes the team display name,
-team-run count, distinct member-memory count, latest memory timestamp, and
-merged availability. A catalog query itself never scans root trees or writes
-the history index.
+Team and org explorers share one catalog policy owner,
+`CollaborationRootMemoryCatalog`, which is fed by one family-specific
+`CollaborationRootMemorySource` per persistence family:
 
-Team-run summaries include V2 TeamRun execution facts, merged availability
-across member targets, and `memberTargets` containing only members with memory.
-The backend passes the validated tree through
-`TeamMemoryMemberTargetBuilder.buildFromTree` and
-`AgentMemoryLocationService.listTeamMemberLocationsFromTree` to the pure
-`TeamRunExecutionTreeLocationService.listAgentsInTree` projection. This avoids
-an unscoped all-root lookup inside the per-root loop. Logical selection uses
-rooted `memberAddress`, while physical lookup uses
-`rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened
-Team/member assumption.
+- `TeamRootMemorySource` — lists stored root team runs and reads each admitted
+  V2 Team execution tree through `TeamRunExecutionTreeLocationService`; display
+  metadata comes from the Team catalog owner.
+- `AgentOrgRootMemorySource` — lists stored root org runs and reads each org
+  execution tree through `AgentOrgExecutionTreeLocationService`; display
+  metadata comes from `AgentOrgRunHistoryCatalogService.listCatalogRows()`,
+  the org history owner's pure, admission-filtered read. The explorer uses a
+  stored-only history manager and never manages live runs.
+
+`TeamMemoryExplorerService` and `AgentOrgMemoryExplorerService` are thin
+family facades over that catalog. The catalog owns: iteration with **exactly
+one execution-tree read per root per list request** (linear in stored root
+runs; this replaced an O(N²) per-root all-root rescan), the skip-invalid-root
+rule (a corrupt tree is skipped with a warning while other roots still list),
+member memory filtering, grouping by definition id, name resolution, merged
+availability, sort order, search matching, and paging. A catalog query never
+writes the history index.
+
+A root run is included only when at least one member target has inspectable
+memory. Definition summaries (`teamDefinitionId` / `orgDefinitionId`) include
+the display name, run count, distinct member-memory count, latest memory
+timestamp, and merged availability.
+
+Member targets are built by `buildCollaborationMemberMemoryTargets`
+(`collaboration-member-memory-targets.ts`) from the same tree snapshot. Every
+agent execution located in the tree that has memory on disk becomes a target:
+configured agents (`CONFIGURED`), delegated task agents (`TASK_AGENT`, with
+`startedAt`), and members of delegated task teams at any nesting depth
+(`TASK_TEAM_MEMBER`). Each target carries its own `agentRunId` and a
+`groupPath` of enclosing `CONFIGURED_TEAM` / `TASK_TEAM` groups so clients can
+render the run's execution structure. Groups have no memory of their own.
+Memory folders not referenced by the execution tree are not listed. Team
+display names use the member address basename; org display names use the
+address path inside the org. Logical selection uses rooted `memberAddress` and
+`agentRunId`, while physical lookup uses the root run id plus
+`ancestorTeamRunIds` plus `agentRunId` rather than a flattened Team/member
+assumption.
+
+For inspector resolution, `AgentMemoryLocationService` reads only the given
+root's tree when the team run id is an active or admitted root team run, and
+matches against every root's agents only for other (nested) team run ids. Org
+member resolution reads the named org root's tree directly.
 
 When `AgentMemoryLocationService` is constructed with an explicit `memoryDir`,
 its topology/readback collaborators must use the same memory root. Do not mix a
@@ -455,17 +483,15 @@ different memory root; raw-trace readback depends on that root consistency.
 `MemoryExplorerSourceService` owns the Memory UI source boundary. Missing or
 null source input resolves to local memory. Imported source input validates the
 `sourceNodeId`, verifies that `memory/imports/<sourceNodeId>` exists, and roots
-all agent/team explorer and view readers under that import root.
+all agent/team/org explorer and view readers under that import root.
 
 Imported source reads are marked read-only. The backend must not silently fall
 back to local memory for an unknown imported source id; returning an error keeps
 local and imported corpora separated.
 
-The current imported Team list and Team-run-list queries follow this bounded,
-read-only path. The separate Org root-memory source adapter is not present in
-this branch; when it merges, it must use the Org catalog owner's read-only
-`listCatalogRows()` query and be validated independently. Do not interpret the
-current Team checks as Org imported-source coverage.
+Imported Team and Org list queries follow this bounded, read-only path. Memory
+Sync currently exports only `agents` and `agent_teams`, so an imported source
+has no `agent_orgs` corpus and the Org explorer returns an empty page for it.
 
 ### Explorer GraphQL Queries
 
@@ -476,12 +502,20 @@ The explorer GraphQL surface is:
 - `listAgentRunsWithMemory(selector, source, search, page, pageSize)`
 - `listAgentTeamsWithMemory(source, search, page, pageSize)`
 - `listAgentTeamRunsWithMemory(teamDefinitionId, source, search, page, pageSize)`
+- `listAgentOrgsWithMemory(source, search, page, pageSize)`
+- `listAgentOrgRunsWithMemory(orgDefinitionId, source, search, page, pageSize)`
 
-All list queries return a `MemoryExplorerPage` shape with `entries`, `total`, `page`, `pageSize`, and `totalPages`. Search is applied within the active surface: agent/team cards on home, selected-agent runs on agent detail, or selected-team runs/member targets on team detail.
+All list queries return a `MemoryExplorerPage` shape with `entries`, `total`, `page`, `pageSize`, and `totalPages`. Search is applied within the active surface: agent/team/org cards on home, selected-agent runs on agent detail, or selected-team/org runs and member targets (including task agents and task-team members) on team/org detail.
+
+Team-run and org-run entries share the member type
+`CollaborationMemberMemoryTargetSummary` (`memberAddress`, `displayName`,
+`agentRunId`, `agentDefinitionId`, `executionKind`, `startedAt`, `groupPath:
+[CollaborationMemoryGroup]`, `lastUpdatedAt`, `memory`). The structure fields
+and org queries are additive; existing query names and arguments are unchanged.
 
 The `source` argument is a `MemoryExplorerSourceInput`:
 
-- `{ type: LOCAL }` reads `memory/agents` and `memory/agent_teams`.
+- `{ type: LOCAL }` reads `memory/agents`, `memory/agent_teams`, and `memory/agent_orgs`.
 - `{ type: IMPORTED, sourceNodeId }` reads the selected
   `memory/imports/<sourceNodeId>` corpus.
 
@@ -517,9 +551,12 @@ Context also retains the canonical name on its provider-protocol result message.
 GraphQL memory-view queries:
 
 - `getAgentRunMemoryView(runId: String!, source: MemoryExplorerSourceInput)`
-- `getTeamMemberRunMemoryView(teamRunId: String!, memberRunId: String!, source: MemoryExplorerSourceInput)`
+- `getTeamMemberRunMemoryView(teamRunId: String!, agentRunId: String!, source: MemoryExplorerSourceInput)`
+- `getAgentOrgMemberRunMemoryView(orgRunId: String!, agentRunId: String!, source: MemoryExplorerSourceInput)`
 
-Both view queries accept include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. They also accept an optional `rawTraceFileName` selector. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab, changes the trace limit, or selects a different raw-trace file.
+Unknown members resolve to an empty view for the requested `agentRunId`.
+
+All view queries accept include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. They also accept an optional `rawTraceFileName` selector. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab, changes the trace limit, or selects a different raw-trace file.
 
 `MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete rotated raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. `RawTraceFileSummary` exposes safe file-selection metadata: `fileName`, `kind` (`active` or `segment`), `recordCount`, optional `segmentIndex`, and optional first/last timestamps. The selector identity is the backend-listed file name only, for example `raw_traces_active.jsonl` or `raw_traces_000003.jsonl`; callers must not send or expose absolute file paths.
 
@@ -602,11 +639,12 @@ above.
 
 ## Key Source Files
 
-- Explorer services: `src/agent-memory/services/agent-memory-explorer-service.ts`, `src/agent-memory/services/team-memory-explorer-service.ts`
+- Explorer services: `src/agent-memory/services/agent-memory-explorer-service.ts`, `src/agent-memory/services/team-memory-explorer-service.ts`, `src/agent-memory/services/agent-org-memory-explorer-service.ts`
+- Team/org catalog owner and family sources: `src/agent-memory/services/collaboration-root-memory-catalog.ts`, `src/agent-memory/services/team-root-memory-source.ts`, `src/agent-memory/services/agent-org-root-memory-source.ts`
 - Source resolver: `src/agent-memory/services/memory-explorer-source-service.ts`
 - Raw-trace file selector service: `src/agent-memory/services/raw-trace-file-source-service.ts`
 - Raw-trace record normalization: `src/agent-memory/services/raw-trace-record-normalizer.ts`
-- Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/team-memory-member-target-builder.ts`, `src/agent-memory/services/memory-explorer-page.ts`
+- Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/collaboration-member-memory-targets.ts`, `src/agent-memory/services/memory-explorer-page.ts`
 - Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts`
 - Conversation activity guard: `src/agent-memory/services/agent-conversation-activity-inspector.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`

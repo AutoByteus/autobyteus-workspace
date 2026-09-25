@@ -2,47 +2,89 @@
 
 ## Overview
 
-The Memory page (`/memory`) is a page-based memory browser for stored agent and agent-team memory. It is intentionally memory-derived: it lists only independent agents or agent teams that have persisted memory-bearing runs. Configured agents or teams that have never produced memory do not appear.
+The Memory page (`/memory`) is a page-based memory browser for stored agent, agent-team, and agent-org memory. It is intentionally memory-derived: it lists only independent agents, agent teams, or agent orgs that have persisted memory-bearing runs. Configured agents, teams, or orgs that have never produced memory do not appear.
 
 The current user flow is:
 
 1. **Memory source** — default to `Local Memory`; when the current server is a
    Memory Hub, optionally select an imported source.
-2. **Memory Home** — choose `Agents` or `Agent Teams`.
+2. **Memory Home** — choose `Agents`, `Agent Teams`, or `Agent Orgs`.
 3. **Agent detail** — after selecting an agent card, browse that agent's memory-bearing runs.
-4. **Agent Team detail** — after selecting a team card, browse that team's memory-bearing team runs and member memory targets.
-5. **Memory Inspector** — inspect one agent run or one team member run through `Working Context`, `Episodic`, `Semantic`, and `Raw Traces` tabs.
+4. **Agent Team / Agent Org detail** — after selecting a team or org card, browse that definition's memory-bearing root runs and each run's member memory tree.
+5. **Memory Inspector** — inspect one agent run, one team member run, or one org member run through `Working Context`, `Episodic`, `Semantic`, and `Raw Traces` tabs.
 
-Route query state preserves deep links and refreshes for home, source selection,
-agent detail, team detail, agent-run inspector, and team-member inspector views.
+Route query state (`view`, `tab`, `source`, and the selected definition/run
+identifiers) preserves deep links and refreshes for home, source selection,
+agent detail, team detail, org detail, agent-run inspector, team-member
+inspector, and org-member inspector views. Each card, run, member, or Back click
+navigates immediately and issues exactly one data request for the target view;
+detail views show `Loading runs…` until their own data arrives and never show a
+previous selection's runs.
 
 ## Memory Home
 
-Memory Home starts directly with the functional browser panel rather than a repeated page title. It has two tabs:
+Memory Home starts directly with the functional browser panel rather than a repeated page title. It has three tabs:
 
 - `Agents`
 - `Agent Teams`
+- `Agent Orgs`
 
 When imported Memory Sync sources exist, a source selector is shown above the
 tabs. `Local Memory` is the default for initial page load and for missing or
 invalid source route state. Imported options are labeled as read-only imported
 corpora and use `source=imported:<sourceNodeId>` in the route query.
 
-Cards show display names, stable IDs, run counts, compact latest-update timestamps, member counts for teams, and memory availability badges. Search placeholders are scoped to the selected tab (`Search agents...` or `Search agent teams...`), and search/pagination are backed by GraphQL rather than by client-side grouping.
+The sources list is refreshed in the background every time the Memory home view
+is shown (including first page entry); the refresh never delays the home list,
+so sources imported by another node appear when the user returns home without
+reloading the app. A route that names an imported source not yet in the loaded
+list triggers one awaited refresh; if the source is still unknown the view falls
+back to `Local Memory` and drops it from the URL. Detail and inspector
+navigation never request the sources list. A failed refresh keeps the previously
+loaded list and shows the source error text.
+
+Cards show display names, stable IDs, run counts, compact latest-update timestamps, member counts for teams and orgs, and memory availability badges. Search placeholders are scoped to the selected tab, and search/pagination are backed by GraphQL rather than by client-side grouping.
 
 Agent cards are grouped primarily by `agentDefinitionId` when metadata exists. Standalone memory directories without run-history or metadata remain visible under an explicit `Unattributed runs` agent group so legacy stored memory is not hidden.
 
 Agent-team cards are grouped by `teamDefinitionId` from team-run metadata. A team appears only when at least one member memory target exists.
 
+Agent-org cards are grouped by `orgDefinitionId` in the same way and appear only
+when at least one org member has memory. Memory Sync does not export
+`agent_orgs`, so imported sources always show the `No agent org memories yet.`
+empty state on this tab.
+
 ## Detail Pages
 
 Agent detail pages use the selected agent name as the run-list card heading without a separate subject summary card. The list is sorted by latest memory update and exposes run labels, run IDs, workspace paths when available, compact updated timestamps, and memory availability badges. Selecting a run opens the Memory Inspector for that agent run.
 
-Team detail pages use the selected team name as the team-run-list card heading without a separate subject summary card. Team runs are sorted by latest member-memory update, and each team run exposes only member targets that have inspectable memory under the `Members` section. Backend summaries are resolved from the current V2 Team execution tree and the server memory-location service. Logical `memberAddress` identifies the Agent placement; physical memory resolution uses `rootTeamRunId + ancestorTeamRunIds + agentRunId` rather than a flattened or address-derived directory.
+Team and org detail pages share one component (`CollaborationMemoryDetail`) and use the selected team or org name as the run-list card heading without a separate subject summary card. Root runs are sorted by latest member-memory update. Backend summaries are resolved from the stored execution tree of each root run and the server memory-location service. Logical `memberAddress` identifies the Agent placement; physical memory resolution uses the root run id plus ancestor team run ids plus `agentRunId` rather than a flattened or address-derived directory.
 
-Search on detail pages uses `Search runs...` and filters only within the selected agent's runs or selected team's team runs/member targets. Subject-level run-count and ID metadata are intentionally not repeated above the list; per-run and per-team-run metadata remains visible inside the list cards.
+Each run's `Members` section is a tree that mirrors the run-history sidebar
+structure. It shows every agent run of that root run that has memory on disk:
 
-The inspector header renders `Memory Inspector` once. Inspector back links preserve the previous destination while using concise subject labels, for example `Back to Codex` or `Back to <team name>`.
+- configured agents;
+- configured teams as group rows containing their members;
+- delegated task agents (marked as tasks, with their start time);
+- delegated task teams as group rows (marked as tasks, with their start time)
+  containing their members, including nested teams inside task teams at any
+  depth.
+
+Group rows are structural only and have no memory of their own; a group row
+appears only when something inside it has memory. Every agent row shows the
+member's display name (for orgs, its address path inside the org, for example
+`software_engineering_team/solution_designer`) and its own run ID, and opens the
+inspector for exactly that run, so the row's badge, run ID, and inspected memory
+always refer to the same run. Memory folders on disk that the run's execution
+tree does not reference are not shown. A team run without delegated tasks
+renders as a flat member list.
+
+The tree is built client-side (`components/memory/collaborationMemberTree.ts`)
+from each member target's `groupPath`, `executionKind`, and `startedAt`.
+
+Search on detail pages uses `Search runs...` and filters only within the selected agent's runs or the selected team's/org's runs and member targets (including task agents and task-team members). Subject-level run-count and ID metadata are intentionally not repeated above the list; per-run and per-team-run metadata remains visible inside the list cards.
+
+The inspector header renders `Memory Inspector` once. Inspector back links preserve the previous destination while using concise subject labels, for example `Back to Codex`, `Back to <team name>`, or `Back to <org name>`. The org-member breadcrumb reads `Agent Orgs / <org> / <org run> / <member>`.
 
 Imported source detail and inspector views keep the selected source in route and
 store state. Imported memory is browse-only; the UI must not add restore,
@@ -52,11 +94,11 @@ continue, archive, delete, or other local-runtime actions for imported sources.
 
 Frontend memory state is split by role:
 
-- `stores/memoryExplorerStore.ts` owns Memory Home and detail-page lists, searches, pagination, selected source, selected agent/team summaries, and request-staleness guards.
+- `stores/memoryExplorerStore.ts` owns Memory Home and detail-page lists (agents, teams, orgs), searches, pagination, the sources list and selected source, selected agent/team/org summaries, and request-staleness guards. `pages/memory.vue` owns route-driven fetching: it decides which single request a navigation issues and when the sources list is refreshed.
 - `stores/memoryInspectorStore.ts` owns the explicit inspect target, selected inspector tab, raw-trace loading state, selected raw-trace file name, raw-trace limit, and request-staleness guards.
 - `stores/memorySyncStore.ts` owns the Nodes -> Memory Sync setup/status UI for the currently bound backend node.
 
-The old flat `MemoryIndexPanel` and per-scope index/view stores were replaced. The page shell now renders `MemoryHome`, `AgentMemoryDetail`, `AgentTeamMemoryDetail`, or `MemoryInspector` according to `/memory` query parameters.
+The old flat `MemoryIndexPanel` and per-scope index/view stores were replaced. The page shell now renders `MemoryHome`, `AgentMemoryDetail`, `CollaborationMemoryDetail` (teams and orgs; it replaced `AgentTeamMemoryDetail`), or `MemoryInspector` according to `/memory` query parameters.
 
 ## GraphQL Explorer Contract
 
@@ -67,6 +109,18 @@ The Memory page uses backend-for-frontend explorer queries for lists:
 - `listAgentRunsWithMemory(selector, source, search, page, pageSize)` returns memory-bearing runs for a selected attributed agent or the `UNATTRIBUTED` group.
 - `listAgentTeamsWithMemory(source, search, page, pageSize)` returns memory-bearing agent-team groups.
 - `listAgentTeamRunsWithMemory(teamDefinitionId, source, search, page, pageSize)` returns memory-bearing team runs and member memory targets for one team definition.
+- `listAgentOrgsWithMemory(source, search, page, pageSize)` returns memory-bearing agent-org groups.
+- `listAgentOrgRunsWithMemory(orgDefinitionId, source, search, page, pageSize)` returns memory-bearing org runs and member memory targets for one org definition.
+
+Team-run and org-run entries expose `memberTargets` of the shared type
+`CollaborationMemberMemoryTargetSummary` (renamed from the former team-only
+member target type). Each target carries `memberAddress`, `displayName`,
+`agentRunId` (the target's own run), `agentDefinitionId`, `executionKind`
+(`CONFIGURED`, `TASK_AGENT`, `TASK_TEAM_MEMBER`), `startedAt` (task agents),
+`groupPath` (ordered `CollaborationMemoryGroup` entries with `teamRunId`,
+`address`, `displayName`, `kind` `CONFIGURED_TEAM`/`TASK_TEAM`, and
+`startedAt`), `lastUpdatedAt`, and `memory`. These fields are additive; existing
+query names and arguments are unchanged.
 
 Every explorer page returns `entries`, `total`, `page`, `pageSize`, and `totalPages`. Entry summaries include `MemoryAvailabilitySummary` flags for working context, episodic memory, semantic memory, active raw traces, and raw-trace archives.
 
@@ -86,8 +140,11 @@ Inspector data comes from memory-view queries:
 
 - `getAgentRunMemoryView(runId: String!, source: MemoryExplorerSourceInput)`
 - `getTeamMemberRunMemoryView(teamRunId: String!, agentRunId: String!, source: MemoryExplorerSourceInput)`
+- `getAgentOrgMemberRunMemoryView(orgRunId: String!, agentRunId: String!, source: MemoryExplorerSourceInput)`
 
-Both support include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. The raw-trace file selector uses the optional `rawTraceFileName` argument and returns `rawTraceFiles` plus `selectedRawTraceFileName` in the memory view.
+An unknown team or org member resolves to an empty view for that `agentRunId`.
+
+All three support include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. The raw-trace file selector uses the optional `rawTraceFileName` argument and returns `rawTraceFiles` plus `selectedRawTraceFileName` in the memory view.
 
 The frontend initially loads working/episodic/semantic data without raw traces. Opening the `Raw Traces` tab flips `includeRawTraces` and `includeRawTraceFiles` on and refetches the selected target. The backend defaults the selected file to active `raw_traces_active.jsonl` when it exists, otherwise to the first available complete segment in the inspector ordering. The selector lists active `raw_traces_active.jsonl` plus complete rotated `raw_traces_<zero-padded-index>.jsonl` segment files with record counts; pending/incomplete manifest entries are not shown. Selecting a file sends only that backend-listed file name, not an absolute path, and the response contains records from that file only. Changing the raw-trace limit refetches the currently selected file and applies the limit to that file.
 
@@ -110,6 +167,7 @@ Storage is server-owned and identity-opaque:
 - Direct team members: `memory/agent_teams/<rootTeamRunId>/<memberRunId>/...`
 - Nested subteam members: `memory/agent_teams/<rootTeamRunId>/<childTeamRunId>/<memberRunId>/...`, with deeper child team ids appended before the member id
 - Task-Agent runs: `memory/agent_teams/<rootTeamRunId>/<...ancestorTeamRunIds>/<taskAgentRunId>/...`
+- Agent org members: `memory/agent_orgs/<orgRunId>/<...teamRunIds>/<agentRunId>/...` (team runs hosted inside the org, including task teams, contribute their run ids before the agent run id)
 - Imported source memory: `memory/imports/<sourceNodeId>/agents/...` and
   `memory/imports/<sourceNodeId>/agent_teams/...`, plus hub-managed
   `source-node.json` and `sync-manifest.json`.
@@ -221,7 +279,7 @@ Explorer and inspector stores increment request IDs for each fetch. Late respons
 
 Coverage includes:
 
-- Backend unit and GraphQL e2e checks for memory-derived agent/team inclusion, no-memory exclusion, `Unattributed runs`, selected agent/team filtering, memory-view raw-trace lazy loading, selected raw-trace file listing/reads, invalid selector fallback, imported read-only source behavior, and merged-corpus preservation.
+- Backend unit and GraphQL e2e checks for memory-derived agent/team/org inclusion, one execution-tree read per root per list request, task-agent and task-team member targets with their group paths, each member target's own run id, org member views (including task-team members), no-memory exclusion, `Unattributed runs`, selected agent/team filtering, memory-view raw-trace lazy loading, selected raw-trace file listing/reads, invalid selector fallback, imported read-only source behavior, and merged-corpus preservation.
 - Backend Memory Sync API/E2E checks for hub enablement, URL candidates, one-time token handling, source config redaction, explicit draft and saved connection-test modes, REST batch ingestion, imported-source Memory Explorer reads, duplicate retry, source-token binding, latest-error source status, and unsafe path rejection.
 - Backend multi-process Memory Sync E2E starts two real server processes with isolated app-data directories, configures hub/source through HTTP GraphQL, validates saved-mode connection testing, syncs over HTTP, and asserts hub import files without requiring browser, Electron, Docker, or Kubernetes.
-- Frontend store/component/page tests for Memory Home, source selection, agent detail, team detail, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, raw-trace file selector state/rendering, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.
+- Frontend store/component/page tests for Memory Home (three tabs), source selection and home-only sources refresh, one request per navigation, agent detail, team and org detail with the member tree, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, raw-trace file selector state/rendering, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.
