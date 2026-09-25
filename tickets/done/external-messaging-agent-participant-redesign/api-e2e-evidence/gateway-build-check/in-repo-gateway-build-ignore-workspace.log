@@ -1,0 +1,4 @@
+
+> autobyteus-message-gateway@1.4.78 build /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/autobyteus-message-gateway
+> tsc -p tsconfig.build.json
+

@@ -1,0 +1,245 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.allinone.asis-nosyntax
+#1 transferring dockerfile: 3.70kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:22-bookworm
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/autobyteus/chrome-vnc:zh
+#3 DONE 0.0s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 282B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 DONE 0.0s
+
+#6 [runtime  1/19] FROM docker.io/autobyteus/chrome-vnc:zh@sha256:24ca92cb4a274be088901f679ae9bb31317d2b73c3ab954d2fc8f631e6713071
+#6 resolve docker.io/autobyteus/chrome-vnc:zh@sha256:24ca92cb4a274be088901f679ae9bb31317d2b73c3ab954d2fc8f631e6713071 0.0s done
+#6 DONE 0.0s
+
+#7 [builder  1/21] FROM docker.io/library/node:22-bookworm@sha256:1031993481795705055273f2eef0c24597abdcb277d6e058c82f78cbbdef92a6
+#7 resolve docker.io/library/node:22-bookworm@sha256:1031993481795705055273f2eef0c24597abdcb277d6e058c82f78cbbdef92a6
+#7 resolve docker.io/library/node:22-bookworm@sha256:1031993481795705055273f2eef0c24597abdcb277d6e058c82f78cbbdef92a6 0.0s done
+#7 DONE 0.0s
+
+#6 [runtime  1/19] FROM docker.io/autobyteus/chrome-vnc:zh@sha256:24ca92cb4a274be088901f679ae9bb31317d2b73c3ab954d2fc8f631e6713071
+#6 DONE 0.0s
+
+#8 [runtime  2/19] WORKDIR /app
+#8 CACHED
+
+#9 [runtime  3/19] RUN apt-get update   && apt-get install -y --no-install-recommends curl git ripgrep   && rm -rf /var/lib/apt/lists/*
+#9 CACHED
+
+#10 [runtime  4/19] RUN corepack enable && corepack prepare pnpm@10.30.2 --activate
+#10 CACHED
+
+#5 [internal] load build context
+#5 transferring context: 43.55MB 0.8s done
+#5 DONE 0.8s
+
+#11 [builder  2/21] WORKDIR /app
+#11 CACHED
+
+#12 [builder  3/21] RUN corepack enable
+#12 CACHED
+
+#13 [builder  4/21] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#13 DONE 0.2s
+
+#14 [builder  5/21] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#14 DONE 0.0s
+
+#15 [builder  6/21] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#15 DONE 0.0s
+
+#16 [builder  7/21] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#16 DONE 0.0s
+
+#17 [builder  8/21] COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/
+#17 DONE 0.0s
+
+#18 [builder  9/21] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#18 DONE 0.1s
+
+#19 [builder 10/21] COPY autobyteus-web/package.json ./autobyteus-web/
+#19 DONE 0.0s
+
+#20 [builder 11/21] COPY autobyteus-ts ./autobyteus-ts
+#20 DONE 0.1s
+
+#21 [builder 12/21] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#21 DONE 0.0s
+
+#22 [builder 13/21] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#22 DONE 0.0s
+
+#23 [builder 14/21] COPY autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts
+#23 DONE 0.0s
+
+#24 [builder 15/21] COPY autobyteus-server-ts ./autobyteus-server-ts
+#24 DONE 0.3s
+
+#25 [builder 16/21] COPY autobyteus-web ./autobyteus-web
+#25 DONE 0.2s
+
+#26 [builder 17/21] RUN pnpm install --no-frozen-lockfile   --filter autobyteus-ts...   --filter @autobyteus/application-sdk-contracts...   --filter @autobyteus/application-backend-sdk...   --filter @autobyteus/team-stream-contracts...   --filter autobyteus-server-ts...   --filter autobyteus...
+#26 0.426 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+#26 2.240 Scope: 6 of 7 workspace projects
+#26 2.338 Lockfile is up to date, resolution step is skipped
+#26 2.428 Progress: resolved 1, reused 0, downloaded 0, added 0
+#26 2.561 .                                        |    +1679 ++++++++++++++++++++++++++++
+#26 2.969 
+#26 2.969    ╭──────────────────────────────────────────────╮
+#26 2.969    │                                              │
+#26 2.969    │     Update available! 10.28.2 → 12.6.0.      │
+#26 2.969    │     Changelog: https://pnpm.io/v/12.6.0      │
+#26 2.969    │   To update, run: corepack use pnpm@12.6.0   │
+#26 2.969    │                                              │
+#26 2.969    ╰──────────────────────────────────────────────╯
+#26 2.969 
+#26 3.431 Progress: resolved 1679, reused 0, downloaded 116, added 113
+#26 4.433 Progress: resolved 1679, reused 0, downloaded 260, added 260
+#26 5.433 Progress: resolved 1679, reused 0, downloaded 388, added 388
+#26 6.434 Progress: resolved 1679, reused 0, downloaded 437, added 437
+#26 7.434 Progress: resolved 1679, reused 0, downloaded 504, added 504
+#26 8.434 Progress: resolved 1679, reused 0, downloaded 648, added 648
+#26 9.434 Progress: resolved 1679, reused 0, downloaded 758, added 758
+#26 10.43 Progress: resolved 1679, reused 0, downloaded 890, added 889
+#26 11.43 Progress: resolved 1679, reused 0, downloaded 1001, added 1001
+#26 12.43 Progress: resolved 1679, reused 0, downloaded 1095, added 1095
+#26 13.44 Progress: resolved 1679, reused 0, downloaded 1209, added 1209
+#26 14.44 Progress: resolved 1679, reused 0, downloaded 1318, added 1318
+#26 15.44 Progress: resolved 1679, reused 0, downloaded 1424, added 1423
+#26 16.44 Progress: resolved 1679, reused 0, downloaded 1502, added 1502
+#26 17.44 Progress: resolved 1679, reused 0, downloaded 1592, added 1592
+#26 18.44 Progress: resolved 1679, reused 0, downloaded 1657, added 1657
+#26 19.44 Progress: resolved 1679, reused 0, downloaded 1666, added 1668
+#26 20.44 Progress: resolved 1679, reused 0, downloaded 1669, added 1671
+#26 21.44 Progress: resolved 1679, reused 0, downloaded 1671, added 1673
+#26 22.44 Progress: resolved 1679, reused 0, downloaded 1672, added 1674
+#26 23.53 Progress: resolved 1679, reused 0, downloaded 1673, added 1674
+#26 24.53 Progress: resolved 1679, reused 0, downloaded 1673, added 1675
+#26 26.20 Progress: resolved 1679, reused 0, downloaded 1674, added 1675
+#26 27.20 Progress: resolved 1679, reused 0, downloaded 1674, added 1676
+#26 29.71 Progress: resolved 1679, reused 0, downloaded 1675, added 1676
+#26 30.71 Progress: resolved 1679, reused 0, downloaded 1675, added 1677
+#26 33.49 Progress: resolved 1679, reused 0, downloaded 1676, added 1677
+#26 34.49 Progress: resolved 1679, reused 0, downloaded 1676, added 1678
+#26 39.05 Progress: resolved 1679, reused 0, downloaded 1677, added 1678
+#26 39.06 Progress: resolved 1679, reused 0, downloaded 1677, added 1679, done
+#26 39.64 .../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+#26 39.64 .../node-pty@1.1.0/node_modules/node-pty install$ node scripts/prebuild.js || node-gyp rebuild
+#26 39.64 .../node_modules/@prisma/engines postinstall$ node scripts/postinstall.js
+#26 39.64 .../node_modules/protobufjs postinstall$ node scripts/postinstall
+#26 39.75 .../node_modules/@parcel/watcher install: Done
+#26 39.79 .../node-pty@1.1.0/node_modules/node-pty install: [32m> Checking prebuilds...[0m
+#26 39.79 .../node-pty@1.1.0/node_modules/node-pty install: [33m> Rebuilding because directory /app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/linux-arm64 does not exist[0m
+#26 39.79 .../node-pty@1.1.0/node_modules/node-pty install: gyp info it worked if it ends with ok
+#26 39.79 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node-gyp@11.5.0
+#26 39.79 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node@22.22.3 | linux | arm64
+#26 39.79 .../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+#26 39.83 .../node_modules/protobufjs postinstall: Done
+#26 39.83 .../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+#26 39.87 .../node-pty@1.1.0/node_modules/node-pty install: gyp info find Python using Python version 3.11.2 found at "/usr/bin/python3"
+#26 39.87 .../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+#26 39.90 .../sharp@0.33.5/node_modules/sharp install$ node install/check
+#26 39.95 .../node_modules/vue-demi postinstall: Done
+#26 39.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v22.22.3/node-v22.22.3-headers.tar.gz
+#26 39.99 .../sharp@0.33.5/node_modules/sharp install: Done
+#26 40.06 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v22.22.3/node-v22.22.3-headers.tar.gz
+#26 42.70 .../node_modules/@prisma/engines postinstall: Done
+#26 44.27 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v22.22.3/SHASUMS256.txt
+#26 44.30 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v22.22.3/SHASUMS256.txt
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn /usr/bin/python3
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/gyp/gyp_main.py',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'binding.gyp',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-f',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'make',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/config.gypi',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/addon.gypi',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node-gyp/22.22.3/include/node/common.gypi',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dlibrary=shared_library',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dvisibility=default',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_root_dir=/root/.cache/node-gyp/22.22.3',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_gyp_dir=/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_lib_file=/root/.cache/node-gyp/22.22.3/<(target_arch)/node.lib',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dmodule_root_dir=/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_engine=v8',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--depth=.',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--no-parallel',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--generator-output',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'build',
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Goutput_dir=.'
+#26 44.93 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args ]
+#26 45.09 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn make
+#26 45.09 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [ 'BUILDTYPE=Release', '-C', 'build' ]
+#26 45.09 .../node-pty@1.1.0/node_modules/node-pty install: make: Entering directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#26 45.09 .../node-pty@1.1.0/node_modules/node-pty install:   TOUCH Release/obj.target/../../../node-addon-api@7.1.1/node_modules/node-addon-api/node_addon_api_except.stamp
+#26 45.10 .../node-pty@1.1.0/node_modules/node-pty install:   CXX(target) Release/obj.target/pty/src/unix/pty.o
+#26 46.20 .../node-pty@1.1.0/node_modules/node-pty install:   SOLINK_MODULE(target) Release/obj.target/pty.node
+#26 46.26 .../node-pty@1.1.0/node_modules/node-pty install:   COPY Release/pty.node
+#26 46.27 .../node-pty@1.1.0/node_modules/node-pty install: make: Leaving directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#26 46.27 .../node-pty@1.1.0/node_modules/node-pty install: gyp info ok 
+#26 46.28 .../node-pty@1.1.0/node_modules/node-pty install: Done
+#26 46.28 .../node-pty@1.1.0/node_modules/node-pty postinstall$ node scripts/post-install.js
+#26 46.33 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Cleaning release folder...[0m
+#26 46.33 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Moving conpty.dll...[0m
+#26 46.33 .../node-pty@1.1.0/node_modules/node-pty postinstall:   SKIPPED (not Windows)
+#26 46.33 .../node-pty@1.1.0/node_modules/node-pty postinstall: Done
+#26 46.53 .../prisma@5.22.0/node_modules/prisma preinstall$ node scripts/preinstall-entry.js
+#26 46.59 .../prisma@5.22.0/node_modules/prisma preinstall: Done
+#26 46.68 .../node_modules/@prisma/client postinstall$ node scripts/postinstall.js
+#26 47.01 .../node_modules/@prisma/client postinstall: prisma:warn We could not find your Prisma schema in the default locations (see: https://pris.ly/d/prisma-schema-location).
+#26 47.01 .../node_modules/@prisma/client postinstall: If you have a Prisma schema file in a custom path, you will need to run
+#26 47.01 .../node_modules/@prisma/client postinstall: `prisma generate --schema=./path/to/your/schema.prisma` to generate Prisma Client.
+#26 47.01 .../node_modules/@prisma/client postinstall: If you do not have a Prisma schema file yet, you can ignore this message.
+#26 47.03 .../node_modules/@prisma/client postinstall: Done
+#26 47.25 autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+#26 47.30 autobyteus-ts postinstall: [node-pty-fix] skipped: no spawn-helper found
+#26 47.31 autobyteus-ts postinstall: Done
+#26 47.37 Done in 45.4s using pnpm v10.28.2
+#26 DONE 47.7s
+
+#27 [builder 18/21] RUN pnpm -C autobyteus-team-stream-contracts build
+#27 0.980 
+#27 0.980 > @autobyteus/team-stream-contracts@0.1.0 build /app/autobyteus-team-stream-contracts
+#27 0.980 > tsc -p tsconfig.build.json
+#27 0.980 
+#27 2.657 src/team-agent-message-dtos.ts(6,8): error TS2307: Cannot find module '@autobyteus/agent-presentation-contracts' or its corresponding type declarations.
+#27 2.657 src/team-stream-server-message.ts(88,3): error TS2322: Type '{ type: "SYSTEM_INSTRUCTIONS_SUPPLIED"; payload: Record<string, unknown>; } | { type: "TURN_STARTED"; payload: Record<string, unknown>; } | { type: "TURN_COMPLETED"; payload: Record<string, unknown>; } | ... 27 more ... | { ...; }' is not assignable to type 'TeamStreamServerMessage'.
+#27 2.657   Type '{ type: "ERROR"; payload?: any; }' is not assignable to type 'TeamStreamServerMessage'.
+#27 2.657     Type '{ type: "ERROR"; payload?: any; }' is not assignable to type 'Readonly<{ type: "ERROR"; payload: any; }>'.
+#27 2.657       Property 'payload' is optional in type '{ type: "ERROR"; payload?: any; }' but required in type 'Readonly<{ type: "ERROR"; payload: any; }>'.
+#27 2.691  ELIFECYCLE  Command failed with exit code 2.
+#27 ERROR: process "/bin/sh -c pnpm -C autobyteus-team-stream-contracts build" did not complete successfully: exit code: 2
+------
+ > [builder 18/21] RUN pnpm -C autobyteus-team-stream-contracts build:
+0.980 
+0.980 > @autobyteus/team-stream-contracts@0.1.0 build /app/autobyteus-team-stream-contracts
+0.980 > tsc -p tsconfig.build.json
+0.980 
+2.657 src/team-agent-message-dtos.ts(6,8): error TS2307: Cannot find module '@autobyteus/agent-presentation-contracts' or its corresponding type declarations.
+2.657 src/team-stream-server-message.ts(88,3): error TS2322: Type '{ type: "SYSTEM_INSTRUCTIONS_SUPPLIED"; payload: Record<string, unknown>; } | { type: "TURN_STARTED"; payload: Record<string, unknown>; } | { type: "TURN_COMPLETED"; payload: Record<string, unknown>; } | ... 27 more ... | { ...; }' is not assignable to type 'TeamStreamServerMessage'.
+2.657   Type '{ type: "ERROR"; payload?: any; }' is not assignable to type 'TeamStreamServerMessage'.
+2.657     Type '{ type: "ERROR"; payload?: any; }' is not assignable to type 'Readonly<{ type: "ERROR"; payload: any; }>'.
+2.657       Property 'payload' is optional in type '{ type: "ERROR"; payload?: any; }' but required in type 'Readonly<{ type: "ERROR"; payload: any; }>'.
+2.691  ELIFECYCLE  Command failed with exit code 2.
+------
+Dockerfile.allinone.asis-nosyntax:34
+--------------------
+  32 |       --filter autobyteus-server-ts... \
+  33 |       --filter autobyteus...
+  34 | >>> RUN pnpm -C autobyteus-team-stream-contracts build
+  35 |     RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+  36 |     RUN pnpm -C autobyteus-server-ts build
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c pnpm -C autobyteus-team-stream-contracts build" did not complete successfully: exit code: 2

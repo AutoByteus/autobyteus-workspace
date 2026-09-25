@@ -496,9 +496,8 @@ Important identity/storage rules:
   warnings.
 - required startup app-data migration
   `20260706_remove_global_skill_discovery_mode` rewrites persisted
-  `skillAccessMode: "GLOBAL_DISCOVERY"` values in standalone run metadata,
-  recursive team metadata, and external-channel binding files to
-  `PRELOADED_ONLY`, creates per-file backups for changed files, and reports
+  `skillAccessMode: "GLOBAL_DISCOVERY"` values in standalone run metadata and
+  recursive team metadata to `PRELOADED_ONLY`, creates per-file backups for changed files, and reports
   migrated/skipped/failed item counts. Current metadata parsing accepts only
   `PRELOADED_ONLY` and `NONE`; history restore must not resurrect all-installed
   skill discovery from older metadata.

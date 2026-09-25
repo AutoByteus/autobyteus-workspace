@@ -33,7 +33,7 @@ pnpm install
 Android (Termux) profile:
 
 ```bash
-pnpm install --no-optional --filter ./autobyteus-ts... --filter ./autobyteus-server-ts... --filter ./autobyteus-message-gateway...
+pnpm install --no-optional --filter ./autobyteus-ts... --filter ./autobyteus-server-ts...
 pnpm verify:android-profile
 ```
 
@@ -170,6 +170,24 @@ maps legacy runtime labels; and materializes a complete
 that Team's unique direct coordinator snapshot. Exact V2 files are skipped
 idempotently. Runtime, history, GraphQL, and stream readers are V2-only and
 admit only complete execution-tree/task/communication packages.
+
+Required startup migration `20260924_remove_external_messaging_data`
+permanently deletes the data of the removed built-in external messaging
+feature, with no backup. It removes four roots resolved from the configured
+app-data, download, and logs directories: the chat binding, receipt, and
+callback-outbox files; the installed messaging gateway runtimes with their
+provider configuration, including plaintext bot tokens; the gateway download
+cache; and the gateway logs. A missing root is skipped. A root that cannot be
+removed records `FAILED` without blocking startup, and the migration retries on
+the next start. Nothing outside those four roots is touched. The exact roots are
+defined in
+`src/app-data-migrations/migrations/remove-external-messaging-data-migration.ts`
+and its registry entry. Prisma migration
+`20260924120000_remove_external_channel_tables` drops the two orphan receipt
+and delivery-event tables. Run history started from chat bindings stays
+listable, and those runs replay as ordinary user and assistant messages. The
+Docker all-in-one `gateway.log` file in the logs directory and any Docker named
+volume created for gateway memory are outside these roots and are not removed.
 
 ### Production migration practice
 

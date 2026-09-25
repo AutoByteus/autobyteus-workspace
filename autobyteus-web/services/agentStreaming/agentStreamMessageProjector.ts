@@ -5,7 +5,6 @@ import {
   handleSegmentStart,
   handleSegmentContent,
   handleSegmentEnd,
-  handleExternalUserMessage,
   handleMemberInputMessage,
   handleToolApprovalRequested,
   handleToolApproved,
@@ -88,8 +87,6 @@ const dispatchToHandler = (
       const effect = handleSegmentEnd(message.payload, context);
       return conversationResult(effect !== 'NONE', effect);
     }
-    case 'EXTERNAL_USER_MESSAGE':
-      return conversationResult(handleExternalUserMessage(message.payload, context), 'STRUCTURAL');
     case 'MEMBER_INPUT_MESSAGE':
       return conversationResult(handleMemberInputMessage(message.payload, context), 'STRUCTURAL');
     case 'TOOL_APPROVAL_REQUESTED':

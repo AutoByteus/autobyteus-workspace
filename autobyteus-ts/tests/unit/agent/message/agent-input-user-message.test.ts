@@ -3,8 +3,6 @@ import { AgentInputUserMessage } from '../../../../src/agent/message/agent-input
 import { SenderType } from '../../../../src/agent/sender-type.js';
 import { ContextFile } from '../../../../src/agent/message/context-file.js';
 import { ContextFileType } from '../../../../src/agent/message/context-file-type.js';
-import { buildAgentExternalSourceMetadata } from '../../../../src/agent/message/external-source-metadata.js';
-import { parseExternalMessageEnvelope } from '../../../../src/external-channel/external-message-envelope.js';
 
 describe('AgentInputUserMessage', () => {
   it('defaults to USER sender type', () => {
@@ -39,25 +37,5 @@ describe('AgentInputUserMessage', () => {
 
   it('throws when content is not a string', () => {
     expect(() => new AgentInputUserMessage(123 as any)).toThrow();
-  });
-
-  it('extracts parsed external source metadata when present', () => {
-    const envelope = parseExternalMessageEnvelope({
-      provider: 'WHATSAPP',
-      transport: 'PERSONAL_SESSION',
-      accountId: 'acct-1',
-      peerId: 'peer-1',
-      peerType: 'USER',
-      externalMessageId: 'msg-1',
-      content: 'hello',
-      receivedAt: '2026-02-08T00:00:00.000Z'
-    });
-    const externalSource = buildAgentExternalSourceMetadata(envelope);
-
-    const message = new AgentInputUserMessage('hello', SenderType.USER, null, { externalSource });
-    const parsed = message.getExternalSourceMetadata();
-
-    expect(parsed).not.toBeNull();
-    expect(parsed?.transport).toBe('PERSONAL_SESSION');
   });
 });

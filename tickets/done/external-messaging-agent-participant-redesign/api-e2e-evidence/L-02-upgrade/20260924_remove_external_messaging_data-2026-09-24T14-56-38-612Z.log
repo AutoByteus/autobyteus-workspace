@@ -1,0 +1,9 @@
+migrationId=20260924_remove_external_messaging_data
+displayName=Remove external messaging data
+statusSummary={"scannedCount":4,"migratedCount":4,"skippedCount":0,"failedCount":0}
+error=
+details=
+{"itemId":"bindingDataDir","filePath":"/private/tmp/emr-e2e/upgrade-a/external-channel","status":"MIGRATED","message":"Removed."}
+{"itemId":"gatewayInstallDir","filePath":"/private/tmp/emr-e2e/upgrade-a/extensions/messaging-gateway","status":"MIGRATED","message":"Removed."}
+{"itemId":"gatewayDownloadDir","filePath":"/private/tmp/emr-e2e/upgrade-a/download/messaging-gateway","status":"MIGRATED","message":"Removed."}
+{"itemId":"gatewayLogsDir","filePath":"/private/tmp/emr-e2e/upgrade-a/logs/messaging-gateway","status":"MIGRATED","message":"Removed."}

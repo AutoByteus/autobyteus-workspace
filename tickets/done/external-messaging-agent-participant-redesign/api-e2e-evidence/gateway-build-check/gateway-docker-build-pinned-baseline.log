@@ -1,0 +1,181 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.gateway.Y
+#1 transferring dockerfile: 1.19kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-bookworm
+#2 DONE 0.0s
+
+#3 [internal] load .dockerignore
+#3 transferring context: 282B done
+#3 DONE 0.0s
+
+#4 [ 1/13] FROM docker.io/library/node:20-bookworm@sha256:65b74d0fb42134c49530a8c34e9f3e4a2fb8e1f99ac4a0eb4e6f314b426183a2
+#4 resolve docker.io/library/node:20-bookworm@sha256:65b74d0fb42134c49530a8c34e9f3e4a2fb8e1f99ac4a0eb4e6f314b426183a2 0.0s done
+#4 DONE 0.0s
+
+#5 [ 2/13] WORKDIR /app
+#5 CACHED
+
+#6 [internal] load build context
+#6 transferring context: 7.37MB 0.2s done
+#6 DONE 0.3s
+
+#7 [ 3/13] RUN corepack enable && corepack prepare pnpm@10.28.2 --activate
+#7 0.334 Preparing pnpm@10.28.2 for immediate activation...
+#7 DONE 2.0s
+
+#8 [ 4/13] RUN apt-get update   && apt-get install -y --no-install-recommends python3 make g++   && rm -rf /var/lib/apt/lists/*
+#8 0.367 Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+#8 0.424 Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+#8 0.441 Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [34.8 kB]
+#8 0.484 Get:4 http://deb.debian.org/debian bookworm/main arm64 Packages [8689 kB]
+#8 1.288 Get:5 http://deb.debian.org/debian bookworm-updates/main arm64 Packages [6936 B]
+#8 1.288 Get:6 http://deb.debian.org/debian-security bookworm-security/main arm64 Packages [339 kB]
+#8 2.139 Fetched 9277 kB in 2s (4793 kB/s)
+#8 2.139 Reading package lists...
+#8 2.646 Reading package lists...
+#8 3.129 Building dependency tree...
+#8 3.280 Reading state information...
+#8 3.473 python3 is already the newest version (3.11.2-1+b1).
+#8 3.473 python3 set to manually installed.
+#8 3.473 make is already the newest version (4.3-4.1).
+#8 3.473 g++ is already the newest version (4:12.2.0-3).
+#8 3.473 0 upgraded, 0 newly installed, 0 to remove and 107 not upgraded.
+#8 DONE 3.5s
+
+#9 [ 5/13] COPY pnpm-workspace.yaml pnpm-lock.yaml ./
+#9 DONE 0.1s
+
+#10 [ 6/13] COPY autobyteus-ts/package.json autobyteus-ts/package.json
+#10 DONE 0.0s
+
+#11 [ 7/13] COPY autobyteus-message-gateway/package.json autobyteus-message-gateway/package.json
+#11 DONE 0.0s
+
+#12 [ 8/13] RUN printf "\nonlyBuiltDependencies:\n  - '@whiskeysockets/baileys'\n  - esbuild\n  - node-pty\n  - protobufjs\n  - sharp\n" >> pnpm-workspace.yaml
+#12 DONE 0.1s
+
+#13 [ 9/13] RUN pnpm install --frozen-lockfile --filter autobyteus-message-gateway...
+#13 0.502 Scope: all 2 workspace projects
+#13 0.636 Lockfile is up to date, resolution step is skipped
+#13 0.730 Progress: resolved 1, reused 0, downloaded 0, added 0
+#13 0.778 .                                        | +391 ++++++++++++++++++++++++++++++++
+#13 1.422 
+#13 1.422    ╭──────────────────────────────────────────────╮
+#13 1.422    │                                              │
+#13 1.422    │     Update available! 10.28.2 → 12.6.0.      │
+#13 1.422    │     Changelog: https://pnpm.io/v/12.6.0      │
+#13 1.422    │   To update, run: corepack use pnpm@12.6.0   │
+#13 1.422    │                                              │
+#13 1.422    ╰──────────────────────────────────────────────╯
+#13 1.422 
+#13 1.513 Packages are hard linked from the content-addressable store to the virtual store.
+#13 1.513   Content-addressable store is at: /root/.local/share/pnpm/store/v10
+#13 1.513   Virtual store is at:             node_modules/.pnpm
+#13 1.750 Progress: resolved 391, reused 0, downloaded 141, added 139
+#13 2.734 Progress: resolved 391, reused 0, downloaded 205, added 203
+#13 3.736 Progress: resolved 391, reused 0, downloaded 323, added 322
+#13 4.737 Progress: resolved 391, reused 0, downloaded 383, added 383
+#13 5.736 Progress: resolved 391, reused 0, downloaded 390, added 390
+#13 6.722 Progress: resolved 391, reused 0, downloaded 391, added 391, done
+#13 6.848 .../node_modules/protobufjs postinstall$ node scripts/postinstall
+#13 6.849 .../node_modules/protobufjs postinstall$ node scripts/postinstall
+#13 6.850 .../node-pty@1.1.0/node_modules/node-pty install$ node scripts/prebuild.js || node-gyp rebuild
+#13 6.900 .../node_modules/protobufjs postinstall: Done
+#13 6.905 .../sharp@0.33.5/node_modules/sharp install$ node install/check
+#13 6.920 .../node-pty@1.1.0/node_modules/node-pty install: [32m> Checking prebuilds...[0m
+#13 6.920 .../node-pty@1.1.0/node_modules/node-pty install: [33m> Rebuilding because directory /app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/linux-arm64 does not exist[0m
+#13 6.920 .../node_modules/protobufjs postinstall: Done
+#13 6.922 .../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+#13 6.955 .../node-pty@1.1.0/node_modules/node-pty install: gyp info it worked if it ends with ok
+#13 6.955 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node-gyp@11.5.0
+#13 6.955 .../node-pty@1.1.0/node_modules/node-pty install: gyp info using node@20.20.0 | linux | arm64
+#13 6.971 .../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+#13 7.034 .../sharp@0.33.5/node_modules/sharp install: Done
+#13 7.082 .../node-pty@1.1.0/node_modules/node-pty install: gyp info find Python using Python version 3.11.2 found at "/usr/bin/python3"
+#13 7.218 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v20.20.0/node-v20.20.0-headers.tar.gz
+#13 7.339 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v20.20.0/node-v20.20.0-headers.tar.gz
+#13 10.35 .../node-pty@1.1.0/node_modules/node-pty install: gyp http GET https://nodejs.org/download/release/v20.20.0/SHASUMS256.txt
+#13 10.39 .../node-pty@1.1.0/node_modules/node-pty install: gyp http 200 https://nodejs.org/download/release/v20.20.0/SHASUMS256.txt
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn /usr/bin/python3
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/gyp/gyp_main.py',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'binding.gyp',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-f',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'make',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build/config.gypi',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp/addon.gypi',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-I',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '/root/.cache/node-gyp/20.20.0/include/node/common.gypi',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dlibrary=shared_library',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dvisibility=default',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_root_dir=/root/.cache/node-gyp/20.20.0',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_gyp_dir=/root/.cache/node/corepack/v1/pnpm/10.28.2/dist/node_modules/node-gyp',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_lib_file=/root/.cache/node-gyp/20.20.0/<(target_arch)/node.lib',
+#13 10.97 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dmodule_root_dir=/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty',
+#13 10.98 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Dnode_engine=v8',
+#13 10.98 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--depth=.',
+#13 10.98 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--no-parallel',
+#13 10.98 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '--generator-output',
+#13 10.98 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args 'build',
+#13 10.98 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args '-Goutput_dir=.'
+#13 10.98 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args ]
+#13 11.17 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn make
+#13 11.17 .../node-pty@1.1.0/node_modules/node-pty install: gyp info spawn args [ 'BUILDTYPE=Release', '-C', 'build' ]
+#13 11.18 .../node-pty@1.1.0/node_modules/node-pty install: make: Entering directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#13 11.18 .../node-pty@1.1.0/node_modules/node-pty install:   TOUCH Release/obj.target/../../../node-addon-api@7.1.1/node_modules/node-addon-api/node_addon_api_except.stamp
+#13 11.19 .../node-pty@1.1.0/node_modules/node-pty install:   CXX(target) Release/obj.target/pty/src/unix/pty.o
+#13 12.47 .../node-pty@1.1.0/node_modules/node-pty install:   SOLINK_MODULE(target) Release/obj.target/pty.node
+#13 12.53 .../node-pty@1.1.0/node_modules/node-pty install:   COPY Release/pty.node
+#13 12.54 .../node-pty@1.1.0/node_modules/node-pty install: make: Leaving directory '/app/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/build'
+#13 12.54 .../node-pty@1.1.0/node_modules/node-pty install: gyp info ok 
+#13 12.55 .../node-pty@1.1.0/node_modules/node-pty install: Done
+#13 12.55 .../node-pty@1.1.0/node_modules/node-pty postinstall$ node scripts/post-install.js
+#13 12.58 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Cleaning release folder...[0m
+#13 12.58 .../node-pty@1.1.0/node_modules/node-pty postinstall: [32m> Moving conpty.dll...[0m
+#13 12.58 .../node-pty@1.1.0/node_modules/node-pty postinstall:   SKIPPED (not Windows)
+#13 12.58 .../node-pty@1.1.0/node_modules/node-pty postinstall: Done
+#13 12.77 .../node_modules/@whiskeysockets/baileys preinstall$ node ./engine-requirements.js
+#13 12.80 .../node_modules/@whiskeysockets/baileys preinstall: Done
+#13 12.99 autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+#13 13.02 autobyteus-ts postinstall: node:internal/modules/cjs/loader:1210
+#13 13.02 autobyteus-ts postinstall:   throw err;
+#13 13.02 autobyteus-ts postinstall:   ^
+#13 13.02 autobyteus-ts postinstall: Error: Cannot find module '/app/autobyteus-ts/scripts/fix-node-pty-permissions.mjs'
+#13 13.02 autobyteus-ts postinstall:     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+#13 13.02 autobyteus-ts postinstall:     at Module._load (node:internal/modules/cjs/loader:1038:27)
+#13 13.02 autobyteus-ts postinstall:     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+#13 13.02 autobyteus-ts postinstall:     at node:internal/main/run_main_module:28:49 {
+#13 13.02 autobyteus-ts postinstall:   code: 'MODULE_NOT_FOUND',
+#13 13.02 autobyteus-ts postinstall:   requireStack: []
+#13 13.02 autobyteus-ts postinstall: }
+#13 13.02 autobyteus-ts postinstall: Node.js v20.20.0
+#13 13.02 autobyteus-ts postinstall: Failed
+#13 13.06  ELIFECYCLE  Command failed with exit code 1.
+#13 ERROR: process "/bin/sh -c pnpm install --frozen-lockfile --filter autobyteus-message-gateway..." did not complete successfully: exit code: 1
+------
+ > [ 9/13] RUN pnpm install --frozen-lockfile --filter autobyteus-message-gateway...:
+13.02 autobyteus-ts postinstall:     at Module._resolveFilename (node:internal/modules/cjs/loader:1207:15)
+13.02 autobyteus-ts postinstall:     at Module._load (node:internal/modules/cjs/loader:1038:27)
+13.02 autobyteus-ts postinstall:     at Function.executeUserEntryPoint [as runMain] (node:internal/modules/run_main:164:12)
+13.02 autobyteus-ts postinstall:     at node:internal/main/run_main_module:28:49 {
+13.02 autobyteus-ts postinstall:   code: 'MODULE_NOT_FOUND',
+13.02 autobyteus-ts postinstall:   requireStack: []
+13.02 autobyteus-ts postinstall: }
+13.02 autobyteus-ts postinstall: Node.js v20.20.0
+13.02 autobyteus-ts postinstall: Failed
+13.06  ELIFECYCLE  Command failed with exit code 1.
+------
+Dockerfile.gateway.Y:19
+--------------------
+  17 |     
+  18 |     # Install only the gateway workspace and its local workspace dependencies.
+  19 | >>> RUN pnpm install --frozen-lockfile --filter autobyteus-message-gateway...
+  20 |     
+  21 |     COPY autobyteus-ts autobyteus-ts
+--------------------
+ERROR: failed to build: failed to solve: process "/bin/sh -c pnpm install --frozen-lockfile --filter autobyteus-message-gateway..." did not complete successfully: exit code: 1

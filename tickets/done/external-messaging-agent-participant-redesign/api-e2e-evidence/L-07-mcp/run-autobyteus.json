@@ -1,0 +1,47 @@
+{
+  "runtimeKind": "autobyteus",
+  "model": "gpt-5.4-mini",
+  "runId": "mcp_token_probe_833481d1878a4931b6c8490b138ffe4e",
+  "nonce": "N-autobyteus-86d4205a",
+  "eventTypes": {
+    "CONNECTED": 1,
+    "AGENT_STATUS": 4,
+    "AGENT_COMMAND_ACK": 1,
+    "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+    "TURN_STARTED": 1,
+    "SEGMENT_START": 2,
+    "SEGMENT_CONTENT": 2,
+    "SEGMENT_END": 2,
+    "TOKEN_USAGE_UPDATED": 2,
+    "TOOL_EXECUTION_STARTED": 1,
+    "TOOL_LOG": 3,
+    "TOOL_EXECUTION_SUCCEEDED": 1,
+    "ASSISTANT_COMPLETE": 1,
+    "TURN_COMPLETED": 1
+  },
+  "toolEvents": [
+    {
+      "type": "TOOL_EXECUTION_STARTED",
+      "snippet": "{\"agent_id\":\"mcp_token_probe_833481d1878a4931b6c8490b138ffe4e\",\"tool_name\":\"verify_e2e_token\",\"invocation_id\":\"call_hGvrEacMbezCF7uZc8pHLJOX\",\"turn_id\":\"turn_0001\",\"arguments\":{\"nonce\":\"N-autobyteus-86d4205a\"}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "snippet": "{\"log_entry\":\"[TOOL_CALL] Agent_ID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e, Tool: verify_e2e_token, Invocation_ID: call_hGvrEacMbezCF7uZc8pHLJOX, Arguments: nonce: N-autobyteus-86d4205a\",\"tool_invocation_id\":\"call_hGvrEacMbezCF7uZc8pHLJOX\",\"tool_name\":\"verify_e2e_token\",\"turn_id\":\"turn_000"
+    },
+    {
+      "type": "TOOL_LOG",
+      "snippet": "{\"log_entry\":\"[TOOL_RESULT] content:\\n  - \\n    type: text\\n    text: TOKEN_PRESENT=true TOKEN_SHA8=abf32337 NONCE=N-autobyteus-86d4205a\",\"tool_invocation_id\":\"call_hGvrEacMbezCF7uZc8pHLJOX\",\"tool_name\":\"verify_e2e_token\",\"turn_id\":\"turn_0001\"}"
+    },
+    {
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "snippet": "{\"agent_id\":\"mcp_token_probe_833481d1878a4931b6c8490b138ffe4e\",\"tool_name\":\"verify_e2e_token\",\"invocation_id\":\"call_hGvrEacMbezCF7uZc8pHLJOX\",\"turn_id\":\"turn_0001\",\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"TOKEN_PRESENT=true TOKEN_SHA8=abf32337 NONCE=N-autobyteus-86d4205a\"}]}}"
+    },
+    {
+      "type": "TOOL_LOG",
+      "snippet": "{\"log_entry\":\"[TOOL_RESULT_SUCCESS_PROCESSED] Agent_ID: mcp_token_probe_833481d1878a4931b6c8490b138ffe4e, Tool: verify_e2e_token, Invocation_ID: call_hGvrEacMbezCF7uZc8pHLJOX, Result: content:\\n  - \\n    type: text\\n    text: TOKEN_PRESENT=true TOKEN_SHA8=abf32337 NONCE=N-autobyteus-86d4205a\",\"tool_"
+    }
+  ],
+  "assistantTextContainsNonce": true,
+  "anyEventContainsToolResult": true,
+  "errors": []
+}

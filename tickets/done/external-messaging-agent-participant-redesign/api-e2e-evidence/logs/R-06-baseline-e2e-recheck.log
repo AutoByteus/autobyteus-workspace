@@ -1,0 +1,1719 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+
+(node:25500) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-v1-supported-startup-25500-1790262648201-68524427ae5f9.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/db/team-v1-supported-startup-25500-1790262648201-68524427ae5f9.db"
+
+SQLite database team-v1-supported-startup-25500-1790262648201-68524427ae5f9.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/db/team-v1-supported-startup-25500-1790262648201-68524427ae5f9.db
+
+25 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "team-v1-warning-startup-25500-1790262651263-ccc0d1a20918.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/db/team-v1-warning-startup-25500-1790262651263-ccc0d1a20918.db"
+
+SQLite database team-v1-warning-startup-25500-1790262651263-ccc0d1a20918.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/db/team-v1-warning-startup-25500-1790262651263-ccc0d1a20918.db
+
+25 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-consolidation-retry-startup-25500-1790262653487-e14c4b0dccaf3.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/db/token-consolidation-retry-startup-25500-1790262653487-e14c4b0dccaf3.db"
+
+SQLite database token-consolidation-retry-startup-25500-1790262653487-e14c4b0dccaf3.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/db/token-consolidation-retry-startup-25500-1790262653487-e14c4b0dccaf3.db
+
+25 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "token-consolidation-overlap-startup-25500-1790262657790-170570a0c9701.db" at "file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/db/token-consolidation-overlap-startup-25500-1790262657790-170570a0c9701.db"
+
+SQLite database token-consolidation-overlap-startup-25500-1790262657790-170570a0c9701.db created at file:///Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/db/token-consolidation-overlap-startup-25500-1790262657790-170570a0c9701.db
+
+25 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+stdout | tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > rejects a legacy/current run-ID overlap before source cleanup while preserving both stores
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Database migrations completed successfully.
+
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests | 3 failed) 11768ms
+     × migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch 3062ms
+     × isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available 2224ms
+     × keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry 4304ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  2178ms
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:26230) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-24T15:11:03.331Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Agent definition cache populated with 3 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+[2026-09-24T15:11:03.404Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stderr | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+DEFINITION_CONTRACT_INVALID: skipped Team 'default-team-1790262663381_ad99a225c7cb3' at '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/agent-teams/default-team-1790262663381_ad99a225c7cb3/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+stderr | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+DEFINITION_CONTRACT_INVALID: skipped Team 'duplicate-team-1790262663381_ad99a225c7cb3' at '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/agent-teams/duplicate-team-1790262663381_ad99a225c7cb3/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+stderr | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+DEFINITION_CONTRACT_INVALID: skipped Team 'external-team-1790262663381_ad99a225c7cb3' at '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-local-1790262663381_ad99a225c7cb3-3Gb2QA/agent-teams/external-team-1790262663381_ad99a225c7cb3/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+[2026-09-24T15:11:03.406Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stderr | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Error fetching all agent team definitions: Error: E2E Studio service 'definitionAdmissionService' does not implement 'scan'. Provide an explicit service override for this scenario.
+
+stderr | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Error fetching agent team definition by ID duplicate-team-1790262663381_ad99a225c7cb3: Error: E2E Studio service 'definitionAdmissionService' does not implement 'requireAvailable'. Provide an explicit service override for this scenario.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+[2026-09-24T15:11:03.420Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+[2026-09-24T15:11:03.420Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-09-24T15:11:03.432Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-09-24T15:11:03.432Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-09-24T15:11:03.436Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-09-24T15:11:03.437Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-09-24T15:11:03.442Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > reloads a linked local package through GraphQL and refreshes package-derived reads
+[2026-09-24T15:11:03.442Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-09-24T15:11:03.455Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stderr | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+DEFINITION_CONTRACT_INVALID: skipped Team 'github-team-1790262663443_12711634eccc' at '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-managed-1790262663443_12711634eccc-WgwdmU/agent-packages/github/autobyteus__mock-agent-package-1790262663443_12711634eccc/agent-teams/github-team-1790262663443_12711634eccc/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-09-24T15:11:03.455Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-09-24T15:11:03.470Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-09-24T15:11:03.470Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-09-24T15:11:03.473Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a managed GitHub package through the package-oriented GraphQL contract
+[2026-09-24T15:11:03.473Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-09-24T15:11:03.494Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-09-24T15:11:03.494Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Agent definition cache populated with 2 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-09-24T15:11:03.522Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stderr | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+DEFINITION_CONTRACT_INVALID: skipped Team 'github-update-new-team-1790262663474_fb4442822eca1' at '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-github-data-1790262663474_fb4442822eca1-KMcpON/agent-packages/github/autobyteus__mock-agent-package-update-1790262663474_fb4442822eca1/agent-teams/github-update-new-team-1790262663474_fb4442822eca1/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-09-24T15:11:03.522Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stderr | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Error fetching all agent team definitions: Error: E2E Studio service 'definitionAdmissionService' does not implement 'scan'. Provide an explicit service override for this scenario.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-09-24T15:11:03.529Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+[2026-09-24T15:11:03.529Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[2026-09-24T15:11:03.544Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[2026-09-24T15:11:03.545Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[2026-09-24T15:11:03.549Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > allows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[2026-09-24T15:11:03.549Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[2026-09-24T15:11:03.565Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[2026-09-24T15:11:03.565Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[2026-09-24T15:11:03.603Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[2026-09-24T15:11:03.603Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > returns local-clone guidance when direct private GitHub import metadata is unavailable
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > returns local-clone guidance when direct private GitHub import metadata is unavailable
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > returns local-clone guidance when direct private GitHub import metadata is unavailable
+[2026-09-24T15:11:03.605Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > returns local-clone guidance when direct private GitHub import metadata is unavailable
+[2026-09-24T15:11:03.605Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+[2026-09-24T15:11:03.609Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+[2026-09-24T15:11:03.609Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+[2026-09-24T15:11:03.611Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > rejects invalid import input and invalid managed package shape
+[2026-09-24T15:11:03.611Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+ ❯ tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts (8 tests | 2 failed) 281ms
+     × imports and removes a linked local package while preserving runtime discovery behavior 39ms
+     ✓ reloads a linked local package through GraphQL and refreshes package-derived reads 22ms
+     ✓ imports and removes a managed GitHub package through the package-oriented GraphQL contract 31ms
+     × checks and updates a managed GitHub package through GraphQL with staged directory replacement 56ms
+     ✓ allows legacy managed GitHub records with unknown revision to update to latest through GraphQL 20ms
+     ✓ rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure 54ms
+     ✓ returns local-clone guidance when direct private GitHub import metadata is unavailable 2ms
+     ✓ rejects invalid import input and invalid managed package shape 5ms
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:26545) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-24T15:11:04.778Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-09-24T15:11:04.838Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+[2026-09-24T15:11:04.838Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-09-24T15:11:04.843Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-09-24T15:11:04.845Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-09-24T15:11:04.848Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+[2026-09-24T15:11:04.848Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+[2026-09-24T15:11:04.849Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+[2026-09-24T15:11:04.849Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[2026-09-24T15:11:04.856Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[2026-09-24T15:11:04.857Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[2026-09-24T15:11:04.861Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+[2026-09-24T15:11:04.861Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+[2026-09-24T15:11:04.863Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes md-centric team GraphQL output contract
+[2026-09-24T15:11:04.863Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+Agent definition cache populated with 0 items.
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+[2026-09-24T15:11:04.868Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+[2026-09-24T15:11:04.868Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+ ❯ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts (6 tests | 5 failed) 91ms
+     × creates, updates, lists templates, and deletes agent team definitions 13ms
+     × round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows 9ms
+     × exposes team-local subteams in GraphQL with ownership metadata and local member scopes 1ms
+     × exposes company-level team-local departments and their local agents without promoting departments to root catalog entries 12ms
+     ✓ exposes md-centric team GraphQL output contract 2ms
+     × returns validation error when coordinatorMemberName is not present in nodes 5ms
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+Agent websocket attached for run claude-ws-context-memory
+Created agent session b63ce8d2-7576-4437-bf6e-cadb044e7e42 for run claude-ws-context-memory
+Agent WebSocket connected: session=b63ce8d2-7576-4437-bf6e-cadb044e7e42, run=claude-ws-context-memory
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+prisma:info Starting a sqlite pool with 21 connections.
+
+stderr | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+Claude runtime turn failed for run 'claude-ws-context-memory': Error: CLAUDE_RUNTIME_RESULT_ERROR: There's an issue with the selected model (claude-test-model). It may not exist or you may not have access to it.
+Claude Code diagnostics:
+[claude-code:unrecognized_model] {"model":"claude-test-model","query_source":"sdk"}
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:499:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Closed agent session b63ce8d2-7576-4437-bf6e-cadb044e7e42
+Agent WebSocket disconnected: b63ce8d2-7576-4437-bf6e-cadb044e7e42
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Agent websocket attached for run claude-ws-interrupt-provider
+Created agent session 2df20c92-c207-4407-b717-462695eeddd8 for run claude-ws-interrupt-provider
+Agent WebSocket connected: session=2df20c92-c207-4407-b717-462695eeddd8, run=claude-ws-interrupt-provider
+
+stderr | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Claude runtime turn failed for run 'claude-ws-interrupt-provider': Error: CLAUDE_RUNTIME_RESULT_ERROR: There's an issue with the selected model (claude-test-model). It may not exist or you may not have access to it.
+Claude Code diagnostics:
+[claude-code:unrecognized_model] {"model":"claude-test-model","query_source":"sdk"}
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:499:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the caller-reserved UUID when INTERRUPT_GENERATION happens before stream confirmation
+Closed agent session 2df20c92-c207-4407-b717-462695eeddd8
+Agent WebSocket disconnected: 2df20c92-c207-4407-b717-462695eeddd8
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the caller-reserved UUID when INTERRUPT_GENERATION happens before stream confirmation
+Agent websocket attached for run claude-ws-interrupt-placeholder
+Created agent session cc60e33e-d21b-4586-8822-8fb7c877b720 for run claude-ws-interrupt-placeholder
+Agent WebSocket connected: session=cc60e33e-d21b-4586-8822-8fb7c877b720, run=claude-ws-interrupt-placeholder
+
+stderr | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the caller-reserved UUID when INTERRUPT_GENERATION happens before stream confirmation
+Claude runtime turn failed for run 'claude-ws-interrupt-placeholder': Error: CLAUDE_RUNTIME_RESULT_ERROR: There's an issue with the selected model (claude-test-model). It may not exist or you may not have access to it.
+Claude Code diagnostics:
+[claude-code:unrecognized_model] {"model":"claude-test-model","query_source":"sdk"}
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSession.executeTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:499:13)
+    at processTicksAndRejections (node:internal/process/task_queues:105:5)
+    at runTurn (/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:165:9)
+
+stdout | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume live E2E
+Closed agent session cc60e33e-d21b-4586-8822-8fb7c877b720
+Agent WebSocket disconnected: cc60e33e-d21b-4586-8822-8fb7c877b720
+
+ ❯ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts (4 tests | 3 failed | 1 skipped) 6056ms
+     × preserves provider conversation memory after interrupt instead of starting a new Claude conversation 2035ms
+     × resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION 2009ms
+     × resumes the caller-reserved UUID when INTERRUPT_GENERATION happens before stream confirmation 2010ms
+     ↓ uses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:26948) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TFsnG2/test_ws_root
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TFsnG2/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Created and registered workspace ID: agent_ws_52c5b87bb406726ea721abddd33d27ad768a018c91342b6af7e54e7009555bfc
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace agent_ws_52c5b87bb406726ea721abddd33d27ad768a018c91342b6af7e54e7009555bfc
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists workspaces
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sEB069/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sEB069/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created and registered workspace ID: agent_ws_06ad9291e78d424fd13821e6bd49c2c250571d12cc1e440769b090b7d6fd3e58
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+GraphQL mutation to remove registered workspace
+
+stderr | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Unexpected error removing workspace: Error: The process AgentRunManager is not initialized.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TFsnG2/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+Closing FileSystemWorkspace agent_ws_06ad9291e78d424fd13821e6bd49c2c250571d12cc1e440769b090b7d6fd3e58
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-SgKHuh/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-SgKHuh/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created and registered workspace ID: agent_ws_1ab8ecbf4b3b22fdbc113dc3087cceaa570ca16f03372c50c731388df4e756ef
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Creating temp workspace at: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/temp_workspace
+Created metadata-only FileSystemWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/temp_workspace.
+Initialized TempWorkspace at /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sEB069/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TFsnG2/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sEB069/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TFsnG2/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Closing FileSystemWorkspace agent_ws_1ab8ecbf4b3b22fdbc113dc3087cceaa570ca16f03372c50c731388df4e756ef
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > keeps a workspace registered when removeWorkspace is blocked by an active standalone run
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-xnBDpm/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-xnBDpm/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created and registered workspace ID: agent_ws_f680652188c98a7eb42f342cb639c76f26e874984d173dabe792134cc9841013
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sEB069/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-SgKHuh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TFsnG2/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > returns workspace metadata from createWorkspace without acquiring file explorer
+Closing FileSystemWorkspace agent_ws_f680652188c98a7eb42f342cb639c76f26e874984d173dabe792134cc9841013
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-UomnZm/test_ws_root
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-UomnZm/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created and registered workspace ID: agent_ws_c77ff6c8a1eee8fb74ff8124d900ef34e354d6e3826bb34abf4a6c3875be6540
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sEB069/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-SgKHuh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TFsnG2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-xnBDpm/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves deterministic workspace metadata without initializing the workspace
+Closing FileSystemWorkspace agent_ws_c77ff6c8a1eee8fb74ff8124d900ef34e354d6e3826bb34abf4a6c3875be6540
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IbKmjj/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IbKmjj/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IbKmjj/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace with the backend-selected app-data-relative path
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Removed 1 persisted filesystem registry entry for the configured temp workspace root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MekA3I/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MekA3I/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MekA3I/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MekA3I/regular_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-MekA3I/regular_ws.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-BPBgfH/server-data/temp_workspace/.
+Resolved configured temp workspace root to TempWorkspace.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-BPBgfH/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-BPBgfH/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-BPBgfH/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/created-during-list
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/created-during-list.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created and registered workspace ID: agent_ws_c8dc4e16aa0d4be48aba4ddba35675f286d8b52f8bb7a02eea31bcd1ebd49439
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/existing-a.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/existing-b.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/existing-c.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/existing-a.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/existing-b.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-AHoVj2/existing-c.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Closing FileSystemWorkspace agent_ws_c8dc4e16aa0d4be48aba4ddba35675f286d8b52f8bb7a02eea31bcd1ebd49439
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > preserves a seeded registry when GraphQL workspace listing and creation overlap
+Closing FileSystemWorkspace temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace
+GraphQL mutation to remove registered workspace
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > rejects removing the default temp workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sEB069/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-SgKHuh/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-TFsnG2/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-UomnZm/test_ws_root.
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-xnBDpm/test_ws_root.
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IAo2cx/server-data
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IAo2cx/server-data/.env
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IAo2cx/server-data/isolated-temp-workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IAo2cx/server-data/isolated-temp-workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-IAo2cx/server-data/isolated-temp-workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > creates and lists the temp workspace using the configured relative override under app data dir
+Closing FileSystemWorkspace temp_ws_default
+
+ ❯ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (11 tests | 1 failed) 100ms
+     ✓ creates and lists workspaces 8ms
+     × removes a registered workspace from visibility, preserves files, and re-adds the same root 10ms
+     ✓ keeps a workspace registered when removeWorkspace is blocked by an active standalone run 6ms
+     ✓ returns workspace metadata from createWorkspace without acquiring file explorer 5ms
+     ✓ resolves deterministic workspace metadata without initializing the workspace 5ms
+     ✓ creates and lists the temp workspace with the backend-selected app-data-relative path 2ms
+     ✓ lists only temp_ws_default for the configured temp root and cleans duplicate persisted filesystem entries 4ms
+     ✓ resolves createWorkspace for the configured temp root to temp_ws_default without persisting a filesystem entry 2ms
+     ✓ preserves a seeded registry when GraphQL workspace listing and creation overlap 4ms
+     ✓ rejects removing the default temp workspace 1ms
+     ✓ creates and lists the temp workspace using the configured relative override under app data dir 3ms
+stdout | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:26952) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e
+[2026-09-24T15:11:14.985Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archives inactive agent and team runs and hides them from default history without deleting disk or index data
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (2 tests | 1 failed) 383ms
+     × archives inactive agent and team runs and hides them from default history without deleting disk or index data 196ms
+     ✓ rejects active and unsafe archive IDs without writing archive state or creating files 178ms
+ ❯ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test | 1 failed) 14034ms
+     × syncs fake source memory from one real backend server process into another 7ms
+ ❯ tests/e2e/run-history/nested-team-history-restart.e2e.test.ts (2 tests | 2 failed) 4669ms
+     × moves released flat configured/task memory before public reads and remains canonical after process restart 2323ms
+     × keeps startup healthy on an invalid target and retries the remaining move through the public ANYTIME action 2344ms
+ ❯ tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts (7 tests | 7 failed) 15557ms
+     × persists root, nested-Team, and exact-Agent configurations and restores them after process restart 2352ms
+     × rejects a 'missing' 'Team' runtime before workspace or run side effects 2246ms
+     × rejects a 'blank' 'Team' runtime before workspace or run side effects 2325ms
+     × rejects a 'unsupported' 'Team' runtime before workspace or run side effects 2273ms
+     × rejects a 'missing' 'Agent' runtime before workspace or run side effects 2365ms
+     × rejects a 'blank' 'Agent' runtime before workspace or run side effects 2042ms
+     × rejects a 'unsupported' 'Agent' runtime before workspace or run side effects 1953ms
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:27727) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts > token usage analytics GraphQL E2E
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts > token usage analytics GraphQL E2E > reconciles observation-time ranges, filters, buckets, exact rows, and mixed cost through GraphQL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+ ✓ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts (5 tests) 217ms
+stdout | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:27732) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-24T15:11:52.708Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > returns grouped agent and team definitions for workspace history
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+ ❯ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts (6 tests | 5 failed) 64ms
+     × returns grouped agent and team definitions for workspace history 5ms
+     × returns scoped history for a registered workspace id 1ms
+     × returns scoped history for the default temp workspace id 1ms
+     × rejects workspaceRunHistory for a missing or removed workspace id 3ms
+     ✓ does not expose the legacy flat workspace history fields 1ms
+     × rejects removed persisted status/activity fields while team stable fields remain queryable 3ms
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:27740) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks)
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-24T15:11:53.895Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks) > persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks) > persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+Agent Definition created successfully with ID: professor-agent-ac-1790262713945-2f4bf6
+
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks) > persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks) > persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks) > persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+Agent definition cache populated with 1 items.
+
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks) > persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+In-memory cache: Updated agent definition with ID professor-agent-ac-1790262713945-2f4bf6.
+
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks) > persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+Agent Definition with ID professor-agent-ac-1790262713945-2f4bf6 updated successfully.
+
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks) > persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+In-memory cache: Updated agent definition with ID professor-agent-ac-1790262713945-2f4bf6.
+
+stdout | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks) > persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+Agent Definition with ID professor-agent-ac-1790262713945-2f4bf6 updated successfully.
+
+ ❯ tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts (1 test | 1 failed) 149ms
+     × persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json 98ms
+(node:27741) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests | 2 failed) 182ms
+     × first-upgrade: preserves usage and conversation through full restore, replay and advancing response 64ms
+     × token-only-rerun: preserves usage and conversation through full restore, replay and advancing response 117ms
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-9m7Ulk/workspace
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-9m7Ulk/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+Created and registered workspace ID: agent_ws_ea4e4b5f5d42876ca21a9fa67d5403c0ae54a86be72f3a6a701a501a2581d687
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-33tues/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-33tues/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace
+Created and registered workspace ID: agent_ws_048e6de5d3a78ebcf212c9049d85869106b8ca6b998fb646f4ed4e684717580e
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-eP6ZaD/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-eP6ZaD/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Created and registered workspace ID: agent_ws_d62a927bd51ae129706770079c7cdd0ed32f833c987e962444a73a88b74bf4c2
+
+stderr | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+Security error accessing path ../workspace-sibling/leak.png in workspace agent_ws_d62a927bd51ae129706770079c7cdd0ed32f833c987e962444a73a88b74bf4c2: Access denied: Path resolves outside the workspace boundary.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-9M2Oes/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-9M2Oes/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Created and registered workspace ID: agent_ws_5615e9a0b3effa13e5e297d59698a57bb369eb4ef49f7077d46ade1c827b8d60
+
+stderr | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+Security error accessing path /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-9M2Oes/absolute.png in workspace agent_ws_5615e9a0b3effa13e5e297d59698a57bb369eb4ef49f7077d46ade1c827b8d60: Access denied: Path resolves outside the workspace boundary.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through the static workspace route
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-NR5Nss/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-NR5Nss/workspace.
+
+stdout | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through the static workspace route
+Created and registered workspace ID: agent_ws_47990c51f93150e1740bd514ed790163c4814bf15623b5580f04a77b8f343f36
+
+stderr | tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through the static workspace route
+Security error accessing path /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-rest-e2e-NR5Nss/absolute.html in workspace agent_ws_47990c51f93150e1740bd514ed790163c4814bf15623b5580f04a77b8f343f36: Access denied: Path resolves outside the workspace boundary.
+
+ ❯ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts (5 tests | 5 failed) 51ms
+     × serves encoded image paths through a real FileSystemWorkspace 30ms
+     × serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace 7ms
+     × rejects a same-prefix sibling traversal through FileSystemWorkspace 5ms
+     × rejects an absolute candidate through FileSystemWorkspace 4ms
+     × rejects an absolute candidate through the static workspace route 4ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 38 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > imports and removes a linked local package while preserving runtime discovery behavior
+ FAIL  tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts > Agent packages GraphQL e2e > checks and updates a managed GitHub package through GraphQL with staged directory replacement
+GraphQLError: Unable to fetch agent team definitions at this time.
+ ❯ AgentTeamDefinitionResolver.agentTeamDefinitions src/api/graphql/types/agent-team-definition.ts:295:13
+    293|     } catch (error) {
+    294|       logger.error(`Error fetching all agent team definitions: ${Strin…
+    295|       throw new Error("Unable to fetch agent team definitions at this …
+       |             ^
+    296|     }
+    297|   }
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:28:64
+ ❯ applyMiddlewares ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/helpers.js:51:16
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:22:16
+ ❯ executeField ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:500:20
+ ❯ executeFields ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:422:22
+ ❯ executeOperation ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:352:14
+ ❯ execute ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:136:20
+ ❯ graphqlImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:86:31
+ ❯ ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:23:43
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/38]⎯
+
+ FAIL  tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts > JSON file persistence contract e2e (md-centric, no mocks) > persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+GraphQLError: Cannot query field "refType" on type "TeamMember". Did you mean "refScope"?
+ ❯ Object.Field ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/FieldsOnCorrectTypeRule.js:51:13
+ ❯ Object.enter ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/visitor.js:298:32
+ ❯ Object.enter ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/TypeInfo.js:391:27
+ ❯ visit ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/visitor.js:194:21
+ ❯ validate ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/validate.js:91:24
+ ❯ graphqlImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:78:52
+ ❯ ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:23:43
+ ❯ graphql ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:23:10
+ ❯ execGraphql tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts:83:26
+     81|     variables?: Record<string, unknown>,
+     82|   ): Promise<T> => {
+     83|     const result = await graphql({
+       |                          ^
+     84|       schema,
+     85|       source: query,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/38]⎯
+
+ FAIL  tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > creates, updates, lists templates, and deletes agent team definitions
+ FAIL  tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > round-trips TEAM_LOCAL members from file-authored teams through read and update GraphQL flows
+ FAIL  tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes company-level team-local departments and their local agents without promoting departments to root catalog entries
+GraphQLError: Cannot query field "refType" on type "TeamMember". Did you mean "refScope"?
+ ❯ Object.Field ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/FieldsOnCorrectTypeRule.js:51:13
+ ❯ Object.enter ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/visitor.js:298:32
+ ❯ Object.enter ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/TypeInfo.js:391:27
+ ❯ visit ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/visitor.js:194:21
+ ❯ validate ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/validate.js:91:24
+ ❯ graphqlImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:78:52
+ ❯ ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:23:43
+ ❯ graphql ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:23:10
+ ❯ execGraphql tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts:159:26
+    157|     variables?: Record<string, unknown>,
+    158|   ): Promise<T> => {
+    159|     const result = await graphql({
+       |                          ^
+    160|       schema,
+    161|       source: query,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/38]⎯
+
+ FAIL  tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > exposes team-local subteams in GraphQL with ownership metadata and local member scopes
+TypeError: (0 , __vite_ssr_import_5__.buildTeamLocalTeamDefinitionId) is not a function
+ ❯ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts:872:34
+    870|     const parentTeamId = `company_${unique}`;
+    871|     const localTeamId = `department_${unique}`;
+    872|     const canonicalLocalTeamId = buildTeamLocalTeamDefinitionId(parent…
+       |                                  ^
+    873| 
+    874|     const parentTeamDir = await writeRootTeamFixture({
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/38]⎯
+
+ FAIL  tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts > Agent team definitions GraphQL e2e > returns validation error when coordinatorMemberName is not present in nodes
+AssertionError: expected 'Variable "$input" got invalid value {…' to contain 'Coordinator member name must match'
+
+Expected: "Coordinator member name must match"
+Received: "Variable "$input" got invalid value { memberName: "helper", ref: "agent-1", refType: "AGENT", refScope: "SHARED" } at "input.nodes[0]"; Field "refType" is not defined by type "TeamMemberInput". Did you mean "refScope"?"
+
+ ❯ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts:1388:41
+    1386| 
+    1387|     expect(result.errors?.length ?? 0).toBeGreaterThan(0);
+    1388|     expect(result.errors?.[0]?.message).toContain("Coordinator member …
+       |                                         ^
+    1389|   });
+    1390| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/38]⎯
+
+ FAIL  tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > first-upgrade: preserves usage and conversation through full restore, replay and advancing response
+ FAIL  tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts > isolated migrated Org continuation through current server lifecycle > token-only-rerun: preserves usage and conversation through full restore, replay and advancing response
+AssertionError: {"status":"FAILED","summary":{"scannedCount":0,"migratedCount":0,"skippedCount":0,"failedCount":1,"details":[{"itemId":"token-usage-run-records-v1:failure","status":"FAILED","message":"\nInvalid `this.transaction.tokenUsageRunRecord.create()` invocation in\n/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66\n\n  176 }\n  177 \n  178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {\n→ 179   const persisted = await this.transaction.tokenUsageRunRecord.create(\nThe column `claude_sdk_usage_state_json` does not exist in the current database."}]},"errorMessage":"\nInvalid `this.transaction.tokenUsageRunRecord.create()` invocation in\n/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66\n\n  176 }\n  177 \n  178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {\n→ 179   const persisted = await this.transaction.tokenUsageRunRecord.create(\nThe column `claude_sdk_usage_state_json` does not exist in the current database."}: expected 'FAILED' to be 'SUCCEEDED' // Object.is equality
+
+Expected: "SUCCEEDED"
+Received: "FAILED"
+
+ ❯ materializeLegacyUsage tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts:42:49
+     40|   } finally { db.close(); }
+     41|   const result = await new TokenUsageRunRecordsV1AppDataMigration(new …
+     42|   expect(result.status, JSON.stringify(result)).toBe("SUCCEEDED");
+       |                                                 ^
+     43|   expect(await e.client.$queryRawUnsafe("SELECT COUNT(*) AS count FROM…
+     44| };
+ ❯ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts:61:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/38]⎯
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch
+Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/tests/.tmp/team-v1-supported-startup-25500-1790262648201-68524427ae5f9/memory/agent_teams/team-v1-supported-root/team_run_execution_tree.json'
+ ❯ assertConvertedPackage tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:741:30
+    739| const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof se…
+    740|   expect(fs.existsSync(scenario.supported.metadataPath)).toBe(false);
+    741|   const tree = JSON.parse(fs.readFileSync(path.join(scenario.supported…
+       |                              ^
+    742|   expect(tree).toMatchObject({
+    743|     schemaVersion: 2,
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1148:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/38]⎯
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available
+AssertionError: expected [ { …(11) }, { …(11) }, …(18) ] to have a length of 19 but got 20
+
+- Expected
++ Received
+
+- 19
++ 20
+
+ ❯ assertLedgerTransition tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:850:21
+    848|   }
+    849|   const afterRows = readMigrationLedger(databasePath);
+    850|   expect(afterRows).toHaveLength(beforeRows.length + 4);
+       |                     ^
+    851|   const transitionedBeforeRows = beforeRows.map((row) => {
+    852|     if (typeof row.summary !== "string") return row;
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1218:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/38]⎯
+
+ FAIL  tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts > TeamRun released-shape production upgrade to current V2 through actual startup > keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry
+AssertionError: expected { success: false, …(2) } to match object { success: true, …(1) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "success": true,
+-   "teamRunId": "team-v1-supported-root",
++   "success": false,
++   "teamRunId": null,
+  }
+
+ ❯ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts:1321:42
+    1319|     expect(countTokenRows(target.database.databasePath)).toEqual({ leg…
+    1320|     const restored = await restoreTeamRun(second.serverUrl, scenario.r…
+    1321|     expect(restored.restoreAgentTeamRun).toMatchObject({
+       |                                          ^
+    1322|       success: true,
+    1323|       teamRunId: scenario.rootTeamRunId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/38]⎯
+
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > persists root, nested-Team, and exact-Agent configurations and restores them after process restart
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:328:11
+ ❯ createTeamDefinition tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:68:18
+ ❯ seedHierarchy tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:107:26
+ ❯ tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:239:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/38]⎯
+
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'missing' 'Team' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'blank' 'Team' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'unsupported' 'Team' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'missing' 'Agent' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'blank' 'Agent' runtime before workspace or run side effects
+ FAIL  tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts > hierarchical TeamRun GraphQL and V2 lifecycle > rejects a 'unsupported' 'Agent' runtime before workspace or run side effects
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:328:11
+ ❯ createTeamDefinition tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:68:18
+ ❯ seedHierarchy tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:107:26
+ ❯ tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts:426:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/38]⎯
+
+ FAIL  tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves encoded image paths through a real FileSystemWorkspace
+ FAIL  tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > serves SVG bytes with the image/svg+xml content boundary through a real FileSystemWorkspace
+ FAIL  tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects a same-prefix sibling traversal through FileSystemWorkspace
+ FAIL  tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through FileSystemWorkspace
+ FAIL  tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts > workspace content REST boundary e2e > rejects an absolute candidate through the static workspace route
+Error: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:72:13
+     70|   static getInstance(): AgentRunManager {
+     71|     if (!AgentRunManager.instance) {
+     72|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     73|     }
+     74|     return AgentRunManager.instance;
+ ❯ WorkspaceRemovalGuard.checkWorkspaceCanBeRemoved src/workspaces/workspace-removal-guard.ts:35:69
+ ❯ WorkspaceManager.removeRegisteredWorkspace src/workspaces/workspace-manager.ts:199:58
+ ❯ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts:41:25
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/38]⎯
+
+ FAIL  tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts > Memory Sync multi-process backend e2e > syncs fake source memory from one real backend server process into another
+Error: Team V2 cannot contain configured Team '/nested'.
+ ❯ src/agent-team-execution/services/team-run-execution-tree-builder.ts:53:42
+     51|     defaultLaunchConfiguration: launchConfiguration(input.config.rootT…
+     52|     members: input.config.rootTeam.children.map((member) => {
+     53|       if (member.kind !== "agent") throw new Error(`Team V2 cannot con…
+       |                                          ^
+     54|       return toAgent(member);
+     55|     }),
+ ❯ buildInitialTeamRunExecutionTree src/agent-team-execution/services/team-run-execution-tree-builder.ts:52:45
+ ❯ testExecutionTree tests/fixtures/current-team-run-fixtures.ts:162:37
+ ❯ writeCurrentNestedTeamPackage tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts:49:16
+ ❯ seedSourceMemory tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts:255:20
+ ❯ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts:324:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/38]⎯
+
+ FAIL  tests/e2e/run-history/nested-team-history-restart.e2e.test.ts > nested TeamRun history startup/restart hydration > moves released flat configured/task memory before public reads and remains canonical after process restart
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:328:11
+ ❯ tests/e2e/run-history/nested-team-history-restart.e2e.test.ts:299:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/38]⎯
+
+ FAIL  tests/e2e/run-history/nested-team-history-restart.e2e.test.ts > nested TeamRun history startup/restart hydration > keeps startup healthy on an invalid target and retries the remaining move through the public ANYTIME action
+Error: TEST_GRAPHQL_REQUEST_FAILED
+ ❯ stableError ../test-support/live-e2e/test-runtime-bootstrap.mjs:47:17
+     45| 
+     46| const stableError = (code) => {
+     47|   const error = new Error(code);
+       |                 ^
+     48|   error.code = code;
+     49|   return error;
+ ❯ executeGraphql ../test-support/live-e2e/test-runtime-bootstrap.mjs:328:11
+ ❯ tests/e2e/run-history/nested-team-history-restart.e2e.test.ts:456:30
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/38]⎯
+
+ FAIL  tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts > Archive run history GraphQL e2e > archives inactive agent and team runs and hides them from default history without deleting disk or index data
+AssertionError: expected [] to deeply equal ArrayContaining{…}
+
+- Expected
++ Received
+
+- ArrayContaining [
+-   "team-archive",
+-   "team-visible",
+-   "team-active",
+-   "team-archived-active",
+- ]
++ []
+
+ ❯ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts:448:46
+    446|     );
+    447|     expect(flattenAgentRunIds(beforeArchive)).not.toContain("run-agent…
+    448|     expect(flattenTeamRunIds(beforeArchive)).toEqual(
+       |                                              ^
+    449|       expect.arrayContaining([
+    450|         "team-archive",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/38]⎯
+
+ FAIL  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > returns grouped agent and team definitions for workspace history
+ FAIL  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > returns scoped history for a registered workspace id
+ FAIL  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > returns scoped history for the default temp workspace id
+ FAIL  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > rejects removed persisted status/activity fields while team stable fields remain queryable
+GraphQLError: The process AgentRunManager is not initialized.
+ ❯ Function.getInstance src/agent-execution/services/agent-run-manager.ts:72:13
+     70|   static getInstance(): AgentRunManager {
+     71|     if (!AgentRunManager.instance) {
+     72|       throw new Error("The process AgentRunManager is not initialized.…
+       |             ^
+     73|     }
+     74|     return AgentRunManager.instance;
+ ❯ new AgentRunHistoryService src/run-history/services/agent-run-history-service.ts:48:76
+ ❯ getAgentRunHistoryService src/run-history/services/agent-run-history-service.ts:150:36
+ ❯ RunHistoryResolver.<instance_members_initializer> src/api/graphql/types/run-history.ts:248:36
+ ❯ new RunHistoryResolver src/api/graphql/types/run-history.ts:247:8
+ ❯ DefaultContainer.get ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/utils/container.js:8:51
+ ❯ IOCContainer.getInstance ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/utils/container.js:29:42
+ ❯ ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:12:51
+ ❯ executeField ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:500:20
+ ❯ executeFields ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:422:22
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/38]⎯
+
+ FAIL  tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts > Workspace run history GraphQL e2e > rejects workspaceRunHistory for a missing or removed workspace id
+AssertionError: expected "vi.fn()" to be called with arguments: [ 'ws-removed' ]
+
+Number of calls: 0
+
+ ❯ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts:380:48
+    378|     `);
+    379| 
+    380|     expect(getWorkspaceRootPathForHistoryMock).toHaveBeenCalledWith("w…
+       |                                                ^
+    381|     expect(getWorkspaceRunHistoryMock).not.toHaveBeenCalled();
+    382|     expect((result.errors ?? []).map((error) => error.message)).toEqua…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/38]⎯
+
+ FAIL  tests/e2e/workspaces/workspaces-graphql.e2e.test.ts > Workspaces GraphQL e2e > removes a registered workspace from visibility, preserves files, and re-adds the same root
+AssertionError: expected { success: false, …(3) } to match object { success: true, …(2) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "success": true,
++   "success": false,
+    "workspaceId": "agent_ws_06ad9291e78d424fd13821e6bd49c2c250571d12cc1e440769b090b7d6fd3e58",
+-   "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-workspace-sEB069/test_ws_root",
++   "workspaceRootPath": null,
+  }
+
+ ❯ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts:272:37
+    270|     }>(removeMutation, { input: { workspaceId } });
+    271| 
+    272|     expect(removed.removeWorkspace).toMatchObject({
+       |                                     ^
+    273|       success: true,
+    274|       workspaceId,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/38]⎯
+
+ FAIL  tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > preserves provider conversation memory after interrupt instead of starting a new Claude conversation
+Error: Timed out waiting for initial fake Claude query memory capture and reserved provider session use
+ ❯ waitForCondition tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:411:9
+    409|     await new Promise((resolve) => setTimeout(resolve, 10));
+    410|   }
+    411|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+    412| };
+    413| 
+ ❯ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:562:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/38]⎯
+
+ FAIL  tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the same WebSocket follow-up with the adopted provider session id after INTERRUPT_GENERATION
+Error: Timed out waiting for initial fake Claude query and reserved provider session use
+ ❯ waitForCondition tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:411:9
+    409|     await new Promise((resolve) => setTimeout(resolve, 10));
+    410|   }
+    411|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+    412| };
+    413| 
+ ❯ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:629:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[21/38]⎯
+
+ FAIL  tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts > Claude Agent SDK websocket interrupt/resume integration > resumes the caller-reserved UUID when INTERRUPT_GENERATION happens before stream confirmation
+Error: Timed out waiting for initial placeholder fake Claude query start
+ ❯ waitForCondition tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:411:9
+    409|     await new Promise((resolve) => setTimeout(resolve, 10));
+    410|   }
+    411|   throw new Error(`Timed out waiting for ${label}`);
+       |         ^
+    412| };
+    413| 
+ ❯ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts:683:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[22/38]⎯
+
+
+ Test Files  13 failed | 1 passed (14)
+      Tests  38 failed | 25 passed | 1 skipped (64)
+   Start at  17:10:44
+   Duration  71.65s (transform 4.62s, setup 75ms, import 16.22s, tests 53.60s, environment 1ms)
+

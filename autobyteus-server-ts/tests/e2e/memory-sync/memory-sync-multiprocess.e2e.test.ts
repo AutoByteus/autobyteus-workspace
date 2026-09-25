@@ -152,7 +152,7 @@ const prepareServerDist = (): void => {
     cwd: serverRoot,
     stdio: "inherit",
   });
-  execFileSync(process.execPath, [path.join(serverRoot, "scripts", "copy-managed-messaging-assets.mjs")], {
+  execFileSync(process.execPath, [path.join(serverRoot, "scripts", "copy-build-assets.mjs")], {
     cwd: serverRoot,
     stdio: "inherit",
   });

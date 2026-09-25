@@ -7,9 +7,6 @@ import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import {
-  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-} from "../../../src/config/server-runtime-endpoints.js";
 import { getTeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import {
   closeLiveRuntimeSecretVault,
@@ -175,11 +172,9 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
   let testDataDir: string | null = null;
   let runtimeServerApp: FastifyInstance | null = null;
   let runtimeServerUrl: URL;
-  let originalInternalServerBaseUrl: string | undefined;
   const createdWorkspaceRoots = new Set<string>();
 
   beforeAll(async () => {
-    originalInternalServerBaseUrl = process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "autobyteus-team-runtime-api-e2e-"));
     await writeFile(
       path.join(testDataDir, ".env"),
@@ -207,11 +202,6 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     if (testDataDir) {
       await rm(testDataDir, { recursive: true, force: true });
       testDataDir = null;
-    }
-    if (originalInternalServerBaseUrl) {
-      process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] = originalInternalServerBaseUrl;
-    } else {
-      delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     }
   });
 

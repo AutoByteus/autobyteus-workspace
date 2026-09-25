@@ -1,0 +1,37 @@
+ FAIL  tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts > MediaUrlTransformerProcessor > emits media segment event
+ FAIL  tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > does not persist activation failure state and permits retry from prepared fact
+ FAIL  tests/unit/agent-execution/backends/claude/session/claude-session.test.ts > ClaudeSession > switches an opened but unconfirmed first query to exact resume after interrupt
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > correlates started/local-completed/raw output and admits it through the strict Team boundary
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > retains exact tool identity across a retry diagnostic
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output
+ FAIL  tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts > Codex TOOL_LOG correlation > uses an exact direct raw provider tool name without inventing correlation
+ FAIL  tests/unit/agent-packages/package-root-summary.test.ts > package-root-summary > validates package roots and counts shared agents, team-local agents, and team
+ FAIL  tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > sets isTemp false for regular workspace ID
+ FAIL  tests/unit/api/graphql/converters/workspace-converter.test.ts > WorkspaceConverter > sets isTemp true for temp workspace ID
+ FAIL  tests/unit/api/graphql/studio-application-api-services.test.ts > Studio application API service registration > publishes one exact service set and releases it idempotently
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > rolls back an injected cleanup failure and succeeds through the same ordinary retry
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts > token usage consolidation source-token decoding > imports later JSON integers after four leading NULLs in the same real Prisma batch
+ FAIL  tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets lifecycle restart recovery reach ready and dispatch an existing pending event
+ FAIL  tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets reload/reentry inspect and dispatch existing journal state before activation
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > builds the workspace directory tree
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > produces shallow JSON with limited depth
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > reads file content within size limit
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > rejects reading files outside the workspace
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > returns the root tree node
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > serializes the tree to JSON
+ FAIL  tests/unit/file-explorer/file-explorer.test.ts > FileExplorer > throws when reading a file that exceeds max size
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm defaults to non-query log kind
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm honors explicit environment query-log policy only
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm honors typed policy and typed-false precedence
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm import acquires no Prisma client or datasource
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > esm rejects a conflicting post-bind logging policy
+ FAIL  tests/unit/logging/prisma-query-log-policy.test.ts > repository_prisma installed package policy > installs exact unpatched 1.0.9 entrypoints without dotenv acquisition code
+ FAIL  tests/unit/run-history/services/agent-run-history-catalog-service.test.ts > AgentRunHistoryCatalogService > commits only llmConfig through the serialized catalog
+ FAIL  tests/unit/run-history/services/published-artifact-projection-service.test.ts > PublishedArtifactProjectionService > reads historical published-artifact summaries and revision text from durable projection storage
+ FAIL  tests/unit/runtime-management/codex/client/codex-app-server-client.test.ts > CodexAppServerClient spawn diagnostics > uses an explicitly supplied Codex environment without applying the governed-launcher policy
+ FAIL  tests/unit/secret-management/live-e2e-harness.test.ts > one-database live E2E runtime and evidence boundary > adapts the raw product backend through the canonical AgentRun event facade
+ FAIL  tests/unit/services/media-storage-service.test.ts > MediaStorageService > stores media from a remote URL
+ FAIL  tests/unit/workspaces/workspace-manager-skill-integration.test.ts > WorkspaceManager skill integration > creates and initializes a SkillWorkspace for skill_ws_ ID
+ FAIL  tests/unit/workspaces/workspace-manager.test.ts > WorkspaceManager > removes a registered workspace entry without deleting workspace file

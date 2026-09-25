@@ -1,0 +1,16 @@
+== actionlint baseline: release-android.yml release-desktop.yml release-ios.yml release-messaging-gateway.yml release-server-docker.yml 
+       4
+== actionlint candidate: release-android.yml release-desktop.yml release-ios.yml release-server-docker.yml 
+       0
+== new actionlint findings in candidate (not in baseline):
+== baseline-only findings (removed):
+   |
+   |         ^~~~
+.github/workflows/release-messaging-gateway.yml:L:C: shellcheck reported issue in this script: SC2129:style:30:1: Consider using { cmd1; cmd2; } >> file instead of individual redirects [shellcheck]
+48 |         run: |
+bash -n OK scripts/desktop-release.sh
+   shellcheck baseline=       0 candidate=       0 new-in-candidate=0
+bash -n OK scripts/android-bootstrap-termux.sh
+   shellcheck baseline=       0 candidate=       0 new-in-candidate=0
+bash -n OK scripts/personal-docker.sh
+   shellcheck baseline=       0 candidate=       0 new-in-candidate=0

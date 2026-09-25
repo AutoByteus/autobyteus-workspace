@@ -14,7 +14,6 @@ const TARGET_MODE = SkillAccessMode.PRELOADED_ONLY;
 const CANDIDATE_JSON_FILE_NAMES = new Set([
   "run_metadata.json",
   "team_run_metadata.json",
-  "bindings.json",
 ]);
 
 type CandidateFile = {
@@ -145,16 +144,12 @@ export class RemoveGlobalSkillDiscoveryModeMigration implements AppDataMigration
   readonly description = "Rewrites persisted GLOBAL_DISCOVERY skill access values to configured-only behavior.";
   readonly requiredOnStartup = true;
 
-  constructor(
-    private readonly memoryDir: string,
-    private readonly appDataDir: string,
-  ) {}
+  constructor(private readonly memoryDir: string) {}
 
   async execute(): Promise<AppDataMigrationExecutionResult> {
     const candidates = [
       ...(await collectCandidateFiles(path.join(this.memoryDir, "agents"), "agent")),
       ...(await collectCandidateFiles(path.join(this.memoryDir, "agent_teams"), "team")),
-      ...(await collectCandidateFiles(path.join(this.appDataDir, "external-channel"), "external-channel")),
     ].sort((left, right) => left.filePath.localeCompare(right.filePath));
     const details: AppDataMigrationItemDetail[] = [];
 

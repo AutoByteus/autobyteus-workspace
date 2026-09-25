@@ -1,5 +1,5 @@
-import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
-import type { ExternalDeliveryEvent } from "autobyteus-ts/external-channel/external-delivery-event.js";
+import type { ExternalMessageEnvelope } from "../../external-channel/external-message-envelope.js";
+import type { ExternalDeliveryEvent } from "../../external-channel/external-delivery-event.js";
 import { createServerSignature } from "./server-signature.js";
 
 export type ServerIngressResult = {

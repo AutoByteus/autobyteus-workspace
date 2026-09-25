@@ -17,8 +17,6 @@ export type {
 } from './agentCommandTypes';
 import type { CompactionStatusPayload } from './compactionTypes';
 export type { CompactionStatusPayload } from './compactionTypes';
-import type { ExternalUserMessagePayload } from './externalUserMessageTypes';
-export type { ExternalUserMessageContextFilePathPayload, ExternalUserMessagePayload } from './externalUserMessageTypes';
 import type { MemberInputMessagePayload } from './memberInputMessageTypes';
 export type { MemberInputMessageContextFilePathPayload, MemberInputMessagePayload } from './memberInputMessageTypes';
 export type { UserMessageContextFilePathPayload, UserMessageProjectionPayload } from './userMessagePayloadTypes';
@@ -37,7 +35,6 @@ export type ServerMessageType =
   | 'SEGMENT_START'
   | 'SEGMENT_CONTENT'
   | 'SEGMENT_END'
-  | 'EXTERNAL_USER_MESSAGE'
   | 'MEMBER_INPUT_MESSAGE'
   | 'AGENT_STATUS'
   | 'AGENT_COMMAND_ACK'
@@ -273,7 +270,6 @@ export type ServerMessage =
   | { type: 'SEGMENT_START'; payload: SegmentStartPayload }
   | { type: 'SEGMENT_CONTENT'; payload: SegmentContentPayload }
   | { type: 'SEGMENT_END'; payload: SegmentEndPayload }
-  | { type: 'EXTERNAL_USER_MESSAGE'; payload: ExternalUserMessagePayload }
   | { type: 'MEMBER_INPUT_MESSAGE'; payload: MemberInputMessagePayload }
   | { type: 'AGENT_STATUS'; payload: AgentStatusPayload }
   | { type: 'AGENT_COMMAND_ACK'; payload: AgentCommandAckPayload }

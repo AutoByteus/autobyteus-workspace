@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import * as rootExports from '../../../src/index.js';
-import { ExternalChannelProvider } from '../../../src/external-channel/provider.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { getDefaultSessionFactory } from '../../../src/tools/terminal/session-factory.js';
 import { ParameterSchema } from '../../../src/utils/parameter-schema.js';
@@ -35,12 +34,10 @@ const removedSourceModuleSpecifiers = [
 
 describe('autobyteus-ts public surface after native CLI/TUI removal', () => {
   it('keeps supported programmatic root and deep imports available', () => {
-    expect(rootExports.ExternalChannelProvider).toBe(ExternalChannelProvider);
     expect(rootExports.LLMProvider).toBe(LLMProvider);
     expect(rootExports.ParameterSchema).toBe(ParameterSchema);
     expect(rootExports.getDefaultSessionFactory).toBe(getDefaultSessionFactory);
 
-    expect(ExternalChannelProvider.WECOM).toBe('WECOM');
     expect(LLMProvider.OPENAI).toBe('OPENAI');
     expect(typeof getDefaultSessionFactory()).toBe('function');
   });

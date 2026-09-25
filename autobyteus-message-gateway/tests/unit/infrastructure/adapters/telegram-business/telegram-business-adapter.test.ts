@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from "vitest";
-import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
-import { ExternalChannelTransport } from "autobyteus-ts/external-channel/channel-transport.js";
-import type { ExternalOutboundEnvelope } from "autobyteus-ts/external-channel/external-outbound-envelope.js";
-import { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
+import type { ExternalMessageEnvelope } from "../../../../../src/external-channel/external-message-envelope.js";
+import { ExternalChannelTransport } from "../../../../../src/external-channel/channel-transport.js";
+import type { ExternalOutboundEnvelope } from "../../../../../src/external-channel/external-outbound-envelope.js";
+import { ExternalChannelProvider } from "../../../../../src/external-channel/provider.js";
 import { TelegramBusinessAdapter } from "../../../../../src/infrastructure/adapters/telegram-business/telegram-business-adapter.js";
 import type {
   TelegramSendMessageInput,

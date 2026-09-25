@@ -1,3 +1,4 @@
+import path from "node:path";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import type { AppDataMigrationDefinition } from "./domain/app-data-migration-types.js";
 import { RunHistoryIndexV2AppDataMigration } from "./migrations/run-history-index-v2-migration.js";
@@ -20,6 +21,7 @@ import { TeamAgentMemoryLayoutAppDataMigration } from "./migrations/team-agent-m
 import { TeamRunExecutionTreeV2AppDataMigration } from "./migrations/team-run-execution-tree-v2-app-data-migration.js";
 import { AgentOrgFlatTeamFamiliesV1AppDataMigration } from "./migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import { AgentOrgHistoryFirstMessageSummaryV1AppDataMigration } from "./migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.js";
+import { RemoveExternalMessagingDataMigration } from "./migrations/remove-external-messaging-data-migration.js";
 
 export class AppDataMigrationRegistry {
   private readonly definitions: AppDataMigrationDefinition[];
@@ -27,10 +29,7 @@ export class AppDataMigrationRegistry {
   constructor(definitions?: AppDataMigrationDefinition[]) {
     this.definitions = definitions ?? [
       new CustomProviderV1AppDataMigration(),
-      new RemoveGlobalSkillDiscoveryModeMigration(
-        appConfigProvider.config.getMemoryDir(),
-        appConfigProvider.config.getAppDataDir(),
-      ),
+      new RemoveGlobalSkillDiscoveryModeMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunMetadataMemberTreeMigration(appConfigProvider.config.getMemoryDir()),
       new TeamRunExecutionTreeV1AppDataMigration(
         appConfigProvider.config.getMemoryDir(),
@@ -65,6 +64,12 @@ export class AppDataMigrationRegistry {
       new TeamRunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
       new RunHistoryIndexV2AppDataMigration(appConfigProvider.config.getMemoryDir()),
       new CustomProviderReadableIdAppDataMigration(),
+      new RemoveExternalMessagingDataMigration({
+        bindingDataDir: path.join(appConfigProvider.config.getAppDataDir(), "external-channel"),
+        gatewayInstallDir: path.join(appConfigProvider.config.getAppDataDir(), "extensions", "messaging-gateway"),
+        gatewayDownloadDir: path.join(appConfigProvider.config.getDownloadDir(), "messaging-gateway"),
+        gatewayLogsDir: path.join(appConfigProvider.config.getLogsDir(), "messaging-gateway"),
+      }),
     ];
     this.validateDefinitions();
   }

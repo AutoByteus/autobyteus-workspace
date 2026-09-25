@@ -1,0 +1,10 @@
+# G-01 probe: candidate server started with NO --data-dir (default app-data dir = server package root) (2026-09-24T15:18:36Z)
+before: git ls-files autobyteus-server-ts/external-channel ->
+autobyteus-server-ts/external-channel/gateway-callback-outbox.json
+health=200
+APP DATA DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+SUCCEEDED|Scanned 4; migrated 1; skipped 3; failed 0.
+after: git status --short autobyteus-server-ts/external-channel ->
+ D autobyteus-server-ts/external-channel/gateway-callback-outbox.json
+server stopped
+76bd9107d 2026-04-13 feat(applications): add application bundle import ecosystem
