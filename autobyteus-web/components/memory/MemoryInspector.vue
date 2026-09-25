@@ -67,8 +67,12 @@ const breadcrumb = computed(() => {
     const agent = target.agentDisplayName || target.agentDefinitionId || 'Unattributed runs';
     return `Agents / ${agent} / ${target.runLabel || target.runId}`;
   }
-  const team = target.teamDefinitionName || target.teamDefinitionId || 'Agent Team';
   const member = target.memberName || target.memberAddress || target.agentRunId;
+  if (target.kind === 'org_member_run') {
+    const org = target.orgDefinitionName || target.orgDefinitionId || 'Agent Org';
+    return `Agent Orgs / ${org} / ${target.orgRunId} / ${member}`;
+  }
+  const team = target.teamDefinitionName || target.teamDefinitionId || 'Agent Team';
   return `Agent Teams / ${team} / ${target.teamRunId} / ${member}`;
 });
 

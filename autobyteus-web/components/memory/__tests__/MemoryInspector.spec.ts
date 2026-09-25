@@ -35,4 +35,13 @@ describe('MemoryInspector', () => {
     const wrapper = mount(MemoryInspector, { global: { plugins: [pinia] } });
     expect(wrapper.text()).toContain('Agent Teams / Alpha Team / team-1 / Coordinator');
   });
+
+  it('renders org member breadcrumb and member run context', () => {
+    const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
+    const store = useMemoryInspectorStore();
+    store.target = { kind: 'org_member_run', orgDefinitionName: 'Alpha Org', orgRunId: 'org-run-1', agentRunId: 'designer-run', memberAddress: '/software_engineering_team/solution_designer', memberName: 'software_engineering_team/solution_designer' };
+    const wrapper = mount(MemoryInspector, { global: { plugins: [pinia] } });
+    expect(wrapper.text()).toContain('Agent Orgs / Alpha Org / org-run-1 / software_engineering_team/solution_designer');
+    expect(wrapper.text()).toContain('Member run: designer-run');
+  });
 });

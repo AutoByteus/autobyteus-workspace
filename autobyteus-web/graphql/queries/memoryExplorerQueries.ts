@@ -124,6 +124,93 @@ export const LIST_AGENT_TEAM_RUNS_WITH_MEMORY = gql`
           displayName
           agentRunId
           agentDefinitionId
+          executionKind
+          startedAt
+          groupPath {
+            teamRunId
+            address
+            displayName
+            kind
+            startedAt
+          }
+          lastUpdatedAt
+          memory {
+            latestMemoryAt
+            hasWorkingContext
+            hasEpisodic
+            hasSemantic
+            hasRawTraces
+            hasRawArchive
+          }
+        }
+      }
+    }
+  }
+`
+
+export const LIST_AGENT_ORGS_WITH_MEMORY = gql`
+  query ListAgentOrgsWithMemory($source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+    listAgentOrgsWithMemory(source: $source, search: $search, page: $page, pageSize: $pageSize) {
+      total
+      page
+      pageSize
+      totalPages
+      entries {
+        orgDefinitionId
+        orgDefinitionName
+        orgRunCount
+        memberMemoryCount
+        latestMemoryAt
+        memory {
+          latestMemoryAt
+          hasWorkingContext
+          hasEpisodic
+          hasSemantic
+          hasRawTraces
+          hasRawArchive
+        }
+      }
+    }
+  }
+`
+
+export const LIST_AGENT_ORG_RUNS_WITH_MEMORY = gql`
+  query ListAgentOrgRunsWithMemory($orgDefinitionId: String!, $source: MemoryExplorerSourceInput, $search: String, $page: Int, $pageSize: Int) {
+    listAgentOrgRunsWithMemory(orgDefinitionId: $orgDefinitionId, source: $source, search: $search, page: $page, pageSize: $pageSize) {
+      total
+      page
+      pageSize
+      totalPages
+      entries {
+        orgRunId
+        orgDefinitionId
+        orgDefinitionName
+        summary
+        workspaceRootPath
+        createdAt
+        lastUpdatedAt
+        memory {
+          latestMemoryAt
+          hasWorkingContext
+          hasEpisodic
+          hasSemantic
+          hasRawTraces
+          hasRawArchive
+        }
+        memberTargets {
+          memberAddress
+          displayName
+          agentRunId
+          agentDefinitionId
+          executionKind
+          startedAt
+          groupPath {
+            teamRunId
+            address
+            displayName
+            kind
+            startedAt
+          }
           lastUpdatedAt
           memory {
             latestMemoryAt
