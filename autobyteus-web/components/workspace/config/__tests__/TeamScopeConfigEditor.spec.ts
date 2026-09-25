@@ -312,6 +312,30 @@ describe('TeamScopeConfigEditor presentation', () => {
     expect(workspace.props('model')).toEqual(expect.objectContaining({ isLoading: true }))
   })
 
+  it('keeps the AGY default through synchronous runtime, model and config edits, then allows explicit off', async () => {
+    const wrapper = mountEditor()
+    const runtime = wrapper.getComponent(RuntimeModelConfigFieldsStub)
+    runtime.vm.$emit('update:runtimeKind', 'antigravity_cli')
+    runtime.vm.$emit('update:llmModelIdentifier', '')
+    runtime.vm.$emit('update:llmConfig', null)
+
+    const selectionEdits = wrapper.emitted('update-override') ?? []
+    expect(selectionEdits).toHaveLength(3)
+    for (const [patch] of selectionEdits) expect(patch).toEqual(expect.objectContaining({
+      runtimeKind: 'antigravity_cli', autoExecuteTools: true,
+    }))
+    expect(selectionEdits[2]![0]).toEqual(expect.objectContaining({ llmConfig: null }))
+
+    await wrapper.setProps({ scope: {
+      ...(wrapper.props('scope') as EditableTeamScopeFormModel),
+      override: { runtimeKind: 'antigravity_cli', autoExecuteTools: true, llmConfig: null },
+      effectiveConfig: { ...inheritedConfig, runtimeKind: 'antigravity_cli', autoExecuteTools: true, llmConfig: null },
+    } })
+    await wrapper.get('button[aria-expanded]').trigger('click')
+    await wrapper.get('[role="switch"]').trigger('click')
+    expect(wrapper.emitted('update-override')?.at(-1)).toEqual([{ runtimeKind: 'antigravity_cli', llmConfig: null }])
+  })
+
   it('keeps disclosure access while disabling nested edits and omitting stored Reset', async () => {
     const wrapper = mountEditor({
       disabled: true,

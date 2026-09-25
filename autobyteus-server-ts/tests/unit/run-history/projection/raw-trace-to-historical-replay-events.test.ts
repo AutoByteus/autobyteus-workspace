@@ -75,6 +75,23 @@ describe("raw trace to historical replay events", () => {
     });
   });
 
+  it("restores an AGY provider ERROR denial as denied without changing generic error mapping", () => {
+    const events = buildHistoricalReplayEvents([
+      { traceType: "tool_call", toolCallId: "agy-denied", toolName: "run_command", toolArgs: {}, turnId: "turn", seq: 1, ts: 1 },
+      { traceType: "tool_result", toolCallId: "agy-denied", toolResult: { status: "denied", provider_state: "ERROR" },
+        toolError: "permission denied", turnId: "turn", seq: 2, ts: 2 },
+      { traceType: "tool_call", toolCallId: "agy-done-denied", toolName: "run_command", toolArgs: {}, turnId: "turn", seq: 3, ts: 3 },
+      { traceType: "tool_result", toolCallId: "agy-done-denied", toolResult: { status: "denied", provider_state: "DONE" },
+        toolError: "permission denied", turnId: "turn", seq: 4, ts: 4 },
+      { traceType: "tool_call", toolCallId: "other-error", toolName: "run_bash", toolArgs: {}, turnId: "turn", seq: 5, ts: 5 },
+      { traceType: "tool_result", toolCallId: "other-error", toolResult: null,
+        toolError: "failed", turnId: "turn", seq: 6, ts: 6 },
+    ]);
+    expect(events[0]).toMatchObject({ kind: "tool", invocationId: "agy-denied", status: "denied" });
+    expect(events[1]).toMatchObject({ kind: "tool", invocationId: "agy-done-denied", status: "denied" });
+    expect(events[2]).toMatchObject({ kind: "tool", invocationId: "other-error", status: "error" });
+  });
+
   it("carries collision-safe raw, tool lifecycle, orphan, and legacy identity", () => {
     const equalRaw = buildHistoricalReplayEvents([
       { id: "r17", traceType: "assistant", content: "Done", turnId: "t", seq: 1, ts: 1 },

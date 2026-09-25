@@ -1,0 +1,21 @@
+{
+  "cliExit": 0,
+  "permissionMode": "request-review",
+  "tools": [
+    {
+      "name": "run_command",
+      "state": "ACTIVE",
+      "hasError": false
+    },
+    {
+      "name": "run_command",
+      "state": "ERROR",
+      "hasError": true
+    }
+  ],
+  "resultStatus": "SUCCESS",
+  "resultResponse": "",
+  "stderrMentionsDenial": true,
+  "stderrTail": "jetski: no output produced \u2014 a tool required the \"command\" permission that headless mode cannot prompt for, so it was auto-denied. Add an allow-rule under permissions.allow in settings.json (e.g. command(<target>)). Alternatively, re-run with --dangerously-skip-permissions to auto-approve all tools.\n",
+  "dangerouslySkipPermissionsUsed": false
+}

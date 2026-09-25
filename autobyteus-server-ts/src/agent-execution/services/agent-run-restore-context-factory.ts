@@ -1,5 +1,6 @@
 import { ClaudeAgentRunContext } from "../backends/claude/backend/claude-agent-run-context.js";
 import { buildClaudeSessionConfig, DEFAULT_CLAUDE_PERMISSION_MODE } from "../backends/claude/session/claude-session-config.js";
+import { AgyAgentRunContext } from "../backends/antigravity/backend/agy-agent-run-context.js";
 import { CodexAgentRunContext } from "../backends/codex/backend/codex-agent-run-context.js";
 import { resolveApprovalPolicyForRunConfig } from "../backends/codex/backend/codex-thread-bootstrapper.js";
 import { buildCodexThreadConfig } from "../backends/codex/thread/codex-thread-config.js";
@@ -13,6 +14,7 @@ export const buildAgentRunRestoreRuntimeContext = (
   config: AgentRunConfig,
   platformAgentRunId: string,
 ): RuntimeAgentRunContext => {
+  if (config.runtimeKind === RuntimeKind.ANTIGRAVITY_CLI) return new AgyAgentRunContext(platformAgentRunId);
   if (config.runtimeKind === RuntimeKind.CODEX_APP_SERVER) {
     return new CodexAgentRunContext({
       codexThreadConfig: buildCodexThreadConfig({

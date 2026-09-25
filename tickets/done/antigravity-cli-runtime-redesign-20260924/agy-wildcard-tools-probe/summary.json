@@ -1,0 +1,13 @@
+[
+  {
+    "case": "file",
+    "exit": 3,
+    "initCwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-agy-minimal-workspace-46hega4h/capsule",
+    "status": "ERROR",
+    "response": "",
+    "workspaceFile": null,
+    "capsuleFile": null,
+    "tools": [],
+    "stderrTail": "error: failed to construct executor: failed to resolve components: unknown component: tool \"*\" not found in registry\nAGY_ERROR: {\"short_error\":\"failed to construct executor: failed to resolve components: unknown component: tool \\\"*\\\" not found in registry\",\"status\":\"UNKNOWN\",\"error_code\":2,\"code_kind\":\"grpc\",\"retryable\":false,\"error_id\":\"e565f7e4-9130-43f5-bc42-475f02714008-1\"}\n"
+  }
+]

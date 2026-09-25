@@ -2,6 +2,21 @@ import { describe, expect, it } from 'vitest';
 import { buildConversationFromProjection } from '../runProjectionConversation';
 
 describe('runProjectionConversation', () => {
+  it('rehydrates an AGY provider ERROR denial without making other errors denied', () => {
+    const conversation = buildConversationFromProjection('run-denied', [
+      { kind: 'tool_call', invocationId: 'agy-denied', toolName: 'run_command',
+        toolResult: { status: 'denied', provider_state: 'ERROR' }, toolError: 'permission denied', ts: 1 },
+      { kind: 'tool_call', invocationId: 'agy-done-denied', toolName: 'run_command',
+        toolResult: { status: 'denied', provider_state: 'DONE' }, toolError: 'permission denied', ts: 2 },
+      { kind: 'tool_call', invocationId: 'other-error', toolName: 'run_bash',
+        toolResult: null, toolError: 'failed', ts: 3 },
+    ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'gemini-3.8-flash-low' });
+    const statuses = conversation.messages.flatMap((message) => message.type === 'ai'
+      ? message.segments.filter((segment) => segment.type === 'tool_call').map((segment) => segment.status)
+      : []);
+    expect(statuses).toEqual(['denied', 'denied', 'error']);
+  });
+
   it('hydrates the deferred-tool projection as Thinking A, tool card, Thinking B', () => {
     const conversation = buildConversationFromProjection(
       'run-deferred-tool-reasoning',

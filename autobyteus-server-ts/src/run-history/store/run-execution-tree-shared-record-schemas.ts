@@ -1,4 +1,5 @@
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import {
   assertAgentTeamAddress,
   getParentAgentTeamAddress,
@@ -74,7 +75,7 @@ export const validateLaunchConfiguration = (value: unknown, label: string): void
     "skillAccessMode",
     "workspaceRootPath",
   ], label);
-  if (!["autobyteus", "claude_agent_sdk", "codex_app_server"].includes(String(launch.runtimeKind))) {
+  if (!Object.values(RuntimeKind).includes(launch.runtimeKind as RuntimeKind)) {
     throw new Error(`${label}.runtimeKind is unsupported.`);
   }
   requiredString(launch.llmModelIdentifier, `${label}.llmModelIdentifier`);

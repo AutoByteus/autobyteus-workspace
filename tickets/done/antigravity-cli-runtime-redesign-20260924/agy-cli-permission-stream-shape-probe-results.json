@@ -1,0 +1,59 @@
+{
+  "cliExit": 0,
+  "streamShape": [
+    {
+      "event": "init",
+      "permission_mode": "request-review",
+      "has_conversation_id": true
+    },
+    {
+      "event": "step_update",
+      "step_type": "user_input",
+      "state": "DONE"
+    },
+    {
+      "event": "step_update",
+      "step_type": "agent_response",
+      "state": "DONE",
+      "text_delta": null
+    },
+    {
+      "event": "step_update",
+      "step_type": "tool",
+      "state": "ACTIVE",
+      "tool_name": "run_command",
+      "tool_info": {
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "printf APPROVAL-JSON-PROBE"
+        }
+      }
+    },
+    {
+      "event": "step_update",
+      "step_type": "tool",
+      "state": "ERROR",
+      "tool_name": "run_command",
+      "tool_info": {
+        "name": "run_command",
+        "parameters": {
+          "CommandLine": "printf APPROVAL-JSON-PROBE"
+        },
+        "error": {
+          "type": "TOOL_ERROR",
+          "message": "permission check failed for unsandboxed \"printf APPROVAL-JSON-PROBE\": user denied permission to run command:\nprintf APPROVAL-JSON-PROBE\nDo not attempt to circumvent this denial by rephrasing the command, using alternative tools/scripts (e.g. python, sh, curl), or accessing the same target resource. Proceed without performing this action."
+        }
+      }
+    },
+    {
+      "event": "result",
+      "status": "SUCCESS",
+      "response": "",
+      "error": null
+    }
+  ],
+  "invalidStdoutLines": [],
+  "stderr": "jetski: no output produced \u2014 a tool required the \"command\" permission that headless mode cannot prompt for, so it was auto-denied. Add an allow-rule under permissions.allow in settings.json (e.g. command(<target>)). Alternatively, re-run with --dangerously-skip-permissions to auto-approve all tools.\n",
+  "dangerouslySkipPermissionsUsed": false,
+  "globalSettingsEdited": false
+}

@@ -20,7 +20,7 @@ export const teamMemberExecutionIdentityDtoSchema = z.object({
 }).strict();
 
 export type AgentLaunchConfigurationDto = Readonly<{
-  runtime_kind: "autobyteus" | "claude_agent_sdk" | "codex_app_server";
+  runtime_kind: "autobyteus" | "claude_agent_sdk" | "codex_app_server" | "antigravity_cli";
   llm_model_identifier: string;
   llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
   auto_execute_tools: boolean;
@@ -93,7 +93,7 @@ export type ConfiguredTeamExecutionDto = Readonly<{
 export type ConfiguredMemberExecutionDto = ConfiguredAgentExecutionDto | ConfiguredTeamExecutionDto;
 
 const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.object({
-  runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server"]),
+  runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli"]),
   llm_model_identifier: nonEmptyStringSchema,
   llm_config: z.record(z.string(), jsonValueSchema).nullable(),
   auto_execute_tools: z.boolean(),

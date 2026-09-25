@@ -159,6 +159,8 @@ const buildUserContextFilePaths = (entry: RunProjectionConversationEntry): Conte
 ];
 
 const inferToolStatus = (entry: RunProjectionConversationEntry): ToolInvocationStatus => {
+  const result = asRecord(entry.toolResult);
+  if (result.status === 'denied' && (result.provider_state === 'ERROR' || result.provider_state === 'DONE')) return 'denied';
   if (entry.toolError) {
     return 'error';
   }

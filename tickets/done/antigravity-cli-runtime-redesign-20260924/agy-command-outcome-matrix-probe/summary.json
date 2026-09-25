@@ -1,0 +1,153 @@
+[
+  {
+    "case": "exit0",
+    "requestedCommand": "sh -c 'printf OK-EXIT-0; exit 0'",
+    "autoApprove": true,
+    "processExit": 0,
+    "initPermissionMode": "always-proceed",
+    "resultStatus": "SUCCESS",
+    "resultResponse": "The command executed successfully and exited with code `0`. \n\n**Output:**\n```\nOK-EXIT-0\n```\n",
+    "resultDeniedActions": null,
+    "toolSteps": [
+      {
+        "index": 2,
+        "state": "ACTIVE",
+        "name": "run_command",
+        "toolInfo": {
+          "name": "run_command",
+          "parameters": {
+            "CommandLine": "sh -c 'printf OK-EXIT-0; exit 0'"
+          }
+        }
+      },
+      {
+        "index": 2,
+        "state": "DONE",
+        "name": "run_command",
+        "toolInfo": {
+          "name": "run_command",
+          "parameters": {
+            "CommandLine": "sh -c 'printf OK-EXIT-0; exit 0'"
+          },
+          "output": "OK-EXIT-0"
+        }
+      }
+    ],
+    "stderrTail": ""
+  },
+  {
+    "case": "exit8_empty",
+    "requestedCommand": "sh -c 'exit 8'",
+    "autoApprove": true,
+    "processExit": 0,
+    "initPermissionMode": "always-proceed",
+    "resultStatus": "SUCCESS",
+    "resultResponse": "The command `sh -c 'exit 8'` was executed. It terminated immediately with exit code `8` and produced no output to stdout or stderr.\n",
+    "resultDeniedActions": null,
+    "toolSteps": [
+      {
+        "index": 2,
+        "state": "ACTIVE",
+        "name": "run_command",
+        "toolInfo": {
+          "name": "run_command",
+          "parameters": {
+            "CommandLine": "sh -c 'exit 8'"
+          }
+        }
+      },
+      {
+        "index": 2,
+        "state": "DONE",
+        "name": "run_command",
+        "toolInfo": {
+          "name": "run_command",
+          "parameters": {
+            "CommandLine": "sh -c 'exit 8'"
+          }
+        }
+      }
+    ],
+    "stderrTail": ""
+  },
+  {
+    "case": "not_found",
+    "requestedCommand": "agy_command_that_does_not_exist_73682",
+    "autoApprove": true,
+    "processExit": 0,
+    "initPermissionMode": "always-proceed",
+    "resultStatus": "SUCCESS",
+    "resultResponse": "The command failed and exited with exit code `127`. The shell output indicated:\n\n```\nzsh:1: command not found: agy_command_that_does_not_exist_73682\n```\n",
+    "resultDeniedActions": null,
+    "toolSteps": [
+      {
+        "index": 2,
+        "state": "ACTIVE",
+        "name": "run_command",
+        "toolInfo": {
+          "name": "run_command",
+          "parameters": {
+            "CommandLine": "agy_command_that_does_not_exist_73682"
+          }
+        }
+      },
+      {
+        "index": 2,
+        "state": "DONE",
+        "name": "run_command",
+        "toolInfo": {
+          "name": "run_command",
+          "parameters": {
+            "CommandLine": "agy_command_that_does_not_exist_73682"
+          },
+          "output": "zsh:1: command not found: agy_command_that_does_not_exist_73682\r\n"
+        }
+      }
+    ],
+    "stderrTail": ""
+  },
+  {
+    "case": "denied",
+    "requestedCommand": "printf DENIAL-CONTROL-7513",
+    "autoApprove": false,
+    "processExit": "timeout after result",
+    "initPermissionMode": "request-review",
+    "resultStatus": "SUCCESS",
+    "resultResponse": "",
+    "resultDeniedActions": [
+      {
+        "action": "command",
+        "display_name": "RunCommand"
+      }
+    ],
+    "toolSteps": [
+      {
+        "index": 2,
+        "state": "ACTIVE",
+        "name": "run_command",
+        "toolInfo": {
+          "name": "run_command",
+          "parameters": {
+            "CommandLine": "printf DENIAL-CONTROL-7513"
+          }
+        }
+      },
+      {
+        "index": 2,
+        "state": "ERROR",
+        "name": "run_command",
+        "toolInfo": {
+          "name": "run_command",
+          "parameters": {
+            "CommandLine": "printf DENIAL-CONTROL-7513"
+          },
+          "error": {
+            "type": "TOOL_ERROR",
+            "message": "permission check failed for unsandboxed \"printf DENIAL-CONTROL-7513\": user denied permission to run command:\nprintf DENIAL-CONTROL-7513\nDo not attempt to circumvent this denial by rephrasing the command, using alternative tools/scripts (e.g. python, sh, curl), or accessing the same target resource. Proceed without performing this action."
+          }
+        }
+      }
+    ],
+    "stderrTail": "jetski: no output produced \u2014 a tool required the \"command\" permission that headless mode cannot prompt for, so it was auto-denied. Add an allow-rule under permissions.allow in settings.json (e.g. command(<target>)). Alternatively, re-run with --dangerously-skip-permissions to auto-approve all tools.\n"
+  }
+]

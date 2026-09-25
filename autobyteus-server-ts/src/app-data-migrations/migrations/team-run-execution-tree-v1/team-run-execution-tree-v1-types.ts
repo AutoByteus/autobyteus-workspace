@@ -18,6 +18,8 @@ export const toTeamRunRuntimeKind = (
       return "CLAUDE";
     case RuntimeKind.CODEX_APP_SERVER:
       return "CODEX";
+    case RuntimeKind.ANTIGRAVITY_CLI:
+      throw new Error("AGY has no historical TeamRun V1 records to migrate.");
   }
 };
 

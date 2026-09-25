@@ -1,0 +1,30 @@
+{
+  "model": "gemini-3.8-flash-low",
+  "addedDirectory": {
+    "expectedMarker": "REAL-WORKSPACE-MARKER-6731",
+    "exit": 0,
+    "conversationId": "8f3aac82-4c17-4c32-8d29-0abdef775089",
+    "resultId": "8f3aac82-4c17-4c32-8d29-0abdef775089",
+    "resultStatus": "SUCCESS",
+    "response": "REAL-WORKSPACE-MARKER-6731\n",
+    "toolNames": [
+      "view_file"
+    ],
+    "stderrTail": ""
+  },
+  "runLocalHook": {
+    "called": false,
+    "records": []
+  },
+  "logFile": {
+    "created": true,
+    "containsConversationId": true,
+    "containsCreatedConversationLine": true
+  },
+  "invalidExactResume": {
+    "requestedId": "63203b62-1904-486c-b36d-10cdc2ca66e6",
+    "exit": 0,
+    "reportedInitId": "f686c858-c562-452f-9780-e7a638392ec0",
+    "stderrTail": "warning: conversation \"63203b62-1904-486c-b36d-10cdc2ca66e6\" not found\n"
+  }
+}

@@ -26,6 +26,7 @@ export class RuntimeModelCapacityService {
     const ids = models.map((model) => model.model_identifier);
     if (context.runtimeKind === RuntimeKind.CODEX_APP_SERVER) return this.codex.resolveMany(context.workspaceRootPath, ids);
     if (context.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) return this.claude.resolveContextCapacities(context.workspaceRootPath, ids);
+    if (context.runtimeKind === RuntimeKind.ANTIGRAVITY_CLI) return Object.fromEntries(ids.map((id) => [id, unknownCapacity("Antigravity CLI does not expose verified context capacity.")]));
     return Object.fromEntries(models.map((model) => [model.model_identifier, nativeModelCapacity(model)]));
   }
 }

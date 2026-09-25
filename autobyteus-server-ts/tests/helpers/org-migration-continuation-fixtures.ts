@@ -68,6 +68,7 @@ export const createMigrationContinuationRuntime = (memoryDir: string, store: Tok
   const noAttachment = { attachToRun: () => () => undefined };
   const agentManager = new AgentRunManager({
     autoByteusBackendFactory: factory, codexBackendFactory: factory, claudeBackendFactory: factory,
+    agyBackendFactory: factory,
     memoryRecorder: recorder, agentToolMcpRunSessionDeactivator: sessions,
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
     activationRegistry: new AgentRunActivationRegistry(new AgentRunResourceManager({ runSessions: sessions,

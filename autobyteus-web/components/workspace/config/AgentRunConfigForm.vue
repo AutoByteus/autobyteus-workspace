@@ -53,7 +53,9 @@
       <div class="min-w-0">
         <label for="auto-execute" class="block text-base text-gray-900 select-none" :class="{ 'text-gray-400': isFormReadOnly }">{{ $t('workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools') }}</label>
         <p class="mt-1 text-xs leading-relaxed text-gray-500">
-          {{ $t('workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help') }}
+          {{ $t(config.runtimeKind === 'antigravity_cli'
+            ? 'workspace.components.workspace.config.AgentRunConfigForm.agy_auto_approve_tools_help'
+            : 'workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help') }}
         </p>
       </div>
       <button
@@ -95,6 +97,7 @@
 </template>
 
 <script setup lang="ts">
+import { autoExecuteForNewRuntimeSelection } from '~/utils/agentRunRuntimeDraftPolicy'
 import { computed } from 'vue'
 import type { ExistingRunModelSelection, ExistingRunModelOptionsState } from '~/types/agent/ExistingRunModelConfigDraft'
 import type { AgentDefinition } from '~/stores/agentDefinitionStore'
@@ -159,6 +162,7 @@ const updateAutoExecute = (checked: boolean) => {
 
 const updateRuntimeKind = (value: string) => {
   if (isFormReadOnly.value) return
+  if (value !== props.config.runtimeKind && !existingRun.value) props.config.autoExecuteTools = autoExecuteForNewRuntimeSelection(value, props.config.autoExecuteTools)
   props.config.runtimeKind = value
 }
 

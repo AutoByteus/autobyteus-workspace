@@ -1,0 +1,5 @@
+error: failed to construct executor: failed to resolve components: unknown component: tool "call_mcp_tool" not found in registry
+unknown component: tool "command_status" not found in registry
+unknown component: tool "send_command_input" not found in registry
+unknown component: tool "sed_file" not found in registry
+AGY_ERROR: {"short_error":"failed to construct executor: failed to resolve components: unknown component: tool \"call_mcp_tool\" not found in registry\nunknown component: tool \"command_status\" not found in registry\nunknown component: tool \"send_command_input\" not found in registry\nunknown component: tool \"sed_file\" not found in registry","status":"UNKNOWN","error_code":2,"code_kind":"grpc","retryable":false,"error_id":"788e3c25-f179-4b1b-b035-dfbf2fe0920a-1"}

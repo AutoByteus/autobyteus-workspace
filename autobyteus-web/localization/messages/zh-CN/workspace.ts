@@ -143,8 +143,12 @@ const messages = {
     "配置",
   "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
     "Codex 高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
+  "workspace.components.workspace.config.AgentRunConfigForm.agy_auto_approve_tools_help":
+    "Antigravity CLI 高信任模式：工具无需交互式确认即可运行。关闭后，被拒绝的操作无法在聊天中批准。",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "Codex 团队成员高信任模式：本次运行会自动允许工具调用以及访问/权限请求。",
+  "workspace.components.workspace.config.TeamRunConfigForm.agy_auto_approve_tools_help":
+    "Antigravity CLI 成员高信任模式：工具无需交互式确认即可运行。关闭后，被拒绝的操作无法在聊天中批准。",
   "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
     "团队成员覆盖",
   "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":

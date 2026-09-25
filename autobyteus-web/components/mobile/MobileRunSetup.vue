@@ -78,6 +78,7 @@
     <MobileLaunchRunOptionsCard
       v-if="activeConfig"
       :auto-execute-tools="autoExecuteTools"
+      :runtime-kind="'rootConfig' in activeConfig ? activeConfig.rootConfig.runtimeKind : activeConfig.runtimeKind"
       @update:auto-execute-tools="setAutoExecuteTools"
     />
 

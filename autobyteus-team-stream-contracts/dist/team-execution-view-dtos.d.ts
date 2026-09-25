@@ -5,7 +5,7 @@ export declare const teamMemberExecutionIdentityDtoSchema: z.ZodObject<{
     member_address: z.ZodString;
 }, z.core.$strict>;
 export type AgentLaunchConfigurationDto = Readonly<{
-    runtime_kind: "autobyteus" | "claude_agent_sdk" | "codex_app_server";
+    runtime_kind: "autobyteus" | "claude_agent_sdk" | "codex_app_server" | "antigravity_cli";
     llm_model_identifier: string;
     llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
     auto_execute_tools: boolean;

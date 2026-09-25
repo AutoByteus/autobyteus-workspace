@@ -1,0 +1,48 @@
+{
+  "revision": "API-REV-003",
+  "worktreeCommit": "97f881366",
+  "runtime": "antigravity_cli",
+  "team": {
+    "result": "pass",
+    "mode": "real GraphQL/WebSocket, AGY member processes, no stub",
+    "assertions": [
+      "ping call_mcp_tool send_message_to delivered to real pong with exact sender and receiver IDs",
+      "tool start/success invocation and recipient turn correlated",
+      "both member projections retain token",
+      "terminate/restore preserves member and platform AGY IDs, model/runtime/workspace and fresh persisted response"
+    ],
+    "finalLog": "/tmp/agy-api-r3-full-final.log"
+  },
+  "org": {
+    "result": "partial pass; overall fail on public GraphQL projection",
+    "mode": "real GraphQL Org create, native /ws/agent-org stream, direct and nested AGY members, no stub",
+    "passingAssertions": [
+      "typed ROOT_EXECUTION_VIEW_SNAPSHOT and active ROOT_LIFECYCLE after CONNECTED",
+      "direct /director and nested /team/worker AGY processes published and exact-target commands accepted",
+      "both members emitted exact-address and exact-run-ID TURN_COMPLETED",
+      "director call_mcp_tool send_message_to start/success invocation correlated",
+      "native Org communication event contains exact director/worker run IDs and relay content",
+      "worker emitted post-delivery TURN_COMPLETED"
+    ],
+    "failure": {
+      "id": "API-F-003",
+      "query": "getAgentOrgMemberRunProjection",
+      "expected": "public GraphQL returns exact AGY member conversation/activity projection",
+      "observed": "AgentRun '/director' at '<orgRunId>' was not found in AgentOrg '<orgRunId>'",
+      "correctVariables": ["orgRunId", "memberAddress=/director", "agentRunId=<actual AGY director run ID>"],
+      "observedServiceArguments": ["root=<orgRunId>", "address=<orgRunId>", "run=/director"],
+      "directServiceCall": "succeeds with intended arguments",
+      "httpGraphql": "same error at POST /graphql",
+      "sourceBoundary": "autobyteus-server-ts/src/api/graphql/types/agent-org-run.ts:152-161",
+      "finalLog": "/tmp/agy-api-r3-full-final.log",
+      "diagnosticLogs": ["/tmp/agy-api-r3-org-projection-spy.log", "/tmp/agy-api-r3-org-http-diag.log"]
+    }
+  },
+  "focusedRegression": {
+    "contract": "8/8 pass",
+    "server": "28/28 pass",
+    "web": "48/48 pass",
+    "logs": ["/tmp/agy-api-r3-contract.log", "/tmp/agy-api-r3-server-regression.log", "/tmp/agy-api-r3-web-regression.log"]
+  },
+  "carriedPriorControls": "API-REV-001 browser/live DENIED after reload, DONE green without invented shell exit, standalone exact restore/selected workspace/skills/collision; no new browser run."
+}

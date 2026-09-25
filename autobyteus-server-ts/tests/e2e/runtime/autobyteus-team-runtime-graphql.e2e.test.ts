@@ -1,14 +1,11 @@
 import "reflect-metadata";
 import path from "node:path";
 import os from "node:os";
-import { createRequire } from "node:module";
 import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import { randomUUID } from "node:crypto";
 import type { FastifyInstance } from "fastify";
 import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getTeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import {
@@ -172,8 +169,6 @@ const assistantTextMatches = (message: WsMessage, agentRunId: string, token: str
 };
 
 describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () => {
-  let schema: GraphQLSchema;
-  let graphql: typeof graphqlFn;
   let testDataDir: string | null = null;
   let runtimeServerApp: FastifyInstance | null = null;
   let runtimeServerUrl: URL;
@@ -188,15 +183,9 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
     );
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
     await initializeLiveRuntimeSecretVaultFromEnvironment();
-    const require = createRequire(import.meta.url);
-    const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
-    const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
-    const graphqlModule = await import(graphqlPath);
-    graphql = graphqlModule.graphql as typeof graphqlFn;
     const started = await startStudioE2eRuntimeServer();
     runtimeServerApp = started.fastify;
     runtimeServerUrl = started.mainUrl;
-    schema = await buildGraphqlSchema();
   });
 
   afterAll(async () => {
@@ -217,15 +206,16 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
   });
 
   const execGraphql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
-    const result = await graphql({
-      schema,
-      source: query,
-      variableValues: variables,
+    const response = await fetch(new URL("/graphql", runtimeServerUrl), {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ query, variables }),
     });
-    if (result.errors?.length) {
-      throw result.errors[0];
+    const result = await response.json() as { data?: T; errors?: Array<{ message: string }> };
+    if (!response.ok || result.errors?.length || !result.data) {
+      throw new Error(`GraphQL HTTP ${response.status}: ${JSON.stringify(result.errors ?? result)}`);
     }
-    return result.data as T;
+    return result.data;
   };
 
   const fetchConfiguredAgentExecution = async (
@@ -244,28 +234,23 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
 
   const fetchModelIdentifier = async (): Promise<string> => {
     const query = `
-      query Models($runtimeKind: String) {
-        providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
-          llmModels {
-            modelIdentifier
-          }
+      mutation EnsureLocalModel($providerId: String!, $runtimeKind: String) {
+        ensureProviderModelCatalog(providerId: $providerId, runtimeKind: $runtimeKind) {
+          llmModels { modelIdentifier }
         }
       }
     `;
 
     const result = await execGraphql<{
-      providerModelCatalogSnapshots: Array<{
-        llmModels: Array<{ modelIdentifier: string }>;
-      }>;
+      ensureProviderModelCatalog: { llmModels: Array<{ modelIdentifier: string }> };
     }>(query, {
+      providerId: "LMSTUDIO",
       runtimeKind: "autobyteus",
     });
 
-    const modelIdentifiers = result.providerModelCatalogSnapshots.flatMap((provider) =>
-      provider.llmModels
+    const modelIdentifiers = result.ensureProviderModelCatalog.llmModels
         .map((model) => model.modelIdentifier)
-        .filter((modelIdentifier): modelIdentifier is string => modelIdentifier.trim().length > 0),
-    );
+        .filter((modelIdentifier): modelIdentifier is string => modelIdentifier.trim().length > 0);
     if (modelIdentifiers.length === 0) {
       throw new Error("No AutoByteus model identifier was returned for team API E2E.");
     }
@@ -349,7 +334,6 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
           {
             memberName: "worker",
             ref: workerAgentDefinitionId,
-            refType: "AGENT",
             refScope: "SHARED",
           },
         ],
@@ -461,13 +445,11 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
             {
               memberName: "coordinator",
               ref: coordinatorAgentDefinitionId,
-              refType: "AGENT",
               refScope: "SHARED",
             },
             {
               memberName: "reviewer",
               ref: reviewerAgentDefinitionId,
-              refType: "AGENT",
               refScope: "SHARED",
             },
           ],
@@ -651,13 +633,11 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
           {
             memberName: "worker",
             ref: workerAgentDefinitionId,
-            refType: "AGENT",
             refScope: "SHARED",
           },
           {
             memberName: "reviewer",
             ref: reviewerAgentDefinitionId,
-            refType: "AGENT",
             refScope: "SHARED",
           },
         ],
@@ -1176,13 +1156,11 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
           {
             memberName: "coordinator",
             ref: coordinatorAgentDefinitionId,
-            refType: "AGENT",
             refScope: "SHARED",
           },
           {
             memberName: "reviewer",
             ref: reviewerAgentDefinitionId,
-            refType: "AGENT",
             refScope: "SHARED",
           },
         ],

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   CollaborationStreamClientMessageSchema,
+  CollaborationStreamServerMessageSchema,
   RootExecutionEventDtoSchema,
   RootExecutionViewDtoSchema,
 } from "../dist/index.js";
@@ -101,6 +102,52 @@ test("requires explicit family and exact matching branch", () => {
   assert.equal(RootExecutionViewDtoSchema.parse(orgSnapshot()).root_subject_kind, "agent_org");
   assert.throws(() => RootExecutionViewDtoSchema.parse({ root_subject_kind: "agent_org", root_run_id: "o", schema_version: 2, root_team: {} }));
   assert.throws(() => RootExecutionViewDtoSchema.parse(orgSnapshot("another-org-run")), /root correlation mismatch/);
+});
+
+test("parses a native AGY Org snapshot at root, direct Agent, nested Team and nested Agent scopes", () => {
+  const snapshot = orgSnapshot();
+  const agyLaunch = () => ({ ...launchConfiguration, runtimeKind: "antigravity_cli" });
+  const root = snapshot.root_org.execution_tree.rootOrg;
+  root.defaultLaunchConfiguration = agyLaunch();
+  const direct = configuredAgent("/director", "agent-run-director");
+  direct.launchConfiguration = agyLaunch();
+  const nested = configuredAgent("/team/worker", "agent-run-worker");
+  nested.launchConfiguration = agyLaunch();
+  const team = configuredTeam("/team", "team-run", "/team/worker", [nested]);
+  team.defaultLaunchConfiguration = agyLaunch();
+  root.members.push(direct, team);
+  snapshot.root_org.agent_statuses.push(
+    status("/director", "agent-run-director"),
+    status("/team/worker", "agent-run-worker"),
+  );
+
+  const parsed = CollaborationStreamServerMessageSchema.parse({
+    type: "ROOT_EXECUTION_VIEW_SNAPSHOT", payload: snapshot,
+  });
+  assert.equal(parsed.type, "ROOT_EXECUTION_VIEW_SNAPSHOT");
+  assert.equal(parsed.payload.root_org.execution_tree.rootOrg.defaultLaunchConfiguration.runtimeKind, "antigravity_cli");
+  assert.equal(parsed.payload.root_org.execution_tree.rootOrg.members[0].launchConfiguration.runtimeKind, "antigravity_cli");
+  assert.equal(parsed.payload.root_org.execution_tree.rootOrg.members[1].defaultLaunchConfiguration.runtimeKind, "antigravity_cli");
+  assert.equal(parsed.payload.root_org.execution_tree.rootOrg.members[1].members[0].launchConfiguration.runtimeKind, "antigravity_cli");
+
+  for (const change of [
+    (value) => value.root_org.execution_tree.rootOrg.defaultLaunchConfiguration.runtimeKind = "unknown_runtime",
+    (value) => value.root_org.execution_tree.rootOrg.members[0].launchConfiguration.runtimeKind = "unknown_runtime",
+    (value) => value.root_org.execution_tree.rootOrg.members[1].defaultLaunchConfiguration.runtimeKind = "unknown_runtime",
+    (value) => value.root_org.execution_tree.rootOrg.members[1].members[0].launchConfiguration.runtimeKind = "unknown_runtime",
+  ]) {
+    const invalid = structuredClone(snapshot);
+    change(invalid);
+    assert.throws(() => CollaborationStreamServerMessageSchema.parse({ type: "ROOT_EXECUTION_VIEW_SNAPSHOT", payload: invalid }));
+  }
+});
+
+test("keeps all pre-existing Org snapshot runtime kinds valid", () => {
+  for (const runtimeKind of ["autobyteus", "claude_agent_sdk", "codex_app_server"]) {
+    const snapshot = orgSnapshot();
+    snapshot.root_org.execution_tree.rootOrg.defaultLaunchConfiguration.runtimeKind = runtimeKind;
+    assert.equal(RootExecutionViewDtoSchema.parse(snapshot).root_org.execution_tree.rootOrg.defaultLaunchConfiguration.runtimeKind, runtimeKind);
+  }
 });
 
 test("requires sequenced events and an exact Org-root client command", () => {

@@ -274,6 +274,24 @@ describe("RuntimeToolTraceSequencer", () => {
     expect(results.every((trace) => !("tool_args" in trace))).toBe(true);
   });
 
+  it("persists AGY denial provider state without adding it to other-runtime denials", async () => {
+    const memoryDir = await mkTempDir();
+    const { sequencer } = createSequencer(memoryDir);
+    for (const [invocationId, providerState] of [["agy-error", "ERROR"], ["agy-done", "DONE"], ["other", null]] as const) {
+      sequencer.recordTerminal(event(AgentRunEventType.TOOL_DENIED, {
+        invocation_id: invocationId, turn_id: "turn-1", tool_name: "run_command", arguments: {},
+        reason: "permission denied", ...(providerState ? { provider_state: providerState } : {}),
+        ...(providerState ? { result: { provider_state: providerState, output: `${invocationId}-output` } } : {}),
+      }), "turn-1");
+    }
+    const results = readTraceDicts(memoryDir).filter((trace) => trace.trace_type === "tool_result");
+    expect(results.map((trace) => trace.tool_result)).toEqual([
+      { status: "denied", reason: "permission denied", provider_state: "ERROR", output: "agy-error-output" },
+      { status: "denied", reason: "permission denied", provider_state: "DONE", output: "agy-done-output" },
+      { status: "denied", reason: "permission denied" },
+    ]);
+  });
+
   it("rejects a conflicting terminal name without completing the lifecycle", async () => {
     const memoryDir = await mkTempDir();
     const { sequencer, flushReasoningBoundary } = createSequencer(memoryDir);

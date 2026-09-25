@@ -1,0 +1,34 @@
+{
+  "model": "gemini-3.8-flash-low",
+  "firstMessageExpected": "FIRST-EMBER",
+  "firstMessage": {
+    "exit": 0,
+    "stderr": "",
+    "initId": "742f12c9-0e5f-4495-8732-9022551a006b",
+    "results": [
+      {
+        "status": "SUCCESS",
+        "response": "READY.\n",
+        "conversationId": "742f12c9-0e5f-4495-8732-9022551a006b"
+      },
+      {
+        "status": "SUCCESS",
+        "response": "FIRST-EMBER\n",
+        "conversationId": "742f12c9-0e5f-4495-8732-9022551a006b"
+      }
+    ]
+  },
+  "workspaceRuleExpected": "RULE-CYAN",
+  "workspaceRule": {
+    "exit": 0,
+    "stderr": "",
+    "initId": null,
+    "results": [
+      {
+        "status": "SUCCESS",
+        "response": "4fb46bba-09b5-4cae-8d17-6cd163446622\n",
+        "conversationId": "4fb46bba-09b5-4cae-8d17-6cd163446622"
+      }
+    ]
+  }
+}
