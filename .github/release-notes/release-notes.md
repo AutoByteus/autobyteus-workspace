@@ -1,14 +1,14 @@
 ## What's New
-- **External messaging is removed from AutoByteus.** Settings no longer has a Messaging section. The server no longer receives chat-platform messages, starts or resumes runs from them, or posts run output back to a chat. The desktop app no longer downloads, installs or runs the messaging gateway, and releases no longer publish a gateway package. Chat-platform integrations are planned as separate projects that you add through **Settings → MCP Servers** and skills, like any other tools.
+- Antigravity CLI is available as an Agent runtime for standalone Agents, Teams, and AgentOrgs, with model selection, scoped Agent Tools collaboration, and conversation continuation after restart.
 
 ## Improvements
-- Upgrading frees the disk space used by installed messaging gateway versions and their download cache, which can be several GB on machines that used messaging.
-- Old links to the Messaging settings page now open **API Keys** instead of an error.
+- Large Antigravity AgentOrgs launch with responsive health checks while model discovery runs. Invalid configurations finish with a clear, member-specific error instead of remaining on the starting screen.
+- Agent and member conversations retain their identity, history, and visible prior replies across an app restart.
+- Antigravity tool activity appears in the existing conversation and Activity/Event Monitor views; new selections default to automatic tool execution while an explicit off choice is preserved.
 
-## Upgrade notes
-- **Messaging stops when you upgrade.** Existing chat bindings stop working, and no messaging process keeps running.
-- **Messaging data is permanently deleted on the first start, with no backup.** This covers chat bindings with their receipts and outbox, installed gateway runtimes, gateway configuration including saved bot tokens, the gateway download cache and gateway logs. The two unused messaging tables are dropped from the database. To connect a bot again later, create a new token on that chat platform.
-- If a messaging folder cannot be deleted, the server still starts and the cleanup retries on the next start.
-- Past runs that were started from chat messages stay in run history and open as ordinary conversations.
-- **Docker all-in-one:** the old `gateway.log` file in the data `logs` folder and the Docker volume that held gateway memory are not removed automatically. Delete the log file by hand. Find the volume with `docker volume ls --filter name=gateway`, then remove it with `docker volume rm <volume-name>`.
-- MCP servers, tools and skills work as before.
+## Fixes
+- Team-local configured skills with safe links to files in their own Team package now start correctly in Antigravity member runs. Linked files are copied into the run-private skill snapshot without changing the source package or selected workspace.
+
+## Notes
+- A provider-reported `DONE` tool step is displayed as a successful provider step; it does not independently verify an underlying shell exit code.
+- Antigravity CLI must be installed and available to the app. No persisted-data migration is required.
