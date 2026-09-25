@@ -1,12 +1,14 @@
 ## What's New
-- Team and AgentOrg stored-run history now follow the same index-backed, read-only listing policy.
+- **External messaging is removed from AutoByteus.** Settings no longer has a Messaging section. The server no longer receives chat-platform messages, starts or resumes runs from them, or posts run output back to a chat. The desktop app no longer downloads, installs or runs the messaging gateway, and releases no longer publish a gateway package. Chat-platform integrations are planned as separate projects that you add through **Settings → MCP Servers** and skills, like any other tools.
 
 ## Improvements
-- Imported Team Memory listing reuses each inspected execution tree for member memory details instead of rereading all roots.
-- Local operators can preview and explicitly repair missing Team or AgentOrg history-index rows with an offline, backup-protected command.
+- Upgrading frees the disk space used by installed messaging gateway versions and their download cache, which can be several GB on machines that used messaging.
+- Old links to the Messaging settings page now open **API Keys** instead of an error.
 
-## Fixes
-- Team archive now checks inactive state in the same root transition lane as restore, preventing a stale archive decision during concurrent restore.
-- Corrupt Team and AgentOrg history indexes fail visibly without an automatic overwrite; missing indexes remain empty until lifecycle events or explicit local repair.
-
-The separate Org imported-memory adapter is not part of this branch and must be integrated and validated when its branch merges.
+## Upgrade notes
+- **Messaging stops when you upgrade.** Existing chat bindings stop working, and no messaging process keeps running.
+- **Messaging data is permanently deleted on the first start, with no backup.** This covers chat bindings with their receipts and outbox, installed gateway runtimes, gateway configuration including saved bot tokens, the gateway download cache and gateway logs. The two unused messaging tables are dropped from the database. To connect a bot again later, create a new token on that chat platform.
+- If a messaging folder cannot be deleted, the server still starts and the cleanup retries on the next start.
+- Past runs that were started from chat messages stay in run history and open as ordinary conversations.
+- **Docker all-in-one:** the old `gateway.log` file in the data `logs` folder and the Docker volume that held gateway memory are not removed automatically. Delete the log file by hand. Find the volume with `docker volume ls --filter name=gateway`, then remove it with `docker volume rm <volume-name>`.
+- MCP servers, tools and skills work as before.
