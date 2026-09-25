@@ -28,7 +28,7 @@ import { address, testAgentNode, testExecutionTree } from "../../fixtures/curren
 
 /**
  * Team and AgentOrg memory explorer + member memory view through the built GraphQL schema
- * (REQ-004…REQ-010; AC-003, AC-005…AC-011). Roots are admitted by the real package readiness index.
+ * (REQ-004…REQ-010, REQ-012; AC-003, AC-005…AC-011, AC-014). Roots are admitted by the real package readiness index.
  */
 
 const writeJsonl = (filePath: string, records: unknown[], mtimeIso: string) => {
@@ -395,12 +395,13 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     expect(unknown.listAgentOrgRunsWithMemory).toMatchObject({ total: 0, entries: [] });
   });
 
-  it("opens org member memory for a team-hosted member and a task instance; unknown members get an empty view (AC-009, AC-011)", async () => {
+  it("opens org member memory for a team-hosted member, a task instance and a task-team member; unknown members get an empty view (AC-009, AC-011, AC-014)", async () => {
     const view = (orgRunId: string, agentRunId: string) =>
       execGraphql<ViewData<"getAgentOrgMemberRunMemoryView">>(orgMemberViewQuery, { orgRunId, agentRunId })
         .then((data) => data.getAgentOrgMemberRunMemoryView);
     await expect(view("gql-org-a-1", "gql-org-a-1-designer")).resolves.toMatchObject({ runId: "gql-org-a-1-designer", semantic: [expect.objectContaining({ fact: "org designer" })] });
     await expect(view("gql-org-a-1", "gql-org-a-1-task-ceo")).resolves.toMatchObject({ semantic: [expect.objectContaining({ fact: "org task ceo" })] });
+    await expect(view("gql-org-a-1", "gql-org-a-1-task-team-designer")).resolves.toMatchObject({ runId: "gql-org-a-1-task-team-designer", semantic: [expect.objectContaining({ fact: "org task team member" })] });
     for (const [orgRunId, agentRunId] of [["gql-org-a-1", "missing-run"], ["gql-org-missing", "gql-org-a-1-ceo"]]) {
       const empty = await view(orgRunId!, agentRunId!);
       expect(empty.runId).toBe(agentRunId);

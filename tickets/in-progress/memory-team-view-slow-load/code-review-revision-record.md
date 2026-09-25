@@ -8,6 +8,8 @@
 | CRR-002 | `code-review-report.md` | Independent implementation rereview, round 2 / user request | Pass (9.4/10) | Pass (9.4/10) | CR-001 (unchanged, Low) |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 / user-directed refactor | Pass (9.4/10) | Reopened — Design Impact | CR-001 (subsumed), CR-002 (new), CR-003 (new) |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 / `origin/personal` verification | Reopened — Design Impact | Reopened — Design Impact | CR-003 (upstream resolved), CR-004 (new), CR-002 (unchanged) |
+| CRR-005 | `code-review-report.md` | Implementation Review, round 5 / IR-002 (SR-004) handoff | Reopened — Design Impact | Pass (9.4/10) | CR-001, CR-002, CR-003, CR-004 (resolved); CR-005, CR-006 (new, Low) |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional API/E2E test-code review / API-REV-001 pass | N/A (first test review) | Pass | None |
 
 ## Revision Entries
 
@@ -143,3 +145,71 @@ None.
   - whether `TeamRunExecutionTreeStore.read` validation fully covers the `49ce0d173` root-mismatch invariant for `TeamRootMemorySource`;
   - conflict resolution in the test files;
   - whether the codegen delta needs regeneration after the merge.
+
+### CRR-005: IR-002 (SR-004) source review — Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/code-review-report.md` (rewritten to the latest authoritative result)
+- Review entry point and round: Implementation Review, round 5.
+- Triggering role, report path, and finding or scenario IDs: `implementation_engineer`, `implementation-handoff.md` (IR-002; merge commit `7c2553f48`, parents `bd8450984` and `origin/personal` @ `6f7b5e371`). Scenarios: SCN-001…006.
+- Relevant solution revision IDs: SR-001…SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-001…ARCH-REV-004
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: N/A (the IR-001-cycle API/E2E work was superseded)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Reopened — Design Impact` (CRR-004)
+- Current authoritative result: `Pass` (9.4/10)
+- What changed in the review result and why: SR-004 is implemented as designed.
+  - Delta 1 (REQ-012): all executions, with `executionKind`, `startedAt` and `groupPath`; depth-first order; the web tree keyed by `teamRunId`.
+  - Delta 2 (REQ-011): sources only on the home view (background) or for an unknown imported key; no `await` between selection and fetch.
+  - Delta 3 (merge): this branch's structure wins; upstream's parallel path is removed; the org source reads the history owner; a mismatch skip test was added.
+  - Reviewer runs: server focused suites 417 tests passed (the 3 failures are pre-existing and unrelated); build typecheck 0 errors; web 12 files / 54 tests passed.
+- Supported product scenario / material-premise basis changes: added SCN-R2 (REQ-011 home refresh). AR-P-002 confirmed. C-12 rejected as Not Reachable (Team V2 trees cannot contain configured teams).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Subsumed by CR-002 | Resolved | IR-002 | `syncRouteState` has no `await` between `selectRouteSubject()` (which calls `resetList`) and `fetch*` (which sets `loading` synchronously); page test "shows 'Loading runs' in the first render … never the empty state" |
+| CR-002 | Open (Design Impact) | Resolved | SR-004 Delta 2; IR-002 | `loadSources` only replaces the list and shares one in-flight request; sources are awaited only for an unknown imported key; `refreshSourcesForHome` runs in the background; AC-012 request-count test |
+| CR-003 | Upstream resolved; in-package half open | Resolved | SR-004 Delta 3; IR-002 | `AgentOrgRootMemorySource.readCatalogEntries` → `AgentOrgRunHistoryCatalogService.listCatalogRows()`; no `AgentOrgRunHistoryIndexStore` import |
+| CR-004 | Open (integration) | Resolved | SR-004 Delta 3; IR-002 | Merge parents verified. `team-memory-member-target-builder.ts`, `listAgentsInTree` and `listTeamMemberLocationsFromTree` are absent. `withInactiveHistoryMutation` is in both stored-only managers. Test "skips a root folder whose tree names a different team run"; upstream no-writes test kept |
+
+- New or remaining finding IDs:
+  - CR-005 (Low, non-blocking): orphaned doc comment above `containsRunId`.
+  - CR-006 (Low, non-blocking): unused `sourcesLoaded`.
+  - C-14 (requirements-doc note): the AC-014 example does not match real data; the implementation follows REQ-012.
+- Material score or classification changes: score 9.4/10, every category ≥ 9.0; `Large` / `High` stands.
+- Recommended recipient: `/api_e2e_engineer`; informational notice to `/implementation_engineer`.
+- Remaining risks or uncertainty:
+  - AC-014 must be judged by rule;
+  - built-backend timing and O-001;
+  - the codegen baseline is stale upstream;
+  - RSK-001.
+
+### CRR-006: Proportional test-code review after the API/E2E pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/api-e2e-test-review-report.md` (created)
+- Review entry point and round: Successful API/E2E test-code review, round 1.
+- Triggering role, report path, and finding or scenario IDs: `api_e2e_engineer`, `api-e2e-execution-coverage-report.md` (API-REV-001, execution round 2, `7c2553f48`). Scenario: SCN-006; AC-009, AC-011 and AC-014.
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-004
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: N/A (first test review). The source-review result remains CRR-005 Pass.
+- Current authoritative result: `Pass`
+- What changed in the review result and why: one durable test change was reviewed. `memory-collaboration-graphql.e2e.test.ts` gained an assertion that the org member view opens the task-team member's own memory (unique content, own `runId`). It is requirement-aligned, reuses the existing helper and fixture, and is deterministic.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None (no prior test-review findings). CR-005 and CR-006 (source review, Low) remain open and non-blocking.
+
+- New or remaining finding IDs: None for tests.
+- Material score or classification changes: None; `Large` / `High`.
+- Recommended recipient: `/delivery_engineer`.
+- Remaining risks or uncertainty:
+  - the test change is uncommitted;
+  - the AC-014 example-text correction is pending;
+  - the API/E2E environment incidents are disclosed;
+  - the packaged Electron app was not run.

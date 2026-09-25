@@ -2,220 +2,153 @@
 
 ## Investigation Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/requirements-doc.md` (SR-002, Approved)
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/requirements-doc.md` (SR-004, approved "go" 2026-09-25)
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/investigation-notes.md`
 - Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/solution-revision-record.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/design-spec.md` (SR-003)
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/design-spec.md` (SR-004 Revision authoritative)
 - Supplemental Task Artifacts: None. Product Design: `N/A — not applicable`.
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/design-review-report.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/design-review-report.md` (ARCH-REV-004 Pass)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/implementation-handoff.md`
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/implementation-handoff.md` (IR-002)
 - Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/implementation-revision-record.md`
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/code-review-report.md` (CRR-001, Pass)
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/code-review-report.md` (CRR-005 Pass)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 1
-- Trigger: `/code_reviewer` Implementation Review Pass (CRR-001, round 1) for commit `bd8450984`
-- Prior Investigation Reviewed: N/A (initial)
-- Latest Authoritative Investigation: Round 1
+- Current Investigation Round: 2. This is the first completed round; round 1 on `bd8450984` was stopped without a verdict and superseded by SR-004.
+- Trigger: `/code_reviewer` Implementation Review Pass, CRR-005, merge commit `7c2553f48` (parents `bd8450984`, `origin/personal` @ `6f7b5e371`)
+- Prior Investigation Reviewed: round 1 (stopped). F-001 was superseded by REQ-012; O-001 was carried forward.
+- Latest Authoritative Investigation: Round 2
 
 ## Routing Classification
 
-- Task size: `Large`
-- Architectural risk: `High`
-- Input route: `Reviewed`
-- Successful-output route: `Code Review` (proportional test-code review)
-- Proportional test-code review decision: `Required` (durable coverage is added)
+- Task size `Large`; architectural risk `High`; input route `Reviewed`; successful-output route `Code Review`.
+- Proportional test-code review decision: `Required` (durable e2e file updated).
 
 ## Current Requirement And Design Basis
 
-This package must prove four things:
+The requirements are REQ-001…REQ-012 and AC-001…AC-014 (SR-004). Beyond the round-1 basis, this round must also prove:
 
-1. The Agent Teams list and one team's runs list scale linearly and answer in ≤ 2 s on the user's data. Team content is unchanged apart from REQ-009 and REQ-010 (REQ-001, REQ-004, REQ-005; AC-001…003, AC-005, AC-006).
-2. A click only navigates. The route sync sends exactly one data request, shows the loading state and never shows another selection's runs (REQ-002, REQ-003; AC-004).
-3. The new Agent Orgs tab, org detail and org member inspector work end to end. That includes the breadcrumb `Agent Orgs / <org> / <org run> / <member>`, Back, and the imported-source empty state (REQ-006…008; AC-007…009).
-4. Member entries show a display name and their own run ID. The badge, the run ID and the inspector agree (REQ-009, REQ-010; AC-010, AC-011).
-
-The design is SR-003: a shared `CollaborationRootMemoryCatalog`, team and org sources that read one tree per root, a root-first and admission-aware `resolveTeamMemberLocation`, and route-owned fetching in `pages/memory.vue`. Code review CR-001 (Low) asks this stage to observe whether the transient "No runs match this filter." state is visible before "Loading runs…".
+- **REQ-011 / AC-012 / AC-013:** the sources list is requested only on the Memory home view (background) or once, awaited, for an unknown imported source. Detail and inspector navigation send exactly one request and show "Loading runs…" first.
+- **REQ-012 / AC-014:** every agent run with memory in the execution tree is shown in its structure (configured teams, task agents, task teams, nested teams), grouped by `teamRunId`. Each row opens its own run. Judge AC-014 by the REQ-012 rule, not the literal example rows (CRR-005, handoff Known Risks).
+- **AC-005:** the baseline is now `origin/personal` @ `6f7b5e371`.
+- **O-001:** admission counts, old vs new built server on the same copy.
 
 ## Changed Behavior Summary
 
 | Behavior ID / Boundary | Change Type | Upstream Evidence | Coverage Consequence |
 | --- | --- | --- | --- |
-| BEH-001 / BEH-002 performance (team list, team runs) | Changed | REQ-001, AC-001/002 | Live timing on the built backend against a full-fidelity copy of the live memory dir |
-| BEH-005 team content | Preserved | REQ-004, AC-005 | Existing unit tests, plus team GraphQL e2e (new) and live-data spot checks |
-| BEH-006 / BEH-007 Agent Orgs | Added | REQ-006…008, AC-007…009 | New GraphQL e2e; live timing; browser walkthrough |
-| BEH-002…004 route-owned fetching | Changed | REQ-002/003, AC-004 | Page and store unit tests exist; browser request counting and state observation (CR-001) |
-| BEH-008 display name | Changed (fix) | REQ-009, AC-010 | Component test exists; GraphQL e2e asserts `displayName`; browser check |
-| BEH-009 own run ID | Changed (fix) | REQ-010, AC-011 | Unit test exists; GraphQL e2e for team and org task instances; live nested-classroom check |
-| `resolveTeamMemberLocation` root-first / nested / admission | Changed (internal) | REQ-005, AC-006, REC-001 | Unit tests exist; GraphQL e2e through `getTeamMemberRunMemoryView` |
-| GraphQL type rename `CollaborationMemberMemoryTargetSummary` | Changed | Design Interface Mapping | GraphQL e2e selects member fields through the real schema |
+| BEH-001/002 performance | Changed | REQ-001, AC-001/002 | Live timing on the built backend |
+| BEH-005 team content | Preserved (except REQ-009/010/012) | REQ-004, AC-005 | Old-vs-new built-server equivalence on the same data |
+| BEH-006/007 Agent Orgs | Added | REQ-006…008 | GraphQL e2e + live + browser |
+| BEH-010 all runs in structure | Added | REQ-012, AC-014 | Independent real-data check + browser + e2e |
+| Route-owned fetching and sources ownership | Changed | REQ-002/003/011, AC-004/012/013 | Browser request counting and render-state order |
+| Org history owner (merge) | Changed | Design Delta 3 | e2e (org index names/summaries) + live |
 
 ## Changed Surface And Boundary Classification
 
-| Surface / Boundary | Affected? | Actual Changed Boundary | Repository Evidence Available | Material Risk Not Exercised By That Evidence | Candidate Broader Validation Mode |
+| Surface / Boundary | Affected? | Actual Changed Boundary | Repository Evidence | Material Risk Not Exercised By It | Broader Mode |
 | --- | --- | --- | --- | --- | --- |
-| Domain / backend logic | Yes | Catalog, sources, location services | Unit tests (service level, real fs fixtures) | Performance at real volume; admission from the real readiness index | Live API timing on the built backend |
-| API / transport / contract | Yes | 3 new queries, 4 types, type rename | `memory-explorer-types.test.ts`, resolver unit test (source service mocked) | No test runs the team or org queries through the built schema | Durable GraphQL e2e (new) + live curl |
-| Frontend component / state | Yes | Stores, `CollaborationMemoryDetail`, `MemoryHome`, `MemoryInspector` | Web component/store/page specs (12 files / 46 tests) | Real rendering, request counts over the network, CR-001 transient state | Browser |
-| Browser integration / user journey | Yes | `pages/memory.vue` route sync and new routes | Page spec with mocked stores | Real router + Apollo + backend sequencing | Browser against the dev stack |
-| Authentication / session / permissions | No | — | — | — | — |
-| Desktop renderer / web-equivalent UI | Yes | Same Nuxt renderer | As above | As above | Browser (project `pnpm dev`) |
-| Desktop shell / Electron-specific integration | No | No `autobyteus-web/electron/**` file changed | — | None introduced by this diff | None (see Desktop decision) |
-| Process / lifecycle | No | Read-only queries | — | — | — |
-| Persisted-data transition | No (`Not Affected`) | Read-only paths | Handoff Persisted Data check | A read path must not write: check the live copy is not modified by the explorer queries | Live copy observation |
-| Worker / queue / distributed coordination | No | — | — | — | — |
-| External integration | No | — | — | — | — |
+| Domain / backend logic | Yes | Catalog, sources, location services (`executionKind`, `groupPath`) | Unit (admitted fixtures) | Real volume; real task-team shapes | Live API on real data |
+| API / transport / contract | Yes | Additive GraphQL fields and org queries | `memory-collaboration-graphql.e2e.test.ts` | — | Live curl |
+| Frontend component / state | Yes | Stores, tree component, route sync | Web specs (12 files / 54 tests) | Real request sequencing and render order | Browser |
+| Browser user journey | Yes | `pages/memory.vue` | Page spec (recording client) | Real Apollo/network | Browser (headless Chromium) |
+| Desktop shell | No | No `electron/**` file in `git diff 6f7b5e371 HEAD` | — | — | None |
+| Persisted data | No (`Not Affected`) | Read-only | Upstream no-writes test | Server startup writes | Copy-modification check |
+| Authentication, workers, external | No | — | — | — | — |
 
 ## Project Execution Discovery
 
-- Assigned task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load`
-- Project type and runtime stack: pnpm monorepo; `autobyteus-server-ts` (Node, Fastify + Mercurius + type-graphql, vitest); `autobyteus-web` (Nuxt 3, Pinia, Apollo, vitest; Electron shell under `autobyteus-web/electron`).
-- Conflicting or unclear instructions: none.
-- Required secrets: `N/A` (the memory explorer needs no provider keys).
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load`
+- Instructions:
+  - `autobyteus-server-ts/AGENTS.md`: vitest `--no-watch`.
+  - `autobyteus-web/AGENTS.md`: `pnpm test:nuxt … --run`; never `git add .`.
+  - Root `package.json`: `pnpm dev`.
+  - `scripts/development/development-runtime.mjs`: backend :8000, web :3000, data root `<worktree>/.autobyteus/development/server-data`.
+- **Environment constraints learned this round:**
+  1. The agent shell inherits the user's AutoByteus app environment: `PORT=29695`, `DATABASE_URL` → `~/.autobyteus/server-data/db/production.db`, and many `AUTOBYTEUS_*` paths. Server starts must use `env -i PATH=… HOME=…` with explicit variables. dotenv does not override inherited variables.
+  2. A fresh dev DB makes server startup re-run the upstream app-data migrations on the memory copy. That rewrote 146 `team_communication_messages.json` files plus run metadata, and 100 fewer team roots were admitted. A faithful run needs a `cp -c` clone of `production.db`, which already holds the migration records, as the live app has.
+  3. The embedded `open_tab` browser tab is hidden (`visibilityState: hidden`), so frame and timer throttling distorts navigation timing. Use headless Chromium (Playwright, `playwright-core` 1.58.2 + cached `chromium_headless_shell`) for UI timing and journeys.
 
-| Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
-| --- | --- | --- |
-| `autobyteus-server-ts/AGENTS.md` | Server test commands | `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
-| `autobyteus-web/AGENTS.md` | Web test commands, git rules | `pnpm test:nuxt <path> --run`; never `git add .` |
-| `package.json` (root) | Dev stack | `pnpm dev` = server build + `scripts/development/run-dev.mjs` |
-| `scripts/development/development-runtime.mjs` | Dev runtime layout | Backend `127.0.0.1:8000`, frontend `127.0.0.1:3000`; data root `<worktree>/.autobyteus/development/server-data`; `AUTOBYTEUS_MEMORY_DIR=<data root>/memory` |
-| `autobyteus-server-ts/tests/e2e/memory/*.e2e.test.ts` | Existing GraphQL e2e pattern | `buildGraphqlSchema()` + `graphql()` in-process over a temp app data dir |
+| Component | Working Directory | Start | Readiness | Stop |
+| --- | --- | --- | --- | --- |
+| New stack | worktree | `env -i … pnpm dev` | `DEV_SERVER_READY` / `DEV_WEB_READY` | SIGINT `run-dev.mjs` |
+| Old server `6f7b5e371` (O-001 only) | temporary `git worktree` under `/tmp/api-e2e-memory-team-view/r2/old` (deps `cp -cR`, `tsc` build) | `env -i … DATABASE_URL=<clone> node dist/app.js --port 8010 --data-dir <tmp>` | `/rest/health` | SIGINT; worktree removed |
 
-| Component / Dependency | Working Directory | Start / Setup Command | Runtime / Resource Notes | Readiness Check | Stop / Cleanup Method |
-| --- | --- | --- | --- | --- | --- |
-| Built backend + Nuxt dev | worktree root | `pnpm dev` (background) | Ports 8000/3000 were free; the user's Electron app uses :29695 and `~/.autobyteus/server-data` and is not touched | Log line `Server listening on 127.0.0.1:8000` and `/rest/health`; frontend HTTP 200 | SIGINT/kill of the owned `pnpm dev` process group; verify ports freed |
-| Full-fidelity memory copy | worktree | `cp -cR ~/.autobyteus/server-data/memory <data root>/memory` (APFS clonefile, same volume; copy-on-write, no data movement) | 6.0 GB teams, 144 MB orgs, 1.0 GB imports; live dir is only read | File counts compared with the live dir | `rm -rf <worktree>/.autobyteus/development` after validation |
-
-| Data / Fixture / Identity Need | Existing Project Mechanism Or Creation Method | Environment / Data-Safety Notes | Cleanup / Retention |
+| Data Need | Mechanism | Safety | Cleanup |
 | --- | --- | --- | --- |
-| User's real team/org memory (534+ team runs, 19 org runs) | APFS clone of the live memory dir into the dev data root | The dev backend never opens the live dir, so startup reconciliation cannot mutate the user's data | Deleted after validation |
-| Imported source for the org empty state | Real `imports/docker-node-1` in the copy (has `agent_teams`, `agents`, no `agent_orgs`) | Same | Same |
-| GraphQL e2e fixtures | `tests/fixtures/current-team-run-fixtures.ts`, `current-agent-org-run-fixtures.ts`, run-history stores | Temp app data dir per suite | Removed in `afterAll` |
+| Real memory (543 team roots, 23 org roots at 13:15:56Z) | `cp -cRp` APFS clone of `~/.autobyteus/server-data/memory` | The live dir is only read | Deleted |
+| Migration-state fidelity | `cp -c` clone of `production.db` per server | Clone only; stays on the machine | Deleted |
+| AC-013 new source | `imports/api-e2e-new-source/source-node.json` created in the dev copy | Copy only | Deleted |
 
 ## Persisted Data Transition Coverage Basis
 
-- Approved decision: `Not Affected`.
-- References: design-spec "Persisted Data / State Transition Decision"; handoff "Persisted Data Transition Check".
-- Evidence planned: the new queries run against a real data copy. I will compare the history index files of the copy before and after the explorer queries to show that the read paths do not write.
+- Decision `Not Affected`. Evidence: 0 files changed in either server's memory copy after startup and all explorer queries, when the DB clone carries the migration records. The upstream no-writes explorer test is kept.
 
 ## Existing Durable Coverage Inventory
 
-| Path / Scenario | Current Assertion Or Intent | Related Req / AC | Validity Decision | Evidence | Action |
-| --- | --- | --- | --- | --- | --- |
-| `server/tests/unit/agent-memory/team-memory-explorer-service.test.ts` | Grouping, search, paging, one read per root, AC-011 task instance, corrupt root skipped | REQ-001, 004, 010; AC-003, 011 | Still Valid | Reviewed file | Run |
-| `server/tests/unit/agent-memory/agent-org-memory-explorer-service.test.ts` | Org grouping, labels, own run ID, search, paging, index fallback, one read per root, corrupt skip | REQ-006…008, 010; AC-003, 007, 008 | Still Valid | Reviewed file | Run |
-| `server/tests/unit/agent-memory/agent-memory-location-service.test.ts` | Root-scoped read, nested ID, non-admitted root, org resolution | REQ-005; AC-006, 009 | Still Valid | Reviewed file | Run |
-| `server/tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts` | `listAgents({rootRunId})`, `listRootRunIds` | REQ-008 | Still Valid | Handoff | Run |
-| `server/tests/unit/api/graphql/types/memory-explorer-types.test.ts`, `memory-view-member-resolver.test.ts` | Resolver wiring; the source service is mocked | AC-007, 009 | Still Valid | Reviewed file | Run |
-| `server/tests/e2e/memory/memory-explorer-graphql.e2e.test.ts` | Agents list and runs through the schema | Agents (preserved) | Still Valid | Reviewed file | Run; no team/org coverage |
-| `server/tests/e2e/memory/memory-view-graphql.e2e.test.ts` | Agent run memory view through the schema | Preserved | Still Valid | Reviewed file | Run; no team/org member view |
-| `web/pages/__tests__/memory.spec.ts` | One fetch per route, no fetch on click, org routes, back labels, selection before sources | REQ-002/003/007; AC-004, 009 | Still Valid | Handoff | Run |
-| `web/tests/stores/memoryExplorerStore.test.ts`, `memoryInspectorStore.test.ts` | Org fetch, identity reset, late-response drop, org inspect query | AC-004, 009 | Still Valid | Handoff | Run |
-| `web/components/memory/__tests__/{CollaborationMemoryDetail,MemoryHome,MemoryInspector}.spec.ts` | `displayName` shown, org tab, org breadcrumb | AC-007, 009, 010 | Still Valid | Handoff | Run |
-| `web/components/memory/__tests__/AgentTeamMemoryDetail.spec.ts` | Removed by implementation (component replaced) | — | Stale / Remove (already removed) | Design Removal Plan | None |
-
-## Stale Or Obsolete Coverage Decisions
-
-None beyond the implementation's removal of `AgentTeamMemoryDetail.spec.ts`. It is replaced by `CollaborationMemoryDetail.spec.ts`, per the design Removal Plan.
-
-## Durable Coverage To Add
-
-| Scenario ID | Behavior / Boundary | Req / AC / Design Evidence | Planned Artifact / Path | Why Durable Coverage Is Needed |
+| Path | Intent | Req / AC | Validity | Action |
 | --- | --- | --- | --- | --- |
-| E2E-TEAM-01 | Team list and runs through the built GraphQL schema: renamed member type, `displayName`, own task run ID, search by the task run ID, paging | REQ-004, 009, 010; AC-005, 010, 011 | `autobyteus-server-ts/tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts` | No existing e2e runs any team explorer query; the type rename is a contract change |
-| E2E-TEAM-02 | `getTeamMemberRunMemoryView` for a root ID, a nested team run ID and a non-admitted root (REC-001) | REQ-005; AC-006 | same file | The resolver was only unit-tested with the source service mocked; admission comes from the real readiness index |
-| E2E-TEAM-03 | A corrupt team tree among valid roots is skipped with a warning | AC-003 alternate | same file | Proves the skip rule through the transport |
-| E2E-ORG-01 | `listAgentOrgsWithMemory` / `listAgentOrgRunsWithMemory`: definition card, counts, badges, address-path labels, own task run ID, task-team exclusion, search, paging, corrupt org tree skipped | REQ-006…008, 010; AC-003, 007, 008 | same file | New queries have no transport-level coverage |
-| E2E-ORG-02 | `getAgentOrgMemberRunMemoryView`: member inside a configured team, task instance, unknown member → empty view | REQ-007, 010; AC-009, 011 | same file | New query |
-| E2E-ORG-03 | Imported source → org list is empty; teams still list from the imported source | AC-007 alternate | same file | The empty state depends on the imported layout |
+| `server/tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts` | Team/org list, runs, member views; structure fields; admitted fixtures | AC-003, 005…011, 014 | Still Valid (updated upstream from "excludes" to "includes … under their task group") | **Updated**: task-team member memory view assertion (REQ-012 "every agent row opens exactly that run") |
+| `server/tests/e2e/memory/memory-{explorer,view}-graphql.e2e.test.ts` | Agents | Preserved | Still Valid | Run |
+| `server/tests/unit/agent-memory/*`, `agent-org-execution/*`, `api/graphql/types/*`, `run-history/*` | Catalog, sources, structure, location, mismatch, no writes | AC-003, 006, 011, 014 | Still Valid | Run |
+| `web/pages/__tests__/memory.spec.ts`, stores, components | AC-012/013 request counting, loading-first, tree rendering | AC-004, 009, 010, 012, 013, 014 | Still Valid | Run |
 
-## Durable Coverage To Update
+## Durable Coverage Changes
 
-None.
-
-## Durable Coverage To Remove
-
-None.
+- Update: `autobyteus-server-ts/tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts`. Adds an assertion that `getAgentOrgMemberRunMemoryView` for the task-team member `gql-org-a-1-task-team-designer` returns that run's own memory (REQ-012 / AC-014), plus a header comment update. No other changes, and no removals.
+- Not durable, with reasons: the real-data checks depend on the user's private memory, and the browser journeys run against real data. This repo has no browser-E2E harness for the memory feature; request ownership is asserted durably in the page and store specs.
 
 ## Repository Coverage Execution Plan And Results
 
-| Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
-| --- | --- | --- | --- | --- | --- |
-| 1 | `pnpm exec vitest run tests/e2e/memory --no-watch` | `autobyteus-server-ts` | New and existing memory GraphQL e2e | Planned | Ledger R-01 |
-| 2 | `pnpm exec vitest run tests/unit/agent-memory tests/unit/agent-org-execution tests/unit/api/graphql/types tests/unit/skill-improvement tests/unit/application-orchestration tests/integration/agent-memory --no-watch` | `autobyteus-server-ts` | Service/location/resolver units and external `resolveTeamMemberLocation` callers | Planned | Ledger R-02 |
-| 3 | `pnpm exec tsc -p tsconfig.build.json --noEmit` | `autobyteus-server-ts` | Build typecheck incl. the new e2e file imports | Planned | Ledger R-03 |
-| 4 | `pnpm test:nuxt components/memory pages/__tests__/memory.spec.ts tests/stores/memoryExplorerStore.test.ts tests/stores/memoryInspectorStore.test.ts localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts --run` | `autobyteus-web` | Web memory specs | Planned | Ledger R-04 |
-
-## Test-Case Ledger Plan
-
-- Ledger required: `Yes`. The run has multiple independent cases, including a long build and dev stack, live timing, and a multi-step browser journey, so interruption is a real risk.
-- Canonical ledger path: see Meta.
-- Ledger initialized before execution: `Yes`
-- Case granularity: one suite, one timing set or one browser journey per case.
-
-| Case ID | Case / Journey | Req / AC IDs | Boundary / Execution Surface | Planned Command Or Entry Point | Planned Order |
-| --- | --- | --- | --- | --- | --- |
-| R-01 | Memory GraphQL e2e (new + existing) | AC-003, 005…011 | In-process GraphQL schema | vitest `tests/e2e/memory` | 1 |
-| R-02 | Server unit/integration suites | AC-003, 006, 011 | Services | vitest | 2 |
-| R-03 | Server build typecheck | — | Compiler | tsc | 3 |
-| R-04 | Web memory specs | AC-004, 009, 010 | Components/stores/page | vitest (nuxt) | 4 |
-| L-01 | Live timing: teams, SE team runs, orgs, org runs, member views | AC-001, 002, 007; QR-001 | Built backend over HTTP, full-fidelity copy | `curl -w %{time_total}` on :8000 | 5 |
-| L-02 | Live data correctness: 4 org cards/run counts, task-instance own IDs, imported org empty, read-only check | AC-007, 011; persisted `Not Affected` | Built backend | curl + jq | 6 |
-| B-01 | SCN-001/002/003: Teams tab → team card → member inspector → Back, request counting, CR-001 observation | AC-004, 010 | Browser (Nuxt dev → :8000) | Browser tab + fetch instrumentation | 7 |
-| B-02 | SCN-004/005/006: Orgs tab → org card → member (team-nested + task instance) → breadcrumb, Back; search/paging | AC-004, 007…011 | Browser | Same | 8 |
-| B-03 | Imported source → Agent Orgs empty state; agent card single fetch | AC-004, AC-007 alt | Browser | Same | 9 |
+| Order | Command | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | `pnpm exec vitest run tests/e2e/memory/memory-{collaboration,explorer,view}-graphql.e2e.test.ts --no-watch` | Pass 15/15 | ledger 14 |
+| 2 | `pnpm exec vitest run tests/unit/agent-memory tests/unit/agent-org-execution tests/unit/api/graphql/types tests/unit/skill-improvement tests/unit/application-orchestration tests/unit/run-history tests/integration/agent-memory --no-watch` | 492/496; 4 pre-existing failures | `/tmp/api-e2e-memory-team-view/r2/r02.log` |
+| 3 | `tsc -p tsconfig.build.json --noEmit`; `tsc -p tsconfig.json` (e2e file) | 0 / 0 errors | `r2/r03.log` |
+| 4 | `pnpm test:nuxt components/memory pages/__tests__/memory.spec.ts tests/stores/memoryExplorerStore.test.ts tests/stores/memoryInspectorStore.test.ts localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts --run` | 12 files / 54 tests pass | ledger 17 |
 
 ## Post-Repository Confidence Scorecard
 
-Filled in after repository execution (see below).
+| Category | Score | Support | Remaining Uncertainty | Improvement |
+| --- | --- | --- | --- | --- |
+| Requirement and AC proof | 85% | Durable tests for AC-003, 005…014 | AC-001/002/007 timing, O-001 and AC-012/013 on a real surface not yet run | Live timing, old-vs-new servers, browser |
+| Changed-boundary directness | 85% | Real schema in-process | No HTTP/UI | Built backend + browser |
+| Integration realism | 80% | Page specs use recording mocks | Real Apollo/route sequencing | Browser |
+| Environment / fixture fidelity | 80% | Admitted fixtures | Real task-team shapes, real admission | Real data copy |
+| Failure / edge | 88% | Corrupt, non-admitted, mismatch, unknown member | Live error/Retry, source-refresh failure | Browser with injected failures |
+| User surface | 70% | Component specs | No real rendering | Browser |
+| Durable regression | 93% | e2e + unit + page specs | — | — |
+
+- Overall post-repository confidence: 83%. Several categories are below 90%, so broader validation is `Required`.
 
 ## Broader Validation Decision
 
-Pre-decision: `Required`. AC-001/002/007 explicitly need timing on the built backend against the user's real data. AC-004 needs real request counting and a rendered-state observation (CR-001), which mocked page tests cannot give. Final decision recorded after repository execution.
+- Decision: `Required`. Modes: Live API (built backend; old-vs-new built servers for O-001 and AC-005), then Browser (headless Chromium via the project's `pnpm dev`).
+- Desktop: the Electron shell is unchanged (no `electron/**` in the package diff). The renderer is web-equivalent, so the browser covers the "manual Electron check". The packaged app was not run, because the user's app on :29695 must not be disturbed.
 
-## Desktop Application Validation Decision
+## Temporary Executable Validation
 
-- Desktop framework / shell: Electron (`autobyteus-web/electron`), which loads the same Nuxt renderer and talks to the backend over HTTP/WS.
-- Relevant instructions: `autobyteus-web/AGENTS.md`, `scripts/development/*` (browser development path `pnpm dev`).
-- Web-equivalent behavior: all changed UI (memory page, stores, components) and all GraphQL queries.
-- Shell-specific behavior: none changed. `git diff --stat 40b1783f4..bd8450984` touches no `electron/**` file, preload, IPC or packaging.
-- Chosen approach: browser against the project's dev stack (built backend + Nuxt dev), with the backend reading a full-fidelity copy of the user's memory. The upstream "manual Electron check" wording is met by the web-equivalent renderer. Running the packaged app would add no shell evidence for this diff, and it would require touching the user's running app.
-- Effect on the running desktop app: none. It stays on :29695 with its own data dir.
-- Not directly proven: packaged-bundle behavior of the same renderer code. Risk is negligible because no shell code changed.
+| Scenario | Method | Why Not Durable |
+| --- | --- | --- |
+| L-01, O-001, L-02 | curl / `r2/equiv-all.py` / `r2/req012.mjs` against servers on the copy | Private data |
+| B-01…B-03, F-01…F-03 | `r2/journeys.mjs`, `r2/failures.mjs` (Playwright) | Real data; no memory browser harness in the repo |
 
-## Temporary Executable Validation Plan
+## Not Tested / Deferred
 
-| Scenario ID | Probe / Harness / Runtime Setup | Behavior Proven | Why Not Durable |
-| --- | --- | --- | --- |
-| L-01/L-02 | curl against the dev backend over the cloned real data | Real-volume timing and real-data correctness | Depends on the user's private data |
-| B-01…03 | Browser journey with a `window.fetch` counter | Request counts, rendered states, CR-001 | Page/store specs already durably assert the fetch ownership; a new browser E2E harness is not part of this repo's memory feature tests |
-
-## Not Tested / Infeasible / Deferred
-
-| Behavior / Boundary | Reason | Risk | Follow-Up |
-| --- | --- | --- | --- |
-| Packaged Electron bundle | No shell change; the user's app must not be disturbed | Negligible | None |
+| Behavior | Reason | Risk |
+| --- | --- | --- |
+| Packaged Electron app | No shell change; the user's app must not be disturbed | Negligible |
+| Actual memory-sync import while the page is open (AC-013) | Emulated by creating an import source directory (the same condition `MemoryImportStore.sourceExists` checks) | Low |
+| REQ-005 nested team run ID through the server | Cannot occur for admitted stored Team V2 roots (no configured nested teams); unit-covered | Low |
 
 ## Ambiguities Or Reroute Triggers
 
-None at investigation time.
-
-## Round 1 Status Update (stopped)
-
-- Validation of `bd8450984` was stopped at `/solution_designer` direction (package reopened, CRR-003 Design Impact). No confidence scorecard or verdict is recorded for round 1.
-- Plan revisions from evidence:
-  - E2E-TEAM-02: nested team run IDs cannot exist in admitted stored Team V2 roots, so the nested fallback stays unit-covered. The e2e covers unknown and non-admitted team run IDs instead.
-  - Org fixtures use a task execution of a configured team (the only admittable task-team shape).
-- New finding **F-001** (task-team members listed for orgs; preliminary `Design Impact`) and open item **O-001** (server vs in-process admission count). See the execution report.
+- AC-014 example rows vs data: judged by the REQ-012 rule, as CRR-005 directs. The example-text correction is with the Solution Designer. It is not a reroute.
+- Upstream observation (outside the package): re-running app-data migrations on already-migrated memory (fresh DB + copied memory) rewrites 146 team communication files, and 100 team roots then fail readiness admission. This is a separate-ticket candidate, not a finding against this package.
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Stopped` (round 1 superseded by SR-004; the original decision was `Yes`)
-- Repository-Resident Durable Coverage Will Be Added: `Yes` (`memory-collaboration-graphql.e2e.test.ts`)
-- Post-repository confidence: pending
-- Broader validation decision: `Required` (pre-decision)
-- Reroute Required Before Validation Execution: `No`
+- Proceed: `Yes` (completed). Durable coverage updated: `Yes`. Final result: see the execution report (`Pass`, 95.7%).

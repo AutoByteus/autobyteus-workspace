@@ -232,3 +232,12 @@ Web (`autobyteus-web`):
 
 - API-REV-001: validate REQ-011/REQ-012 and AC-012…AC-014 end to end. The updated `memory-collaboration-graphql.e2e.test.ts` now asserts task-team members under their task group.
 - Owned by `api_e2e_engineer`: pass/fail classification and confidence.
+
+## Downstream Review Status (Informational)
+
+- 2026-09-25: `/code_reviewer` reported **Pass** for IR-002, CRR-005, score 9.4/10. CR-001…CR-004 are resolved. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-team-view-slow-load/tickets/in-progress/memory-team-view-slow-load/code-review-report.md`.
+- The reviewer confirmed the AC-014 data note. The REQ-012 behavior is correct; the example text needs a Solution Designer correction. API/E2E will judge AC-014 by the rule.
+- Two Low, non-blocking cleanups, to do on the next code touch:
+  - CR-005: remove the orphaned `listAgentsInTree` doc comment above `containsRunId` in `team-run-execution-tree-location-service.ts`.
+  - CR-006: remove the unused `sourcesLoaded` store field, or give it a consumer.
+- The reviewer delivered the package to `/api_e2e_engineer`. Implementation takes no action: no forwarding and no code change this round.
