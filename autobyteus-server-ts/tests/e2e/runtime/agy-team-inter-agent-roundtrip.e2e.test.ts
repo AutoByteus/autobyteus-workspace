@@ -11,6 +11,8 @@ import {
   AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
 } from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { getAgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
 import { getTeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
@@ -620,11 +622,43 @@ Rules:
           !!member.platformAgentRunId,
         )).toBe(true);
 
+        const teamStopDiagnostic = (phase: string) => {
+          const root = getAgentTeamRunManager().getActiveTeamRun(teamRunId);
+          const manager = AgentRunManager.getInstance();
+          return {
+            phase, teamRunId,
+            rootActive: root?.isActive() ?? false,
+            checkpoint: root?.getExecutionCheckpoint() ?? null,
+            leafStatuses: root?.getLeafAgentStatusSnapshots() ?? null,
+            members: boundBeforeRestore.map((member) => ({
+              address: member.memberAddress, runId: member.agentRunId,
+              publishedInManager: manager.hasActiveRun(member.agentRunId),
+            })),
+            publishedRunIds: manager.listActiveRuns(),
+          };
+        };
+        // Restore coverage stops a quiescent Team, not an in-flight relay turn.
+        // The persisted token can appear before the sending member finishes.
+        for (let attempt = 0; attempt < 120; attempt++) {
+          const root = getAgentTeamRunManager().getActiveTeamRun(teamRunId);
+          expect(root).not.toBeNull();
+          if (!root!.getExecutionCheckpoint().hasOpenExecutionWork) break;
+          if (attempt === 119) throw new Error("Team remained busy before restore stop");
+          await wait(500);
+        }
+        const beforeStop = teamStopDiagnostic("before");
         const terminated = await execGraphql<{
           terminateAgentTeamRun: { success: boolean; message: string };
         }>(`mutation TerminateTeam($teamRunId: String!) {
           terminateAgentTeamRun(teamRunId: $teamRunId) { success message }
         }`, { teamRunId });
+        if (!terminated.terminateAgentTeamRun.success) {
+          console.info("AGY_TEAM_STOP_FAILURE", JSON.stringify({
+            result: terminated.terminateAgentTeamRun,
+            beforeStop,
+            afterFailure: teamStopDiagnostic("after-failure"),
+          }));
+        }
         expect(terminated.terminateAgentTeamRun.success).toBe(true);
 
         const restored = await execGraphql<{
