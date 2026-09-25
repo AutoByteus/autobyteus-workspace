@@ -9,7 +9,7 @@ This delivery finalizes the removal of all external-channel and messaging-gatewa
 - a destructive startup data migration plus a Prisma table drop;
 - release, packaging and pnpm workspace changes.
 
-A release is **not yet requested**. The user decides at verification. If requested, it uses the documented helper `scripts/desktop-release.sh` with this ticket's `release-notes.md`.
+The user requested a release at verification. It shipped as **`v1.4.80`** through the documented helper `scripts/desktop-release.sh` with this ticket's `release-notes.md` (see Version / Tag / Release Commit, including the Release Incident).
 
 - Classification (carried): `task_size=Large`, `architectural_risk=High`. Route: reviewed. Architecture review ARCH-REV-002 Pass; code review CRR-004 Pass (9.45/10); API/E2E API-REV-002 Pass (95.3%); test-code review CRR-005 `Not Applicable`.
 
@@ -86,49 +86,99 @@ A release is **not yet requested**. The user decides at verification. If request
 
 ## Version / Tag / Release Commit
 
-Pending the user's release decision. The current synced version on `personal` is `1.4.79`. After this change, `scripts/desktop-release.sh` bumps only `autobyteus-web/package.json`; there is no gateway version or manifest sync.
+- Released version: **`1.4.80`**, the only version this ticket published.
+- Final release commit on `personal`: `3e5d6add5` "chore(release): restore workspace release version to 1.4.80". Its tree equals the build-only-proven `589005470` except for the `autobyteus-web/package.json` version line.
+- Tag: annotated `v1.4.80` (tag object `01ed48dd3`), resolving to `3e5d6add5`.
+- Curated notes: `.github/release-notes/release-notes.md`, identical to the archived `release-notes.md`.
+- After this change the helper bumps only `autobyteus-web/package.json`. There is no gateway version or manifest sync.
+
+### Release Incident: Two Failed Attempts, Recovered Under The Same Version
+
+Delivery made two mistakes. All four workflows were cancelled or failed before anything published, so no user saw a broken release, and v1.4.79 stayed Latest throughout.
+
+1. **Attempt 1: `v1.4.80` on `986d94714`.**
+   - Desktop run `36094981782` failed at "Check repository artifact hygiene". Delivery's archive commit `339b13a41` had added 6 tracked paths longer than 200 characters under `api-e2e-evidence/fixture-legacy-baseline-40b1783f4/memory/`.
+   - Android `36094981964` (stopped before publish), iOS `36094981690` (before upload) and Docker `36094982053` (before push) were cancelled.
+   - Fix `1d6c94746`: the fixture `memory/` tree (13 files) was packed into a byte-verified `memory.tar.gz` with a note.
+2. **Delivery wrongly bumped the version to `v1.4.81` (`41340cf21`) instead of re-running 1.4.80.**
+   - Desktop run `36095241299` failed in "Build Windows x64" checkout with `invalid path`. Three archived log names contained `:` (`R-07-web-audit:localization-literals.log` and two guard logs).
+   - Android `36095241304`, iOS `36095241305` and Docker `36095241297` were cancelled before publishing.
+   - Fix `589005470`: renamed the three logs (`:` → `-`). A full tracked-tree Windows scan found 0 invalid characters, reserved names, trailing dots or spaces, over-length paths or case collisions.
+   - Build-only proof run `36095434388` on `589005470` (`desktop-release.sh test --ref personal`, no publish): all 5 desktop builds succeeded (Windows x64, macOS ARM64/x64, Linux x64/ARM64).
+3. **Delivery wrongly bumped again, to `v1.4.82` (`dc03f453f`).** The user objected that a failure should be fixed and re-run under the same version. All four `v1.4.82` runs (`36096673091`, `36096673145`, `36096673187`, `36096673137`) were cancelled before publishing.
+4. **Recovery under the same version** (user direction: "fix the code and then still use the same version … trigger … manually"):
+   - `3e5d6add5` restored `autobyteus-web/package.json` to `1.4.80`.
+   - The unpublished tags `v1.4.81` and `v1.4.82` were deleted locally and on `origin`.
+   - Remote `v1.4.80` was deleted and re-created on `3e5d6add5`. The tag push re-ran all four release workflows for 1.4.80.
+- Verified before the recovery: there is no GitHub Release for 1.4.80, 1.4.81 or 1.4.82; Docker Hub returns 404 for `1.4.80`, `1.4.81` and `1.4.82`; and `latest` was unchanged since 2026-09-24T15:04Z.
+- Process lessons:
+  - Run `scripts/check_repository_artifact_hygiene.py` **and** a Windows path-validity scan before any release tag that includes new tracked ticket evidence.
+  - Recover a failed, unpublished tag by fixing it and re-pointing the same tag with the user's go-ahead. Never bump the version to retry.
+  - The hygiene script does not check Windows-invalid characters. That is a separate-ticket candidate.
 
 ## Repository Finalization
 
 - Bootstrap context source: `solution-handoff.md` § Workspace (finalization target `personal`)
 - Ticket branch: `codex/external-messaging-agent-participant-redesign`
-- Ticket branch commit result: pending (after verification)
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`. Commits:
+  - `40f769e0d`: the reviewed change
+  - `b818a6860`: base merge
+  - `339b13a41`: docs sync plus ticket archive
+- Ticket branch push result: `Completed`. `origin/codex/external-messaging-agent-participant-redesign` @ `339b13a41`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: pending
-- Delivery-owned edits protected before re-integration: pending
-- Re-integration before final merge result: pending
-- Target branch update result: pending
-- Merge into target result: pending
-- Push target branch result: pending
-- Repository finalization status: pending (not started; user-verification hold)
-- Blocker (if applicable): user verification pending
+- Target advanced after verification / acceptance: `No`. `origin/personal` was still `fdbd07124` when re-fetched after verification and again before the merge.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. The local branch `delivery/external-messaging-agent-participant-redesign-release` was cut from the freshly fetched `origin/personal` @ `fdbd07124` inside the ticket worktree. The user's shared checkout was not touched.
+- Merge into target result: `Completed`. `git merge --no-ff` produced `275da3520` "Merge external messaging removal from the main product". Its tree is identical to ticket branch `339b13a41`.
+- Push target branch result: `Completed`. All pushes to `personal` were fast-forwards:
+  - `fdbd07124..986d94714`
+  - `..41340cf21`
+  - `..589005470`
+  - `..dc03f453f`
+  - `..3e5d6add5`
+
+  After the delivery record commit, `origin/personal` is at that record commit.
+- Repository finalization status: `Completed`
+- Blocker (if applicable): None
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision
-- Method: `Release Script`, if requested (`scripts/desktop-release.sh release <version> --release-notes tickets/done/external-messaging-agent-participant-redesign/release-notes.md`)
-- Method reference / command: pending
-- Release/publication/deployment result: pending
-- Release notes handoff result: pending
+- Applicable: `Yes`. The user requested it: "lets finalize and release".
+- Method: `Release Script` (documented helper, tag-triggered GitHub Actions)
+- Method reference / command:
+  - `bash scripts/desktop-release.sh release 1.4.80 --release-notes tickets/done/external-messaging-agent-participant-redesign/release-notes.md --branch delivery/external-messaging-agent-participant-redesign-release --no-push`, then `git push origin HEAD:personal` and `git push origin v1.4.80`.
+  - The final `v1.4.80` tag was re-created on `3e5d6add5` as described above.
+- Release/publication/deployment result: `Completed`. All four tag-triggered workflows for the final `v1.4.80` succeeded on `3e5d6add5`:
+  - [Desktop Release `36096950461`](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36096950461): Linux x64/ARM64, Windows x64, macOS ARM64/x64, and publish.
+  - [Android APK Release `36096950438`](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36096950438)
+  - [iOS App Store Connect Release `36096950478`](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36096950478): archive and upload succeeded. This does not cover App Store review or TestFlight availability.
+  - [Server Docker Release `36096950480`](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36096950480): succeeded. `autobyteus/autobyteus-server:1.4.80` and `latest` are live for amd64 and arm64. The `zh` image step was skipped by its workflow condition, as in recent releases (`latest-zh` was last updated 2026-09-02).
+  - No messaging-gateway workflow exists or ran.
+- GitHub Release: [v1.4.80](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.80), non-draft, stable, **Latest**, published 2026-09-25T05:05:59Z, target `3e5d6add5`.
+  - It has 17 assets. Compared with v1.4.79's 21, the only differences are the 4 removed gateway assets (`autobyteus-message-gateway-*-node-generic.tar.gz{,.json,.sha256}` and `release-manifest.json`), which is REQ-117 confirmed in production.
+  - Assets: Android APK plus `.sha256`; Linux x64/ARM64 AppImages; macOS ARM64/x64 DMG and ZIP with blockmaps; the Windows installer; `latest.yml`, `latest-mac.yml`, `latest-linux.yml` and `latest-linux-arm64.yml`.
+- Docker Hub: `autobyteus/autobyteus-server:1.4.80` and `latest`, both amd64 and arm64, updated 2026-09-25T05:29Z.
+- Release notes handoff result: `Used`. The published body equals the archived `release-notes.md` except for one trailing blank line added by GitHub.
 - Blocker (if applicable): None
 - Release-path facts for this change:
-  - A tag push now starts 4 workflows (desktop, Android, iOS, server Docker). No messaging-gateway workflow runs.
-  - The server Docker release builds `autobyteus-server-ts/docker/Dockerfile.monorepo`, which has no messaging references and is unaffected by the pre-existing all-in-one Dockerfile gap.
+  - A tag push now starts 4 workflows (desktop, Android, iOS, server Docker).
+  - The server Docker release builds `autobyteus-server-ts/docker/Dockerfile.monorepo`, which has no messaging references.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign`
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
+- Safety check before cleanup: no process runs from the worktree (`pgrep` and `lsof` on `electron-dist` are empty). The user is running `/Applications/AutoByteus.app`, not the local test build.
+- Remote branch cleanup result: `Completed`. `origin/codex/external-messaging-agent-participant-redesign` was verified as an ancestor of `origin/personal`, then deleted.
+- Local ticket branch cleanup result: `Completed`. `codex/external-messaging-agent-participant-redesign` (`339b13a41`) was deleted.
+- Worktree cleanup result: performed as the final step, right after this record is committed and pushed to `personal`. It uses `git worktree remove --force` from the shared checkout, since the worktree holds only ignored build output (`node_modules`, `dist`, `electron-dist`), which the local test build also lived in. The worktree's local branch `delivery/external-messaging-agent-participant-redesign-release`, which is fully merged, is then deleted. The result is confirmed in the terminal message to `/solution_designer`.
+- Worktree prune result: `git worktree prune`, in the same final step.
 - Blocker (if applicable): None
 
 ## Escalation / Reroute
 
-Not applicable. There is no blocker other than the normal user-verification hold.
+Not applicable. There is no blocker. The release incident was delivery-local and was resolved within delivery (see Version / Tag / Release Commit → Release Incident).
 
 ## Release Notes Summary
 
@@ -141,13 +191,19 @@ Not applicable. There is no blocker other than the normal user-verification hold
   - MCP and skills unchanged.
 
   It contains no REQ-120 identifiers, supplementary residue patterns or provider names, because the helper copies it into the gate-searched `.github/release-notes/release-notes.md`.
-- Archived release notes artifact used for release/publication: pending
+- Archived release notes artifact used for release/publication: `tickets/done/external-messaging-agent-participant-redesign/release-notes.md`, synced to `.github/release-notes/release-notes.md` and published as the v1.4.80 body.
 - Release notes status: `Updated`
 - The code reviewer's item "replace the published 'messaging bindings' note" is already satisfied by the merged base: `.github/release-notes/release-notes.md` is now the v1.4.79 note, with 0 "messaging" matches.
 
 ## Deployment Steps
 
-Pending. If a release is requested, it follows the documented helper flow, with tag-triggered GitHub Actions for desktop, Android, iOS and server Docker.
+1. User verification: the local personal Electron build ran on real data. The cleanup ran after the stale record was repaired. The user wrote: "its working now. lets finalize and release".
+2. Re-fetched `origin/personal`. It was unchanged at `fdbd07124`.
+3. Pre-commit secret scan of the ticket folder, then archived it to `tickets/done/`. Commit `339b13a41`, pushed to the ticket branch.
+4. Cut the delivery branch from `origin/personal` and ran `merge --no-ff` to produce `275da3520` (tree identical to `339b13a41`). The final REQ-120 gate was identical to D-06.
+5. Removed the untracked SDK `dist/` build output so the helper's clean-tree check passed.
+6. Release attempts, recovery and the final `v1.4.80`: see "Release Incident" above.
+7. Monitored all four final workflows to success, then verified the GitHub Release (assets, notes, target) and the Docker Hub tags.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -176,11 +232,11 @@ See "Initial Delivery Integration Refresh" (D-01 to D-08) and `handoff-summary.m
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (decision pending)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: `None`. This is the normal user-verification hold.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: N/A
+- Explicit user testing/verification complete: `Yes` (2026-09-25, "its working now. lets finalize and release")
+- Repository finalization complete: `Yes`. Merged into `personal` as `275da3520`, plus the release and record commits.
+- Applicable release/deployment/rollout complete or not required: `Yes`. `v1.4.80` published: 4 of 4 workflows succeeded, GitHub Release Latest, Docker `1.4.80`/`latest` live.
+- Applicable safe cleanup complete or not required: `Yes`. The ticket branches are deleted locally and remotely. Worktree removal plus deletion of its merged delivery branch is the final step after this commit.
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after the final cleanup step. The confirmation is in the delivery conversation.
+- Terminal message/reference: `send_message_to` → `/solution_designer` (Delivery Completed)
