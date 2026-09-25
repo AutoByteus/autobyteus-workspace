@@ -1,0 +1,353 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts > Codex MCP tool arguments memory/projection integration > persists an early MCP call plus minimal result and projects both UI surfaces
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-mcp-projection-wiazhp/working_context_snapshot.json
+
+ ❯ tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts (1 test | 1 failed) 10ms
+     × persists an early MCP call plus minimal result and projects both UI surfaces 10ms
+stdout | tests/integration/mcp-gateway/mcp-gateway-routes.integration.test.ts > MCP gateway route > delegates calls through an actual configured stdio MCP server
+Successfully registered tool definition: 'real_echo'
+
+stdout | tests/integration/mcp-gateway/mcp-gateway-routes.integration.test.ts > MCP gateway route > delegates calls through an actual configured stdio MCP server
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'publish_artifacts'
+
+ ✓ tests/integration/mcp-gateway/mcp-gateway-routes.integration.test.ts (4 tests) 375ms
+     ✓ delegates calls through an actual configured stdio MCP server  342ms
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts > Agent Tools MCP tokenless route integration > serves headerless initialize, tools, resources, ping, notifications, SSE, and calls
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+
+ ✓ tests/integration/agent-tools/mcp/agent-tools-mcp-routes.integration.test.ts (9 tests) 145ms
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+AgentRunManager initialized.
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+Published autobyteus agent run 'team-agent-tools-member-run'.
+
+stdout | tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts > supported Team Agent Tools MCP lifecycle integration > keeps a rejected member session active, deletes it before accepted Team stop, and restores the same route with fresh live state twice
+Published autobyteus agent run 'team-agent-tools-member-run'.
+
+ ✓ tests/integration/agent-team-execution/team-agent-tools-mcp-lifecycle.integration.test.ts (1 test) 124ms
+stdout | tests/unit/skills/services/skill-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stderr | tests/unit/skills/services/skill-service.test.ts > SkillService > returns resolved skills by configured names and skips unknown entries
+Skill 'missing' could not be resolved via SkillService. Skipping.
+
+stdout | tests/unit/skills/services/skill-service.test.ts > SkillService > returns a skill file tree
+Starting directory traversal for: '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-HdhqZo/skills/tree_skill' with max_depth=null
+
+stdout | tests/unit/skills/services/skill-service.test.ts > SkillService > returns a skill file tree
+Directory traversal for '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-skill-service-HdhqZo/skills/tree_skill' completed in 0.0030 seconds.
+
+ ✓ tests/unit/skills/services/skill-service.test.ts (38 tests) 82ms
+stdout | tests/integration/agent-tools/mcp/application-agent-tools-mcp-routes.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/agent-tools/mcp/application-agent-tools-mcp-routes.integration.test.ts (1 test) 46ms
+stdout | tests/unit/agent-tools/mcp/agent-tools-mcp-host.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/mcp/agent-tools-mcp-host.test.ts > AgentToolsMcpHost > owns one one-shot loopback listener and publishes only ready descriptors
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+
+ ✓ tests/unit/agent-tools/mcp/agent-tools-mcp-host.test.ts (2 tests) 40ms
+stdout | tests/unit/skills/services/skill-sources-management.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/skills/services/skill-sources-management.test.ts
+Initialized server settings service with 20 predefined settings
+
+ ✓ tests/unit/skills/services/skill-sources-management.test.ts (15 tests) 26ms
+ ✓ tests/unit/mcp-gateway/mcp-gateway-tool-catalog.test.ts (2 tests) 11ms
+ ✓ tests/unit/skills/loader.test.ts (10 tests) 13ms
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog > resolves configured supported tools across families with browser and team availability gates
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/external-messaging-agent-participant-redesign/autobyteus-server-ts
+
+stderr | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog configured MCP bridge > keeps built-in adapter names authoritative when a configured MCP tool collides
+Configured MCP tool 'send_message_to' was not exposed because it collides with a protected Agent Tools MCP adapter.
+
+stderr | tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts > AgentToolMcpCatalog configured MCP bridge > resolves configured MCP calls through a registry-backed adapter
+Tool 'FakeConfiguredMcpTool' does not define an argument schema but received arguments: {"sql":"select 1"}.
+
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-catalog.test.ts (13 tests) 10ms
+stdout | tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-session-service.test.ts (8 tests) 9ms
+stderr | tests/unit/skills/disabled-skills-store.test.ts > DisabledSkillsStore > handles corrupted file gracefully
+Failed to parse disabled_skills.json: SyntaxError: Unexpected token 'o', "not valid json {{{" is not valid JSON. Starting with empty list.
+
+ ✓ tests/unit/skills/disabled-skills-store.test.ts (10 tests) 9ms
+ ✓ tests/unit/agent-tools/mcp/agent-tools-mcp-local-access.test.ts (16 tests) 6ms
+stdout | tests/integration/skills/skill-integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/integration/skills/skill-integration.test.ts (1 test) 15ms
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > imports valid JSON configs
+Starting bulk import of MCP server configurations from JSON.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > imports valid JSON configs
+Bulk import complete. Imported: 2, Failed: 0
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > handles partial failure during import
+Starting bulk import of MCP server configurations from JSON.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > handles partial failure during import
+Bulk import complete. Imported: 1, Failed: 1
+
+stderr | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > handles partial failure during import
+Failed to import configuration for server 'invalid-server-no-command': Error: Failed to create config for server 'invalid-server-no-command' due to incompatible parameters for STDIO config: StdioMcpServerConfig 'invalid-server-no-command' 'command' must be a non-empty string.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > throws for malformed JSON
+Starting bulk import of MCP server configurations from JSON.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > throws for invalid structure
+Starting bulk import of MCP server configurations from JSON.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > returns zero counts for empty configs
+Starting bulk import of MCP server configurations from JSON.
+Bulk import complete. Imported: 0, Failed: 0
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > accepts camelCase transportType/toolNamePrefix
+Starting bulk import of MCP server configurations from JSON.
+
+stdout | tests/unit/mcp-server-management/services/mcp-config-service.test.ts > McpConfigService import > accepts camelCase transportType/toolNamePrefix
+Bulk import complete. Imported: 1, Failed: 0
+
+ ✓ tests/unit/mcp-server-management/services/mcp-config-service.test.ts (6 tests) 8ms
+stdout | tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/agent-tools/mcp/scoped-agent-tool-mcp-session-authority.test.ts (5 tests) 6ms
+ ✓ tests/unit/mcp-server-management/file-provider.import.test.ts (1 test) 5ms
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getAll
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getAll
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getAll
+Cache HIT for MCP config test_server_1
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getByServerId
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getByServerId
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getByServerId
+Cache HIT for MCP config test_server_1
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > populates cache on first getByServerId
+Cache HIT for MCP config test_server_2
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > returns null for unknown server IDs
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > returns null for unknown server IDs
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > returns null for unknown server IDs
+Cache MISS for MCP config nonexistent.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on create
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on create
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on create
+In-memory cache: Added new MCP config new_server_3.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on update
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on update
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on update
+In-memory cache: Updated MCP config test_server_1.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > updates cache on update
+Cache HIT for MCP config test_server_1
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > removes from cache on delete
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > removes from cache on delete
+MCP server config cache populated with 2 items.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > removes from cache on delete
+In-memory cache: Removed MCP config test_server_1.
+
+stdout | tests/unit/mcp-server-management/cached-provider.test.ts > CachedMcpServerConfigProvider > removes from cache on delete
+Cache MISS for MCP config test_server_1.
+
+ ✓ tests/unit/mcp-server-management/cached-provider.test.ts (6 tests) 6ms
+ ✓ tests/unit/agent-tools/mcp/mcp-effective-tool-result-projector.test.ts (10 tests) 4ms
+ ✓ tests/unit/agent-tools/mcp/agent-tool-mcp-run-session-id.test.ts (4 tests) 3ms
+stdout | tests/unit/mcp-server-management/persistence-provider.test.ts
+AgentFactory (Singleton) initialized.
+
+ ✓ tests/unit/mcp-server-management/persistence-provider.test.ts (2 tests) 4ms
+ ✓ tests/unit/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.test.ts (2 tests) 2ms
+ ✓ tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts (2 tests) 2ms
+ ✓ tests/unit/skills/domain/models.test.ts (2 tests) 2ms
+stdout | tests/integration/mcp-server-management/mcp-config-service.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ↓ tests/integration/mcp-server-management/mcp-config-service.integration.test.ts (5 tests | 5 skipped)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts > Codex MCP tool arguments memory/projection integration > persists an early MCP call plus minimal result and projects both UI surfaces
+AssertionError: expected [ 'tool_call', 'tool_result' ] to deeply equal [ 'reasoning', 'tool_call', …(1) ]
+
+- Expected
++ Received
+
+  [
+-   "reasoning",
+    "tool_call",
+    "tool_result",
+  ]
+
+ ❯ tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts:122:52
+    120| 
+    121|     const traces = readRawTraces(memoryDir);
+    122|     expect(traces.map((trace) => trace.traceType)).toEqual(["reasoning…
+       |                                                    ^
+    123|     expect(traces[0]).toMatchObject({
+    124|       traceType: "reasoning",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed | 25 passed | 1 skipped (27)
+      Tests  1 failed | 172 passed | 5 skipped (178)
+   Start at  16:48:11
+   Duration  19.14s (transform 4.13s, setup 138ms, import 15.18s, tests 966ms, environment 2ms)
+

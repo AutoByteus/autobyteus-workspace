@@ -1,0 +1,558 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.15                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+(node:75082) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts (3 tests | 3 failed) 703ms
+     × normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup 535ms
+     × rolls back an injected cleanup failure and succeeds through the same ordinary retry 52ms
+     × returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file 116ms
+stdout | tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts (11 tests | 11 failed) 367ms
+     × changes exactly three fields, preserves accounting/checkpoint bytes and negative controls, and keeps replay/advancement neutral 35ms
+     × finds stale SQL after all history sources are gone and performs zero history-content or index writes 88ms
+     × warning-classifies wrong-root source data after whole-root rollback and keeps the local readiness guard 20ms
+     × warning-classifies mixed-summary source data after whole-root rollback and keeps the local readiness guard 21ms
+     × warning-classifies scalar-only source data after whole-root rollback and keeps the local readiness guard 20ms
+     × warning-classifies extra-claimant source data after whole-root rollback and keeps the local readiness guard 19ms
+     × warning-classifies malformed source data after whole-root rollback and keeps the local readiness guard 25ms
+     × includes settled direct-task and task-Team members without materializing runtimes 20ms
+     × rolls back an actual SQLite UPDATE failure after an earlier member update 21ms
+     × uses the current token boundary after real package loading and rejects before scope build; inspection stays available 77ms
+     × does not normalize a malformed current attribution into a ready result 19ms
+stdout | tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > adds large excluded histories without any history-content I/O or index writes; flat task Teams do not change classification
+FAMILY_MIGRATION_IO_ONLY {"addedExcludedBytes":22020096,"small":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":2.9183329999999614},"large":{"readFiles":3,"bytes":1495,"enumerations":2,"historyContentReads":0,"historyWrites":0,"elapsedMs":1.4058330000000296}}
+
+ ❯ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts (11 tests | 8 failed) 699ms
+     ✓ adds large excluded histories without any history-content I/O or index writes; flat task Teams do not change classification 63ms
+     ✓ reconciles only a retained Team index row without reopening current Org history 137ms
+     × retains source evidence and exact usage through authority interruption, then retries 49ms
+     × retains source evidence and exact usage through rename-before interruption, then retries 44ms
+     × retains source evidence and exact usage through rename-after interruption, then retries 45ms
+     × retains source evidence and exact usage through org-index-after interruption, then retries 48ms
+     × retains source evidence and exact usage through team-index-before interruption, then retries 43ms
+     × retains source evidence and exact usage through team-index-after interruption, then retries 44ms
+     × retains source evidence and exact usage through retirement interruption, then retries 45ms
+     × retains referrer markers when a cross-candidate token dependency fails, including cycles 23ms
+     ✓ retains referrer markers when a cross-candidate sidecar dependency fails, including cycles 156ms
+(node:75103) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts (8 tests | 1 failed) 266ms
+     × imports later JSON integers after four leading NULLs in the same real Prisma batch 54ms
+     ✓ rejects 'JSON real' and rolls the real migration transaction back 32ms
+     ✓ rejects 'JSON text' and rolls the real migration transaction back 32ms
+     ✓ rejects 'JSON true' and rolls the real migration transaction back 30ms
+     ✓ rejects 'JSON array' and rolls the real migration transaction back 29ms
+     ✓ rejects 'JSON object' and rolls the real migration transaction back 29ms
+     ✓ rejects 'negative JSON integer' and rolls the real migration transaction back 28ms
+     ✓ rejects 'integer above SafeInt' and rolls the real migration transaction back 29ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 23 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through authority interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through rename-before interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through rename-after interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through org-index-after interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through team-index-before interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through team-index-after interruption, then retries
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains source evidence and exact usage through retirement interruption, then retries
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts:75:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts > family candidate scope and durable interruption boundaries > retains referrer markers when a cross-candidate token dependency fails, including cycles
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-history-candidate-safety.test.ts:120:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > changes exactly three fields, preserves accounting/checkpoint bytes and negative controls, and keeps replay/advancement neutral
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:27:153
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > finds stale SQL after all history sources are gone and performs zero history-content or index writes
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:59:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies wrong-root source data after whole-root rollback and keeps the local readiness guard
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies mixed-summary source data after whole-root rollback and keeps the local readiness guard
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies scalar-only source data after whole-root rollback and keeps the local readiness guard
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies extra-claimant source data after whole-root rollback and keeps the local readiness guard
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > warning-classifies malformed source data after whole-root rollback and keeps the local readiness guard
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:71:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > includes settled direct-task and task-Team members without materializing runtimes
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:114:63
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > rolls back an actual SQLite UPDATE failure after an earlier member update
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:124:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > uses the current token boundary after real package loading and rejects before scope build; inspection stays available
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:134:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts > Org attribution: isolated actual SQL and current token store > does not normalize a malformed current attribution into a ready result
+PrismaClientKnownRequestError: 
+Invalid `transaction.tokenUsageRunRecord.findUnique()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/token-usage/repositories/sql/token-usage-run-repository.ts:24:63
+
+  21 const normalized = runId.trim();
+  22 if (!normalized) throw new Error("Token usage run ID is required.");
+  23 return this.client.$transaction(async (transaction) => {
+→ 24   const persisted = await transaction.tokenUsageRunRecord.findUnique(
+The column `main.token_usage_run_records.claude_sdk_usage_state_json` does not exist in the current database.
+ ❯ $n.handleRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:7315
+ ❯ $n.handleAndLogRequestError ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6623
+ ❯ $n.request ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:121:6307
+ ❯ l ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:9633
+ ❯ client.$transaction.maxWait src/token-usage/repositories/sql/token-usage-run-repository.ts:24:25
+     22|     if (!normalized) throw new Error("Token usage run ID is required."…
+     23|     return this.client.$transaction(async (transaction) => {
+     24|       const persisted = await transaction.tokenUsageRunRecord.findUniq…
+       |                         ^
+     25|       return work(transaction, persisted ? fromPrismaTokenUsageRunReco…
+     26|     }, { maxWait: 30_000, timeout: 120_000 });
+ ❯ Proxy._transactionWithCallback ../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client/runtime/library.js:130:8000
+ ❯ src/token-usage/services/token-usage-run-accumulator.ts:44:22
+ ❯ serializeRun src/token-usage/services/token-usage-run-accumulator.ts:18:12
+ ❯ tests/unit/app-data-migrations/agent-org-token-attribution-transition.test.ts:146:32
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup
+AssertionError: expected '\nInvalid `this.transaction.tokenUsag…' to be null
+
+- Expected: 
+null
+
++ Received: 
+"
+Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
+/Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
+
+  176 }
+  177 
+  178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
+→ 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
+The column `claude_sdk_usage_state_json` does not exist in the current database."
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:175:35
+    173| 
+    174|       const result = await migration.execute();
+    175|       expect(result.errorMessage).toBeNull();
+       |                                   ^
+    176|       expect(result).toMatchObject({
+    177|         status: "SUCCEEDED",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > rolls back an injected cleanup failure and succeeds through the same ordinary retry
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'FAILED', …(2) }
+
+- Expected
++ Received
+
+@@ -1,7 +1,15 @@
+  {
+-   "errorMessage": "injected cleanup failure",
++   "errorMessage": "
++ Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
++ /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
++
++   176 }
++   177 
++   178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
++ → 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
++ The column `claude_sdk_usage_state_json` does not exist in the current database.",
+    "status": "FAILED",
+    "summary": {
+      "failedCount": 1,
+      "migratedCount": 0,
+    },
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:279:22
+    277|       };
+    278|       const failed = await new TokenUsageRunRecordsV1AppDataMigration(…
+    279|       expect(failed).toMatchObject({
+       |                      ^
+    280|         status: "FAILED",
+    281|         errorMessage: "injected cleanup failure",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'SUCCEEDED', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "SUCCEEDED",
++   "status": "FAILED",
+    "summary": {
+-     "failedCount": 0,
+-     "migratedCount": 6,
+-     "scannedCount": 403,
++     "failedCount": 1,
++     "migratedCount": 0,
++     "scannedCount": 0,
+    },
+  }
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:311:22
+    309|         new LegacyTokenUsageConsolidationRepository(prisma),
+    310|       ).execute();
+    311|       expect(result).toMatchObject({
+       |                      ^
+    312|         status: "SUCCEEDED",
+    313|         summary: { scannedCount: 403, migratedCount: 6, failedCount: 0…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/23]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts > token usage consolidation source-token decoding > imports later JSON integers after four leading NULLs in the same real Prisma batch
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'SUCCEEDED', …(2) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "errorMessage": null,
+-   "status": "SUCCEEDED",
++   "errorMessage": "
++ Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
++ /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-baseline/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
++
++   176 }
++   177 
++   178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
++ → 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
++ The column `claude_sdk_usage_state_json` does not exist in the current database.",
++   "status": "FAILED",
+    "summary": {
+-     "failedCount": 0,
+-     "migratedCount": 1,
+-     "scannedCount": 6,
++     "failedCount": 1,
++     "migratedCount": 0,
++     "scannedCount": 0,
+    },
+  }
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:142:22
+    140| 
+    141|       const result = await new TokenUsageRunRecordsV1AppDataMigration(…
+    142|       expect(result).toMatchObject({
+       |                      ^
+    143|         status: "SUCCEEDED",
+    144|         errorMessage: null,
+ ❯ withFixture tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:118:5
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:127:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/23]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  23 failed | 10 passed (33)
+   Start at  16:47:52
+   Duration  8.62s (transform 2.25s, setup 31ms, import 5.38s, tests 2.03s, environment 0ms)
+

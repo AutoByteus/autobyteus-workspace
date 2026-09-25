@@ -1,0 +1,27 @@
+{
+  "results": [
+    {
+      "label": "agent-binding-run",
+      "found": true,
+      "opened": true,
+      "missing": [],
+      "externalMetadataVisible": false
+    },
+    {
+      "label": "agent-legacy-metadata-variant",
+      "found": true,
+      "opened": true,
+      "missing": [],
+      "externalMetadataVisible": false
+    },
+    {
+      "label": "team-binding-run",
+      "found": true,
+      "opened": true,
+      "missing": [],
+      "externalMetadataVisible": false
+    }
+  ],
+  "pageErrors": [],
+  "sidebarTextStart": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nws-legacy\nTH\nTelegram Helper\n(2)\nHello from Telegram. What is 2+2? Answer in one short sentence.\n11m\nHello from Telegram. What is 2+2? Answer in one short sentence.\n11m\nTEAMS\nClassroom Relay\n(1)\nProfessor, name one prime number. One short sentence.\n11m\nP\nprofessor\n11m\nSettings\nP\nprofessor\nOffline\nYou\nProfessor, name one prime number. One short sentence.\nP\nprofessor\n\nSeven.\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks"
+}

@@ -1,0 +1,21 @@
+
+> autobyteus-message-gateway@1.4.78 build:runtime-package /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/autobyteus-message-gateway
+> node ./scripts/build-runtime-package.mjs
+
+[33m
+Building gateway runtime artifacts...[0m
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+
+> autobyteus-message-gateway@1.4.78 build /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/autobyteus-message-gateway
+> tsc -p tsconfig.build.json
+
+sh: tsc: command not found
+ ELIFECYCLE  Command failed.
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?
+[31mFailed to build runtime package: Command failed (1): pnpm -C /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild/autobyteus-message-gateway build[0m
+ ELIFECYCLE  Command failed with exit code 1.
+ WARN   Local package.json exists, but node_modules missing, did you mean to install?

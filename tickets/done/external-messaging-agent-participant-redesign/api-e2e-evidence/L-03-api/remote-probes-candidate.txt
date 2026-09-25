@@ -1,0 +1,10 @@
+# L-03 remote probes from Docker container (node:22-bookworm) → candidate e9bbb28ab :18741 (2026-09-24T14:58:35Z)
+client source address as seen from container: 172.17.0.10
+remote POST /rest/api/channel-ingress/v1/messages (no auth)        -> HTTP 404  body={"message":"Route POST:/rest/api/channel-ingress/v1/messages not found","error":"Not Found","statusCode":404}
+remote POST /rest/api/channel-ingress/v1/delivery-events (no auth) -> HTTP 404  body={"message":"Route POST:/rest/api/channel-ingress/v1/delivery-events not found","error":"Not Found","statusCode":404}
+remote POST /rest/api/never-existed (no auth, control)             -> HTTP 404  body={"message":"Route POST:/rest/api/never-existed not found","error":"Not Found","statusCode":404}
+remote POST /rest/api/channel-ingress/v1/messages (invalid mobile cred) -> HTTP 401  body={"error":"REMOTE_ACCESS_AUTH_INVALID","code":"REMOTE_ACCESS_AUTH_INVALID","message":"Remote Access credential is invalid."}
+remote POST /rest/api/channel-ingress/v1/delivery-events (invalid mobile cred) -> HTTP 401  body={"error":"REMOTE_ACCESS_AUTH_INVALID","code":"REMOTE_ACCESS_AUTH_INVALID","message":"Remote Access credential is invalid."}
+remote POST /graphql (invalid mobile cred, protected control)      -> HTTP 401  body={"error":"REMOTE_ACCESS_AUTH_INVALID","code":"REMOTE_ACCESS_AUTH_INVALID","message":"Remote Access credential is invalid."}
+remote POST /rest/api/never-existed (invalid mobile cred, control) -> HTTP 401  body={"error":"REMOTE_ACCESS_AUTH_INVALID","code":"REMOTE_ACCESS_AUTH_INVALID","message":"Remote Access credential is invalid."}
+remote GET /rest/health (invalid mobile cred, public control)      -> HTTP 200  body={"status":"ok","message":"Server is running"}

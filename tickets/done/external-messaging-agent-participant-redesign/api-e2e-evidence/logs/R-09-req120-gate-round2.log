@@ -1,0 +1,26 @@
+== HEAD: 40f769e0d
+== [1] Content gate (case-sensitive), hits outside allowed set 1-4 except the registry line:
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts:68:        bindingDataDir: path.join(appConfigProvider.config.getAppDataDir(), "external-channel"),
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts:69:        gatewayInstallDir: path.join(appConfigProvider.config.getAppDataDir(), "extensions", "messaging-gateway"),
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts:70:        gatewayDownloadDir: path.join(appConfigProvider.config.getDownloadDir(), "messaging-gateway"),
+autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts:71:        gatewayLogsDir: path.join(appConfigProvider.config.getLogsDir(), "messaging-gateway"),
+== [2] Path gate (tracked file paths, case-insensitive), outside allowed set:
+== [3] Supplementary residue (design): GatewaySignature|CHANNEL_CALLBACK|CHANNEL_GATEWAY|MESSAGE_GATEWAY|messageGateway|GATEWAY_[A-Z]|gateway-memory|allinone-start-gateway
+test-support/live-e2e/live-e2e-harness.ts:485:        () => reject(new Error('LIVE_E2E_GATEWAY_AGENT_FLOW_TIMEOUT')),
+test-support/live-e2e/live-e2e-harness.ts:498:          reject(new Error('LIVE_E2E_GATEWAY_AGENT_FLOW_RUNTIME_ERROR'));
+test-support/live-e2e/live-e2e-harness.ts:507:    if (!sendResult.accepted) throw new Error('LIVE_E2E_GATEWAY_AGENT_FLOW_SEND_REJECTED');
+test-support/live-e2e/live-e2e-harness.ts:523:      throw new Error('LIVE_E2E_GATEWAY_AGENT_FLOW_TERMINATION_FAILED');
+== [4] Provider names (case-insensitive):
+autobyteus-web/ui-prototypes/local-agents-clean-list/prompts/web/local-agents-management/local-agents-list-clean-default.md:60:- WeChat Official Account Agent
+== [5] Case-insensitive externalUserMessage:
+autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts:506:    const onAcceptedExternalUserMessage = vi.fn()
+autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts:508:      orgRunId: 'org-run', publish: vi.fn(), reportError: vi.fn(), onAcceptedExternalUserMessage,
+autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts:519:    expect(onAcceptedExternalUserMessage).not.toHaveBeenCalled()
+autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts:530:    expect(onAcceptedExternalUserMessage).toHaveBeenCalledWith({
+autobyteus-web/services/agentOrgExecution/__tests__/agentOrgStreamingService.spec.ts:533:    expect(JSON.stringify(onAcceptedExternalUserMessage.mock.calls)).not.toContain('Authoritative first message')
+autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:69:    onAcceptedExternalUserMessage?(event: Readonly<{
+autobyteus-web/services/agentOrgExecution/agentOrgStreamingService.ts:372:          this.options.onAcceptedExternalUserMessage?.({
+autobyteus-web/stores/__tests__/agentOrgContextsStore.spec.ts:57:    await mocks.instances[0]?.options.onAcceptedExternalUserMessage({
+autobyteus-web/stores/agentOrgContextsStore.ts:95:      onAcceptedExternalUserMessage: () => { void useRunHistoryStore().refreshAgentOrgHistory() },
+autobyteus-server-ts/src/app-data-migrations/migrations/remove-external-messaging-data-migration.ts
+autobyteus-server-ts/tests/unit/app-data-migrations/remove-external-messaging-data-migration.test.ts

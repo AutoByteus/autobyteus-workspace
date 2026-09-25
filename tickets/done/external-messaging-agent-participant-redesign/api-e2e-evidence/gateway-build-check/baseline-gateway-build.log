@@ -1,0 +1,13 @@
+
+> autobyteus-message-gateway@1.4.78 prebuild /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild-base/autobyteus-message-gateway
+> pnpm -C .. -r --filter autobyteus-ts build
+
+
+> autobyteus-ts@1.0.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild-base/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+
+> autobyteus-message-gateway@1.4.78 build /Users/normy/autobyteus_org/autobyteus-worktrees/emr-api-e2e-gwbuild-base/autobyteus-message-gateway
+> tsc -p tsconfig.build.json
+

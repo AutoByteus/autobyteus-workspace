@@ -1,0 +1,16 @@
+{
+  "runId": "telegram_helper_legacymeta00000000000000000001",
+  "agentDefinitionId": "telegram-helper",
+  "workspaceRootPath": "/private/tmp/emr-e2e/ws-legacy",
+  "memoryDir": "/private/tmp/emr-e2e/legacy-src/memory/agents/telegram_helper_legacymeta00000000000000000001",
+  "llmModelIdentifier": "gpt-5.4-mini",
+  "llmConfig": null,
+  "autoExecuteTools": false,
+  "skillAccessMode": "NONE",
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "telegram_helper_legacymeta00000000000000000001",
+  "preparedAt": "2026-09-24T14:51:56.351Z",
+  "preparedExpiresAt": "2026-09-25T14:51:56.351Z",
+  "startedAt": "2026-09-24T14:51:56.429Z",
+  "applicationExecutionContext": null
+}

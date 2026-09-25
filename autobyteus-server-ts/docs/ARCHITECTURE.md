@@ -135,6 +135,15 @@ application/template imports. The canonical policy table, project/manifest
 resolution rules, injection families, and remediation guidance are in
 [`docs/modules/applications.md`](./modules/applications.md#executable-application-framework-boundaries).
 
+External chat platforms are outside the server boundary. The server has no chat
+ingress route, chat-to-run binding model, managed chat gateway runtime, or
+outbound delivery to chat platforms, and runs start only through the normal
+Agent, Team, and AgentOrg launch paths. A chat-platform integration is built as
+a separate project and reaches agents as an ordinary MCP server plus skills,
+configured through [MCP server management](./modules/mcp_server_management.md)
+and [skills](./modules/skills.md) and assigned like any other tools. The
+one-time startup removal of the former built-in integration's data is described
+under "Production data migrations" in the server `README.md`.
 
 ## Native Working-Context Compaction
 

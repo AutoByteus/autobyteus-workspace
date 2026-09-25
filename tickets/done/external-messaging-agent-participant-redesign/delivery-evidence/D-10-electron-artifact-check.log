@@ -1,0 +1,20 @@
+== build HEAD: b818a6860
+== artifacts
+-rw-r--r--@ 1 normy  staff  478772006 Sep 25 04:24 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.79.dmg
+-rw-r--r--@ 1 normy  staff  473836486 Sep 25 04:26 autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.79.zip
+5d7245df13db6264ec1bf25bf3619f780710c815f5fe1c1ee7f1e6ba718f1193  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.79.dmg
+ba9a4c0c4a74442027bff91c02953904e091584162fbd31d77324203763c5003  autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.79.zip
+== hdiutil verify
+Die überprüfte CRC32-Prüfsumme ist $107E99B5
+hdiutil: verify: checksum of "autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.79.dmg" is VALID
+== app version
+1.4.79
+== bundled server: autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+cleanup migration present:
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/migrations/remove-external-messaging-data-migration.js
+autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/prisma/migrations/20260924120000_remove_external_channel_tables
+messaging modules in bundled server dist (expect none):
+EXTERNAL_USER_MESSAGE in bundled server dist (expect 0):
+       0
+EXTERNAL_USER_MESSAGE / Messaging section in app renderer (expect 0):
+       0

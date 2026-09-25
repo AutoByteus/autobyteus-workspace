@@ -1,0 +1,2 @@
+nuxt-exit=1
+electron-exit=0
