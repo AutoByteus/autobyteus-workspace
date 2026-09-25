@@ -31,7 +31,6 @@ Major domains under `src/`:
 - Agent definition and execution
 - Flat AgentTeam definition/execution and coordinator-free AgentOrg composition/execution
 - Server-hosted Agent Tools MCP sessions for configured server-owned tools
-- External-channel messaging ingress, bindings, and reply routing
 - Prompt engineering
 - Skills
 - Shared Agent Work Trace Projection

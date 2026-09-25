@@ -1,0 +1,105 @@
+
+> autobyteus-message-gateway@1.4.79 test /private/tmp/emr-gw/autobyteus-message-gateway
+> vitest run --passWithNoTests
+
+
+ RUN  v4.1.11 /private/tmp/emr-gw/autobyteus-message-gateway
+
+ ✓ tests/unit/config/runtime-config.test.ts (9 tests) 12ms
+ ✓ tests/unit/infrastructure/adapters/telegram-business/telegram-business-adapter.test.ts (5 tests) 8ms
+ ✓ tests/unit/external-channel/external-message-envelope.test.ts (10 tests) 7ms
+ ✓ tests/unit/infrastructure/adapters/wechat-personal/wechat-personal-adapter.test.ts (4 tests) 19ms
+ ✓ tests/unit/infrastructure/adapters/discord-business/discord-business-adapter.test.ts (10 tests) 23ms
+ ✓ tests/integration/http/routes/runtime-reliability-route.integration.test.ts (5 tests) 48ms
+ ✓ tests/unit/external-channel/external-outbound-envelope.test.ts (10 tests) 4ms
+ ✓ tests/unit/application/services/inbound-forwarder-worker.test.ts (4 tests) 7ms
+ ✓ tests/unit/application/services/inbound-inbox-service.test.ts (4 tests) 4ms
+ ✓ tests/unit/infrastructure/queue/file-queue-state-store.test.ts (4 tests) 105ms
+ ✓ tests/unit/application/services/outbound-outbox-service.test.ts (4 tests) 8ms
+ ✓ tests/unit/infrastructure/adapters/whatsapp-personal/whatsapp-personal-adapter.test.ts (7 tests) 58ms
+ ✓ tests/integration/http/routes/channel-admin-route.integration.test.ts (13 tests) 82ms
+ ✓ tests/integration/application/services/inbound-forwarder-worker.integration.test.ts (2 tests) 35ms
+ ✓ tests/unit/infrastructure/server-api/autobyteus-server-client.test.ts (4 tests) 18ms
+ ✓ tests/unit/application/services/outbound-sender-worker.test.ts (4 tests) 9ms
+ ✓ tests/unit/infrastructure/queue/file-queue-owner-lock.test.ts (6 tests) 130ms
+ ✓ tests/unit/application/services/whatsapp-personal-session-service.test.ts (3 tests) 6ms
+ ✓ tests/unit/infrastructure/adapters/whatsapp-personal/baileys-session-client.test.ts (1 test) 5ms
+ ✓ tests/integration/infrastructure/outbox/file-outbox-store.integration.test.ts (3 tests) 44ms
+ ✓ tests/integration/infrastructure/inbox/file-inbox-store.integration.test.ts (3 tests) 58ms
+ ✓ tests/e2e/queue-upgrade-reset.e2e.test.ts (1 test) 123ms
+ ✓ tests/unit/config/env.test.ts (1 test) 7ms
+ ✓ tests/integration/http/routes/wecom-app-webhook-route.integration.test.ts (4 tests) 75ms
+ ✓ tests/integration/http/routes/wechat-sidecar-event-route.integration.test.ts (4 tests) 74ms
+ ✓ tests/unit/infrastructure/adapters/telegram-business/telegram-bot-client.test.ts (2 tests) 36ms
+ ✓ tests/integration/http/routes/provider-webhook-route.integration.test.ts (2 tests) 30ms
+ ✓ tests/unit/infrastructure/adapters/wecom/wecom-unified-adapter.test.ts (2 tests) 4ms
+ ✓ tests/integration/http/routes/server-callback-route.integration.test.ts (4 tests) 37ms
+ ✓ tests/unit/infrastructure/adapters/whatsapp-personal/personal-peer-candidate-index.test.ts (4 tests) 9ms
+ ✓ tests/unit/infrastructure/inbox/file-inbox-store.test.ts (3 tests) 66ms
+ ✓ tests/unit/infrastructure/adapters/discord-business/discord-gateway-client.test.ts (3 tests) 4ms
+ ✓ tests/unit/infrastructure/adapters/shared/account-peer-candidate-index.test.ts (3 tests) 6ms
+ ✓ tests/unit/infrastructure/outbox/file-outbox-store.test.ts (3 tests) 110ms
+ ✓ tests/integration/infrastructure/adapters/wechat-personal/wechat-sidecar-contract.integration.test.ts (1 test) 82ms
+ ✓ tests/unit/infrastructure/adapters/discord-business/discord-rest-client.test.ts (3 tests) 28ms
+ ✓ tests/unit/infrastructure/adapters/wechat-personal/wechaty-sidecar-client.test.ts (3 tests) 22ms
+ ✓ tests/unit/bootstrap/gateway-runtime-lifecycle.test.ts (1 test) 8ms
+ ✓ tests/unit/application/services/inbound-message-service.test.ts (3 tests) 4ms
+ ✓ tests/unit/application/services/wechat-personal-session-service.test.ts (2 tests) 3ms
+ ✓ tests/unit/external-channel/discord-binding-identity.test.ts (7 tests) 8ms
+ ✓ tests/unit/application/services/inbound-envelope-bridge-service.test.ts (3 tests) 5ms
+ ✓ tests/integration/application/services/outbound-sender-worker.integration.test.ts (1 test) 12ms
+ ✓ tests/unit/infrastructure/adapters/whatsapp-business/whatsapp-business-adapter.test.ts (3 tests) 5ms
+ ✓ tests/unit/infrastructure/adapters/whatsapp-personal/inbound-envelope-mapper.test.ts (3 tests) 4ms
+ ✓ tests/unit/infrastructure/adapters/session/session-supervisor-registry.test.ts (2 tests) 4ms
+ ✓ tests/unit/infrastructure/adapters/discord-business/discord-thread-context-resolver.test.ts (3 tests) 3ms
+stderr | tests/integration/bootstrap/create-gateway-app.integration.test.ts > create-gateway-app integration > accepts valid signed wechat sidecar ingress when wechat personal is enabled
+[gateway] wechat sidecar inbound event dropped due to unknown session { sessionId: 'session-1', accountLabel: 'home-wechat' }
+
+ ✓ tests/unit/bootstrap/start-gateway.test.ts (1 test) 4ms
+ ✓ tests/integration/bootstrap/create-gateway-app.integration.test.ts (11 tests) 869ms
+     ✓ applies configured Telegram discovery limits inside the bootstrapped app  327ms
+     ✓ releases queue owner locks when the gateway app closes  340ms
+ ✓ tests/unit/infrastructure/adapters/whatsapp-personal/session-credential-store.test.ts (2 tests) 28ms
+ ✓ tests/unit/infrastructure/adapters/session/session-supervisor.test.ts (3 tests) 9ms
+ ✓ tests/integration/application/services/outbound-outbox-service.integration.test.ts (1 test) 14ms
+ ✓ tests/integration/application/services/inbound-inbox-service.integration.test.ts (1 test) 13ms
+ ✓ tests/unit/application/services/gateway-capability-service.test.ts (3 tests) 2ms
+ ✓ tests/integration/http/hooks/raw-body-capture.integration.test.ts (1 test) 20ms
+ ✓ tests/unit/http/middleware/verify-server-callback-signature.test.ts (4 tests) 4ms
+ ✓ tests/unit/infrastructure/adapters/wecom/wecom-app-inbound-strategy.test.ts (2 tests) 6ms
+ ✓ tests/unit/infrastructure/adapters/wecom/wecom-adapter.test.ts (2 tests) 10ms
+ ✓ tests/unit/application/services/reliability-status-service.test.ts (3 tests) 3ms
+ ✓ tests/unit/http/middleware/verify-wechat-sidecar-signature.test.ts (3 tests) 3ms
+ ✓ tests/unit/application/services/telegram-peer-discovery-service.test.ts (2 tests) 6ms
+ ✓ tests/unit/application/services/discord-peer-discovery-service.test.ts (2 tests) 5ms
+ ✓ tests/unit/application/services/inbound-classifier-service.test.ts (2 tests) 2ms
+ ✓ tests/unit/infrastructure/adapters/wechat-personal/wechat-inbound-message-id-normalizer.test.ts (2 tests) 3ms
+ ✓ tests/unit/infrastructure/adapters/wecom/wecom-app-outbound-strategy.test.ts (1 test) 2ms
+ ✓ tests/integration/infrastructure/adapters/discord-business/discord-gateway-client.integration.test.ts (1 test) 3ms
+ ✓ tests/unit/infrastructure/adapters/discord-business/discord-target-codec.test.ts (3 tests) 3ms
+ ✓ tests/unit/external-channel/provider.test.ts (2 tests) 2ms
+ ✓ tests/unit/external-channel/channel-routing-key.test.ts (2 tests) 2ms
+ ✓ tests/unit/infrastructure/adapters/discord-business/discord-peer-candidate-index.test.ts (1 test) 4ms
+ ✓ tests/unit/infrastructure/adapters/wechat-personal/session-state-store.test.ts (1 test) 27ms
+ ✓ tests/unit/infrastructure/adapters/telegram-business/telegram-peer-candidate-index.test.ts (1 test) 4ms
+ ✓ tests/unit/application/services/idempotency-service.test.ts (2 tests) 3ms
+ ✓ tests/integration/infrastructure/queue/file-queue-owner-lock.integration.test.ts (1 test) 38ms
+ ✓ tests/unit/infrastructure/adapters/wecom/wecom-account-registry.test.ts (1 test) 2ms
+ ✓ tests/unit/infrastructure/retry/retry-decision.test.ts (4 tests) 2ms
+ ✓ tests/unit/application/services/channel-mention-policy-service.test.ts (3 tests) 2ms
+ ✓ tests/unit/http/mappers/http-request-mapper.test.ts (1 test) 2ms
+ ✓ tests/unit/external-channel/channel-transport.test.ts (2 tests) 3ms
+ ✓ tests/integration/infrastructure/adapters/session/session-supervisor.integration.test.ts (1 test) 6ms
+ ✓ tests/unit/infrastructure/retry/exponential-backoff.test.ts (2 tests) 2ms
+ ✓ tests/unit/infrastructure/adapters/wecom/wecom-inbound-message-id-normalizer.test.ts (2 tests) 2ms
+ ✓ tests/unit/infrastructure/server-api/server-signature.test.ts (1 test) 2ms
+ ✓ tests/integration/http/routes/health-route.integration.test.ts (1 test) 16ms
+ ✓ tests/unit/infrastructure/adapters/whatsapp-personal/session-state-mapper.test.ts (3 tests) 3ms
+ ✓ tests/e2e/inbound-webhook-forwarding.e2e.test.ts (1 test) 968ms
+     ✓ forwards webhook ingress to server and marks inbox record completed  967ms
+
+ Test Files  86 passed (86)
+      Tests  268 passed (268)
+   Start at  17:44:44
+   Duration  2.72s (transform 2.66s, setup 0ms, import 8.26s, tests 3.56s, environment 6ms)
+

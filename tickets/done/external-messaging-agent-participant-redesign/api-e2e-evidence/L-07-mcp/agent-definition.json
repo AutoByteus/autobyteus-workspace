@@ -1,0 +1,11 @@
+{
+  "data": {
+    "createAgentDefinition": {
+      "id": "mcp-token-probe",
+      "name": "MCP Token Probe",
+      "toolNames": [
+        "verify_e2e_token"
+      ]
+    }
+  }
+}

@@ -72,24 +72,7 @@ export declare const teamMemberInputMessagePayloadSchema: z.ZodObject<{
     sender_agent_run_id: z.ZodNullable<z.ZodString>;
     parent_communication_message_id: z.ZodNullable<z.ZodString>;
 }, z.core.$strict>;
-export declare const teamExternalUserMessagePayloadSchema: z.ZodObject<{
-    agent_run_id: z.ZodString;
-    member_address: z.ZodString;
-    content: z.ZodString;
-    received_at: z.ZodString;
-    provider: z.ZodString;
-    transport: z.ZodString;
-    account_id: z.ZodString;
-    peer_id: z.ZodString;
-    thread_id: z.ZodNullable<z.ZodString>;
-    external_message_id: z.ZodString;
-    context_file_paths: z.ZodArray<z.ZodObject<{
-        path: z.ZodString;
-        type: z.ZodNullable<z.ZodString>;
-    }, z.core.$strict>>;
-}, z.core.$strict>;
 export type TeamCommunicationMessageDto = Readonly<z.infer<typeof teamCommunicationMessageDtoSchema>>;
 export type TeamCommunicationMessagePayload = Readonly<z.infer<typeof teamCommunicationMessagePayloadSchema>>;
 export type TeamMemberInputMessagePayload = Readonly<z.infer<typeof teamMemberInputMessagePayloadSchema>>;
-export type TeamExternalUserMessagePayload = Readonly<z.infer<typeof teamExternalUserMessagePayloadSchema>>;
 //# sourceMappingURL=team-collaboration-message-dtos.d.ts.map

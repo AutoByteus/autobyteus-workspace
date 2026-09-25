@@ -90,12 +90,6 @@ export const classifyHttpRoute = (
   if (path.startsWith("/ws/")) {
     return "TRUSTED_NETWORK_WEBSOCKET";
   }
-  if (
-    path === "/rest/api/channel-ingress/v1/messages"
-    || path === "/rest/api/channel-ingress/v1/delivery-events"
-  ) {
-    return "EXTERNAL_SIGNATURE";
-  }
   if (isApplicationBackendPath(path) || isApplicationBundleAssetPath(path) || isProtectedRestFamily(path)) {
     return "TRUSTED_NETWORK_PROTECTED";
   }
@@ -108,7 +102,6 @@ const allowedWithoutAuth = new Set<RemoteAccessRouteClassification>([
   "PUBLIC_HEALTH_STATUS",
   "PUBLIC_PREFLIGHT",
   "PUBLIC_PAIRING_EXCHANGE",
-  "EXTERNAL_SIGNATURE",
 ]);
 
 const reject = (

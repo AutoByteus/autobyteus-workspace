@@ -109,7 +109,7 @@ describe('app font-size fixed-px audit', () => {
   it('keeps the corrected settings source perimeter enrolled in the durable audit', () => {
     expect(SETTINGS_COMPONENT_FILES.length).toBeGreaterThan(0);
     expect(SETTINGS_COMPONENT_FILES).toContain('components/settings/DisplaySettingsManager.vue');
-    expect(SETTINGS_COMPONENT_FILES).toContain('components/settings/messaging/SetupChecklistCard.vue');
+    expect(SETTINGS_COMPONENT_FILES).toContain('components/settings/providerApiKey/ProviderApiKeyEditor.vue');
     expect(SETTINGS_COMPONENT_FILES).toContain('components/settings/VoiceInputExtensionCard.vue');
     expect(TARGETED_FILES).toContain('pages/settings.vue');
   });

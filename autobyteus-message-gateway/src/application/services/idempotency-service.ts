@@ -1,4 +1,4 @@
-import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
+import type { ExternalMessageEnvelope } from "../../external-channel/external-message-envelope.js";
 
 export function buildInboundIdempotencyKey(envelope: ExternalMessageEnvelope): string {
   const threadPart =

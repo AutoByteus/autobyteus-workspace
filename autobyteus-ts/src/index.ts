@@ -11,7 +11,6 @@ export * from './multimedia/image/api/index.js';
 export * from './multimedia/video/index.js';
 export * from './multimedia/video/api/index.js';
 export * from './multimedia/utils/index.js';
-export * from './external-channel/index.js';
 export * from './llm/index.js';
 export * from './secrets/index.js';
 export * from './memory/index.js';

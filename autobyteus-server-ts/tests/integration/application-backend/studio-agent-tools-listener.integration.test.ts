@@ -5,9 +5,6 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import {
-  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-} from "../../../src/config/server-runtime-endpoints.js";
 import { startStudioE2eRuntimeServer } from "../../e2e/helpers/studio-runtime-test-server.js";
 
 const tempDirs: string[] = [];
@@ -30,8 +27,6 @@ const mcpRequest = async (url: string, method: string, id: string) =>
 
 describe("Studio main and Agent Tools listener integration", () => {
   it("preserves a wildcard main bind while serving Agent Tools only on one loopback listener and closing both", async () => {
-    const originalInternalBase =
-      process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     const appDataDir = await fs.mkdtemp(
       path.join(os.tmpdir(), "studio-agent-tools-listener-"),
     );
@@ -128,12 +123,6 @@ describe("Studio main and Agent Tools listener integration", () => {
       })).toThrow("Agent Tools MCP host is closed");
     } finally {
       if (!closed) await started.fastify.close();
-      if (originalInternalBase) {
-        process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] =
-          originalInternalBase;
-      } else {
-        delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
-      }
     }
   }, 30_000);
 });

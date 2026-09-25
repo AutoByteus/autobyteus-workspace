@@ -10,16 +10,6 @@ export default defineConfig({
   },
   resolve: {
     preserveSymlinks: true,
-    alias: [
-      {
-        find: /^autobyteus-ts\/(.+)$/,
-        replacement: resolve(rootDir, "../autobyteus-ts/dist/$1"),
-      },
-      {
-        find: "autobyteus-ts",
-        replacement: resolve(rootDir, "../autobyteus-ts/dist/index.js"),
-      },
-    ],
   },
   server: {
     fs: {

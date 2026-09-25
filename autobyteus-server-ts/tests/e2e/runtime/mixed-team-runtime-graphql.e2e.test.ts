@@ -10,9 +10,6 @@ import WebSocket from "ws";
 import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
-import {
-  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-} from "../../../src/config/server-runtime-endpoints.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getTeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -247,15 +244,12 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
   let testDataDir: string | null = null;
   let runtimeServerApp: FastifyInstance | null = null;
   let runtimeServerUrl: URL;
-  let originalInternalServerBaseUrl: string | undefined;
   const createdAgentDefinitionIds = new Set<string>();
   const createdTeamDefinitionIds = new Set<string>();
   const createdTeamRunIds = new Set<string>();
   const createdWorkspaceRoots = new Set<string>();
 
   beforeAll(async () => {
-    originalInternalServerBaseUrl =
-      process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
     testDataDir = await mkdtemp(
       path.join(os.tmpdir(), "mixed-team-runtime-e2e-appdata-"),
@@ -287,12 +281,6 @@ describeMixedRuntime("Mixed AutoByteus+Codex GraphQL runtime e2e", () => {
         originalCodexApprovalPolicy;
     } else {
       delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
-    }
-    if (originalInternalServerBaseUrl) {
-      process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] =
-        originalInternalServerBaseUrl;
-    } else {
-      delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     }
     if (runtimeServerApp) {
       await runtimeServerApp.close();

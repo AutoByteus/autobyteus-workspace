@@ -24,7 +24,6 @@
       "@parcel/watcher",
       "@prisma/client",
       "@prisma/engines",
-      "@whiskeysockets/baileys",
       "electron",
       "esbuild",
       "node-pty",

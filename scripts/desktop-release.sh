@@ -4,7 +4,6 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 WEB_PACKAGE_JSON="$REPO_ROOT/autobyteus-web/package.json"
-GATEWAY_PACKAGE_JSON="$REPO_ROOT/autobyteus-message-gateway/package.json"
 RELEASE_NOTES_OUTPUT_PATH="$REPO_ROOT/.github/release-notes/release-notes.md"
 RELEASE_NOTES_OUTPUT_REL=".github/release-notes/release-notes.md"
 DEFAULT_BRANCH="personal"
@@ -173,24 +172,13 @@ run_release() {
     exit 1
   fi
 
-  local current_gateway_version
-  current_gateway_version="$(get_package_version "$GATEWAY_PACKAGE_JSON")"
-
   echo "Updating autobyteus-web/package.json: $current_web_version -> $version"
   set_package_version "$WEB_PACKAGE_JSON" "$version"
-  echo "Updating autobyteus-message-gateway/package.json: $current_gateway_version -> $version"
-  set_package_version "$GATEWAY_PACKAGE_JSON" "$version"
   sync_release_notes_file "$release_notes_file"
-  echo "Syncing managed messaging release manifest to $tag"
-  node "$REPO_ROOT/autobyteus-message-gateway/scripts/build-runtime-package.mjs" \
-    --sync-manifest-only \
-    --release-tag "$tag"
 
   git -C "$REPO_ROOT" add \
     .github/release-notes/release-notes.md \
-    autobyteus-message-gateway/package.json \
-    autobyteus-web/package.json \
-    autobyteus-server-ts/src/managed-capabilities/messaging-gateway/release-manifest.json
+    autobyteus-web/package.json
   git -C "$REPO_ROOT" commit -m "chore(release): bump workspace release version to $version"
   git -C "$REPO_ROOT" tag -a "$tag" -m "Release $tag"
 

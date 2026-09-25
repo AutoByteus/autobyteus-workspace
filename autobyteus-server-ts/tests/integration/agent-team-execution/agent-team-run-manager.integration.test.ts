@@ -15,8 +15,6 @@ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
-import type { ChannelBinding } from "../../../src/external-channel/domain/models.js";
-import { ChannelBindingRunLauncher } from "../../../src/external-channel/runtime/channel-binding-run-launcher.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunHistoryCatalogService } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
@@ -147,38 +145,11 @@ const createFactory = (input: {
   };
 };
 
-const createTeamBinding = (teamRunId: string): ChannelBinding => ({
-  id: `binding-${teamRunId}`,
-  provider: "WHATSAPP" as any,
-  transport: "BUSINESS_API" as any,
-  accountId: "acct-1",
-  peerId: "peer-1",
-  threadId: null,
-  targetType: "TEAM",
-  agentDefinitionId: null,
-  launchPreset: null,
-  agentRunId: null,
-  teamDefinitionId: "team-def-mixed-only",
-  teamLaunchPreset: {
-    workspaceRootPath: "/tmp/external-team-workspace",
-    llmModelIdentifier: "unused-fallback-model",
-    runtimeKind: RuntimeKind.AUTOBYTEUS,
-    autoExecuteTools: false,
-    skillAccessMode: "PRELOADED_ONLY",
-    llmConfig: null,
-  },
-  teamRunId,
-  targetMemberRouteKey: "Coordinator",
-  allowTransportFallback: false,
-  createdAt: new Date("2026-08-25T00:00:00.000Z"),
-  updatedAt: new Date("2026-08-25T00:00:00.000Z"),
-});
-
-const exactChannelLauncher = (
+const exactTeamRunService = (
   manager: AgentTeamRunManager,
   memoryDir: string,
-): { launcher: ChannelBindingRunLauncher; teamRunService: TeamRunService } => {
-  const teamRunService = new TeamRunService({
+): TeamRunService => {
+  return new TeamRunService({
     agentTeamRunManager: manager,
     memoryDir,
     memoryLocationService: new AgentMemoryLocationService({
@@ -199,15 +170,6 @@ const exactChannelLauncher = (
       requireAvailable: vi.fn(),
     },
   });
-  const launcher = new ChannelBindingRunLauncher({
-    bindingService: {
-      upsertBindingAgentRunId: vi.fn(),
-      upsertBindingTeamRunId: vi.fn(async () => undefined),
-    } as never,
-    agentRunService: {} as never,
-    teamRunService,
-  });
-  return { launcher, teamRunService };
 };
 
 describe("AgentTeamRunManager strict current V2 package integration", () => {
@@ -561,7 +523,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
   });
 
-  it("orders the exact external-channel Team resolver after Save and restores committed config", async () => {
+  it("orders an exact-ID Team restore after an in-flight Save and restores committed config", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
       initializeTaskIdentityAllocator(memoryDir),
@@ -582,10 +544,10 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       activeRootDirectory: isolatedRootDirectory(),
       modelSelectionValidator: { validate, validateMany: (inputs) => Promise.all(inputs.map((input) => validate(input))) },
     });
-    const root = await manager.createTeamRun({ config, teamDefinitionName: "External Save-First Team" });
+    const root = await manager.createTeamRun({ config, teamDefinitionName: "Save-First Team" });
     await expect(manager.terminateTeamRun(root.teamRunId)).resolves.toBe(true);
     factory.state.active = true;
-    const { launcher, teamRunService } = exactChannelLauncher(manager, memoryDir);
+    const teamRunService = exactTeamRunService(manager, memoryDir);
     const patch = [{
       scopeKind: "CONFIGURED_TEAM" as const,
       scopeAddress: "/",
@@ -598,7 +560,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       patches: patch,
     });
     await vi.waitFor(() => expect(validate).toHaveBeenCalledOnce());
-    const externalResolve = launcher.resolveOrStartTeamRun(createTeamBinding(root.teamRunId));
+    const restore = teamRunService.restoreTeamRun(root.teamRunId);
     await Promise.resolve();
     expect(factory.materialize).toHaveBeenCalledTimes(1);
 
@@ -612,7 +574,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
         },
       },
     });
-    await expect(externalResolve).resolves.toBe(root.teamRunId);
+    await expect(restore).resolves.toMatchObject({ teamRunId: root.teamRunId });
     expect(factory.materialize).toHaveBeenLastCalledWith(
       expect.objectContaining({
         activationMode: "restore",
@@ -626,7 +588,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     );
   });
 
-  it("returns RUN_ACTIVE when the exact external-channel Team resolver restores before Save", async () => {
+  it("returns RUN_ACTIVE when an exact-ID Team restore completes before Save", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
       initializeTaskIdentityAllocator(memoryDir),
@@ -645,13 +607,13 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       activeRootDirectory: isolatedRootDirectory(),
       modelSelectionValidator: { validate, validateMany: (inputs) => Promise.all(inputs.map((input) => validate(input))) },
     });
-    const root = await manager.createTeamRun({ config, teamDefinitionName: "External Restore-First Team" });
+    const root = await manager.createTeamRun({ config, teamDefinitionName: "Restore-First Team" });
     await expect(manager.terminateTeamRun(root.teamRunId)).resolves.toBe(true);
     factory.state.active = true;
-    const { launcher, teamRunService } = exactChannelLauncher(manager, memoryDir);
+    const teamRunService = exactTeamRunService(manager, memoryDir);
 
-    await expect(launcher.resolveOrStartTeamRun(createTeamBinding(root.teamRunId)))
-      .resolves.toBe(root.teamRunId);
+    await expect(teamRunService.restoreTeamRun(root.teamRunId))
+      .resolves.toMatchObject({ teamRunId: root.teamRunId });
     await expect(teamRunService.updateStoppedModelConfigs({
       teamRunId: root.teamRunId,
       patches: [{

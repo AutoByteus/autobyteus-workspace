@@ -40,9 +40,6 @@ const mocks = vi.hoisted(() => {
     loggerError: vi.fn(),
     loggerWarn: vi.fn(),
     scheduleStudioBackgroundTasks: vi.fn(async () => undefined),
-    startChannelRuntime: vi.fn(),
-    startGatewayRuntime: vi.fn(),
-    restoreManagedMessaging: vi.fn(async () => undefined),
   };
 });
 
@@ -66,17 +63,6 @@ vi.mock("../../src/startup/background-runner.js", () => ({
 }));
 vi.mock("../../src/compositions/build-studio-server.js", () => ({
   buildStudioServer: mocks.buildStudioServer,
-}));
-vi.mock("../../src/external-channel/runtime/channel-run-output-runtime-singleton.js", () => ({
-  startChannelRunOutputDeliveryRuntime: mocks.startChannelRuntime,
-}));
-vi.mock("../../src/external-channel/runtime/gateway-callback-delivery-runtime.js", () => ({
-  startGatewayCallbackDeliveryRuntime: mocks.startGatewayRuntime,
-}));
-vi.mock("../../src/managed-capabilities/messaging-gateway/defaults.js", () => ({
-  getManagedMessagingGatewayService: () => ({
-    restoreIfEnabled: mocks.restoreManagedMessaging,
-  }),
 }));
 vi.mock("../../src/app-data-migrations/app-data-migration-runner.js", () => ({
   getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),

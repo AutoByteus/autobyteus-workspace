@@ -26,9 +26,6 @@ import { buildApplicationPlatformRuntime } from "../application-platform/runtime
 import type { ApplicationPlatformRuntime } from "../application-platform/runtime/application-platform-runtime.js";
 import { configureStudioApplicationApiServices } from "../api/graphql/studio-application-api-services.js";
 import { stopMemorySyncWorker } from "../memory-sync/source/memory-sync-worker.js";
-import { stopChannelRunOutputDeliveryRuntime } from "../external-channel/runtime/channel-run-output-runtime-singleton.js";
-import { stopGatewayCallbackDeliveryRuntime } from "../external-channel/runtime/gateway-callback-delivery-runtime.js";
-import { getManagedMessagingGatewayService } from "../managed-capabilities/messaging-gateway/defaults.js";
 import { stopDefaultAgentRunEventPipeline } from "../agent-execution/events/default-agent-run-event-pipeline.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import {
@@ -98,27 +95,15 @@ const closeStudioProcessResources = async (input: {
           input.studioApiHandle?.close();
         } finally {
           try {
-            await stopChannelRunOutputDeliveryRuntime();
+            await stopDefaultAgentRunEventPipeline();
           } finally {
             try {
-              await stopGatewayCallbackDeliveryRuntime();
+              input.hostDefinitionServices.close();
             } finally {
               try {
-                await getManagedMessagingGatewayService().close();
+                await getSecretVaultRuntime().close();
               } finally {
-                try {
-                  await stopDefaultAgentRunEventPipeline();
-                } finally {
-                  try {
-                    input.hostDefinitionServices.close();
-                  } finally {
-                    try {
-                      await getSecretVaultRuntime().close();
-                    } finally {
-                      await shutdownPrisma();
-                    }
-                  }
-                }
+                await shutdownPrisma();
               }
             }
           }

@@ -1,0 +1,12 @@
+[
+  {
+    "teamRunId": "classroom_relay_999545672ef04187b3eca06713ee2a39",
+    "teamDefinitionId": "classroom-relay",
+    "teamDefinitionName": "Classroom Relay",
+    "workspaceRootPath": "/private/tmp/emr-e2e/ws-legacy",
+    "summary": "Professor, name one prime number. One short sentence.",
+    "createdAt": "2026-09-24T14:53:04.493Z",
+    "archivedAt": null,
+    "terminatedAt": null
+  }
+]

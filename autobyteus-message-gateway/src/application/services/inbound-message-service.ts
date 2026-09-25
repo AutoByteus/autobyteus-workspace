@@ -1,5 +1,5 @@
-import type { ExternalChannelProvider } from "autobyteus-ts/external-channel/provider.js";
-import type { ExternalMessageEnvelope } from "autobyteus-ts/external-channel/external-message-envelope.js";
+import type { ExternalChannelProvider } from "../../external-channel/provider.js";
+import type { ExternalMessageEnvelope } from "../../external-channel/external-message-envelope.js";
 import type { InboundHttpRequest } from "../../domain/models/inbound-http-request.js";
 import type { InboundProviderAdapter } from "../../domain/models/provider-adapter.js";
 import type { InboundInboxService } from "./inbound-inbox-service.js";

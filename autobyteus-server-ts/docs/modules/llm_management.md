@@ -446,7 +446,6 @@ Selector rewriting is deliberately narrow. It changes only the exact old
 byte-for-byte in:
 
 - agent/team default launch configuration;
-- external-channel launch presets;
 - application agent/team/default/member launch-profile rows;
 - agent/team resumable run metadata; and
 - skill-improvement sessions.

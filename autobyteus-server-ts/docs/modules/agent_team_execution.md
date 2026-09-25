@@ -481,8 +481,7 @@ Team-only events retain their own strict identities:
 - `TASK_DELEGATION_EVENT` carries exact execution and participant addresses;
 - `TEAM_COMMUNICATION_MESSAGE` carries exact sender/receiver addresses;
 - `MEMBER_INPUT_MESSAGE` carries its execution, optional sender, stable message
-  identity, origin, and context files;
-- `EXTERNAL_USER_MESSAGE` carries its exact execution address; and
+  identity, origin, and context files; and
 - `TEAM_RUN_LIFECYCLE` carries root liveness only.
 
 Multiple WebSocket/API subscribers do not create duplicate runtime listeners,

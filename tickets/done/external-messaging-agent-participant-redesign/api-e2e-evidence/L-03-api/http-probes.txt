@@ -1,0 +1,10 @@
+# L-03 AC-102 probes against candidate e9bbb28ab on :18741 (2026-09-24T14:57:50Z)
+loopback POST /rest/api/channel-ingress/v1/messages        -> HTTP 404  body={"message":"Route POST:/rest/api/channel-ingress/v1/messages not found","error":"Not Found","statusCode":404}
+loopback POST /rest/api/channel-ingress/v1/delivery-events -> HTTP 404  body={"message":"Route POST:/rest/api/channel-ingress/v1/delivery-events not found","error":"Not Found","statusCode":404}
+loopback POST /api/channel-ingress/v1/messages (no /rest)  -> HTTP 404  body={"message":"Route POST:/api/channel-ingress/v1/messages not found","error":"Not Found","statusCode":404}
+loopback POST /rest/api/never-existed (control)            -> HTTP 404  body={"message":"Route POST:/rest/api/never-existed not found","error":"Not Found","statusCode":404}
+remote(192.168.2.158) POST /rest/api/channel-ingress/v1/messages -> HTTP 404  body={"message":"Route POST:/rest/api/channel-ingress/v1/messages not found","error":"Not Found","statusCode":404}
+remote(192.168.2.158) POST /rest/api/channel-ingress/v1/delivery-events -> HTTP 404  body={"message":"Route POST:/rest/api/channel-ingress/v1/delivery-events not found","error":"Not Found","statusCode":404}
+remote(192.168.2.158) POST /graphql (protected control)    -> HTTP 200  body={"data":{"__typename":"Query"}}
+remote(192.168.2.158) POST /rest/api/never-existed (control) -> HTTP 404  body={"message":"Route POST:/rest/api/never-existed not found","error":"Not Found","statusCode":404}
+remote(192.168.2.158) GET /rest/health (public control)    -> HTTP 200  body={"status":"ok","message":"Server is running"}

@@ -133,6 +133,58 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
     ]);
   });
 
+  it("replays a historical user message carrying unknown extra metadata as an ordinary user message", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "local-memory-provider-opaque-metadata-"));
+    tempDirs.add(root);
+    const memoryDir = path.join(root, "historical-run");
+    await fs.mkdir(memoryDir, { recursive: true });
+    const legacySourceMetadata = { schemaVersion: 1, source: "retired-integration", peerId: "peer-1" };
+    await fs.writeFile(
+      path.join(memoryDir, RAW_TRACES_ACTIVE_MEMORY_FILE_NAME),
+      [
+        {
+          id: "rt-user",
+          trace_type: "user",
+          content: "question sent before the upgrade",
+          turn_id: "t1",
+          seq: 1,
+          ts: 1,
+          source_event: "LLMUserMessageReadyEvent",
+          metadata: { legacySourceMetadata },
+          legacySourceMetadata,
+        },
+        {
+          id: "rt-assistant",
+          trace_type: "assistant",
+          content: "answer",
+          turn_id: "t1",
+          seq: 2,
+          ts: 2,
+          source_event: "LLMCompleteResponseReceivedEvent",
+        },
+      ].map((record) => JSON.stringify(record)).join("\n") + "\n",
+      "utf-8",
+    );
+    const provider = new LocalMemoryRunViewProjectionProvider("/unused");
+
+    const projection = await provider.buildProjection({
+      source: {
+        runId: "server-run-1",
+        runtimeKind: RuntimeKind.AUTOBYTEUS,
+        workspaceRootPath: "/tmp/workspace",
+        memoryDir,
+        platformRunId: null,
+        metadata: createMetadata({ memoryDir, platformAgentRunId: null }),
+      },
+    });
+
+    expect(projection.conversation).toEqual([
+      expect.objectContaining({ role: "user", content: "question sent before the upgrade" }),
+      expect.objectContaining({ role: "assistant", content: "answer" }),
+    ]);
+    expect(JSON.stringify(projection)).not.toContain("legacySourceMetadata");
+  });
+
   it("restores exact system instructions from active-only memory into Activity without conversation leakage", async () => {
     const getRunMemoryView = vi.fn().mockReturnValue({
       rawTraces: [{

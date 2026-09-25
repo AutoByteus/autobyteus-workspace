@@ -34,8 +34,6 @@ CI build behavior:
 - `AUTOBYTEUS_BUILD_FLAVOR=personal` is set in release build jobs.
 - Release preparation validates:
   - desktop package version matches the pushed tag
-  - messaging gateway package version matches the pushed tag
-  - bundled managed messaging release manifest matches the pushed tag
 - macOS builds run with `--arm64` and `--x64` explicitly.
 - macOS builds validate the packaged Terminal runtime for both architectures. The validator checks staged `autobyteus-web/resources/server` and final `.app/Contents/Resources/server` `node-pty` helpers, and runs a real spawn probe when the runner architecture matches the target.
 - macOS builds run `scripts/verify-macos-signing-policy.mjs` for both ARM64 and x64 before artifact upload. The verifier requires Squirrel, ShipIt, frameworks, `.dylib` files, `.node` native modules, and bundled server native binaries to carry no entitlement keys, while the root app and Electron helper app executables keep their role-specific entitlements.
@@ -94,7 +92,7 @@ Release.
 
 ### Cross-Workflow Release Timing
 
-The desktop, Android, messaging-gateway, and server Docker workflows are all
+The desktop, Android, and server Docker workflows are all
 triggered by the same `v*` tag. The GitHub Release is shared across asset
 families, so another publish job can make the release visible before
 `release-desktop.yml` has uploaded the desktop updater metadata and binaries.

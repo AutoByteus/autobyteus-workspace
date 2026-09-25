@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 2,
+  "createdAt": "2026-09-24T14:53:04.493Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "classroom-relay",
+    "teamDefinitionName": "Classroom Relay",
+    "teamRunId": "classroom_relay_999545672ef04187b3eca06713ee2a39",
+    "coordinatorAddress": "/professor",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "autobyteus",
+      "llmModelIdentifier": "gpt-5.4-mini",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "skillAccessMode": "NONE",
+      "workspaceRootPath": "/private/tmp/emr-e2e/ws-legacy"
+    },
+    "members": [
+      {
+        "address": "/professor",
+        "agentDefinitionId": "telegram-helper",
+        "role": null,
+        "description": null,
+        "agentRunId": "telegram_helper_2eb422f4210e4828b65643a51615937e",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.4-mini",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "NONE",
+          "workspaceRootPath": "/private/tmp/emr-e2e/ws-legacy"
+        }
+      }
+    ],
+    "taskExecutions": []
+  }
+}

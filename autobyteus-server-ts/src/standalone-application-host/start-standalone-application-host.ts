@@ -20,7 +20,6 @@ import {
   resetDefaultAgentRunEventPipeline,
   stopDefaultAgentRunEventPipeline,
 } from "../agent-execution/events/default-agent-run-event-pipeline.js";
-import { seedInternalServerBaseUrlFromListenAddress } from "../config/server-runtime-endpoints.js";
 import { buildApplicationPlatformRuntime } from "../application-platform/runtime/build-application-platform-runtime.js";
 import { buildStandaloneApplicationServer } from "../compositions/build-standalone-application-server.js";
 import {
@@ -306,10 +305,6 @@ export const startStandaloneApplicationHost = async (
     await applicationRuntime.lifecycle.prepareBeforeListen();
     await agentToolsMcpHost.listen();
     const url = await app.listen({ host: config.host, port: config.port });
-    seedInternalServerBaseUrlFromListenAddress({
-      requestedHost: config.host,
-      listenAddress: app.server.address(),
-    });
     await applicationRuntime.lifecycle.recoverAfterListen();
 
     let closePromise: Promise<void> | null = null;

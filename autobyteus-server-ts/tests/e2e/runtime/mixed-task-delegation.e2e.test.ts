@@ -16,9 +16,6 @@ import {
 } from "@autobyteus/team-stream-contracts";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import {
-  AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR,
-} from "../../../src/config/server-runtime-endpoints.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentToolRegistryReadiness } from "../../../src/startup/agent-tool-loader.js";
 import { getGeneralProcessPublishedArtifactPublisher } from "../../../src/services/published-artifacts/published-artifact-publication-service.js";
@@ -376,14 +373,12 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
   let testDataDir: string | null = null;
   let runtimeServerApp: FastifyInstance | null = null;
   let runtimeServerUrl: URL | null = null;
-  let originalInternalServerBaseUrl: string | undefined;
   const createdAgentDefinitionIds = new Set<string>();
   const createdTeamDefinitionIds = new Set<string>();
   const createdTeamRunIds = new Set<string>();
   const createdWorkspaceRoots = new Set<string>();
 
   beforeAll(async () => {
-    originalInternalServerBaseUrl = process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     process.env.CODEX_APP_SERVER_APPROVAL_POLICY = "untrusted";
     testDataDir = await mkdtemp(path.join(os.tmpdir(), "mixed-task-delegation-e2e-appdata-"));
     await writeFile(path.join(testDataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
@@ -406,8 +401,6 @@ describeLive("Live mixed-runtime task delegation e2e", () => {
   afterAll(async () => {
     if (typeof originalCodexApprovalPolicy === "string") process.env.CODEX_APP_SERVER_APPROVAL_POLICY = originalCodexApprovalPolicy;
     else delete process.env.CODEX_APP_SERVER_APPROVAL_POLICY;
-    if (originalInternalServerBaseUrl) process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR] = originalInternalServerBaseUrl;
-    else delete process.env[AUTOBYTEUS_INTERNAL_SERVER_BASE_URL_ENV_VAR];
     if (runtimeServerApp) {
       await runtimeServerApp.close();
       runtimeServerApp = null;

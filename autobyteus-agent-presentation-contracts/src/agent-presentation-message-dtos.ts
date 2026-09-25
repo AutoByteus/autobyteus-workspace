@@ -91,7 +91,6 @@ export const agentPresentationPayloadSchemas = {
   ARTIFACT_PERSISTED: z.object({ artifact_id: nonEmptyStringSchema, path: nonEmptyStringSchema, artifact_type: nonEmptyStringSchema, status: z.literal("available"), description: z.string().nullable(), revision_id: nonEmptyStringSchema, created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }).strict(),
   FILE_CHANGE: z.object({ file_change_id: nonEmptyStringSchema, path: nonEmptyStringSchema, file_type: nonEmptyStringSchema, status: nonEmptyStringSchema, source_tool: nonEmptyStringSchema, source_invocation_id: nullableNonEmptyStringSchema, content: z.string().nullable(), created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }).strict(),
   MEMBER_INPUT_MESSAGE: z.object({ message_id: nonEmptyStringSchema, dedupe_key: nonEmptyStringSchema, content: z.string(), input_origin: z.enum(["user_message", "inter_agent_delivery"]), received_at: nonEmptyStringSchema, context_file_paths: z.array(contextPath), sender_agent_run_id: nonEmptyStringSchema.nullable(), parent_communication_message_id: nonEmptyStringSchema.nullable() }).strict(),
-  EXTERNAL_USER_MESSAGE: z.object({ content: z.string(), received_at: nonEmptyStringSchema, provider: nonEmptyStringSchema, transport: nonEmptyStringSchema, account_id: nonEmptyStringSchema, peer_id: nonEmptyStringSchema, thread_id: nonEmptyStringSchema.nullable(), external_message_id: nonEmptyStringSchema, context_file_paths: z.array(contextPath) }).strict(),
 } as const;
 
 const errorCommon = {
