@@ -191,10 +191,14 @@ const gotoAndSettle = async target => {
 const expectRedirectHome = async (description) => {
   await waitFor(`${description} redirects home`, async () => pathname() === homePath);
 };
-const openProjectDetail = async projectId => {
-  await gotoAndSettle(`/projects/${projectId}`);
+// Two-pane Projects page: the list pane stays mounted; `?tab=workspaces` selects the Workspaces tab (Tasks is the default).
+const openProjectDetail = async (projectId, { tab } = {}) => {
+  await gotoAndSettle(`/projects/${projectId}${tab === 'workspaces' ? '?tab=workspaces' : ''}`);
   await page.getByTestId('project-detail-name').waitFor({ state: 'visible', timeout: timeoutMs });
 };
+const listItem = projectId => page.getByTestId(`project-list-item-${projectId}`);
+const listNamesOn = async target => (await target.locator('[data-testid="project-list"] a span.truncate').allInnerTexts()).map(text => text.trim());
+const listNames = () => listNamesOn(page);
 const workspaceRow = workspaceId => page.getByTestId(`project-workspace-row-${workspaceId}`);
 const linkDialog = () => page.getByTestId('project-workspace-link-dialog');
 const selectorTrigger = () => linkDialog().locator('button', { hasText: /Select a workspace|选择/ }).first();
@@ -212,7 +216,8 @@ const screenshot = name => page.screenshot({ path: path.join(outputDir, `${name}
 const scopedText = async selectors => page.evaluate(list => list
   .flatMap(selector => Array.from(document.querySelectorAll(selector)))
   .map(element => element.innerText).join('\n'), selectors);
-const TASK_WORDING = /\btasks?\b|任务/i;
+// Raw translation keys must never render (e.g. a missing catalogue entry).
+const RAW_KEY = /\bprojects\.[a-z][\w.]+/i;
 
 // ---------------------------------------------------------------- case runner
 const runCase = async (caseId, title, fn) => {
@@ -405,8 +410,7 @@ try {
     seeded.autobyteus = projects.find(project => project.name === 'autobyteus');
     seeded.marketing = projects.find(project => project.name === 'Marketing site');
 
-    const grid = page.getByTestId('projects-grid');
-    const cardNames = async () => (await grid.locator('h2').allInnerTexts()).map(text => text.trim());
+    const cardNames = listNames;
     obs.indexNames = await cardNames();
     assert(obs.indexNames.join('|') === 'autobyteus|Marketing site', `Index order/content: ${obs.indexNames}`);
     const search = page.getByTestId('projects-search-input');
@@ -420,8 +424,10 @@ try {
     await waitFor('cleared search', async () => (await cardNames()).length === 2);
     obs.searchFocusAfterClear = (await activeInfo()).testId;
 
-    await page.getByTestId(`project-card-${seeded.autobyteus.projectId}`).click();
-    await page.getByTestId('project-detail-name').waitFor({ state: 'visible', timeout: timeoutMs });
+    await listItem(seeded.autobyteus.projectId).click();
+    await waitFor('selected project route', async () => pathname() === `/projects/${seeded.autobyteus.projectId}`);
+    await waitFor('detail shows the selection', async () => (await page.getByTestId('project-detail-name').innerText()).trim() === 'autobyteus');
+    assert((await listItem(seeded.autobyteus.projectId).getAttribute('aria-current')) === 'page', 'Selected project not highlighted in the list pane');
     assert((await page.getByTestId('project-detail-description').innerText()).trim() === 'AutoByteus product', 'Detail description mismatch');
     await page.getByTestId('project-edit-button').click();
     await nameInput.fill('marketing SITE');
@@ -434,11 +440,14 @@ try {
     await page.getByTestId('project-form-dialog').waitFor({ state: 'detached', timeout: timeoutMs });
     await waitFor('detail updated', async () => (await page.getByTestId('project-detail-description').innerText()).trim() === 'AutoByteus product suite');
     assert((await api.project(nodeA, seeded.autobyteus.projectId)).description === 'AutoByteus product suite', 'Edit not persisted');
-    await page.getByTestId('project-back-link').click();
-    await waitFor('back to index', async () => pathname() === '/projects');
-    await waitFor('index shows edited description', async () => (await grid.innerText()).includes('AutoByteus product suite'));
+    // One click switches Projects; the list pane stays in place (REQ-016).
+    await listItem(seeded.marketing.projectId).click();
+    await waitFor('switched project', async () => (await page.getByTestId('project-detail-name').innerText()).trim() === 'Marketing site');
+    await listItem(seeded.autobyteus.projectId).click();
+    await waitFor('switched back', async () => (await page.getByTestId('project-detail-name').innerText()).trim() === 'autobyteus');
     await page.reload({ waitUntil: 'domcontentloaded' });
-    await waitFor('index after reload', async () => (await page.getByTestId('projects-grid').innerText()).includes('AutoByteus product suite'));
+    await waitFor('detail after reload', async () => (await page.getByTestId('project-detail-description').innerText()).trim() === 'AutoByteus product suite');
+    assert((await listNames()).join('|') === 'autobyteus|Marketing site', 'List pane after reload');
   });
 
   await runCase('E2E-004', 'Add-workspace default path links a registered workspace; Temp never offered; register-then-link', async obs => {
@@ -447,7 +456,7 @@ try {
     seeded.prototype = await api.registerWorkspace(nodeA, rootOf('e2e-web-prototype'));
     seeded.marketingWs = await api.registerWorkspace(nodeA, rootOf('e2e-marketing'));
     seeded.superrepo = await api.registerWorkspace(nodeA, rootOf('e2e-superrepo'));
-    await openProjectDetail(seeded.autobyteus.projectId);
+    await openProjectDetail(seeded.autobyteus.projectId, { tab: 'workspaces' });
     await page.getByTestId('project-workspaces-empty').waitFor({ state: 'visible', timeout: timeoutMs });
 
     await page.getByTestId('project-add-workspace-button').click();
@@ -506,7 +515,7 @@ try {
     const removal = await api.removeWorkspace(nodeA, seeded.prototype.workspaceId);
     obs.removal = removal;
     assert(removal.success === true, `Workspace removal was blocked: ${removal.message}`);
-    await openProjectDetail(seeded.autobyteus.projectId);
+    await openProjectDetail(seeded.autobyteus.projectId, { tab: 'workspaces' });
     const row = workspaceRow(seeded.prototype.workspaceId);
     await waitFor('row unavailable', async () => (await row.getAttribute('data-availability')) === 'UNREGISTERED');
     obs.unavailableRow = (await row.innerText()).replace(/\s+/g, ' ');
@@ -555,7 +564,7 @@ try {
     await page.getByTestId('project-delete-button').click();
     await page.getByTestId('project-delete-confirm').click();
     await waitFor('navigated to index', async () => pathname() === '/projects');
-    await waitFor('card removed', async () => (await page.getByTestId(`project-card-${throwaway.projectId}`).count()) === 0);
+    await waitFor('list item removed', async () => (await listItem(throwaway.projectId).count()) === 0);
     assert(await api.project(nodeA, throwaway.projectId) === null, 'Project still exists after confirm');
     obs.workspacesJsonUnchanged = (await readWorkspacesJson(nodeA)) === workspacesBefore;
     obs.workspaceIdsUnchanged = (await api.workspaceIds(nodeA)).sort().join() === workspaceIdsBefore.join();
@@ -568,7 +577,7 @@ try {
     const failures = [];
     const soft = (condition, message) => { if (!condition) failures.push(message); };
     await gotoAndSettle('/projects');
-    await page.getByTestId('projects-grid').waitFor({ state: 'visible', timeout: timeoutMs });
+    await page.getByTestId('project-list').waitFor({ state: 'visible', timeout: timeoutMs });
     await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); });
     obs.tabsToNewButton = await tabUntil('New project button', info => info.testId === 'projects-new-button');
     await page.keyboard.press('Enter');
@@ -600,12 +609,15 @@ try {
     await page.getByTestId('project-form-dialog').waitFor({ state: 'detached', timeout: timeoutMs });
     const created = (await api.projects(nodeA)).find(project => project.name === 'Keyboard project');
     assert(created, 'Keyboard create failed');
+    await waitFor('new project selected', async () => pathname() === `/projects/${created.projectId}`);
 
+    await routerPush('/projects');
+    await waitFor('no selection', async () => pathname() === '/projects');
     await page.getByTestId('projects-search-input').focus();
     await page.keyboard.type('keyboard');
-    await waitFor('keyboard search', async () => (await page.getByTestId('projects-grid').locator('h2').allInnerTexts()).join('|') === 'Keyboard project');
+    await waitFor('keyboard search', async () => (await listNames()).join('|') === 'Keyboard project');
     await page.keyboard.press('Tab');
-    soft((await activeInfo()).testId === `project-card-${created.projectId}`, 'Tab from search did not reach the result card');
+    soft((await activeInfo()).testId === `project-list-item-${created.projectId}`, 'Tab from search did not reach the result in the list pane');
     await page.keyboard.press('Enter');
     await page.getByTestId('project-detail-name').waitFor({ state: 'visible', timeout: timeoutMs });
 
@@ -642,6 +654,11 @@ try {
       await linkDialog().waitFor({ state: 'visible', timeout: timeoutMs });
       await tabUntil('workspace picker trigger', isTrigger, 6);
     };
+    // Switch to the Workspaces tab with the keyboard (arrow keys move between tabs).
+    await page.getByTestId('project-tab-tasks').focus();
+    await page.keyboard.press('ArrowRight');
+    await waitFor('workspaces tab selected', async () => (await page.getByTestId('project-tab-workspaces').getAttribute('aria-selected')) === 'true');
+    soft((await activeInfo()).testId === 'project-tab-workspaces', 'Arrow key did not move focus to the Workspaces tab');
     const link = {};
     await openLinkDialogByKeyboard();
     await page.keyboard.press('Enter');
@@ -740,21 +757,22 @@ try {
     assert(failures.length === 0, `Keyboard journey failures:\n- ${failures.join('\n- ')}`);
   });
 
-  await runCase('E2E-008', 'zh-CN renders Projects surfaces; no Task wording on any Project surface', async obs => {
+  await runCase('E2E-008', 'zh-CN renders Projects surfaces; no raw translation keys on any Project surface', async obs => {
     await ensureProjectsEnabled();
     const zhContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'zh-CN', timezoneId: 'UTC' });
     await zhContext.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'zh-CN'));
     const zhPage = await zhContext.newPage();
     await zhPage.goto(`${frontendUrl}/projects`, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await zhPage.getByTestId('projects-grid').waitFor({ state: 'visible', timeout: timeoutMs });
+    await zhPage.getByTestId('project-list').waitFor({ state: 'visible', timeout: timeoutMs });
     const zhNav = (await zhPage.locator('nav').first().locator(':scope > ul > li > button:first-child').allInnerTexts()).map(text => text.trim());
-    const indexText = await zhPage.getByTestId('projects-index').innerText();
+    const indexText = await zhPage.getByTestId('projects-page').innerText();
     obs.zhIndex = { hasTitle: indexText.includes('项目'), hasNewProject: indexText.includes('新建项目'), navHasProjects: zhNav.includes('项目'), hasEnglishNewProject: indexText.includes('New project') };
     assert(obs.zhIndex.hasTitle && obs.zhIndex.hasNewProject && obs.zhIndex.navHasProjects && !obs.zhIndex.hasEnglishNewProject, `zh-CN index: ${JSON.stringify(obs.zhIndex)}`);
-    await zhPage.goto(`${frontendUrl}/projects/${seeded.autobyteus.projectId}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await zhPage.goto(`${frontendUrl}/projects/${seeded.autobyteus.projectId}?tab=workspaces`, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await zhPage.getByTestId('project-detail-name').waitFor({ state: 'visible', timeout: timeoutMs });
+    await zhPage.getByTestId('project-workspace-list').waitFor({ state: 'visible', timeout: timeoutMs });
     const detailText = await zhPage.getByTestId('project-detail').innerText();
-    obs.zhDetail = ['返回项目列表', '编辑', '删除', '工作区', '添加工作区', '取消关联'].filter(label => !detailText.includes(label));
+    obs.zhDetail = ['编辑', '删除', '任务', '工作区', '添加工作区', '取消关联'].filter(label => !detailText.includes(label));
     assert(obs.zhDetail.length === 0, `zh-CN detail missing: ${obs.zhDetail}`);
     await zhPage.getByTestId('project-add-workspace-button').click();
     await zhPage.getByTestId('project-workspace-link-dialog').waitFor({ state: 'visible', timeout: timeoutMs });
@@ -767,9 +785,9 @@ try {
 
     // English surfaces: index, detail (with an unavailable row), form and delete dialogs.
     await gotoAndSettle('/projects');
-    await page.getByTestId('projects-grid').waitFor({ state: 'visible', timeout: timeoutMs });
-    const enIndex = await scopedText(['[data-testid="projects-index"]']);
-    await openProjectDetail(seeded.autobyteus.projectId);
+    await page.getByTestId('project-list').waitFor({ state: 'visible', timeout: timeoutMs });
+    const enIndex = await scopedText(['[data-testid="projects-page"]']);
+    await openProjectDetail(seeded.autobyteus.projectId, { tab: 'workspaces' });
     await page.getByTestId('project-edit-button').click();
     await page.getByTestId('project-form-dialog').waitFor({ state: 'visible', timeout: timeoutMs });
     const enForm = await scopedText(['[role="dialog"]']);
@@ -781,8 +799,9 @@ try {
     await page.keyboard.press('Escape');
     const enDetail = await scopedText(['[data-testid="project-detail"]']);
     const allText = [zhTaskText, enIndex, enForm, enDelete, enDetail].join('\n');
-    obs.taskWordingMatches = allText.match(new RegExp(TASK_WORDING.source, 'gi')) ?? [];
-    assert(obs.taskWordingMatches.length === 0, `Task wording rendered: ${obs.taskWordingMatches}`);
+    // Released REQ-014 ("no Task wording") is superseded by PROJ-TASKS REQ-011; check for unresolved keys instead.
+    obs.rawKeyMatches = allText.match(new RegExp(RAW_KEY.source, 'gi')) ?? [];
+    assert(obs.rawKeyMatches.length === 0, `Raw translation keys rendered: ${obs.rawKeyMatches}`);
   });
 
   await runCase('E2E-009', 'Advanced-table ENABLE_PROJECTS edit hides/shows nav live; open Project route redirects when off', async obs => {
@@ -842,12 +861,12 @@ try {
     await gotoAndSettle(homePath);
     await waitForNav('Projects after restart', labels => labels.includes('Projects'));
     await gotoAndSettle('/projects');
-    await page.getByTestId(`project-card-${seeded.autobyteus.projectId}`).waitFor({ state: 'visible', timeout: timeoutMs });
+    await listItem(seeded.autobyteus.projectId).waitFor({ state: 'visible', timeout: timeoutMs });
     const after = await api.projects(nodeA);
     obs.projectsBefore = before.map(project => `${project.name}:${project.workspaces.length}`);
     obs.projectsAfter = after.map(project => `${project.name}:${project.workspaces.length}`);
     assert(JSON.stringify(after) === JSON.stringify(before), 'Projects changed across restart');
-    await openProjectDetail(seeded.autobyteus.projectId);
+    await openProjectDetail(seeded.autobyteus.projectId, { tab: 'workspaces' });
     obs.rowsAfterRestart = await page.locator('[data-testid^="project-workspace-row-"]').count();
     assert(obs.rowsAfterRestart === before.find(project => project.projectId === seeded.autobyteus.projectId).workspaces.length, 'Rows missing after restart');
   });
@@ -857,7 +876,7 @@ try {
     await api.setProjectsEnabled(nodeB, true);
     const onlyOnB = await api.createProject(nodeB, 'node-b-only', 'Lives on node B');
     await gotoAndSettle('/projects');
-    await page.getByTestId(`project-card-${seeded.autobyteus.projectId}`).waitFor({ state: 'visible', timeout: timeoutMs });
+    await listItem(seeded.autobyteus.projectId).waitFor({ state: 'visible', timeout: timeoutMs });
     const original = await page.evaluate(() => {
       const store = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('windowNodeContext');
       return { nodeId: store.nodeId, baseUrl: store.nodeBaseUrl, revision: store.bindingRevision };
@@ -869,15 +888,15 @@ try {
     await page.evaluate(({ url }) => {
       document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('windowNodeContext').bindNodeContext('probe-node-b', url);
     }, { url: nodeB.url });
-    await page.getByTestId(`project-card-${onlyOnB.projectId}`).waitFor({ state: 'visible', timeout: timeoutMs });
-    obs.onB = (await page.getByTestId('projects-grid').locator('h2').allInnerTexts()).map(text => text.trim());
+    await listItem(onlyOnB.projectId).waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.onB = await listNames();
     assert(obs.onB.join('|') === 'node-b-only', `Node B list shows ${obs.onB}`);
     assert(graphqlTargets.includes(nodeB.url), 'No GraphQL request reached node B');
     await page.evaluate(({ nodeId, baseUrl }) => {
       document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('windowNodeContext').bindNodeContext(nodeId, baseUrl);
     }, original);
-    await page.getByTestId(`project-card-${seeded.autobyteus.projectId}`).waitFor({ state: 'visible', timeout: timeoutMs });
-    obs.backOnA = (await page.getByTestId('projects-grid').locator('h2').allInnerTexts()).map(text => text.trim());
+    await listItem(seeded.autobyteus.projectId).waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.backOnA = await listNames();
     assert(!obs.backOnA.includes('node-b-only') && obs.backOnA.includes('autobyteus'), `Node A list shows ${obs.backOnA}`);
     page.off('request', listener);
     obs.graphqlOrigins = [...new Set(graphqlTargets)];
@@ -931,7 +950,7 @@ try {
     assert((await api.capability(nodeA)).enabled === true, 'Projects capability changed');
   });
 
-  await runCase('E2E-013', 'Narrow desktop width (1024x700): index, detail and dialogs fit without horizontal overflow', async obs => {
+  await runCase('E2E-013', 'Narrow desktop width (1024x700): list pane, detail and dialogs fit without horizontal overflow', async obs => {
     await ensureProjectsEnabled();
     const narrow = await browser.newContext({ viewport: { width: 1024, height: 700 }, locale: 'en-US', timezoneId: 'UTC' });
     await narrow.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
@@ -958,10 +977,10 @@ try {
       }
     };
     await narrowPage.goto(`${frontendUrl}/projects`, { waitUntil: 'domcontentloaded', timeout: 60000 });
-    await narrowPage.getByTestId('projects-grid').waitFor({ state: 'visible', timeout: timeoutMs });
-    obs.index = await layout(['[data-testid="projects-new-button"]', '[data-testid="projects-search-input"]', '[data-testid="projects-grid"]']);
-    check('index', obs.index, ['[data-testid="projects-new-button"]', '[data-testid="projects-search-input"]', '[data-testid="projects-grid"]']);
-    await narrowPage.goto(`${frontendUrl}/projects/${seeded.autobyteus.projectId}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await narrowPage.getByTestId('project-list').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.index = await layout(['[data-testid="projects-new-button"]', '[data-testid="projects-search-input"]', '[data-testid="project-list"]']);
+    check('index', obs.index, ['[data-testid="projects-new-button"]', '[data-testid="projects-search-input"]', '[data-testid="project-list"]']);
+    await narrowPage.goto(`${frontendUrl}/projects/${seeded.autobyteus.projectId}?tab=workspaces`, { waitUntil: 'domcontentloaded', timeout: 60000 });
     await narrowPage.getByTestId('project-detail-name').waitFor({ state: 'visible', timeout: timeoutMs });
     const detailSelectors = ['[data-testid="project-edit-button"]', '[data-testid="project-delete-button"]', '[data-testid="project-add-workspace-button"]', '[data-testid="project-workspace-list"]', '[data-testid="project-workspace-path"]', '[data-testid="project-workspace-unlink"]'];
     obs.detail = await layout(detailSelectors);

@@ -22,17 +22,17 @@ describe('Projects catalogs', () => {
     expect(zhCnShellMessages['shell.navigation.projects']).toBe('项目');
   });
 
-  it('never mention Tasks on Project surfaces (REQ-014)', () => {
-    const englishCopy = [
-      ...Object.values(enProjectMessages),
-      ...projectsSettingsKeys(enSettingsMessages).map((key) => enSettingsMessages[key as keyof typeof enSettingsMessages]),
-    ];
-    const chineseCopy = [
-      ...Object.values(zhCnProjectMessages),
-      ...projectsSettingsKeys(zhCnSettingsMessages).map((key) => zhCnSettingsMessages[key as keyof typeof zhCnSettingsMessages]),
-    ];
+  it('label every Project Task status in both locales (REQ-003, REQ-015)', () => {
+    for (const status of ['TODO', 'IN_PROGRESS', 'DONE']) {
+      expect(enProjectMessages[`projects.task.status.${status}` as keyof typeof enProjectMessages]).toBeTruthy()
+      expect(zhCnProjectMessages[`projects.task.status.${status}` as keyof typeof zhCnProjectMessages]).toBeTruthy()
+    }
+    expect(enProjectMessages['projects.task.status.TODO']).toBe('To Do')
+    expect(zhCnProjectMessages['projects.task.status.TODO']).toBe('待办')
+  });
 
-    expect(englishCopy.filter((text) => /\btasks?\b/i.test(String(text)))).toEqual([]);
-    expect(chineseCopy.filter((text) => String(text).includes('任务'))).toEqual([]);
+  it('no longer carries the removed card-grid copy', () => {
+    const keys = Object.keys(enProjectMessages)
+    expect(keys.filter((key) => /ProjectsList\.|ProjectCard\.|backToProjects/.test(key))).toEqual([])
   });
 });

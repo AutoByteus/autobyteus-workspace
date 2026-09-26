@@ -1,17 +1,8 @@
 <template>
-  <div class="mx-auto w-full max-w-[1100px] px-4 py-6 sm:px-6 lg:px-8" data-testid="project-detail">
-    <NuxtLink
-      to="/projects"
-      class="inline-flex items-center gap-1 rounded text-sm font-medium text-slate-600 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-      data-testid="project-back-link"
-    >
-      <Icon icon="heroicons:arrow-left" class="h-4 w-4" aria-hidden="true" />
-      {{ t('projects.components.projects.ProjectDetail.backToProjects') }}
-    </NuxtLink>
-
+  <div class="mx-auto w-full max-w-[1100px] px-4 py-5 sm:px-6 lg:px-8" data-testid="project-detail">
     <div
       v-if="state === 'loading'"
-      class="mt-6 rounded-xl border border-slate-200 bg-white py-20 text-center shadow-sm"
+      class="rounded-xl border border-slate-200 bg-white py-20 text-center shadow-sm"
       role="status"
       data-testid="project-detail-loading"
     >
@@ -21,7 +12,7 @@
 
     <div
       v-else-if="state === 'error'"
-      class="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+      class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
       role="alert"
       data-testid="project-detail-error"
     >
@@ -38,25 +29,19 @@
 
     <div
       v-else-if="!project"
-      class="mt-6 rounded-xl border border-slate-200 bg-white py-16 text-center"
+      class="rounded-xl border border-slate-200 bg-white py-16 text-center"
       data-testid="project-not-found"
     >
-      <h1 class="text-lg font-semibold text-slate-900">{{ t('projects.components.projects.ProjectDetail.notFoundTitle') }}</h1>
+      <h2 class="text-lg font-semibold text-slate-900">{{ t('projects.components.projects.ProjectDetail.notFoundTitle') }}</h2>
       <p class="mt-2 text-sm text-slate-500">{{ t('projects.components.projects.ProjectDetail.notFoundHelp') }}</p>
-      <NuxtLink
-        to="/projects"
-        class="mt-4 inline-flex rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-      >
-        {{ t('projects.components.projects.ProjectDetail.backToProjects') }}
-      </NuxtLink>
     </div>
 
     <template v-else>
-      <header class="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+      <header class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div class="min-w-0">
-          <h1 class="break-words text-3xl font-semibold text-slate-900" data-testid="project-detail-name">{{ project.name }}</h1>
+          <h2 class="break-words text-2xl font-semibold text-slate-900" data-testid="project-detail-name">{{ project.name }}</h2>
           <p
-            class="mt-2 whitespace-pre-line text-sm"
+            class="mt-1 whitespace-pre-line text-sm"
             :class="project.description ? 'text-slate-600' : 'italic text-slate-400'"
             data-testid="project-detail-description"
           >
@@ -66,7 +51,7 @@
         <div class="flex flex-shrink-0 gap-2">
           <button
             type="button"
-            class="rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
+            class="rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
             data-testid="project-edit-button"
             @click="showEditDialog = true"
           >
@@ -74,7 +59,7 @@
           </button>
           <button
             type="button"
-            class="rounded-md border border-red-200 bg-white px-4 py-2 text-sm font-medium text-red-700 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
+            class="rounded-md border border-red-200 bg-white px-3 py-1.5 text-sm font-medium text-red-700 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-1"
             data-testid="project-delete-button"
             @click="openDeleteDialog"
           >
@@ -83,43 +68,35 @@
         </div>
       </header>
 
-      <section class="mt-8 rounded-2xl border border-slate-200 bg-white shadow-sm" :aria-labelledby="workspacesHeadingId">
-        <div class="flex flex-col gap-3 border-b border-slate-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <h2 :id="workspacesHeadingId" class="text-base font-semibold text-slate-900">
-              {{ t('projects.components.projects.ProjectDetail.workspacesTitle') }}
-            </h2>
-            <p class="mt-0.5 text-sm text-slate-500">{{ t('projects.components.projects.ProjectDetail.workspacesHelp') }}</p>
-          </div>
-          <button
-            type="button"
-            class="inline-flex flex-shrink-0 items-center gap-2 self-start whitespace-nowrap rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-1"
-            data-testid="project-add-workspace-button"
-            @click="openLinkDialog(null)"
-          >
-            <Icon icon="heroicons:plus" class="h-4 w-4" aria-hidden="true" />
-            {{ t('projects.components.projects.ProjectDetail.addWorkspace') }}
-          </button>
-        </div>
+      <div
+        class="mt-5 flex gap-1 border-b border-slate-200"
+        role="tablist"
+        :aria-label="t('projects.components.projects.ProjectDetail.tabs.label')"
+        data-testid="project-detail-tabs"
+      >
+        <button
+          v-for="tab in TABS"
+          :id="tabId(tab)"
+          :key="tab"
+          type="button"
+          role="tab"
+          :aria-selected="activeTab === tab ? 'true' : 'false'"
+          :aria-controls="panelId(tab)"
+          :tabindex="activeTab === tab ? 0 : -1"
+          class="-mb-px border-b-2 px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-blue-500"
+          :class="activeTab === tab ? 'border-blue-600 text-blue-700' : 'border-transparent text-slate-600 hover:text-slate-900'"
+          :data-testid="`project-tab-${tab}`"
+          @click="selectTab(tab)"
+          @keydown="handleTabKeydown($event, tab)"
+        >
+          {{ t(TAB_LABEL_KEYS[tab]) }}
+        </button>
+      </div>
 
-        <p v-if="rowError" role="alert" class="mx-5 mt-4 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700" data-testid="project-workspace-row-error">
-          {{ rowError }}
-        </p>
-
-        <p v-if="project.workspaces.length === 0" class="px-5 py-10 text-center text-sm text-slate-500" data-testid="project-workspaces-empty">
-          {{ t('projects.components.projects.ProjectDetail.noWorkspaces') }}
-        </p>
-        <ul v-else class="divide-y divide-slate-100" data-testid="project-workspace-list">
-          <ProjectWorkspaceRow
-            v-for="link in project.workspaces"
-            :key="link.workspaceId"
-            :link="link"
-            :busy="unlinkingWorkspaceId === link.workspaceId"
-            @edit="openLinkDialog"
-            @unlink="unlink"
-          />
-        </ul>
-      </section>
+      <div :id="panelId(activeTab)" role="tabpanel" :aria-labelledby="tabId(activeTab)" class="mt-5">
+        <ProjectTasksPanel v-if="activeTab === 'tasks'" :project-id="project.projectId" />
+        <ProjectWorkspacesPanel v-else :project="project" />
+      </div>
     </template>
 
     <ProjectFormDialog
@@ -129,14 +106,6 @@
       @saved="showEditDialog = false"
     />
 
-    <ProjectWorkspaceLinkDialog
-      v-if="linkDialog.open && project"
-      :project="project"
-      :link="linkDialog.link"
-      @close="closeLinkDialog"
-      @saved="closeLinkDialog"
-    />
-
     <ProjectDialogFrame
       v-if="showDeleteDialog && project"
       :title="t('projects.components.projects.ProjectDetail.deleteTitle')"
@@ -144,9 +113,7 @@
       test-id="project-delete-dialog"
       @close="showDeleteDialog = false"
     >
-      <p class="text-sm text-slate-700">
-        {{ t('projects.components.projects.ProjectDetail.deleteMessage', { name: project.name }) }}
-      </p>
+      <p class="text-sm text-slate-700" data-testid="project-delete-message">{{ deleteMessage }}</p>
       <p class="mt-2 text-sm text-slate-500">{{ t('projects.components.projects.ProjectDetail.deleteScope') }}</p>
       <p v-if="deleteError" role="alert" class="mt-3 rounded-md bg-red-50 px-3 py-2 text-sm text-red-700" data-testid="project-delete-error">
         {{ deleteError }}
@@ -177,71 +144,101 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue'
-import { Icon } from '@iconify/vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import ProjectDialogFrame from '~/components/projects/ProjectDialogFrame.vue'
 import ProjectFormDialog from '~/components/projects/ProjectFormDialog.vue'
-import ProjectWorkspaceLinkDialog from '~/components/projects/ProjectWorkspaceLinkDialog.vue'
-import ProjectWorkspaceRow from '~/components/projects/ProjectWorkspaceRow.vue'
+import ProjectTasksPanel from '~/components/projects/ProjectTasksPanel.vue'
+import ProjectWorkspacesPanel from '~/components/projects/ProjectWorkspacesPanel.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectStore } from '~/stores/projectStore'
+import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
-import type { ProjectWorkspace } from '~/types/project'
 import { projectErrorMessageKey } from '~/utils/projects/projectErrorMessageKey'
+
+type ProjectDetailTab = 'tasks' | 'workspaces'
+const TABS: readonly ProjectDetailTab[] = ['tasks', 'workspaces']
+const TAB_LABEL_KEYS: Readonly<Record<ProjectDetailTab, string>> = {
+  tasks: 'projects.components.projects.ProjectDetail.tabs.tasks',
+  workspaces: 'projects.components.projects.ProjectDetail.tabs.workspaces',
+}
 
 const props = defineProps<{ projectId: string }>()
 
 const { t } = useLocalization()
+const route = useRoute()
+const router = useRouter()
 const projectStore = useProjectStore()
+const projectTaskStore = useProjectTaskStore()
 const windowNodeContextStore = useWindowNodeContextStore()
+
+const uid = Math.random().toString(36).slice(2, 8)
+const tabId = (tab: ProjectDetailTab) => `project-tab-${tab}-${uid}`
+const panelId = (tab: ProjectDetailTab) => `project-tabpanel-${tab}-${uid}`
 
 const state = ref<'loading' | 'ready' | 'error'>('loading')
 const loadError = ref<string | null>(null)
 const project = computed(() => projectStore.getProjectById(props.projectId))
-const workspacesHeadingId = `project-workspaces-heading-${Math.random().toString(36).slice(2, 8)}`
+
+// Tasks is the default tab; `?tab=workspaces` selects Workspaces.
+const activeTab = computed<ProjectDetailTab>(() => (route.query.tab === 'workspaces' ? 'workspaces' : 'tasks'))
 
 const showEditDialog = ref(false)
-const linkDialog = reactive<{ open: boolean; link: ProjectWorkspace | null }>({ open: false, link: null })
 const showDeleteDialog = ref(false)
 const deleting = ref(false)
 const deleteError = ref<string | null>(null)
-const unlinkingWorkspaceId = ref<string | null>(null)
-const rowError = ref<string | null>(null)
 
+/**
+ * Loads the selected Project. A Project already cached by the list is shown at once and
+ * refreshed in the background, so switching Projects does not flash a loading state.
+ */
 const load = async (): Promise<void> => {
-  state.value = 'loading'
+  const cached = Boolean(project.value)
+  state.value = cached ? 'ready' : 'loading'
   loadError.value = null
   try {
     await projectStore.fetchProject(props.projectId)
     state.value = 'ready'
   } catch (error) {
-    loadError.value = error instanceof Error ? error.message : String(error)
-    state.value = 'error'
+    if (!cached) {
+      loadError.value = error instanceof Error ? error.message : String(error)
+      state.value = 'error'
+    }
   }
 }
 
-const openLinkDialog = (link: ProjectWorkspace | null): void => {
-  rowError.value = null
-  linkDialog.link = link
-  linkDialog.open = true
+const selectTab = (tab: ProjectDetailTab): void => {
+  if (tab === activeTab.value) return
+  const { tab: _previous, ...query } = route.query
+  void router.replace({ query: tab === 'tasks' ? query : { ...query, tab } })
 }
 
-const closeLinkDialog = (): void => {
-  linkDialog.open = false
-  linkDialog.link = null
+const handleTabKeydown = (event: KeyboardEvent, tab: ProjectDetailTab): void => {
+  const index = TABS.indexOf(tab)
+  let next: ProjectDetailTab | undefined
+  if (event.key === 'ArrowRight') next = TABS[(index + 1) % TABS.length]
+  else if (event.key === 'ArrowLeft') next = TABS[(index - 1 + TABS.length) % TABS.length]
+  else if (event.key === 'Home') next = TABS[0]
+  else if (event.key === 'End') next = TABS[TABS.length - 1]
+  if (!next) return
+  event.preventDefault()
+  const target = next
+  selectTab(target)
+  void nextTick(() => document.getElementById(tabId(target))?.focus())
 }
 
-const unlink = async (link: ProjectWorkspace): Promise<void> => {
-  rowError.value = null
-  unlinkingWorkspaceId.value = link.workspaceId
-  try {
-    await projectStore.removeWorkspace(props.projectId, link.workspaceId)
-  } catch (error) {
-    rowError.value = t(projectErrorMessageKey(error))
-  } finally {
-    unlinkingWorkspaceId.value = null
-  }
-}
+// Count of Tasks deleted with the Project. `openTaskCount` is always loaded with the
+// Project, unlike the Task list (not loaded when landing on ?tab=workspaces). It equals
+// the total number of Tasks only while no Task can become DONE (no status mutation exists
+// yet); the Task-admission work must revisit this when it adds one.
+const deleteMessage = computed(() => {
+  const name = project.value?.name ?? ''
+  const count = project.value?.openTaskCount ?? 0
+  if (count === 0) return t('projects.components.projects.ProjectDetail.deleteMessage', { name })
+  return count === 1
+    ? t('projects.components.projects.ProjectDetail.deleteMessageOneTask', { name })
+    : t('projects.components.projects.ProjectDetail.deleteMessageTasks', { name, count })
+})
 
 const openDeleteDialog = (): void => {
   deleteError.value = null
@@ -253,6 +250,7 @@ const confirmDelete = async (): Promise<void> => {
   deleteError.value = null
   try {
     await projectStore.deleteProject(props.projectId)
+    projectTaskStore.forget(props.projectId)
     showDeleteDialog.value = false
     await navigateTo('/projects')
   } catch (error) {
@@ -263,6 +261,7 @@ const confirmDelete = async (): Promise<void> => {
 }
 
 onMounted(load)
+// Only the selected Project and the bound node drive loading; a `?tab=` change does not.
 watch(() => props.projectId, load)
 watch(() => windowNodeContextStore.bindingRevision, load)
 </script>

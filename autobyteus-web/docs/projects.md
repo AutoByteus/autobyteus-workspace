@@ -11,23 +11,25 @@ Projects surfaces.
 
 ## Main Files
 
-- `pages/projects/index.vue`
-- `pages/projects/[id].vue`
-- `components/projects/ProjectsList.vue`
-- `components/projects/ProjectCard.vue`
+- `pages/projects.vue` (two-pane parent route), `pages/projects/index.vue`, `pages/projects/[id].vue`
+- `components/projects/ProjectListPane.vue`, `components/projects/ProjectListItem.vue`
 - `components/projects/ProjectDetail.vue`
+- `components/projects/ProjectTasksPanel.vue`, `ProjectTaskRow.vue`, `ProjectTaskDialog.vue`
+- `components/projects/ProjectWorkspacesPanel.vue`
 - `components/projects/ProjectWorkspaceRow.vue`
 - `components/projects/ProjectFormDialog.vue`
 - `components/projects/ProjectWorkspaceLinkDialog.vue`
 - `components/projects/ProjectDialogFrame.vue`
-- `stores/projectStore.ts`
+- `stores/projectStore.ts`, `stores/projectTaskStore.ts`
 - `stores/projectsCapabilityStore.ts`
 - `stores/capabilities/createBoundNodeCapabilityStore.ts`
 - `components/settings/ProjectsFeatureToggleCard.vue`
 - `utils/projects/linkableWorkspaces.ts`
 - `utils/projects/projectErrorMessageKey.ts`
 - `utils/projects/pathBreakSegments.ts`
+- `utils/projects/taskSummary.ts`, `utils/projects/relativeTime.ts`, `utils/projects/projectRequestError.ts`
 - `graphql/queries/projectQueries.ts`, `graphql/mutations/projectMutations.ts`
+- `graphql/queries/projectTaskQueries.ts`, `graphql/mutations/projectTaskMutations.ts`
 - `graphql/queries/projectsCapabilityQueries.ts`, `graphql/mutations/projectsCapabilityMutations.ts`
 - `types/project.ts`
 - `localization/messages/{en,zh-CN}/projects.ts`
