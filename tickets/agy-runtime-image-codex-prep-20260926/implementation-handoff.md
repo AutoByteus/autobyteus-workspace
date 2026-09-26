@@ -1,8 +1,45 @@
-# Implementation Handoff — AGY Native Tools, Image Output, and Codex Preparation
+# Implementation Handoff — AGY Native Tools, Image Invocation, and Codex Preparation
 
-> **Current IR-004 result: Design Impact — implementation not ready for Code Review or API/E2E.** The SR-019 partial source at `77c9ffa28` is not a completed implementation handoff. IR-003/CRR-003 below are historical SR-015 results. See the current section immediately below and `implementation-revision-record.md` IR-004.
+> **Current IR-005 result: Implementation Complete for SR-023; fresh independent Code Review required.** No API/E2E or live AutoByteus-launched provider signoff is claimed. IR-004 and all older results below are historical.
 
-## Current IR-004 Design Impact — Shared Input Admission And Terminal Publication
+## Current IR-005 Handoff — Approved Invocation-Only Outcome
+
+### Upstream Package And Revision Basis
+
+- Approved authority: `requirements-doc.md` (SR-021/E-055 invocation-only image outcome; SR-018/E-048 exact eight; SR-013/E-034 skill disposition), `investigation-notes.md`, `solution-revision-record.md`, and current `design-spec.md` SR-023. No Product or behavior-defining supplement applies (`N/A — not applicable`).
+- Independent architecture review: `design-review-report.md` ARCH-REV-008 **Pass**, with `architecture-review-revision-record.md`; ARCH-REV-007/F-004's terminal-result safety finding is resolved in the approved SR-023 design. ARCH-REV-006 was for superseded SR-019.
+- Triggering downstream history: `api-e2e-execution-coverage-report.md` / `api-e2e-revision-record.md` API-REV-001 and `code-review-report.md` / `code-review-revision-record.md` CRR-004 exposed the 49-name/path assumptions. CRR-003 was only a historical SR-015 source pass. Delivery revision: `N/A`.
+- Implementation round: **IR-005 Rework** after IR-004 Design Impact and user-approved scope correction; server source commit `4fe185502` on `task/agy-runtime-capabilities-20260926`. Separate Codex skill package remains at `a140474` on `task/agy-codex-skill-bundle-20260926`; both task worktrees use the user-specified `Ryan Zheng <nogrethumphrey@gmail.com>` Git identity. The code and this current handoff, not historical IR entries, are authoritative.
+
+### Classification And Route
+
+- `task_size=Medium`, `architectural_risk=High` — **confirmed** against SR-023. Bounded AGY adapter/backend cleanup and existing skill/package fixes remain medium; native provider grants/MCP identity, skill provenance and public/private failure handling retain high architectural risk. No new design impact was found under the narrowed requirement.
+- Selected route: fresh full **Code Review** under `get_handoff_rules`, then API/E2E if passed. Direct-route self-review: `Not Applicable` because High risk requires independent review.
+
+### Reviewed Behavior Implementation Trace
+
+| Behavior | Actual production path and outcome |
+| --- | --- |
+| BEH-001; REQ-001/005/006; AC-001/005/006 | `agy-native-tool-policy.ts` and capsule/factory retain the validated 1.2.11 exact-eight native names, including AGY `generate_image`; no native collaboration or native `call_mcp_tool`. Existing configured MCP scope remains separate. Unsupported version fails safely; no 49-name fallback. |
+| BEH-003; REQ-002; AC-001/002 | `agy-stream-event-converter.ts` now emits native image STARTED and pathless DONE→SUCCEEDED with empty public args and null output; AGY stores any generated file. It emits fixed-safe image ERROR/denial, keeps provider details private, and preserves ordinary AGY reply. Failed/missing/unknown terminal result or nonempty `result.error` emits only fixed-safe `AGY_TURN_ERROR` with current turn identity and terminal scope/effect, not raw response/error/status/usage or `TURN_COMPLETED`. `agy-agent-run-backend.ts` returns to ordinary result/FIFO ordering, keeps fixed-safe close/input failures, and no longer reads transcript or copies bytes. Generic Files projection is unchanged for other tools; no AGY image artifact is produced. |
+| BEH-002; REQ-003/004; AC-003/004 | Existing detailed skill resolver/materializer warn-and-omit for missing or semantically invalid configured SKILL.md remains; unsafe provenance/collision/source mutation still blocks. Bundled package-local Codex workflow skill remains unchanged. Live first turn is an API/E2E gate. |
+
+### Removal, State, And Local Checks
+
+- Removed the partial SR-019 transcript reader, run-owned image copier, pending-image/deferred-text reconciliation, provider-result/finalizing flags, copied-image tests, path-required success gate, and AGY-only file stat special case. Did **not** delete existing user/provider images or historic run data. The restricted AGY diagnostic sink now records bounded native step **and turn-result** failures in `agy-provider-diagnostics/provider-failures.jsonl` with the existing no-follow/0700/0600 boundary. No shared queue/publisher API, UI route, endpoint, schema or dependency was added.
+- Persisted-data decision: **Directly Usable — No Migration**, per SR-023. Capsule manifest v1, existing snapshots and generic file-change projection remain readable; new native grants apply to new capsules only. No new image index is written.
+- Design health: bounded correction/removal of an overextended intermediate artifact design; actual production ownership now matches reviewed AGY adapter and existing app FIFO/event boundaries. No compatibility shim or parallel path retained. Changed source implementation files are 176/134/47 lines for converter/backend/diagnostic sink; no changed source exceeds the 500-line guardrail or 220 changed-line signal. `git diff --check` clean.
+- Implementation-scoped validation: server source `tsc -p tsconfig.build.json --noEmit` **passed** after local shared-package builds (temporary generated `dist` outputs removed). Four focused AGY stream/backend/diagnostic/file-projection unit files: **39 passed**. Four native-policy/skill/capsule/capability unit files: **40 passed, 1 skipped**. These are local checks, not API/E2E signoff.
+- Frontend rendered-result check: **Not Applicable** — no rendered UI code changed; the existing generic tool card/chat presentation is an API/E2E observation gate, not a new UI implementation.
+
+### Downstream Gates And Risk
+
+- Fresh Code Reviewer must check SR-023 terminal-result public/private boundary, ordinary AGY result/close ordering, native image step truthfulness, obsolete-path removal and retained skill/tool scope. The API/E2E Engineer must then prove a **real AutoByteus-launched AGY 1.2.11** first turn with provider `tool_name=generate_image` ACTIVE→DONE, normal tool card/assistant reply, not MCP `call_mcp_tool`; no image bytes/path/Files/preview check is required. Also validate scoped MCP coexistence, native collaboration exclusion, Codex bundled-skill first turn, missing/invalid warning versus unsafe hard failures, unsupported version and safe redaction. Do not claim completion from `init.tools` or model assertion alone.
+- No new exploratory AGY experiment was run by Implementation Engineer, per user instruction. Remaining uncertainty is real app/provider integration, Team/Org behavior, and public event/redaction under live execution. If that contradicts SR-023, return Design Impact rather than silently broadening behavior.
+
+> **Historical IR-004 result: Design Impact under superseded SR-019.** The SR-019 partial source at `77c9ffa28` was not a completed implementation handoff; IR-005 above replaces it. IR-003/CRR-003 below are historical SR-015 results.
+
+## Historical IR-004 Design Impact — Shared Input Admission And Terminal Publication
 
 - Basis: approved exact eight-name E-048 requirements, SR-019 design, ARCH-REV-006 Pass; `task_size=Medium`, `architectural_risk=High` retained. Product/behavior-defining supplements: N/A.
 - Trigger: API-REV-001/CRR-004 F-API-001/F-API-002 drove SR-019 recovery; ARCH-REV-005/F-003 was resolved in design by ARCH-REV-006. This round discovered an implementation-path contradiction while executing that reviewed turn-release design.
