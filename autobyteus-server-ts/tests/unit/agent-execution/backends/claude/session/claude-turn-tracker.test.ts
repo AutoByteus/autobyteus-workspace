@@ -338,7 +338,7 @@ describe("ClaudeTurnTracker interrupt (SPINE-5, IC-1)", () => {
     feed(init());
     tracker.requestInterrupt(a.turnId);
     expect(tracker.registerInput({ kind: "append_to_active_turn", turnId: a.turnId })).toMatchObject({ accepted: false, code: "CLAUDE_APPEND_TURN_MISMATCH" });
-    expect(tracker.registerInput({ kind: "start_turn" })).toMatchObject({ accepted: false });
+    expect(tracker.registerInput({ kind: "start_turn" })).toMatchObject({ accepted: false, code: "CLAUDE_TURN_INTERRUPTING" });
     expect(() => tracker.requestInterrupt("t-other")).toThrow("Claude active turn is 't1', not 't-other'.");
   });
 

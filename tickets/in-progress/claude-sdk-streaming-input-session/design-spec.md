@@ -2,10 +2,10 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-009` (revision after ARCH-REV-002; prior rounds SR-007, SR-008)
-- Approved requirements baseline: `requirements-doc.md` at SR-006 (BEH-001..008, UC-001..005, REQ-001..011, AC-001..013, SCN-001..007, DEC-001..006 all decided by the user on 2026-09-24/25; quotes in the requirements Document Status and SR-003..SR-006).
+- Current solution revision ID: `SR-011` (adds the shared AgentRun append claim rule after IMP-DI-001; SR-007..SR-009 reviewed in ARCH-REV-001..003)
+- Approved requirements baseline: `requirements-doc.md` at SR-011 (SR-006 plus REQ-012/AC-014..016, DEC-007 = A, user approval 2026-09-26). Earlier basis: SR-006 (BEH-001..008, UC-001..005, REQ-001..011, AC-001..013, SCN-001..007, DEC-001..006 all decided by the user on 2026-09-24/25; quotes in the requirements Document Status and SR-003..SR-006).
 - Behavior-defining supplements: none. `probe-evidence/` is evidence only.
-- Design status: `Ready` (round 3, for independent architecture review; addresses ARCH-F-001..008, see "Review Round 1 Resolution" and "Review Round 2 Resolution")
+- Design status: `Ready` (round 4: the new section "Shared AgentRun Append Claim (SR-011)" and its file/test mapping need review; every other section is unchanged from ARCH-REV-003 Pass)
 - Canonical investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/investigation-notes.md` (see "Architecture Investigation Findings (SR-007)" and "Architecture Review Round 1 Evidence (SR-008)").
 - Base: `origin/personal` @ `6f7b5e371` (v1.4.81).
 
@@ -245,7 +245,7 @@ The backend maps `submitInput` onto `AgentRunBackendInputDispatchResult` (`forwa
 
 ## Existing Capability Reuse Check
 
-- AgentRun input admission, append dispatch and the canonical lifecycle: reused unchanged (Codex precedent).
+- AgentRun input admission, append dispatch and the canonical lifecycle: reused, **except the claim rule, which is corrected in "Shared AgentRun Append Claim (SR-011)"**. The original "reused unchanged" premise was false (IMP-DI-001).
 - `SYSTEM_TASK_NOTIFICATION` canonical event and web rendering: reused (skill-improvement precedent).
 - Token-usage reconciler (cumulative `modelUsage`): reused; verify (RSK-007).
 - Content-block/tool/text projectors (`claude-session-content-block-processor.ts`, `claude-text-segment-projector.ts`, `claude-session-tool-use-coordinator.ts`): reused per frame with the tracker's turn id. The text projector becomes per canonical turn (created at turn open, finished at settle).
@@ -353,3 +353,57 @@ Completion during the final reply (probe Q): the t5 `result` arrives with the co
 | ARCH-F-007 (Medium) | Consumption requires a `user` tool_result followed by an `assistant` frame after the notification, both before `interruptRequested`. Abort-generated frames never count. The Stop sequence was added to the examples and step-2 tests |
 | ARCH-F-008 (Low) | Per-uuid send state. Unsent uuids are cancelled locally without an SDK call, in any process state; the SDK interrupt covers only sent uuids. The in-flight `submitInput` skips a cancelled send. An open in progress continues |
 | Non-blocking (constant placement) | `CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID` moved to neutral `agent-execution/domain/system-task-notification-senders.ts` |
+
+## Shared AgentRun Append Claim (SR-011, IMP-DI-001, REQ-012)
+
+### Current defect
+
+`AgentRunInputAdmissionState.claimNext` (`src/agent-execution/input/agent-run-input-admission-state.ts` L154-157) looks only at the first non-terminal entry and returns null unless that entry is `queued`. The entry whose `start_turn` opened the active turn stays `forwarded` until that turn's terminal, so a second input is never claimed as `append_to_active_turn`. This makes Codex `turn/steer` and Claude mid-turn delivery unreachable in the normal case (IMP-DI-001 repro: post A, then B → one `start_turn` dispatch only). The defect dates from `1e7837929`/`3f3aafa7c` (2026-08-13/15).
+
+### Target claim rule (owner: `AgentRunInputAdmissionState`, shared by all runtimes)
+
+`claimNext(selection)`:
+1. Unchanged guards: no claim while `activeClaim` exists, while `selection.hasPendingTurnStart`, or while an interrupt reservation is active (`AgentRun.claimNextInput`).
+2. Walk the non-terminal entries in FIFO order:
+   - `forwarded` entry whose `associatedTurnId === selection.activeTurn.turnId` (the active IDENTIFIED turn): **skip**. It is already inside the running turn and will finish at that turn's terminal.
+   - First `queued` entry reached → candidate.
+   - Any other state before a candidate (`reserved`, `committed`, `claimed`, or `forwarded` into a different or unknown turn): **stop**, return null. This keeps FIFO order and the existing reservation semantics.
+3. Candidate dispatch:
+   - `activeTurn.kind === "NONE"` and no entries were skipped → `start_turn` (today's behavior).
+   - `activeTurn.kind === "IDENTIFIED"`, `capabilities.activeTurnAppend === "supported"`, and the candidate is not marked `notInto === activeTurn.turnId` → `append_to_active_turn(activeTurn.turnId)`.
+   - Otherwise → null. This covers unsupported runtimes, which keep waiting, and ANONYMOUS turns.
+
+Runtimes without append support (native AutoByteus, and AGY if it declares unsupported) are unaffected because step 3 returns null exactly as today.
+
+### Definitely-undelivered append (AC-016)
+
+- `AgentRunBackendInputDispatchResult` gains an optional `undeliveredRetryAsStart?: true`. It is valid only with `forwarded:false` on an `append_to_active_turn` dispatch, and only when the backend guarantees that nothing reached the provider.
+- `applyDispatchResult` for such a result returns the entry to `queued` at its original FIFO position and records `notInto = <that turnId>`. There is no failure notification. The entry becomes claimable as `start_turn` after that turn's canonical terminal (or as an append into a *different* later turn). The `notInto` mark prevents a busy retry loop against the same turn.
+- Backends that set it:
+  - Claude: the tracker's `CLAUDE_APPEND_TURN_MISMATCH` rejection. It is always pre-send, so delivery is definitely not done.
+  - Codex: only the local pre-check in `codex-thread.ts` `appendInput` (`activeTurnId !== expectedTurnId`, before any RPC). An RPC-level `turn/steer` rejection stays a visible failure, as today, because delivery cannot be proven not to have happened.
+- Any other `forwarded:false` result keeps today's behavior (visible failure; no fallback). The `agent_execution.md` rule "never falls back to start" is narrowed to "never falls back to start unless the backend proves the input was not delivered".
+
+### Invariants preserved
+
+- FIFO: appends are claimed in entry order, one active claim at a time. A skipped entry is always earlier and already inside the active turn.
+- Exactly-once: an appended entry is `forwarded` with `associatedTurnId = T` and finishes at T's canonical terminal. The Claude tracker keeps T open until every written uuid is answered or cancelled, and Codex steer semantics are unchanged.
+- Interrupt reservation: unchanged; no appends while one is active. Entries appended into T resolve `interrupted` with T.
+- Termination: `prepareTermination` quiesces admission and drains; queued entries may now be appended into the active turn instead of waiting. They still resolve at a terminal before quiescence completes. Root-shutdown fencing is unchanged (it cancels only committed/queued entries).
+
+### Files and tests (additions to Final File Responsibility Mapping)
+
+| File | Status | Responsibility |
+| --- | --- | --- |
+| `src/agent-execution/input/agent-run-input-admission-state.ts` | Modify | Claim rule above; the `notInto` mark; requeue on `undeliveredRetryAsStart` |
+| `src/agent-execution/input/agent-run-input-contract.ts` | Modify | Optional `undeliveredRetryAsStart` on the dispatch result |
+| `src/agent-execution/backends/claude/backend/claude-agent-run-backend.ts` | Modify | Set it for `CLAUDE_APPEND_TURN_MISMATCH` |
+| `src/agent-execution/backends/codex/backend/codex-agent-run-backend.ts`, `.../codex/thread/codex-thread.ts` | Modify | Distinguish the local pre-check mismatch (retryable) from an RPC rejection (not retryable) |
+| `docs/modules/agent_execution.md` "Active Input And Interrupt Command Results" | Modify | Describe the claim rule and the narrowed fallback rule; Claude now declares append support |
+| `tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts`, `tests/unit/agent-execution/agent-run.test.ts` | Modify/New | IMP-DI-001 repro (post A then B → append into A's turn); B and C ordered; a reservation ahead blocks; an interrupt reservation blocks; a pending start blocks; unsupported runtime still waits; `undeliveredRetryAsStart` requeues without failure and without a retry loop; an ambiguous rejection still fails; termination with appended entries |
+| `tests/unit/agent-execution/backends/codex/*`, `.../claude/claude-agent-run-backend.test.ts` | Modify | Retryable vs non-retryable mapping |
+| API/E2E | New | AC-014: gated live Codex check (a message to a busy Codex agent is steered into the same turn) plus fake-CLI/fake-app-server websocket E2E for Claude (AC-003) and Codex. AC-016 race via fake backends. Team `send_message_to` to a busy member for both runtimes (AC-004) |
+
+### Classification impact
+
+It stays `Large` / `High`. This adds a shared input-contract change that affects Codex runtime behavior (mid-turn delivery now reachable) and narrows a documented rule. Independent architecture review is required for this section.

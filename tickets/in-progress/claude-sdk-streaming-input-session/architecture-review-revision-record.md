@@ -7,6 +7,7 @@
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (Large / High) | SR-006, SR-007 | N/A | Fail | ARCH-F-001, ARCH-F-002, ARCH-F-003, ARCH-F-004, ARCH-F-005, ARCH-F-006 |
 | ARCH-REV-002 | Round 2 / Revised design SR-008 | SR-008 | Fail | Fail | ARCH-F-001..006 (resolved); ARCH-F-007, ARCH-F-008 (new) |
 | ARCH-REV-003 | Round 3 / Revised design SR-009 | SR-009 | Fail | Pass | ARCH-F-007, ARCH-F-008 (resolved); IC-1, IC-2 (constraints) |
+| ARCH-REV-004 | Round 4 / SR-011 shared append claim (IMP-DI-001) | SR-010, SR-011 | Pass | Pass | none; IC-3, IC-4 (constraints) |
 
 ## Revision Entries
 
@@ -87,3 +88,31 @@ None
 - Material classification changes: none
 - Recommended recipient: `/implementation_engineer` (primary); `/solution_designer` (informational)
 - Remaining risks or uncertainty: append-mismatch race (Codex parity); RSK-006 isolated and live-tested; RSK-007 verify; P-prewait accepted; process memory accepted.
+
+### ARCH-REV-004 — Round 4: SR-011 shared AgentRun append claim (IMP-DI-001) — Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-review-report.md`
+- Review round and trigger: round 4; revised `Architecture Design Complete` (SR-011) after implementation Design Impact IMP-DI-001 (checkpoint `26450e6b0`)
+- Triggering role, report path, and finding IDs: `/solution_designer`, `solution-handoff.md`; `implementation-handoff.md` IMP-DI-001
+- Relevant solution revision IDs: SR-010, SR-011 (requirements re-approved with DEC-007 = A: REQ-012, BEH-009, AC-014..016, SCN-008)
+- Prior authoritative decision: `Pass` (ARCH-REV-003)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - Reviewed the new section "Shared AgentRun Append Claim (SR-011)" against `agent-run-input-admission-state.ts`, `agent-run.ts` (claim, dispatch result, termination) and `codex-thread.ts` `appendInput`.
+  - Confirmed the defect, the claim walk, `undeliveredRetryAsStart` with `notInto`, and the preserved invariants.
+  - Added constraints IC-3 (split the Codex pre-RPC mismatch from the post-RPC returned-id mismatch, which share `CODEX_TURN_STEER_ID_MISMATCH`) and IC-4 (the claim-time `turnId` return value).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-F-001..008 | Resolved | Resolved | SR-008, SR-009 | Sections unchanged in SR-011 |
+| Residual risk "append-mismatch race (Codex parity)" | Accepted residual | Resolved by design | SR-011 `undeliveredRetryAsStart` | Definitely-undelivered appends are requeued with `notInto`; ambiguous rejections still fail visibly |
+
+- New or remaining finding IDs: none. Constraints IC-1 and IC-2 (from round 3); IC-3 and IC-4 (new)
+- Material classification changes: none; still Large / High
+- Recommended recipient: `/implementation_engineer` (primary); `/solution_designer` (informational)
+- Remaining risks or uncertainty:
+  - The Codex steer path becomes reachable in production for the first time; it is covered by the gated live AC-014 check.
+  - RSK-006: the undeclared `cancelQueued` option (unchanged).
+  - RSK-007: token usage after a crash reopen (unchanged).

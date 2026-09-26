@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/requirements-doc.md` (Approved, SR-006; unchanged)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/investigation-notes.md` (new section "Architecture Review Round 1 Evidence (SR-008)")
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-spec.md` (SR-009)
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-spec.md` (SR-011; round 4 reviewed the new section "Shared AgentRun Append Claim (SR-011)" and its file/test mapping; all other sections are unchanged since ARCH-REV-003)
 - Supplemental Task Artifacts Reviewed: `solution-handoff.md`; `probe-evidence/` including the new `probeP.log` (cq/cam on the PATH 2.1.281 and bundled 2.1.280 CLIs), `probeP-prewait.log` and `probeQ.log`
-- Relevant Solution Revision IDs: SR-006, SR-007, SR-008, SR-009
+- Relevant Solution Revision IDs: SR-006, SR-007, SR-008, SR-009, SR-010, SR-011 (requirements re-approved at SR-011 with DEC-007 = A: REQ-012, BEH-009, AC-014..016, SCN-008)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: 3
-- Trigger: revised `Architecture Design Complete` (SR-009) addressing ARCH-F-007 and ARCH-F-008
-- Prior Review Round Reviewed: 2 (ARCH-REV-002, `Fail`)
-- Latest Authoritative Round: 3
+- Current Architecture Review Revision ID: `ARCH-REV-004`
+- Current Review Round: 4
+- Trigger: revised `Architecture Design Complete` (SR-011) after implementation Design Impact IMP-DI-001 (the shared AgentRun append claim). Implementation checkpoint `26450e6b0`
+- Prior Review Round Reviewed: 3 (ARCH-REV-003, `Pass`)
+- Latest Authoritative Round: 4
 - Current-State Evidence Basis: round-1 code reads still apply (base `6f7b5e371` unchanged). Additionally checked `agent-run-interrupt-state.ts` (`observeTerminal` clears the interrupt reservation on any terminal of the turn), the new unfiltered probe captures, and SDK 0.3.280 `sdk.d.ts` `SDKControlInterruptRequest.cancel_queued`.
 
 ## Routing Classification Review
@@ -191,7 +191,7 @@ None.
 
 ## Findings
 
-None blocking. All prior findings are resolved; see `architecture-review-revision-record.md` ARCH-REV-003.
+None blocking. All prior findings are resolved; see `architecture-review-revision-record.md` ARCH-REV-003 and ARCH-REV-004.
 
 ### Implementation constraints (binding on implementation and code review)
 
@@ -200,6 +200,12 @@ None blocking. All prior findings are resolved; see `architecture-review-revisio
   - Situation: a completion that arrives after `interruptRequested` but survives `cancel_queued` because it was not yet queued at the interrupt instant can both be announced as "stopped before reporting it", becoming carry-over, and trigger a later provider-initiated turn.
   - What to do: when a provider-initiated turn opens, clear any carry-over entries for the completions it reports, or carry over only completions recorded before `interruptRequested`.
   - Effect: this avoids telling the agent twice.
+- **IC-3 (round 4; REQ-012 exactly-once, AC-016):** `codex-thread.ts` `appendInput` currently throws `CODEX_TURN_STEER_ID_MISMATCH` from two places:
+  - the local pre-check before any RPC (`activeTurnId !== expectedTurnId`; definitely undelivered);
+  - after a successful `turn/steer` whose returned turn id differs (the input may have been delivered).
+
+  Only the pre-RPC path may map to `undeliveredRetryAsStart`. Give it a distinct code or flag, and keep the post-RPC mismatch and `CODEX_TURN_STEER_REJECTED` as visible failures. Add a Codex backend unit test for each path.
+- **IC-4 (round 4; non-blocking):** `AgentRun.postUserMessage` returns `turnId: appendTurnId` at claim time. After an `undeliveredRetryAsStart` requeue that id is no longer the input's turn. No current caller consumes it (the websocket coordinator uses lifecycle observer facts; checked `agent-run-command-coordinator.ts` and the routers). Either leave the return as-is and document it as a claim-time hint, or return `null` for append claims. Do not add consumers that depend on it.
 
 ## Classification
 
@@ -218,8 +224,34 @@ N/A (Pass)
 - A non-interrupt error result with further written input settles the canonical turn as `ERROR` after the remaining input is answered. It is visible and accounted.
 - Process memory (~170 MB per live run) is accepted (DEC-002).
 
+## Round 4 Review — Shared AgentRun Append Claim (SR-011)
+
+- Basis: REQ-012, BEH-009, AC-014..016 and SCN-008, approved by the user at SR-011 (DEC-007 = A; quote in requirements-doc Document Status). The Codex scope exception is now approved, so the Codex behavior change is in scope and is not a Requirement Gap.
+- Defect confirmed: in the current code (`agent-run-input-admission-state.ts` `claimNext`), `entries.find(state !== "terminal")` returns the forwarded entry that started the turn, and `state !== "queued"` then returns null. An append is therefore never claimed while the starting input is unfinished. The root cause is `Missing Invariant` in the shared owner. The fix belongs in that owner, and the design puts it there.
+- Claim walk: sound. Each check was walked against the code:
+  - It skips only `forwarded` entries associated with the active IDENTIFIED turn.
+  - It stops at any `reserved`/`committed`/`claimed` entry, or a `forwarded` entry into another or unknown turn. This preserves FIFO order and reservation ordering.
+  - An entry with a null `associatedTurnId` stops the walk, which is the conservative choice. `observeTurnStarted` normally fills that id in.
+  - The guards for an active claim, a pending turn start and an interrupt reservation are unchanged.
+  - Unsupported and ANONYMOUS cases return null as today, so native AutoByteus is unaffected.
+- `undeliveredRetryAsStart` plus `notInto`: proportionate. The trigger is Reachable: the backend has settled T while `TURN_COMPLETED(T)` is still in flight to AgentRun. This is the documented residual race from rounds 1–3, and it is now resolved without failing the input.
+  - Claude's mismatch is rejected synchronously before any send (tracker rule 1), so non-delivery is certain.
+  - The `notInto` guard prevents a busy retry against T. The entry becomes claimable after T's terminal, or into a different later turn such as a Claude provider-initiated turn.
+  - Ambiguous rejections still fail visibly.
+  - Requeue emits no observer facts: the claim emitted none, and `forwarded`/`turn_associated` fire only on real forwarding.
+- Invariants: FIFO, exactly-once (appended entries finish at T's terminal; the Claude tracker keeps T open until every written uuid is answered or cancelled), interrupt reservation, termination quiescence (`prepareTerminationOnce` → `quiesce` → drain → `waitForQuiescence`; appended entries resolve at T's terminal, sooner than before) and root-shutdown fencing all hold.
+- Tests and E2E: the mapping covers the IMP-DI-001 repro, ordering, reservation/interrupt/pending-start blocking, unsupported runtimes, requeue without a loop, ambiguous-rejection failure, termination, backend mappings, and gated live Codex steer (AC-014).
+- Constraints added: IC-3 (Codex mismatch code split) and IC-4 (claim-time `turnId` return).
+- Verdicts for the new section:
+  - Spine: `Pass`
+  - Ownership: `Pass` (a single owner, `AgentRunInputAdmissionState`)
+  - Interface: `Pass` (optional result flag, with its validity stated)
+  - Legacy: `Pass` (the documented rule is narrowed explicitly, with no dual path)
+  - Persisted data: `Not Affected`
+  - Change safety: `Pass`
+
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. P-001..P-009 are resolved. P-010 is Reachable, and IC-1 addresses it without new machinery.
-- Notes: the design is ready for implementation. The strongest risk controls are the live gated `cancelQueued` check (step 1), the tracker and registry frame-sequence tests from unfiltered captures (step 2), and IC-1.
+- Material-Premise Gate: `Pass`. P-001..P-009 are resolved. P-010 is covered by IC-1. The round-4 end-of-turn append race is Reachable and handled by `undeliveredRetryAsStart` with `notInto`.
+- Notes (round 4): the SR-011 shared append-claim section passes, with IC-3 and IC-4 added. The design is ready for implementation to resume from `26450e6b0`. The strongest risk controls are the live gated `cancelQueued` check (step 1), the tracker and registry frame-sequence tests from unfiltered captures (step 2), and IC-1.

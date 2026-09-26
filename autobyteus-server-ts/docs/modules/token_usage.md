@@ -257,7 +257,12 @@ meter. The public summary keeps the selected canonical and raw identities.
 counters against bounded, session-and-raw-model checkpoints. Duplicate or
 regressed observations do not double-count; a regression becomes a new
 baseline before later growth. Legacy/unknown resume history is baselined rather
-than guessed. Only the selected model's admitted delta reaches the lifetime
+than guessed. In streaming input mode one Claude process serves many turns and
+`modelUsage` is cumulative across them; each result's delta is admitted per
+turn. A resumed process continues from the totals its transcript saved. A
+non-success result whose `modelUsage` rows are all zero (a crash or startup
+failure) is not forwarded as usage, so it cannot reset the baseline and make
+the next result count the whole session again. Only the selected model's admitted delta reaches the lifetime
 run, daily analytics, GraphQL, and live `run_summary_after_event` projections;
 all-source checkpoints remain private in the nullable
 `claude_sdk_usage_state_json` run-record column. The 2026-09-23 Prisma migration

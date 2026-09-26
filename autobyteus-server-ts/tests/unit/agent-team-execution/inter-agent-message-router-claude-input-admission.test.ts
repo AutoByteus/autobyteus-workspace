@@ -102,15 +102,16 @@ describe("InterAgentMessageRouter Claude input admission", () => {
       },
     });
 
-    const started = await session.submitInput(new AgentInputUserMessage("active work"), { kind: "start_turn" });
+    const backend = new ClaudeAgentRunBackend(runContext as never, session);
+    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: runContext, backend });
+    await run.postUserMessage(new AgentInputUserMessage("active work"));
+    await vi.waitFor(() => expect(session.activeTurnId).not.toBeNull());
     await flushClaudeSession();
-    if (!started.accepted) throw new Error(started.code);
+    const started = { accepted: true as const, turnId: session.activeTurnId! };
     const fake = sdkClient.current;
     fake.init();
     await flushClaudeSession();
 
-    const backend = new ClaudeAgentRunBackend(runContext as never, session);
-    const run = new AgentRun({ providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch }, context: runContext, backend });
     const request = buildRequest();
     const result = await new InterAgentMessageRouter().deliver({ recipientRun: run, request });
     await vi.waitFor(() => expect(fake.sent).toHaveLength(2));

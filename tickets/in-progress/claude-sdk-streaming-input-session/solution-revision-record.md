@@ -13,6 +13,8 @@
 | SR-007 | Design | Architecture investigation (probes J, K, L, M, N, O) and design-spec | N/A | Approved; no design | Approved; Design Ready | none (requirements unchanged) | Architecture Design Complete: Large / High → architecture review |
 | SR-008 | Design | Architecture review ARCH-REV-001 (Fail, Design Impact): ARCH-F-001..006 | ARCH-F-001, 002, 003, 004, 005, 006 | Design Ready (round 1) | Design Ready (round 2) | none (requirements unchanged) | Design revised with probes P (both CLIs), P-prewait, Q; re-routed to architecture review |
 | SR-009 | Design | Architecture review ARCH-REV-002 (Fail, Design Impact): ARCH-F-007, 008 | ARCH-F-007, ARCH-F-008 | Design Ready (round 2) | Design Ready (round 3) | none (requirements unchanged) | Consumption rule excludes abort frames; unsent-input Stop path defined; re-routed |
+| SR-010 | Requirements | Implementation Design Impact IMP-DI-001 (IR-001): shared AgentRun claim rule blocks append | IMP-DI-001 | Approved; Design Ready (reviewed) | Ready for Approval (DEC-007); design Needs Revision | REQ-004, AC-003, AC-004; proposed REQ-012/AC-014 | Requirement Gap: shared/Codex scope decision needed from the user |
+| SR-011 | Mixed | User decision DEC-007 = A (2026-09-26); design section for the shared claim rule | IMP-DI-001 | Ready for Approval; design Needs Revision | Approved; Design Ready (round 4) | REQ-012, BEH-009, AC-014..016, SCN-008, DEC-007 | Shared AgentRun append claim designed; re-routed to architecture review |
 
 ## Revision Entries
 
@@ -108,4 +110,28 @@
 - Review outcome (recorded 2026-09-25): ARCH-REV-003 **Pass** on SR-006..SR-009 (`design-review-report.md`, `architecture-review-revision-record.md`). ARCH-F-001..008 resolved. Implementation constraints from the reviewer:
   - IC-1 (binding): the no-SDK-call Stop path applies only when no uuid was sent and no CLI turn is open; a provider-initiated turn always uses `interrupt({cancelQueued:true})`.
   - IC-2 (hygiene): the agent is not told twice about a carried-over completion.
+  The reviewer forwarded the package to `/implementation_engineer`. The Solution Designer did not forward it again.
+
+### SR-010 — Requirement gap: shared AgentRun append claim (IMP-DI-001)
+
+- Phase and classification: Requirements / Requirement Gap (via implementation Design Impact)
+- Trigger: `/implementation_engineer` IR-001 finding IMP-DI-001 (checkpoint `26450e6b0`, `implementation-handoff.md`)
+- Verified evidence: `autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts` `claimNext` (L154-157) inspects only the first non-terminal FIFO entry and returns null unless it is `queued`. The entry whose `start_turn` opened the active turn stays `forwarded` until that turn's terminal, so later inputs are never claimed as `append_to_active_turn`. This has been in place since `1e7837929`/`3f3aafa7c` (2026-08-13/15). The same code path makes Codex `turn/steer` unreachable in the normal scenario, contradicting `docs/modules/agent_execution.md` L312. The design (SR-007..009) assumed AgentRun's append contract was reusable unchanged. That premise is false, which triggers the escalation clause "AgentRun needs a contract change beyond declaring append support"
+- Impact: REQ-004/AC-003/AC-004 cannot be met without changing shared AgentRun input admission. Any shared fix changes Codex runtime behavior, which the approved requirements put out of scope
+- Status changes: requirements `Ready for Approval` for the delta (DEC-007); design-spec `Needs Revision` for the AgentRun claim rule (the rest of the reviewed design is unaffected); implementation paused on this item
+- Intended behavior changed: pending the user's decision (option A extends REQ-004 behavior to Codex)
+- Next action: user decides DEC-007 → requirements update + approval → design revision (claim rule, AgentRun tests, Codex check) → architecture re-review (shared-contract change)
+
+### SR-011 — Shared AgentRun append claim approved and designed
+
+- Phase and classification: Mixed (Requirements approval + Design)
+- Trigger: user 2026-09-26: "thanks for your suggestion. lets do it according to your suggestion that means later implemetnation should add more tests and api e2e should also tests more i believe right?" (DEC-007 = A)
+- Requirements changed: REQ-012, BEH-009, AC-014, AC-015, AC-016, SCN-008 added; the Codex out-of-scope line narrowed to exclude the shared rule. REQ-012 also includes the rule that a definitely-undelivered append starts the next turn instead of failing. This keeps option A from introducing a new failure mode for Codex and Claude users and was stated to the user in the same reply
+- Design changed: new design-spec section "Shared AgentRun Append Claim (SR-011)" (claim rule, `undeliveredRetryAsStart`, invariants, files, tests); status `Ready`; reuse statement corrected
+- Approval: requirements `Approved` at SR-011
+- Task size/risk: unchanged `Large` / `High`
+- Next action: architecture review of the new section; then implementation resumes from checkpoint `26450e6b0`
+- Review outcome for SR-011 (recorded 2026-09-26): ARCH-REV-004 **Pass** on SR-010/SR-011 (shared AgentRun append claim). Implementation constraints from the reviewer:
+  - IC-3: Codex reuses `CODEX_TURN_STEER_ID_MISMATCH` both before the RPC and for a returned-id mismatch after it; only the pre-RPC case may set `undeliveredRetryAsStart`.
+  - IC-4 (non-blocking): the append turnId that `postUserMessage` returns at claim time can go stale after a requeue; no current caller reads it.
   The reviewer forwarded the package to `/implementation_engineer`. The Solution Designer did not forward it again.

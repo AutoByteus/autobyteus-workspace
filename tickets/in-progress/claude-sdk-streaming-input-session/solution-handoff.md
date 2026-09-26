@@ -2,7 +2,7 @@
 
 - Result classification: `Architecture Design Complete`
 - Package identifier: `claude-sdk-streaming-input-session`
-- Current solution revision: `SR-009` (design revision after ARCH-REV-002)
+- Current solution revision: `SR-011` (shared AgentRun append claim after IMP-DI-001; requirements re-approved with REQ-012)
 - Task size / architectural risk: `Large` / `High` (evidence: `design-spec.md` → "Task Size And Architectural Risk")
 - Approval state: requirements `Approved` at SR-006 by explicit user decisions on 2026-09-24/25 (quotes in `requirements-doc.md` → Document Status; SR-003..SR-006). Design is not user-approved content; it realizes the approved requirements.
 
@@ -34,7 +34,11 @@ The user reported that Claude agents' background Bash never finishes (predecesso
 - Predecessor: `origin/personal:tickets/done/claude-sdk-background-task-lifecycle/`
 - Prior review artifacts: `design-review-report.md` and `architecture-review-revision-record.md` (ARCH-REV-001, reviewed basis SR-007; Fail/Design Impact). The resolution map is at the end of `design-spec.md`
 
-## Points Worth Reviewer Attention (round 3)
+## Points Worth Reviewer Attention (round 4)
+
+- Round 4: implementation raised IMP-DI-001. `AgentRunInputAdmissionState.claimNext` blocks every append behind the forwarded entry that started the turn. That also leaves Codex steer unreachable. The user chose to fix the shared rule for every append-capable runtime (DEC-007 = A, REQ-012/AC-014..016). Please review design-spec "Shared AgentRun Append Claim (SR-011)" (the claim walk rule, `undeliveredRetryAsStart` requeue with the `notInto` guard, invariants). All other sections are unchanged since ARCH-REV-003 Pass. Implementation checkpoint: `26450e6b0` (`implementation-handoff.md`).
+
+### Round 3 points (history)
 
 - Round 3: ARCH-F-007 (consumption now needs a tool_result followed by an assistant frame before any Stop; abort frames never count) and ARCH-F-008 (per-uuid send state; unsent input is cancelled locally with no SDK call) are addressed. See design-spec "Review Round 2 Resolution". The non-blocking constant placement is also done.
 
@@ -55,3 +59,4 @@ The user reported that Claude agents' background Bash never finishes (predecesso
 - Handoff rule outcome (SR-007): matched the rule "Architecture Design Complete with task_size=Large or architectural_risk=High …" → `/architecture_reviewer`
 - Handoff rule outcome (SR-008): the same rule matched again for the revised package → `/architecture_reviewer`
 - Handoff rule outcome (SR-009): the same rule matched again → `/architecture_reviewer`
+- Handoff rule outcome (SR-011): the same rule matched (Large/High revised package) → `/architecture_reviewer`

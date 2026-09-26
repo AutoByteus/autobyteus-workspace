@@ -185,7 +185,7 @@ Missing, unreadable, conflicting, or indeterminate durable state fails closed.
 
 Codex restoration sends the stored thread ID to `thread/resume`; failure never
 falls back to `thread/start`. Claude reserves one valid UUID before first input:
-the first SDK query receives only `sessionId`, later and restored queries receive
+the first process open receives only `sessionId`, later and restored opens receive
 only `resume`, and every provider-reported session ID must confirm the same UUID.
 The local AgentRun ID is never a Codex/Claude provider binding or placeholder.
 
@@ -308,12 +308,29 @@ an entry atomically claimed as an exact active-turn append. Other admissions
 return `turnId: null` and gain their identified turn through canonical lifecycle
 observation.
 
-Codex declares exact active-turn append support and maps that dispatch to
-`turn/steer(expectedTurnId=A)`. A successful steer preserves A without a new
-turn-start transition; rejection, mismatch, or failure never falls back to
-start. AutoByteus and Claude declare append unsupported, so input accepted while
-their turn is active stays in the AgentRun FIFO and becomes one later
-`start_turn` after the current canonical terminal. Provider I/O stays outside
+Claim rule: the FIFO is walked in order. Entries already forwarded into the
+active IDENTIFIED turn are skipped, because they finish at that turn's terminal.
+The first queued entry is the candidate; any other non-queued entry ahead
+(reserved, committed, claimed, or forwarded into a different or unknown turn)
+stops the walk. With no active turn the candidate becomes `start_turn`. With an
+IDENTIFIED active turn and `activeTurnAppend: "supported"` it becomes
+`append_to_active_turn(T)`. Otherwise it waits. So a message posted while an
+earlier message's turn is still running is delivered into that turn.
+
+Codex and Claude declare exact active-turn append support. Codex maps the
+dispatch to `turn/steer(expectedTurnId=T)`; Claude writes the message into its
+live streaming session. A successful append preserves T without a new
+turn-start transition. A rejection, mismatch, or failure never falls back to
+start unless the backend proves the input was not delivered: such a result
+sets `undeliveredRetryAsStart` (Claude `CLAUDE_APPEND_TURN_MISMATCH`, Codex
+`CODEX_TURN_STEER_TURN_NOT_ACTIVE`, both raised before any provider I/O). The
+entry then returns to its FIFO position, marked as never to be appended into T
+again. It starts the next turn after T's terminal, or appends into a different
+later turn. An RPC-level steer rejection or a post-RPC steer id mismatch stays a
+visible failure. Native AutoByteus declares append unsupported, so its input
+waits for the canonical terminal and becomes one later `start_turn`. The
+`turnId` returned by `postUserMessage` for an append is only a claim-time hint;
+consumers observe input lifecycle facts instead. Provider I/O stays outside
 the serialized critical section, while admission, claims, result application,
 terminal observation, and drain re-enter the per-run event queue. User-message
 memory/sidecar observation occurs only when the entry is actually forwarded.
@@ -447,7 +464,7 @@ streaming handlers or by `RunFileChangeService`; that service consumes
 
 Claude Agent SDK sessions treat raw assistant `tool_use` blocks as authoritative invocation starts. `tool_use.input` / `tool_use.arguments` is tracked by invocation id, emitted on both the segment metadata lane and lifecycle argument lane, and preserved on terminal `TOOL_EXECUTION_SUCCEEDED` / `TOOL_EXECUTION_FAILED` events as a result-first recovery path. If the Claude SDK permission callback observes the same invocation, the coordinator must reuse that tracked state and suppress duplicate segment-start/lifecycle-start emissions independently.
 
-Claude Agent SDK turn query options carry an explicit AutoByteus built-in tool
+Claude Agent SDK session options carry an explicit AutoByteus built-in tool
 policy at the `ClaudeSdkClient` boundary. The SDK `tools` option enables exactly
 these Claude Code built-ins: `Bash`, `Read`, `Edit`, `Write`, `Glob`, `Grep`,
 `NotebookEdit`, `WebFetch`, `WebSearch`, and `Skill`. Every other built-in,
@@ -472,32 +489,47 @@ created before this policy keep any earlier agent-type listing in their
 persisted transcript history. On resume, the tool list itself is still
 restricted and native multi-agent calls still fail.
 
-Every Claude turn query also forces the Claude CLI runtime policy env
-`CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1` and `BASH_MAX_TIMEOUT_MS=1800000` at the
-`ClaudeSdkClient` boundary, overriding inherited or caller-supplied values.
-Because each turn closes its one-string query on `result`, the Claude CLI process
-exits at turn end and kills any CLI-owned background task, including a foreground
-Bash command the CLI auto-backgrounds when it exceeds its timeout. With the policy
-applied, Bash has no `run_in_background` option and no auto-backgrounding: a long
-command runs in the foreground inside the turn and either completes or ends with a
-visible timeout error. A single command may run up to 30 minutes when the model
-requests that `timeout`; the per-call default stays the CLI default (2 minutes,
-`BASH_DEFAULT_TIMEOUT_MS` is not set). Model-discovery and context-capacity probes
-do not receive this policy. A user-level `~/.claude/settings.json` `env` block can
-still override these values inside the CLI. Both variables are documented Claude
-Code CLI env contracts; re-check them after Claude CLI or Agent SDK version bumps.
-This policy is temporary and must be removed when the Claude backend moves to SDK
-streaming input mode with a long-lived session per run.
-
 Claude Agent SDK `0.3.280` is used with exact direct peers
-`@anthropic-ai/sdk@0.128.0` and `@modelcontextprotocol/sdk@1.30.0`. The adapter
-continues to call one `query({ prompt: string, options })` per AgentRun
-`start_turn`; it does not use SDK `streamInput`, priority scheduling, or a
-provider-owned input queue. The intrinsic Agent Tools MCP descriptor alone is
-marked `alwaysLoad: true` so required Team tools are ready on the first turn.
+`@anthropic-ai/sdk@0.128.0` and `@modelcontextprotocol/sdk@1.30.0` in SDK
+streaming input mode. Each Claude AgentRun keeps one Claude CLI process for its
+whole life: `ClaudeSdkClient.openStreamingSession` opens one
+`query({ prompt: AsyncIterable, options })` lazily on the first input (new or
+restored run), and `ClaudeSessionProcess` owns that process, its single frame
+pump, and exit detection. There is no idle timer. Run terminate/close (standalone
+or team) and server shutdown close the process, which stops its background
+tasks. An unexpected exit fails the active turn with a turn-terminal `ERROR`
+carrying stderr diagnostics, and the next input reopens the session with
+`resume`. Claude CLI defaults apply: AutoByteus sets no background-task or Bash
+timeout environment variables. The intrinsic Agent Tools MCP descriptor alone
+is marked `alwaysLoad: true` so required Team tools are ready on the first
+turn. Tool exposure, the MCP descriptor, system-prompt capture, and the
+selected-model binding are resolved once per process open.
 
-For token accounting, the active Claude SDK query resolves the selected model
-value to one raw id through that query's supported-model metadata. Terminal
+Canonical turns are derived from the stream by `ClaudeTurnTracker`, the single
+owner of Claude turn identity. Turn ids are `${runId}:turn:${uuid}`.
+- A turn opens on a `start_turn` input, or on `system/init` while idle: that is
+  a turn the CLI starts itself, for example after a background task completes.
+- Every input is an `SDKUserMessage` with its own uuid. A canonical turn may span
+  several CLI turns and settles only when no CLI turn is open and every written
+  uuid is listed in a `result.user_message_uuids` or cancelled.
+- Only `system/init` opens a turn. Content frames or results that arrive while
+  no turn is active are logged and dropped.
+
+`ClaudeBackgroundTaskRegistry` tracks the CLI's background set and completions
+the model has not seen. A turn the CLI starts itself is preceded by a
+`SYSTEM_TASK_NOTIFICATION` (`sender_id: "system.claude_background_task"`), for
+example `Background task completed: <description> (<status>)`. Agent memory
+records these notices, and only these, as `system_task_notification` traces,
+and run-history replay shows them in the conversation.
+
+Image context files are sent inline as image content blocks. The Codex and
+Claude paths share `agent-execution/shared/context-image-source.ts`. Local
+files are read and base64-encoded (at most 20 MB); http(s) URLs and data URLs
+pass through. An unreadable image becomes a visible text note, not a failure.
+Non-image context files keep the "Reference files" path section.
+
+For token accounting, each Claude process open resolves the selected model
+value to one raw id through that session's supported-model metadata. Terminal
 result `modelUsage` is reconciled by the server token-usage fold per session and
 raw model; auxiliary-model usage is not charged to the selected-model meter.
 The meter reports an AutoByteus-configured API-equivalent estimate, not the
@@ -508,27 +540,31 @@ it is positive and safe; a safe full prompt sum then yields the latest prompt
 percentage. Older valid rows with null percentage are repaired by the
 run-summary read projection, not by a data backfill.
 
-Claude active-turn closure is owned by the session, not by WebSocket, GraphQL,
-or frontend button state. Each active Claude turn is tracked with its own
-`AbortController`, and that controller is passed into the SDK query options.
-When a user interrupt or active-run terminate request closes an in-flight Claude
-turn, the session clears pending tool approvals, flushes pending
-approval/control-response work, calls `AbortController.abort()`, waits for the
-exact active query execution to settle, completes registered-query/reference
-cleanup, clears active state, and only then emits canonical `TURN_INTERRUPTED`.
-It does not call SDK `Query.interrupt()` or consume an SDK interrupt receipt as
-a fallback. AgentRun then releases the reservation and drains retained FIFO
-input. A user-requested interrupt is a normal interrupted terminal path: it must
-not be recorded as a completed turn and SDK abort/close fallout should not
-surface as a runtime `ERROR`. Active terminate reuses the same session-owned
-closure boundary before the manager emits `SESSION_TERMINATED` and removes the
-run session, so row-level termination remains stronger than interrupt without
-duplicating abort-first cleanup policy outside the session. Follow-up messages
-start from a fresh query resource after settlement and resume the same UUID
-reserved before the first query. The initial query uses SDK `sessionId`; after
-it opens, every later query uses SDK `resume`. Provider stream identity confirms
-that immutable UUID and a missing or conflicting confirmation is terminal rather
-than a late adoption opportunity.
+Claude interrupt is owned by the session, not by WebSocket, GraphQL, or
+frontend button state, and it ends only the current turn. The process, the
+conversation, and running background tasks stay alive.
+1. The session clears and flushes pending tool approvals.
+2. Input still waiting for the process to open or for an image read is
+   cancelled locally without an SDK call.
+3. Unless no input of the turn was ever sent and no CLI turn is open, the
+   session calls `Query.interrupt({ cancelQueued: true })`. The CLI advertises
+   this with the `interrupt_cancel_queued_v1` capability; the SDK d.ts omits the
+   parameter, so the call is isolated in `ClaudeSdkStreamingSession`. That
+   atomically cancels messages the CLI has queued and aborts the running turn.
+4. The turn settles by the tracker's uuid accounting:
+   - `TURN_INTERRUPTED` when anything was cancelled or aborted;
+   - `TURN_COMPLETED` when the Stop arrived before the CLI read the input.
+
+Background completions that `cancelQueued` may have dequeued are announced in
+the interrupted turn and carried into the next input as a system note. Active
+terminate settles an active turn as `TURN_INTERRUPTED`, closes the process, and
+only then does the manager emit `SESSION_TERMINATED`. The first process open
+uses SDK `sessionId` with the UUID reserved before the first input; every later
+open (after an exit or a restore) uses `resume`. A provider-reported session id
+that conflicts with that UUID is fatal for the process. Re-verify the
+`cancelQueued` contract after Claude CLI or Agent SDK bumps with the gated live
+check in `claude-sdk-client.integration.test.ts` (`RUN_CLAUDE_E2E=1`, PATH and
+bundled CLIs).
 
 Native AutoByteus runs expose the same user-facing interrupt contract through
 the `autobyteus-ts` runtime. `AgentRun.interrupt(...)` delegates to

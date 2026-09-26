@@ -150,7 +150,11 @@ export class ClaudeTurnTracker {
         return { accepted: true, turnId: opened.turnId, uuid };
       }
       if (turn.interruptRequested) {
-        return this.rejectAppend(`Claude turn '${turn.turnId}' is being interrupted.`);
+        return {
+          accepted: false,
+          code: "CLAUDE_TURN_INTERRUPTING",
+          message: `Claude turn '${turn.turnId}' is being interrupted.`,
+        };
       }
       // AgentRun raced a provider-initiated turn it has not observed yet: join it.
       return this.addInput(turn);

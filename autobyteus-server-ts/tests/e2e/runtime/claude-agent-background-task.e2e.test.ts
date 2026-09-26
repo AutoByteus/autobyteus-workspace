@@ -54,7 +54,7 @@ const createLiveHarness = async (input: {
   const runContext = new AgentRunContext({
     runId: input.runId,
     config: new AgentRunConfig({
-      agentDefinitionId: "agent-claude-background-bash-policy",
+      agentDefinitionId: "agent-claude-background-task",
       llmModelIdentifier: "haiku",
       autoExecuteTools: true,
       skillAccessMode: SkillAccessMode.NONE,
@@ -69,7 +69,7 @@ const createLiveHarness = async (input: {
       }),
       carpenterSystemPrompt: composeSharedCarpenterPrompt({
         agentDefinition: {
-          name: "Claude Background Bash Policy E2E Agent",
+          name: "Claude Background Task E2E Agent",
           description: "Runs shell commands for the user",
           instructions: "Do what the user asks with the available tools.",
         },
@@ -78,7 +78,12 @@ const createLiveHarness = async (input: {
       skillAccessMode: SkillAccessMode.NONE,
     }),
   });
-  const sessionManager = new ClaudeSessionManager({} as never, new ClaudeSdkClient());
+  const sessionManager = new ClaudeSessionManager(
+    { activateForRun: () => ({ kind: "not_exposed" as const }) } as never,
+    {} as never,
+    new ClaudeSdkClient(),
+    { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
+  );
   const session = await sessionManager.createRunSession(runContext);
   const agentRun = new AgentRun({
     providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
@@ -156,40 +161,25 @@ const closeHarness = async (harness: LiveHarness): Promise<void> => {
   await harness.app.close();
 };
 
-/** Resolves with the marker-file state observed at the moment TURN_COMPLETED is streamed. */
-const waitForTurnCompleted = (
+const waitForStreamMessage = (
   harness: LiveHarness,
-  markerPath: string,
-): Promise<{ markerContentAtTurnCompleted: string | null }> =>
+  predicate: (message: StreamMessage, index: number) => boolean,
+  label: string,
+): Promise<number> =>
   new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      harness.socket.off("message", onMessage);
-      reject(new Error(
-        `Timed out waiting for TURN_COMPLETED; seen: ${harness.messages.map((m) => m.type).join(",")}`,
-      ));
-    }, LIVE_TURN_TIMEOUT_MS);
-    const onMessage = (data: WebSocket.RawData) => {
-      let parsed: StreamMessage;
-      try {
-        parsed = JSON.parse(data.toString()) as StreamMessage;
-      } catch {
-        return;
+    const deadline = Date.now() + LIVE_TURN_TIMEOUT_MS;
+    const poll = () => {
+      const index = harness.messages.findIndex(predicate);
+      if (index >= 0) return resolve(index);
+      if (Date.now() > deadline) {
+        return reject(new Error(`Timed out waiting for ${label}; seen: ${harness.messages.map((m) => m.type).join(",")}`));
       }
-      if (parsed.type !== "TURN_COMPLETED") {
-        return;
-      }
-      clearTimeout(timer);
-      harness.socket.off("message", onMessage);
-      resolve({
-        markerContentAtTurnCompleted: fsSync.existsSync(markerPath)
-          ? fsSync.readFileSync(markerPath, "utf-8").trim()
-          : null,
-      });
+      setTimeout(poll, 200);
     };
-    harness.socket.on("message", onMessage);
+    poll();
   });
 
-describeLiveClaudeRuntime("Claude runtime background Bash policy (live E2E)", () => {
+describeLiveClaudeRuntime("Claude runtime background tasks (live E2E, AC-002)", () => {
   const cleanups: Array<() => Promise<void>> = [];
 
   afterEach(async () => {
@@ -200,7 +190,7 @@ describeLiveClaudeRuntime("Claude runtime background Bash policy (live E2E)", ()
   });
 
   it.each(cliCandidates.map((candidate) => [candidate.label, candidate] as const))(
-    "runs a command requested 'in the background' in the foreground and reports it in the same turn (%s)",
+    "keeps a background Bash command running after the turn ends and reports it in a turn Claude starts itself (%s)",
     async (_label, candidate) => {
       // Behave like a standalone server process even when launched from a Claude Code session.
       const standaloneEnv = buildStandaloneClaudeProcessEnv();
@@ -211,69 +201,57 @@ describeLiveClaudeRuntime("Claude runtime background Bash policy (live E2E)", ()
       }
       vi.stubEnv("CLAUDE_CODE_EXECUTABLE_PATH", candidate.executablePath);
 
-      const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), "claude-live-background-bash-"));
+      const workspaceRoot = await fs.mkdtemp(path.join(os.tmpdir(), "claude-live-background-task-"));
       cleanups.push(() => fs.rm(workspaceRoot, { recursive: true, force: true }));
       const markerPath = path.join(workspaceRoot, "marker");
       const command = `sleep ${String(BACKGROUND_COMMAND_SECONDS)}; echo done > ${markerPath}`;
       const harness = await createLiveHarness({
-        runId: `claude-live-background-bash-${randomUUID()}`,
+        runId: `claude-live-background-task-${randomUUID()}`,
         workspaceRoot,
       });
       cleanups.push(() => closeHarness(harness));
 
-      const turnCompleted = waitForTurnCompleted(harness, markerPath);
       sendE2eSendMessageCommand(harness.socket, {
         content: [
-          "Use the Bash tool to run this exact command in the background:",
+          "Use the Bash tool with run_in_background set to true to run this exact command:",
           command,
-          "When the command has finished, reply with the content of the marker file.",
+          "Do not wait for it. Reply only STARTED and end your turn.",
+          "When you are later notified that it finished, reply with the content of the marker file.",
         ].join("\n"),
       });
-      const { markerContentAtTurnCompleted } = await turnCompleted;
-      console.info(`[${candidate.label} ${candidate.version}] tool stream:`, JSON.stringify(
-        harness.messages
-          .filter((message) => message.type?.startsWith("TOOL_") || message.type?.startsWith("TURN_"))
-          .map((message) => ({
-            type: message.type,
-            tool: message.payload?.tool_name,
-            arguments: message.payload?.arguments,
-            result: message.payload?.result,
-            error: message.payload?.error,
-          })),
-      ));
 
-      const bashStarts = harness.messages.filter(
-        (message) =>
-          message.type === "TOOL_EXECUTION_STARTED" && message.payload?.tool_name === "Bash",
+      const firstCompleted = await waitForStreamMessage(harness, (message) => message.type === "TURN_COMPLETED", "first TURN_COMPLETED");
+      expect(fsSync.existsSync(markerPath), "the command is still running when the first turn ends").toBe(false);
+      const bashStart = harness.messages.find((message) =>
+        message.type === "TOOL_EXECUTION_STARTED" &&
+        message.payload?.tool_name === "Bash" &&
+        String((message.payload?.arguments as Record<string, unknown> | undefined)?.command ?? "").includes(markerPath));
+      expect((bashStart?.payload?.arguments as Record<string, unknown> | undefined)?.run_in_background).toBe(true);
+
+      const noticeIndex = await waitForStreamMessage(
+        harness,
+        (message, index) => index > firstCompleted && message.type === "SYSTEM_TASK_NOTIFICATION",
+        "background completion notice",
       );
-      const commandStart = bashStarts.find((message) =>
-        String((message.payload?.arguments as Record<string, unknown> | undefined)?.command ?? "")
-          .includes(markerPath),
+      const notice = harness.messages[noticeIndex]!;
+      expect(notice.payload?.sender_id).toBe("system.claude_background_task");
+      expect(String(notice.payload?.content)).toMatch(/^Background task completed: .+ \(completed\)$/u);
+      await waitForStreamMessage(
+        harness,
+        (message, index) => index > noticeIndex && message.type === "TURN_COMPLETED",
+        "Claude-initiated TURN_COMPLETED",
       );
-      expect(commandStart, "Bash call for the requested command").toBeTruthy();
-      for (const start of bashStarts) {
-        expect(start.payload?.arguments ?? {}).not.toHaveProperty("run_in_background");
-      }
 
-      const commandSucceeded = harness.messages.find(
-        (message) =>
-          message.type === "TOOL_EXECUTION_SUCCEEDED" &&
-          message.payload?.invocation_id === commandStart?.payload?.invocation_id,
-      );
-      expect(commandSucceeded, "requested command completed as a tool result").toBeTruthy();
-
-      const streamText = JSON.stringify(harness.messages);
-      expect(streamText).not.toContain("[killed]");
-      expect(streamText).not.toMatch(/"run_in_background"/u);
-
-      // The command finished before the turn ended: the result belongs to this turn.
-      expect(markerContentAtTurnCompleted).toBe("done");
-      const assistantText = harness.messages
+      expect(fsSync.readFileSync(markerPath, "utf-8").trim()).toBe("done");
+      const reportText = harness.messages
+        .slice(noticeIndex)
         .filter((message) => message.type === "SEGMENT_CONTENT")
         .map((message) => String(message.payload?.delta ?? ""))
         .join("");
-      expect(assistantText.toLowerCase()).toContain("done");
+      expect(reportText.toLowerCase()).toContain("done");
+      expect(JSON.stringify(harness.messages)).not.toContain("[killed]");
+      expect(harness.sessionManager.requireRunSession(harness.runContext.runId).processState).toBe("OPEN");
     },
-    LIVE_TURN_TIMEOUT_MS + 30_000,
+    LIVE_TURN_TIMEOUT_MS * 2,
   );
 });

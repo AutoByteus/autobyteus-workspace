@@ -84,7 +84,16 @@ export class ClaudeAgentRunBackend implements AgentRunBackend {
           : { kind: "append_to_active_turn", turnId: dispatch.turnId },
       );
       if (!result.accepted) {
-        return { forwarded: false, code: result.code, message: result.message, turnId: null };
+        // The tracker rejects a mismatched append before anything is written to the CLI.
+        const undelivered = dispatch.kind === "append_to_active_turn" &&
+          result.code === "CLAUDE_APPEND_TURN_MISMATCH";
+        return {
+          forwarded: false,
+          code: result.code,
+          message: result.message,
+          turnId: null,
+          ...(undelivered ? { undeliveredRetryAsStart: true as const } : {}),
+        };
       }
       return {
         forwarded: true,

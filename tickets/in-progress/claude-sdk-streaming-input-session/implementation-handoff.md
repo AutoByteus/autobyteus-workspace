@@ -1,109 +1,178 @@
 # Implementation Handoff — claude-sdk-streaming-input-session
 
-Status: **Design Impact (IMP-DI-001)**. The implementation is halted before completion; this is not a downstream-ready package.
+Status: **Implementation complete (IR-002)**. Ready for independent code review (Large / High).
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Large / High. The independent architecture review passed (ARCH-REV-003) and the architecture reviewer routed the package to `/implementation_engineer`.
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/requirements-doc.md` (SR-006)
+- Upstream review applicability and handoff-rule result: Large / High. The independent architecture review passed (ARCH-REV-004), and the architecture reviewer routed the package to `/implementation_engineer`. IMP-DI-001 is resolved by SR-011.
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/requirements-doc.md` (Approved, SR-011)
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/investigation-notes.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/solution-revision-record.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-spec.md` (SR-009)
-- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/probe-evidence/`
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-review-report.md`
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-spec.md` (SR-011)
+- Solution handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/solution-handoff.md`
+- Supplemental task artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/probe-evidence/` (evidence only)
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-review-report.md` (Pass, ARCH-REV-004; binding constraints IC-1..IC-4)
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial round)
+- Triggering rework report: ARCH-REV-004 (resume after IMP-DI-001)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+Claude runs now use one long-lived Claude CLI process per AgentRun in SDK streaming-input mode.
+- **Process lifetime.** The process opens lazily on the first input (`create`, then `resume` for later opens) and lives until terminate/close/shutdown. An unexpected exit fails the active turn and the next input resumes.
+- **Canonical turns.** `ClaudeTurnTracker` derives them from the stream plus per-input uuids. This covers turns spanning several CLI turns, turns the CLI starts itself, and uuid-accounted settlement.
+- **Background tasks.** They are enabled; the v1.4.78 policy env is removed. Completions are announced with `SYSTEM_TASK_NOTIFICATION` before a Claude-started turn, recorded in memory, and replayed in history.
+- **Stop.** It uses `Query.interrupt({cancelQueued:true})` under IC-1 and ends only the turn.
+- **Images.** Image context files are sent inline.
+- **Shared AgentRun claim rule (SR-011).** Input posted while an earlier input's turn runs is now appended into that turn, for Claude and Codex. A proven-undelivered append (`undeliveredRetryAsStart`) is requeued and starts the next turn instead of failing.
+
+- Implementation cycle: `Rework` (resume after Design Impact)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related revision IDs: SR-009; ARCH-REV-003. CRR, API-REV and DR are N/A.
-- Triggering finding IDs: IC-1 and IC-2 (implemented). New finding: IMP-DI-001.
-- Checkpoint commit: see branch `codex/claude-sdk-streaming-input-session` ("wip(claude): streaming-input session … [Design Impact IMP-DI-001]").
-
-## IMP-DI-001 — AgentRun FIFO blocks active-turn append for the normal busy-agent scenario (escalation trigger)
-
-- **Requirement impact.** Blocks REQ-004 / BEH-002 / AC-003 / AC-004 ("input accepted while a Claude turn is active is delivered into the running Claude session"). This hits the design escalation trigger "AgentRun needs a contract change beyond declaring append support".
-- **Code evidence.** `src/agent-execution/input/agent-run-input-admission-state.ts` `claimNext` (L154-157):
-  - `const entry = this.entries.find((c) => c.state !== "terminal"); if (!entry || entry.state !== "queued" …) return null;`
-  - The entry whose `start_turn` opened the active turn stays `forwarded` until that turn's canonical terminal (`observeTurnTerminal` → `finishEntry`).
-  - So a later queued input is never claimed while that turn runs, even though `activeTurnAppend: "supported"` and the turn is `IDENTIFIED`.
-  - Append is only chosen when the active turn has no forwarded FIFO entry ahead of the new input, for example a provider-initiated turn or a turn started outside AgentRun. That is the shape every existing AgentRun append unit test uses (`tests/unit/agent-execution/agent-run.test.ts`, "claims exact active Codex append…", with the snapshot pre-seeded to IDENTIFIED and an empty FIFO).
-- **Reproduction.**
-  - Setup: a throwaway AgentRun unit test with `append: "supported"`. `postUserMessage("A")` is forwarded with `turnId: "turn-A"`; then `postUserMessage("B")`.
-  - Result: B returns `{accepted: true, turnId: null}`, and `dispatchUserInput` is called once (`start_turn` only). B waits for A's terminal.
-  - The same happens end to end: `tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts` "delivers a message sent to a busy agent into the running turn (AC-003)" fails. The second SEND_MESSAGE is acknowledged `accepted` but never reaches the session.
-- **Scope note.** This is shared AgentRun behavior. The repro ran with `runtimeKind: codex_app_server`, so Codex `turn/steer` is not reached in this scenario either. The Codex claim in `docs/modules/agent_execution.md` "Active Input And Interrupt Command Results" is only true when the active turn has no forwarded entry ahead.
-- **Why not patched locally.** The Claude backend can't change it: the input never reaches the backend. The owner is AgentRun input admission (`agent-execution/input`), which the design declares "reused unchanged". Changing it alters the canonical input contract for every append-capable runtime (Codex included), for ordering, exactly-once, interrupt reservation and termination quiescence. That is a design/ownership decision, not an implementation detail.
-- **Possible direction (for the designer, not implemented).**
-  - In `claimNext`, when append is supported and the active turn is IDENTIFIED: skip non-terminal entries that are `forwarded` and associated with (or awaiting association to) that active turn, and claim the first `queued` entry after them as `append_to_active_turn`.
-  - FIFO order among undispatched entries stays unchanged.
-  - Needs new AgentRun tests. Codex behavior changes too (it would then steer, as its docs claim).
-  - Requirement owner: confirm whether the Codex behavior change is in scope, or whether it must stay Claude-only through a capability detail.
+- Current implementation revision ID: `IR-002`
+- Related revision IDs: SR-011; ARCH-REV-004. CRR, API-REV and DR are N/A.
+- Triggering finding IDs: IMP-DI-001 (resolved by design); IC-1..IC-4 (implemented)
 
 ## Routing Classification
 
-- Task size / architecture risk: `Large` / `High` (carried from design-spec "Task Size And Architectural Risk")
+- Task size / architecture risk: `Large` / `High` (design-spec "Task Size And Architectural Risk"; SR-011 "Classification impact")
 - Classification confirmed or changed: `Confirmed`
-- Selected route: `Solution Designer` (Design Impact)
-- Lightweight self-review: `Not Applicable` (Large/High; the Code Reviewer route applies after the design question is resolved)
-- New design impact: IMP-DI-001
+- Selected route: `Code Review`
+- Lightweight self-review: `Not Applicable` (Large/High)
+- New design impact: `None`
+
+## Binding Constraint Implementation
+
+| ID | Implementation | Evidence |
+| --- | --- | --- |
+| IC-1 | `ClaudeTurnTracker.requestInterrupt`: unsent uuids are cancelled locally. `sdkInterruptRequired = anySent \|\| cliTurnOpen`. `ClaudeSession.interruptActiveTurn` calls `interruptAndCancelQueued` when required | Tracker tests "provider-initiated turn…", "start_turn raced…", "only-unsent…"; session tests for the provider turn, the race, and unsent-at-open |
+| IC-2 | Option (b): `registry.announceStopped(stopSequence)` carries over only completions recorded before `interruptRequested`. Later ones stay pending for the CLI's own turn | Tracker test "keeps a completion recorded after the Stop pending…" |
+| IC-3 | The pre-RPC check throws the distinct `CODEX_TURN_STEER_TURN_NOT_ACTIVE`. The Codex backend maps only that code to `undeliveredRetryAsStart`. Post-RPC `CODEX_TURN_STEER_ID_MISMATCH` and `CODEX_TURN_STEER_REJECTED` stay visible failures | 3 Codex backend tests + 1 thread test |
+| IC-4 | Left as-is and documented as a claim-time hint (`AgentRun.postUserMessage` doc comment and `agent_execution.md`). No consumers were added | — |
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change | Implemented Path / Key Files | Result |
 | --- | --- | --- | --- |
-| BEH-004 (REQ-001/006) | One process per run, lazy open, lives until terminate/close/shutdown | `ClaudeSession.submitInput` → `ClaudeSessionProcess.ensureOpen` → `ClaudeSdkClient.openStreamingSession` (`claude-sdk-client.ts`, `claude-sdk-streaming-session.ts`, `claude-session-process.ts`) | Done. Unit: 3 turns on one process. Live: manager integration (9/9) and client integration |
-| BEH-007 | Restored run resumes once per process open | `ClaudeProviderSessionLifecycle.buildOpenBinding/noteProcessOpened/noteProcessClosed` | Done (unit + live restore tests) |
-| BEH-002 (REQ-004) | Mid-turn delivery by uuid | Backend `activeTurnAppend: "supported"`; `ClaudeTurnTracker.registerInput` (append/join) | Session and backend done (unit AC-003 at session level). **Blocked at AgentRun: IMP-DI-001** |
-| BEH-001/008 (REQ-002/003/009) | Background tasks enabled; completion → notice + provider-initiated turn | Policy env removed; `ClaudeBackgroundTaskRegistry` + tracker opener; `SYSTEM_TASK_NOTIFICATION` session event → converter | Done: unit, tracker probe sequences, fake-CLI websocket E2E (AC-002). Live AC-002 not yet run |
-| BEH-003 (REQ-005) | Stop ends the turn only; `interrupt({cancelQueued:true})`; IC-1 | `ClaudeSession.interrupt` → `ClaudeTurnTracker.requestInterrupt` (IC-1 rule) → `ClaudeSdkStreamingSession.interruptAndCancelQueued` | Done: unit (P cq, P-prewait, provider turn, race, unsent-at-open), fake-CLI websocket E2E, **live step-1 check passed on PATH 2.1.282 and bundled 2.1.280** |
-| BEH-006 (REQ-007) | Terminate closes the process | `ClaudeSession.closeProcess` via manager `terminateRun` / cleanup | Done (unit + live terminate test) |
-| REQ-008 | Unexpected exit fails the turn; next input resumes | `ClaudeSessionProcess.runPump` → `onExit` → `tracker.processExited` | Done (unit) |
-| BEH-005 (REQ-011) | Inline images | `claude-user-message-builder.ts`, `shared/context-image-source.ts` (Codex mapper migrated) | Done (unit AC-012/013 at session level) |
-| REQ-003 history | Notice trace + replay | `runtime-memory-event-accumulator.ts` (sender-scoped), `RawTraceItem.senderId`, replay kind `system_task_notification`, web hydration mapping | Implemented; dedicated unit tests still to add |
+| BEH-004 (REQ-001/006) | One process per run, lazy open, no idle close | `ClaudeSession.submitInput` → `ClaudeSessionProcess.ensureOpen` → `ClaudeSdkClient.openStreamingSession` → `ClaudeSdkStreamingSession` | Unit (3 turns, 1 process) + live manager/client integration |
+| BEH-007 | Restore resumes once per open | `ClaudeProviderSessionLifecycle.buildOpenBinding/noteProcessOpened/noteProcessClosed` | Unit + live restore tests |
+| BEH-002, BEH-009 (REQ-004, REQ-012) | Mid-turn delivery; shared claim rule; undelivered requeue | `AgentRunInputAdmissionState.claimNext` walk + `notInto`; `applyDispatchResult` requeue; Claude `registerInput` append/join; Codex `turn/steer` | AgentRun + admission unit (AC-015/016, IMP-DI-001 repro); Claude websocket fake-CLI AC-003; router AC-004 through AgentRun |
+| BEH-001/008 (REQ-002/003/009) | Background tasks; notice + provider-initiated turn | Policy env removed; `ClaudeBackgroundTaskRegistry`; tracker opener; `SYSTEM_TASK_NOTIFICATION` | Unit, probe-sequence tests, fake-CLI websocket, **live AC-002 on PATH and bundled CLIs** |
+| BEH-003 (REQ-005) | Stop ends the turn only | `ClaudeSession.interrupt` → tracker (IC-1) → `interruptAndCancelQueued` | Unit, fake-CLI websocket, live websocket interrupt test, **live cancelQueued check on both CLIs** |
+| BEH-006 (REQ-007) | Terminate closes the process | `ClaudeSession.closeProcess` via manager `terminateRun`/cleanup | Unit + live terminate tests |
+| REQ-008 | Exit fails the turn; resume on next input | `ClaudeSessionProcess.runPump` → `onExit` → `tracker.processExited` | Unit |
+| BEH-005 (REQ-011) | Inline images | `claude-user-message-builder.ts`; shared `context-image-source.ts` (Codex mapper migrated with no behavior change) | Builder + source unit tests; session AC-012/013 |
+| REQ-003 history | Notice trace and replay | Accumulator (sender-scoped); `RawTraceItem.senderId`; replay kind `system_task_notification`; conversation entry `senderId`; web hydration → notice segment | Memory/replay unit tests (incl. ARCH-F-004 scoping); web spec |
 
-Implementation notes for review:
-- IC-2: I chose option (b). Completions recorded before `interruptRequested` are announced as "stopped" and carried over. Later ones stay pending for the CLI's own turn.
-- Registry refinement: a `result` with `origin.kind === "task-notification"` inside a continuation CLI turn consumes the completions recorded before that CLI turn. This avoids stale notices at a later provider turn.
-- RSK-007: a non-success result whose `modelUsage` rows are all zero is not emitted as usage, so the reconciler's cumulative baseline isn't reset.
-- The "turn completed without provider UUID confirmation" guard was dropped. Every frame carries `session_id`, and a conflicting id is fatal for the process.
-- The event-monitor active-trace page has no system-notice visual, so notices replay only in the run-history conversation.
+## Key Files Or Areas
+
+- **Client**: `runtime-management/claude/client/claude-sdk-client.ts` (`openStreamingSession`; `startQueryTurn`, `closeQuery` and the policy env are removed) and `claude-sdk-streaming-session.ts` (new; input channel, `cancelQueued` adapter, capability snapshot).
+- **Session**: `backends/claude/session/`
+  - `claude-session.ts` (rewrite);
+  - `claude-session-process.ts`, `claude-turn-tracker.ts`, `claude-background-task-registry.ts`, `claude-user-message-builder.ts` (new);
+  - `claude-provider-session-lifecycle.ts`, `claude-session-manager.ts`, `claude-session-cleanup.ts`, `claude-session-state-input.ts`, `claude-session-token-usage.ts`;
+  - `claude-selected-model-binding.ts` (renamed);
+  - `claude-active-turn-execution.ts` (deleted).
+- **Backend and events**: `backends/claude/backend/claude-agent-run-backend.ts` (append supported; undelivered mapping) and `backends/claude/events/*` (notice event).
+- **Shared AgentRun input**: `agent-execution/input/agent-run-input-admission-state.ts` and `agent-run-input-contract.ts`; `domain/agent-run.ts` (IC-4 doc comment only).
+- **Codex**: `codex-thread.ts`, `codex-input-submission-error.ts`, `codex-agent-run-backend.ts`, `codex-user-input-mapper.ts`.
+- **Shared domain and image source**: `agent-execution/shared/context-image-source.ts`; `domain/system-task-notification-senders.ts`.
+- **Memory and history**: `agent-memory/*` (trace type, writer, normalizer, accumulator); `run-history/projection/*` (replay kind, conversation, event-monitor no-visual branch).
+- **Other packages**: `autobyteus-ts` `RawTraceItem.senderId` (additive); `autobyteus-web` `runProjectionConversation.ts`.
+- **Docs**: `docs/modules/agent_execution.md` (active input claim rule, streaming lifecycle, interrupt, images, notice) and `docs/modules/token_usage.md` (streaming cumulative note, zeroed crash results).
+- **Tests**: new or rewritten unit, integration and E2E suites, listed below. The helper is `tests/helpers/fake-claude-streaming-sdk.ts`.
+
+## Implementation Notes For Review
+
+- **Registry refinement.** A `result` with `origin.kind === "task-notification"` in a continuation CLI turn consumes completions recorded before that CLI turn, which avoids stale notices at a later provider turn.
+- **RSK-007.** A non-success result whose `modelUsage` rows are all zero is not emitted as usage.
+- **Provider UUID guard.** The old "completed without provider UUID confirmation" turn guard was dropped. Every frame carries `session_id`, and a conflicting id is fatal for the process.
+- **Rejection codes.** A `start_turn` that races into an interrupting turn is rejected with `CLAUDE_TURN_INTERRUPTING` (not retried). Only the append mismatch `CLAUDE_APPEND_TURN_MISMATCH` sets `undeliveredRetryAsStart`.
+- **History surfaces.** The event-monitor active-trace page has no system-notice visual; notices replay only in the run-history conversation.
+- **Pre-existing test bugs fixed.**
+  - Two E2E harnesses passed the SDK client as the workspace manager argument of `ClaudeSessionManager`, so the "mocked" tests launched a real CLI.
+  - The live manager tests called a non-existent `session.sendTurn`.
+  - The live factory tests treated the backend as an AgentRun and used an unnamed agent definition.
+
+## Legacy / Compatibility Removal Check
+
+- Backward-compatibility mechanisms introduced: `None`. There is no single-message fallback or flag (DEC-005).
+- Legacy behavior retained: `No`. The policy env, per-turn query, `AbortController` interrupt path, `activeQueriesByRunId`, `startQueryTurn`, `closeQuery` and client auto-approve are removed.
+- Dead code and obsolete tests removed: `Yes`.
+  - `claude-sdk-client-runtime-policy.integration.test.ts` is deleted.
+  - The background-bash policy E2E is replaced by `claude-agent-background-task.e2e.test.ts`.
+- Shared structures tight: `Yes`. The dispatch-result flag is optional and its validity is documented.
+- Changed source files within size guardrails: `Yes`.
+  - `claude-session.ts` 477, `claude-sdk-client.ts` 471, `claude-turn-tracker.ts` 368, `agent-run-input-admission-state.ts` 418, `agent-run.ts` 464.
+  - `codex-thread.ts` stays at its base size of 500; `claude-session-event-converter.ts` is 497.
+
+## Persisted Data Transition Check
+
+- Approved decision: `Directly Usable — No Migration`. The trace type is additive; `sender_id` is an optional field and older traces lack it.
+- Implementation follows it: `Yes`.
+
+## Environment Or Dependency Notes
+
+- Worktree setup:
+  - `pnpm install --frozen-lockfile`;
+  - `pnpm exec prisma generate` and `pnpm prepare:shared` in `autobyteus-server-ts` (rerun `prepare:shared` after `autobyteus-ts` changes);
+  - `pnpm exec nuxt prepare` in `autobyteus-web` before web vitest.
+- Claude CLIs used for live checks: PATH `claude` 2.1.282 and SDK-bundled 2.1.280 (SDK 0.3.280).
 
 ## Local Implementation Checks Run
 
 - `tsc -p tsconfig.build.json --noEmit`: pass.
-- Unit, new or rewritten, all passing:
+- Unit, new or changed, all passing:
 
   | Suite | Result |
   | --- | --- |
   | `claude-session.test.ts` | 34 |
   | `claude-turn-tracker.test.ts` (probe frame sequences, I-1..I-3, IC-1, IC-2) | 26 |
+  | `claude-user-message-builder.test.ts` | 3 |
+  | `context-image-source.test.ts` | 1 |
   | `claude-session-tool-gating` | 13 |
   | `claude-sdk-client` + `claude-sdk-streaming-session` | 36 |
-  | backend | 4 |
-  | manager | 9 |
-  | router Claude admission | 1 |
+  | Claude backend | 5 |
+  | Claude manager | 9 |
+  | `agent-run-input-admission-state.test.ts` | 9 |
+  | `agent-run.test.ts` | 33 (+2) |
+  | Codex backend + thread | 50 (+4) |
+  | memory notice / replay | 2 |
+  | router AC-004 | 1 |
+  | web `runProjectionConversation.spec.ts` | 12 |
+  | `autobyteus-ts` memory | 246 |
 
-- Full `tests/unit`: 59 failed / 3369 passed, in 24 files outside the changed areas. The same 24 files give the identical result on base `6f7b5e371` (59 failed / 111 passed within them).
+- Full server `tests/unit`: 59 failed in 24 files, all outside the changed areas. The same 24 files give the identical result on base `6f7b5e371` (verified with a tracked-only stash).
+- Fake-CLI websocket E2E (`claude-agent-websocket-interrupt-resume.e2e.test.ts`): AC-005, AC-003 and AC-002 pass.
 - Live (`RUN_CLAUDE_E2E=1`):
-  - `claude-sdk-client.integration.test.ts`: 6/6, including the design step-1 `cancelQueued` check on both CLIs.
-  - `claude-session-manager.integration.test.ts`: 9/9. These live tests previously called the non-existent `session.sendTurn`; they are now ported.
-- Fake-CLI websocket E2E: AC-005 and AC-002 pass. AC-003 fails because of IMP-DI-001.
 
-## Remaining Work (independent of IMP-DI-001 unless noted)
+  | Suite | Result |
+  | --- | --- |
+  | `claude-sdk-client.integration.test.ts` (incl. step-1 `cancelQueued` on both CLIs) | 6/6 |
+  | `claude-session-manager.integration.test.ts` | 9/9 |
+  | `claude-agent-background-task.e2e.test.ts` (AC-002, both CLIs) | 2/2 |
+  | `claude-agent-websocket-interrupt-resume.e2e.test.ts` (incl. the live interrupt case) | 4/4 |
+  | `claude-agent-run-backend-factory.integration.test.ts` | 6/8 |
 
-- Docs: `agent_execution.md` (lifecycle, append, interrupt, images, notice) and a `token_usage.md` note.
-- Tests still to do:
-  - replace `tests/e2e/runtime/claude-agent-background-bash-policy.e2e.test.ts` with a background-task E2E;
-  - migrate `tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts` (it still calls `startQueryTurn`);
-  - add memory-accumulator scoping (ARCH-F-004), replay, builder/image-source and web hydration unit tests;
-  - run the live factory/team E2E suites.
-- AC-003/AC-004 end to end: depends on the IMP-DI-001 resolution.
+- Live suites not passing (pre-existing, unrelated):
+  - The 2 `claude-agent-run-backend-factory.integration.test.ts` Agent Tools MCP browser cases stub `activateForRun` as `not_exposed`, so they cannot pass without a real Agent Tools MCP harness.
+  - `claude-team-inter-agent-roundtrip.e2e.test.ts` (5) fails at team-definition setup on the removed GraphQL field `refType`, before any Claude code runs.
 
 ## Frontend Rendered-Result Check
 
-- The only web change is a small hydration mapping (`runProjectionConversation.ts`), which makes a replayed notice render with the existing notice segment.
-- The rendered check is not done yet. It is pending the remaining work after the design decision.
+- Affected surface: run-history conversation hydration of a replayed Claude background-task notice. Live notices already rendered through the existing `SystemTaskNotificationSegment`.
+- Change: `runProjectionConversation.ts` maps a `system_task_notification` entry to that existing segment type.
+- Verified: by unit spec only. The rendered UI was not inspected; that needs a server, the web app and a Claude run with a notice in its history. This remains unverified and is left for API/E2E or delivery user verification.
+
+## Downstream Coverage Hints / Suggested Scenarios
+
+- **AC-014 (new production path):** gated live Codex check. Send a message to a busy Codex agent (user and teammate) and confirm `turn/steer` into the same turn id with no new turn.
+- **AC-001 / AC-006:** confirm the same pid across 3 messages and after idle (`ps`).
+- **AC-007:** server restart, then resume and recall.
+- **AC-008:** terminate with a running background task and check for no orphans with `ps`.
+- **AC-009:** kill the CLI mid-turn, then the next message works with context.
+- **AC-012:** a live screenshot question without a `Read` call.
+- **AC-004:** live team `send_message_to` to a busy Claude member and a busy Codex member (the team E2E harness needs its GraphQL setup updated first).
+- **RSK-007:** usage totals after a crash reopen.
+
+## API / E2E / Executable Coverage Still Required
+
+- Everything in the list above, plus the pass/fail classification. `api_e2e_engineer` owns this.

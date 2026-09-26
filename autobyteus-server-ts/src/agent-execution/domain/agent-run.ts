@@ -123,6 +123,11 @@ export class AgentRun {
     await this.publishSourceEvents([event]);
   }
 
+  /**
+   * Admits one input. The returned `turnId` is a claim-time hint only: it names the turn an
+   * append was claimed into, and an append the backend proves undelivered is requeued into a
+   * later turn. Consumers must observe input lifecycle facts, not this value.
+   */
   async postUserMessage(
     message: AgentInputUserMessage,
     options: AgentRunInputOptions = {},

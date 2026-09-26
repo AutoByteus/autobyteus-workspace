@@ -3,13 +3,13 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-006`
+- Current solution revision ID: `SR-011`
 - Package identifier: `claude-sdk-streaming-input-session`
 - Request / ticket: Follow-up approved by the user on 2026-09-24 in `claude-sdk-background-task-lifecycle`: migrate the Claude Agent SDK backend to streaming input mode. Start request: "since its released. now we could work on the second ticket right?"
 - Requirements owner: solution_designer
 - Date: 2026-09-24
 - Approval state and reference: Approved by the user on 2026-09-25 through explicit decisions on every open item: DEC-002 (SR-003), DEC-001 (SR-004), DEC-003/005/006 ("I accept … your earlier recommendations: turns claude starts by itself, messages to a busy agent, roll out, and no background task UI", SR-005) and DEC-004 ("lets keep also use inline image in this ticket", SR-006). Direction confirmed earlier: "We should keep one process per agent run. That's definitely right."
-- Exact approved requirements baseline: this document at SR-006 (BEH-001..008, UC-001..005, REQ-001..011, AC-001..013, SCN-001..007, DEC-001..006 decided)
+- Exact approved requirements baseline: this document at SR-011 (SR-006 basis plus DEC-007 = A: REQ-012, BEH-009, AC-014..016, SCN-008; User 2026-09-26: "thanks for your suggestion. lets do it according to your suggestion that means later implemetnation should add more tests and api e2e should also tests more i believe right?"). Earlier baseline: SR-006 (BEH-001..008, UC-001..005, REQ-001..011, AC-001..013, SCN-001..007, DEC-001..006 decided)
 - Behavior-defining supplements: none. `probe-evidence/` (incl. `image-probe-results.md`) is evidence only
 
 ## Problem And Desired Outcome
@@ -34,6 +34,7 @@
 | BEH-006 | System | SCN-006 | Terminate closes the active query | Terminate closes the process and its background tasks | Terminate semantics | — |
 | BEH-007 | System | SCN-005 | Restored runs resume by session id | Unchanged, via reopen | Yes | — |
 | BEH-005 | User | SCN-007 | Image context files reach Claude as text path references; the model must call `Read` to see them | Image context files are sent to Claude inline as image content blocks with the message, like Codex and native AutoByteus | Non-image context files keep path references | Probes G/H/I |
+| BEH-009 | User/System | SCN-003, SCN-008 | Shared AgentRun queue: an input that started the active turn blocks later inputs from being appended (`claimNext` checks only the head entry), so Codex `turn/steer` and Claude mid-turn delivery are never reached in the normal case (IMP-DI-001) | Later inputs are appended into the active turn for append-capable runtimes; a definitely-undelivered append starts the next turn | FIFO order, exactly-once resolution, interrupt reservation, termination quiescence, root-shutdown fencing | `agent-run-input-admission-state.ts` L154-157; SR-010 |
 | BEH-008 | User | SCN-002 | No provider-initiated turns exist | A turn Claude starts itself (e.g. after a background task finishes) appears as a normal agent turn with a short notice | — | Probe E-S1 |
 
 ## Scope Guardrail
@@ -51,7 +52,7 @@
 - Inline **documents** (PDF, DOCX, …) stay path references; only images become inline (DEC-004).
 - A background-task panel, per-task stop button, or running-task indicator in the UI — DEC-006.
 - Exposing more Claude built-in tools (the explicit 10-tool list stays; `Monitor`/`Agent`/etc. stay hidden).
-- Codex and AutoByteus-native runtimes; live model/permission switching mid-run.
+- Codex and AutoByteus-native runtimes, **except** the shared AgentRun mid-turn input rule (REQ-012, DEC-007), which Codex also gets; live model/permission switching mid-run.
 - Keeping background tasks alive across server restart or run terminate.
 
 ### Non-Goals
@@ -80,6 +81,7 @@ Standard: blocking findings must cite REQ/AC/BEH IDs; scope changes are Requirem
 | REQ-008 | If the Claude process exits unexpectedly, the active turn (if any) ends with a visible error, and the next input reopens the session via resume | BEH-004 | Must |
 | REQ-009 | The temporary v1.4.78 policy (`CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`, `BASH_MAX_TIMEOUT_MS=1800000`) is removed; Claude CLI defaults apply | BEH-001 | Must |
 | REQ-010 | Preserved behavior (see boundary) keeps working | — | Must |
+| REQ-012 | For **every runtime that declares mid-turn input support (Claude and Codex)**, input accepted by an AgentRun while that run's turn is active is delivered into the running turn, even when an earlier input of the same turn has not finished yet, in FIFO order, and each input resolves exactly once. If the turn ends before a message could be delivered and the runtime reports it definitely undelivered, the message starts the next turn instead of failing. Runtimes without mid-turn support (native AutoByteus) keep today's wait-until-turn-end behavior | BEH-002, BEH-009 | Must |
 | REQ-011 | Image context files attached to a message for a Claude agent (local path, `file://`, data URL, or http(s) URL) are delivered to Claude inline as image content with that message, so Claude sees them without a tool call. Non-image context files keep today's path-reference behavior. An unreadable image yields a visible, non-fatal outcome and the session continues | BEH-005 | Must |
 
 ## Acceptance Criteria
@@ -98,6 +100,9 @@ Standard: blocking findings must cite REQ/AC/BEH IDs; scope changes are Requirem
 | AC-010 | REQ-009 | — | Query options inspection | Neither policy variable is set by AutoByteus | Unit |
 | AC-012 | REQ-011 | SCN-007 | User attaches a screenshot (local context file) and asks about it; Claude has no Read call in that turn | Claude answers from the image; no `Read` tool call is needed | Live E2E |
 | AC-013 | REQ-011 | SCN-007 | Attached image path is missing/unreadable, or an http image fails | The message still reaches Claude with a clear note that the image could not be attached (or Claude's graceful reply); no crash; session continues | Unit + integration |
+| AC-014 | REQ-012 | SCN-008 | Codex agent is running a turn; the user (and separately a teammate) sends another message | The message is delivered into the running Codex turn (`turn/steer` into the same turn id); no new turn is started for it; it resolves when that turn ends | — | AgentRun unit + Codex backend unit + gated live Codex E2E |
+| AC-015 | REQ-012 | SCN-003, SCN-008 | Input A started turn T; inputs B and C are posted while T runs (append-capable runtime) | B then C are dispatched as append into T in order; each resolves exactly once at T's terminal. A reservation ahead of B still blocks (order preserved); an interrupt reservation still prevents appends; a pending turn start still blocks | — | AgentRun unit (incl. the IMP-DI-001 repro) |
+| AC-016 | REQ-012 | SCN-003, SCN-008 | A message is appended just as turn T ends and the runtime reports it definitely undelivered (Claude `CLAUDE_APPEND_TURN_MISMATCH`; Codex local turn-mismatch pre-check) | The message is not failed; it is dispatched as `start_turn` after T's terminal; no busy retry loop | An ambiguous provider rejection still fails visibly (unchanged) | AgentRun unit + backend units |
 | AC-011 | REQ-010 | — | Existing Claude unit/integration/E2E suites; tool approval; team tools | Pass (pre-existing known failures in the rewritten area are fixed or replaced, not skipped) | Suites |
 
 ## Relevant Scenarios And Journeys
@@ -110,6 +115,7 @@ Standard: blocking findings must cite REQ/AC/BEH IDs; scope changes are Requirem
 | SCN-004 | User | User | Stop the current turn | Stop button | Turn ends, session continues | Supported Normal |
 | SCN-005 | System/Operational | Server | Keep the session for the run's life; resume after restart | Run lifetime / restore | Same process while the run lives; resume after restart | Supported Normal |
 | SCN-007 | User | User → Claude agent | Show Claude a screenshot | Attach image + message | Claude sees and discusses the image | Supported Normal |
+| SCN-008 | User/System | User or teammate → Codex agent | Steer or inform a working Codex agent | Message while running | Delivered mid-turn (turn/steer) | Supported Normal (documented in `agent_execution.md`, previously unreachable) |
 | SCN-006 | User/Operational | User / server | End a run | Terminate / shutdown | Process and tasks stop | Supported Normal |
 
 ## UI, Interaction, And Experience Requirements
@@ -155,6 +161,7 @@ Standard: blocking findings must cite REQ/AC/BEH IDs; scope changes are Requirem
 | DEC-003 | Messages to a busy Claude agent | Deliver into the running turn (like Codex) | Keep waiting for the turn to end | **Decided: deliver into the running turn (like Codex).** User 2026-09-25: "I accept … your earlier recommendations: turns claude starts by itself, messages to a busy agent, roll out, and no background task UI" |
 | DEC-004 | Inline images/documents | **Decided 2026-09-25 by the user: include inline images in this ticket** ("if use inline image is not complicated … lets do it in this ticket"; "do some experiments, and find out how to inline image, then lets keep also use inline image in this ticket"). Probes G/H/I show it is simple | — | Decided |
 | DEC-005 | Rollout | Clean switch; remove the v1.4.78 policy env; no fallback flag | Keep single-message mode behind a flag for one release | **Decided: clean switch; remove the v1.4.78 policy env; no fallback flag.** User 2026-09-25: "I accept … your earlier recommendations: turns claude starts by itself, messages to a busy agent, roll out, and no background task UI" |
+| DEC-007 | Messages to a busy agent (REQ-004) need a fix in the **shared** AgentRun input queue (`agent-run-input-admission-state.ts` `claimNext`: an input that started the active turn blocks all later inputs from being appended). The fix also changes **Codex**: its messages to a busy agent would be delivered into the running turn (`turn/steer`, as `agent_execution.md` already documents) instead of waiting. Codex is out of scope today | Without a shared fix REQ-004/AC-003/AC-004 cannot be met | **A (recommended):** fix the shared rule for every append-capable runtime (Claude + Codex); add REQ-012/AC-014. **B:** Claude-only rule (a Claude special case in shared code; Codex docs corrected to its real wait behavior). **C:** drop REQ-004 (Claude keeps waiting) | User | **Decided: A** (fix the shared rule for every append-capable runtime, Codex included). User 2026-09-26: "thanks for your suggestion. lets do it according to your suggestion that means later implemetnation should add more tests and api e2e should also tests more i believe right?" |
 | DEC-006 | Background task UI (indicator/stop per task) | Out of scope (later ticket) | Include now | **Decided: no background-task UI in this ticket.** User 2026-09-25: "I accept … your earlier recommendations: turns claude starts by itself, messages to a busy agent, roll out, and no background task UI" |
 
 ## Traceability
@@ -172,6 +179,7 @@ Standard: blocking findings must cite REQ/AC/BEH IDs; scope changes are Requirem
 | REQ-009 | UC-001 | BEH-001 | AC-010 | — |
 | REQ-010 | all | — | AC-011 | — |
 | REQ-011 | UC-005 | BEH-005 | AC-012, AC-013 | SCN-007 |
+| REQ-012 | UC-002 | BEH-002, BEH-009 | AC-014, AC-015, AC-016 | SCN-003, SCN-008 |
 
 ## Architecture Phase Input
 

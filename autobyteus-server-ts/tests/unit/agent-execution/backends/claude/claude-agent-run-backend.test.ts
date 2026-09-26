@@ -105,7 +105,7 @@ describe("ClaudeAgentRunBackend", () => {
     );
   });
 
-  it("maps a session rejection to a non-forwarded dispatch without a turn", async () => {
+  it("marks a pre-send append turn mismatch as definitely undelivered (AC-016)", async () => {
     const { backend } = createBackend({
       submitInput: vi.fn().mockResolvedValue({
         accepted: false,
@@ -123,6 +123,21 @@ describe("ClaudeAgentRunBackend", () => {
       code: "CLAUDE_APPEND_TURN_MISMATCH",
       message: "Claude append expected active turn 'turn-a' but 'none' is current.",
       turnId: null,
+      undeliveredRetryAsStart: true,
     });
+  });
+
+  it("keeps other session rejections as visible failures", async () => {
+    const { backend } = createBackend({
+      submitInput: vi.fn().mockResolvedValue({ accepted: false, code: "CLAUDE_INPUT_EMPTY", message: "empty" }),
+    });
+
+    const result = await backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-a",
+      message: new AgentInputUserMessage("x"),
+    });
+
+    expect(result).toEqual({ forwarded: false, code: "CLAUDE_INPUT_EMPTY", message: "empty", turnId: null });
   });
 });
