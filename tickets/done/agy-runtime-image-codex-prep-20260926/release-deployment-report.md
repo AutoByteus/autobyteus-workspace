@@ -1,13 +1,13 @@
-# Delivery / Release / Deployment Report — DR-005 repository finalization / package PR hold
+# Delivery / Release / Deployment Report — DR-007 user scope correction / PR withdrawal
 
 ## Release / Publication / Deployment Scope
 - Ticket: `agy-runtime-image-codex-prep-20260926`; `task_size=Medium`, `architectural_risk=High`, reviewed route (ARCH-REV-008, CRR-005 source, CRR-007 test, API-REV-004 Pass/95.0%; CRR-008 test-code review Not Applicable because no durable test changed).
-- Server finalization target: `origin/personal` from `solution-result.md` bootstrap; separate `autobyteus-agents` package target: `origin/main` from `implementation-handoff.md`. The package is part of the completion boundary, not a server-owned bundled file.
-- Status: **User verified; server repository finalized; package target `main` blocked by PR #14 review.** This is not yet `Delivery Completed`.
+- Server finalization target: `origin/personal` from `solution-result.md` bootstrap. Prior requirements/design/handoff also named separate `autobyteus-agents` package target `origin/main`; the user now explicitly rejects that cross-project change as out of this ticket's scope. Solution Designer owns reconciliation of that scope correction and its effect on the Codex-skill acceptance claim.
+- Status: **User verified; server repository finalized; package PR #14 closed unmerged and its remote task branch deleted at the user's request.** Full terminal scope/evidence reconciliation remains pending; this is not yet `Delivery Completed`.
 
 ## Handoff Summary
 - Artifact: `handoff-summary.md`; status Updated for user verification.
-- Revision record: `delivery-revision-record.md`; current ID DR-005.
+- Revision record: `delivery-revision-record.md`; current ID DR-007.
 
 ## Initial Delivery Integration Refresh
 - Bootstrap server base: `origin/personal@ae3aba1bf`; fetched latest `origin/personal@fc2a60527` (advanced: Yes).
@@ -37,17 +37,16 @@
 
 ## Repository Finalization
 - Server task branch: `task/agy-runtime-capabilities-20260926@b5574da79` after archive/docs commit, pushed to `origin/task/agy-runtime-capabilities-20260926`. Latest remote base `cf005d377` was integrated as `cf0e0e7e` after verification; 36 focused AGY unit tests passed with one preexisting skip. A detached target worktree merged the task branch into `personal` as `9f7fb71296f6200de643d626201acd0c2cf7adca`, then pushed `origin/personal`; the merge tree equals the verified task tree. A subsequent finalization-status documentation commit `dfca52164bdf50b81e8d8e213768cf64ee4f16be` was pushed to `origin/personal` and fast-forwarded into the primary checkout without altering its pre-existing untracked `.codex/`.
-- Separate package task branch: `task/agy-codex-skill-bundle-20260926@a140474`, pushed to `origin/task/agy-codex-skill-bundle-20260926`; target `origin/main@1b1a75e`.
-- GitHub rejected direct package-main push with protected-branch `GH006` (review-required). [Package PR #14](https://github.com/AutoByteus/autobyteus-agents/pull/14) is open, mergeable but `REVIEW_REQUIRED`; auto-merge is disabled for this repository. Its merge/push cannot be claimed until policy-approved independent review completes. The unrelated dirty `autobyteus-agents` primary `main` checkout was left untouched.
-- Repository finalization: **Completed for server target** (`origin/personal@dfca52164` before the present report correction); **Blocked for package main** by required independent PR approval. Latest remote check: PR #14 `OPEN`, `MERGEABLE`, `REVIEW_REQUIRED`, zero reviews; `origin/main@1b1a75e` unchanged. Do not claim full repository finalization.
+- Historical package attempt: task branch `a140474` was pushed, and direct package-main push was rejected with protected-branch `GH006`. [Package PR #14](https://github.com/AutoByteus/autobyteus-agents/pull/14) was opened, but the user then said the other project is out of scope and explicitly requested removal. PR #14 is now `CLOSED`, `mergedAt=null`; its remote task branch was deleted. `origin/main@1b1a75e` remains unchanged. The unrelated dirty primary package checkout was not touched. The local package task worktree/branch remains only for historical test evidence and is not an approved finalization target.
+- Repository finalization: **Completed for server target** (`origin/personal@db9ec6780` before the present report correction). Package-main finalization is withdrawn at the user's direction, subject to Solution Designer reconciling the revised scope and test dependency. Do not treat the old package PR review hold as current.
 
 ## Release / Publication / Deployment
 - Applicability: No — the user explicitly requested repository finalization without a new version or release. No release helper, tag-triggered workflow or direct deployment will run.
-- Package-root rollout gate: select the current integrated `autobyteus-agents` Codex bundle (currently task revision `a140474`, later target merge revision) rather than the ambient older root. Verify selected definition `sourceInfo` and skill content. API-REV-002 did so in an isolated app test, and API-REV-004 did so through a separate backend/Nuxt/real Chrome UI import. Neither is a deployed installation.
+- Historical package-root test dependency: API-REV-002 and API-REV-004 selected local package revision `a140474` in isolated tests; this was not deployed and is not on package `main`. With the user's cross-project scope correction, Solution Designer must decide whether the Codex-skill first-turn criterion is withdrawn, deferred, or must be met without changing `autobyteus-agents`. Do not infer that those tests prove the ambient older package root works.
 - Release notes handoff: Not required; draft withdrawn. Result: Not required.
 
 ## Post-Finalization Cleanup
-- Dedicated server and package task worktrees/local branches remain. Server worktree retains the user-tested unsigned Electron App; package worktree is the selected current local Codex bundle and is the source named by the isolated manual launcher. Removing either now could break a user test or imported package root, so task-worktree/local-branch cleanup is not currently safe. Both temporary detached merge worktrees were removed and worktrees pruned. Remote server task branch cleanup is deferred until the overall package PR gate resolves.
+- Dedicated server and package task worktrees/local branches remain. Server worktree retains the user-tested unsigned Electron App; the local package worktree is historical test evidence and is still named by the isolated manual launcher. Removing it before the scope/test-dependency audit could erase the provenance of the user-tested configuration. Both temporary detached merge worktrees were removed and worktrees pruned. The package remote task branch was deleted; package `main` is unchanged. Remote server task branch cleanup waits for truthful server-only terminal classification.
 
 ## Environment / Persisted-Data Transition
 - Approved design: Directly Usable — No Migration. New grant applies to new capsules; old capsules remain immutable. No app-owned image index/files to migrate, delete, or recover. Provider-owned image storage remains provider-owned.
@@ -59,5 +58,5 @@
 - Rollback criterion: if installed CLI differs from 1.2.11, selected Codex package source is stale/missing, native image cards are uncorrelated/unsafe, or a provider failure leaks private output, stop rollout. Revert target commits or deploy prior known-good release as appropriate; do not rewrite old capsules or delete AGY-owned images.
 
 ## Final Status
-- Explicit user verification: Yes — final acceptance after DR-004 rebuild. Repository finalization: Server target completed; package target blocked by PR #14 review. Applicable release/rollout: Not required. Safe cleanup: Task worktrees intentionally retained because the tested App/current package root may still be used; temporary detached worktrees removed. The power-off ended the prior 18080/13080 processes, but any residual isolated test files must be handled only by recorded ownership after verification. The separate installed app on 29695 remains untouched. Terminal package eligible: **No**.
-- Classification: **Blocked — non-deployment repository-finalization approval**. Recommended recipient under the handoff rules: `/solution_designer` for upstream classification and coordination of the independent package PR review. The hold is protected package-branch review, not user verification or an implementation/design finding. Do not bypass GitHub branch policy or send a successful terminal handoff yet.
+- Explicit user verification: Yes — final acceptance after DR-004 rebuild. Repository finalization: Server target completed; package PR closed unmerged/remote branch deleted at user request. Applicable release/rollout: Not required. Safe cleanup: Server worktree retains tested App; local package worktree temporarily retains test provenance; detached worktrees removed. The separate installed app and unrelated package checkout remain untouched. Terminal package eligible: **No**, pending scope/evidence reconciliation.
+- Classification: **Blocked — user requirement/scope correction**. Recommended recipient under the handoff rules: `/solution_designer`, to reconcile the approved requirements/design and Codex-skill acceptance evidence with the user's explicit exclusion of the other repository. Do not bypass the user's scope decision, reopen PR #14, or claim full terminal completion merely because the server merge is already pushed.

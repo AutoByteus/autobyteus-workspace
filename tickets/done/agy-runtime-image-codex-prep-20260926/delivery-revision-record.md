@@ -9,6 +9,7 @@
 | DR-004 | User blank-screen feedback and rebuild request | DR-003 artifact unusable | Clean rebuilt unsigned ARM64 artifact ready for retest | `delivery-electron-build-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-005 | Explicit user test acceptance; repository-only finalization | DR-004 retest hold | Server target pushed; package PR #14 review hold | `handoff-summary.md`, `release-deployment-report.md`, `delivery-final-reintegration-test.log` |
 | DR-006 | Finalization gate audit and blocked handoff classification | DR-005 package PR review hold | Server tip confirmed; package PR #14 still requires independent review; blocked reroute | `handoff-summary.md`, `release-deployment-report.md` |
+| DR-007 | User rejects cross-project package change and requests PR removal | DR-006 protected-package review hold | PR #14 closed unmerged; remote package task branch deleted; server-only scope reconciliation pending | `handoff-summary.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 ### DR-001 — Initial integrated delivery baseline
@@ -77,3 +78,11 @@
 - Cleanup: temporary detached target worktrees were removed; server and package task worktrees are intentionally retained because they hold the user-tested App and selected Codex package root. The unrelated dirty primary package checkout and the installed app were not modified.
 - Result/classification: **Blocked — non-deployment repository-finalization approval**. Route to `/solution_designer` for upstream coordination of required independent PR review. Do not treat this as `Delivery Completed` or bypass branch policy.
 - Next action: obtain policy-compliant independent approval and merge of [package PR #14](https://github.com/AutoByteus/autobyteus-agents/pull/14); then verify remote target, complete only safe cleanup, update reports, and send the terminal delivery receipt. No release.
+
+### DR-007 — Cross-project package PR withdrawn at user request
+- Trigger: user clarified that changing `autobyteus-agents` is outside this ticket and explicitly requested deletion of its PR; their separate question to Solution Designer about why it was scoped remains pending.
+- Prior authoritative result: DR-006 server target completed, package PR review hold.
+- Current result: [PR #14](https://github.com/AutoByteus/autobyteus-agents/pull/14) closed with `mergedAt=null`; remote `task/agy-codex-skill-bundle-20260926` deleted; `origin/main@1b1a75e` unchanged. No package release, merge or deployment occurred. Server `origin/personal@db9ec6780` remained finalized before this documentation correction.
+- Test-evidence caveat: API-REV-002/004 and the manual launcher selected local package revision `a140474` for the Codex workflow-skill first-turn scenario. That local package worktree/branch remains temporarily to preserve the evidence; it is not an authorized cross-project finalization target. Native image and server-focused test results are not automatically invalidated, but the Codex-skill claim cannot be promoted as ambient-package behavior.
+- Classification: **Blocked — user requirement/scope correction**. Ask Solution Designer to reconcile the approved requirements/design and criterion disposition; do not silently reinterpret the earlier approval or reopen PR #14. Server-only finalization may be terminal only after that reconciliation and safe cleanup disposition.
+- No version bump, tag, release, publication or deployment requested or performed. The unrelated dirty primary package checkout and the separate installed app were not touched.
