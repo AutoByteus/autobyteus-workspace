@@ -19,3 +19,6 @@ Durable knowledge promoted from design-spec.md, investigation-notes.md AE-001–
 
 ## Continuation
 Docs sync Pass. Next: explicit user verification of candidate, then repository finalization to personal. No documentation-local ambiguity or upstream defect. Final delivery is Blocked on routine user verification, not Delivery Completed.
+
+## DR-002 completion continuation
+User explicitly verified and requested release 2026-09-26. Refetch confirmed same base; docs remained accurate without further content changes. Ticket archived into tickets/done/task-agent-peer-sidebar. Finalization, v1.4.84 release and safe cleanup Completed; release-deployment-report.md and handoff-summary.md supersede the DR-001 hold above.
