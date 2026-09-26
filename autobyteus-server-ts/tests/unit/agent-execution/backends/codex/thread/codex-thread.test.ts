@@ -968,6 +968,17 @@ describe("CodexThread input submission policy", () => {
     expect(client.request.mock.calls.every(([method]) => method === "turn/steer")).toBe(true);
   });
 
+  it("rejects a steer for a turn that is no longer active before any RPC with a distinct code", async () => {
+    const { thread, client } = createThread(false);
+    thread.markStartupReady();
+    thread.markTurnStarted("turn-B");
+
+    await expect(thread.appendInput(new AgentInputUserMessage("late"), "turn-A")).rejects.toMatchObject({
+      code: "CODEX_TURN_STEER_TURN_NOT_ACTIVE",
+    });
+    expect(client.request).not.toHaveBeenCalledWith("turn/steer", expect.anything());
+  });
+
   it("rejects a steer response without its method-specific top-level turnId", async () => {
     const { thread, client } = createThread(false);
     thread.markStartupReady();

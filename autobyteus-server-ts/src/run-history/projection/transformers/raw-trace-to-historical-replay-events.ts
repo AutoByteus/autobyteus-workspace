@@ -198,6 +198,18 @@ export const buildHistoricalReplayEvents = (
       });
       continue;
     }
+    if (trace.traceType === "system_task_notification") {
+      if (trace.content?.trim()) {
+        events.push({
+          ...resolveTraceReplayIdentity(trace, nextLegacyOccurrence),
+          kind: "system_task_notification",
+          senderId: trace.senderId ?? null,
+          content: trace.content,
+          ts: trace.ts ?? null,
+        });
+      }
+      continue;
+    }
     if (trace.traceType === "provider_compaction_boundary") {
       events.push(createCompactionEvent(trace, resolveTraceReplayIdentity(trace, nextLegacyOccurrence)));
       continue;

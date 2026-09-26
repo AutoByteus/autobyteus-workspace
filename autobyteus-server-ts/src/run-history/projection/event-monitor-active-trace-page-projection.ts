@@ -127,6 +127,8 @@ export const buildEventMonitorActiveTracePageEvent = (
       eventId: event.eventId, kindOrdinal: 0, content: event.content,
     });
     appendMediaVisuals(visuals, event.eventId, event.media);
+  } else if (event.kind === "system_task_notification") {
+    // The active-trace page has no system-notice visual; the notice replays in the conversation.
   } else {
     visuals.push({
       kind: "compaction", visualId: visualId(event.eventId, "compaction", 0), eventId: event.eventId,

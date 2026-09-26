@@ -30,6 +30,16 @@ export const buildRunProjectionConversation = (
       return [];
     }
 
+    if (event.kind === "system_task_notification") {
+      return [{
+        kind: "system_task_notification",
+        role: null,
+        senderId: event.senderId,
+        content: event.content,
+        ts: event.ts,
+      }];
+    }
+
     return [{
       kind:
         event.status === "parsed" || event.status === "parsing"

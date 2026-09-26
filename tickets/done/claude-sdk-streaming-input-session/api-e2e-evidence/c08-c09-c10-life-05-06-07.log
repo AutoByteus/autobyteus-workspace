@@ -1,0 +1,247 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [path-claude]
+[22m[39mAgent websocket attached for run claude-live-crash-246c88ea-ee3a-4624-b47c-ece01acc2909
+Created agent session 5cd0198f-78a7-44dd-a225-88d41fcb926a for run claude-live-crash-246c88ea-ee3a-4624-b47c-ece01acc2909
+Agent WebSocket connected: session=5cd0198f-78a7-44dd-a225-88d41fcb926a, run=claude-live-crash-246c88ea-ee3a-4624-b47c-ece01acc2909
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [path-claude]
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [path-claude]
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [path-claude]
+[22m[39mClaude process for run 'claude-live-crash-246c88ea-ee3a-4624-b47c-ece01acc2909' exited: Error: Claude Code process terminated by signal SIGKILL
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11802)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5122)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [path-claude]
+[22m[39m[AC-009 path-claude] crash error: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_PROCESS_EXITED: Claude Code process terminated by signal SIGKILL","error_scope":"turn","error_effect":"terminal","turn_id":"claude-live-crash-246c88ea-ee3a-4624-b47c-ece01acc2909:turn:0dbc1a88-6931-42c9-974c-ea58ed822c8c"}
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [path-claude]
+[22m[39m[RSK-007 path-claude] folded usage: [{"turnId":"claude-live-crash-246c88ea-ee3a-4624-b47c-ece01acc2909:turn:44e6920c-2a81-4791-825e-23dc5160bc6d","queryKind":"create","rawModelUsage":[],"accountingTotal":null,"flags":["reported_input_tokens_missing","reported_output_tokens_missing","reported_total_tokens_missing","input_token_semantic_unknown","claude_sdk_cache_write_1h_assumed"]},{"turnId":"claude-live-crash-246c88ea-ee3a-4624-b47c-ece01acc2909:turn:ea6cc396-93c8-4064-aaa7-65f891125ed3","queryKind":"resume","rawModelUsage":[],"accountingTotal":null,"flags":["reported_input_tokens_missing","reported_output_tokens_missing","reported_total_tokens_missing","input_token_semantic_unknown","claude_sdk_selected_regressed"]}]
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [path-claude]
+[22m[39mClosed agent session 5cd0198f-78a7-44dd-a225-88d41fcb926a
+Agent WebSocket disconnected: 5cd0198f-78a7-44dd-a225-88d41fcb926a
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-crash-00949143-5a31-40ef-9511-bea17fefc4ef
+Created agent session fa5e94ff-a9c0-4fc3-9b77-ff9d280ae7f2 for run claude-live-crash-00949143-5a31-40ef-9511-bea17fefc4ef
+Agent WebSocket connected: session=fa5e94ff-a9c0-4fc3-9b77-ff9d280ae7f2, run=claude-live-crash-00949143-5a31-40ef-9511-bea17fefc4ef
+
+[90mstderr[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [sdk-bundled-claude]
+[22m[39mClaude process for run 'claude-live-crash-00949143-5a31-40ef-9511-bea17fefc4ef' exited: Error: Claude Code process terminated by signal SIGKILL
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11802)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5122)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:293:12)
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [sdk-bundled-claude]
+[22m[39m[AC-009 sdk-bundled-claude] crash error: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_PROCESS_EXITED: Claude Code process terminated by signal SIGKILL","error_scope":"turn","error_effect":"terminal","turn_id":"claude-live-crash-00949143-5a31-40ef-9511-bea17fefc4ef:turn:59dfffe3-5ed9-4072-90c6-25f0310fca58"}
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [sdk-bundled-claude]
+[22m[39m[RSK-007 sdk-bundled-claude] folded usage: [{"turnId":"claude-live-crash-00949143-5a31-40ef-9511-bea17fefc4ef:turn:09e2a343-7fb8-4973-bcef-64732f36f585","queryKind":"create","rawModelUsage":[],"accountingTotal":null,"flags":["reported_input_tokens_missing","reported_output_tokens_missing","reported_total_tokens_missing","input_token_semantic_unknown","claude_sdk_cache_write_1h_assumed"]},{"turnId":"claude-live-crash-00949143-5a31-40ef-9511-bea17fefc4ef:turn:1c1a3457-dd43-4488-8b1f-11e13f2f5d57","queryKind":"resume","rawModelUsage":[],"accountingTotal":null,"flags":["reported_input_tokens_missing","reported_output_tokens_missing","reported_total_tokens_missing","input_token_semantic_unknown","claude_sdk_selected_regressed"]}]
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [sdk-bundled-claude]
+[22m[39mClosed agent session fa5e94ff-a9c0-4fc3-9b77-ff9d280ae7f2
+Agent WebSocket disconnected: fa5e94ff-a9c0-4fc3-9b77-ff9d280ae7f2
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2ma restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [path-claude]
+[22m[39mAgent websocket attached for run claude-live-restore-a7f493f7-17c6-428d-8e3f-11c63ae20c72
+Created agent session bbbd3cf7-fbb1-4c10-a956-ac4e46d2820e for run claude-live-restore-a7f493f7-17c6-428d-8e3f-11c63ae20c72
+Agent WebSocket connected: session=bbbd3cf7-fbb1-4c10-a956-ac4e46d2820e, run=claude-live-restore-a7f493f7-17c6-428d-8e3f-11c63ae20c72
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2ma restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [path-claude]
+[22m[39mClosed agent session bbbd3cf7-fbb1-4c10-a956-ac4e46d2820e
+Agent WebSocket disconnected: bbbd3cf7-fbb1-4c10-a956-ac4e46d2820e
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2ma restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [path-claude]
+[22m[39mAgent websocket attached for run claude-live-restore-a7f493f7-17c6-428d-8e3f-11c63ae20c72
+Created agent session a518d018-cb53-42e1-9d91-5a89426fac54 for run claude-live-restore-a7f493f7-17c6-428d-8e3f-11c63ae20c72
+Agent WebSocket connected: session=a518d018-cb53-42e1-9d91-5a89426fac54, run=claude-live-restore-a7f493f7-17c6-428d-8e3f-11c63ae20c72
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2ma restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [path-claude]
+[22m[39mClosed agent session a518d018-cb53-42e1-9d91-5a89426fac54
+Agent WebSocket disconnected: a518d018-cb53-42e1-9d91-5a89426fac54
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2ma restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-restore-fe8411cc-ece7-4ee1-af4d-f75e6b523f8c
+Created agent session 756926f5-549d-4d8e-a08e-14628ad27fcd for run claude-live-restore-fe8411cc-ece7-4ee1-af4d-f75e6b523f8c
+Agent WebSocket connected: session=756926f5-549d-4d8e-a08e-14628ad27fcd, run=claude-live-restore-fe8411cc-ece7-4ee1-af4d-f75e6b523f8c
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2ma restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [sdk-bundled-claude]
+[22m[39mClosed agent session 756926f5-549d-4d8e-a08e-14628ad27fcd
+Agent WebSocket disconnected: 756926f5-549d-4d8e-a08e-14628ad27fcd
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2ma restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-restore-fe8411cc-ece7-4ee1-af4d-f75e6b523f8c
+Created agent session 04b33ee7-0bc3-4d27-9ff8-cd5235653c91 for run claude-live-restore-fe8411cc-ece7-4ee1-af4d-f75e6b523f8c
+Agent WebSocket connected: session=04b33ee7-0bc3-4d27-9ff8-cd5235653c91, run=claude-live-restore-fe8411cc-ece7-4ee1-af4d-f75e6b523f8c
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2ma restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [sdk-bundled-claude]
+[22m[39mClosed agent session 04b33ee7-0bc3-4d27-9ff8-cd5235653c91
+Agent WebSocket disconnected: 04b33ee7-0bc3-4d27-9ff8-cd5235653c91
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2msends an attached image inline so Claude answers without a Read call; a missing image is non-fatal (AC-012, AC-013) [path-claude]
+[22m[39mAgent websocket attached for run claude-live-image-99ce7e85-f743-416a-b527-28acda111644
+Created agent session e4b2aa3e-da9d-48a8-a391-402861be7173 for run claude-live-image-99ce7e85-f743-416a-b527-28acda111644
+Agent WebSocket connected: session=e4b2aa3e-da9d-48a8-a391-402861be7173, run=claude-live-image-99ce7e85-f743-416a-b527-28acda111644
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2msends an attached image inline so Claude answers without a Read call; a missing image is non-fatal (AC-012, AC-013) [path-claude]
+[22m[39mClosed agent session e4b2aa3e-da9d-48a8-a391-402861be7173
+Agent WebSocket disconnected: e4b2aa3e-da9d-48a8-a391-402861be7173
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2msends an attached image inline so Claude answers without a Read call; a missing image is non-fatal (AC-012, AC-013) [sdk-bundled-claude]
+[22m[39mAgent websocket attached for run claude-live-image-0ac11165-fa5c-4190-b202-f2421a90c20f
+Created agent session 4768fe0a-9af1-4457-8cb0-b3a2f2bf4c6b for run claude-live-image-0ac11165-fa5c-4190-b202-f2421a90c20f
+Agent WebSocket connected: session=4768fe0a-9af1-4457-8cb0-b3a2f2bf4c6b, run=claude-live-image-0ac11165-fa5c-4190-b202-f2421a90c20f
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22m[2mClaude streaming session lifecycle (live E2E)[2m > [22m[2msends an attached image inline so Claude answers without a Read call; a missing image is non-fatal (AC-012, AC-013) [sdk-bundled-claude]
+[22m[39mClosed agent session 4768fe0a-9af1-4457-8cb0-b3a2f2bf4c6b
+Agent WebSocket disconnected: 4768fe0a-9af1-4457-8cb0-b3a2f2bf4c6b
+
+ [31m❯[39m tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts [2m([22m[2m14 tests[22m[2m | [22m[31m2 failed[39m[2m | [22m[33m8 skipped[39m[2m)[22m[33m 46521[2mms[22m[39m
+     [2m[90m↓[39m[22m serves consecutive turns and an idle period from one Claude process with context (AC-001, AC-006) [path-claude]
+     [2m[90m↓[39m[22m serves consecutive turns and an idle period from one Claude process with context (AC-001, AC-006) [sdk-bundled-claude]
+     [2m[90m↓[39m[22m delivers a user message sent during a foreground command into the running turn, resolving each input once (AC-003) [path-claude]
+     [2m[90m↓[39m[22m delivers a user message sent during a foreground command into the running turn, resolving each input once (AC-003) [sdk-bundled-claude]
+     [2m[90m↓[39m[22m Stop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [path-claude]
+     [2m[90m↓[39m[22m Stop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [sdk-bundled-claude]
+     [2m[90m↓[39m[22m terminating the run closes the Claude process and its background tasks, leaving no orphans (AC-008) [path-claude]
+     [2m[90m↓[39m[22m terminating the run closes the Claude process and its background tasks, leaving no orphans (AC-008) [sdk-bundled-claude]
+[31m     [31m×[31m ends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [path-claude][39m[33m 9702[2mms[22m[39m
+[31m     [31m×[31m ends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [sdk-bundled-claude][39m[33m 11268[2mms[22m[39m
+     [33m[2m✓[22m[39m a restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [path-claude] [33m 6894[2mms[22m[39m
+     [33m[2m✓[22m[39m a restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [sdk-bundled-claude] [33m 7090[2mms[22m[39m
+     [33m[2m✓[22m[39m sends an attached image inline so Claude answers without a Read call; a missing image is non-fatal (AC-012, AC-013) [path-claude] [33m 6300[2mms[22m[39m
+     [33m[2m✓[22m[39m sends an attached image inline so Claude answers without a Read call; a missing image is non-fatal (AC-012, AC-013) [sdk-bundled-claude] [33m 5265[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22mClaude streaming session lifecycle (live E2E)[2m > [22mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [path-claude]
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts[2m > [22mClaude streaming session lifecycle (live E2E)[2m > [22mends the turn with a visible error when the CLI is killed mid-turn, then resumes with context and sane usage (AC-009, RSK-007) [sdk-bundled-claude]
+[31m[1mAssertionError[22m: expected [ …(5) ] to not include 'claude_sdk_selected_regressed'[39m
+[36m [2m❯[22m tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts:[2m344:31[22m[39m
+    [90m342| [39m      [34mexpect[39m(recallUsage[33m.[39mlength)[33m.[39m[34mtoBeGreaterThan[39m([34m0[39m)[33m;[39m
+    [90m343| [39m      [35mfor[39m ([35mconst[39m row [35mof[39m folded) {
+    [90m344| [39m        expect(row.flags).not.toContain("claude_sdk_selected_regressed…
+    [90m   | [39m                              [31m^[39m
+    [90m345| [39m      }
+    [90m346| [39m      expect(recallUsage.every((row) => typeof row.accountingTotal ===…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m4 passed[39m[22m[2m | [22m[33m8 skipped[39m[90m (14)[39m
+[2m   Start at [22m 05:53:40
+[2m   Duration [22m 51.14s[2m (transform 2.71s, setup 14ms, import 4.10s, tests 46.52s, environment 0ms)[22m
+

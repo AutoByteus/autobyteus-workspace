@@ -23,7 +23,7 @@ import { buildRuntimeAgentToolExposure } from "../../../src/agent-execution/shar
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { getClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
-import type { ClaudeSdkStartQueryTurnOptions } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
+import { createFakeClaudeSdkClient, flushClaudeSession } from "../../helpers/fake-claude-streaming-sdk.js";
 import type { AgentToolMcpRunSessionActivationInput } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
@@ -154,6 +154,14 @@ const createExplicitSessionManager = (): ClaudeSessionManager =>
     getClaudeWorkspaceSkillMaterializer(),
   );
 
+const startTurn = async (
+  session: Awaited<ReturnType<ClaudeSessionManager["createRunSession"]>>,
+  message: AgentInputUserMessage,
+): Promise<void> => {
+  const result = await session.submitInput(message, { kind: "start_turn" });
+  if (!result.accepted) throw new Error(`Claude input rejected: ${result.code}`);
+};
+
 const waitForTurnSettlement = async (events: ClaudeSessionEvent[]): Promise<void> =>
   waitFor(() =>
     events.some(
@@ -168,7 +176,7 @@ const bootstrapClaudeSession = async (
   events: ClaudeSessionEvent[],
 ): Promise<void> => {
   const bootstrapToken = `bootstrap-${randomUUID()}`;
-  await session.sendTurn(
+  await startTurn(session, 
     new AgentInputUserMessage(`Reply with exactly '${bootstrapToken}'. Include nothing else.`),
   );
   await waitForTurnSettlement(events);
@@ -176,18 +184,8 @@ const bootstrapClaudeSession = async (
 };
 
 describe("ClaudeSessionManager explicit Agent Tools activator", () => {
-  it("materializes an activated headerless provider-neutral descriptor into the Claude query config", async () => {
-    const startQueryTurn = vi.fn(async (options: ClaudeSdkStartQueryTurnOptions) => ({
-      async *[Symbol.asyncIterator]() {
-        yield {
-          type: "result",
-          session_id: options.sessionBinding.sessionId,
-          result: "done",
-        };
-      },
-      interrupt: vi.fn(async () => undefined),
-      close: vi.fn(() => undefined),
-    }));
+  it("materializes an activated headerless provider-neutral descriptor into the Claude streaming session config", async () => {
+    const sdkClient = createFakeClaudeSdkClient({});
     const activator = {
       activateForRun: vi.fn((input: AgentToolMcpRunSessionActivationInput) => ({
         kind: "active" as const,
@@ -204,10 +202,7 @@ describe("ClaudeSessionManager explicit Agent Tools activator", () => {
     const manager = new ClaudeSessionManager(
       activator,
       getWorkspaceManager(),
-      {
-        startQueryTurn,
-        closeQuery: vi.fn((query) => query?.close()),
-      } as never,
+      sdkClient as never,
       {
         cleanupMaterializedWorkspaceSkills: vi.fn(async () => undefined),
       } as never,
@@ -223,11 +218,13 @@ describe("ClaudeSessionManager explicit Agent Tools activator", () => {
     const events: ClaudeSessionEvent[] = [];
     session.subscribeRuntimeEvents((event) => events.push(event));
 
-    await session.startTurn(new AgentInputUserMessage("exercise explicit activator"));
+    await startTurn(session, new AgentInputUserMessage("exercise explicit activator"));
+    await flushClaudeSession();
+    sdkClient.current.completeTurn("done");
     await waitForTurnSettlement(events);
 
     expect(activator.activateForRun).toHaveBeenCalledTimes(1);
-    expect(startQueryTurn).toHaveBeenCalledWith(expect.objectContaining({
+    expect(sdkClient.openStreamingSession).toHaveBeenCalledWith(expect.objectContaining({
       mcpServers: {
         autobyteus_agent_tools: {
           type: "http",
@@ -292,7 +289,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
 
       const userToken = `user-${randomUUID()}`;
       const assistantToken = `assistant-${randomUUID()}`;
-      await session.sendTurn(
+      await startTurn(session, 
         new AgentInputUserMessage(
           `Reply with exactly '${assistantToken}'. Include nothing else. User token: ${userToken}`,
         ),
@@ -306,7 +303,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
         ),
       );
 
-      const resolvedSessionId = session.runContext.runtimeContext.sessionId;
+      const resolvedSessionId = session.sessionId;
       expect(resolvedSessionId).toBeTruthy();
       expect(resolvedSessionId).not.toBe(runId);
       expect(session.runContext.runtimeContext.hasCompletedTurn).toBe(true);
@@ -347,7 +344,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
         firstEvents.push(event);
       });
 
-      await original.sendTurn(
+      await startTurn(original, 
         new AgentInputUserMessage(
           `Reply with exactly '${firstReplyToken}'. Include nothing else. Prompt token: ${firstPromptToken}`,
         ),
@@ -361,7 +358,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
       );
       unsubscribeOriginal();
 
-      const sessionId = original.runContext.runtimeContext.sessionId;
+      const sessionId = original.sessionId;
       expect(sessionId).toBeTruthy();
 
       const restored = await sessionManager.restoreRunSession(
@@ -381,7 +378,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
         secondEvents.push(event);
       });
 
-      await restored.sendTurn(
+      await startTurn(restored, 
         new AgentInputUserMessage(
           `Reply with exactly '${secondReplyToken}'. Include nothing else. Prompt token: ${secondPromptToken}`,
         ),
@@ -394,7 +391,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
         ),
       );
 
-      expect(restored.runContext.runtimeContext.sessionId).toBe(sessionId);
+      expect(restored.sessionId).toBe(sessionId);
       expect(restored.runContext.runtimeContext.hasCompletedTurn).toBe(true);
 
       const messages = await sessionManager.getSessionMessages(sessionId!);
@@ -447,7 +444,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
 
         try {
           const bootstrapToken = `bootstrap-${randomUUID()}`;
-          await session.sendTurn(
+          await startTurn(session, 
             new AgentInputUserMessage(
               `Reply with exactly '${bootstrapToken}'. Include nothing else.`,
             ),
@@ -462,7 +459,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
           );
           events.length = 0;
 
-          await session.sendTurn(
+          await startTurn(session, 
             new AgentInputUserMessage(
               [
                 "You must call the Write tool exactly once in this turn.",
@@ -592,7 +589,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
 
         try {
           const bootstrapToken = `bootstrap-${randomUUID()}`;
-          await session.sendTurn(
+          await startTurn(session, 
             new AgentInputUserMessage(
               `Reply with exactly '${bootstrapToken}'. Include nothing else.`,
             ),
@@ -607,7 +604,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
           );
           events.length = 0;
 
-          await session.sendTurn(
+          await startTurn(session, 
             new AgentInputUserMessage(
               [
                 "You must call the Write tool exactly once in this turn.",
@@ -725,7 +722,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
 
         try {
           const bootstrapToken = `bootstrap-${randomUUID()}`;
-          await session.sendTurn(
+          await startTurn(session, 
             new AgentInputUserMessage(
               `Reply with exactly '${bootstrapToken}'. Include nothing else.`,
             ),
@@ -740,7 +737,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
           );
           events.length = 0;
 
-          await session.sendTurn(
+          await startTurn(session, 
             new AgentInputUserMessage(
               [
                 "You must call the Write tool exactly once in this turn.",
@@ -836,7 +833,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
         try {
           await bootstrapClaudeSession(session, events);
 
-          await session.sendTurn(
+          await startTurn(session, 
             new AgentInputUserMessage(
               buildExactWriteToolPrompt({
                 targetFilePath,
@@ -854,7 +851,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
             APPROVAL_STEP_TIMEOUT_MS,
           );
 
-          await session.interrupt();
+          await session.interrupt(session.activeTurnId!);
 
           await waitFor(
             () =>
@@ -932,7 +929,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
         try {
           await bootstrapClaudeSession(session, events);
 
-          await session.sendTurn(
+          await startTurn(session, 
             new AgentInputUserMessage(
               buildExactWriteToolPrompt({
                 targetFilePath,
@@ -1013,7 +1010,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
 
       await bootstrapClaudeSession(original, originalEvents);
 
-      await original.sendTurn(
+      await startTurn(original, 
         new AgentInputUserMessage(
           buildExactWriteToolPrompt({
             targetFilePath,
@@ -1029,7 +1026,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
         targetLines.join("\n"),
       );
 
-      const sessionId = original.runContext.runtimeContext.sessionId;
+      const sessionId = original.sessionId;
       expect(sessionId).toBeTruthy();
       unsubscribeOriginal();
 
@@ -1050,7 +1047,7 @@ describeClaudeSessionIntegration("ClaudeSessionManager integration (live Claude 
         restoredEvents.push(event);
       });
 
-      await restored.sendTurn(
+      await startTurn(restored, 
         new AgentInputUserMessage(
           `Reply with exactly '${followupReply}'. Include nothing else. Token: ${followupToken}`,
         ),

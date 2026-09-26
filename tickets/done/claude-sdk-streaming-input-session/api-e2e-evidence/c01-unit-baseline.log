@@ -1,0 +1,812 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ [31m❯[39m tests/unit/run-history/services/agent-run-history-catalog-service.test.ts [2m([22m[2m11 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 360[2mms[22m[39m
+     [32m✓[39m records prepared metadata and one V2 catalog row through one boundary[32m 144[2mms[22m[39m
+     [32m✓[39m does not flush the index for a normal start/activity metadata update[32m 58[2mms[22m[39m
+[31m     [31m×[31m commits only llmConfig through the serialized catalog[39m[32m 32[2mms[22m[39m
+     [32m✓[39m updates first summary only and does not rewrite on ordinary later activity[32m 2[2mms[22m[39m
+     [32m✓[39m serializes concurrent prepared-run catalog mutations[32m 64[2mms[22m[39m
+     [32m✓[39m refuses to cancel a run after the serialized catalog start mutation[32m 35[2mms[22m[39m
+     [32m✓[39m rejects unsafe delete identities inside the catalog boundary[32m 1[2mms[22m[39m
+     [32m✓[39m rolls back archive state in memory when the index flush fails[32m 4[2mms[22m[39m
+     [32m✓[39m rolls back first summary and termination state in memory when index flushes fail[32m 4[2mms[22m[39m
+     [32m✓[39m rolls back delete state and leaves the run directory when the index flush fails[32m 9[2mms[22m[39m
+     [32m✓[39m rolls back cancel state and leaves prepared metadata when the index flush fails[32m 6[2mms[22m[39m
+ [31m❯[39m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[32m 16[2mms[22m[39m
+[31m     [31m×[31m retains exact tool identity across a retry diagnostic[39m[32m 10[2mms[22m[39m
+[31m     [31m×[31m correlates started/local-completed/raw output and admits it through the strict Team boundary[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m uses an exact direct raw provider tool name without inventing correlation[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output[39m[32m 1[2mms[22m[39m
+     [32m✓[39m fails closed when lifecycle facts conflict for the same invocation[32m 0[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/published-artifact-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/run-history/services/published-artifact-projection-service.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 7[2mms[22m[39m
+[31m     [31m×[31m reads historical published-artifact summaries and revision text from durable projection storage[39m[32m 6[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run.test.ts [2m([22m[2m34 tests[22m[2m)[22m[33m 969[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler-system-instruction-debug.test.ts[2m > [22m[2mAgentStreamHandler system-instruction diagnostics[2m > [22m[2mretains identifiers and derived length without serializing exact prompt content
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler-system-instruction-debug.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 845[2mms[22m[39m
+     [33m[2m✓[22m[39m retains identifiers and derived length without serializing exact prompt content [33m 844[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/root-run-package-readiness-index.test.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 541[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/team-run-history-catalog-service.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 340[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/team-memory-explorer-service.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 278[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/memory-layout-cleanup-regression.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 266[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-run-history-index-repair.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 129[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/team-run-package-catalog.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 121[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts [2m([22m[2m40 tests[22m[2m)[22m[32m 133[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 73[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/agent-memory-explorer-service.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 79[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/input/agent-run-provider-input-normalizer.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 54[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/agent-memory-location-service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 64[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/agent-run-memory-recorder.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/agent-run-memory-recorder.test.ts[2m > [22m[2mAgentRunMemoryRecorder[2m > [22m[2mrecords forwarded commands and normalized events without a stream subscriber
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-p0w0am/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-p0w0am/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/agent-run-memory-recorder.test.ts[2m > [22m[2mAgentRunMemoryRecorder[2m > [22m[2mrecords canonical route-backed send_message_to tool traces with MCP content result shape
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-5W7Qcw/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-memory-recorder-5W7Qcw/working_context_snapshot.json
+
+ [32m✓[39m tests/unit/agent-memory/agent-run-memory-recorder.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 67[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/collaboration-root-history-readiness.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/collaboration-root-history-readiness.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 80[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22m[2mClaudeSession streaming lifecycle[2m > [22m[2mcloses the opened process and fails the turn when system-instruction persistence fails
+[22m[39mClaude input for run 'run-1' failed before send: Error: persist failed
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:241:36)
+    at Object.Mock [as capture] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at captureClaudeSystemInstructions (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-system-instruction-capture.ts:14:75)
+    at ClaudeSession.openStreamingSession (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:352:7)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:104:17)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:206:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:123:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:248:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+[90mstderr[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22m[2mClaudeSession streaming lifecycle[2m > [22m[2menriches a failed process open with bounded redacted stderr diagnostics
+[22m[39mClaude input for run 'run-1' failed before send: Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:107:13)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:206:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:123:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:335:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+[90mstderr[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22m[2mClaudeSession process lifetime[2m > [22m[2mfails the active turn visibly on an unexpected exit and reopens with resume on the next input (AC-009)
+[22m[39mClaude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:727:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+[90mstderr[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22m[2mClaudeSession process lifetime[2m > [22m[2mtreats a conflicting provider UUID as fatal for the process and fails the active turn
+[22m[39mClaude process for run 'run-1' exited: Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+    at ClaudeProviderSessionLifecycle.confirmProviderSessionId (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:82:13)
+    at ClaudeSession.handleFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:386:37)
+    at Object.onFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:107:32)
+    at ClaudeSessionProcess.runPump (/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:127:26)
+
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session.test.ts [2m([22m[2m34 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/agent-run-view-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/run-history/services/agent-run-view-projection-service.test.ts[2m > [22m[2mAgentRunViewProjectionService[2m > [22m[2mkeeps Codex projection empty when local replay history is missing
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/run-projection-service-IiLu7k/agents/run-codex-missing-local/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/unit/run-history/services/agent-run-view-projection-service.test.ts[2m > [22m[2mAgentRunViewProjectionService[2m > [22m[2mreturns deterministic empty projection when the local replay provider fails
+[22m[39m[AgentRunViewProjectionService] local replay projection failed for run 'run-local-provider-fails' (autobyteus): Error: local replay failed
+
+ [32m✓[39m tests/unit/run-history/services/agent-run-view-projection-service.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 48[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/atomic-json-file-writer.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 37[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-run-history-existing-index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 37[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists run-owned reasoning closure exactly once before the next tool
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-gMupzj/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mrejects segment lifecycle without an exact turn instead of inventing a fallback turn
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-ZEdZZY/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-ZEdZZY/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists one trace for adjacent reasoning deltas and a new trace after a tool boundary
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-W4LFNt/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mtolerates lifecycle-before-command ordering and flushes text and reasoning on turn completion
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-jhBAQf/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists open reasoning before a following tool call without duplicating later flushes
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-nw7vl9/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists open reasoning before an inferred tool call from a terminal tool result
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-GNjVNx/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mkeeps reasoning open across a matching result and flushes one trace at the next tool
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-5Lzku5/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpreserves post-card reasoning when authoritative call arguments arrive only at result
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-f3bXkS/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mkeeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-JLHEHA/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mkeeps reasoning open across matching TOOL_DENIED updates
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-OySKFV/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists open reasoning before assistant text without requiring turn completion
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-1F5LVv/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpersists open reasoning before assistant complete output
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-3HNvit/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mdoes not substitute an active turn when forwarded input lacks its exact turn identity
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-UTZpv3/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-UTZpv3/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mrecords tool traces once from lifecycle events when matching tool segments are present
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-gOk3AW/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mpreserves assistant-tool-assistant raw trace order from distinct text segment ids
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-jxNsbP/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mdoes not create a fallback turn for a segment without exact turn identity
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-kIta6o/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-kIta6o/raw_traces_active.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mignores provider compaction/status payloads without local raw-trace pruning
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-mEoIoQ/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mwrites provider compaction markers and rotates settled active traces into segmented archives
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-RZv03Q/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mdedupes replayed provider boundaries without dropping post-boundary active records
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-d9aHuA/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts[2m > [22m[2mRuntimeMemoryEventAccumulator[2m > [22m[2mretries rotation from an existing provider boundary marker when no complete segment exists
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-accumulator-dygk5d/working_context_snapshot.json
+
+ [32m✓[39m tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+[90mstdout[2m | tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/atomic-run-package-file-commit-writer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/team-run-file-commit-writer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/agent-run-metadata-store.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+[90mstderr[2m | tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts[2m > [22m[2mCodexThreadEventConverter through CodexThread[2m > [22m[2mdoes not map token-usage telemetry into AGENT_STATUS
+[22m[39mRun 'run-1': Codex token-usage update arrived without a turn id. Skipping persistence.
+
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts [2m([22m[2m64 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+[90mstderr[2m | tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts[2m > [22m[2mCodex reasoning block conversion[2m > [22m[2mrejects a completed reasoning snapshot without exact turn identity
+[22m[39m[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: [32m'codex_app_server'[39m,
+  runId: [32m'run-1'[39m,
+  nativeEventName: [32m'item/completed'[39m,
+  reasonCode: [32m'CODEX_SEGMENT_TURN_INACTIVE'[39m
+}
+
+[90mstderr[2m | tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts[2m > [22m[2mCodex reasoning block conversion[2m > [22m[2mpreserves for in-place or no-effect event: thread tokens
+[22m[39mRun 'run-1': Codex token-usage update for turn 'turn-1' did not include usable token counts.
+
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts [2m([22m[2m52 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic V1 snapshot before lifecycle changes
+[22m[39mCreated agent session 63920fc4-2d71-4c06-9731-e8deaf03ffe4 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic V1 snapshot before lifecycle changes
+[22m[39mAgent Team WebSocket connected: session=63920fc4-2d71-4c06-9731-e8deaf03ffe4, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic V1 snapshot before lifecycle changes
+[22m[39mClosed agent session 63920fc4-2d71-4c06-9731-e8deaf03ffe4
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mCreated agent session e4a768ff-fdcd-4896-be01-abadd74c5586 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mAgent Team WebSocket connected: session=e4a768ff-fdcd-4896-be01-abadd74c5586, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mClosed agent session e4a768ff-fdcd-4896-be01-abadd74c5586
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mCreated agent session 207b2902-c42e-41c4-a4c5-c4fb607701c7 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mAgent Team WebSocket connected: session=207b2902-c42e-41c4-a4c5-c4fb607701c7, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mClosed agent session 207b2902-c42e-41c4-a4c5-c4fb607701c7
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mCreated agent session 36570203-5011-445b-98fd-39f7ab1291b3 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mAgent Team WebSocket connected: session=36570203-5011-445b-98fd-39f7ab1291b3, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mClosed agent session 36570203-5011-445b-98fd-39f7ab1291b3
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mCreated agent session e86c0b0f-180c-437d-ab80-eabed40e0072 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mAgent Team WebSocket connected: session=e86c0b0f-180c-437d-ab80-eabed40e0072, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mClosed agent session e86c0b0f-180c-437d-ab80-eabed40e0072
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mCreated agent session 36d29442-ba79-4ed3-b734-d0d114685d24 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mAgent Team WebSocket connected: session=36d29442-ba79-4ed3-b734-d0d114685d24, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mClosed agent session 36d29442-ba79-4ed3-b734-d0d114685d24
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+[90mstderr[2m | tests/unit/run-history/store/agent-run-history-index-store.test.ts[2m > [22m[2mAgentRunHistoryIndexStore[2m > [22m[2mdoes not treat legacy V1 status rows as a normal source catalog
+[22m[39mInvalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-gR8jZ8/run_history_index.json
+
+[90mstderr[2m | tests/unit/run-history/store/agent-run-history-index-store.test.ts[2m > [22m[2mAgentRunHistoryIndexStore[2m > [22m[2mdoes not treat a file-level version wrapper as the standalone source catalog
+[22m[39mInvalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-dijhlH/run_history_index.json
+
+[90mstderr[2m | tests/unit/run-history/store/agent-run-history-index-store.test.ts[2m > [22m[2mAgentRunHistoryIndexStore[2m > [22m[2mrejects plain V2 rows that the catalog cannot normalize
+[22m[39mInvalid run history index file format: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-index-store-c8WklB/run_history_index.json
+
+ [32m✓[39m tests/unit/run-history/store/agent-run-history-index-store.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/team-run-history-index-store.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/runtime-tool-trace-sequencer.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/external-runtime-memory-writer.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/external-runtime-memory-writer.test.ts[2m > [22m[2mExternalRuntimeMemoryWriter[2m > [22m[2mwrites exact normalized raw fields without creating a WorkingContext snapshot
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/external-runtime-memory-writer-0Dc0Z3/working_context_snapshot.json
+
+ [32m✓[39m tests/unit/agent-memory/external-runtime-memory-writer.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-index-service.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 27[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts[2m > [22m[2mCodexThreadBootstrapper[2m > [22m[2mfalls back to workspace materialization when the discoverable-skill probe fails
+[22m[39mFailed to preflight discoverable Codex skills for '/tmp/codex-workspace'; falling back to workspace materialization: Error: skills/list failed
+
+ [32m✓[39m tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to a run identity and sends CONNECTED plus projected status without restoring runtime
+[22m[39mCreated agent session 88169e55-db8a-4691-b4c1-44492623bb86 for run agent-123
+Agent WebSocket connected: session=88169e55-db8a-4691-b4c1-44492623bb86, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to run events through the AgentRun subject for active runtime-managed runs
+[22m[39mCreated agent session b1d5c31c-a0fe-4faa-9977-43a2c709ac04 for run runtime-run-1
+Agent WebSocket connected: session=b1d5c31c-a0fe-4faa-9977-43a2c709ac04, run=runtime-run-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps Codex AgentRunEvents directly to websocket messages for single-agent runs
+[22m[39mCreated agent session bdb514ef-d3a8-4cce-af12-d100f202f0d9 for run runtime-run-2
+Agent WebSocket connected: session=bdb514ef-d3a8-4cce-af12-d100f202f0d9, run=runtime-run-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps turn lifecycle AgentRunEvents directly to websocket messages
+[22m[39mCreated agent session 2be2ea5f-73e8-4cc2-82ea-d29525e63443 for run runtime-run-3
+Agent WebSocket connected: session=2be2ea5f-73e8-4cc2-82ea-d29525e63443, run=runtime-run-3
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mregisters the websocket connection for run-scoped live message broadcasts
+[22m[39mCreated agent session c4f217ed-c7bc-491e-b513-cd9fbb48701a for run agent-123
+Agent WebSocket connected: session=c4f217ed-c7bc-491e-b513-cd9fbb48701a, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mpublishes terminal offline status to an already-connected websocket when a run terminates
+[22m[39mCreated agent session 17e58a80-0871-4e48-aaf1-57e231627c34 for run run-terminate-1
+Agent WebSocket connected: session=17e58a80-0871-4e48-aaf1-57e231627c34, run=run-terminate-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles SEND_MESSAGE through the command coordinator and returns an ACK
+[22m[39mCreated agent session a543a334-b302-4fe1-a127-791d3df27a60 for run agent-123
+Agent WebSocket connected: session=a543a334-b302-4fe1-a127-791d3df27a60, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mdefers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+[22m[39mCreated agent session cbf4a91b-8ea8-4da7-ba1a-7556d5eedfc2 for run agent-123
+Agent WebSocket connected: session=cbf4a91b-8ea8-4da7-ba1a-7556d5eedfc2, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mCreated agent session d4638496-bd65-49b6-bf89-e6825ff5c837 for run agent-123
+Agent WebSocket connected: session=d4638496-bd65-49b6-bf89-e6825ff5c837, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mINTERRUPT_GENERATION rejected for missing agent run agent-123.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mreturns exactly one same-socket acknowledgement for an accepted interrupt
+[22m[39mCreated agent session 1a605ea8-1504-4d16-ad68-b0a85441a35c for run agent-123
+Agent WebSocket connected: session=1a605ea8-1504-4d16-ad68-b0a85441a35c, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mrejects an empty interrupt command id before runtime execution
+[22m[39mCreated agent session 5c6bb02d-289f-4d3d-b173-73243baebccd for run agent-123
+Agent WebSocket connected: session=5c6bb02d-289f-4d3d-b173-73243baebccd, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mCreated agent session 2eb08941-e410-44d0-b169-f5c035ef1ac3 for run agent-123
+Agent WebSocket connected: session=2eb08941-e410-44d0-b169-f5c035ef1ac3, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mINTERRUPT_GENERATION rejected for agent run agent-123: [PROVIDER_REJECTED] Cannot interrupt now.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles tool approvals for active sessions
+[22m[39mCreated agent session 604291f2-6d00-4321-a1e6-01200f8d6bf9 for run agent-123
+Agent WebSocket connected: session=604291f2-6d00-4321-a1e6-01200f8d6bf9, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mignores messages for unknown sessions
+[22m[39mMessage for unknown session: missing
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-run-history-catalog-core.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/agent-memory-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/agent-memory-service.test.ts[2m > [22m[2mAgentMemoryService[2m > [22m[2mapplies raw trace limits
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-pG8Ykn/agents/agent-456/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-pG8Ykn/agents/agent-456/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-pG8Ykn/agents/agent-456/semantic.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/agent-memory-service.test.ts[2m > [22m[2mAgentMemoryService[2m > [22m[2mreads archive segments plus active traces as the complete corpus
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-aqOMgF/agents/agent-archive/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-aqOMgF/agents/agent-archive/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-aqOMgF/agents/agent-archive/semantic.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/agent-memory-service.test.ts[2m > [22m[2mAgentMemoryService[2m > [22m[2mlists raw trace files active first and reads only the selected segment filename
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-wRlaDl/agents/agent-segments/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-wRlaDl/agents/agent-segments/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-wRlaDl/agents/agent-segments/semantic.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/agent-memory-service.test.ts[2m > [22m[2mAgentMemoryService[2m > [22m[2mfalls back to the default raw trace file for invalid selected filenames
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-clma7y/agents/agent-invalid-file/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-clma7y/agents/agent-invalid-file/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-clma7y/agents/agent-invalid-file/semantic.jsonl
+
+[90mstderr[2m | tests/unit/agent-memory/agent-memory-service.test.ts[2m > [22m[2mAgentMemoryService[2m > [22m[2mdoes not create a missing run directory for includeArchive raw-trace reads
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-4grjk7/agents/missing-run/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-4grjk7/agents/missing-run/episodic.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-service-4grjk7/agents/missing-run/semantic.jsonl
+
+ [32m✓[39m tests/unit/agent-memory/agent-memory-service.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/agent-conversation-activity-inspector.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts [2m([22m[2m32 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/team-member-run-view-projection-service.import.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstderr[2m | tests/unit/agent-memory/memory-file-store.test.ts[2m > [22m[2mMemoryFileStore[2m > [22m[2mreturns null for missing or invalid JSON
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-xGwYcQ/missing.json
+Failed to decode JSON file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-xGwYcQ/bad.json: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+[90mstderr[2m | tests/unit/agent-memory/memory-file-store.test.ts[2m > [22m[2mMemoryFileStore[2m > [22m[2mreads JSONL and skips malformed lines
+[22m[39mSkipping malformed JSONL line in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-8NDNA7/agents/agent/raw_traces_active.jsonl: SyntaxError: Expected property name or '}' in JSON at position 1 (line 1 column 2)
+
+[90mstderr[2m | tests/unit/agent-memory/memory-file-store.test.ts[2m > [22m[2mMemoryFileStore[2m > [22m[2mreturns empty array for missing JSONL
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/memory-store-PcSihi/missing.jsonl
+
+ [32m✓[39m tests/unit/agent-memory/memory-file-store.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/team-execution-view-projector.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts [2m([22m[2m26 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/run-file-change-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/run-history/services/run-file-change-projection-service.test.ts[2m > [22m[2mRunFileChangeProjectionService current run identity[2m > [22m[2mreads an active standalone run from the runtime owner
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/run-history/services/run-file-change-projection-service.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/projection/user-file-attachment-projection.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/projection/user-file-attachment-projection.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/studio-run-model-config-service.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts[2m > [22m[2msystem task notification memory trace (REQ-003, ARCH-F-004)[2m > [22m[2mrecords a Claude background-task notice for its turn and replays it into the conversation
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-notice-ROyY8N/working_context_snapshot.json
+
+[90mstderr[2m | tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts[2m > [22m[2msystem task notification memory trace (REQ-003, ARCH-F-004)[2m > [22m[2mdoes not record notices from other producers, such as skill improvement (history behavior unchanged)
+[22m[39mMemory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-notice-7VhgVo/working_context_snapshot.json
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-memory-notice-7VhgVo/raw_traces_active.jsonl
+
+ [32m✓[39m tests/unit/agent-memory/runtime-memory-system-task-notification.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-memory/agent-memory-layout.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcreates sessions successfully
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mthrows when creating a duplicate session
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mallows multiple sessions for the same agent
+[22m[39mCreated agent session s1 for run agent-123
+Created agent session s2 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mretrieves sessions by ID
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mretrieves sessions for an agent
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses sessions and removes them
+[22m[39mCreated agent session s1 for run agent-123
+Closed agent session s1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses all sessions for an agent
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses all sessions
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mlists active sessions
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-session-manager.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/agent-run-history-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-service.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/team-run-history-service.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/team-member-run-view-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/run-history/team-member-run-view-projection-service.test.ts[2m > [22m[2mTeamMemberRunViewProjectionService exact AgentRun identity[2m > [22m[2mresolves and projects a member by root TeamRun plus concrete AgentRun ID
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/run-history/team-member-run-view-projection-service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/codex-workspace-skill-materializer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/claude-workspace-skill-materializer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-client-thread-router.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-user-message-builder.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-streaming-session.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-org-run-history-summary-writer.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/team-run-v2-package-schema.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/claude-run-view-projection-provider.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/current-execution-tree-runtime-admission.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/codex-app-server-model-normalizer.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/workspace-run-history-service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-model-normalizer.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-run-model-selection-commit.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-user-input-mapper.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-memory/raw-trace-record-normalizer.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-memory/raw-trace-record-normalizer.test.ts[2m > [22m[2mraw trace record normalizer outcome presence[2m > [22m[2misolates malformed run rows and preserves strict run/turn scope
+[22m[39m[RawTraceRecordNormalizer] omitted malformed system instruction trace row.
+
+ [32m✓[39m tests/unit/agent-memory/raw-trace-record-normalizer.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/active-trace-event-page-policy.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/payload-serialization.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-process-diagnostics.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mconnects and reports connected state
+[22m[39mAgentSession s1 connected to run agent-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mprevents connecting a closed session
+[22m[39mAgentSession s2 closed
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mcloses and resets connected state
+[22m[39mAgentSession s3 connected to run agent-3
+AgentSession s3 closed
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-session.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/shared/runtime-agent-tool-exposure.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-model-selection-presentation.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/agent-run-metadata-service.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/backend/codex-configured-tool-gating.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-broadcaster.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/recent-run-projection-policy.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-ordered-tool-boundary-tracker.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-config.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/shared/context-image-source.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-identity.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/runtime-management/claude/client/claude-sdk-setting-sources.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 6 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/agent-run-history-catalog-service.test.ts[2m > [22mAgentRunHistoryCatalogService[2m > [22mcommits only llmConfig through the serialized catalog
+[31m[1mAssertionError[22m: expected { kind: 'failed', metadata: { …(14) } } to match object { kind: 'committed', …(1) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[33m@@ -1,13 +1,13 @@[39m
+[2m  {[22m
+[32m-   "kind": "committed",[39m
+[31m+   "kind": "failed",[39m
+[2m    "metadata": {[22m
+[2m      "agentDefinitionId": "agent-def-1",[22m
+[2m      "applicationExecutionContext": null,[22m
+[2m      "autoExecuteTools": false,[22m
+[2m      "llmConfig": {[22m
+[32m-       "effort": "high",[39m
+[31m+       "effort": "low",[39m
+[2m      },[22m
+[2m      "llmModelIdentifier": "model-1",[22m
+[2m      "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-run-history-catalog-0tulNl/agents/run-1",[22m
+[2m      "platformAgentRunId": null,[22m
+[2m      "preparedAt": "2026-03-26T10:00:00.000Z",[22m
+
+[36m [2m❯[22m tests/unit/run-history/services/agent-run-history-catalog-service.test.ts:[2m184:5[22m[39m
+    [90m182| [39m    const storedBefore = JSON.parse(await fs.readFile(metadataPath, "u…
+    [90m183| [39m
+    [90m184| [39m    [35mawait[39m [34mexpect[39m(service[33m.[39m[34mcommitRunModelConfig[39m({
+    [90m   | [39m    [31m^[39m
+    [90m185| [39m      runId[33m:[39m [32m"run-1"[39m[33m,[39m
+    [90m186| [39m      llmConfig[33m:[39m { effort[33m:[39m [32m"high"[39m }[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/published-artifact-projection-service.test.ts[2m > [22mPublishedArtifactProjectionService[2m > [22mreads historical published-artifact summaries and revision text from durable projection storage
+[31m[1mError[22m: The process AgentRunManager is not initialized.[39m
+[36m [2m❯[22m Function.getInstance src/agent-execution/services/agent-run-manager.ts:[2m74:13[22m[39m
+    [90m 72| [39m  [35mstatic[39m [34mgetInstance[39m()[33m:[39m [33mAgentRunManager[39m {
+    [90m 73| [39m    [35mif[39m ([33m![39m[33mAgentRunManager[39m[33m.[39minstance) {
+    [90m 74| [39m      throw new Error("The process AgentRunManager is not initialized.…
+    [90m   | [39m            [31m^[39m
+    [90m 75| [39m    }
+    [90m 76| [39m    [35mreturn[39m [33mAgentRunManager[39m[33m.[39minstance[33m;[39m
+[90m [2m❯[22m new PublishedArtifactProjectionService src/run-history/services/published-artifact-projection-service.ts:[2m41:71[22m[39m
+[90m [2m❯[22m tests/unit/run-history/services/published-artifact-projection-service.test.ts:[2m70:21[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22mretains exact tool identity across a retry diagnostic
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m92:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22mcorrelates started/local-completed/raw output and admits it through the strict Team boundary
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m134:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22muses an exact direct raw provider tool name without inventing correlation
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m188:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22msuppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m216:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m3 failed[39m[22m[2m | [22m[1m[32m103 passed[39m[22m[90m (106)[39m
+[2m      Tests [22m [1m[31m6 failed[39m[22m[2m | [22m[1m[32m845 passed[39m[22m[90m (851)[39m
+[2m   Start at [22m 05:38:21
+[2m   Duration [22m 36.34s[2m (transform 3.54s, setup 423ms, import 21.26s, tests 5.37s, environment 7ms)[22m
+

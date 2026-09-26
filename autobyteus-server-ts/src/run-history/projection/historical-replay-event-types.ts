@@ -75,6 +75,16 @@ export interface HistoricalReplayCompactionEvent {
   detailLevel: RunProjectionSourceDetailLevel;
 }
 
+/** A system notice in the conversation (Claude background-task notices). */
+export interface HistoricalReplaySystemTaskNotificationEvent {
+  eventId: string;
+  turnGroupId: string;
+  kind: "system_task_notification";
+  senderId: string | null;
+  content: string;
+  ts: number | null;
+}
+
 export interface HistoricalReplaySystemInstructionEvent {
   eventId: string;
   kind: "system_instruction";
@@ -88,6 +98,7 @@ export type HistoricalReplayEvent =
   | HistoricalReplayReasoningEvent
   | HistoricalReplayToolEvent
   | HistoricalReplayCompactionEvent
+  | HistoricalReplaySystemTaskNotificationEvent
   | HistoricalReplaySystemInstructionEvent;
 
 export type EventMonitorReplayEvent = Exclude<

@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -226,10 +227,11 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
       if (scenario.operation === 'claude-api-key') {
         const tempDirectory = await fs.mkdtemp(path.join(os.tmpdir(), 'claude-api-key-real-e2e-'));
         const client = execution.createApiKeyClaudeClient();
-        let query: Awaited<ReturnType<typeof client.startQueryTurn>> | null = null;
+        let session: Awaited<ReturnType<typeof client.openStreamingSession>> | null = null;
         try {
-          query = await safeExternalOperation(scenarioId, () => client.startQueryTurn({
-            prompt: 'Reply with the single word pong.',
+          session = await safeExternalOperation(scenarioId, () => client.openStreamingSession({
+            systemPrompt: '',
+            sessionBinding: { kind: 'create', sessionId: randomUUID() },
             model: scenario.model!,
             workingDirectory: tempDirectory,
             env: {
@@ -239,16 +241,23 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
             mcpServers: {},
             allowedTools: [],
           }));
+          session.send({
+            type: 'user',
+            uuid: randomUUID(),
+            parent_tool_use_id: null,
+            message: { role: 'user', content: [{ type: 'text', text: 'Reply with the single word pong.' }] },
+          });
           let observedEvents = 0;
           await safeExternalOperation(scenarioId, async () => {
-            for await (const event of query!) {
+            for await (const event of session!.messages) {
               assertEvidenceClean(event);
               observedEvents += 1;
+              if ((event as { type?: unknown }).type === 'result') break;
             }
           });
           expect(observedEvents).toBeGreaterThan(0);
         } finally {
-          client.closeQuery(query);
+          session?.close();
           await fs.rm(tempDirectory, { recursive: true, force: true });
         }
         return;
