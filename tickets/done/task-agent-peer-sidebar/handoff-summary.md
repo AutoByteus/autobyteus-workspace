@@ -1,19 +1,18 @@
 # Verification Handoff — task-agent-peer-sidebar
 
 ## Current result
-DR-001: integrated/docs-synchronized candidate ready for explicit user verification; terminal delivery **Blocked — awaiting user verification**. Not a completed release.
-- task_size=Small; architectural_risk=Low; direct low-risk route.
-- Workspace: /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar
-- Branch: codex/task-agent-peer-sidebar; HEAD a35f017a704c249e0045118be85f6dfbdadadfcd.
-- Implementation: 90d71e7f3; API additions: a35f017a7. Delivery Markdown edits currently uncommitted by design.
-- Target: origin/personal, per solution-handoff.md bootstrap.
-- Initial refresh: `git fetch origin personal` succeeded 2026-09-26; base 1676bede9d910ca40dc0331390a35f203206fd41 unchanged and ancestor of HEAD. Already current; no merge/checkpoint necessary and no code rerun necessary. Only Markdown changed afterward; diff check passed.
+User verified 2026-09-26: “the task is done. lets finalize and release a new version.” Delivery Completed, DR-002. DR-001 hold resolved; repository finalization, v1.4.84 publication/rollout verification and safe cleanup all Completed.
+- task_size=Small; architectural_risk=Low; direct low-risk route; independent reviews N/A.
+- Durable package: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-agent-peer-sidebar.
+- Ticket archived/committed/pushed: 5702b8922; merged/pushed personal: 4c2348eaa.
+- Release helper commit ae3aba1bf pushed on personal with annotated tag v1.4.84; package version aligned.
+- Both initial and post-verification refreshes found origin/personal unchanged at 1676bede9; no integration code delta or rerun needed. Delivery changes only docs/archive before version/release notes.
 
 ## User-visible outcome and verification checklist
 1. Open a Team run with available tasks. Tasks should immediately follow their recipient Agent at equal depth, without Agent disclosure.
 2. Select separate same-address tasks and the regular Agent with mouse/Enter/Space: each opens its own conversation.
 3. Collapse/reopen the Team; inspect available retained tasks; check existing loading/failure/retry behavior where reproducible. Actual task-Team descendants remain within their Team.
-Please explicitly confirm that the result is verified, or report discrepancies. Requirements approval “Approve now work on it.” is not delivery verification.
+Verification received in the user message above; checklist retained as the verified scope, not an outstanding request.
 
 ## Evidence and limits
 API-REV-001: 63 tests across 11 files Pass; PEER-001–003 browser journeys each Pass twice. Real production projection/index/sidebar, selection, Apollo hydration and TeamWorkspaceView; emulated GraphQL/current-format fixture data. No live backend persistence/LLM/WebSocket generation, Electron shell, full build/typecheck/full-suite/packaging claim. Scoped confidence 95%, not full-release confidence.
@@ -27,12 +26,12 @@ All ticket artifacts below are in `/Users/normy/autobyteus_org/autobyteus-worksp
 - api-e2e-coverage-investigation.md, api-e2e-execution-coverage-report.md, api-e2e-test-case-ledger.md, api-e2e-revision-record.md (API-REV-001), evidence/api-e2e/repo-narrow.log, evidence/api-e2e/repo-integration.log and complete evidence/api-e2e/ directory (including preserved fixture corrections).
 - docs-sync-report.md, release-deployment-report.md, delivery-revision-record.md (DR-001), release-notes.md and this handoff-summary.md.
 - Independent architecture/source/test review reports and revision records: N/A — not applicable. Product spec: N/A — not requested. Original user screenshot reference remains in solution-handoff.md; not normative target.
-Durable browser coverage: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs` and `fixtures/task-agent-peer-sidebar.page.vue` in that same e2e directory.
-Long-lived docs: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/docs/agent_teams.md`.
+Durable browser coverage: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/tests/e2e/task-agent-peer-sidebar-probe.mjs` and `fixtures/task-agent-peer-sidebar.page.vue` in that same e2e directory.
+Long-lived docs: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/autobyteus-web/docs/agent_teams.md`.
 
-## Remaining gates
-Explicit verification missing. No ticket archival, finalization commit/push, target merge/push, release/tag/deployment or worktree/branch cleanup performed. After verification, refetch target; protect edits and re-integrate/check if advanced, renew verification if material; archive ticket before final commit; commit/push ticket, update/merge/push personal, then safe cleanup. Release/deployment not required for current request; no version/release authorization inferred.
+## Completion and terminal receipt
+All four release workflows successful. Stable release https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.84 has 17 assets; release notes and four updater metadata files verified. Docker 1.4.84/latest digest and amd64/arm64 manifests verified; iOS App Store Connect upload succeeded. No installed-app/container runtime claim. Complete evidence under evidence/delivery/; release-deployment-report.md owns exact results.
+Ticket and temporary release worktrees/local branches removed safely; remote ticket branch retained for audit. Unrelated integration checkout files untouched. No outstanding delivery gate. Terminal recipient determined by handoff rules; actual dispatch confirmed only by messaging tool receipt.
 
-## DR-002 — Verified finalization and release in progress
-2026-09-26 user: “the task is done. lets finalize and release a new version.”
-This explicitly verifies the candidate and authorizes finalization plus release. Earlier pending-verification statements describe DR-001 and are superseded by this section. Refetched origin/personal: unchanged 1676bede9d910ca40dc0331390a35f203206fd41; no incoming commits, no re-integration or renewed verification required. Release now Applicable: Yes, planned v1.4.84. Ticket archived before final commit. Repository finalization/release/cleanup pending execution; terminal return not yet eligible. Main personal checkout has unrelated untracked outputs: preserve them. Use clean isolated release-preparation worktree with documented helper --branch/--no-push, then fast-forward personal and push branch/tag exactly once. No duplicate workflow dispatch.
+## Historical artifact path mapping
+Upstream artifacts preserve original execution-time worktree/in-progress paths. Every ticket-relative artifact and evidence item was archived unchanged under this directory; use this durable location after cleanup. Browser probe/fixture remain in autobyteus-web/tests/e2e in the integration checkout. Original external user screenshot is supporting context, not required final validation evidence.

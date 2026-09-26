@@ -13,6 +13,8 @@ import type { AgentRunBackendFactory } from "../../../src/agent-execution/backen
 import type { AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
+import type { AgentRunInputLifecycle } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { CodexThreadCleanup } from "../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js";
@@ -821,6 +823,99 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     } finally {
       unsubscribe();
       await writeBackendEventLog("codex-backend-auto-exec", events);
+    }
+  }, FLOW_TEST_TIMEOUT_MS);
+
+  it("steers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)", async () => {
+    const workspaceRoot = await createWorkspace("codex-backend-steer");
+    clientManager = new CodexAppServerClientManager({
+      createClient: (cwd) =>
+        new CodexAppServerClient({
+          command: "codex",
+          args: ["app-server"],
+          cwd,
+          requestTimeoutMs: 45_000,
+        }),
+    });
+    threadManager = new CodexThreadManager(
+      clientManager,
+      undefined,
+      new CodexClientThreadRouter(),
+    );
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
+    const runId = "run-codex-backend-steer";
+    const factory = await createFactory({ clientManager, threadManager, workspaceRoot, runId });
+    const backend = await factory.createBackend(
+      new AgentRunConfig({
+        runtimeKind: "codex_app_server",
+        agentDefinitionId: "agent-def-codex-live",
+        llmModelIdentifier: modelIdentifier,
+        autoExecuteTools: true,
+        workspaceId: "workspace-codex-steer",
+        memoryDir: path.join(workspaceRoot, ".memory", runId),
+        llmConfig: { reasoning_effort: "low" },
+      }),
+      runId,
+    );
+    createdRunIds.add(backend.runId);
+    await waitForStartupReady(threadManager.getThread(backend.runId)!.startup.waitForReady);
+
+    const dispatches: Array<{ kind: string; turnId: string | null; result: unknown }> = [];
+    const originalDispatch = backend.dispatchUserInput.bind(backend);
+    backend.dispatchUserInput = async (dispatch) => {
+      const result = await originalDispatch(dispatch);
+      dispatches.push({ kind: dispatch.kind, turnId: dispatch.kind === "append_to_active_turn" ? dispatch.turnId : null, result });
+      return result;
+    };
+    const agentRun = new AgentRun({
+      context: backend.getContext(),
+      backend,
+      providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+    });
+    const events: AgentRunEvent[] = [];
+    const unsubscribe = agentRun.subscribeToEvents((event) => {
+      events.push(event);
+    });
+    const facts = { first: [] as AgentRunInputLifecycle[], second: [] as AgentRunInputLifecycle[] };
+    const isTerminal = (fact: AgentRunInputLifecycle) => ["completed", "interrupted", "failed", "cancelled"].includes(fact.kind);
+
+    try {
+      await agentRun.postUserMessage(
+        new AgentInputUserMessage(
+          "Use the terminal tool to execute this command exactly once: sleep 20; echo FIRST_DONE\nThen reply with its output.",
+        ),
+        { lifecycleObserver: (fact) => facts.first.push(fact) },
+      );
+      await waitForEvent(events, (event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED);
+      const turnStarted = events.filter((event) => event.eventType === AgentRunEventType.TURN_STARTED);
+      expect(turnStarted).toHaveLength(1);
+      const turnId = String(turnStarted[0]!.payload.turnId ?? turnStarted[0]!.payload.turn_id);
+
+      const posted = await agentRun.postUserMessage(
+        new AgentInputUserMessage("Also: your final reply must include the word PINEAPPLE."),
+        { lifecycleObserver: (fact) => facts.second.push(fact) },
+      );
+      expect(posted).toMatchObject({ accepted: true, turnId });
+
+      await waitFor(() => facts.first.some(isTerminal) && facts.second.some(isTerminal));
+      expect(dispatches.map(({ kind, turnId: target }) => [kind, target])).toEqual([
+        ["start_turn", null],
+        ["append_to_active_turn", turnId],
+      ]);
+      expect(dispatches[1]!.result).toMatchObject({ forwarded: true, turnId });
+      expect(facts.second).toContainEqual({ kind: "forwarded", dispatchKind: "append_to_active_turn", turnId });
+      expect(facts.first.filter(isTerminal)).toEqual([{ kind: "completed", turnId }]);
+      expect(facts.second.filter(isTerminal)).toEqual([{ kind: "completed", turnId }]);
+      expect(events.filter((event) => event.eventType === AgentRunEventType.TURN_STARTED)).toHaveLength(1);
+      const reply = events
+        .filter((event) => event.eventType === AgentRunEventType.SEGMENT_CONTENT && event.payload.segment_type === "text")
+        .map((event) => String(event.payload.delta ?? ""))
+        .join("");
+      expect(reply).toContain("FIRST_DONE");
+      expect(reply.toUpperCase()).toContain("PINEAPPLE");
+    } finally {
+      unsubscribe();
+      await writeBackendEventLog("codex-backend-steer", events);
     }
   }, FLOW_TEST_TIMEOUT_MS);
 

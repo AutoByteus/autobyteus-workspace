@@ -241,6 +241,18 @@ export class ClaudeSessionEventConverter {
         return this.createLifecycleEvents(claudeEventName, AgentRunEventType.TURN_INTERRUPTED, {
           ...(turnId ? { turnId } : {}),
         });
+      case ClaudeSessionEventName.SYSTEM_TASK_NOTIFICATION: {
+        const senderId = asString(payload.sender_id);
+        const content = asNonEmptyRawString(payload.content);
+        if (!senderId || !content) {
+          throw new Error("Claude system task notification event has an invalid payload.");
+        }
+        return [this.createEvent(claudeEventName, AgentRunEventType.SYSTEM_TASK_NOTIFICATION, {
+          sender_id: senderId,
+          content,
+          ...(turnId ? { turn_id: turnId } : {}),
+        })];
+      }
       case ClaudeSessionEventName.SESSION_TERMINATED:
       case ClaudeSessionEventName.STATUS_CHANGED:
         return [this.createStatusEvent(claudeEventName)];

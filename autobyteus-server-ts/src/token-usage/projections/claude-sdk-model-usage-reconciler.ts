@@ -138,6 +138,9 @@ export const reconcileClaudeSdkResult = (input: {
       payload: publicPayload(payload, null, flags) };
   }
   const knownSession = state.checkpoints.some((row) => row.sessionId === sessionId);
+  // SR-012: a resume-opened process restarts cumulative totals from an unknown origin. Its first
+  // observation re-anchors every checkpoint and admits the per-turn main-loop usage instead.
+  const seriesRestart = payload.claude_sdk_series_restart === true;
   const zeroOrigin = payload.claude_sdk_query_kind === 'create' || knownSession;
   let selectedTokens: Counts | null = null;
   const next = structuredClone(state);
@@ -153,8 +156,8 @@ export const reconcileClaudeSdkResult = (input: {
       continue;
     }
     const current: Checkpoint = { ...row, canonicalModel: row.canonicalModel ?? previous?.canonicalModel ?? null, sessionId };
-    const regressed = Boolean(previous && fields.some((field) => row[field] < previous[field]));
-    const mayContribute = !regressed && Boolean(previous || zeroOrigin);
+    const regressed = !seriesRestart && Boolean(previous && fields.some((field) => row[field] < previous[field]));
+    const mayContribute = seriesRestart || (!regressed && Boolean(previous || zeroOrigin));
     // A regression is a reset baseline: suppress this row, then advance from it once.
     if (index >= 0) next.checkpoints[index] = current;
     else next.checkpoints.push(current);
@@ -164,8 +167,19 @@ export const reconcileClaudeSdkResult = (input: {
       flags = flagsWith(flags, regressed ? 'claude_sdk_selected_regressed' : 'claude_sdk_selected_legacy_resume_baselined');
       continue;
     }
-    selectedTokens = Object.fromEntries(fields.map((field) =>
-      [field, row[field] - (previous?.[field] ?? 0)])) as Counts;
+    if (seriesRestart) {
+      const mainLoop = payload.claude_sdk_main_loop_usage;
+      if (!mainLoop || !fields.every((field) => typeof mainLoop[field] === 'number')) {
+        next.partial = true;
+        flags = flagsWith(flags, 'claude_sdk_series_restart_main_loop_unavailable');
+        continue;
+      }
+      selectedTokens = Object.fromEntries(fields.map((field) => [field, mainLoop[field]!])) as Counts;
+      flags = flagsWith(flags, 'claude_sdk_series_restart_main_loop_delta');
+    } else {
+      selectedTokens = Object.fromEntries(fields.map((field) =>
+        [field, row[field] - (previous?.[field] ?? 0)])) as Counts;
+    }
     const detailIndex = next.selectedDetails.findIndex((detail) => detail.rawModelId === row.rawModelId && detail.provider === row.provider);
     const oldDetail = detailIndex >= 0 ? next.selectedDetails[detailIndex]! : null;
     const detailCounts = fields.map((field) => safeSum(oldDetail?.[field] ?? 0, selectedTokens![field]));

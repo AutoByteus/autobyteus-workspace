@@ -7,7 +7,8 @@ export type RuntimeMemoryTraceType =
   | "reasoning"
   | "tool_call"
   | "tool_result"
-  | "provider_compaction_boundary";
+  | "provider_compaction_boundary"
+  | "system_task_notification";
 
 type RuntimeMemoryTraceInputBase = {
   turnId: string;
@@ -65,7 +66,21 @@ type RuntimeMemoryUserTraceInput = Omit<RuntimeMemoryNonToolTraceInput, "traceTy
   fileAttachments?: readonly ContextFileReference[];
 };
 
+/** A system notice shown in the conversation (recorded only for Claude background-task notices). */
+export type RuntimeMemorySystemTaskNotificationTraceInput = RuntimeMemoryTraceInputBase & {
+  traceType: "system_task_notification";
+  senderId: string;
+  media?: never;
+  toolName?: never;
+  toolCallId?: never;
+  toolArgs?: never;
+  toolResult?: never;
+  toolError?: never;
+  correlationId?: never;
+};
+
 export type RuntimeMemoryTraceInput =
+  | RuntimeMemorySystemTaskNotificationTraceInput
   | RuntimeMemoryUserTraceInput
   | RuntimeMemoryNonToolTraceInput
   | RuntimeMemoryToolCallTraceInput

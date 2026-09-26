@@ -2,6 +2,25 @@ import { describe, expect, it } from 'vitest';
 import { buildConversationFromProjection } from '../runProjectionConversation';
 
 describe('runProjectionConversation', () => {
+  it('rehydrates a replayed Claude background-task notice as a system task notification segment', () => {
+    const conversation = buildConversationFromProjection('run-claude-notice', [
+      { kind: 'message', role: 'user', content: 'build in the background', ts: 1 },
+      { kind: 'message', role: 'assistant', content: 'Started.', ts: 2 },
+      { kind: 'system_task_notification', role: null, senderId: 'system.claude_background_task',
+        content: 'Background task completed: Build app (completed)', ts: 3 },
+      { kind: 'message', role: 'assistant', content: 'Build finished.', ts: 4 },
+    ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'haiku' });
+
+    const segments = conversation.messages.flatMap((message) => message.type === 'ai' ? message.segments : []);
+    expect(segments).toContainEqual({
+      type: 'system_task_notification',
+      senderId: 'system.claude_background_task',
+      content: 'Background task completed: Build app (completed)',
+    });
+    const aiText = conversation.messages.filter((message) => message.type === 'ai').map((message) => message.text).join('|');
+    expect(aiText).not.toContain('Background task completed');
+  });
+
   it('rehydrates an AGY provider ERROR denial without making other errors denied', () => {
     const conversation = buildConversationFromProjection('run-denied', [
       { kind: 'tool_call', invocationId: 'agy-denied', toolName: 'run_command',

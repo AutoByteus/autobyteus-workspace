@@ -1,0 +1,17 @@
+version: 1.4.84
+files:
+  - url: AutoByteus_personal_macos-arm64-1.4.84.zip
+    sha512: DehkQ1how31nNuuZsVaBYsePCJYIEcy+sdNWwKJCWqjcLEkxbt8I5JF5Nxvw+KXLfXz88kvidaDbhootwKc3SA==
+    size: 507370899
+  - url: AutoByteus_personal_macos-arm64-1.4.84.dmg
+    sha512: 296Fs+xOAycXfV40t7xj5csFIDUm4WyFLNen0WQss8kBM4wETMRmlOeUdq23lDzCDKP1f6L7aDsXcEJD8VX5yA==
+    size: 512136881
+  - url: AutoByteus_personal_macos-x64-1.4.84.zip
+    sha512: Gk2x5oi7WljbA3gweI02WRPI+dfF9ZROrhww8pZwyoh7Zru6KWCRiGcZ96xVO7rcS3kzafOklpjqFmWbj+WdoA==
+    size: 529010510
+  - url: AutoByteus_personal_macos-x64-1.4.84.dmg
+    sha512: 7Het/5LCbD9LZUauqQSLwWSdFxRlsUKGGsUMiRZ1DOKrtfnZoxsDTPYoFAXwjupnPLCWMyFzFghqrJXggonZBg==
+    size: 534850063
+path: AutoByteus_personal_macos-arm64-1.4.84.zip
+sha512: DehkQ1how31nNuuZsVaBYsePCJYIEcy+sdNWwKJCWqjcLEkxbt8I5JF5Nxvw+KXLfXz88kvidaDbhootwKc3SA==
+releaseDate: '2026-09-26T05:45:01.315Z'

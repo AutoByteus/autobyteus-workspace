@@ -1,7 +1,7 @@
 # Delivery / Release / Deployment Report
 
 ## Scope and authority
-Package task-agent-peer-sidebar; DR-001; task_size=Small; architectural_risk=Low; direct low-risk route. This is a repository-delivery candidate, not a requested release. Handoff summary Updated: handoff-summary.md. Revision authority: delivery-revision-record.md. Docs authority: docs-sync-report.md.
+Package task-agent-peer-sidebar; DR-002; task_size=Small; architectural_risk=Low; direct low-risk route. Authoritative completed repository delivery and user-requested v1.4.84 release. Handoff summary Updated: handoff-summary.md. Revision authority: delivery-revision-record.md. Docs authority: docs-sync-report.md.
 
 ## Initial delivery integration refresh
 - Bootstrap/base checked: origin/personal@1676bede9d910ca40dc0331390a35f203206fd41, fetched 2026-09-26 with `git fetch origin personal`.
@@ -12,27 +12,27 @@ Package task-agent-peer-sidebar; DR-001; task_size=Small; architectural_risk=Low
 - Delivery edits started only after current-base check: Yes. Handoff current with checked remote base: Yes (refetch required after verification).
 
 ## User verification
-Initial explicit delivery verification: No. Acceptance reference: none. Earlier implementation approval is insufficient. Renewed verification: not yet applicable; initial verification outstanding.
+Received 2026-09-26: “the task is done. lets finalize and release a new version.” This is explicit candidate verification and release authorization. Post-verification fetch confirmed unchanged origin/personal@1676bede9; no new base delta or renewed verification needed.
 
 ## Docs and ticket state
-Docs Updated: autobyteus-web/docs/agent_teams.md (peer rows, identity, projection/ancestry ownership, containment and availability boundaries). Release notes prepared before verification: release-notes.md (Unreleased).
-Moved to tickets/done: No. Current ticket: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/task-agent-peer-sidebar. Future archive: tickets/done/task-agent-peer-sidebar, not created yet.
+Docs sync Updated: autobyteus-web/docs/agent_teams.md; report docs-sync-report.md. Archived before final commit to tickets/done/task-agent-peer-sidebar. Durable integration checkout: /Users/normy/autobyteus_org/autobyteus-workspace-superrepo.
 
-## Repository finalization
-Bootstrap authority: solution-handoff.md / investigation-notes.md.
-- Ticket branch codex/task-agent-peer-sidebar at a35f017a7; upstream implementation/API commits present. Delivery commit Pending user verification.
-- Ticket push, target update/merge/push: Not attempted — verification hold.
-- Target remote/branch: origin/personal.
-- Target advanced after acceptance: not assessed (no acceptance yet).
-- Edit protection/re-integration: Not needed at initial refresh; reassess after verification.
-- Finalization status: Blocked — explicit user verification missing.
+## Repository finalization — Completed
+- Ticket commit 5702b89227cfa2f18417f900a1b516eec25dab73; ticket push Completed to origin/codex/task-agent-peer-sidebar.
+- Updated personal from origin (already current), merged ticket with --no-ff: 4c2348eaa07b676907167d57dec286ff337a4641; pushed origin/personal successfully.
+- Upstream candidate a35f017a7 and implementation 90d71e7f3 retained in ancestry. Only delivery docs/archive followed validation.
+- Main checkout's unrelated untracked .article-work and four dist directories preserved untouched.
 
-## Release / publication / deployment / version
-Applicable: No under current request; no version/tag/release/packaging/deployment requested. Result: Not required. No version bump, tag, release commit, publication, deployment or rollout performed. If later requested, follow autobyteus-web/AGENTS.md canonical root release helper after finalization, not duplicate dispatch. Release notes archive/use: not yet archived; publication handoff Not required.
+## Release / publication / deployment — Completed
+User-authorized patch version 1.4.84 (previous 1.4.83; local/remote next tag absent).
+Because personal checkout contains unrelated untracked outputs, created clean worktree /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar-release on delivery/task-agent-peer-sidebar-release from finalized personal. Used documented helper options:
+`pnpm release 1.4.84 --branch delivery/task-agent-peer-sidebar-release --no-push --release-notes tickets/done/task-agent-peer-sidebar/release-notes.md`.
+Helper copied archived notes into .github/release-notes/release-notes.md, bumped autobyteus-web/package.json, committed ae3aba1bfb7af6fefd8c69994e0b1bc421967d60 and created annotated v1.4.84. Then fast-forwarded personal to that exact commit, pushed origin/personal, and pushed v1.4.84 once. No manual tag creation or duplicate dispatch.
+Version/tag/package aligned. All four standard tag-triggered workflows (Desktop, Android, iOS, Server Docker) Completed / success at release commit ae3aba1bf. Evidence: evidence/delivery/release-workflows.json.
+No user-installed app upgrade, live service restart or public App Store submission requested; repository-configured publication is the release scope.
 
-## Post-finalization cleanup
-Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar.
-Worktree removal/prune and local ticket branch deletion: Blocked pending verification and safe finalization; retained intentionally. Remote branch cleanup: Not required currently (no delivery push). API-owned temporary page/browser/process cleanup already confirmed in API evidence; no user app/data touched.
+## Post-finalization cleanup — Completed
+Both dedicated ticket and release-preparation worktrees removed with git worktree remove after clean-status and merged-ancestry checks. Both local branches deleted with git branch -d; git worktree prune completed. Paths confirmed absent; no force removal or unrelated cleanup. Remote ticket branch retained as audit reference (deletion Not required). API-owned temporary runtime cleanup already confirmed by API-REV-001.
 
 ## Data and rollback
 Approved persisted-data transition: Not Affected. Delivery action None; source adapter only, no data migration/reset. No environment transition.
@@ -41,18 +41,15 @@ Rollback criteria: wrong execution selection, hidden peers or broken Team contai
 ## Verification evidence
 API report, ledger and evidence paths indexed in handoff-summary.md. 63 tests/11 files and three Chrome journeys twice Pass; 95% scoped confidence. Backend transport/retained fixture emulated; live backend/LLM/WebSocket, Electron, full suite/build/typecheck/packaging untested. Independent review gates N/A — direct route. No additional delivery executable run claimed.
 
-## Hold classification and routing
-Result Blocked — routine explicit user-verification hold. No Local Fix, Design Impact, Requirement Gap or Unclear finding discovered; no issue needs upstream classification. Next actor user, then Delivery Engineer. Handoff rules inspected; no conditional rule applies to this routine hold. No successful terminal package sent.
+## Publication / rollout verification
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.84, public stable non-draft/non-prerelease. 17 nonempty assets: macOS ARM64/x64 DMG+ZIP/blockmaps, Linux ARM64/x64 AppImages, Windows EXE, Android APK/checksum, four updater metadata files.
+- Archived curated release notes match published body. Downloaded latest-mac.yml, latest-linux.yml, latest-linux-arm64.yml and latest.yml: all version 1.4.84 and all referenced filenames exist in release assets. Evidence publication-checks.json / github-release.json / latest*.yml.
+- Desktop 36220894539, Android 36220894567, iOS 36220894529 and Docker 36220894533 all successful. evidence/delivery/*-jobs.json records individual jobs; release-workflows.json records all four exact-SHA workflow results.
+- iOS Archive And Upload To App Store Connect job success; no final public App Store review/submission claimed.
+- Docker registry read verifies autobyteus/autobyteus-server:1.4.84 and :latest both resolve to sha256:4a5e11b59df27c70df08303443f47d41776a21319ff3ef78f3105688ec783d47, with linux/amd64 and linux/arm64 manifests. evidence/delivery/docker-registry.json. No separate zh variant requested or dispatched.
+- Remote annotated tag dereferences to ae3aba1bfb7af6fefd8c69994e0b1bc421967d60; package version matches. Final delivery evidence commit follows tag on personal without changing released code/version.
+- Release publication/metadata/registry checks completed; no installed binary runtime smoke, downloaded-binary hash verification, live user app update or container launch claimed. API-stage mock limits remain. Existing GitHub dependency alerts were reported by push (937 total at execution); no security remediation or security certification claimed in this scoped UI release.
 
-## Final gates
-- Explicit user verification complete: No.
-- Repository finalization complete: No.
-- Applicable release/deployment/rollout complete or not required: Yes — Not required for current scope.
-- Applicable safe cleanup complete: No — pending finalization.
-- Unresolved blocker: user verification.
-- Successful terminal package eligible: No.
-- Terminal package sent to Solution Designer: No; reference N/A.
-
-## DR-002 — Verified finalization and release in progress
-2026-09-26 user: “the task is done. lets finalize and release a new version.”
-This explicitly verifies the candidate and authorizes finalization plus release. Earlier pending-verification statements describe DR-001 and are superseded by this section. Refetched origin/personal: unchanged 1676bede9d910ca40dc0331390a35f203206fd41; no incoming commits, no re-integration or renewed verification required. Release now Applicable: Yes, planned v1.4.84. Ticket archived before final commit. Repository finalization/release/cleanup pending execution; terminal return not yet eligible. Main personal checkout has unrelated untracked outputs: preserve them. Use clean isolated release-preparation worktree with documented helper --branch/--no-push, then fast-forward personal and push branch/tag exactly once. No duplicate workflow dispatch.
+## Final gates — Delivery Completed
+Explicit user verification: Completed. Repository finalization: Completed. Applicable release/publication/rollout verification: Completed. Safe worktree/local-branch cleanup: Completed. Data transition: Not required. Additional live-environment deployment: Not required. Unresolved blocker: None.
+Successful terminal package eligible: Yes. Next action: configured terminal receipt to Solution Designer; send-message tool result is the dispatch authority (not inferred from this pre-dispatch file). DR-002 is the completed delivery revision. Final evidence commit and pushed personal SHA are included in terminal message.

@@ -7,6 +7,8 @@ import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
+import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import {
   AgentRunEventType,
@@ -203,6 +205,7 @@ const createFactory = (input: {
   const factory = builder.createForExecution({
     agentDefinitionService: {
       getAgentDefinitionById: async () => ({
+        name: "Claude backend integration agent",
         instructions: input.instructions ?? "Reply briefly.",
         description: "Fallback Claude backend integration instructions.",
         skillNames: [],
@@ -230,6 +233,21 @@ const writeBackendEventLog = async (testName: string, events: AgentRunEvent[]): 
     "utf8",
   );
 };
+
+const wrapAgentRun = (backend: Awaited<ReturnType<ClaudeAgentRunBackendFactory["createBackend"]>>) =>
+  Object.assign(new AgentRun({
+    providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+    context: backend.getContext(),
+    backend,
+  }), { backend });
+
+const createAgentRun = async (factory: ClaudeAgentRunBackendFactory, runId: string, config: AgentRunConfig) =>
+  wrapAgentRun(await factory.createBackend(config, runId));
+
+const restoreAgentRun = async (
+  factory: ClaudeAgentRunBackendFactory,
+  context: Parameters<ClaudeAgentRunBackendFactory["restoreBackend"]>[0],
+) => wrapAgentRun(await factory.restoreBackend(context));
 
 describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live transport)", () => {
   let sessionManager: ClaudeSessionManager | null = null;
@@ -289,7 +307,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       sessionManager = built.sessionManager;
       const factory = built.factory;
 
-      const backend = await factory.createBackend(
+      const backend = await createAgentRun(factory, runId,
         new AgentRunConfig({
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           agentDefinitionId: "agent-def-claude-live-normal",
@@ -333,7 +351,10 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           events,
           (event) =>
             event.eventType === AgentRunEventType.SEGMENT_END &&
-            event.payload.segment_type === "text",
+            events.some((start) =>
+              start.eventType === AgentRunEventType.SEGMENT_START &&
+              start.payload.segment_type === "text" &&
+              start.payload.id === event.payload.id),
         );
         await waitForEvent(
           events,
@@ -343,7 +364,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
             event.statusHint === "IDLE",
         );
 
-        expect(backend.getStatusSnapshot()).toEqual({ status: "idle" });
+        expect(backend.getStatusSnapshot()).toMatchObject({ status: "idle" });
         expect(
           events.some(
             (event) =>
@@ -378,7 +399,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       sessionManager = built.sessionManager;
       const factory = built.factory;
 
-      const backend = await factory.createBackend(
+      const backend = await createAgentRun(factory, runId,
         new AgentRunConfig({
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           agentDefinitionId: "agent-def-claude-live-approved",
@@ -476,7 +497,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       sessionManager = built.sessionManager;
       const factory = built.factory;
 
-      const backend = await factory.createBackend(
+      const backend = await createAgentRun(factory, runId,
         new AgentRunConfig({
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           agentDefinitionId: "agent-def-claude-live-denied",
@@ -553,7 +574,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       sessionManager = built.sessionManager;
       const factory = built.factory;
 
-      const backend = await factory.createBackend(
+      const backend = await createAgentRun(factory, runId,
         new AgentRunConfig({
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           agentDefinitionId: "agent-def-claude-live-autoexec",
@@ -625,7 +646,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       sessionManager = built.sessionManager;
       const factory = built.factory;
 
-      const backend = await factory.createBackend(
+      const backend = await createAgentRun(factory, runId,
         new AgentRunConfig({
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           agentDefinitionId: "agent-def-claude-live-interrupt",
@@ -699,7 +720,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       sessionManager = built.sessionManager;
       const factory = built.factory;
 
-      const original = await factory.createBackend(
+      const original = await createAgentRun(factory, runId,
         new AgentRunConfig({
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           agentDefinitionId: "agent-def-claude-live-restore",
@@ -741,12 +762,18 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
 
         const sessionId = original.getPlatformAgentRunId();
         expect(sessionId).toBeTruthy();
-        const storedContext = original.getContext();
+        const liveContext = original.backend.getContext();
+        // A restored run is rebuilt from persisted metadata that carries the provider session id.
+        const storedContext = new AgentRunContext({
+          runId: liveContext.runId,
+          config: liveContext.config,
+          runtimeContext: { sessionId } as never,
+        });
 
         const terminateResult = await original.terminate();
         expect(terminateResult).toMatchObject({ accepted: true });
 
-        const restored = await factory.restoreBackend(storedContext);
+        const restored = await restoreAgentRun(factory, storedContext);
         const restoredEvents: AgentRunEvent[] = [];
         const unsubscribeRestored = restored.subscribeToEvents((event) => {
           if (event && typeof event === "object") {
@@ -808,7 +835,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       sessionManager = built.sessionManager;
       const factory = built.factory;
 
-      const backend = await factory.createBackend(
+      const backend = await createAgentRun(factory, runId,
         new AgentRunConfig({
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           agentDefinitionId: "agent-def-claude-browser-live",
@@ -904,7 +931,7 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
       sessionManager = built.sessionManager;
       const factory = built.factory;
 
-      const backend = await factory.createBackend(
+      const backend = await createAgentRun(factory, runId,
         new AgentRunConfig({
           runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
           agentDefinitionId: "agent-def-claude-browser-surface-live",

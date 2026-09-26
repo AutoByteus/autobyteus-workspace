@@ -65,13 +65,17 @@
         @update:model-value="updateWorkspaceSelection"
       />
       <WorkspaceSelector
-        v-else-if="existingScope"
-        :model="existingScope.workspaceControl"
+        v-else-if="existingScope?.workspacePresentation.kind === 'selector'"
+        :model="existingScope.workspacePresentation.model"
         :disabled="isInteractionDisabled"
         :historical-value-unavailable-message="historicalUnavailableMessage"
         :auto-select-default="false"
         control-variant="quiet"
         @update:model-value="updateWorkspaceSelection"
+      />
+      <FixedWorkspacePath
+        v-else-if="existingScope?.workspacePresentation.kind === 'fixed-path'"
+        :root-path="existingScope.effectiveConfig.workspaceRootPath"
       />
     </div>
 
@@ -218,13 +222,17 @@
           @update:model-value="updateWorkspaceSelection"
         />
         <WorkspaceSelector
-          v-else-if="existingScope"
-          :model="existingScope.workspaceControl"
+          v-else-if="existingScope?.workspacePresentation.kind === 'selector'"
+          :model="existingScope.workspacePresentation.model"
           :disabled="isInteractionDisabled"
           :historical-value-unavailable-message="historicalUnavailableMessage"
           :auto-select-default="false"
           control-variant="quiet"
           @update:model-value="updateWorkspaceSelection"
+        />
+        <FixedWorkspacePath
+          v-else-if="existingScope?.workspacePresentation.kind === 'fixed-path'"
+          :root-path="existingScope.effectiveConfig.workspaceRootPath"
         />
       </div>
 
@@ -256,6 +264,7 @@ import { computed, ref, watch } from 'vue'
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import AutoApproveSwitch from './AutoApproveSwitch.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
+import FixedWorkspacePath from './FixedWorkspacePath.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type { TeamScopeConfigOverride } from '~/types/agent/TeamRunConfig'
 import type { RuntimeModelConfigSchemaState } from '~/types/agent/RuntimeModelConfigSchemaState'
@@ -348,7 +357,8 @@ const resetScope = () => {
   if (!isInteractionDisabled.value && editableScope.value) emit('reset')
 }
 const updateWorkspaceSelection = (selection: WorkspaceSelectionState) => {
-  if (!isInteractionDisabled.value && (editableScope.value || existingScope.value?.workspaceControl.mode === 'editable')) {
+  if (!isInteractionDisabled.value && (editableScope.value || (existingScope.value?.workspacePresentation.kind === 'selector'
+    && existingScope.value.workspacePresentation.model.mode === 'editable'))) {
     emit('update:workspace-selection', props.scope.address, selection)
   }
 }

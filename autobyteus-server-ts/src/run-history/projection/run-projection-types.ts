@@ -38,6 +38,7 @@ export interface RunProjectionConversationEntry {
   toolError?: string | null;
   media?: Record<string, string[]> | null;
   fileAttachments?: readonly ContextFileReference[];
+  senderId?: string | null;
   ts?: number | null;
 }
 

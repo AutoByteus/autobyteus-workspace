@@ -6,6 +6,19 @@ import { parseClaudeSdkResultUsage } from "./claude-sdk-result-usage-parser.js";
 const countOf = (value: unknown): number | null =>
   typeof value === "number" && Number.isSafeInteger(value) && value >= 0 ? value : null;
 
+/**
+ * `modelUsage` is cumulative per streaming session. A crash/startup-error result may carry
+ * zeroed totals (SDK doc); forwarding them would reset the reconciler baseline and make the
+ * next result count the whole session again (RSK-007), so such results are not usage.
+ */
+const isZeroedErrorResult = (
+  result: Record<string, unknown>,
+  models: ReturnType<typeof parseClaudeSdkResultUsage>["models"],
+): boolean =>
+  asString(result.subtype) !== "success" && models.length > 0 && models.every((row) =>
+    row.inputTokens === 0 && row.outputTokens === 0 &&
+    row.cacheReadInputTokens === 0 && row.cacheCreationInputTokens === 0);
+
 /** One sanitized, result-level observation. Main-loop usage is context only. */
 export const buildClaudeTokenUsageEvent = (input: {
   chunk: unknown;
@@ -22,6 +35,7 @@ export const buildClaudeTokenUsageEvent = (input: {
   if (asString(result.type)?.toLowerCase() !== "result") return null;
 
   const parsed = parseClaudeSdkResultUsage(result);
+  if (isZeroedErrorResult(result, parsed.models)) return null;
   const binding = input.selectedBinding;
   const selectedRawId = binding?.selectedModelValue === input.model ? binding.selectedResolvedRawModelId : null;
   const selectedRows = selectedRawId ? parsed.models.filter((row) => row.rawModelId === selectedRawId) : [];
@@ -88,6 +102,7 @@ export const buildClaudeTokenUsageEvent = (input: {
   };
 };
 
+/** Emits the usage observation for `chunk`; returns whether an event was emitted (IC-5). */
 export const emitClaudeTokenUsageEvent = (
   chunk: unknown,
   runId: string,
@@ -97,7 +112,10 @@ export const emitClaudeTokenUsageEvent = (
   queryKind: ClaudeSdkQueryKind,
   selectedBinding: ClaudeSdkSelectedBinding,
   emitEvent: (event: ClaudeSessionEvent) => void,
-): void => {
+  seriesRestart = false,
+): boolean => {
   const event = buildClaudeTokenUsageEvent({ chunk, runId, turnId, sessionId, model, queryKind, selectedBinding });
-  if (event) emitEvent(event);
+  if (!event) return false;
+  emitEvent(seriesRestart ? { ...event, params: { ...event.params, claude_sdk_series_restart: true } } : event);
+  return true;
 };

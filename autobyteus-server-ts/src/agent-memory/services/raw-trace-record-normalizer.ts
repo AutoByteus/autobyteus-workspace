@@ -72,6 +72,8 @@ export const toMemoryTraceEvent = (trace: RawTraceRecord): MemoryTurnTraceEvent 
   if (Object.prototype.hasOwnProperty.call(trace, "tool_error")) {
     event.toolError = asString(trace["tool_error"]);
   }
+  const senderId = asString(trace["sender_id"]);
+  if (senderId) event.senderId = senderId;
   return event;
 };
 
