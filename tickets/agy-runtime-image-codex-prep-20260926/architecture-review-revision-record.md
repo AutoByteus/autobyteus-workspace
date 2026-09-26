@@ -9,6 +9,7 @@ The latest `design-review-report.md` is authoritative; this file records review 
 | ARCH-REV-001 | Round 1 / Architecture Design Complete | SR-005, SR-006, SR-007 | N/A | Fail — Design Impact | F-001 |
 | ARCH-REV-002 | Round 2 / Revised Architecture Design Complete | SR-008, SR-009, SR-010, SR-011 | Fail — Design Impact | Fail — Design Impact | F-001 resolved; F-002 new |
 | ARCH-REV-003 | Round 3 / Revised Architecture Design Complete | SR-012 | Fail — Design Impact | Pass | F-002 resolved |
+| ARCH-REV-004 | Round 4 / Approved skill-policy change | SR-013, SR-014, SR-015 | Pass (SR-012 only) | Pass (SR-015) | None; F-001/F-002 remain resolved |
 
 ## Revision Entries
 
@@ -73,3 +74,26 @@ None.
 - Material classification changes: None; `task_size=Medium`, `architectural_risk=High` remain justified.
 - Recommended recipient: `/implementation_engineer` primary, then `/solution_designer` informational.
 - Remaining risks or uncertainty: Exact AGY native profile, actual app-backed native-image output and Codex first turn remain implementation/API-E2E validation gates, not claimed facts. User-deferred live symlink updates are out of scope.
+
+
+### ARCH-REV-004 — Approved semantic-invalid skill skip design passes
+
+- Canonical design review report: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/tickets/agy-runtime-image-codex-prep-20260926/design-review-report.md`
+- Review round and trigger: Round 4, `SR-015` revised architecture following SR-013/E-034 approval and CRR-001 block on older IR-001 skill code.
+- Triggering role, report path, and finding IDs: `/solution_designer`, `solution-result.md`; no prior open architecture finding. CRR-001 had no promoted source finding.
+- Relevant solution revision IDs: `SR-013`, `SR-014`, `SR-015`; unchanged `SR-005` native-tool and `SR-009/SR-010` missing-skill basis still apply.
+- Prior authoritative decision: Pass on SR-012 only (ARCH-REV-003).
+- Current authoritative decision: Pass on SR-015 revised design; not code/API-E2E signoff.
+- What changed in the review result or what baseline was established: The user-approved invalid-content outcome supersedes SR-012's hard failure. The detailed AGY resolver now owns semantic-invalid/missing versus unsafe provenance classification; materializer warns/omits the two skippable causes, snapshots only trusted resolved sources, and retains safety/source-change/unrelated failures. Native AGY image/tool boundaries are unchanged and remain coherent.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-001 | Resolved in ARCH-REV-002/003 | Remains resolved | SR-008, SR-015 | `design-spec.md` DS-003 and provider-public/private failure boundary retain fixed public text, scrubbed image arguments/output, private-only raw diagnostics and no failed artifact. |
+| F-002 | Resolved in ARCH-REV-003 | Remains resolved under changed disposition | SR-012, SR-015 | `design-spec.md` DS-004 and SkillService/resolver interface still classify absence and present-invalid separately; SR-013 changes invalid's disposition to approved warn/omit while leaving provenance/collision/source-change coded failures outside the semantic-invalid catch. |
+
+- New or remaining finding IDs: None.
+- Material classification changes: None; `task_size=Medium`, `architectural_risk=High` remain justified.
+- Recommended recipient: `/implementation_engineer` primary, then `/solution_designer` informational.
+- Remaining risks or uncertainty: IR-001 skill code follows old policy; CRR-001 was blocked, not signoff. Actual AGY native image/output/profile and Codex first turn remain executable validation gates. User-deferred live symlinks remain out of scope.

@@ -7,6 +7,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-003 on SR-012 | N/A | Initial Baseline | SR-009/SR-010/SR-012; ARCH-REV-003; CRR/API-REV/DR N/A | Implementation ready for independent Code Review; live provider/API-E2E gates remain open |
+| IR-002 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-004 on SR-015; CRR-001 authority hold | CRR-001/C-001 held for upstream clarification, not a source defect | Implementation Revision | SR-013/SR-014/SR-015; ARCH-REV-004; CRR-001; API-REV/DR N/A | Revised skill policy implemented; fresh full Code Review required; provider/API-E2E gates remain open |
 
 ## Revision Entries
 
@@ -16,7 +17,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Triggering finding IDs: N/A; ARCH-REV-001/F-001 and ARCH-REV-002/F-002 were resolved in the reviewed design.
 - Classification: Initial Baseline; `task_size=Medium`, `architectural_risk=High`.
 - Prior authoritative result: N/A.
-- Current authoritative result: Server commits `3134b966cd214ba32b1adb279a3d665f07f955ef` and `b0d17d98fbc31b5effe8e609f5fd87ba5482d65a` and agent-package commit `a8c2c71273e4d583c950fadd163d60977ff0c39a`; independent source review requested. Native provenance, real provider image bytes/path, complete selective CLI profile and live Codex first turn are not yet signed off.
+- Current authoritative result at IR-001: Server implementation commits `33a926187` and `84f8fa569`, and agent-package commit `78828dc` (commit identities corrected at the user's request after the historical CRR-001 snapshot); independent source review requested. Native provenance, real provider image bytes/path, complete selective CLI profile and live Codex first turn were not signed off.
 - Related solution revision IDs: SR-009, SR-010, SR-012.
 - Related architecture-review revision IDs: ARCH-REV-003 (with prior F-001/F-002 context).
 - Related code-review revision IDs: N/A.
@@ -29,3 +30,24 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Local validation and result: Server build TypeScript check passed after Prisma generation; 7 focused server unit files: 91 passed, 1 skipped; 3 file projection/REST unit files: 25 passed; `git diff --check` clean; bundled skill matches canonical 31-file source at `6db634c118ccc6193428fe6bf7422d22357e42d3` except new provenance note; Markdown relative references missing: 0.
 - Next recipient or routing: Independent Code Review per High architectural risk, subject to `get_handoff_rules`.
 - Remaining limitations or risks: No implementation-scoped live AGY invocation was run, in accordance with the user's no-more-exploratory-experiments instruction and downstream API/E2E ownership. The actual native image output schema, exact model-exposed native profile, real output bytes/path through Files, MCP coexistence/collaboration exclusion, UI redaction and Codex first turn remain explicit downstream validation gates. If the provider contradicts SR-012, return Design Impact rather than add a fallback.
+
+### IR-002 — Approved semantic-invalid skill warning and safety boundary
+
+- Triggering role, report path, and round: Architecture Reviewer, `design-review-report.md`, ARCH-REV-004 Pass on SR-015; prior Code Reviewer `code-review-report.md`, CRR-001 Blocked pending changed requirements.
+- Triggering finding IDs: CRR-001/C-001 was held for upstream authority and is not an implementation defect. SR-013 was explicitly approved in SR-014/E-034 before SR-015/ARCH-REV-004.
+- Classification: Implementation Revision; `task_size=Medium`, `architectural_risk=High` unchanged.
+- Prior authoritative result: IR-001 treated present-invalid AGY skill candidates as hard failures; CRR-001 did not pass the source because intended behavior changed.
+- Current authoritative result: Server implementation commit `dd9efb39b` and agent-package documentation commit `a140474` implement semantic-invalid warning/omission while retaining hard safety/source-change failures. A fresh full Code Review is required; no API/E2E signoff is claimed.
+- Related solution revision IDs: SR-013, SR-014, SR-015 (prior SR-009/SR-010/SR-012 remain relevant to unchanged native-tool/image design).
+- Related architecture-review revision IDs: ARCH-REV-004 (ARCH-REV-003 historical).
+- Related code-review revision IDs: CRR-001 Blocked, historical only.
+- Related API/E2E revision IDs: N/A.
+- Related delivery revision IDs: N/A.
+- Why this revision is recorded: User-approved change requires an otherwise healthy AGY agent to start despite missing or semantically invalid configured SKILL.md, without copying invalid content; safety faults still block.
+- Approved behavior or requirement IDs affected: BEH-002, REQ-003/004, AC-003/004/006; BEH-001/003 remain as IR-001.
+- Implementation delta: Narrowed detailed resolver outcomes to `unsafe_name`, `missing_manifest`, `unreadable_manifest`, `malformed_manifest`, `name_mismatch`; shared `SkillLoader` metadata/name validation remains authoritative. Provenance, bounded source-tree safety inspection, fingerprint, global nested-root cycle/out-of-bounds handling and source-change checks remain coded hard failures rather than semantic-invalid catches. AGY materializer logs sanitized run/agent/skill/reason and omits only skipped bindings; other resolved skills snapshot normally. Legacy Codex/Claude resolution and manifest-v1 restoration remain unchanged. Package README now describes approved policy.
+- Changed files or areas: `src/skills/{domain/configured-agent-skill-binding.ts,services/configured-agent-skill-resolver.ts,services/configured-skill-source-fingerprint.ts,services/skill-discovery.ts,services/skill-service.ts}`, `src/agent-execution/backends/antigravity/capsule/agy-configured-skill-materializer.ts`, focused skill/capsule unit tests, separate agent-package `README.md`.
+- Local validation and result: Server source build TypeScript check passed; 8 focused unit files 110 passed, 1 skipped, and subsequent two-file resolver/capsule rerun 62 passed; `git diff --check` clean. No live AGY invocation or API/E2E tests were run by Implementation Engineer.
+- Next recipient or routing: Fresh independent Code Review per Medium/High classification, subject to `get_handoff_rules`.
+- Remaining limitations or risks: Exact model-exposed AGY native profile, genuine native `tool_name: generate_image`, real image bytes/path, safe public/private failure flow, MCP coexistence/collaboration exclusion, and Codex first turn require API/E2E. The no-more-exploratory-experiments constraint remains in force. If provider contract contradicts design, return Design Impact, not an MCP fallback.
+- Commit-identity correction: At the user's request, the task branches were rebased to `Ryan Zheng <nogrethumphrey@gmail.com>`. Historical CRR-001 records the pre-rebase SHA snapshot (`3134b966c`→`33a926187`, `b0d17d98f`→`84f8fa569`, `d456f0041`→`04e873ba1`, package `a8c2c7127`→`78828dc`). This changes identifiers, not reviewed source content.

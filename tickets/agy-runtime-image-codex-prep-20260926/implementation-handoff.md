@@ -2,27 +2,27 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Independent architecture review applicable and ARCH-REV-003 Pass. Downstream routing rule to be queried after this artifact is written.
-- Requirements doc: `requirements-doc.md` (approved SR-009/SR-010).
+- Upstream review applicability and handoff-rule result: Independent architecture review applicable and ARCH-REV-004 Pass on SR-015 (ARCH-REV-003 is historical). `get_handoff_rules` selected `/code_reviewer` for complete implementation with `architectural_risk=High`.
+- Requirements doc: `requirements-doc.md` (SR-009/SR-010 plus approved SR-013 in SR-014/E-034).
 - Investigation notes: `investigation-notes.md`.
 - Solution revision record: `solution-revision-record.md`.
-- Design spec: `design-spec.md` (SR-012).
+- Design spec: `design-spec.md` (SR-015, retaining SR-012 native-tool/image design).
 - Supplemental task artifacts: N/A — no behavior-defining supplement.
-- Design review report: `design-review-report.md` (ARCH-REV-003 Pass).
+- Design review report: `design-review-report.md` (ARCH-REV-004 Pass).
 - Architecture review revision record: `architecture-review-revision-record.md`.
-- Triggering rework report/revision/evidence: N/A for initial implementation; ARCH-REV-001/F-001 and ARCH-REV-002/F-002 were resolved upstream before this round.
+- Triggering rework report/revision/evidence: `code-review-report.md` / `code-review-revision-record.md`, CRR-001 Blocked on held C-001 requirement authority; SR-013/SR-014/E-034 approved clarification and SR-015/ARCH-REV-004 reviewed design. CRR-001 did not sign off source.
 
 ## Current Implementation Summary
 
-- Implementation cycle: Initial.
+- Implementation cycle: Revision after changed approved requirements.
 - Implementation revision record: `implementation-revision-record.md`.
-- Current implementation revision ID: IR-001.
-- Related solution revision IDs: SR-009, SR-010, SR-012.
-- Related architecture-review revision IDs: ARCH-REV-003 (prior F-001/F-002 context).
-- Related code-review, API/E2E and delivery revision IDs: N/A.
-- Triggering finding IDs: N/A.
-- Server branch/worktree and commit: `task/agy-runtime-capabilities-20260926`, `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926`, `b0d17d98fbc31b5effe8e609f5fd87ba5482d65a` (preceded by implementation commit `3134b966cd214ba32b1adb279a3d665f07f955ef`); base `ae3aba1bfb7af6fefd8c69994e0b1bc421967d60`, target `origin/personal`.
-- Agent-package branch/worktree and commit: `task/agy-codex-skill-bundle-20260926`, `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-codex-skill-bundle-20260926`, `a8c2c71273e4d583c950fadd163d60977ff0c39a`; base/target `origin/main@1b1a75ee57271745424030e9289a699523ff34a6`.
+- Current implementation revision ID: IR-002.
+- Related solution revision IDs: SR-009, SR-010, SR-012, SR-013, SR-014, SR-015.
+- Related architecture-review revision IDs: ARCH-REV-004 (ARCH-REV-003 and prior F-001/F-002 historical).
+- Related code-review revision IDs: CRR-001 Blocked, historical; fresh full review required. API/E2E and delivery: N/A.
+- Triggering finding IDs: CRR-001/C-001 held upstream, not an implementation-source defect.
+- Server branch/worktree and implementation commit: `task/agy-runtime-capabilities-20260926`, `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926`, `dd9efb39b` (prior implementation `33a926187`, `84f8fa569`; artifact baseline `04e873ba1`); base `ae3aba1bfb7af6fefd8c69994e0b1bc421967d60`, target `origin/personal`.
+- Agent-package branch/worktree and commit: `task/agy-codex-skill-bundle-20260926`, `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-codex-skill-bundle-20260926`, `a140474` (bundle `78828dc`); base/target `origin/main@1b1a75ee57271745424030e9289a699523ff34a6`. Task-branch commits were rebased to the user-specified `Ryan Zheng <nogrethumphrey@gmail.com>` identity; CRR-001's pre-rebase SHA snapshot maps in IR-002.
 
 ## Routing Classification (Mandatory)
 
@@ -31,7 +31,7 @@
 - Design classification reference: `design-spec.md` § Task Size And Architectural Risk.
 - Classification confirmed or changed: Confirmed.
 - Evidence/rationale: Provider tool permission, native image file serving, public error safety and skill provenance remain high-risk boundaries; implementation scope matches bounded medium design across server and separate package.
-- Selected route: Code Review, pending returned handoff rule.
+- Selected route: Fresh full Code Review per returned high-risk implementation rule; CRR-001 was blocked and is not a signoff.
 - Lightweight implementation self-review for direct route: Not Applicable — independent Code Review required.
 - New design impact/escalation trigger: None observed in static implementation; actual provider contract remains an explicit validation gate. A contradiction must be routed as Design Impact.
 
@@ -41,7 +41,7 @@
 | --- | --- | --- | --- |
 | BEH-001 | Default AGY non-collaboration native tools including `generate_image`, with independently scoped MCP and no native collaboration | `runtime-management/antigravity-cli-capability.ts` → `agy-native-tool-policy.ts` → `agy-agent-run-backend-factory.ts` → `agy-run-capsule.ts`; existing MCP authority unchanged | Pinned 1.2.11 profile and explicit unsupported-version failure; no eight-tool fallback or MCP names in native frontmatter. Exact provider exposure remains API/E2E gate. |
 | BEH-003 | Actual native image path or accurate safe failure | `agy-stream-event-converter.ts` → `agy-native-image-result.ts` / `agy-native-image-diagnostic-sink.ts` → canonical lifecycle → `file-change-event-processor.ts` → existing file-content route | Only provider `tool_name: generate_image` uses native handling; explicit absolute output path, regular image file/header check before success; native failure/denial uses static public text, null output, scrubbed start arguments; private bounded diagnostic. Real provider output shape/bytes and UI route remain API/E2E gate. |
-| BEH-002 | Codex skill portable when present; genuinely missing skill warns/omits, invalid source fails | `SkillService` / `ConfiguredAgentSkillResolver` detailed outcomes → AGY factory/materializer → v1 capsule manifest; package `agents/codex/skills/software-engineering-workflow-skill` | `resolved`, `certified_absent`, `invalid_candidate` are distinct; only certified absence warns with run/agent/skill and omits; complete source-tree change/removal fails. Existing Codex/Claude resolver method retained unchanged. Live first turn remains API/E2E gate. |
+| BEH-002 | Codex skill portable when present; missing or semantically invalid content warns/omits; unsafe provenance, collision and source changes block | `SkillService` / `ConfiguredAgentSkillResolver` detailed outcomes → AGY factory/materializer → v1 capsule manifest; package `agents/codex/skills/software-engineering-workflow-skill` | `resolved`, `certified_absent`, `invalid_candidate` stay distinct; both skippable kinds warn with sanitized run/agent/skill and safe disposition/reason, without copying invalid content. Source-tree safety/fingerprint and post-resolution change failures remain hard; valid peers snapshot. Existing Codex/Claude resolver method retained unchanged. Live first turn remains API/E2E gate. |
 
 ## Key Files Or Areas
 
@@ -58,7 +58,7 @@
 ## Known Risks
 
 - Native image output structure and full model-exposed permission set are not yet proven by a real AutoByteus-launched call. API/E2E must establish `tool_name: generate_image`, real image bytes and content endpoint path; `call_mcp_tool` does not pass.
-- Detailed resolution fingerprints the complete trusted skill source tree; materialization rechecks it before and after copy as well as checking files during copying. Reviewer should assess the trust-boundary and race handling.
+- Detailed resolution inspects complete candidate-tree safety before treating metadata errors as skippable, fingerprints valid sources, and materialization rechecks content before/after copy and during copying. Reviewer should assess the trust-boundary and race handling, including contextual/global precedence and nested global-root cycles.
 - Current static/native image path validation checks file type/signature and existence, not a full image decode; downstream must inspect real bytes and serving.
 - Existing chat/Files UI was not rendered in this implementation round; public event/redaction tests are local only.
 
@@ -96,11 +96,11 @@
 
 ## Local Implementation Checks Run
 
-- `tsc -p autobyteus-server-ts/tsconfig.build.json --noEmit`: passed after Prisma generation.
-- Focused AGY/skill/capability unit tests: 7 files, 91 passed, 1 skipped (`/tmp/agy-unit-final.log`).
+- `tsc -p autobyteus-server-ts/tsconfig.build.json --noEmit`: passed after Prisma generation and IR-002 edits.
+- Focused AGY/skill/capability/file-change unit tests: 8 files, 110 passed, 1 skipped (`/tmp/ir002-focused.log`); subsequent resolver/capsule rerun: 2 files, 62 passed (`/tmp/ir002-quick.log`).
 - File-change/projection/REST unit tests: 3 files, 25 passed (`/tmp/agy-filechecks.log`).
 - Package source `diff -qr` against pinned source: only `PROVENANCE.md` differs; Markdown relative-link check: zero missing links.
-- `git diff --check` clean in both worktrees.
+- `git diff --check` clean in both worktrees; changed implementation files remain under 500 effective non-empty lines and below the >220 changed-line signal.
 - Generic server `typecheck` script is currently blocked by pre-existing tsconfig `rootDir=src` including all `tests`; source build config check above passed. No API/E2E sign-off is claimed.
 
 ## Frontend Rendered-Result Check (When Applicable)
@@ -115,7 +115,7 @@
 
 - Native `generate_image` versus `call_mcp_tool` provenance; pin exact model-exposed 1.2.11 default non-collaboration profile and native collaboration exclusions with separately scoped MCP Team/Org calls.
 - Real native image success with verified output bytes, absolute path, Files projection and content endpoint; unavailable/denied/error and `DONE` with explicit error; malicious parameter/output/error marker absent from public tool card/ACK/history/Files but correlated bounded private diagnostic present.
-- Codex bundled skill present first turn; missing-only and mixed present/missing first turns with backend warning and no false loaded claim; malformed/no-manifest/name-mismatched contextual/global candidates, global fallback not hiding contextual invalid, source mutation/removal, `NONE` mode, restore v1.
+- Codex bundled skill present first turn; missing-only, invalid-only and mixed valid+invalid first turns with sanitized backend warning and no false loaded claim; malformed/no-manifest/unreadable/name-mismatched contextual/global candidates, global fallback not hiding contextual invalid, source mutation/removal, out-of-bounds and cyclic roots, protected destination collision, `NONE` mode and restore v1.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
