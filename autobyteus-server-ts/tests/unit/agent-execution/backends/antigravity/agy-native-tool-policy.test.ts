@@ -2,12 +2,10 @@ import { describe, expect, it } from "vitest";
 import { resolveAgyNativeToolProfile } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.js";
 
 describe("AGY native custom-agent policy", () => {
-  it("pins image, coding, web, browser and interaction names without collaboration or MCP", () => {
+  it("pins the exact E-048 eight native names without collaboration or MCP", () => {
     const names = resolveAgyNativeToolProfile("1.2.11").permittedNativeToolNames;
-    expect(names).toEqual(expect.arrayContaining(["generate_image", "view_file", "run_command",
-      "search_web", "read_url_content", "browser_click_element", "ask_question", "schedule"]));
-    expect(names).not.toEqual(expect.arrayContaining(["invoke_subagent", "define_subagent",
-      "manage_subagents", "browser_subagent", "send_message", "manage_inbox", "call_mcp_tool"]));
+    expect(names).toEqual(["view_file", "write_to_file", "replace_file_content", "grep_search",
+      "list_dir", "find_by_name", "run_command", "generate_image"]);
     expect(new Set(names).size).toBe(names.length);
   });
 

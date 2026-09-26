@@ -7,7 +7,6 @@ import { AgentRunEventType } from "../../../../../src/agent-execution/domain/age
 import { AgentSegmentLifecycleEventTransformer } from "../../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.js";
 import { AgentSegmentLifecycleState } from "../../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
 import { AgentTurnLifecycleState } from "../../../../../src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
-import os from "node:os";
 
 const fixture = (name: string, directory = "agy-tool-event-capture") => fs.readFileSync(path.resolve(process.cwd(), `../tickets/done/antigravity-cli-runtime-redesign-20260924/${directory}/${name}.stdout.jsonl`), "utf8")
   .split("\n").filter(Boolean).map((line) => parseAgyStreamMessage(line)).filter((event) => event !== null);
@@ -47,19 +46,32 @@ describe("AGY canonical stream conversion", () => {
     expect(mcp.find((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)?.payload.tool_name).toBe("call_mcp_tool");
   });
 
-  it("accepts a real native image only from an explicit output path", () => {
-    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "agy-native-image-"));
-    try {
-      const file = path.join(dir, "image.png");
-      fs.writeFileSync(file, Buffer.from([137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 0, 0, 0, 0, 0]));
-      const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
-      converter.startTurn("turn");
-      const events = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
-        step_index: 1, step_type: "tool", state: "DONE", tool_name: "generate_image",
-        tool_info: { output: { file_path: file } } } });
-      expect(events.find((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)?.payload.result)
-        .toEqual({ provider_state: "DONE", file_path: fs.realpathSync(file) });
-    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  it("defers native image terminal until result-bound reconciliation", () => {
+    const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
+    converter.startTurn("turn");
+    const events = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
+      step_index: 1, step_type: "tool", state: "DONE", tool_name: "generate_image",
+      tool_info: { output: { file_path: "/untrusted/provider-path.png" } } } });
+    expect(events.map((item) => item.eventType)).toEqual([AgentRunEventType.TOOL_EXECUTION_STARTED]);
+    expect(converter.getPendingNativeImages()).toEqual([{ turnId: "turn", stepIndex: 1, invocationId: "agy-tool-turn-1" }]);
+    const terminal = converter.completeResult({ conversation_id: "conversation", status: "SUCCESS" }, new Map([[1, "/run-owned/image.png"]]));
+    expect(terminal.find((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)?.payload.result)
+      .toEqual({ provider_state: "DONE", file_path: "/run-owned/image.png" });
+    expect(JSON.stringify(terminal)).not.toContain("/untrusted/provider-path.png");
+  });
+  it("correlates two distinct native image steps without duplicating terminal events", () => {
+    const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
+    converter.startTurn("turn");
+    for (const stepIndex of [4, 8]) converter.convert({ event: "step_update", step_update: {
+      conversation_id: "conversation", step_index: stepIndex, step_type: "tool", state: "DONE",
+      tool_name: "generate_image", tool_info: {},
+    } });
+    expect(converter.getPendingNativeImages().map((item) => item.stepIndex)).toEqual([4, 8]);
+    const terminal = converter.completeResult({ conversation_id: "conversation", status: "SUCCESS" },
+      new Map([[4, "/run-owned/first.jpg"], [8, "/run-owned/second.jpg"]]));
+    expect(terminal.filter((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)
+      .map((item) => (item.payload.result as { file_path: string }).file_path))
+      .toEqual(["/run-owned/first.jpg", "/run-owned/second.jpg"]);
   });
   it("keeps multi-turn text/tool order without repeating result.response", () => {
     const events = convert("multi_turn");
