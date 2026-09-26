@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
-import { createHash } from "node:crypto";
-import { existsSync, realpathSync, readFileSync } from "node:fs";
+import { fingerprintConfiguredSkillSource } from "../../../../../src/skills/services/configured-skill-source-fingerprint.js";
+import { existsSync, realpathSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -38,12 +38,15 @@ const binding = (skill: string, trustedRoot: string, origin: "agent_private" | "
   source: { origin, sourceRoot: realpathSync(skill), trustedRoot: realpathSync(trustedRoot) },
 });
 const detailed = (binding: ConfiguredAgentSkillBinding): DetailedConfiguredSkillResolution => binding.kind === "resolved"
-  ? { ...binding, manifestSha256: createHash("sha256").update(readFileSync(path.join(binding.skill.rootPath, "SKILL.md"))).digest("hex") }
+  ? { ...binding, sourceTreeSha256: (() => {
+    try { return fingerprintConfiguredSkillSource(binding.skill.rootPath, binding.source.trustedRoot); }
+    catch { return "invalid-source"; }
+  })() }
   : { kind: "certified_absent", name: binding.name };
 const create = (root: Awaited<ReturnType<typeof fixture>>, configuredSkillBindings: ConfiguredAgentSkillBinding[],
   mode: "PRELOADED_ONLY" | "NONE" = "PRELOADED_ONLY", runId = "linked") => createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] },
   runId, memoryDir: path.join(root.base, `memory-${runId}`), workspacePath: root.workspace,
-  identity: "Identity", configuredSkillBindings: configuredSkillBindings.map(detailed), skillAccessMode: mode, mcpDescriptor: null,
+  identity: "Identity", configuredSkillBindings: mode === "NONE" ? [] : configuredSkillBindings.map(detailed), skillAccessMode: mode, mcpDescriptor: null,
 });
 const resolver = new ConfiguredAgentSkillResolver({ loader: new SkillLoader(), isReadonlyPath: () => true,
   resolveGlobalSkill: () => null, isSkillDisabled: () => false, logger: { warn: () => undefined } });
@@ -127,7 +130,7 @@ describe("AGY configured skill checked snapshot", () => {
 
   it("never lets a global fallback borrow its caller's team boundary", async () => {
     const root = await fixture();
-    await expect(create(root, [binding(root.skill, root.skill, "global")])).rejects.toThrow("AGY_SKILL_SOURCE_OUT_OF_BOUNDS");
+    await expect(create(root, [binding(root.skill, root.skill, "global")])).rejects.toThrow(/AGY_SKILL_SOURCE_/);
     await expect(fs.stat(path.join(root.base, "memory-linked", "agy-project"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 

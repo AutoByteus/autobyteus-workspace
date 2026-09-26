@@ -1,8 +1,8 @@
 import fs from "node:fs/promises";
-import { createHash } from "node:crypto";
+import { fingerprintConfiguredSkillSource } from "../../../../../src/skills/services/configured-skill-source-fingerprint.js";
 import os from "node:os";
 import path from "node:path";
-import { realpathSync, readFileSync } from "node:fs";
+import { realpathSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createAgyRunCapsule, restoreAgyRunCapsule } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
@@ -18,7 +18,7 @@ const roots = async () => {
 const globalBinding = (source: string, name = "example-skill"): DetailedConfiguredSkillResolution => ({
   kind: "resolved", skill: new Skill({ name, description: "test", content: "", rootPath: source }),
   source: { origin: "global", sourceRoot: realpathSync(source), trustedRoot: realpathSync(source) },
-  manifestSha256: createHash("sha256").update(readFileSync(path.join(source, "SKILL.md"))).digest("hex"),
+  sourceTreeSha256: fingerprintConfiguredSkillSource(source, source),
 });
 
 const mcpDescriptor = { name: "autobyteus_agent_tools", transport: "streamable_http" as const,
@@ -154,6 +154,20 @@ describe("AGY run capsule", () => {
     const resolved = globalBinding(source);
     await fs.rm(source, { recursive: true });
     await expect(createAgyRunCapsule({ ...common, runId: "changed", configuredSkillBindings: [resolved] }))
+      .rejects.toThrow("AGY_SKILL_SOURCE_CHANGED");
+  });
+
+  it("rejects non-manifest source content changed after detailed resolution", async () => {
+    const root = await roots();
+    const source = path.join(root.base, "skill-source");
+    await fs.mkdir(source);
+    await fs.writeFile(path.join(source, "SKILL.md"), "# Example skill");
+    await fs.writeFile(path.join(source, "reference.md"), "before");
+    const resolved = globalBinding(source);
+    await fs.writeFile(path.join(source, "reference.md"), "after");
+    await expect(createAgyRunCapsule({ agentDefinitionId: "codex", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image"] },
+      runId: "changed-content", memoryDir: root.memoryDir, workspacePath: root.workspacePath,
+      identity: "Identity", configuredSkillBindings: [resolved], skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null }))
       .rejects.toThrow("AGY_SKILL_SOURCE_CHANGED");
   });
 

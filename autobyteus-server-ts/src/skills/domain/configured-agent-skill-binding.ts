@@ -6,7 +6,7 @@ export type ConfiguredAgentSkillBinding =
 
 /** Cause-certified AGY resolution; a legacy unresolved binding is not proof of absence. */
 export type DetailedConfiguredSkillResolution =
-  | { kind: "resolved"; skill: Skill; source: ConfiguredSkillSource; manifestSha256: string }
+  | { kind: "resolved"; skill: Skill; source: ConfiguredSkillSource; sourceTreeSha256: string }
   | { kind: "certified_absent"; name: string }
   | { kind: "invalid_candidate"; name: string; reason: "unsafe_name" | "present_invalid" };
 

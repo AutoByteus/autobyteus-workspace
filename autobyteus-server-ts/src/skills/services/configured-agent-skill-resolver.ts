@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import { createHash } from "node:crypto";
 import path from "node:path";
 import type {
   AgentDefinition,
@@ -9,6 +8,7 @@ import { Skill } from "../domain/models.js";
 import type { ConfiguredAgentSkillBinding, ConfiguredSkillSource, DetailedConfiguredSkillResolution } from "../domain/configured-agent-skill-binding.js";
 import { SkillLoader } from "../loader.js";
 import { isSkillDirectory } from "./skill-discovery.js";
+import { fingerprintConfiguredSkillSource } from "./configured-skill-source-fingerprint.js";
 
 type ConfiguredAgentSkillResolverOptions = {
   loader: SkillLoader;
@@ -114,7 +114,7 @@ export class ConfiguredAgentSkillResolver {
           skill.isDisabled = this.isSkillDisabled(name);
           outcome = { kind: "resolved", skill,
             source: this.sourceFor(candidate.origin, skill, candidate.trustedRoot),
-            manifestSha256: createHash("sha256").update(fs.readFileSync(path.join(candidate.path, "SKILL.md"))).digest("hex") };
+            sourceTreeSha256: fingerprintConfiguredSkillSource(candidate.path, candidate.trustedRoot) };
         } catch { outcome = { kind: "invalid_candidate", name, reason: "present_invalid" }; }
         break;
       }

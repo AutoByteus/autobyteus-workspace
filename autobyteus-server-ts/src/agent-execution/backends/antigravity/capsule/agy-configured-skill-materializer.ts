@@ -1,8 +1,8 @@
 import fs from "node:fs/promises";
 import { constants, type BigIntStats } from "node:fs";
 import path from "node:path";
-import { createHash } from "node:crypto";
 import type { DetailedConfiguredSkillResolution } from "../../../../skills/domain/configured-agent-skill-binding.js";
+import { fingerprintConfiguredSkillSource } from "../../../../skills/services/configured-skill-source-fingerprint.js";
 
 export type AgySkillSnapshot = { name: string; relativePath: string };
 
@@ -31,12 +31,10 @@ const snapshotSkill = async (binding: Extract<DetailedConfiguredSkillResolution,
   let sourceRoot: string;
   try { sourceRoot = await fs.realpath(sourcePath); }
   catch { throw failure("AGY_SKILL_SOURCE_CHANGED", name); }
-  const manifestHash = async (root: string): Promise<string> => {
-    try { return createHash("sha256").update(await fs.readFile(path.join(root, "SKILL.md"))).digest("hex"); }
+  const sourceTreeHash = (): string => {
+    try { return fingerprintConfiguredSkillSource(sourceRoot, trustedRoot); }
     catch { throw failure("AGY_SKILL_SOURCE_CHANGED", name); }
   };
-  if (await manifestHash(sourceRoot) !== binding.manifestSha256)
-    throw failure("AGY_SKILL_SOURCE_CHANGED", name);
   const trustedRoot = await fs.realpath(descriptor.trustedRoot);
   const targetRoot = path.join(await fs.realpath(path.dirname(target)), path.basename(target));
   const parts = path.relative(trustedRoot, sourceRoot).split(path.sep);
@@ -49,6 +47,8 @@ const snapshotSkill = async (binding: Extract<DetailedConfiguredSkillResolution,
     || !(await fs.lstat(sourcePath)).isDirectory()
     || contains(trustedRoot, targetRoot))
     throw failure("AGY_SKILL_SOURCE_PROVENANCE_INVALID", name);
+  if (sourceTreeHash() !== binding.sourceTreeSha256)
+    throw failure("AGY_SKILL_SOURCE_CHANGED", name);
 
   const checks: Array<() => Promise<void>> = [];
   const verify = async (entry: string, before: BigIntStats, canonical: string): Promise<void> => {
@@ -117,7 +117,7 @@ const snapshotSkill = async (binding: Extract<DetailedConfiguredSkillResolution,
   if (!(await fs.lstat(path.join(target, "SKILL.md"))).isFile())
     throw failure("AGY_SKILL_SOURCE_INVALID", name);
   for (const check of checks) await check();
-  if (await manifestHash(target) !== binding.manifestSha256)
+  if (sourceTreeHash() !== binding.sourceTreeSha256)
     throw failure("AGY_SKILL_SOURCE_CHANGED", name);
 };
 
