@@ -50,6 +50,8 @@ export class ExternalRuntimeMemoryWriter {
         toolResult: input.toolResult === undefined ? null : input.toolResult,
         toolError: input.toolError ?? null,
       });
+    } else if (input.traceType === "system_task_notification") {
+      options.senderId = input.senderId;
     } else if (input.traceType === "provider_compaction_boundary") {
       if (input.toolResult !== undefined) options.toolResult = input.toolResult;
       options.correlationId = input.correlationId;

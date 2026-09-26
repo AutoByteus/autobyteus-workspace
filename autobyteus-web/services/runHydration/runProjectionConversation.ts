@@ -14,6 +14,7 @@ export interface RunProjectionConversationEntry {
   toolError?: string | null;
   media?: Record<string, string[]> | null;
   fileAttachments?: ReadonlyArray<{ uri: string; fileType: string; fileName: string | null }>;
+  senderId?: string | null;
   ts?: number | null;
 }
 
@@ -220,6 +221,15 @@ const buildAssistantSideSegments = (
     appendTextSegment(segments, entry.content);
     segments.push(...buildMediaSegments(entry));
     return segments;
+  }
+
+  if (entry.kind === 'system_task_notification') {
+    if (typeof entry.content !== 'string' || entry.content.trim().length === 0) return [];
+    return [{
+      type: 'system_task_notification',
+      senderId: entry.senderId ?? 'system',
+      content: entry.content,
+    }];
   }
 
   if (entry.kind === 'reasoning') {

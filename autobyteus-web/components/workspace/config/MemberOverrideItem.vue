@@ -98,13 +98,18 @@
     </div>
 
     <WorkspaceSelector
-      v-if="existingNode"
+      v-if="existingNode?.workspacePresentation.kind === 'selector'"
       class="mb-3"
-      :model="{ mode: 'stored', workspace: existingNode.storedWorkspace }"
+      :model="existingNode.workspacePresentation.model"
       :disabled="true"
       :historical-value-unavailable-message="historicalUnavailableMessage"
       :auto-select-default="false"
       control-variant="quiet"
+    />
+    <FixedWorkspacePath
+      v-else-if="existingNode?.workspacePresentation.kind === 'fixed-path'"
+      class="mb-3"
+      :root-path="existingNode.effectiveConfig.workspaceRootPath"
     />
 
     <div class="mb-3">
@@ -152,6 +157,7 @@ import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSe
 import RuntimeModelConfigFields from '~/components/launch-config/RuntimeModelConfigFields.vue'
 import ModelConfigSection from './ModelConfigSection.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
+import FixedWorkspacePath from './FixedWorkspacePath.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { loadRuntimeProviderGroupsForSelection, useRuntimeScopedModelSelection } from '~/composables/useRuntimeScopedModelSelection'
 import {

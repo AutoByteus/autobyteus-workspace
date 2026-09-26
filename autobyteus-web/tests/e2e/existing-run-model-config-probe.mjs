@@ -205,7 +205,10 @@ const teamTree = {
         description: null,
         agent_run_id: name + '-run-browser-1',
         platform_agent_run_id: null,
-        launch_configuration: launch('low'),
+        launch_configuration: {
+          ...launch('low'),
+          workspace_root_path: name === 'lead' ? '/workspace/member-not-registered' : null,
+        },
       })),
     ],
   },
@@ -525,6 +528,14 @@ try {
     const form = page.locator('[data-test="team-run-config-form"]')
     await form.waitFor({ state: 'visible', timeout: timeoutMs })
     assert(await form.getAttribute('data-mode') === 'existing', 'Team must render in existing-run mode')
+    const rootWorkspace = page.locator('[data-test="root-team-config-fields"] [data-test="fixed-workspace-path"]')
+    assert(await rootWorkspace.count() === 1, 'Saved Team root must use one fixed workspace presentation')
+    assert(await rootWorkspace.locator('[data-test="fixed-workspace-value"]').innerText() === '/workspace/browser-probe', 'Root must show the exact canonical saved path')
+    assert(await rootWorkspace.locator('[data-test="fixed-workspace-value"]').getAttribute('aria-readonly') === 'true', 'Root path must be read-only')
+    await rootWorkspace.locator('[data-test="fixed-workspace-value"]').press('X')
+    assert(await rootWorkspace.locator('[data-test="fixed-workspace-value"]').innerText() === '/workspace/browser-probe', 'Typing must not alter the fixed root path')
+    assert((await rootWorkspace.innerText()).includes('Workspace is fixed for existing runs.'), 'Root must explain the fixed value neutrally')
+    assert(await rootWorkspace.locator('input, select, [role="tablist"]').count() === 0, 'Root fixed path must not expose a picker or editable input')
     assert(await page.locator('[data-test="reset-team-scope"]').count() === 0, 'Existing Team Settings must expose no Reset affordance')
     assert(await page.locator('#team-scope-root-runtime-kind').isDisabled(), 'Root Team runtime must remain fixed')
     const disclosure = page.locator('[data-test="team-member-overrides-toggle"]')
@@ -532,6 +543,15 @@ try {
     await disclosure.click()
     assert(await disclosure.getAttribute('aria-expanded') === 'true', 'Team member hierarchy disclosure must be operable')
     assert(await page.locator('[data-test="member-override-item"]').count() === 3, 'Flat configured hierarchy must render coordinator, direct lead, and direct reviewer')
+    const memberWorkspaces = page.locator('[data-test="member-override-item"] [data-test="fixed-workspace-path"]')
+    assert(await memberWorkspaces.count() === 3, 'Each saved Team member must use one fixed workspace presentation')
+    const displayedMemberPaths = await memberWorkspaces.locator('[data-test="fixed-workspace-value"]').allTextContents()
+    assert(JSON.stringify(displayedMemberPaths.map(value => value.trim())) === JSON.stringify([
+      '/workspace/browser-probe', '/workspace/member-not-registered', '—',
+    ]), 'Member paths must preserve exact distinct saved values and neutral null', displayedMemberPaths)
+    assert(await form.locator('[data-test="workspace-selector"], [role="tablist"]').count() === 0, 'Saved Team must not show a workspace picker')
+    assert(!(await form.innerText()).includes('Saved value is unavailable in current options.'), 'Saved Team must not claim unverified unavailability')
+    assert(!(await form.innerText()).includes('Workspace: '), 'Saved Team must not duplicate fixed paths as selection success')
     assert(await page.locator('[data-test="root-team-config-fields"]').count() === 1, 'Exactly one root Team editor is present')
     assert(await page.locator('[data-test="team-scope-config-editor"]').count() === 0, 'Flat Team settings expose no mounted-Team scope editor')
     const reviewerEffort = page.locator('#existing--reviewer-reasoning_effort')
@@ -548,8 +568,14 @@ try {
       teamRunId: 'team-run-browser-1',
       patches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/reviewer', llmModelIdentifier: 'gpt-5.6-luna', llmConfig: modelConfig('high') }],
     } }), 'Team mutation must contain one narrow configured-Agent patch with no revision/runtime input', state.teamMutations[0])
+    const savedPaths = [state.teamTree.root_team.default_launch_configuration.workspace_root_path,
+      ...state.teamTree.root_team.members.map(member => member.launch_configuration.workspace_root_path)]
+    assert(JSON.stringify(savedPaths) === JSON.stringify([
+      '/workspace/browser-probe', '/workspace/browser-probe', '/workspace/member-not-registered', null,
+    ]), 'Model Save must preserve every exact canonical root/member workspace path', savedPaths)
+    assert(await rootWorkspace.locator('[data-test="fixed-workspace-value"]').innerText() === '/workspace/browser-probe', 'Root fixed path must remain after Save')
     await page.screenshot({ path: path.join(outputDir, 'API-E2E-004-B-team-saved.png'), fullPage: true })
-    return { mutation: state.teamMutations[0], renderedMembers: 3, resumeReads: state.teamResumeReads }
+    return { mutation: state.teamMutations[0], renderedMembers: 3, displayedMemberPaths, savedPaths, resumeReads: state.teamResumeReads }
   })
 
   await runScenario('API-E2E-004-C', 'Narrow browser viewport keeps the existing Team Settings editor usable without page overflow', async () => {

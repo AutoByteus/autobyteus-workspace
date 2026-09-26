@@ -21,6 +21,13 @@ export type AgentRunBackendInputDispatchResult = Readonly<{
   message?: string;
   turnId: string | null;
   platformAgentRunId?: string | null;
+  /**
+   * Only with `forwarded: false` on an `append_to_active_turn` dispatch, and only when the
+   * backend guarantees nothing reached the provider (the turn it targeted is no longer
+   * active). AgentRun requeues the input instead of failing it; it then starts the next
+   * turn (or appends into a different later turn), never the same turn again.
+   */
+  undeliveredRetryAsStart?: true;
 }>;
 
 export type AgentRunInputRejectionCode =

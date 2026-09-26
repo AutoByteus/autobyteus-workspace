@@ -149,6 +149,30 @@ submissions, reviews, and reference files. Task activation becomes durable
 before its Agent frames are released, allowing an early-selected task monitor
 to advance without reload or refocus.
 
+## Workspace History Sidebar Task Peers
+
+In an expanded Team run, available task Agents appear immediately after their
+corresponding recipient Agent at the same indentation level. They do not require
+opening that Agent, and an Agent has no disclosure solely for delegated task
+Agents. Task rows retain their distinct dashed treatment, description, lifecycle
+and runtime status, and exact-execution selection by mouse, Enter or Space.
+Repeated tasks at the same address remain separate conversations. Loading,
+failed inspection and retry retain the existing focus-commit behavior.
+
+This is a sidebar projection, not runtime reparenting.
+`stores/runHistoryTeamExecutionRows.ts` derives effective parent/depth for
+`task_agent` leaves whose source parent is `configured_agent` or
+`task_team_agent`, then recomputes child membership. The history navigation
+index and renderer consume that same topology, so peer selection does not need
+to expand the recipient Agent. Shared Team navigation stays unchanged.
+
+Actual Team/task-Team containers still contain their descendants; collapsing
+the outer Team run hides its contents. Source-owned live/retained availability
+is unchanged: peer placement neither resurrects settled tasks in live navigation
+nor fabricates unavailable history. No-context history still shows configured
+members only. This does not add nested configured-Team authoring or change
+Agent Orgs, the Tasks detail, delegation, identity, or persisted data.
+
 ## History, Restore, Stop, And Delete
 
 Team history is backed by the strict native Team V2 package under

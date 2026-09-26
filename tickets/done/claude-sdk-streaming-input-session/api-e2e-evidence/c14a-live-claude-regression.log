@@ -1,0 +1,187 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[22m[39mAgent websocket attached for run claude-ws-interrupt-same-process
+Created agent session 0b83eb4a-44e3-458f-8a55-2c95ab71687c for run claude-ws-interrupt-same-process
+Agent WebSocket connected: session=0b83eb4a-44e3-458f-8a55-2c95ab71687c, run=claude-ws-interrupt-same-process
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2minterrupts only the turn and answers the follow-up from the same Claude process and conversation (AC-005)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mdelivers a message sent to a busy agent into the running turn (AC-003)
+[22m[39mClosed agent session 0b83eb4a-44e3-458f-8a55-2c95ab71687c
+Agent WebSocket disconnected: 0b83eb4a-44e3-458f-8a55-2c95ab71687c
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mdelivers a message sent to a busy agent into the running turn (AC-003)
+[22m[39mAgent websocket attached for run claude-ws-busy-append
+Created agent session 806cd5d0-19a8-4f90-ba79-1bca4cbc4922 for run claude-ws-busy-append
+Agent WebSocket connected: session=806cd5d0-19a8-4f90-ba79-1bca4cbc4922, run=claude-ws-busy-append
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[22m[39mClosed agent session 806cd5d0-19a8-4f90-ba79-1bca4cbc4922
+Agent WebSocket disconnected: 806cd5d0-19a8-4f90-ba79-1bca4cbc4922
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mrequeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)
+[22m[39mAgent websocket attached for run claude-ws-append-after-settle
+Created agent session be9621e3-5992-46a4-8df4-173105584d65 for run claude-ws-append-after-settle
+Agent WebSocket connected: session=be9621e3-5992-46a4-8df4-173105584d65, run=claude-ws-append-after-settle
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[22m[39mClosed agent session be9621e3-5992-46a4-8df4-173105584d65
+Agent WebSocket disconnected: be9621e3-5992-46a4-8df4-173105584d65
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket streaming session (fake CLI)[2m > [22m[2mannounces a background completion and streams the turn Claude starts on its own (AC-002)
+[22m[39mAgent websocket attached for run claude-ws-background-notice
+Created agent session 9061c8f3-7456-4d6d-a1c1-1e8903ee436c for run claude-ws-background-notice
+Agent WebSocket connected: session=9061c8f3-7456-4d6d-a1c1-1e8903ee436c, run=claude-ws-background-notice
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket interrupt/resume live E2E[2m > [22m[2muses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn
+[22m[39mClosed agent session 9061c8f3-7456-4d6d-a1c1-1e8903ee436c
+Agent WebSocket disconnected: 9061c8f3-7456-4d6d-a1c1-1e8903ee436c
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket interrupt/resume live E2E[2m > [22m[2muses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn
+[22m[39mAgent websocket attached for run claude-live-ws-365a287d-42ff-4c5d-8f38-fabf34964bb7
+Created agent session ad7bc7b1-27e0-4d08-9eeb-8cc58ebc07f2 for run claude-live-ws-365a287d-42ff-4c5d-8f38-fabf34964bb7
+Agent WebSocket connected: session=ad7bc7b1-27e0-4d08-9eeb-8cc58ebc07f2, run=claude-live-ws-365a287d-42ff-4c5d-8f38-fabf34964bb7
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts[2m > [22m[2mClaude Agent SDK websocket interrupt/resume live E2E[2m > [22m[2muses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn
+[22m[39mClosed agent session ad7bc7b1-27e0-4d08-9eeb-8cc58ebc07f2
+Agent WebSocket disconnected: ad7bc7b1-27e0-4d08-9eeb-8cc58ebc07f2
+
+ [32m✓[39m tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 6787[2mms[22m[39m
+     [33m[2m✓[22m[39m uses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn [33m 6594[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-execution/claude-session-manager.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/integration/agent-execution/claude-session-manager.integration.test.ts [2m([22m[2m9 tests[22m[2m | [22m[31m7 failed[39m[2m)[22m[33m 241201[2mms[22m[39m
+     [32m✓[39m materializes an activated headerless provider-neutral descriptor into the Claude streaming session config[32m 258[2mms[22m[39m
+     [33m[2m✓[22m[39m creates a run session, adopts the SDK session id, and serves conversation from the session boundary [33m 4473[2mms[22m[39m
+[31m     [31m×[31m restores a run session against the same Claude session id and continues the conversation[39m[33m 7085[2mms[22m[39m
+[31m     [31m×[31m requests tool approval and completes the tool-backed turn after approval[39m[33m 10121[2mms[22m[39m
+[31m     [31m×[31m requests tool approval and denies the tool-backed turn without creating the target file[39m[33m 9619[2mms[22m[39m
+[31m     [31m×[31m auto-executes a tool-backed turn without emitting approval requests[39m[33m 9922[2mms[22m[39m
+[31m     [31m×[31m interrupts a tool-backed turn while approval is pending and leaves the target file untouched[39m[33m 98889[2mms[22m[39m
+[31m     [31m×[31m terminates a run while approval is pending and removes the run session without creating the target file[39m[33m 97264[2mms[22m[39m
+[31m     [31m×[31m restores the Claude session after an auto-executed tool turn and continues the same conversation[39m[33m 3568[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E, AC-002)[2m > [22m[2mkeeps a background Bash command running after the turn ends and reports it in a turn Claude starts itself (path-claude)
+[22m[39mAgent websocket attached for run claude-live-background-task-578c719d-d8ce-4bde-a5bd-d29324a17e4a
+Created agent session 8aea72b1-c3c4-4723-94cc-ad3b37e406a2 for run claude-live-background-task-578c719d-d8ce-4bde-a5bd-d29324a17e4a
+Agent WebSocket connected: session=8aea72b1-c3c4-4723-94cc-ad3b37e406a2, run=claude-live-background-task-578c719d-d8ce-4bde-a5bd-d29324a17e4a
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E, AC-002)[2m > [22m[2mkeeps a background Bash command running after the turn ends and reports it in a turn Claude starts itself (path-claude)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E, AC-002)[2m > [22m[2mkeeps a background Bash command running after the turn ends and reports it in a turn Claude starts itself (path-claude)
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E, AC-002)[2m > [22m[2mkeeps a background Bash command running after the turn ends and reports it in a turn Claude starts itself (path-claude)
+[22m[39mClosed agent session 8aea72b1-c3c4-4723-94cc-ad3b37e406a2
+Agent WebSocket disconnected: 8aea72b1-c3c4-4723-94cc-ad3b37e406a2
+
+[90mstdout[2m | tests/e2e/runtime/claude-agent-background-task.e2e.test.ts[2m > [22m[2mClaude runtime background tasks (live E2E, AC-002)[2m > [22m[2mkeeps a background Bash command running after the turn ends and reports it in a turn Claude starts itself (sdk-bundled-claude)
+[22m[39mAgent websocket attached for run claude-live-background-task-21c3706d-f07b-4e7a-a743-c8faf91fa9bb
+Created agent session 0dac6f1f-8ec0-4449-83cf-8daad436c3a0 for run claude-live-background-task-21c3706d-f07b-4e7a-a743-c8faf91fa9bb
+Agent WebSocket connected: session=0dac6f1f-8ec0-4449-83cf-8daad436c3a0, run=claude-live-background-task-21c3706d-f07b-4e7a-a743-c8faf91fa9bb
+

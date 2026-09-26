@@ -1,0 +1,10 @@
+import { openSession, ts, sleep } from "./lib.mjs";
+import fs from "node:fs";
+const s = openSession({}, "O");
+s.send("Step 1: use Bash with run_in_background true to run: sleep 15; echo OK > /tmp/streamprobe/O.marker . Step 2: then use Bash in the foreground to run: python3 -c 'import time; time.sleep(40)' . Then reply DONE.");
+await sleep(10000);
+console.log(ts(), "O: interrupt()", JSON.stringify(await s.q.interrupt()));
+await s.nextResult(20000);
+await sleep(15000);
+console.log(ts(), "O: marker exists after interrupt:", fs.existsSync("/tmp/streamprobe/O.marker"));
+await sleep(3000); s.close(); process.exit(0);

@@ -16,9 +16,7 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
       listener({ method: "turn/completed", params: {} });
       return () => {};
     }),
-    startTurn: vi.fn().mockResolvedValue({
-      turnId: "turn-1",
-    }),
+    submitInput: vi.fn().mockResolvedValue({ accepted: true, turnId: "turn-1" }),
     approveTool: vi.fn().mockResolvedValue(undefined),
     interrupt: vi.fn().mockResolvedValue(undefined),
     terminate: vi.fn().mockResolvedValue(undefined),
@@ -54,8 +52,9 @@ describe("ClaudeAgentRunBackend", () => {
 
     expect(typeof unsubscribe).toBe("function");
     expect(listener).toHaveBeenCalled();
-    expect(session.startTurn).toHaveBeenCalledWith(
+    expect(session.submitInput).toHaveBeenCalledWith(
       expect.objectContaining({ content: "hello claude" }),
+      { kind: "start_turn" },
     );
     expect(session.approveTool).toHaveBeenCalledWith("invoke-1", true, null);
     expect(session.interrupt).toHaveBeenCalledWith("turn-1");
@@ -76,9 +75,9 @@ describe("ClaudeAgentRunBackend", () => {
     });
   });
 
-  it("returns a runtime command failure when explicit session start throws", async () => {
+  it("returns a runtime command failure when the session input throws", async () => {
     const { backend } = createBackend({
-      startTurn: vi.fn().mockRejectedValue(new Error("boom")),
+      submitInput: vi.fn().mockRejectedValue(new Error("boom")),
     });
 
     const result = await backend.dispatchUserInput({
@@ -91,14 +90,54 @@ describe("ClaudeAgentRunBackend", () => {
     expect(result.message).toContain("Failed to send user input");
   });
 
-  it("declares next-turn-only input mechanics and rejects append without session effect", async () => {
+  it("declares active-turn append support and forwards appends into the session turn", async () => {
     const { backend, session } = createBackend();
-    expect(backend.inputCapabilities).toEqual({ activeTurnAppend: "unsupported" });
+    expect(backend.inputCapabilities).toEqual({ activeTurnAppend: "supported" });
+
     await expect(backend.dispatchUserInput({
       kind: "append_to_active_turn",
       turnId: "turn-active",
-      message: new AgentInputUserMessage("no append"),
-    })).resolves.toMatchObject({ forwarded: false, code: "UNSUPPORTED_RUNTIME_COMMAND" });
-    expect(session.startTurn).not.toHaveBeenCalled();
+      message: new AgentInputUserMessage("steer"),
+    })).resolves.toEqual({ forwarded: true, turnId: "turn-1", platformAgentRunId: "claude-session-1" });
+    expect(session.submitInput).toHaveBeenCalledWith(
+      expect.objectContaining({ content: "steer" }),
+      { kind: "append_to_active_turn", turnId: "turn-active" },
+    );
+  });
+
+  it("marks a pre-send append turn mismatch as definitely undelivered (AC-016)", async () => {
+    const { backend } = createBackend({
+      submitInput: vi.fn().mockResolvedValue({
+        accepted: false,
+        code: "CLAUDE_APPEND_TURN_MISMATCH",
+        message: "Claude append expected active turn 'turn-a' but 'none' is current.",
+      }),
+    });
+
+    await expect(backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-a",
+      message: new AgentInputUserMessage("late"),
+    })).resolves.toEqual({
+      forwarded: false,
+      code: "CLAUDE_APPEND_TURN_MISMATCH",
+      message: "Claude append expected active turn 'turn-a' but 'none' is current.",
+      turnId: null,
+      undeliveredRetryAsStart: true,
+    });
+  });
+
+  it("keeps other session rejections as visible failures", async () => {
+    const { backend } = createBackend({
+      submitInput: vi.fn().mockResolvedValue({ accepted: false, code: "CLAUDE_INPUT_EMPTY", message: "empty" }),
+    });
+
+    const result = await backend.dispatchUserInput({
+      kind: "append_to_active_turn",
+      turnId: "turn-a",
+      message: new AgentInputUserMessage("x"),
+    });
+
+    expect(result).toEqual({ forwarded: false, code: "CLAUDE_INPUT_EMPTY", message: "empty", turnId: null });
   });
 });

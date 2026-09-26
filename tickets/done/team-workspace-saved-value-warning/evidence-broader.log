@@ -1,0 +1,42 @@
+
+> autobyteus@1.4.85 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/team-workspace-saved-value-warning/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/workspace/config/__tests__/WorkspaceSelector.spec.ts stores/__tests__/teamRunConfigStore.spec.ts services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/team-workspace-saved-value-warning/autobyteus-web
+
+stderr | stores/__tests__/teamRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/teamRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/WorkspaceSelector.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runConfigEditing/__tests__/existingTeamModelConfigDraft.spec.ts (5 tests) 12ms
+ ✓ components/workspace/config/__tests__/WorkspaceSelector.spec.ts (22 tests) 78ms
+ ✓ stores/__tests__/teamRunConfigStore.spec.ts (8 tests) 20ms
+
+ Test Files  3 passed (3)
+      Tests  35 passed (35)
+   Start at  14:28:08
+   Duration  4.64s (transform 2.59s, setup 12.03s, collect 241ms, tests 110ms, environment 428ms, prepare 339ms)
+

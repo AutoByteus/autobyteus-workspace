@@ -332,13 +332,15 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     const { wrapper, actions, state } = mountSubject();
     const stableRow = wrapper.get('[data-row-kind="stable_member"]');
     expect(stableRow.text()).toContain('worker');
+    const visibleTask = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
+    expect(visibleTask.attributes('aria-level')).toBe(stableRow.attributes('aria-level'));
+    expect(stableRow.attributes('aria-expanded')).toBeUndefined();
+    expect(stableRow.find('[data-test="workspace-team-member-disclosure"]').exists()).toBe(false);
     await stableRow.trigger('click');
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/worker', agentRunId: 'worker-run',
     }, 'workspace:/ws/a');
-    expect(state.toggleTeamMember).toHaveBeenCalledWith(
-      'workspace:/ws/a', 'team-run-1', 'agent:worker-run',
-    );
+    expect(state.toggleTeamMember).not.toHaveBeenCalled();
 
     actions.onSelectTeamMember.mockClear();
     const taskRow = wrapper.get('[data-test="workspace-team-transient-execution-row"]');
@@ -347,14 +349,41 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(taskRow.classes()).toContain('is-selected');
     expect(taskRow.attributes()).toMatchObject({
       role: 'treeitem',
-      'aria-level': '2',
+      'aria-level': '1',
       'aria-selected': 'true',
       title: 'Temporary task agent · Solve current task · /worker',
     });
-    await taskRow.trigger('click');
+    await taskRow.trigger('keydown', { key: 'Enter' });
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/worker', agentRunId: 'task-agent-run-1',
     }, 'workspace:/ws/a');
+  });
+
+  it('keeps multiple peer tasks independently selectable and obeys outer Team collapse', async () => {
+    const liveContext = buildTestTeamContext({
+      teamRunId: 'team-run-1', coordinatorAddress: '/worker',
+      rootChildren: [testAgentNode('/worker', { agentRunId: 'worker-run' })],
+      tasks: ['first', 'second'].map((id) => testTaskRecord({
+        taskId: id, delegatorAgentRunId: 'worker-run', recipientAddress: '/worker',
+        target: { agentRunId: `${id}-run` }, description: `${id} task`,
+      })),
+    });
+    const { wrapper, actions, state } = mountSubject({ liveContext });
+    const taskRows = () => wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
+    expect(taskRows()).toHaveLength(2);
+    for (const [index, id] of ['first', 'second'].entries()) {
+      expect(taskRows()[index].attributes('aria-level')).toBe('1');
+      await taskRows()[index].trigger(index === 0 ? 'click' : 'keydown', { key: ' ' });
+      expect(actions.onSelectTeamMember).toHaveBeenLastCalledWith({
+        teamRunId: 'team-run-1', memberAddress: '/worker', agentRunId: `${id}-run`,
+      }, 'workspace:/ws/a');
+    }
+    expect(state.toggleTeamMember).not.toHaveBeenCalled();
+    await wrapper.setProps({ state: { ...state, isTeamExpanded: () => false } });
+    expect(taskRows()).toHaveLength(0);
+    expect(wrapper.find('[data-row-kind="stable_member"]').exists()).toBe(false);
+    await wrapper.setProps({ state });
+    expect(taskRows()).toHaveLength(2);
   });
 
   it('marks only the selected TeamRun current when member addresses repeat', async () => {
