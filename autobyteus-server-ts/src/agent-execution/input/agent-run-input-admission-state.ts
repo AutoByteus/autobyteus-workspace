@@ -214,6 +214,10 @@ export class AgentRunInputAdmissionState {
       entry.state = "queued";
       entry.dispatchKind = null;
       entry.associatedTurnId = null;
+      entry.observedTurnId = null;
+      // A terminal of the targeted turn observed while this claim was in flight belongs to
+      // that turn, not to the later turn this input will be delivered into (CR-001).
+      entry.pendingTerminal = null;
       entry.notInto = claim.dispatch.turnId;
       this.clearClaim(entry);
       return { forwarded: false };

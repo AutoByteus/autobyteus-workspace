@@ -1,6 +1,6 @@
 # Implementation Handoff — claude-sdk-streaming-input-session
 
-Status: **Implementation complete (IR-002)**. Ready for independent code review (Large / High).
+Status: **CR-001 Local Fix applied (IR-003)**. Ready for focused code re-review (Large / High).
 
 ## Upstream Artifact Package
 
@@ -25,11 +25,11 @@ Claude runs now use one long-lived Claude CLI process per AgentRun in SDK stream
 - **Images.** Image context files are sent inline.
 - **Shared AgentRun claim rule (SR-011).** Input posted while an earlier input's turn runs is now appended into that turn, for Claude and Codex. A proven-undelivered append (`undeliveredRetryAsStart`) is requeued and starts the next turn instead of failing.
 
-- Implementation cycle: `Rework` (resume after Design Impact)
+- Implementation cycle: `Rework` (IR-003: CRR-001 Local Fix CR-001; a requeued append clears the targeted turn's `pendingTerminal`/`observedTurnId`)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related revision IDs: SR-011; ARCH-REV-004. CRR, API-REV and DR are N/A.
-- Triggering finding IDs: IMP-DI-001 (resolved by design); IC-1..IC-4 (implemented)
+- Current implementation revision ID: `IR-003`
+- Related revision IDs: SR-011; ARCH-REV-004; CRR-001. API-REV and DR are N/A.
+- Triggering finding IDs: CR-001 (fixed); IMP-DI-001 (resolved by design); IC-1..IC-4 (implemented)
 
 ## Routing Classification
 
@@ -132,8 +132,8 @@ Claude runs now use one long-lived Claude CLI process per AgentRun in SDK stream
   | `claude-sdk-client` + `claude-sdk-streaming-session` | 36 |
   | Claude backend | 5 |
   | Claude manager | 9 |
-  | `agent-run-input-admission-state.test.ts` | 9 |
-  | `agent-run.test.ts` | 33 (+2) |
+  | `agent-run-input-admission-state.test.ts` | 11 (incl. CR-001 completed/failed-during-claim) |
+  | `agent-run.test.ts` | 34 (incl. CR-001 terminal-during-append-dispatch) |
   | Codex backend + thread | 50 (+4) |
   | memory notice / replay | 2 |
   | router AC-004 | 1 |

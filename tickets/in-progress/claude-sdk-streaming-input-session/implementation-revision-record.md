@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer / `design-review-report.md` (ARCH-REV-003 Pass) / initial | IC-1, IC-2 (binding constraints) | `Design Impact` | SR-009; ARCH-REV-003; CRR N/A; API-REV N/A; DR N/A | Implementation largely built and checked; halted on escalation trigger IMP-DI-001 (AgentRun FIFO head-of-line blocks append) |
 | IR-002 | architecture_reviewer / `design-review-report.md` (ARCH-REV-004 Pass) / round 4 resume | IMP-DI-001; IC-1..IC-4 | `Initial Baseline` (completion after Design Impact) | SR-011; ARCH-REV-004; CRR N/A; API-REV N/A; DR N/A | Implementation complete; ready for code review |
+| IR-003 | code_reviewer / `code-review-report.md` (CRR-001 Fail) / round 1 | CR-001 | `Local Fix` | SR-011; ARCH-REV-004; CRR-001; API-REV N/A; DR N/A | Fixed; ready for focused re-review |
 
 ## Revision Entries
 
@@ -71,3 +72,26 @@ The current code and `implementation-handoff.md` remain authoritative.
   - Live AC-014 (Codex steer) and the live team AC-004 are for API/E2E.
   - The rendered web check of replayed notices was not done.
   - 2 live factory MCP cases and the Claude team E2E setup are stale for reasons unrelated to this change.
+
+### IR-003 — CR-001: requeued append no longer inherits the old turn's pending terminal
+
+- Triggering role, report path, and round: code_reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/code-review-report.md`, CRR-001 (Fail, Local Fix)
+- Triggering finding IDs: CR-001 (High)
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 (a requeued undelivered append kept the targeted turn's `pendingTerminal` and finished at that old terminal once forwarded into the next turn)
+- Current authoritative result: the requeued input resolves only at the terminal of the turn it is actually delivered into
+- Related revision IDs: SR-011; ARCH-REV-004; CRR-001. API-REV and DR are N/A.
+- Why this revision is recorded: code-review Local Fix
+- Approved behavior or requirement IDs affected: REQ-012, AC-016, QR-003
+- Implementation delta: `AgentRunInputAdmissionState.applyDispatchResult` requeue branch now also clears `entry.pendingTerminal` and `entry.observedTurnId`, alongside state, `dispatchKind`, `associatedTurnId`, and `notInto = T`.
+- Changed files or areas:
+  - `src/agent-execution/input/agent-run-input-admission-state.ts`
+  - `tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts` (new `it.each` for T completed and T failed observed during the in-flight append claim)
+  - `tests/unit/agent-execution/agent-run.test.ts` (new AgentRun-level test: T's `TURN_COMPLETED` published while the append dispatch is pending, then the undelivered result; B resolves only at `turn-B`)
+- Local validation and result:
+  - The 3 new tests fail with the fix reverted and pass with it.
+  - Input + AgentRun suites: 48/48.
+  - Changed-area regression: only the 5 pre-existing base-failing files fail (15 tests, identical on base).
+  - `tsc` build config: pass.
+- Next recipient or routing: `/code_reviewer` (focused re-review of CR-001)
+- Remaining limitations or risks: unchanged from IR-002

@@ -241,6 +241,43 @@ describe("AgentRun input admission", () => {
     expect(lifecycleB).not.toContain("failed");
   });
 
+  it("resolves a requeued append only at the next turn's terminal when the old turn ended mid-dispatch (CR-001)", async () => {
+    let releaseAppend!: (value: unknown) => void;
+    const dispatchUserInput = vi.fn()
+      .mockResolvedValueOnce({ forwarded: true, turnId: "turn-A" })
+      .mockImplementationOnce(() => new Promise((resolve) => { releaseAppend = resolve; }))
+      .mockResolvedValueOnce({ forwarded: true, turnId: "turn-B" });
+    const harness = createHarness({ append: "supported", dispatchUserInput });
+    const lifecycleB: Array<{ kind: string; turnId?: string | null }> = [];
+
+    await harness.run.postUserMessage(new AgentInputUserMessage("A"));
+    await harness.getSourceListener()?.([event(harness.run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-A" })]);
+    await vi.waitFor(() => expect(dispatchUserInput).toHaveBeenCalledTimes(1));
+    harness.setSnapshot({ availability: "active", phase: "running", currentTurn: { kind: "IDENTIFIED", turnId: "turn-A" } });
+    await harness.run.postUserMessage(new AgentInputUserMessage("B"), {
+      lifecycleObserver: (fact) => lifecycleB.push(fact as { kind: string; turnId?: string | null }),
+    });
+    await vi.waitFor(() => expect(dispatchUserInput).toHaveBeenCalledTimes(2));
+
+    // turn-A ends while the append into it is in flight, then the backend proves B undelivered.
+    harness.setSnapshot({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+    await harness.getSourceListener()?.([event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-A" })]);
+    releaseAppend({ forwarded: false, code: "CLAUDE_APPEND_TURN_MISMATCH", turnId: null, undeliveredRetryAsStart: true });
+
+    await vi.waitFor(() => expect(dispatchUserInput).toHaveBeenNthCalledWith(3, {
+      kind: "start_turn",
+      message: expect.objectContaining({ content: "B" }),
+    }));
+    await harness.getSourceListener()?.([event(harness.run.runId, AgentRunEventType.TURN_STARTED, { turn_id: "turn-B" })]);
+    await new Promise((resolve) => setTimeout(resolve, 20));
+    expect(lifecycleB.map((fact) => fact.kind)).not.toContain("completed");
+
+    await harness.getSourceListener()?.([event(harness.run.runId, AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-B" })]);
+    await vi.waitFor(() => expect(lifecycleB.map((fact) => fact.kind)).toContain("completed"));
+    expect(lifecycleB.filter((fact) => fact.kind === "completed")).toEqual([{ kind: "completed", turnId: "turn-B" }]);
+    expect(lifecycleB.map((fact) => fact.kind)).not.toContain("failed");
+  });
+
   it("admits Claude/AutoByteus input while active and starts it only after terminal", async () => {
     const harness = createHarness({
       append: "unsupported",

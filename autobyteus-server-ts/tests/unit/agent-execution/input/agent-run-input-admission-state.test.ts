@@ -121,6 +121,30 @@ describe("AgentRunInputAdmissionState definitely-undelivered append (AC-016)", (
     expect(restart.dispatch).toEqual({ kind: "start_turn", message: expect.objectContaining({ content: "B" }) });
   });
 
+  it.each(["completed", "failed"] as const)(
+    "does not carry the targeted turn's %s terminal, observed while the append was in flight, into the next turn (CR-001)",
+    (terminalKind) => {
+      const { state, admit, startTurn, kinds, facts } = createState();
+      startTurn("A", "turn-A");
+      admit("B");
+      const claimB = state.claimNext({ activeTurn: turn("turn-A"), hasPendingTurnStart: false, capabilities: SUPPORTED })!;
+      // Normal Claude ordering: the tracker settles turn-A, its terminal is observed, then the append is rejected.
+      if (terminalKind === "completed") state.observeTurnTerminal({ kind: "completed", turnId: "turn-A" });
+      else state.observeTurnFailure({ turnId: "turn-A", code: "RUNTIME_TURN_FAILED", message: "turn-A failed" });
+      state.applyDispatchResult(claimB, { forwarded: false, turnId: null, undeliveredRetryAsStart: true });
+
+      const restart = state.claimNext({ activeTurn: NONE, hasPendingTurnStart: false, capabilities: SUPPORTED })!;
+      expect(restart.dispatch.kind).toBe("start_turn");
+      state.observeTurnStarted("turn-B");
+      state.applyDispatchResult(restart, { forwarded: true, turnId: "turn-B" });
+      expect(kinds("B")).toEqual(["admitted", "forwarded", "turn_associated"]);
+
+      state.observeTurnTerminal({ kind: "completed", turnId: "turn-B" });
+      expect(facts.get("B")!.slice(-1)).toEqual([{ kind: "completed", turnId: "turn-B" }]);
+      expect(kinds("B").filter((kind) => kind === "completed" || kind === "failed")).toHaveLength(1);
+    },
+  );
+
   it("may append a requeued input into a different later turn", () => {
     const { state, admit, startTurn } = createState();
     startTurn("A", "turn-A");
