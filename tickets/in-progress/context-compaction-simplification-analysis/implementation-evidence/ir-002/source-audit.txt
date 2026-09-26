@@ -1,0 +1,3 @@
+IR-002 source diff whitespace check: PASS
+Changed handwritten production files: [('autobyteus-ts/src/agent/compaction/compaction-runtime-reporter.ts', 79), ('autobyteus-ts/src/agent/streaming/events/stream-event-payload-lifecycle.ts', 252)]
+The >220-line shared harness delta is test support: removed obsolete topology/lineage assertions, reused existing invocation capture, updated result/caller. Test files are exempt from production source-size limit. No production file >500 or production delta >220.

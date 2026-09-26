@@ -1,4 +1,4 @@
-# Implementation evidence — IR-001
+# Implementation evidence — baseline and revisions
 
 - Source implementation commit: `3eb43f0dc457fb5d5960eee62618d8d497e42e9b`.
 - Reviewed base: `046279298f53fb98d7688ee9dc2b2ba0fa827685`.
@@ -8,7 +8,11 @@
 
 Verbatim upstream prompt/history and raw log bytes are preserved. Whole-ticket staged whitespace check reports their trailing spaces/terminal blank lines; implementation source and newly authored handoff/report Markdown pass scoped whitespace checks.
 
-## Current focused results
+## Current revision
+
+IR-002 corrects CRR-001 findings CR-001/CR-002. Current delta/evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-002/README.md`; initial source inventory below remains the IR-001 baseline, not a complete cumulative caller audit. The original cleanup missed the active shared live harness; IR-002 removes its deleted imports/template and child/correction/category/lineage assertions, aligning its result/caller with direct summaries while preserving fixtures. Live quality remains unverified. CRR-001 baseline reproduction supersedes the original *unclassified* attribution of 14 wider failures and adds one shared facade prerequisite; none are silently waived.
+
+## IR-001 focused results
 
 | Evidence | Outcome | Scope |
 | --- | --- | --- |
