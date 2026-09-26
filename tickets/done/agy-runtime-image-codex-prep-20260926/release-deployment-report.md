@@ -1,13 +1,13 @@
-# Delivery / Release / Deployment Report — DR-009 SR-024 server-only integration
+# Delivery / Release / Deployment Report — DR-010 server-only completion
 
 ## Release / Publication / Deployment Scope
 - Ticket: `agy-runtime-image-codex-prep-20260926`; `task_size=Medium`, `architectural_risk=High`, reviewed route (ARCH-REV-008, CRR-005 source, CRR-007 test, API-REV-004 Pass/95.0%; CRR-008 test-code review Not Applicable because no durable test changed).
 - Server finalization target: `origin/personal` from `solution-result.md` bootstrap. SR-024/E-057 reconciled the user's explicit exclusion of `autobyteus-agents` package modification; its `main` is not a ticket finalization target.
-- Status: **User verified; server repository finalized for the reviewed implementation; SR-024 documentation correction integrated and post-integration checks passed.** Package PR #14 is closed unmerged and its remote task branch deleted. The SR-024 documentary correction still needs final ticket-branch push/target merge/push before terminal `Delivery Completed`.
+- Status: **Delivery Completed for the user-approved server-only ticket.** User verification, SR-024 authority/docs sync, post-integration executable checks, ticket-branch push, target merge/push, and safe cleanup disposition are complete. Package PR #14 is closed unmerged and excluded from the completion boundary.
 
 ## Handoff Summary
 - Artifact: `handoff-summary.md`; status Updated for user verification.
-- Revision record: `delivery-revision-record.md`; current ID DR-009.
+- Revision record: `delivery-revision-record.md`; current ID DR-010.
 
 ## Initial Delivery Integration Refresh
 - Bootstrap server base: `origin/personal@ae3aba1bf`; fetched latest `origin/personal@fc2a60527` (advanced: Yes).
@@ -39,7 +39,7 @@
 ## Repository Finalization
 - Server task branch: `task/agy-runtime-capabilities-20260926@b5574da79` after archive/docs commit, pushed to `origin/task/agy-runtime-capabilities-20260926`. Latest remote base `cf005d377` was integrated as `cf0e0e7e` after verification; 36 focused AGY unit tests passed with one preexisting skip. A detached target worktree merged the task branch into `personal` as `9f7fb71296f6200de643d626201acd0c2cf7adca`, then pushed `origin/personal`; the merge tree equals the verified task tree. A subsequent finalization-status documentation commit `dfca52164bdf50b81e8d8e213768cf64ee4f16be` was pushed to `origin/personal` and fast-forwarded into the primary checkout without altering its pre-existing untracked `.codex/`.
 - Historical package attempt: task branch `a140474` was pushed, and direct package-main push was rejected with protected-branch `GH006`. [Package PR #14](https://github.com/AutoByteus/autobyteus-agents/pull/14) was opened, but the user then said the other project is out of scope and explicitly requested removal. PR #14 is now `CLOSED`, `mergedAt=null`; its remote task branch was deleted. `origin/main@1b1a75e` remains unchanged. The unrelated dirty primary package checkout was not touched. The local package task worktree/branch remains only for historical test evidence and is not an approved finalization target.
-- Repository finalization: **Completed for the reviewed server implementation** (last target `origin/personal@4fec5eef6` before the current SR-024 docs merge). Package-main finalization is withdrawn by approved SR-024; no package-main change is required. The five-file authority correction and current delivery docs will be merged/pushed to `personal` as the final documentary step.
+- Repository finalization: **Completed.** Corrected ticket branch `364d636a7` was pushed to `origin/task/agy-runtime-capabilities-20260926`, then merged into `personal` as `e3134629c9d2c169003b5124702dc8ead2de88d5` and pushed. The merge tree exactly matches the integrated checked ticket tree; the task commit is an ancestor of the target. Its remote task branch was deleted after that verification. This final report is a subsequent status-only documentation commit on `personal`. Package-main finalization is not applicable under approved SR-024; no package-main change is required.
 
 ## Release / Publication / Deployment
 - Applicability: No — the user explicitly requested repository finalization without a new version or release. No release helper, tag-triggered workflow or direct deployment will run.
@@ -47,7 +47,7 @@
 - Release notes handoff: Not required; draft withdrawn. Result: Not required.
 
 ## Post-Finalization Cleanup
-- Dedicated server and package task worktrees/local branches remain. Server worktree retains the user-tested unsigned Electron App; the local package worktree is historical test evidence and is still named by the isolated manual launcher. Removing either before the scope/test-dependency audit could erase the provenance of the user-tested configuration or the App itself. Both temporary detached merge worktrees were removed and worktrees pruned. Both remote task branches were deleted after verification; package `main` is unchanged. Local worktree/branch retention is intentional until the user no longer needs the App and test provenance.
+- Required cleanup: **Completed or Not required.** Both temporary detached merge worktrees were removed/pruned and both remote task branches deleted after safe verification. The server task worktree/local branch intentionally retains the user-tested unsigned Electron App; the local package worktree/branch preserves historical test provenance and is still named by the isolated manual launcher. Deleting these now would remove or break a user-visible test artifact, so their removal is **Not required** for this handoff. Neither local worktree is a release/deployment installation. The unrelated dirty primary package checkout and existing installed App remain untouched.
 
 ## Environment / Persisted-Data Transition
 - Approved design: Directly Usable — No Migration. New grant applies to new capsules; old capsules remain immutable. No app-owned image index/files to migrate, delete, or recover. Provider-owned image storage remains provider-owned.
@@ -59,5 +59,5 @@
 - Rollback criterion: if installed CLI differs from 1.2.11, missing/invalid-skill handling blocks healthy AGY startup or claims a skill loaded, native image cards are uncorrelated/unsafe, or a provider failure leaks private output, stop rollout. Revert target commits or deploy prior known-good release as appropriate; do not rewrite old capsules or delete AGY-owned images.
 
 ## Final Status
-- Explicit user verification: Yes — final acceptance after DR-004 rebuild and renewed server-only direction. Scope authority: SR-024 complete. Repository finalization: reviewed server source merged; SR-024 documentary correction integrated and checks passed, awaiting final ticket-branch/target push. Package PR closed unmerged; package `main` unchanged. Applicable release/rollout: Not required. Safe cleanup: local worktrees intentionally retain tested App and historical test provenance; detached worktrees removed. The separate installed app and unrelated package checkout remain untouched. Terminal package eligible: **after** final documentary push/remote verification, not before.
-- No active design/implementation blocker remains. Do not reopen package PR #14 or claim bundled workflow content.
+- Explicit user verification: **Completed** — final acceptance after DR-004 rebuild and renewed server-only direction. Scope authority: **Completed** — SR-024. Repository finalization: **Completed** — target `origin/personal@e3134629c` contains corrected authority/docs/implementation, followed by this status-only report commit; task remote branch deleted. Applicable release/rollout: **Not required** by user instruction. Safe cleanup: **Completed/Not required** as detailed above. Package PR #14: **Closed unmerged**; package `main` unchanged. Terminal package eligible: **Yes**, after this report commit is pushed/verified.
+- Classification: **Delivery Completed** for the server-only ticket. No active design, implementation, validation, documentation, finalization, release, deployment or cleanup blocker remains. Do not reopen package PR #14 or claim bundled workflow content. Rollback and residual provider/version/ambient-package limitations remain visible above.
