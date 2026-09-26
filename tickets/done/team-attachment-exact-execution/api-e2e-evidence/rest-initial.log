@@ -1,0 +1,202 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-exact-execution/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-exact-execution/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ ❯ tests/integration/api/rest/context-files.integration.test.ts (10 tests | 7 failed) 78ms
+     ✓ uploads, serves, and finalizes standalone draft attachments into run-owned storage 35ms
+     × supports direct Team-member draft delete and exact final Team-member read 6ms
+     × maps known final Team failures exactly and keeps serving the valid same-owner file 4ms
+     × does not convert an unexpected final Team access fault into a client error 3ms
+     × finalizes a nested member through its exact containing TeamRun and canonical execution ID 3ms
+     × rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft 3ms
+     × rejects old, mixed, missing and malformed final identities before moving draft bytes 3ms
+     × isolates image and file bytes for duplicate-address executions even with repeated stored filenames 4ms
+     ✓ preserves the original display name while sanitizing the stored filename 9ms
+     ✓ prunes expired draft attachments before serving them 6ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 7 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > supports direct Team-member draft delete and exact final Team-member read
+TypeError: Cannot assign to read only property 'taskExecutions' of object '#<Object>'
+ ❯ writeExecutionTree tests/integration/api/rest/context-files.integration.test.ts:143:17
+    141|     children: rootAgents,
+    142|   });
+    143|   tree.rootTeam.taskExecutions = [
+       |                 ^
+    144|     ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunI…
+    145|       startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00…
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:207:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/7]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > maps known final Team failures exactly and keeps serving the valid same-owner file
+TypeError: Cannot assign to read only property 'taskExecutions' of object '#<Object>'
+ ❯ writeExecutionTree tests/integration/api/rest/context-files.integration.test.ts:143:17
+    141|     children: rootAgents,
+    142|   });
+    143|   tree.rootTeam.taskExecutions = [
+       |                 ^
+    144|     ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunI…
+    145|       startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00…
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:236:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/7]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > does not convert an unexpected final Team access fault into a client error
+TypeError: Cannot assign to read only property 'taskExecutions' of object '#<Object>'
+ ❯ writeExecutionTree tests/integration/api/rest/context-files.integration.test.ts:143:17
+    141|     children: rootAgents,
+    142|   });
+    143|   tree.rootTeam.taskExecutions = [
+       |                 ^
+    144|     ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunI…
+    145|       startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00…
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:285:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/7]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > finalizes a nested member through its exact containing TeamRun and canonical execution ID
+TypeError: Cannot assign to read only property 'taskExecutions' of object '#<Object>'
+ ❯ writeExecutionTree tests/integration/api/rest/context-files.integration.test.ts:143:17
+    141|     children: rootAgents,
+    142|   });
+    143|   tree.rootTeam.taskExecutions = [
+       |                 ^
+    144|     ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunI…
+    145|       startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00…
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:306:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/7]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft
+TypeError: Cannot assign to read only property 'taskExecutions' of object '#<Object>'
+ ❯ writeExecutionTree tests/integration/api/rest/context-files.integration.test.ts:143:17
+    141|     children: rootAgents,
+    142|   });
+    143|   tree.rootTeam.taskExecutions = [
+       |                 ^
+    144|     ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunI…
+    145|       startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00…
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:331:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/7]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+TypeError: Cannot assign to read only property 'taskExecutions' of object '#<Object>'
+ ❯ writeExecutionTree tests/integration/api/rest/context-files.integration.test.ts:143:17
+    141|     children: rootAgents,
+    142|   });
+    143|   tree.rootTeam.taskExecutions = [
+       |                 ^
+    144|     ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunI…
+    145|       startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00…
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:366:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/7]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > isolates image and file bytes for duplicate-address executions even with repeated stored filenames
+TypeError: Cannot assign to read only property 'taskExecutions' of object '#<Object>'
+ ❯ writeExecutionTree tests/integration/api/rest/context-files.integration.test.ts:143:17
+    141|     children: rootAgents,
+    142|   });
+    143|   tree.rootTeam.taskExecutions = [
+       |                 ^
+    144|     ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunI…
+    145|       startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00…
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:386:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/7]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  7 failed | 3 passed (10)
+   Start at  20:21:24
+   Duration  1.33s (transform 427ms, setup 15ms, import 714ms, tests 78ms, environment 0ms)
+

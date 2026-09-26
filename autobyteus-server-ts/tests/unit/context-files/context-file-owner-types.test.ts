@@ -27,17 +27,16 @@ describe('context-file-owner-types', () => {
     );
   });
 
-  it('preserves exact Team member addresses and extracts stored filename/display name', () => {
+  it('preserves exact Team execution IDs and extracts stored filename/display name', () => {
     const owner = parseFinalContextFileOwnerDescriptor({
       kind: 'team_member_final',
       teamRunId: 'team-1',
-      memberAddress: '/solution-designer',
-      memberRunId: 'caller-supplied-run-id',
+      agentRunId: 'designer-run',
     });
 
     expect(owner).not.toHaveProperty('memberRunId');
     const locator = buildFinalContextFileLocator(owner, 'ctx_abc123__diagram-final.png');
-    expect(locator).toBe('/rest/team-runs/team-1/members/%2Fsolution-designer/context-files/ctx_abc123__diagram-final.png');
+    expect(locator).toBe('/rest/team-runs/team-1/agent-runs/designer-run/context-files/ctx_abc123__diagram-final.png');
     expect(getStoredFilenameFromLocator(locator)).toBe('ctx_abc123__diagram-final.png');
     expect(getDisplayNameFromStoredFilename('ctx_abc123__diagram-final.png')).toBe('diagram-final.png');
   });
@@ -45,4 +44,13 @@ describe('context-file-owner-types', () => {
   it('rejects invalid stored filenames when extracting from locators', () => {
     expect(getStoredFilenameFromLocator('/rest/runs/run-1/context-files/../../etc/passwd')).toBeNull();
   });
+  it.each([
+    {}, { agentRunId: '' }, { agentRunId: '../escape' }, { agentRunId: ' a' },
+    { agentRunId: 'a/b' }, { agentRunId: 42 }, { agentRunId: 'a\\b' },
+    { agentRunId: 'a', memberAddress: '/worker' }, { memberAddress: '/worker' },
+    { agentRunId: 'a', teamRunId: '..' },
+  ])('rejects missing, unsafe and old/mixed Team identity: %j', (input) => {
+    expect(() => parseFinalContextFileOwnerDescriptor({ kind: 'team_member_final', teamRunId: 'team', ...input })).toThrow();
+  });
+
 });

@@ -18,7 +18,7 @@ describe("buildTeamMemberInputEventPayload", () => {
   });
 
   it("preserves canonical ContextFile uri and lower-case file_type in member-input context refs", () => {
-    const imageLocator = "/rest/team-runs/team-1/members/solution_designer/context-files/ctx_abc__image.png";
+    const imageLocator = "/rest/team-runs/team-1/agent-runs/solution_designer/context-files/ctx_abc__image.png";
     const message = new AgentInputUserMessage(
       "please inspect this image",
       SenderType.USER,

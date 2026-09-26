@@ -61,7 +61,8 @@ export class ContextFileOwnerResolver {
       parseFinalContextFileOwnerDescriptor(owner);
       return { rootSubjectKind: "agent_org", rootRunId: owner.orgRunId, agentRunId: owner.agentRunId };
     }
-    return { containingTeamRunId: owner.teamRunId, memberAddress: owner.memberAddress };
+    parseFinalContextFileOwnerDescriptor(owner);
+    return { containingTeamRunId: owner.teamRunId, agentRunId: owner.agentRunId };
   }
 
   private result(
@@ -79,9 +80,9 @@ export class ContextFileOwnerResolver {
     if (!location
       || "rootSubjectKind" in location && location.rootSubjectKind !== "agent_team"
       || location.containingTeamRunId !== owner.teamRunId
-      || location.memberAddress !== owner.memberAddress) {
+      || location.agentRunId !== owner.agentRunId) {
       throw new TeamContextFileOwnerNotFoundError(
-        `Unable to resolve context-file owner member '${owner.memberAddress}' for collaboration root '${owner.teamRunId}'.`,
+        `Unable to resolve context-file owner member '${owner.agentRunId}' for collaboration root '${owner.teamRunId}'.`,
       );
     }
     return { ...owner, rootTeamRunId: "rootRunId" in location ? location.rootRunId : location.rootTeamRunId,

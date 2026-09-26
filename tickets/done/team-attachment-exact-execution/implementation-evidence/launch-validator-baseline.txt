@@ -1,0 +1,17 @@
+Base e06080b0027636cecf20b5e437c496d423c7f26b: teamRunConfigStore calls assertEditTarget without import/declaration; helper private in teamRunLaunchConfigEdit. Initial focused web run produced eight ReferenceErrors. Current implementation publicly names/imports existing validator; no validation rules changed.
+
+import { applyTeamLaunchConfigEdit } from '~/utils/teamRunLaunchConfigEdit'
+    clearRepairNotice() { this.repairNotice = null },
+    focusMember(address: AgentTeamAddress) {
+      const draft = this.selectedDraft; if (!draft) return
+      assertDraftMutable(this.workspacePreparationPlans, this.inFlightDrafts, draft.draftId, 'change focus')
+      assertEditTarget(requireMemberTree(draft.config), address, 'agent')
+      this.replaceSelectedDraft(replaceDraft(draft, { focusedMemberAddress: address }))
+    },
+    setPendingInput(address: AgentTeamAddress, input: TeamLaunchPendingInput | null) {
+      const draft = this.selectedDraft; if (!draft) return
+      assertDraftMutable(this.workspacePreparationPlans, this.inFlightDrafts, draft.draftId, 'change pending input')
+      assertEditTarget(requireMemberTree(draft.config), address, 'agent')
+      const pending = { ...draft.pendingInputsByMemberAddress }
+      if (input) pending[address] = freezePendingInput(input); else delete pending[address]
+      this.replaceSelectedDraft(replaceDraft(draft, { pendingInputsByMemberAddress: Object.freeze(pending) }))

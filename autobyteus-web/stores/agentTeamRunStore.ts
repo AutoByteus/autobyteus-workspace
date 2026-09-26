@@ -260,7 +260,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           contexts.replaceTeamContext(rootTeamRunId, expectedContext, hydrated.hydratedContext);
           markCommittedTeamRunHydrationAuthority(hydrated);
           team = hydrated.hydratedContext;
-          targetAgentRunId = team.view.getFocusedAgentRunId();
+          // Hydration focus is presentation state, never a replacement send target.
         }
         if (!team || !targetAgentRunId || !rootTeamRunId || !draftOwnerId) throw new Error('Canonical Team execution was not created.');
         const member = team.view.getAgentContext(targetAgentRunId);
@@ -277,7 +277,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           draftOwner,
           finalOwner: buildTeamMemberFinalContextFileOwner(
             location.containingTeamRunId,
-            location.memberAddress,
+            targetAgentRunId,
           ),
           attachments: contextAttachments,
         });

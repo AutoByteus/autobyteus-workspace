@@ -1,3 +1,4 @@
+const ATTACHMENT_MIGRATION_ID = "20260926_team_context_file_execution_locators_v1";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const TOKEN_MIGRATION_ID = "token-usage-v1";
@@ -155,6 +156,9 @@ vi.mock("../../../src/secret-management/secret-vault-runtime.js", () => ({
     close: mocks.closeSecretVault,
   }),
 }));
+vi.mock("../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js", () => ({
+  TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID: "20260926_team_context_file_execution_locators_v1",
+}));
 vi.mock("../../../src/app-data-migrations/app-data-migration-runner.js", () => ({
   getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),
 }));
@@ -236,6 +240,7 @@ const status = (
 ) => ({ migrationId, status: migrationStatus, ...extra });
 
 const successfulStatuses = () => [
+  status(ATTACHMENT_MIGRATION_ID, "SUCCEEDED"),
   status(TOKEN_MIGRATION_ID, "SUCCEEDED"),
   status(TEAM_MIGRATION_ID, "SUCCEEDED"),
   status(READABLE_MIGRATION_ID, "SUCCEEDED_WITH_WARNINGS"),
@@ -386,6 +391,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
 
   it("retains degraded token history and strict TeamRun admission without blocking a current-schema run", async () => {
     mocks.runPending.mockResolvedValueOnce([
+      status(ATTACHMENT_MIGRATION_ID, "SUCCEEDED"),
       status(TOKEN_MIGRATION_ID, "FAILED", { logPath: "/tmp/token.log", errorMessage: "history failed" }),
       status(TEAM_MIGRATION_ID, "FAILED", { logPath: "/tmp/team.log", errorMessage: "legacy package" }),
       status(READABLE_MIGRATION_ID, "SUCCEEDED"),
@@ -414,7 +420,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
   ] as const)(
     "rejects %s readable-provider readiness after catalog rebuild and unwinds repository resources",
     async (_label, statuses, expectedStatus, expectedLogPath) => {
-      mocks.runPending.mockResolvedValueOnce(statuses);
+      mocks.runPending.mockResolvedValueOnce([status(ATTACHMENT_MIGRATION_ID, "SUCCEEDED"), ...statuses]);
 
       await expect(startStandaloneApplicationHost(input)).rejects.toThrow(
         `CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:${expectedStatus}:${expectedLogPath}`,
@@ -470,4 +476,13 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
     expect(mocks.shutdownPrisma).toHaveBeenCalledTimes(1);
   });
+  it.each(["MISSING", "NOT_RUN", "RUNNING", "FAILED", "SUCCEEDED_WITH_WARNINGS"])("blocks attachment transition %s before runtime admission", async (value) => {
+    mocks.runPending.mockResolvedValueOnce([...successfulStatuses().filter((entry) => entry.migrationId !== ATTACHMENT_MIGRATION_ID),
+      ...(value === "MISSING" ? [] : [{ migrationId: ATTACHMENT_MIGRATION_ID, status: value }])]);
+    await expect(startStandaloneApplicationHost(input)).rejects.toThrow("Team attachment locator migration requires clean success");
+    expect(mocks.buildApplicationPlatformRuntime).not.toHaveBeenCalled();
+    expect(mocks.app.listen).not.toHaveBeenCalled();
+    expect(mocks.rebuildTeamRunCatalog).not.toHaveBeenCalled();
+  });
+
 });
