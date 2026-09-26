@@ -10,18 +10,18 @@
 - Supplemental task artifacts: N/A — no behavior-defining supplement.
 - Design review report: `design-review-report.md` (ARCH-REV-004 Pass).
 - Architecture review revision record: `architecture-review-revision-record.md`.
-- Triggering rework report/revision/evidence: `code-review-report.md` / `code-review-revision-record.md`, CRR-001 Blocked on held C-001 requirement authority; SR-013/SR-014/E-034 approved clarification and SR-015/ARCH-REV-004 reviewed design. CRR-001 did not sign off source.
+- Triggering rework report/revision/evidence: `code-review-report.md` / `code-review-revision-record.md`, CRR-002 Fail — Local Fix F-001 (AGY image projection lacked runtime-origin guard). CRR-001 was a historical requirement-authority hold resolved by SR-013/SR-014/E-034 and IR-002, not source signoff.
 
 ## Current Implementation Summary
 
-- Implementation cycle: Revision after changed approved requirements.
+- Implementation cycle: Bounded Local Fix after full Code Review.
 - Implementation revision record: `implementation-revision-record.md`.
-- Current implementation revision ID: IR-002.
+- Current implementation revision ID: IR-003.
 - Related solution revision IDs: SR-009, SR-010, SR-012, SR-013, SR-014, SR-015.
 - Related architecture-review revision IDs: ARCH-REV-004 (ARCH-REV-003 and prior F-001/F-002 historical).
-- Related code-review revision IDs: CRR-001 Blocked, historical; fresh full review required. API/E2E and delivery: N/A.
-- Triggering finding IDs: CRR-001/C-001 held upstream, not an implementation-source defect.
-- Server branch/worktree and implementation commit: `task/agy-runtime-capabilities-20260926`, `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926`, `dd9efb39b` (prior implementation `33a926187`, `84f8fa569`; artifact baseline `04e873ba1`); base `ae3aba1bfb7af6fefd8c69994e0b1bc421967d60`, target `origin/personal`.
+- Related code-review revision IDs: CRR-002 Fail — Local Fix; CRR-001 Blocked, historical. API/E2E and delivery: N/A.
+- Triggering finding IDs: CRR-002/F-001 (C-002); prior CRR-001/C-001 held upstream, not an implementation-source defect.
+- Server branch/worktree and implementation commit: `task/agy-runtime-capabilities-20260926`, `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926`, `24e11ca4a` (prior implementation `dd9efb39b`, `33a926187`, `84f8fa569`); base `ae3aba1bfb7af6fefd8c69994e0b1bc421967d60`, target `origin/personal`.
 - Agent-package branch/worktree and commit: `task/agy-codex-skill-bundle-20260926`, `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-codex-skill-bundle-20260926`, `a140474` (bundle `78828dc`); base/target `origin/main@1b1a75ee57271745424030e9289a699523ff34a6`. Task-branch commits were rebased to the user-specified `Ryan Zheng <nogrethumphrey@gmail.com>` identity; CRR-001's pre-rebase SHA snapshot maps in IR-002.
 
 ## Routing Classification (Mandatory)
@@ -31,7 +31,7 @@
 - Design classification reference: `design-spec.md` § Task Size And Architectural Risk.
 - Classification confirmed or changed: Confirmed.
 - Evidence/rationale: Provider tool permission, native image file serving, public error safety and skill provenance remain high-risk boundaries; implementation scope matches bounded medium design across server and separate package.
-- Selected route: Fresh full Code Review per returned high-risk implementation rule; CRR-001 was blocked and is not a signoff.
+- Selected route: Return to independent Code Review under the high-risk Local Fix rule; CRR-002 failed F-001 and is not a signoff.
 - Lightweight implementation self-review for direct route: Not Applicable — independent Code Review required.
 - New design impact/escalation trigger: None observed in static implementation; actual provider contract remains an explicit validation gate. A contradiction must be routed as Design Impact.
 
@@ -40,7 +40,7 @@
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | BEH-001 | Default AGY non-collaboration native tools including `generate_image`, with independently scoped MCP and no native collaboration | `runtime-management/antigravity-cli-capability.ts` → `agy-native-tool-policy.ts` → `agy-agent-run-backend-factory.ts` → `agy-run-capsule.ts`; existing MCP authority unchanged | Pinned 1.2.11 profile and explicit unsupported-version failure; no eight-tool fallback or MCP names in native frontmatter. Exact provider exposure remains API/E2E gate. |
-| BEH-003 | Actual native image path or accurate safe failure | `agy-stream-event-converter.ts` → `agy-native-image-result.ts` / `agy-native-image-diagnostic-sink.ts` → canonical lifecycle → `file-change-event-processor.ts` → existing file-content route | Only provider `tool_name: generate_image` uses native handling; explicit absolute output path, regular image file/header check before success; native failure/denial uses static public text, null output, scrubbed start arguments; private bounded diagnostic. Real provider output shape/bytes and UI route remain API/E2E gate. |
+| BEH-003 | Actual native image path or accurate safe failure | `agy-stream-event-converter.ts` → `agy-native-image-result.ts` / `agy-native-image-diagnostic-sink.ts` → canonical lifecycle → `file-change-event-processor.ts` → existing file-content route | Only AGY runtime plus provider `tool_name: generate_image` and `provider_state=DONE` triggers the shared owner's AGY-specific regular-file verification; non-AGY generated-output projection remains unchanged. Explicit absolute output path, image header check, static public failure/denial text, null failed output, scrubbed start arguments and private bounded diagnostic remain. Real provider output shape/bytes and UI route remain API/E2E gates. |
 | BEH-002 | Codex skill portable when present; missing or semantically invalid content warns/omits; unsafe provenance, collision and source changes block | `SkillService` / `ConfiguredAgentSkillResolver` detailed outcomes → AGY factory/materializer → v1 capsule manifest; package `agents/codex/skills/software-engineering-workflow-skill` | `resolved`, `certified_absent`, `invalid_candidate` stay distinct; both skippable kinds warn with sanitized run/agent/skill and safe disposition/reason, without copying invalid content. Source-tree safety/fingerprint and post-resolution change failures remain hard; valid peers snapshot. Existing Codex/Claude resolver method retained unchanged. Live first turn remains API/E2E gate. |
 
 ## Key Files Or Areas
@@ -96,7 +96,8 @@
 
 ## Local Implementation Checks Run
 
-- `tsc -p autobyteus-server-ts/tsconfig.build.json --noEmit`: passed after Prisma generation and IR-002 edits.
+- `tsc -p autobyteus-server-ts/tsconfig.build.json --noEmit`: passed after Prisma generation and IR-003 edits.
+- IR-003 focused file-change processor unit test: 14 passed (`/tmp/ir003-file-change.log`), covering AGY missing/present native result path and unchanged non-AGY generated-output projection. `prepare:shared` passed before rerun; an initial import failed only because shared-package generated `dist` was absent after IR-002 cleanup.
 - Focused AGY/skill/capability/file-change unit tests: 8 files, 110 passed, 1 skipped (`/tmp/ir002-focused.log`); subsequent resolver/capsule rerun: 2 files, 62 passed (`/tmp/ir002-quick.log`).
 - File-change/projection/REST unit tests: 3 files, 25 passed (`/tmp/agy-filechecks.log`).
 - Package source `diff -qr` against pinned source: only `PROVENANCE.md` differs; Markdown relative-link check: zero missing links.

@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-003 on SR-012 | N/A | Initial Baseline | SR-009/SR-010/SR-012; ARCH-REV-003; CRR/API-REV/DR N/A | Implementation ready for independent Code Review; live provider/API-E2E gates remain open |
 | IR-002 | Architecture Reviewer, `design-review-report.md`, ARCH-REV-004 on SR-015; CRR-001 authority hold | CRR-001/C-001 held for upstream clarification, not a source defect | Implementation Revision | SR-013/SR-014/SR-015; ARCH-REV-004; CRR-001; API-REV/DR N/A | Revised skill policy implemented; fresh full Code Review required; provider/API-E2E gates remain open |
+| IR-003 | Code Reviewer, `code-review-report.md`, CRR-002 on IR-002 | F-001 | Local Fix | SR-015; ARCH-REV-004; CRR-002; API-REV/DR N/A | AGY-only projection guard implemented and locally checked; return for source review |
 
 ## Revision Entries
 
@@ -51,3 +52,22 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Next recipient or routing: Fresh independent Code Review per Medium/High classification, subject to `get_handoff_rules`.
 - Remaining limitations or risks: Exact model-exposed AGY native profile, genuine native `tool_name: generate_image`, real image bytes/path, safe public/private failure flow, MCP coexistence/collaboration exclusion, and Codex first turn require API/E2E. The no-more-exploratory-experiments constraint remains in force. If provider contract contradicts design, return Design Impact, not an MCP fallback.
 - Commit-identity correction: At the user's request, the task branches were rebased to `Ryan Zheng <nogrethumphrey@gmail.com>`. Historical CRR-001 records the pre-rebase SHA snapshot (`3134b966c`→`33a926187`, `b0d17d98f`→`84f8fa569`, `d456f0041`→`04e873ba1`, package `a8c2c7127`→`78828dc`). This changes identifiers, not reviewed source content.
+
+### IR-003 — AGY-origin guard at shared file-change projection
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md`, CRR-002 full Implementation Review of IR-002.
+- Triggering finding IDs: CRR-002/F-001 (candidate C-002); CRR-001/C-001 was already resolved by approved SR-013/SR-014 and IR-002, not a source defect.
+- Classification: Local Fix; `task_size=Medium`, `architectural_risk=High` unchanged.
+- Prior authoritative result: CRR-002 Fail — Local Fix because AGY-native image regular-file verification in shared file-change projection used tool name and provider state but did not guard `runtimeKind`.
+- Current authoritative result: Server commit `24e11ca4a` requires `RuntimeKind.ANTIGRAVITY_CLI` as well as native `tool_name=generate_image` and `provider_state=DONE` before AGY-only regular-file verification; fresh source review required. No API/E2E pass is claimed.
+- Related solution revision IDs: SR-015 (BEH-003/DS-002; preceding SR-009/SR-010/SR-012 unchanged).
+- Related architecture-review revision IDs: ARCH-REV-004.
+- Related code-review revision IDs: CRR-002/F-001; CRR-001 historical.
+- Related API/E2E revision IDs: N/A.
+- Related delivery revision IDs: N/A.
+- Why this revision is recorded: Restore SR-015's explicit provider-origin boundary at the shared projection owner without changing non-AGY generated-output semantics.
+- Approved behavior or requirement IDs affected: BEH-003, REQ-002, AC-001/002; no skill or tool-policy change.
+- Implementation delta and locations: Added runtime-kind guard in `autobyteus-server-ts/src/agent-execution/events/processors/file-change/file-change-event-processor.ts`; added regression in `tests/unit/agent-execution/events/file-change-event-processor.test.ts` showing absent AGY image path is not projected, present AGY regular file is projected, and the same generated-output result still projects for a non-AGY runtime without AGY-only file verification.
+- Local validation and result: `prepare:shared` passed; focused file-change processor unit file 14 passed; server source build TypeScript check passed; `git diff --check` clean. Initial test attempt failed at import because generated shared-package `dist` had been removed after IR-002; rebuilding shared packages restored the test environment, and the rerun passed. Generated untracked build artifacts were cleaned afterward.
+- Next recipient or routing: Independent Code Review again per High architectural risk and Local Fix rule, subject to `get_handoff_rules`.
+- Remaining limitations or risks: Genuine AGY-native `tool_name: generate_image`, real output bytes/path, model-exposed non-collaboration profile, MCP coexistence, safe error redaction and Codex first turn still require downstream API/E2E. No exploratory live AGY run was performed. A provider contract contradiction remains Design Impact, not fallback authorization.
