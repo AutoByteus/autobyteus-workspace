@@ -19,7 +19,7 @@ const row = {
   agentRunId: 'task-run',
   teamRunIdForNode: null,
   displayName: 'Task: A deliberately complete task description',
-  depth: 1,
+  depth: 0,
   hasChildren: false,
   currentStatus: AgentStatus.Idle,
   task: {

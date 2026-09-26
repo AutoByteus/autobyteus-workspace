@@ -52,7 +52,17 @@ export const buildRunHistoryTeamExecutionRows = (
   ) {
     throw new Error(`Team history execution root '${rootTeamRunId}' is invalid.`);
   }
-  const descendantRows = navigationRows.filter((row) => row !== rootRow);
+  const navigationByKey = new Map(navigationRows.map((row) => [row.key, row]));
+  const descendantRows = navigationRows.filter((row) => row !== rootRow).map((row) => {
+    const parent = row.parentKey ? navigationByKey.get(row.parentKey) : undefined;
+    // Only sidebar task-Agent leaves become peers. Shared navigation and real
+    // Team/task-Team containment remain authoritative everywhere else.
+    if (row.kind === 'task_agent'
+      && (parent?.kind === 'configured_agent' || parent?.kind === 'task_team_agent')) {
+      return { ...row, parentKey: parent.parentKey, depth: parent.depth };
+    }
+    return row;
+  });
   const parentRowKeys = new Set(descendantRows.flatMap((row) => row.parentKey ? [row.parentKey] : []));
   const stableByKey = new Map(flattenStableRows(stableSource).map((row) => [row.rowKey, row]));
   return descendantRows.flatMap((execution): RunHistoryTeamExecutionRow[] => {
