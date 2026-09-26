@@ -1128,12 +1128,17 @@ their disclosures operable, but expose no launch action, workspace authoring,
 runtime selection, or stopped-run Reset.
 
 `existingRunModelOptionsClient` reads server-owned Agent or configured-Team
-options for the saved subject. Replacements stay within the fixed runtime and
-require verified target context >= fresh saved-model context for each scope.
-Unknown/smaller options are not eligible, and advisory picker evidence is
-rechecked by the server on Save. Unavailable capacity does not block same-model
-settings when ordinary model/schema/editability checks pass. No extra derived
-budget, output, tokenizer, or compaction-threshold compatibility gate exists.
+options for the saved subject. It receives self-contained current and
+replacement descriptors; it does not intersect server choices with a second
+frontend catalog. Replacements stay within the fixed runtime. Claude Agent
+SDK, Codex App Server and Antigravity CLI use the backend's distinct offered
+IDs without a platform capacity comparison. AutoByteus alone requires verified
+positive non-decreasing context capacity for replacements. An exact saved
+Claude `default` can remain current-only with its schema, but a filtered alias
+is not a new choice. Advisory options are rechecked by the server on Save.
+Unavailable native capacity does not block same-model settings when ordinary
+exact-current/schema/editability checks pass. No extra derived budget, output,
+tokenizer, or compaction-threshold compatibility gate exists.
 
 Existing-run consumers subscribe to one coherent `selection-change` pair.
 Changing model clears old explicit config to null before target-schema/default
@@ -1191,7 +1196,7 @@ Save-time compaction, history conversion, or reset. Existing runtime compaction
 algorithms remain; future model-specific budgets/timing need not be identical.
 Frontend and backend use the complete-pair API together, without an old-client
 adapter or persisted-data migration. See [Settings](./settings.md#existing-run-model-configuration)
-for the user workflow and [server capacity evidence](../../autobyteus-server-ts/docs/modules/llm_management.md#persisted-run-model-selection-validation)
+for the user workflow and [server model-selection policy](../../autobyteus-server-ts/docs/modules/llm_management.md#persisted-run-model-selection-validation)
 for runtime-specific authority and uncertainty limits.
 
 The model-config surface is schema-driven, not thinking-only. It renders
@@ -1218,22 +1223,22 @@ whitespace-only descriptions fall back to the existing name-only row without a
 placeholder. Claude Agent SDK descriptions come from its live runtime catalog
 and must not be hard-coded in the frontend.
 
-For the Claude Agent SDK runtime, options are labeled by the server-provided
-canonical model ID (`canonicalName`, e.g. `claude-opus-5-5[1m]`, falling back
-to the SDK value), the secondary line is `<Claude display name> · <description>`,
-the selected field reads `Anthropic / <canonical ID>`, and options are ordered
-recommended-first. The builder follows the server's nullable
-`selectionPresentation` hint: a row with `aliasOfModelIdentifier` (the SDK
-`default` row) is folded into its target option's `aliasIds`, and the
-`recommended` row shows a localized **Recommended** badge. The frontend never
-tests for the string `default`; if the alias target is not listed, the alias
-row stays its own option. `SearchableGroupedSelect` and
-`RuntimeModelConfigFields` match a stored value by option id or alias
-(`utils/selectItemMatch.ts`), so a saved `default` opens as the Recommended
-option with no "unavailable" warning, and re-choosing the option that already
-represents the stored value emits nothing — the saved SDK value is never
-rewritten to the canonical one. Other runtimes keep their existing labels and
-receive `selectionPresentation: null`.
+For Claude Agent SDK, options are labeled by the server-provided canonical
+model ID (`canonicalName`, e.g. `claude-opus-5-5[1m]`, falling back to the SDK
+value), with `<Claude display name> · <description>` below and
+`Anthropic / <canonical ID>` when selected. The backend owns the offered set:
+it omits a proven redundant `default` alias and recommends its listed sibling,
+or keeps `default` offered when no matching sibling is proven. The frontend
+orders `selectionPresentation.recommended` rows first but does not infer or fold
+aliases. For a server-origin saved/seeded ID absent from offered rows,
+`SearchableGroupedSelect` renders a separate selected-value display and the
+exact-current descriptor supplies schema. This retains a saved `default` ID
+without turning it into a new choice or silently persisting the sibling. Agent,
+Team, mobile Run setup and Application Setup request batched
+`runtimeCurrentModelDescriptors` for their server-origin current IDs; stopped
+Settings receives its current descriptor directly in run options. Missing exact
+detail remains visibly unavailable rather than guessed. Other runtimes keep
+their existing labels and receive `selectionPresentation: null`.
 
 Editable primary/global agent and team launch config initializes **Advanced**
 from effective **Thinking** state. Effective **Thinking** ON opens **Advanced**

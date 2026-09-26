@@ -113,6 +113,14 @@ runnable. Agent configurations can include `runtimeKind`,
 `llmModelIdentifier`, and `workspaceRootPath` only when the slot supports them.
 Team configurations use shared defaults plus current member runtime/model
 overrides, with `workspaceRootPath` on the shared defaults.
+For an effective saved/seeded model, host validation resolves the exact current
+descriptor through `ModelCatalogService.resolveExactCurrentLlmModel`, rather
+than treating the selection-facing offered list as the authority for an
+existing value. A Claude `default` omitted as a redundant new choice can
+therefore remain a valid effective Agent or Team leaf, with its exact ID and
+credential/schema evidence intact. A genuinely missing raw current model still
+fails validation; exact-current resolution is not a bypass for a newly changed
+model or a silent conversion to a recommended sibling.
 
 Application agent-execution launch inputs carry an optional `skillAccessMode`
 field. It has a narrow value set: `PRELOADED_ONLY` is the

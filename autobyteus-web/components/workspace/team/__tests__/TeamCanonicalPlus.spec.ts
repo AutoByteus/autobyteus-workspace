@@ -32,6 +32,9 @@ let createdTree: any
 const meta = { workspaceId: 'ws', workspaceRootPath: '/source', displayName: 'Source', kind: 'filesystem' as const }
 const wrappers: ReturnType<typeof mount>[] = []
 const mounted = (component: any) => { const w = mount(component, { global: { stubs: { AgentTeamEventMonitor: true, SkillImprovementComposerCta: true } } }); wrappers.push(w); return w }
+const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'OpenAI', displayName: id,
+  canonicalName: id, description: null, configSchema: { type: 'object',
+    properties: { budget: { type: 'integer', minimum: 0 }, enabled: { type: 'boolean' } } }, recommended: false })
 const deferred = () => { let resolve!: (x: any) => void; const promise = new Promise<any>(r => resolve = r); return { promise, resolve } }
 const resume = (tree = canonical) => ({ data: { getTeamRunResumeConfig: { teamRunId: tree.root_team.team_run_id, isActive: false, modelConfigEditability: { editable: true, reason: null }, executionTree: JSON.parse(JSON.stringify(tree)) } } })
 beforeEach(async () => {
@@ -49,7 +52,8 @@ beforeEach(async () => {
   io.query.mockImplementation(async ({ query, variables }) => {
     const name = query.definitions.find((d: any) => d.name)?.name.value
     if (name === 'GetTeamRunResumeConfig') return resume(variables.teamRunId === 'new-team' ? createdTree : canonical)
-    if (name === 'TeamRunModelOptions') return { data: { teamRunModelOptions: ['/', '/lead'].map(scopeAddress => ({ scopeAddress, currentModelIdentifier: 'model', currentContextTokens: 100, replacements: [{ llmModelIdentifier: 'replacement-model', contextTokens: 200 }], unavailableReason: null })) } }
+    if (name === 'TeamRunModelOptions') return { data: { teamRunModelOptions: ['/', '/lead'].map(scopeAddress => ({ scopeAddress, currentModelIdentifier: 'model', currentModel: choice('model'), replacements: [choice('replacement-model')], unavailableReason: null })) } }
+    if (name === 'RuntimeCurrentModelDescriptors') return { data: { runtimeCurrentModelDescriptors: variables.identifiers.map((identifier: string) => ({ identifier, model: { modelIdentifier: identifier, name: identifier, canonicalName: identifier, providerName: 'OpenAI', description: null, configSchema: null } })) } }
     if (variables.agentRunId) return { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
     throw new Error('Unexpected query: ' + name)
   })

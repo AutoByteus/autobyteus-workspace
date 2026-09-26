@@ -1,0 +1,18 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { CodexModelCatalog } from '../../../../autobyteus-server-ts/dist/llm-management/services/codex-model-catalog.js';
+const dir=new URL('.',import.meta.url).pathname;
+const info=JSON.parse(await fs.readFile(path.join(dir,'live-stack-info.json')));
+const seed=JSON.parse(await fs.readFile(path.join(dir,'rev002-seed-evidence.json')));
+const workspace=path.join(info.runtimeRoot,'workspaces','agent-codex');
+const catalog=new CodexModelCatalog();
+const ids=(rows)=>rows.map(x=>x.model_identifier).sort();
+const directServer=ids(await catalog.listModels(path.join(process.cwd(),'autobyteus-server-ts')));
+const directWorkspace=ids(await catalog.listModels(workspace));
+const gql=async(query,variables={})=>await(await fetch(info.backendUrl+'/graphql',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({query,variables})})).json();
+const snapshot=await gql('query{providerModelCatalogSnapshots(runtimeKind:"codex_app_server"){llmModels{modelIdentifier}}}');
+const exact=await gql('query{runtimeCurrentModelDescriptors(runtimeKind:"codex_app_server",identifiers:["gpt-6-astra","gpt-6-luna","unknown"]){identifier model{modelIdentifier}}}');
+const options=await gql('query($id:String!){agentRunModelOptions(agentRunId:$id){currentModelIdentifier currentModel{llmModelIdentifier} replacements{llmModelIdentifier}}}',{id:seed['agent-codex'].runId});
+const output={directServer,directWorkspace,snapshot,exact,options,match:JSON.stringify(directServer)===JSON.stringify(directWorkspace)};
+await fs.writeFile(path.join(dir,'rev002-codex-cwd-evidence.json'),JSON.stringify(output,null,2));
+console.log('server',directServer,'workspace',directWorkspace,'match',output.match);

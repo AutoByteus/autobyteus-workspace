@@ -59,6 +59,7 @@
       variant="agent"
       :runtime-kind="agentConfigForSelectedTarget.runtimeKind"
       :llm-model-identifier="agentConfigForSelectedTarget.llmModelIdentifier"
+      :seed-model-identifier="agentSeedModelIdentifier"
       :llm-config="agentConfigForSelectedTarget.llmConfig"
       @update:runtime-kind="updateRuntimeKind"
       @update:llm-model-identifier="updateLlmModelIdentifier"
@@ -69,6 +70,7 @@
       variant="team"
       :runtime-kind="teamConfigForSelectedTarget.rootConfig.runtimeKind"
       :llm-model-identifier="teamConfigForSelectedTarget.rootConfig.llmModelIdentifier"
+      :seed-model-identifier="teamSeedModelIdentifier"
       :llm-config="teamConfigForSelectedTarget.rootConfig.llmConfig"
       @update:runtime-kind="updateRuntimeKind"
       @update:llm-model-identifier="updateLlmModelIdentifier"
@@ -154,7 +156,9 @@ const {
   workspaceRefreshing,
   workspacePathLoading,
   agentConfigForSelectedTarget,
+  agentSeedModelIdentifier,
   teamConfigForSelectedTarget,
+  teamSeedModelIdentifier,
   activeConfig,
   canLaunch,
   blockingIssue,

@@ -12,8 +12,7 @@ const model = () => {
   return projectExistingAgentOrgRunFormModel({ tree, workspaceDraft: createExistingAgentOrgWorkspaceDraft(tree, []), planner: createExistingAgentOrgModelConfigDraft(tree),
     isActive: false, modelConfigEditable: true, modelConfigReason: null, saving: false,
     modelOptionsByAddress: Object.fromEntries(['/', '/director', '/team', '/team/lead'].map(address => [address, {
-      status: 'ready', options: { currentModelIdentifier: 'gpt-5.6-sol', currentContextTokens: 100,
-        replacements: [], unavailableReason: null },
+      status: 'ready', options: { currentModelIdentifier: 'gpt-5.6-sol', replacements: [], unavailableReason: null },
     }])) })
 }
 

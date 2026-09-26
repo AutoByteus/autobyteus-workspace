@@ -9,6 +9,7 @@ import {
   Resolver,
 } from 'type-graphql';
 import { GraphQLError } from 'graphql';
+import { runtimeKindFromString } from '../../../runtime-management/runtime-kind-enum.js';
 import {
   getLlmProviderService,
   type LlmProviderService,
@@ -38,9 +39,17 @@ import {
 import {
   CatalogProviderObject,
   ProviderModelCatalogSnapshotObject,
+  ModelDetail,
+  mapLlm,
   mapProviderDescriptor,
   mapProviderModelCatalogSnapshot,
 } from './llm-provider-model-catalog.js';
+
+@ObjectType()
+class RuntimeCurrentModelDescriptorObject {
+  @Field(() => String) identifier!: string;
+  @Field(() => ModelDetail, { nullable: true }) model!: ModelDetail | null;
+}
 
 @ObjectType()
 class ProviderCredentialSettingObject {
@@ -151,6 +160,20 @@ const throwSanitizedQwenConfigurationError = (error: unknown): never => {
 export class LlmProviderResolver {
   private get modelCatalogService(): ModelCatalogService { return getModelCatalogService(); }
   private get llmProviderService(): LlmProviderService { return getLlmProviderService(); }
+
+  @Query(() => [RuntimeCurrentModelDescriptorObject])
+  async runtimeCurrentModelDescriptors(
+    @Arg('runtimeKind', () => String) runtimeKind: string,
+    @Arg('identifiers', () => [String]) identifiers: string[],
+  ): Promise<RuntimeCurrentModelDescriptorObject[]> {
+    const runtime = runtimeKindFromString(runtimeKind);
+    if (!runtime) throw new GraphQLError(`Unsupported runtime: ${runtimeKind}`);
+    const catalog = await this.modelCatalogService.runtimeModelSelectionCatalog(runtime);
+    return [...new Set(identifiers)].map((identifier) => ({
+      identifier,
+      model: catalog.findExactCurrent(identifier) ? mapLlm(catalog.findExactCurrent(identifier)!) : null,
+    }));
+  }
 
   @Query(() => [ProviderCredentialSettingObject])
   async providerCredentialSettings(

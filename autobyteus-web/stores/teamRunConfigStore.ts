@@ -169,8 +169,9 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     createDraft(config: TeamRunConfig, focusedMemberAddress: AgentTeamAddress): TeamLaunchDraftId {
       assertNoLockedDraft(this.workspacePreparationPlans, this.inFlightDrafts, 'be replaced')
       const draftId = createTeamLaunchDraftId()
+      const seedConfig = freezeConfig(config)
       const draft = Object.freeze({
-        draftId, config: freezeConfig(config),
+        draftId, config: seedConfig, seedConfig,
         teamWorkspaceAuthoringByTeamAddress: freezeTeamWorkspaceAuthoring({}),
         focusedMemberAddress, pendingInputsByMemberAddress: Object.freeze({}),
       })

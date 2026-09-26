@@ -1,0 +1,19 @@
+{
+  "packagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-66384-1790362495630/rev003-application-package",
+  "result": {
+    "data": {
+      "importApplicationPackage": [
+        {
+          "packageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fruntime-specific-stopped-model-switch%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package",
+          "displayName": "importable-package",
+          "applicationCount": 1
+        },
+        {
+          "packageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fruntime-specific-stopped-model-switch%2Fautobyteus-server-ts%2Ftests%2F.tmp%2Fruntime-switch-browser-66384-1790362495630%2Frev003-application-package",
+          "displayName": "rev003-application-package",
+          "applicationCount": 1
+        }
+      ]
+    }
+  }
+}

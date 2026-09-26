@@ -2,87 +2,121 @@ import { describe, expect, it, vi } from 'vitest';
 import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
 import { RunModelSelectionService } from '../../../src/llm-management/services/run-model-selection-service.js';
 import { AgyDiscoveryError } from '../../../src/runtime-management/antigravity-cli-capability.js';
+
+const catalogView = (rows: any[]) => ({ offeredModels: rows,
+  findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
 const context = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, currentModelIdentifier: 'current', workspaceRootPath: '/workspace' };
 const selection = { llmModelIdentifier: 'target', llmConfig: null };
-const known = (tokens: number) => ({ kind: 'known', tokens, source: 'provider' });
-const harness = (current: unknown = known(128000), target: unknown = known(128000)) => {
-  const catalog = { listLlmModels: vi.fn().mockResolvedValue(['current', 'target'].map(model_identifier => ({ model_identifier, config_schema: null }))) };
-  const capacity = { resolveMany: vi.fn().mockResolvedValue({ current, target }) };
-  return { service: new RunModelSelectionService(catalog, capacity), catalog, capacity };
+const harness = (current: number | null = 128000, target: number | null = 128000) => {
+  const catalog = { runtimeModelSelectionCatalog: vi.fn().mockResolvedValue(catalogView(['current', 'target'].map(model_identifier => ({ model_identifier, config_schema: null })))) };
+  const nativeCapacity = { resolveMany: vi.fn().mockReturnValue({ current, target }) };
+  return { service: new RunModelSelectionService(catalog, nativeCapacity), catalog, nativeCapacity };
 };
+
 describe('RunModelSelectionService', () => {
-  it('retains only a safe AGY discovery diagnostic, distinct from a valid missing slug', async () => {
+  it('keeps raw saved default editable but never offers or accepts it as a changed selection', async () => {
+    const raw = { model_identifier: 'default', config_schema: { properties: { effort: { type: 'string', enum: ['low', 'high'] } } } };
+    const sibling = { model_identifier: 'opus', config_schema: raw.config_schema };
+    const catalog = { runtimeModelSelectionCatalog: vi.fn(async () => ({ offeredModels: [sibling],
+      findExactCurrent: (id: string) => id === 'default' ? raw : id === 'opus' ? sibling : null })) };
+    const service = new RunModelSelectionService(catalog);
+    const savedDefault = { ...context, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, currentModelIdentifier: 'default' };
+    const options = await service.listOptions(savedDefault);
+    expect(options.currentModel?.llmModelIdentifier).toBe('default');
+    expect(options.replacements.map((choice) => choice.llmModelIdentifier)).toEqual(['opus']);
+    await expect(service.validate({ context: savedDefault, selection: { llmModelIdentifier: 'default', llmConfig: { effort: 'high' } } }))
+      .resolves.toMatchObject({ kind: 'valid', selection: { llmModelIdentifier: 'default' } });
+    await expect(service.validate({ context: { ...savedDefault, currentModelIdentifier: 'opus' },
+      selection: { llmModelIdentifier: 'default', llmConfig: null } })).resolves.toEqual({ kind: 'model_unavailable' });
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue({ offeredModels: [sibling], findExactCurrent: () => null });
+    await expect(service.validate({ context: savedDefault, selection: { llmModelIdentifier: 'default', llmConfig: null } }))
+      .resolves.toEqual({ kind: 'model_unavailable' });
+  });
+  it('retains only a safe AGY discovery diagnostic, distinct from a missing slug', async () => {
     const { service, catalog } = harness();
-    const agy = { runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, currentModelIdentifier: 'target', workspaceRootPath: '/workspace' };
-    catalog.listLlmModels.mockRejectedValue(new AgyDiscoveryError('AGY_MODEL_DISCOVERY_TIMEOUT'));
+    const agy = { ...context, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI };
+    catalog.runtimeModelSelectionCatalog.mockRejectedValue(new AgyDiscoveryError('AGY_MODEL_DISCOVERY_TIMEOUT'));
     await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable',
       catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_TIMEOUT', message: 'Antigravity model discovery timed out; check the CLI and retry.' } });
-    catalog.listLlmModels.mockRejectedValue(new Error('secret /private/token'));
+    catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error('secret /private/token'));
     await expect(service.validate({ context: agy, selection })).resolves.toMatchObject({ kind: 'model_unavailable',
       catalogDiagnostic: { code: 'AGY_MODEL_DISCOVERY_FAILED' } });
     await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_unavailable' });
-    catalog.listLlmModels.mockResolvedValue([]);
+    expect((await service.listOptions(context)).unavailableReason).toContain('catalog is unavailable');
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([]));
     await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable' });
   });
 
-  it.each([128000, 272000])('accepts a verified equal/larger context %s', async target => {
-    const { service } = harness(known(128000), known(target));
-    await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'valid', selection });
-    expect((await service.listOptions(context)).replacements).toEqual([{ llmModelIdentifier: 'target', contextTokens: target }]);
+  it.each([RuntimeKind.CLAUDE_AGENT_SDK, RuntimeKind.CODEX_APP_SERVER, RuntimeKind.ANTIGRAVITY_CLI])(
+    'offers and accepts any current %s catalog replacement without reading capacity', async runtimeKind => {
+      const { service, nativeCapacity } = harness(null, null);
+      const scoped = { ...context, runtimeKind };
+      expect((await service.listOptions(scoped)).replacements.map((row) => ({ llmModelIdentifier: row.llmModelIdentifier }))).toEqual([{ llmModelIdentifier: 'target' }]);
+      await expect(service.validate({ context: scoped, selection })).resolves.toEqual({ kind: 'valid', selection });
+      expect(nativeCapacity.resolveMany).not.toHaveBeenCalled();
+    });
+
+  it.each([128000, 272000])('accepts native verified equal/larger context %s', async target => {
+    const { service } = harness(128000, target);
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    await expect(service.validate({ context: native, selection })).resolves.toEqual({ kind: 'valid', selection });
+    expect((await service.listOptions(native)).replacements.map((row) => ({ llmModelIdentifier: row.llmModelIdentifier }))).toEqual([{ llmModelIdentifier: 'target' }]);
   });
-  it.each([0, -1, 128000.1, NaN, Infinity, Number.MAX_SAFE_INTEGER + 1, 127999])('rejects invalid or decreasing capacity %s', async target => {
-    const { service } = harness(known(128000), known(target));
-    expect((await service.validate({ context, selection })).kind).toBe('invalid');
-    expect((await service.listOptions(context)).replacements).toEqual([]);
+  it.each([null, 127999])('rejects native unknown or decreasing target %s', async target => {
+    const { service } = harness(128000, target);
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    expect((await service.validate({ context: native, selection })).kind).toBe('invalid');
+    expect((await service.listOptions(native)).replacements.map((row) => ({ llmModelIdentifier: row.llmModelIdentifier }))).toEqual([]);
   });
-  it.each(['current', 'target'])('requires verified %s metadata', async missing => {
-    const { service } = harness(missing === 'current' ? { kind: 'unknown' } : known(128000), missing === 'target' ? { kind: 'unknown' } : known(128000));
-    expect((await service.validate({ context, selection })).kind).toBe('invalid');
+  it('keeps native same-model settings editable without capacity evidence', async () => {
+    const { service, nativeCapacity } = harness(null, null);
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    await expect(service.validate({ context: native, selection: { ...selection, llmModelIdentifier: 'current' } })).resolves.toMatchObject({ kind: 'valid' });
+    expect(nativeCapacity.resolveMany).not.toHaveBeenCalled();
   });
-  it('does not discover replacement capacity for same-model settings', async () => {
-    const { service, capacity } = harness();
-    capacity.resolveMany.mockRejectedValue(new Error('offline'));
-    await expect(service.validate({ context, selection: { ...selection, llmModelIdentifier: 'current' } })).resolves.toMatchObject({ kind: 'valid' });
-    expect(capacity.resolveMany).not.toHaveBeenCalled();
+  it('uses fresh catalog and saved baseline on Save, not earlier option evidence', async () => {
+    const { service, catalog, nativeCapacity } = harness(128000, 272000);
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    await service.listOptions(native);
+    await expect(service.validate({ context: native, selection })).resolves.toMatchObject({ kind: 'valid' });
+    nativeCapacity.resolveMany.mockReturnValue({ current: 128000, target: 64000 });
+    await expect(service.validate({ context: native, selection })).resolves.toMatchObject({ kind: 'invalid' });
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current', config_schema: null }]));
+    await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_unavailable' });
+    expect(catalog.runtimeModelSelectionCatalog).toHaveBeenCalledTimes(4);
   });
-  it('uses the fresh saved baseline and refreshes evidence after advisory options', async () => {
-    const { service, capacity } = harness(known(128000), known(272000));
-    await service.listOptions(context);
-    await expect(service.validate({ context, selection })).resolves.toMatchObject({ kind: 'valid' });
-    await expect(service.validate({ context: { ...context, currentModelIdentifier: 'target' }, selection: { ...selection, llmModelIdentifier: 'current' } })).resolves.toMatchObject({ kind: 'invalid' });
-    capacity.resolveMany.mockResolvedValue({ current: known(128000), target: known(64000) });
-    await expect(service.validate({ context, selection })).resolves.toMatchObject({ kind: 'invalid' });
-    expect(capacity.resolveMany).toHaveBeenCalledTimes(4);
-  });
-  it('does not compare input/output budgets, tokenizer or compression settings', async () => {
+  it('validates target schema for external models', async () => {
     const { service, catalog } = harness();
-    catalog.listLlmModels.mockResolvedValue([{ model_identifier: 'current', max_input_tokens: 100000, max_output_tokens: 8000 },
-      { model_identifier: 'target', max_input_tokens: 90000, max_output_tokens: 16000 }]);
-    await expect(service.validate({ context, selection })).resolves.toMatchObject({ kind: 'valid' });
-  });
-  it('validates the target schema without silently transferring or filtering old keys', async () => {
-    const { service, catalog } = harness();
-    catalog.listLlmModels.mockResolvedValue([{ model_identifier: 'current' }, { model_identifier: 'target', config_schema: {
-      properties: { effort: { type: 'string', enum: ['low','high'] }, budget: { type: 'integer', minimum: 1, maximum: 10 } }, required: ['effort'] } }]);
-    await expect(service.validate({ context, selection: { ...selection, llmConfig: { effort: 'ultra', budget: 0, old: true } } })).resolves.toEqual({ kind: 'invalid', errors: [
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current' }, { model_identifier: 'target', config_schema: {
+      properties: { effort: { type: 'string', enum: ['low','high'] } }, required: ['effort'] } }]));
+    await expect(service.validate({ context, selection: { ...selection, llmConfig: { effort: 'ultra', old: true } } })).resolves.toEqual({ kind: 'invalid', errors: [
       { path: 'llmConfig.effort', message: 'Value is not one of the supported options.' },
-      { path: 'llmConfig.budget', message: 'Value must be at least 1.' },
       { path: 'llmConfig.old', message: 'Setting is not supported by the selected runtime and model.' },
     ] });
-    await expect(service.validate({ context, selection })).resolves.toMatchObject({ kind: 'invalid' });
   });
-  it('coalesces options for different saved models in the same runtime/workspace, but not across requests', async () => {
-    const { service, catalog, capacity } = harness(known(128000), known(272000));
-    const contexts = [context, { ...context, currentModelIdentifier: 'target' }];
-    const [small, large] = await service.listOptionsMany(contexts);
-    expect(small.replacements).toEqual([{ llmModelIdentifier: 'target', contextTokens: 272000 }]);
-    expect(large.replacements).toEqual([]);
-    expect(catalog.listLlmModels).toHaveBeenCalledTimes(1);
-    expect(capacity.resolveMany).toHaveBeenCalledTimes(1);
-    await service.listOptionsMany(contexts);
-    expect(capacity.resolveMany).toHaveBeenCalledTimes(2);
-    await service.listOptionsMany([context, { ...context, workspaceRootPath: '/different-profile' }]);
-    expect(capacity.resolveMany).toHaveBeenCalledTimes(4);
+  it('validates mixed-runtime scopes independently against fresh catalog evidence', async () => {
+    const { service, catalog, nativeCapacity } = harness(128000, 64000);
+    const native = { ...context, runtimeKind: RuntimeKind.AUTOBYTEUS };
+    const results = await service.validateMany([
+      { context, selection },
+      { context: native, selection },
+    ]);
+    expect(results.map((result) => result.kind)).toEqual(['valid', 'invalid']);
+    expect(catalog.runtimeModelSelectionCatalog).toHaveBeenCalledTimes(2);
+    expect(nativeCapacity.resolveMany).toHaveBeenCalledTimes(1);
   });
 
+  it('coalesces catalog reads across configured scopes only within a request', async () => {
+    const { service, catalog, nativeCapacity } = harness(128000, 272000);
+    const contexts = [context, { ...context, currentModelIdentifier: 'target' }];
+    const [first, second] = await service.listOptionsMany(contexts);
+    expect(first.replacements.map((row) => ({ llmModelIdentifier: row.llmModelIdentifier }))).toEqual([{ llmModelIdentifier: 'target' }]);
+    expect(second.replacements.map((row) => ({ llmModelIdentifier: row.llmModelIdentifier }))).toEqual([{ llmModelIdentifier: 'current' }]);
+    expect(catalog.runtimeModelSelectionCatalog).toHaveBeenCalledTimes(1);
+    expect(nativeCapacity.resolveMany).not.toHaveBeenCalled();
+    await service.listOptionsMany(contexts);
+    expect(catalog.runtimeModelSelectionCatalog).toHaveBeenCalledTimes(2);
+    await service.listOptionsMany([context, { ...context, workspaceRootPath: '/different-profile' }]);
+    expect(catalog.runtimeModelSelectionCatalog).toHaveBeenCalledTimes(4);
+  });
 });

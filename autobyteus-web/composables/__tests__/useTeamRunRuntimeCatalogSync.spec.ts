@@ -4,9 +4,11 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { TeamRunConfig } from '~/types/agent/TeamRunConfig'
 
 const loadRuntimeProviderGroupsForSelection = vi.hoisted(() => vi.fn())
+const loadRuntimeCurrentModelDescriptors = vi.hoisted(() => vi.fn(async () => ({})))
 vi.mock('~/composables/useRuntimeScopedModelSelection', () => ({
   loadRuntimeProviderGroupsForSelection,
 }))
+vi.mock('~/composables/useRuntimeCurrentModelDescriptor', () => ({ loadRuntimeCurrentModelDescriptors }))
 
 import { useTeamRunRuntimeCatalogSync } from '../useTeamRunRuntimeCatalogSync'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
@@ -79,6 +81,21 @@ describe('useTeamRunRuntimeCatalogSync', () => {
 
     expect(loadRuntimeProviderGroupsForSelection).toHaveBeenCalledTimes(2)
     expect(setLoading).toHaveBeenCalledTimes(2)
+    stop()
+  })
+
+  it('accepts an exact saved Claude default for readiness without adding it to offered choices', async () => {
+    const store = useTeamRunConfigStore()
+    const saved = config()
+    saved.rootConfig.runtimeKind = 'claude_agent_sdk'
+    saved.rootConfig.llmModelIdentifier = 'default'
+    loadRuntimeProviderGroupsForSelection.mockResolvedValue(providerRows('opus'))
+    loadRuntimeCurrentModelDescriptors.mockResolvedValue({ default: { modelIdentifier: 'default' } })
+    const { stop } = useTeamRunRuntimeCatalogSync(ref(saved))
+
+    await vi.waitFor(() => expect(store.runtimeModelCatalogs.claude_agent_sdk).toEqual(['opus', 'default']))
+    expect(loadRuntimeCurrentModelDescriptors).toHaveBeenCalledWith('claude_agent_sdk', ['default'])
+    expect(loadRuntimeProviderGroupsForSelection).toHaveBeenCalledWith('claude_agent_sdk')
     stop()
   })
 })

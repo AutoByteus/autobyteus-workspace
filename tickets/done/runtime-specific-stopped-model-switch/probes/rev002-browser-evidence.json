@@ -1,0 +1,442 @@
+{
+  "startedAt": "2026-09-25T18:39:08.288Z",
+  "frontendUrl": "http://127.0.0.1:51010",
+  "backendUrl": "http://127.0.0.1:51007",
+  "cases": {
+    "agent-default-current-to-opus": {
+      "status": "Pass",
+      "result": {
+        "current": "default",
+        "choices": [
+          "claude-opus-5-5RecommendedOpus 5.5 · Most capable for ambitious work",
+          "claude-fable-5-1Fable 5.1 · For your toughest challenges",
+          "claude-sonnet-5Sonnet 5 · Most efficient for everyday tasks",
+          "claude-haiku-4-5-20251001Haiku 4.5 · Fastest for quick answers",
+          "claude-opus-5Opus 5 · Best for everyday, complex tasks",
+          "claude-fable-5Fable 5 · Most capable for your hardest and longest-running tasks",
+          "claude-opus-4-8Opus 4.8 · Best for everyday, complex tasks",
+          "claude-opus-4-7Opus 4.7 · Best for everyday, complex tasks",
+          "claude-opus-4-6Opus 4.6 · Best for everyday, complex tasks",
+          "claude-sonnet-4-6Sonnet 4.6 · Efficient for routine tasks"
+        ],
+        "after": {
+          "data": {
+            "getAgentRunResumeConfig": {
+              "metadataConfig": {
+                "llmModelIdentifier": "opus",
+                "llmConfig": null,
+                "runtimeReference": {
+                  "sessionId": "59adecf2-fc1d-48d3-b3ba-bb00aa966291",
+                  "threadId": null
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "team-default-current-to-opus": {
+      "status": "Fail",
+      "error": "Team linked scopes did not all persist opus: [null]",
+      "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude-default\nagent-codex\nagent-native\norg-claude-default\nteam-claude-default\nTEAMS\nClassroom Simulation Team\n(1)\nNew - Classroom Simulation Team\n2m\nP\nprofessor\n2m\nS\nstudent\n2m\nTemp Workspace\nSettings\nTeam Configuration\nTeam Definition\nClassroom Simulation Team\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nAntigravity CLI\n\nRuntime is fixed for this saved run.\n\nDefault LLM Model (Global)\nopus\n\nChoose any model offered by this runtime. The runtime handles context limits when the run resumes.\n\nLoading model options…\n\nLoading replacement models…\n\nWorkspace Directory\nExisting\nNew\n\nSaved value is unavailable in current options.\n\nWorkspace: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-45975-1790361346803/workspaces/team-claude-default\n\nAuto approve tools\n\nHigh-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nTeam Members Override (2)\n●\nThis team is stopped. Saved model settings will be used when it resumes.\n\nTeam model settings updated. They will be used when this team resumes.\n\nSave\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks"
+    },
+    "org-default-current-to-opus": {
+      "status": "Pass",
+      "result": {
+        "current": "default",
+        "choices": [
+          "claude-opus-5-5RecommendedOpus 5.5 · Most capable for ambitious work",
+          "claude-fable-5-1Fable 5.1 · For your toughest challenges",
+          "claude-sonnet-5Sonnet 5 · Most efficient for everyday tasks",
+          "claude-haiku-4-5-20251001Haiku 4.5 · Fastest for quick answers",
+          "claude-opus-5Opus 5 · Best for everyday, complex tasks",
+          "claude-fable-5Fable 5 · Most capable for your hardest and longest-running tasks",
+          "claude-opus-4-8Opus 4.8 · Best for everyday, complex tasks",
+          "claude-opus-4-7Opus 4.7 · Best for everyday, complex tasks",
+          "claude-opus-4-6Opus 4.6 · Best for everyday, complex tasks",
+          "claude-sonnet-4-6Sonnet 4.6 · Efficient for routine tasks"
+        ],
+        "rootModel": "opus"
+      }
+    }
+  },
+  "graphql": [
+    {
+      "name": "GetRunProjection",
+      "variables": {
+        "runId": "daily_assistant_7b755c3edde74f88ab598ff94c973ca1"
+      }
+    },
+    {
+      "name": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_7b755c3edde74f88ab598ff94c973ca1"
+      }
+    },
+    {
+      "name": "GetRunFileChanges",
+      "variables": {
+        "runId": "daily_assistant_7b755c3edde74f88ab598ff94c973ca1"
+      }
+    },
+    {
+      "name": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "name": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "name": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-45975-1790361346803/workspaces/agent-claude-default"
+      }
+    },
+    {
+      "name": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "daily_assistant_7b755c3edde74f88ab598ff94c973ca1"
+      }
+    },
+    {
+      "name": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "daily_assistant_7b755c3edde74f88ab598ff94c973ca1"
+      }
+    },
+    {
+      "name": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "name": "UpdateStoppedAgentRunModelConfig",
+      "variables": {
+        "input": {
+          "agentRunId": "daily_assistant_7b755c3edde74f88ab598ff94c973ca1",
+          "llmModelIdentifier": "opus",
+          "llmConfig": null
+        }
+      }
+    },
+    {
+      "name": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "daily_assistant_7b755c3edde74f88ab598ff94c973ca1"
+      }
+    },
+    {
+      "name": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_92c67b1cce0d4c518ffe962908dd4a94"
+      }
+    },
+    {
+      "name": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "name": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "name": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetTaskDelegationRecords",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_92c67b1cce0d4c518ffe962908dd4a94"
+      }
+    },
+    {
+      "name": "GetTeamCommunicationMessages",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_92c67b1cce0d4c518ffe962908dd4a94"
+      }
+    },
+    {
+      "name": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-45975-1790361346803/workspaces/team-claude-default"
+      }
+    },
+    {
+      "name": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_92c67b1cce0d4c518ffe962908dd4a94",
+        "agentRunId": "professor_0be557c420544ae3ad66c8ba259ff1cb"
+      }
+    },
+    {
+      "name": "GetTeamMemberRunProjection",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_92c67b1cce0d4c518ffe962908dd4a94",
+        "agentRunId": "student_f057bdf1d795471aa517848e0af228ae"
+      }
+    },
+    {
+      "name": "GetSkillImprovementCapability",
+      "variables": {}
+    },
+    {
+      "name": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_92c67b1cce0d4c518ffe962908dd4a94"
+      }
+    },
+    {
+      "name": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_92c67b1cce0d4c518ffe962908dd4a94"
+      }
+    },
+    {
+      "name": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "name": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "name": "UpdateStoppedTeamRunModelConfigs",
+      "variables": {
+        "input": {
+          "teamRunId": "classroom_simulation_team_92c67b1cce0d4c518ffe962908dd4a94",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_TEAM",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "opus",
+              "llmConfig": null
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "classroom_simulation_team_92c67b1cce0d4c518ffe962908dd4a94"
+      }
+    },
+    {
+      "name": "GetAgentOrgRunInspection",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229"
+      }
+    },
+    {
+      "name": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "name": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "name": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetWorkspaceMetadata",
+      "variables": {
+        "rootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-45975-1790361346803/workspaces/org-claude-default"
+      }
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+        "memberAddress": "/product_design_prototyping_team/product_prototyper",
+        "agentRunId": "product_prototyper_43b5c5ceef154469b4743c61affaacbb"
+      }
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+        "memberAddress": "/product_design_prototyping_team/prototype_bootstrapper",
+        "agentRunId": "prototype_bootstrapper_300dc700feb84ccaa03e441f350897f0"
+      }
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+        "memberAddress": "/software_engineering_team/solution_designer",
+        "agentRunId": "solution_designer_aa7a5b3c18c14f968d6c0ccfd0f32bb2"
+      }
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+        "memberAddress": "/software_engineering_team/architecture_reviewer",
+        "agentRunId": "architecture_reviewer_e33a7bf34b6845df8e30353c50699c43"
+      }
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+        "memberAddress": "/software_engineering_team/implementation_engineer",
+        "agentRunId": "implementation_engineer_80ba0128e4184e5583f8e2c0f151c748"
+      }
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+        "memberAddress": "/software_engineering_team/code_reviewer",
+        "agentRunId": "code_reviewer_e5d9894da0444d41af9c2bc1236e25b8"
+      }
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+        "memberAddress": "/software_engineering_team/api_e2e_engineer",
+        "agentRunId": "api_e2e_engineer_ce8fcedee760450591fb10c3d8877edf"
+      }
+    },
+    {
+      "name": "GetAgentOrgMemberRunProjection",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+        "memberAddress": "/software_engineering_team/delivery_engineer",
+        "agentRunId": "delivery_engineer_c42f2aecb0fc444e8b8c265b739dcb76"
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "AgentOrgRunConfig",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229"
+      }
+    },
+    {
+      "name": "AgentOrgRunModelOptions",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+        "teamWorkspacePatches": []
+      }
+    },
+    {
+      "name": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "name": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "name": "UpdateStoppedAgentOrgRunConfig",
+      "variables": {
+        "input": {
+          "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+          "modelPatches": [
+            {
+              "scopeKind": "CONFIGURED_ORG",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "opus",
+              "llmConfig": null
+            }
+          ],
+          "teamWorkspacePatches": []
+        }
+      }
+    },
+    {
+      "name": "AgentOrgRunModelOptions",
+      "variables": {
+        "orgRunId": "software_development_department_c2eb18c2730b4f1b8b5550d54892a229",
+        "teamWorkspacePatches": []
+      }
+    }
+  ],
+  "errors": [],
+  "finishedAt": "2026-09-25T18:39:31.723Z"
+}

@@ -257,7 +257,7 @@ catalogSnapshot.llmModels.push({ ...clone(catalogSnapshot.llmModels[0]),
 })
 const state = {
   agentModel: 'gpt-5.6-luna',
-  replacementsEnabled: false,
+  replacementsEnabled: true,
   teamMutationMode: 'success',
   failTeamReads: 0,
   agentConfig: modelConfig('low'),
@@ -299,11 +299,17 @@ const operationResponse = async (operationName, variables) => {
       modelConfigEditability: { editable: true, reason: null },
     } } }
   }
+  const choice = (id) => {
+    const model = catalogSnapshot.llmModels.find((row) => row.modelIdentifier === id)
+    return model ? { __typename: 'RunModelOptionObject', llmModelIdentifier: id,
+      providerName: model.providerName, displayName: model.name, canonicalName: model.canonicalName,
+      description: model.description, configSchema: model.configSchema, recommended: false } : null
+  }
   const options = (current) => ({ __typename: 'RunModelOptionsObject', currentModelIdentifier: current,
-    currentContextTokens: state.replacementsEnabled ? (current === 'browser-larger-model' ? 272000 : 128000) : null,
+    currentModel: choice(current),
     replacements: state.replacementsEnabled && current !== 'browser-larger-model'
-      ? [{ llmModelIdentifier: 'browser-larger-model', contextTokens: 272000 }] : [],
-    unavailableReason: state.replacementsEnabled ? null : 'Fixture has no replacement metadata.' })
+      ? [choice('browser-larger-model')] : [],
+    unavailableReason: state.replacementsEnabled ? null : 'Fixture has no replacement model options.' })
   if (operationName === 'AgentRunModelOptions') return { data: { agentRunModelOptions: options(state.agentModel) } }
   if (operationName === 'TeamRunModelOptions') return { data: { teamRunModelOptions:
     ['/', ...state.teamTree.root_team.members.map(member => member.address)].map(scopeAddress => {
@@ -661,7 +667,9 @@ try {
     await retry.waitFor({ state: 'visible' })
     assert(await save.isDisabled() && await picker.isDisabled(), 'Unverified outcome must lock duplicate Save and model control')
     await retry.click()
-    await waitFor('Team verification resolved', async () => await retry.count() === 0 && await picker.isEnabled())
+    await waitFor('Team verification resolved', async () => await retry.count() === 0
+      && (await picker.innerText()).includes('browser-larger-model'))
+    assert(await picker.isDisabled(), 'Current-only target with no further eligible replacement must not be re-offered')
     assert(await save.isDisabled(), 'Verified canonical pair must be clean')
     assert((await picker.innerText()).includes('browser-larger-model'), 'Canonical replacement must be displayed')
     assert(state.teamMutations.length === beforeMutations + 1, 'Retry must not repeat the mutation')

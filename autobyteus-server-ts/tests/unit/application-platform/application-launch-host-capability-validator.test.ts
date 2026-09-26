@@ -79,7 +79,8 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
         runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, enabled: false,
         reason: "Antigravity model discovery timed out; check the CLI and retry.",
       }) },
-      modelCatalogService: { listLlmModels },
+      modelCatalogService: { resolveExactCurrentLlmModel: async (runtime: string, id: string) =>
+        (await listLlmModels(runtime)).find((row) => row.model_identifier === id) ?? null },
       providerCredentialReadiness: credentialPort(),
     });
     const issues = await validator.validate(configuration([{
@@ -97,7 +98,7 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
         requireCurrentAutoByteusModelIdentifier: async () => undefined,
       }),
       runtimeAvailabilityService: enabledRuntimeAvailability,
-      modelCatalogService: { listLlmModels: async () => { throw new Error("secret /private/credential-path"); } },
+      modelCatalogService: { resolveExactCurrentLlmModel: async () => { throw new Error("secret /private/credential-path"); } },
       providerCredentialReadiness: credentialPort(),
     });
     const issues = await validator.validate(configuration([{
@@ -119,7 +120,8 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
           LLMFactory.requireCurrentModelIdentifier(modelIdentifier),
       }),
       runtimeAvailabilityService: enabledRuntimeAvailability,
-      modelCatalogService: { listLlmModels },
+      modelCatalogService: { resolveExactCurrentLlmModel: async (runtime: string, id: string) =>
+        (await listLlmModels(runtime)).find((row) => row.model_identifier === id) ?? null },
       providerCredentialReadiness: credentials,
     });
 
@@ -150,7 +152,8 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
     const validator = new ApplicationLaunchHostCapabilityValidator({
       currentModelSelectionPolicy: policy,
       runtimeAvailabilityService: enabledRuntimeAvailability,
-      modelCatalogService: { listLlmModels },
+      modelCatalogService: { resolveExactCurrentLlmModel: async (runtime: string, id: string) =>
+        (await listLlmModels(runtime)).find((row) => row.model_identifier === id) ?? null },
       providerCredentialReadiness: credentials,
     });
 
@@ -175,7 +178,8 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
         requireCurrentAutoByteusModelIdentifier: async () => undefined,
       }),
       runtimeAvailabilityService: enabledRuntimeAvailability,
-      modelCatalogService: { listLlmModels },
+      modelCatalogService: { resolveExactCurrentLlmModel: async (runtime: string, id: string) =>
+        (await listLlmModels(runtime)).find((row) => row.model_identifier === id) ?? null },
       providerCredentialReadiness: credentials,
     });
 
@@ -205,7 +209,8 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
           requireCurrentAutoByteusModelIdentifier,
         }),
         runtimeAvailabilityService: enabledRuntimeAvailability,
-        modelCatalogService: { listLlmModels },
+        modelCatalogService: { resolveExactCurrentLlmModel: async (runtime: string, id: string) =>
+        (await listLlmModels(runtime)).find((row) => row.model_identifier === id) ?? null },
         providerCredentialReadiness: credentials,
       });
 
@@ -220,6 +225,27 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
       expect(credentials.getReadiness).toHaveBeenCalledOnce();
     },
   );
+
+  it('accepts exact saved Claude default for credential readiness without requiring an offered row', async () => {
+    const exact = model('default', 'ANTHROPIC', LLMRuntime.API);
+    const resolveExactCurrentLlmModel = vi.fn(async (_runtime: string, identifier: string) =>
+      identifier === 'default' ? exact : null);
+    const credentials = credentialPort();
+    const validator = new ApplicationLaunchHostCapabilityValidator({
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
+        requireCurrentAutoByteusModelIdentifier: async () => undefined,
+      }),
+      runtimeAvailabilityService: enabledRuntimeAvailability,
+      modelCatalogService: { resolveExactCurrentLlmModel },
+      providerCredentialReadiness: credentials,
+    });
+    await expect(validator.validate(configuration([{
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: 'default',
+    }]))).resolves.toEqual([]);
+    expect(resolveExactCurrentLlmModel).toHaveBeenCalledExactlyOnceWith(RuntimeKind.CLAUDE_AGENT_SDK, 'default');
+    expect(credentials.resolveAuthority).toHaveBeenCalledWith(expect.objectContaining({ model: exact }));
+  });
 
   it("ensures and resolves each dynamic leaf against a fresh exact model before advancing", async () => {
     const identifierA = buildOpenAICompatibleEndpointModelIdentifier("provider-a", "model-a");
@@ -248,7 +274,8 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
         requireCurrentAutoByteusModelIdentifier: async () => undefined,
       }),
       runtimeAvailabilityService: enabledRuntimeAvailability,
-      modelCatalogService: { listLlmModels },
+      modelCatalogService: { resolveExactCurrentLlmModel: async (runtime: string, id: string) =>
+        (await listLlmModels(runtime)).find((row) => row.model_identifier === id) ?? null },
       providerCredentialReadiness: credentials,
     });
 
@@ -290,7 +317,8 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
         requireCurrentAutoByteusModelIdentifier: async () => undefined,
       }),
       runtimeAvailabilityService: enabledRuntimeAvailability,
-      modelCatalogService: { listLlmModels },
+      modelCatalogService: { resolveExactCurrentLlmModel: async (runtime: string, id: string) =>
+        (await listLlmModels(runtime)).find((row) => row.model_identifier === id) ?? null },
       providerCredentialReadiness: credentials,
     });
 
@@ -314,7 +342,8 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
         },
       }),
       runtimeAvailabilityService: enabledRuntimeAvailability,
-      modelCatalogService: { listLlmModels },
+      modelCatalogService: { resolveExactCurrentLlmModel: async (runtime: string, id: string) =>
+        (await listLlmModels(runtime)).find((row) => row.model_identifier === id) ?? null },
       providerCredentialReadiness: credentials,
     });
     const base = configuration([{

@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.81 test:e2e:existing-run-model-config /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web
+> node tests/e2e/existing-run-model-config-probe.mjs -- --output-dir ../tickets/in-progress/runtime-specific-stopped-model-switch/probes/rev004-durable-browser
+
+Existing run model-config probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/probes/rev004-durable-browser/existing-run-model-config-evidence.json

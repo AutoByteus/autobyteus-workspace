@@ -94,15 +94,12 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick, reactive, useId } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
-import { selectItemMatches } from '~/utils/selectItemMatch'
 
 export interface SelectItem {
   id: string
   name: string
   description?: string | null
   selectedLabel?: string
-  /** Other values that select this item (e.g. an alias it represents). */
-  aliasIds?: string[]
   recommended?: boolean
 }
 
@@ -119,6 +116,7 @@ const props = withDefaults(defineProps<{
   loading?: boolean
   disabled?: boolean
   variant?: 'default' | 'quiet'
+  selectedDisplay?: string | null
 }>(), {
   loading: false,
   disabled: false,
@@ -166,7 +164,7 @@ const normalizedDescription = (item: SelectItem): string | null => {
   return normalized || null
 }
 
-const isSelected = (item: SelectItem): boolean => selectItemMatches(item, props.modelValue)
+const isSelected = (item: SelectItem): boolean => item.id === props.modelValue
 
 const updatePopoverPosition = () => {
   if (!isOpen.value || !wrapperRef.value) return
@@ -217,7 +215,7 @@ const selectedItemLabel = computed(() => {
       return found.selectedLabel || found.name
     }
   }
-  return props.modelValue
+  return props.selectedDisplay || props.modelValue
 })
 
 const toggleDropdown = () => {
@@ -239,7 +237,7 @@ const moveOption = (event: KeyboardEvent, delta: number) => {
 }
 const selectItem = (item: SelectItem) => {
   if (props.disabled || props.loading) return
-  // Re-choosing the option that already represents the value must not rewrite it (e.g. an alias).
+  // Only the exact offered ID is already selected; a current-only ID is distinct.
   if (!isSelected(item)) emit('update:modelValue', item.id)
   isOpen.value = false
   searchTerm.value = ''

@@ -1,0 +1,68 @@
+import fs from 'node:fs/promises';
+import { createRequire } from 'node:module';
+const require = createRequire(new URL('../../../../autobyteus-web/package.json', import.meta.url));
+const { chromium } = require('playwright-core');
+const dir = new URL('.', import.meta.url).pathname;
+const info = JSON.parse(await fs.readFile(dir+'live-stack-info.json'));
+const fixture = JSON.parse(await fs.readFile(dir+'rev004-application-fixture.json'));
+const appId = fixture.applicationId;
+const appUrl = info.frontendUrl+'/applications/'+appId;
+const restUrl = info.backendUrl+'/rest/applications/'+encodeURIComponent(appId)+'/execution-resource-configurations';
+const ev = {startedAt:new Date().toISOString(),applicationId:appId,steps:[],pageErrors:[],requests:[],responses:[]};
+const browser = await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+const context = await browser.newContext({viewport:{width:1440,height:900},locale:'en-US'});
+context.on('page',p=>{
+ p.on('pageerror',e=>ev.pageErrors.push({url:p.url(),message:e.message}));
+ p.on('request',r=>{if(r.url().endsWith('/graphql')){try{const v=r.postDataJSON();if(v.operationName==='RuntimeCurrentModelDescriptors')ev.requests.push({operationName:v.operationName,variables:v.variables});}catch{}}});
+ p.on('response',async r=>{if(r.request().method()==='PUT'&&r.url().includes('execution-resource-configurations'))ev.responses.push({url:r.url(),status:r.status(),body:(await r.text().catch(()=>'' )).slice(0,1600)});});
+});
+const readback=async()=>{const r=await fetch(restUrl);return{status:r.status,body:await r.json()}};
+const openSetup=async(name)=>{
+ const p=await context.newPage();await p.goto(appUrl,{waitUntil:'domcontentloaded'});
+ await p.locator('[data-testid="application-launch-setup-slot-header"]').first().waitFor({timeout:45000});
+ if((await p.locator('body').innerText()).includes('Error 500'))throw Error(name+' reopened as Error 500');
+ return p;
+};
+let page;
+try{
+ page=await context.newPage();await page.goto(info.frontendUrl+'/applications',{waitUntil:'domcontentloaded'});await page.getByText('REV004 Model Setup',{exact:true}).first().click();
+ await page.locator('[data-testid="application-launch-setup-slot-header"]').first().waitFor({timeout:45000});
+ ev.steps.push({name:'catalog-to-setup',status:'Pass',url:page.url()});
+ const agent=page.locator('[data-testid="application-launch-setup-panel"] article').filter({hasText:'Optional Agent'});
+ await agent.locator('select').first().selectOption('shared:AGENT:rev004-saved-default-agent');
+ await page.waitForTimeout(600);
+ ev.steps.push({name:'agent-selected-baseline',text:(await agent.innerText()).slice(0,1100)});
+ if(!(await agent.innerText()).includes('claude_agent_sdk · default'))throw Error('Agent exact default baseline not shown');
+ const saveAgent=page.waitForResponse(r=>r.request().method()==='PUT'&&r.url().endsWith('/agentSlot'),{timeout:60000});
+ await page.getByTestId('application-launch-setup-save-agentSlot').click();const agentResponse=await saveAgent;
+ if(agentResponse.status()!==200)throw Error('Agent Save returned '+agentResponse.status()+': '+(await agentResponse.text()));
+ ev.agentAfterSave=await readback();
+ const agentSlot=ev.agentAfterSave.body.slots.find(s=>s.slot.slotKey==='agentSlot');
+ if(agentSlot.savedOverrideState!=='VALID'||agentSlot.effectiveConfiguration?.leaves?.[0]?.llmModelIdentifier!=='default'||ev.agentAfterSave.body.readiness.status!=='RUNNABLE')throw Error('Agent REST exact default/readiness failed');
+ await page.screenshot({path:dir+'rev004-app-agent-saved.png',fullPage:true});await page.close();
+ page=await openSetup('Agent');const agentRestored=page.locator('[data-testid="application-launch-setup-panel"] article').filter({hasText:'Optional Agent'});
+ const agentSelection=await agentRestored.locator('select').first().inputValue();const agentText=await agentRestored.innerText();
+ if(agentSelection!=='shared:AGENT:rev004-saved-default-agent'||!agentText.includes('VALID')||!agentText.includes('claude_agent_sdk · default'))throw Error('Agent browser restore mismatch: '+agentSelection+' '+agentText.slice(0,800));
+ ev.steps.push({name:'agent-saved-fresh-reopen',status:'Pass',selection:agentSelection,text:agentText.slice(0,1800)});
+ await page.screenshot({path:dir+'rev004-app-agent-reopened.png',fullPage:true});
+ const team=page.locator('[data-testid="application-launch-setup-panel"] article').filter({hasText:'Optional Team'});
+ await team.locator('select').first().selectOption('shared:AGENT_TEAM:rev004-saved-default-team');
+ await page.waitForTimeout(600);
+ ev.steps.push({name:'team-selected-baseline',text:(await team.innerText()).slice(0,1800)});
+ if(!(await team.innerText()).includes('claude_agent_sdk · default'))throw Error('Team exact default baseline not shown');
+ const saveTeam=page.waitForResponse(r=>r.request().method()==='PUT'&&r.url().endsWith('/draftingTeam'),{timeout:60000});
+ await page.getByTestId('application-launch-setup-save-draftingTeam').click();const teamResponse=await saveTeam;
+ if(teamResponse.status()!==200)throw Error('Team Save returned '+teamResponse.status()+': '+(await teamResponse.text()));
+ ev.teamAfterSave=await readback();
+ const teamSlot=ev.teamAfterSave.body.slots.find(s=>s.slot.slotKey==='draftingTeam');
+ if(teamSlot.savedOverrideState!=='VALID'||teamSlot.effectiveConfiguration?.leaves?.[0]?.llmModelIdentifier!=='default'||ev.teamAfterSave.body.readiness.status!=='RUNNABLE')throw Error('Team REST exact default/readiness failed');
+ await page.screenshot({path:dir+'rev004-app-team-saved.png',fullPage:true});await page.close();
+ page=await openSetup('Team');const teamRestored=page.locator('[data-testid="application-launch-setup-panel"] article').filter({hasText:'Optional Team'});
+ const teamSelection=await teamRestored.locator('select').first().inputValue();const teamText=await teamRestored.innerText();
+ if(teamSelection!=='shared:AGENT_TEAM:rev004-saved-default-team'||!teamText.includes('VALID')||!teamText.includes('claude_agent_sdk · default'))throw Error('Team browser restore mismatch: '+teamSelection+' '+teamText.slice(0,800));
+ ev.steps.push({name:'team-saved-fresh-reopen',status:'Pass',selection:teamSelection,text:teamText.slice(0,2800)});
+ await page.screenshot({path:dir+'rev004-app-team-reopened.png',fullPage:true});
+ ev.status='Pass';
+}catch(e){ev.status='Fail';ev.error=e.message;ev.failureUrl=page?.url();ev.failureBody=(await page?.locator('body').innerText().catch(()=>''))?.slice(-9000);await page?.screenshot({path:dir+'rev004-app-failure.png',fullPage:true}).catch(()=>{});}
+finally{await browser.close();await fs.writeFile(dir+'rev004-application-browser-evidence.json',JSON.stringify(ev,null,2));}
+console.log(ev.status,ev.error||'',ev.steps.map(x=>x.name+':'+(x.status||'observed')).join(','),ev.responses.map(x=>x.status));

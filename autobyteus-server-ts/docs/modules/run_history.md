@@ -25,9 +25,10 @@ and AgentOrg roots.
   - team: `team-run-history-service.ts#getTeamRunResumeConfig(...)`
 - Keep resume configuration and model-setting editability truthful about General
   Process activity, archive/catalog state, and live Application ownership.
-- Validate stopped-run model/settings selections within the fixed runtime,
-  requiring verified non-decreasing context for replacements, then persist only
-  the coherent `llmModelIdentifier` + `llmConfig` pair.
+- Validate stopped-run model/settings selections within the fixed runtime:
+  external runtimes require fresh catalog membership and target-schema validity,
+  while AutoByteus additionally requires verified non-decreasing context for
+  replacements. Persist only the coherent `llmModelIdentifier` + `llmConfig` pair.
 - For standalone agent runs, frontend follow-up sends should not restore
   directly; the backend `SEND_MESSAGE` command coordinator owns
   restore/start/send lifecycle. WebSocket connection can attach to a durable
@@ -138,13 +139,21 @@ General lifecycle owners:
   not mutation targets.
 
 `RunModelSelectionService` resolves the selected model in the fixed runtime's
-current catalog. For replacement, both the freshly saved model and target need
-verified positive context capacities, with target capacity at least the saved
-baseline for that scope. Smaller or unknown capacity fails validation; picker
-options are advisory and never substitute for fresh Save-time evidence. There
-is no additional input-budget, output-reservation, tokenizer, or compaction-
-threshold matching rule. Keeping the same model bypasses replacement-capacity
-comparison, but still requires model availability and valid settings.
+current catalog. Claude Agent SDK, Codex App Server, and Antigravity CLI
+replacements require fresh **offered** catalog membership and valid target settings, without
+a platform context-capacity comparison. AutoByteus replacements additionally
+require verified positive saved and target capacities, with the target at least
+as large as the freshly saved baseline for that scope. Smaller or unknown
+AutoByteus capacity fails validation. Picker options are advisory and never
+substitute for fresh Save-time validation. There is no additional input-budget,
+output-reservation, tokenizer, or compaction-threshold matching rule. Keeping
+the same model bypasses the native replacement-capacity comparison, but still
+requires exact-current model availability and valid settings. For Claude, a
+proven redundant `default` alias is omitted from new offers, but a run already
+saved as exact `default` retains its current descriptor/schema and can edit
+same-model settings while the raw SDK still reports it. Options return that
+nullable current descriptor separately from replacement descriptors; a current
+ID is never rewritten merely because a recommended sibling is offered.
 
 The server validates submitted values against the selected model's current
 schema. Unknown keys,
@@ -172,7 +181,7 @@ multi-writer compatibility field. Current metadata and Team V2 packages are
 updated in place, so no persisted-data migration is required. Frontend/backend
 must use the complete-pair API together; there is no old-client fallback.
 See [LLM Management](./llm_management.md#persisted-run-model-selection-validation)
-for runtime-specific capacity evidence and its fail-closed limits.
+for runtime-specific catalog/schema validation and the AutoByteus capacity limit.
 
 ## Default History Visibility, Archive, And Delete Semantics
 

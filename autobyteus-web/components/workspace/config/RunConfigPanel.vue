@@ -32,6 +32,7 @@
         v-else-if="effectiveAgentConfig && activeAgentDefinition"
         :key="activeRunConfigContextRenderKey"
         :config="effectiveAgentConfig"
+        :seed-model-identifier="runConfigStore.seedModelIdentifier"
         :agent-definition="activeAgentDefinition"
         :workspace-loading-state="effectiveWorkspaceLoadingState"
         :workspace-selection="workspaceSelection"
@@ -233,6 +234,7 @@ const teamRunFormModel = computed((): Readonly<TeamRunFormModel> | null => {
   if (!config || !definition) return null
   return projectEditableTeamRunFormModel({
     config,
+    seedConfig: teamRunConfigStore.selectedDraft?.seedConfig,
     teamDefinition: definition,
     getTeamDefinitionById: teamDefinitionStore.getCatalogAgentTeamDefinitionById,
     repairAddresses: teamRunConfigStore.repairNotice?.addresses || [],

@@ -528,12 +528,17 @@ outside the execution-tree commit: a descriptor admitted before a later failed
 tree write may remain registered, but that does not represent partial run
 configuration success and never moves or deletes files.
 
-The injected `RunModelSelectionService` enforces same-runtime verified
-equal/larger replacement capacity and schema-valid settings. Model options and
-save validation use each scope's effective workspace after the submitted Team
-workspace patches, so workspace-contextual catalogs cannot be validated against
-the old path. Same-model settings need no replacement-capacity comparison. No
-Agent/provider activation occurs during read/save. Every requested model scope
+The injected `RunModelSelectionService` enforces same-runtime catalog membership
+and schema-valid settings. AutoByteus replacements additionally require verified
+positive, non-decreasing context capacity; Claude Agent SDK, Codex App Server,
+and Antigravity CLI replacements have no platform capacity gate. For Claude,
+a proven redundant `default` is omitted from new offers, while a scope already
+saved as exact `default` retains a separately resolved current descriptor for
+same-model settings and unaffected-scope continuity. Model options
+and Save validation use each scope's effective workspace after the submitted
+Team workspace patches, so workspace-contextual catalogs cannot be validated
+against the old path. Same-model settings need no native replacement-capacity
+comparison. No Agent/provider activation occurs during read/save. Every requested model scope
 is validated through one request-local `validateMany` operation before the
 workspace and model changes are composed into one immutable tree and written
 once.

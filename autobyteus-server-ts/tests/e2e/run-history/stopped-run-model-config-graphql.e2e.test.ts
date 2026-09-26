@@ -408,6 +408,9 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       agentInput: { inputFields: Array<{ name: string }> };
       agentResult: { fields: Array<{ name: string }> };
       teamInput: { inputFields: Array<{ name: string }> };
+      optionResult: { fields: Array<{ name: string }> };
+      optionRow: { fields: Array<{ name: string }> };
+      exactCurrentResult: { fields: Array<{ name: string }> };
     }>(first.serverUrl, `
       query StoppedConfigSchema {
         agentInput: __type(name: "UpdateStoppedAgentRunModelConfigInput") {
@@ -418,6 +421,15 @@ describe("stopped run model-config GraphQL lifecycle", () => {
         }
         teamInput: __type(name: "UpdateStoppedTeamRunModelConfigsInput") {
           inputFields { name }
+        }
+        optionResult: __type(name: "RunModelOptionsObject") {
+          fields { name }
+        }
+        optionRow: __type(name: "RunModelOptionObject") {
+          fields { name }
+        }
+        exactCurrentResult: __type(name: "RuntimeCurrentModelDescriptorObject") {
+          fields { name }
         }
       }
     `);
@@ -431,6 +443,17 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       "teamRunId",
     ]);
     expect(schema.agentResult.fields.map(({ name }) => name)).not.toContain("configurationRevision");
+    expect(schema.optionResult.fields.map(({ name }) => name).sort()).toEqual([
+      "currentModel",
+      "currentModelIdentifier",
+      "replacements",
+      "unavailableReason",
+    ]);
+    expect(schema.optionRow.fields.map(({ name }) => name).sort()).toEqual([
+      "canonicalName", "configSchema", "description", "displayName", "llmModelIdentifier",
+      "providerName", "recommended",
+    ]);
+    expect(schema.exactCurrentResult.fields.map(({ name }) => name).sort()).toEqual(["identifier", "model"]);
 
     await stopServer(first);
     const second = await startServer(target);

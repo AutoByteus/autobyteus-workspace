@@ -48,10 +48,9 @@ export interface ModelInfo {
   selectionPresentation?: ModelSelectionPresentation | null
 }
 
-/** Server-derived picker hint: which option is recommended and which row folds into another. */
+/** Server-derived recommendation for an offered row. */
 export interface ModelSelectionPresentation {
   recommended: boolean
-  aliasOfModelIdentifier: string | null
 }
 
 export interface ProviderWithModels {

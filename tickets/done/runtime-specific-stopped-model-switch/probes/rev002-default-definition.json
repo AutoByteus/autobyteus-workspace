@@ -1,0 +1,15 @@
+{
+  "data": {
+    "createAgentDefinition": {
+      "id": "rev002-saved-default-agent",
+      "name": "REV002 Saved Default Agent",
+      "defaultLaunchConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "default",
+        "llmConfig": {
+          "reasoning_effort": "high"
+        }
+      }
+    }
+  }
+}
