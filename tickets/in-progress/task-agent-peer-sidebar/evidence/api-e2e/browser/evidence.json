@@ -1,0 +1,570 @@
+{
+  "startedAt": "2026-09-26T05:14:41.505Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/autobyteus-web/tests/e2e/fixtures/task-agent-peer-sidebar.page.vue",
+  "scenarios": {
+    "PEER-001": {
+      "result": "Pass",
+      "description": "Initially visible peers; mouse/keyboard exact conversations; delayed loading, failure and retry",
+      "startedAt": "2026-09-26T05:14:49.534Z",
+      "details": {
+        "initial": {
+          "mode": "live",
+          "focus": "peer-reviewer",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-a"
+            },
+            {
+              "key": "agent:peer-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-b"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            },
+            {
+              "key": "team:peer-configured-research",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-configured-analyst",
+              "depth": 1,
+              "children": false,
+              "agent": "peer-configured-analyst"
+            },
+            {
+              "key": "team:peer-task-team",
+              "depth": 1,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-task-team-member",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-task-team-member"
+            },
+            {
+              "key": "agent:peer-nested-task",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:peer-configured-research",
+            "team:peer-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": false,
+            "peer-task-b": false,
+            "peer-worker": false,
+            "peer-nested-task": false
+          }
+        },
+        "layout": [
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Agent, Worker, level 1, idle, /Worker"
+          },
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Temporary task agent, Review launch notes, level 1, In progress · Offline, /Worker"
+          },
+          {
+            "x": 56,
+            "padding": "14px",
+            "label": "Temporary task agent, Check documentation and release readiness, level 1, In progress · Offline, /Worker"
+          }
+        ],
+        "final": {
+          "mode": "live",
+          "focus": "peer-worker",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-a"
+            },
+            {
+              "key": "agent:peer-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-b"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            },
+            {
+              "key": "team:peer-configured-research",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-configured-analyst",
+              "depth": 1,
+              "children": false,
+              "agent": "peer-configured-analyst"
+            },
+            {
+              "key": "team:peer-task-team",
+              "depth": 1,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-task-team-member",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-task-team-member"
+            },
+            {
+              "key": "agent:peer-nested-task",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:peer-configured-research",
+            "team:peer-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": true,
+            "peer-task-b": true,
+            "peer-worker": true,
+            "peer-nested-task": false
+          }
+        },
+        "requests": [
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-task-a",
+            "requestedAt": "2026-09-26T05:14:49.595Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-task-b",
+            "requestedAt": "2026-09-26T05:14:50.154Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-task-b",
+            "requestedAt": "2026-09-26T05:14:50.770Z"
+          },
+          {
+            "operationName": "GetTeamMemberRunProjection",
+            "teamRunId": "peer-root",
+            "agentRunId": "peer-worker",
+            "requestedAt": "2026-09-26T05:14:51.328Z"
+          }
+        ]
+      }
+    },
+    "PEER-002": {
+      "result": "Pass",
+      "description": "Task-Team containment and actual ancestor auto-reveal; outer collapse preserves peers",
+      "startedAt": "2026-09-26T05:14:51.926Z",
+      "details": {
+        "final": {
+          "mode": "live",
+          "focus": "peer-nested-task",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-a"
+            },
+            {
+              "key": "agent:peer-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-b"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            },
+            {
+              "key": "team:peer-configured-research",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-configured-analyst",
+              "depth": 1,
+              "children": false,
+              "agent": "peer-configured-analyst"
+            },
+            {
+              "key": "team:peer-task-team",
+              "depth": 1,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-task-team-member",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-task-team-member"
+            },
+            {
+              "key": "agent:peer-nested-task",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:peer-configured-research",
+            "team:peer-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": true,
+            "peer-task-b": true,
+            "peer-worker": true,
+            "peer-nested-task": true
+          }
+        }
+      }
+    },
+    "PEER-003": {
+      "result": "Pass",
+      "description": "Retained settled task reload uses exact conversation; no-task list unchanged",
+      "startedAt": "2026-09-26T05:14:52.710Z",
+      "details": {
+        "retained": {
+          "mode": "retained",
+          "focus": "peer-task-b",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-task-a",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-a"
+            },
+            {
+              "key": "agent:peer-task-b",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-task-b"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            },
+            {
+              "key": "team:peer-configured-research",
+              "depth": 0,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-configured-analyst",
+              "depth": 1,
+              "children": false,
+              "agent": "peer-configured-analyst"
+            },
+            {
+              "key": "team:peer-task-team",
+              "depth": 1,
+              "children": true,
+              "agent": null
+            },
+            {
+              "key": "agent:peer-task-team-member",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-task-team-member"
+            },
+            {
+              "key": "agent:peer-nested-task",
+              "depth": 2,
+              "children": false,
+              "agent": "peer-nested-task"
+            }
+          ],
+          "ancestors": [
+            "team:peer-configured-research",
+            "team:peer-task-team"
+          ],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": false,
+            "peer-task-b": true,
+            "peer-worker": false,
+            "peer-nested-task": false
+          }
+        },
+        "empty": {
+          "mode": "empty",
+          "focus": "peer-worker",
+          "rows": [
+            {
+              "key": "agent:peer-worker",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-worker"
+            },
+            {
+              "key": "agent:peer-reviewer",
+              "depth": 0,
+              "children": false,
+              "agent": "peer-reviewer"
+            }
+          ],
+          "ancestors": [],
+          "taskAncestors": [],
+          "attempts": {
+            "peer-task-a": null,
+            "peer-task-b": null,
+            "peer-worker": null,
+            "peer-nested-task": null
+          },
+          "authoritative": {
+            "peer-task-a": false,
+            "peer-task-b": false,
+            "peer-worker": true,
+            "peer-nested-task": false
+          }
+        }
+      }
+    }
+  },
+  "projectionRequests": [
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-a",
+      "requestedAt": "2026-09-26T05:14:49.595Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-b",
+      "requestedAt": "2026-09-26T05:14:50.154Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-b",
+      "requestedAt": "2026-09-26T05:14:50.770Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-worker",
+      "requestedAt": "2026-09-26T05:14:51.328Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-nested-task",
+      "requestedAt": "2026-09-26T05:14:52.037Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-a",
+      "requestedAt": "2026-09-26T05:14:53.236Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-task-b",
+      "requestedAt": "2026-09-26T05:14:54.400Z"
+    },
+    {
+      "operationName": "GetTeamMemberRunProjection",
+      "teamRunId": "peer-root",
+      "agentRunId": "peer-worker",
+      "requestedAt": "2026-09-26T05:14:55.437Z"
+    }
+  ],
+  "browserEvents": [
+    {
+      "type": "console:error",
+      "text": "Failed to open team member run: Error: PEER_EXPECTED_PROJECTION_FAILURE\n    at selectTreeRunFromHistory (http://127.0.0.1:52920/_nuxt/stores/runHistorySelectionActions.ts:79:52)\n    at async Object.onSelectTeamMember (http://127.0.0.1:52920/_nuxt/composables/useWorkspaceHistorySelectionActions.ts:68:22)"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    }
+  ],
+  "cleanup": {
+    "browserContext": "closed",
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 17935,
+      "exitCode": null,
+      "signalCode": null,
+      "finalExitCode": null,
+      "finalSignalCode": "SIGTERM"
+    },
+    "nuxtLog": "closed",
+    "installedFixture": "removed"
+  },
+  "failures": [],
+  "port": 52920,
+  "baseUrl": "http://127.0.0.1:52920",
+  "browserVersion": "153.0.8010.54",
+  "result": "Pass",
+  "finishedAt": "2026-09-26T05:14:56.109Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser/evidence.json",
+    "nuxtLogPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser/nuxt.log",
+    "outputDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/task-agent-peer-sidebar/tickets/in-progress/task-agent-peer-sidebar/evidence/api-e2e/browser"
+  }
+}
