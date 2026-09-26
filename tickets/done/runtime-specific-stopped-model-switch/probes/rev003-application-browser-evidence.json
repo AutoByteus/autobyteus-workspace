@@ -1,0 +1,172 @@
+{
+  "startedAt": "2026-09-25T19:02:49.422Z",
+  "errors": [],
+  "graphql": [
+    {
+      "name": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "name": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "ListApplications",
+      "variables": {}
+    },
+    {
+      "name": "GetApplicationById",
+      "variables": {
+        "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f"
+      }
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    }
+  ],
+  "listUrl": "http://127.0.0.1:52364/applications",
+  "listText": "Agents\nAgent Teams\nAgent Orgs\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude-default\nagent-codex\nagent-native\norg-claude-default\nteam-claude-default\nTemp Workspace\nSettings\nApplications\n\nBrowse bundled applications and open their iframe hosts. Runtime orchestration now belongs to each application.\n\nRefresh catalog\nBrief Studio\n\nExternal teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.\n\nOpen app →",
+  "status": "Fail",
+  "error": "locator.waitFor: Timeout 60000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-testid=\"application-launch-setup-slot-header\"]') to be visible\u001b[22m\n",
+  "url": "http://127.0.0.1:52364/applications/bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+  "body": "Agents\nAgent Teams\nAgent Orgs\nApplications\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude-default\nagent-codex\nagent-native\norg-claude-default\nteam-claude-default\nTemp Workspace\nSettings\n← Back to applications\nLaunch setup\nBrief Studio\n\nExternal teaching sample with an app-owned GraphQL brief API, durable event projection, and many runs over one brief record.\n\nThe generic host now boots only the application backend and iframe. Runtime runs are created from inside the application through its own orchestration flows.\n\nEnter the app when setup is ready. Technical metadata stays hidden unless you explicitly open it.\n\nShow technical details\nLaunch setup\nSaved resource and launch defaults\n\nChoose app-declared execution resources plus any supported runtime, model, or workspace defaults for later app-owned runs. Saving this form never starts a run.\n\nRefresh setup\n\nUnable to load application setup\n\nApplication 'bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f' is currently quarantined: Application setup is required after catalog transition.\n\nConfirm launch setup before opening the app\n\nApplication 'bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f' is currently quarantined: Application setup is required after catalog transition.\n\nEnter application"
+}

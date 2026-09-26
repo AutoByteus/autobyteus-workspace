@@ -39,6 +39,8 @@ export type AgentDefinition = {
   ownerApplicationId?: Maybe<Scalars['String']['output']>;
   ownerApplicationName?: Maybe<Scalars['String']['output']>;
   ownerLocalApplicationId?: Maybe<Scalars['String']['output']>;
+  ownerOrgId?: Maybe<Scalars['String']['output']>;
+  ownerOrgName?: Maybe<Scalars['String']['output']>;
   ownerPackageId?: Maybe<Scalars['String']['output']>;
   ownerTeamId?: Maybe<Scalars['String']['output']>;
   ownerTeamName?: Maybe<Scalars['String']['output']>;
@@ -51,6 +53,7 @@ export type AgentDefinition = {
 };
 
 export enum AgentDefinitionOwnershipScope {
+  AgentOrgOwned = 'AGENT_ORG_OWNED',
   ApplicationOwned = 'APPLICATION_OWNED',
   Shared = 'SHARED',
   TeamLocal = 'TEAM_LOCAL'
@@ -76,6 +79,166 @@ export type AgentMemoryView = {
   selectedRawTraceFileName?: Maybe<Scalars['String']['output']>;
   semantic?: Maybe<Array<Scalars['JSON']['output']>>;
   workingContext?: Maybe<Array<MemoryMessage>>;
+};
+
+export type AgentOrgDefinition = {
+  __typename?: 'AgentOrgDefinition';
+  avatarUrl?: Maybe<Scalars['String']['output']>;
+  category?: Maybe<Scalars['String']['output']>;
+  defaultLaunchConfig?: Maybe<DefaultLaunchConfig>;
+  description: Scalars['String']['output'];
+  handoffs: Array<AgentOrgHandoff>;
+  id: Scalars['String']['output'];
+  instructions: Scalars['String']['output'];
+  members: Array<AgentOrgMember>;
+  name: Scalars['String']['output'];
+  revision?: Maybe<Scalars['String']['output']>;
+};
+
+export type AgentOrgExecutionCheckpointPayload = {
+  __typename?: 'AgentOrgExecutionCheckpointPayload';
+  changeSequence: Scalars['Int']['output'];
+  hasOpenExecutionWork: Scalars['Boolean']['output'];
+  orgRunId: Scalars['String']['output'];
+};
+
+export type AgentOrgHandoff = {
+  __typename?: 'AgentOrgHandoff';
+  from: Scalars['String']['output'];
+  rules: Array<Scalars['String']['output']>;
+  to: Scalars['String']['output'];
+};
+
+export type AgentOrgHandoffInput = {
+  from: Scalars['String']['input'];
+  rules: Array<Scalars['String']['input']>;
+  to: Scalars['String']['input'];
+};
+
+export type AgentOrgMember = {
+  __typename?: 'AgentOrgMember';
+  memberName: Scalars['String']['output'];
+  ref: Scalars['String']['output'];
+  refScope: AgentOrgMemberScope;
+  refType: AgentOrgMemberType;
+};
+
+export type AgentOrgMemberInput = {
+  memberName: Scalars['String']['input'];
+  ref: Scalars['String']['input'];
+  refScope: AgentOrgMemberScope;
+  refType: AgentOrgMemberType;
+};
+
+export type AgentOrgMemberRunProjectionPayload = {
+  __typename?: 'AgentOrgMemberRunProjectionPayload';
+  activities: Array<Scalars['JSON']['output']>;
+  agentRunId: Scalars['String']['output'];
+  conversation: Array<Scalars['JSON']['output']>;
+  hasEarlierActiveTraceEvents: Scalars['Boolean']['output'];
+  lastActivityAt?: Maybe<Scalars['String']['output']>;
+  memberAddress: Scalars['String']['output'];
+  summary?: Maybe<Scalars['String']['output']>;
+};
+
+export enum AgentOrgMemberScope {
+  AgentOrgOwned = 'AGENT_ORG_OWNED',
+  ApplicationOwned = 'APPLICATION_OWNED',
+  Shared = 'SHARED'
+}
+
+export enum AgentOrgMemberType {
+  Agent = 'AGENT',
+  AgentTeam = 'AGENT_TEAM'
+}
+
+export type AgentOrgPlacementLaunchConfigurationInput = {
+  autoExecuteTools?: InputMaybe<Scalars['Boolean']['input']>;
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier?: InputMaybe<Scalars['String']['input']>;
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
+  skillAccessMode?: InputMaybe<SkillAccessModeEnum>;
+  workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AgentOrgPlacementLaunchOverrideInput = {
+  address: Scalars['String']['input'];
+  configuration: AgentOrgPlacementLaunchConfigurationInput;
+};
+
+export type AgentOrgRootHistoryObject = {
+  __typename?: 'AgentOrgRootHistoryObject';
+  archived_at?: Maybe<Scalars['String']['output']>;
+  created_at: Scalars['String']['output'];
+  is_active: Scalars['Boolean']['output'];
+  org: Scalars['JSON']['output'];
+  root_run_id: Scalars['String']['output'];
+  root_subject_kind: Scalars['String']['output'];
+  summary: Scalars['String']['output'];
+};
+
+export type AgentOrgRootLaunchConfigurationInput = {
+  autoExecuteTools: Scalars['Boolean']['input'];
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind: Scalars['String']['input'];
+  skillAccessMode: SkillAccessModeEnum;
+  workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type AgentOrgRunConfigObject = {
+  __typename?: 'AgentOrgRunConfigObject';
+  editability: RunModelConfigEditabilityObject;
+  executionTree: Scalars['JSON']['output'];
+  isActive: Scalars['Boolean']['output'];
+  orgRunId: Scalars['String']['output'];
+};
+
+export type AgentOrgRunConfigUpdateResult = {
+  __typename?: 'AgentOrgRunConfigUpdateResult';
+  canonical?: Maybe<Scalars['JSON']['output']>;
+  editability: RunModelConfigEditabilityObject;
+  fieldErrors: Array<RunModelConfigFieldErrorObject>;
+  isActive: Scalars['Boolean']['output'];
+  message: Scalars['String']['output'];
+  outcome: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type AgentOrgRunModelConfigPatchInput = {
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
+  llmModelIdentifier: Scalars['String']['input'];
+  scopeAddress: Scalars['String']['input'];
+  scopeKind: Scalars['String']['input'];
+};
+
+export type AgentOrgRunModelOptionObject = {
+  __typename?: 'AgentOrgRunModelOptionObject';
+  currentModel?: Maybe<RunModelOptionObject>;
+  currentModelIdentifier: Scalars['String']['output'];
+  replacements: Array<RunModelOptionObject>;
+  scopeAddress: Scalars['String']['output'];
+  scopeKind: Scalars['String']['output'];
+  unavailableReason?: Maybe<Scalars['String']['output']>;
+};
+
+export type AgentOrgRunMutationResult = {
+  __typename?: 'AgentOrgRunMutationResult';
+  agentOrgRunId?: Maybe<Scalars['String']['output']>;
+  message: Scalars['String']['output'];
+  success: Scalars['Boolean']['output'];
+};
+
+export type AgentOrgStoredRunMutationResult = {
+  __typename?: 'AgentOrgStoredRunMutationResult';
+  message: Scalars['String']['output'];
+  orgRunId?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type AgentOrgTeamWorkspacePatchInput = {
+  teamAddress: Scalars['String']['input'];
+  workspaceRootPath: Scalars['String']['input'];
 };
 
 export type AgentPackage = {
@@ -165,13 +328,33 @@ export type AgentTeamDefinition = {
   ownerApplicationId?: Maybe<Scalars['String']['output']>;
   ownerApplicationName?: Maybe<Scalars['String']['output']>;
   ownerLocalApplicationId?: Maybe<Scalars['String']['output']>;
+  ownerOrgId?: Maybe<Scalars['String']['output']>;
+  ownerOrgName?: Maybe<Scalars['String']['output']>;
   ownerPackageId?: Maybe<Scalars['String']['output']>;
   ownerTeamId?: Maybe<Scalars['String']['output']>;
   ownerTeamName?: Maybe<Scalars['String']['output']>;
   ownershipScope: AgentTeamDefinitionOwnershipScope;
+  revision?: Maybe<Scalars['String']['output']>;
+};
+
+export type AgentTeamDefinitionEndpoint = {
+  __typename?: 'AgentTeamDefinitionEndpoint';
+  address: Scalars['String']['output'];
+  coordinatorAddress?: Maybe<Scalars['String']['output']>;
+  coordinatorMemberName?: Maybe<Scalars['String']['output']>;
+  definitionId: Scalars['String']['output'];
+  kind: Scalars['String']['output'];
+  memberName: Scalars['String']['output'];
+};
+
+export type AgentTeamDefinitionEndpointCatalog = {
+  __typename?: 'AgentTeamDefinitionEndpointCatalog';
+  from: Array<AgentTeamDefinitionEndpoint>;
+  to: Array<AgentTeamDefinitionEndpoint>;
 };
 
 export enum AgentTeamDefinitionOwnershipScope {
+  AgentOrgOwned = 'AGENT_ORG_OWNED',
   ApplicationOwned = 'APPLICATION_OWNED',
   Shared = 'SHARED',
   TeamLocal = 'TEAM_LOCAL'
@@ -188,6 +371,17 @@ export type AgentTeamHandoffInput = {
   from: Scalars['String']['input'];
   rules: Array<Scalars['String']['input']>;
   to: Scalars['String']['input'];
+};
+
+export type AgentTeamRootHistoryObject = {
+  __typename?: 'AgentTeamRootHistoryObject';
+  archived_at?: Maybe<Scalars['String']['output']>;
+  created_at: Scalars['String']['output'];
+  is_active: Scalars['Boolean']['output'];
+  root_run_id: Scalars['String']['output'];
+  root_subject_kind: Scalars['String']['output'];
+  summary: Scalars['String']['output'];
+  team: Scalars['JSON']['output'];
 };
 
 export type AgentTeamRunMemoryPage = {
@@ -422,6 +616,8 @@ export type CatalogProviderObject = {
   providerType: Scalars['String']['output'];
 };
 
+export type CollaborationRootHistoryItem = AgentOrgRootHistoryObject | AgentTeamRootHistoryObject;
+
 export type ConfigureMcpServerResult = {
   __typename?: 'ConfigureMcpServerResult';
   savedConfig: McpServerConfigUnion;
@@ -442,6 +638,24 @@ export type CreateAgentDefinitionInput = {
   toolExecutionResultProcessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolInvocationPreprocessorNames?: InputMaybe<Array<Scalars['String']['input']>>;
   toolNames?: InputMaybe<Array<Scalars['String']['input']>>;
+};
+
+export type CreateAgentOrgDefinitionInput = {
+  avatarUrl?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
+  defaultLaunchConfig?: InputMaybe<DefaultLaunchConfigInput>;
+  description: Scalars['String']['input'];
+  handoffs?: InputMaybe<Array<AgentOrgHandoffInput>>;
+  instructions: Scalars['String']['input'];
+  members: Array<AgentOrgMemberInput>;
+  name: Scalars['String']['input'];
+};
+
+export type CreateAgentOrgRunInput = {
+  agentOrgDefinitionId: Scalars['String']['input'];
+  agentOverrides?: InputMaybe<Array<AgentOrgPlacementLaunchOverrideInput>>;
+  rootConfiguration: AgentOrgRootLaunchConfigurationInput;
+  teamOverrides?: InputMaybe<Array<AgentOrgPlacementLaunchOverrideInput>>;
 };
 
 export type CreateAgentRunInput = {
@@ -572,6 +786,36 @@ export type DefaultLaunchConfigInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier?: InputMaybe<Scalars['String']['input']>;
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DefinitionAdmissionDiagnostic = {
+  __typename?: 'DefinitionAdmissionDiagnostic';
+  code: Scalars['String']['output'];
+  definitionId?: Maybe<Scalars['String']['output']>;
+  definitionPath: Scalars['String']['output'];
+  dependencyChain: Array<Scalars['String']['output']>;
+  expectedFamily: Scalars['String']['output'];
+  ownerAction: Scalars['String']['output'];
+  packageRoot: Scalars['String']['output'];
+  reason: Scalars['String']['output'];
+  sourceClass: Scalars['String']['output'];
+  subjectKind: Scalars['String']['output'];
+};
+
+export type DefinitionEndpoint = {
+  __typename?: 'DefinitionEndpoint';
+  address: Scalars['String']['output'];
+  coordinatorAddress?: Maybe<Scalars['String']['output']>;
+  coordinatorMemberName?: Maybe<Scalars['String']['output']>;
+  definitionId: Scalars['String']['output'];
+  kind: Scalars['String']['output'];
+  memberName: Scalars['String']['output'];
+};
+
+export type DefinitionEndpointCatalog = {
+  __typename?: 'DefinitionEndpointCatalog';
+  from: Array<DefinitionEndpoint>;
+  to: Array<DefinitionEndpoint>;
 };
 
 export type DeleteAgentDefinitionResult = {
@@ -969,6 +1213,13 @@ export enum MemoryExplorerSourceType {
   Local = 'LOCAL'
 }
 
+export type MemoryFileAttachment = {
+  __typename?: 'MemoryFileAttachment';
+  fileName?: Maybe<Scalars['String']['output']>;
+  fileType: Scalars['String']['output'];
+  uri: Scalars['String']['output'];
+};
+
 export type MemoryHubConnectionInfoGql = {
   __typename?: 'MemoryHubConnectionInfoGql';
   advertisedHubBaseUrl?: Maybe<Scalars['String']['output']>;
@@ -1023,13 +1274,6 @@ export type MemoryImportSummaryGql = {
   lastSyncStatus?: Maybe<Scalars['String']['output']>;
   sourceNodeId: Scalars['String']['output'];
   totalBytes: Scalars['Float']['output'];
-};
-
-export type MemoryFileAttachment = {
-  __typename?: 'MemoryFileAttachment';
-  fileName?: Maybe<Scalars['String']['output']>;
-  fileType: Scalars['String']['output'];
-  uri: Scalars['String']['output'];
 };
 
 export type MemoryMessage = {
@@ -1140,7 +1384,6 @@ export enum ModelMetadataProvenance {
 
 export type ModelSelectionPresentation = {
   __typename?: 'ModelSelectionPresentation';
-  aliasOfModelIdentifier?: Maybe<Scalars['String']['output']>;
   recommended: Scalars['Boolean']['output'];
 };
 
@@ -1158,12 +1401,15 @@ export type Mutation = {
   __typename?: 'Mutation';
   addSkillSource: Array<SkillSource>;
   approveToolInvocation: ApproveToolInvocationResult;
+  archiveStoredAgentOrgRun: AgentOrgStoredRunMutationResult;
   archiveStoredRun: ArchiveStoredRunMutationResult;
   archiveStoredTeamRun: ArchiveStoredTeamRunMutationResult;
   cancelPreparedAgentRun: CancelPreparedAgentRunResult;
   checkAgentPackageUpdates: Array<AgentPackage>;
   configureMcpServer: ConfigureMcpServerResult;
   createAgentDefinition: AgentDefinition;
+  createAgentOrgDefinition: AgentOrgDefinition;
+  createAgentOrgRun: AgentOrgRunMutationResult;
   createAgentRun: CreateAgentRunResult;
   createAgentTeamDefinition: AgentTeamDefinition;
   createAgentTeamRun: CreateAgentTeamRunResult;
@@ -1173,6 +1419,7 @@ export type Mutation = {
   createSkill: Skill;
   createWorkspace: WorkspaceMetadata;
   deleteAgentDefinition: DeleteAgentDefinitionResult;
+  deleteAgentOrgDefinition: Scalars['Boolean']['output'];
   deleteAgentTeamDefinition: DeleteAgentTeamDefinitionResult;
   deleteCustomProvider: DeleteCustomProviderResult;
   deleteFileOrFolder: Scalars['String']['output'];
@@ -1180,6 +1427,7 @@ export type Mutation = {
   deleteServerSetting: Scalars['String']['output'];
   deleteSkill: DeleteSkillResult;
   deleteSkillFile: Scalars['Boolean']['output'];
+  deleteStoredAgentOrgRun: AgentOrgStoredRunMutationResult;
   deleteStoredRun: DeleteStoredRunMutationResult;
   deleteStoredTeamRun: DeleteStoredTeamRunMutationResult;
   disableSkill: Skill;
@@ -1205,6 +1453,7 @@ export type Mutation = {
   removeSkillSource: Array<SkillSource>;
   removeWorkspace: RemoveWorkspaceResultInfo;
   renameFileOrFolder: Scalars['String']['output'];
+  restoreAgentOrgRun: AgentOrgRunMutationResult;
   restoreAgentRun: RestoreAgentRunResult;
   restoreAgentTeamRun: RestoreAgentTeamRunResult;
   revokeMemoryHubSourceCredential: MemoryHubCredentialSummaryGql;
@@ -1220,16 +1469,19 @@ export type Mutation = {
   startAgentRunSkillImprovement: GraphqlSkillImprovementStartResult;
   startMemorySync: MemorySyncRunResultGql;
   startTeamMemberSkillImprovement: GraphqlSkillImprovementStartResult;
+  terminateAgentOrgRun: AgentOrgRunMutationResult;
   terminateAgentRun: TerminateAgentRunResult;
   terminateAgentTeamRun: TerminateAgentTeamRunResult;
   testMemoryHubConnection: MemoryHubConnectionTestResultGql;
   updateAgentDefinition: AgentDefinition;
+  updateAgentOrgDefinition: AgentOrgDefinition;
   updateAgentPackage: Array<AgentPackage>;
   updateAgentTeamDefinition: AgentTeamDefinition;
   updateMemoryHubConfig: MemorySyncStatusGql;
   updateMemorySyncSourceConfig: MemorySyncStatusGql;
   updateServerSetting: Scalars['String']['output'];
   updateSkill: Skill;
+  updateStoppedAgentOrgRunConfig: AgentOrgRunConfigUpdateResult;
   updateStoppedAgentRunModelConfig: UpdateStoppedAgentRunModelConfigResult;
   updateStoppedTeamRunModelConfigs: UpdateStoppedTeamRunModelConfigsResult;
   uploadSkillFile: Scalars['Boolean']['output'];
@@ -1245,6 +1497,11 @@ export type MutationAddSkillSourceArgs = {
 
 export type MutationApproveToolInvocationArgs = {
   input: ApproveToolInvocationInput;
+};
+
+
+export type MutationArchiveStoredAgentOrgRunArgs = {
+  orgRunId: Scalars['String']['input'];
 };
 
 
@@ -1275,6 +1532,16 @@ export type MutationConfigureMcpServerArgs = {
 
 export type MutationCreateAgentDefinitionArgs = {
   input: CreateAgentDefinitionInput;
+};
+
+
+export type MutationCreateAgentOrgDefinitionArgs = {
+  input: CreateAgentOrgDefinitionInput;
+};
+
+
+export type MutationCreateAgentOrgRunArgs = {
+  input: CreateAgentOrgRunInput;
 };
 
 
@@ -1325,6 +1592,11 @@ export type MutationDeleteAgentDefinitionArgs = {
 };
 
 
+export type MutationDeleteAgentOrgDefinitionArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationDeleteAgentTeamDefinitionArgs = {
   id: Scalars['String']['input'];
 };
@@ -1359,6 +1631,11 @@ export type MutationDeleteSkillArgs = {
 export type MutationDeleteSkillFileArgs = {
   path: Scalars['String']['input'];
   skillName: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteStoredAgentOrgRunArgs = {
+  orgRunId: Scalars['String']['input'];
 };
 
 
@@ -1478,6 +1755,11 @@ export type MutationRenameFileOrFolderArgs = {
 };
 
 
+export type MutationRestoreAgentOrgRunArgs = {
+  agentOrgRunId: Scalars['String']['input'];
+};
+
+
 export type MutationRestoreAgentRunArgs = {
   agentRunId: Scalars['String']['input'];
 };
@@ -1557,6 +1839,11 @@ export type MutationStartTeamMemberSkillImprovementArgs = {
 };
 
 
+export type MutationTerminateAgentOrgRunArgs = {
+  agentOrgRunId: Scalars['String']['input'];
+};
+
+
 export type MutationTerminateAgentRunArgs = {
   agentRunId: Scalars['String']['input'];
 };
@@ -1574,6 +1861,11 @@ export type MutationTestMemoryHubConnectionArgs = {
 
 export type MutationUpdateAgentDefinitionArgs = {
   input: UpdateAgentDefinitionInput;
+};
+
+
+export type MutationUpdateAgentOrgDefinitionArgs = {
+  input: UpdateAgentOrgDefinitionInput;
 };
 
 
@@ -1605,6 +1897,11 @@ export type MutationUpdateServerSettingArgs = {
 
 export type MutationUpdateSkillArgs = {
   input: UpdateSkillInput;
+};
+
+
+export type MutationUpdateStoppedAgentOrgRunConfigArgs = {
+  input: UpdateStoppedAgentOrgRunConfigInput;
 };
 
 
@@ -1666,10 +1963,15 @@ export type Query = {
   __typename?: 'Query';
   agentDefinition?: Maybe<AgentDefinition>;
   agentDefinitions: Array<AgentDefinition>;
+  agentOrgDefinition?: Maybe<AgentOrgDefinition>;
+  agentOrgDefinitions: Array<AgentOrgDefinition>;
+  agentOrgEndpointCatalog: DefinitionEndpointCatalog;
+  agentOrgRunModelOptions: Array<AgentOrgRunModelOptionObject>;
   agentPackages: Array<AgentPackage>;
   agentRunModelOptions: RunModelOptionsObject;
   agentTeamDefinition?: Maybe<AgentTeamDefinition>;
   agentTeamDefinitions: Array<AgentTeamDefinition>;
+  agentTeamEndpointCatalog: AgentTeamDefinitionEndpointCatalog;
   agentTeamTemplates: Array<AgentTeamDefinition>;
   agentTemplates: Array<AgentDefinition>;
   application?: Maybe<Application>;
@@ -1682,9 +1984,16 @@ export type Query = {
   availableOptionalToolExecutionResultProcessorNames: Array<Scalars['String']['output']>;
   availableOptionalToolInvocationPreprocessorNames: Array<Scalars['String']['output']>;
   availableToolNames: Array<Scalars['String']['output']>;
+  definitionAdmissionDiagnostics: Array<DefinitionAdmissionDiagnostic>;
   fileContent: Scalars['String']['output'];
   folderChildren: Scalars['String']['output'];
+  getAgentOrgExecutionCheckpoint: AgentOrgExecutionCheckpointPayload;
+  getAgentOrgMemberEventMonitorActiveTracePage: EventMonitorActiveTracePage;
   getAgentOrgMemberRunMemoryView: AgentMemoryView;
+  getAgentOrgMemberRunProjection: AgentOrgMemberRunProjectionPayload;
+  getAgentOrgMemberTokenUsageSummary: TokenUsageRunSummaryGraphql;
+  getAgentOrgRunConfig: AgentOrgRunConfigObject;
+  getAgentOrgRunInspection: Scalars['JSON']['output'];
   getAgentRunMemoryView: AgentMemoryView;
   getAgentRunResumeConfig: RunResumeConfigPayload;
   getAgentRunSkillImprovementEligibility: GraphqlSkillImprovementEligibility;
@@ -1721,6 +2030,7 @@ export type Query = {
   listAgentTeamsWithMemory: AgentTeamWithMemoryPage;
   listAgentsWithMemory: AgentWithMemoryPage;
   listApplications: Array<Application>;
+  listCollaborationRootHistory: Array<CollaborationRootHistoryItem>;
   listMemoryExplorerSources: Array<MemoryExplorerSourceOption>;
   listMemoryHubUrlCandidates: Array<ServerAddressCandidateGql>;
   listMemoryImports: Array<MemoryImportSummaryGql>;
@@ -1731,6 +2041,7 @@ export type Query = {
   providerModelCatalogSnapshots: Array<ProviderModelCatalogSnapshotObject>;
   qwenSetupStatus: QwenSetupStatus;
   runtimeAvailabilities: Array<RuntimeAvailabilityObject>;
+  runtimeCurrentModelDescriptors: Array<RuntimeCurrentModelDescriptorObject>;
   searchFiles: Array<Scalars['String']['output']>;
   skill?: Maybe<Skill>;
   skillFileContent?: Maybe<Scalars['String']['output']>;
@@ -1757,12 +2068,33 @@ export type QueryAgentDefinitionArgs = {
 };
 
 
+export type QueryAgentOrgDefinitionArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryAgentOrgEndpointCatalogArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryAgentOrgRunModelOptionsArgs = {
+  orgRunId: Scalars['String']['input'];
+  teamWorkspacePatches?: Array<AgentOrgTeamWorkspacePatchInput>;
+};
+
+
 export type QueryAgentRunModelOptionsArgs = {
   agentRunId: Scalars['String']['input'];
 };
 
 
 export type QueryAgentTeamDefinitionArgs = {
+  id: Scalars['String']['input'];
+};
+
+
+export type QueryAgentTeamEndpointCatalogArgs = {
   id: Scalars['String']['input'];
 };
 
@@ -1786,6 +2118,43 @@ export type QueryFileContentArgs = {
 export type QueryFolderChildrenArgs = {
   folderPath: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
+};
+
+
+export type QueryGetAgentOrgExecutionCheckpointArgs = {
+  orgRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetAgentOrgMemberEventMonitorActiveTracePageArgs = {
+  agentRunId: Scalars['String']['input'];
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+  memberAddress: Scalars['String']['input'];
+  orgRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetAgentOrgMemberRunProjectionArgs = {
+  agentRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  orgRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetAgentOrgMemberTokenUsageSummaryArgs = {
+  agentRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  orgRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetAgentOrgRunConfigArgs = {
+  orgRunId: Scalars['String']['input'];
+};
+
+
+export type QueryGetAgentOrgRunInspectionArgs = {
+  orgRunId: Scalars['String']['input'];
 };
 
 
@@ -1996,6 +2365,12 @@ export type QueryProviderModelCatalogSnapshotsArgs = {
 };
 
 
+export type QueryRuntimeCurrentModelDescriptorsArgs = {
+  identifiers: Array<Scalars['String']['input']>;
+  runtimeKind: Scalars['String']['input'];
+};
+
+
 export type QuerySearchFilesArgs = {
   query: Scalars['String']['input'];
   workspaceId: Scalars['String']['input'];
@@ -2192,13 +2567,18 @@ export type RunModelConfigFieldErrorObject = {
 
 export type RunModelOptionObject = {
   __typename?: 'RunModelOptionObject';
-  contextTokens: Scalars['Float']['output'];
+  canonicalName: Scalars['String']['output'];
+  configSchema?: Maybe<Scalars['JSON']['output']>;
+  description?: Maybe<Scalars['String']['output']>;
+  displayName: Scalars['String']['output'];
   llmModelIdentifier: Scalars['String']['output'];
+  providerName: Scalars['String']['output'];
+  recommended: Scalars['Boolean']['output'];
 };
 
 export type RunModelOptionsObject = {
   __typename?: 'RunModelOptionsObject';
-  currentContextTokens?: Maybe<Scalars['Float']['output']>;
+  currentModel?: Maybe<RunModelOptionObject>;
   currentModelIdentifier: Scalars['String']['output'];
   replacements: Array<RunModelOptionObject>;
   unavailableReason?: Maybe<Scalars['String']['output']>;
@@ -2241,6 +2621,12 @@ export type RuntimeAvailabilityObject = {
   enabled: Scalars['Boolean']['output'];
   reason?: Maybe<Scalars['String']['output']>;
   runtimeKind: Scalars['String']['output'];
+};
+
+export type RuntimeCurrentModelDescriptorObject = {
+  __typename?: 'RuntimeCurrentModelDescriptorObject';
+  identifier: Scalars['String']['output'];
+  model?: Maybe<ModelDetail>;
 };
 
 export type SearchConfig = {
@@ -2422,8 +2808,7 @@ export type TeamMember = {
   __typename?: 'TeamMember';
   memberName: Scalars['String']['output'];
   ref: Scalars['String']['output'];
-  refScope?: Maybe<AgentMemberRefScope>;
-  refType: TeamMemberType;
+  refScope: AgentMemberRefScope;
 };
 
 export type TeamMemberConfigInput = {
@@ -2440,8 +2825,7 @@ export type TeamMemberConfigInput = {
 export type TeamMemberInput = {
   memberName: Scalars['String']['input'];
   ref: Scalars['String']['input'];
-  refScope?: InputMaybe<AgentMemberRefScope>;
-  refType: TeamMemberType;
+  refScope: AgentMemberRefScope;
 };
 
 export type TeamMemberRunProjectionPayload = {
@@ -2453,11 +2837,6 @@ export type TeamMemberRunProjectionPayload = {
   lastActivityAt?: Maybe<Scalars['String']['output']>;
   summary?: Maybe<Scalars['String']['output']>;
 };
-
-export enum TeamMemberType {
-  Agent = 'AGENT',
-  AgentTeam = 'AGENT_TEAM'
-}
 
 export type TeamRunExecutionCheckpointPayload = {
   __typename?: 'TeamRunExecutionCheckpointPayload';
@@ -2493,7 +2872,7 @@ export type TeamScopeLaunchConfigInput = {
 
 export type TeamScopeModelOptionsObject = {
   __typename?: 'TeamScopeModelOptionsObject';
-  currentContextTokens?: Maybe<Scalars['Float']['output']>;
+  currentModel?: Maybe<RunModelOptionObject>;
   currentModelIdentifier: Scalars['String']['output'];
   replacements: Array<RunModelOptionObject>;
   scopeAddress: Scalars['String']['output'];
@@ -2823,12 +3202,26 @@ export type UpdateAgentDefinitionInput = {
   toolNames?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
+export type UpdateAgentOrgDefinitionInput = {
+  avatarUrl?: InputMaybe<Scalars['String']['input']>;
+  category?: InputMaybe<Scalars['String']['input']>;
+  defaultLaunchConfig?: InputMaybe<DefaultLaunchConfigInput>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  expectedRevision: Scalars['String']['input'];
+  handoffs?: InputMaybe<Array<AgentOrgHandoffInput>>;
+  id: Scalars['String']['input'];
+  instructions?: InputMaybe<Scalars['String']['input']>;
+  members?: InputMaybe<Array<AgentOrgMemberInput>>;
+  name?: InputMaybe<Scalars['String']['input']>;
+};
+
 export type UpdateAgentTeamDefinitionInput = {
   avatarUrl?: InputMaybe<Scalars['String']['input']>;
   category?: InputMaybe<Scalars['String']['input']>;
   coordinatorMemberName?: InputMaybe<Scalars['String']['input']>;
   defaultLaunchConfig?: InputMaybe<DefaultLaunchConfigInput>;
   description?: InputMaybe<Scalars['String']['input']>;
+  expectedRevision: Scalars['String']['input'];
   handoffs?: InputMaybe<Array<AgentTeamHandoffInput>>;
   id: Scalars['String']['input'];
   instructions?: InputMaybe<Scalars['String']['input']>;
@@ -2856,6 +3249,12 @@ export type UpdateSkillInput = {
   content?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+};
+
+export type UpdateStoppedAgentOrgRunConfigInput = {
+  modelPatches: Array<AgentOrgRunModelConfigPatchInput>;
+  orgRunId: Scalars['String']['input'];
+  teamWorkspacePatches: Array<AgentOrgTeamWorkspacePatchInput>;
 };
 
 export type UpdateStoppedAgentRunModelConfigInput = {
@@ -3119,21 +3518,86 @@ export type ApproveToolInvocationMutationVariables = Exact<{
 
 export type ApproveToolInvocationMutation = { __typename?: 'Mutation', approveToolInvocation: { __typename: 'ApproveToolInvocationResult', success: boolean, message: string } };
 
-export type AgentTeamDefinitionMutationFieldsFragment = { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refType: TeamMemberType, refScope?: AgentMemberRefScope | null }> };
+export type AgentOrgDefinitionFieldsFragment = { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null };
+
+export type CreateAgentOrgDefinitionMutationVariables = Exact<{
+  input: CreateAgentOrgDefinitionInput;
+}>;
+
+
+export type CreateAgentOrgDefinitionMutation = { __typename?: 'Mutation', createAgentOrgDefinition: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
+
+export type UpdateAgentOrgDefinitionMutationVariables = Exact<{
+  input: UpdateAgentOrgDefinitionInput;
+}>;
+
+
+export type UpdateAgentOrgDefinitionMutation = { __typename?: 'Mutation', updateAgentOrgDefinition: { __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null } };
+
+export type DeleteAgentOrgDefinitionMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type DeleteAgentOrgDefinitionMutation = { __typename?: 'Mutation', deleteAgentOrgDefinition: boolean };
+
+export type CreateAgentOrgRunMutationVariables = Exact<{
+  input: CreateAgentOrgRunInput;
+}>;
+
+
+export type CreateAgentOrgRunMutation = { __typename?: 'Mutation', createAgentOrgRun: { __typename?: 'AgentOrgRunMutationResult', success: boolean, message: string, agentOrgRunId?: string | null } };
+
+export type RestoreAgentOrgRunMutationVariables = Exact<{
+  agentOrgRunId: Scalars['String']['input'];
+}>;
+
+
+export type RestoreAgentOrgRunMutation = { __typename?: 'Mutation', restoreAgentOrgRun: { __typename?: 'AgentOrgRunMutationResult', success: boolean, message: string, agentOrgRunId?: string | null } };
+
+export type TerminateAgentOrgRunMutationVariables = Exact<{
+  agentOrgRunId: Scalars['String']['input'];
+}>;
+
+
+export type TerminateAgentOrgRunMutation = { __typename?: 'Mutation', terminateAgentOrgRun: { __typename?: 'AgentOrgRunMutationResult', success: boolean, message: string, agentOrgRunId?: string | null } };
+
+export type UpdateStoppedAgentOrgRunConfigMutationVariables = Exact<{
+  input: UpdateStoppedAgentOrgRunConfigInput;
+}>;
+
+
+export type UpdateStoppedAgentOrgRunConfigMutation = { __typename?: 'Mutation', updateStoppedAgentOrgRunConfig: { __typename?: 'AgentOrgRunConfigUpdateResult', success: boolean, outcome: string, message: string, isActive: boolean, canonical?: any | null, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null }, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
+
+export type ArchiveStoredAgentOrgRunMutationVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+}>;
+
+
+export type ArchiveStoredAgentOrgRunMutation = { __typename?: 'Mutation', archiveStoredAgentOrgRun: { __typename?: 'AgentOrgStoredRunMutationResult', success: boolean, message: string, orgRunId?: string | null } };
+
+export type DeleteStoredAgentOrgRunMutationVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+}>;
+
+
+export type DeleteStoredAgentOrgRunMutation = { __typename?: 'Mutation', deleteStoredAgentOrgRun: { __typename?: 'AgentOrgStoredRunMutationResult', success: boolean, message: string, orgRunId?: string | null } };
+
+export type AgentTeamDefinitionMutationFieldsFragment = { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> };
 
 export type CreateAgentTeamDefinitionMutationVariables = Exact<{
   input: CreateAgentTeamDefinitionInput;
 }>;
 
 
-export type CreateAgentTeamDefinitionMutation = { __typename?: 'Mutation', createAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refType: TeamMemberType, refScope?: AgentMemberRefScope | null }> } };
+export type CreateAgentTeamDefinitionMutation = { __typename?: 'Mutation', createAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> } };
 
 export type UpdateAgentTeamDefinitionMutationVariables = Exact<{
   input: UpdateAgentTeamDefinitionInput;
 }>;
 
 
-export type UpdateAgentTeamDefinitionMutation = { __typename?: 'Mutation', updateAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refType: TeamMemberType, refScope?: AgentMemberRefScope | null }> } };
+export type UpdateAgentTeamDefinitionMutation = { __typename?: 'Mutation', updateAgentTeamDefinition: { __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> } };
 
 export type DeleteAgentTeamDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -3258,7 +3722,7 @@ export type EnsureProviderModelCatalogMutationVariables = Exact<{
 }>;
 
 
-export type EnsureProviderModelCatalogMutation = { __typename?: 'Mutation', ensureProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean, aliasOfModelIdentifier?: string | null } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
+export type EnsureProviderModelCatalogMutation = { __typename?: 'Mutation', ensureProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
 
 export type ReloadProviderModelCatalogMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
@@ -3266,7 +3730,7 @@ export type ReloadProviderModelCatalogMutationVariables = Exact<{
 }>;
 
 
-export type ReloadProviderModelCatalogMutation = { __typename?: 'Mutation', reloadProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean, aliasOfModelIdentifier?: string | null } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
+export type ReloadProviderModelCatalogMutation = { __typename?: 'Mutation', reloadProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
 
 export type ProbeCustomProviderMutationVariables = Exact<{
   input: CustomProviderInputObject;
@@ -3511,10 +3975,36 @@ export type GetAgentDefinitionsQueryVariables = Exact<{ [key: string]: never; }>
 
 export type GetAgentDefinitionsQuery = { __typename?: 'Query', agentDefinitions: Array<{ __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null }> };
 
+export type GetAgentOrgDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAgentOrgDefinitionsQuery = { __typename?: 'Query', agentOrgDefinitions: Array<{ __typename?: 'AgentOrgDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, handoffs: Array<{ __typename?: 'AgentOrgHandoff', from: string, to: string, rules: Array<string> }>, members: Array<{ __typename?: 'AgentOrgMember', memberName: string, ref: string, refType: AgentOrgMemberType, refScope: AgentOrgMemberScope }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null }> };
+
+export type GetAgentOrgEndpointCatalogQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentOrgEndpointCatalogQuery = { __typename?: 'Query', agentOrgEndpointCatalog: { __typename?: 'DefinitionEndpointCatalog', from: Array<{ __typename?: 'DefinitionEndpoint', kind: string, address: string, memberName: string, definitionId: string, coordinatorAddress?: string | null, coordinatorMemberName?: string | null }>, to: Array<{ __typename?: 'DefinitionEndpoint', kind: string, address: string, memberName: string, definitionId: string, coordinatorAddress?: string | null, coordinatorMemberName?: string | null }> } };
+
+export type GetAgentOrgReferencedAgentQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentOrgReferencedAgentQuery = { __typename?: 'Query', agentDefinition?: { __typename?: 'AgentDefinition', id: string, name: string, description: string, ownershipScope: AgentDefinitionOwnershipScope, ownerOrgId?: string | null, ownerTeamId?: string | null } | null };
+
+export type GetAgentOrgReferencedTeamQueryVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentOrgReferencedTeamQuery = { __typename?: 'Query', agentTeamDefinition?: { __typename?: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerOrgId?: string | null, ownerOrgName?: string | null, coordinatorMemberName: string, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename?: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> } | null };
+
 export type GetAgentTeamDefinitionsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefinitions: Array<{ __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refType: TeamMemberType, refScope?: AgentMemberRefScope | null }> }> };
+export type GetAgentTeamDefinitionsQuery = { __typename?: 'Query', agentTeamDefinitions: Array<{ __typename: 'AgentTeamDefinition', id: string, name: string, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, coordinatorMemberName: string, revision?: string | null, ownershipScope: AgentTeamDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, handoffs: Array<{ __typename?: 'AgentTeamHandoff', from: string, to: string, rules: Array<string> }>, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, nodes: Array<{ __typename: 'TeamMember', memberName: string, ref: string, refScope: AgentMemberRefScope }> }> };
 
 export type GetAppDataMigrationsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3545,6 +4035,11 @@ export type GetApplicationByIdQueryVariables = Exact<{
 
 
 export type GetApplicationByIdQuery = { __typename?: 'Query', application?: { __typename: 'Application', id: string, name: string, description?: string | null, iconAssetPath?: string | null, entryHtmlAssetPath: string, localApplicationId: string, packageId: string, writable: boolean, executionResourceSlots: Array<{ __typename?: 'ApplicationExecutionResourceSlotSummary', slotKey: string, required: boolean }>, bundleResources: Array<{ __typename?: 'ApplicationExecutionResource', kind: ApplicationExecutionResourceKind, localId: string, definitionId: string }> } | null };
+
+export type ListCollaborationRootHistoryQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ListCollaborationRootHistoryQuery = { __typename?: 'Query', listCollaborationRootHistory: Array<{ __typename: 'AgentOrgRootHistoryObject', root_subject_kind: string, root_run_id: string, created_at: string, archived_at?: string | null, is_active: boolean, summary: string, org: any } | { __typename: 'AgentTeamRootHistoryObject', root_subject_kind: string, root_run_id: string }> };
 
 export type GetFileContentQueryVariables = Exact<{
   workspaceId: Scalars['String']['input'];
@@ -3577,14 +4072,14 @@ export type GetProviderCredentialSettingsQueryVariables = Exact<{
 
 export type GetProviderCredentialSettingsQuery = { __typename?: 'Query', providerCredentialSettings: Array<{ __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } }> };
 
-export type ProviderModelCatalogSnapshotFieldsFragment = { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean, aliasOfModelIdentifier?: string | null } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> };
+export type ProviderModelCatalogSnapshotFieldsFragment = { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> };
 
 export type GetProviderModelCatalogSnapshotsQueryVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetProviderModelCatalogSnapshotsQuery = { __typename?: 'Query', providerModelCatalogSnapshots: Array<{ __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean, aliasOfModelIdentifier?: string | null } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
+export type GetProviderModelCatalogSnapshotsQuery = { __typename?: 'Query', providerModelCatalogSnapshots: Array<{ __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
 
 export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3792,6 +4287,16 @@ export type GetTeamMemberEventMonitorActiveTracePageQueryVariables = Exact<{
 
 export type GetTeamMemberEventMonitorActiveTracePageQuery = { __typename?: 'Query', getTeamMemberEventMonitorActiveTracePage: { __typename?: 'EventMonitorActiveTracePage', beforeCursor?: string | null, hasEarlier: boolean, loadedEarlierCount: number, activeGeneration: string, cursorStatus: string, events: Array<{ __typename?: 'EventMonitorActiveTracePageEvent', eventId: string, turnGroupId: string, occurredAtMs?: number | null, visuals: Array<{ __typename?: 'EventMonitorAssistantTextVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorCompactionVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, activityId: string, phase: string, message: string, turnId?: string | null, rawTraceCount?: number | null, semanticFactCount?: number | null, provider?: string | null } | { __typename?: 'EventMonitorMediaVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, mediaType: string, urls: Array<string> } | { __typename?: 'EventMonitorThinkingVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorToolCardVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, invocationId: string, cardKind: string, toolName: string, statusKey: string, errorMessage?: string | null, summaryArgs: { __typename?: 'EventMonitorToolSummaryArgs', path?: string | null, file_path?: string | null, filepath?: string | null, filename?: string | null, target_path?: string | null, command?: string | null, cmd?: string | null, script?: string | null, query?: string | null, prompt?: string | null, url?: string | null, message?: string | null, text?: string | null, title?: string | null, name?: string | null, raw?: string | null }, approvalTarget?: { __typename?: 'EventMonitorApprovalTarget', agentRunId: string } | null } | { __typename?: 'EventMonitorUserVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> }> }> } };
 
+export type GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+  beforeCursor?: InputMaybe<Scalars['String']['input']>;
+}>;
+
+
+export type GetAgentOrgMemberEventMonitorActiveTracePageQuery = { __typename?: 'Query', getAgentOrgMemberEventMonitorActiveTracePage: { __typename?: 'EventMonitorActiveTracePage', beforeCursor?: string | null, hasEarlier: boolean, loadedEarlierCount: number, activeGeneration: string, cursorStatus: string, events: Array<{ __typename?: 'EventMonitorActiveTracePageEvent', eventId: string, turnGroupId: string, occurredAtMs?: number | null, visuals: Array<{ __typename?: 'EventMonitorAssistantTextVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorCompactionVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, activityId: string, phase: string, message: string, turnId?: string | null, rawTraceCount?: number | null, semanticFactCount?: number | null, provider?: string | null } | { __typename?: 'EventMonitorMediaVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, mediaType: string, urls: Array<string> } | { __typename?: 'EventMonitorThinkingVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, content: string } | { __typename?: 'EventMonitorToolCardVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, invocationId: string, cardKind: string, toolName: string, statusKey: string, errorMessage?: string | null, summaryArgs: { __typename?: 'EventMonitorToolSummaryArgs', path?: string | null, file_path?: string | null, filepath?: string | null, filename?: string | null, target_path?: string | null, command?: string | null, cmd?: string | null, script?: string | null, query?: string | null, prompt?: string | null, url?: string | null, message?: string | null, text?: string | null, title?: string | null, name?: string | null, raw?: string | null }, approvalTarget?: { __typename?: 'EventMonitorApprovalTarget', agentRunId: string } | null } | { __typename?: 'EventMonitorUserVisual', kind: string, visualId: string, eventId: string, kindOrdinal: number, text: string, attachments: Array<{ __typename?: 'EventMonitorActiveTraceAttachment', attachmentId: string, fileType: string, fileName?: string | null, locator: string }> }> }> } };
+
 export type GetTeamRunResumeConfigQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
 }>;
@@ -3814,6 +4319,22 @@ export type GetTeamMemberRunProjectionQueryVariables = Exact<{
 
 export type GetTeamMemberRunProjectionQuery = { __typename?: 'Query', getTeamMemberRunProjection: { __typename?: 'TeamMemberRunProjectionPayload', agentRunId: string, summary?: string | null, lastActivityAt?: string | null, conversation: Array<any>, activities: Array<any>, hasEarlierActiveTraceEvents: boolean } };
 
+export type GetAgentOrgMemberRunProjectionQueryVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentOrgMemberRunProjectionQuery = { __typename?: 'Query', getAgentOrgMemberRunProjection: { __typename?: 'AgentOrgMemberRunProjectionPayload', agentRunId: string, memberAddress: string, summary?: string | null, lastActivityAt?: string | null, conversation: Array<any>, activities: Array<any>, hasEarlierActiveTraceEvents: boolean } };
+
+export type GetAgentOrgExecutionCheckpointQueryVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentOrgExecutionCheckpointQuery = { __typename?: 'Query', getAgentOrgExecutionCheckpoint: { __typename?: 'AgentOrgExecutionCheckpointPayload', orgRunId: string, changeSequence: number, hasOpenExecutionWork: boolean } };
+
 export type GetTeamCommunicationMessagesQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
 }>;
@@ -3835,21 +4356,51 @@ export type GetAgentRunResumeConfigQueryVariables = Exact<{
 
 export type GetAgentRunResumeConfigQuery = { __typename?: 'Query', getAgentRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, metadataConfig: { __typename?: 'RunMetadataConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: SkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
 
-export type RunModelOptionsFieldsFragment = { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, currentContextTokens?: number | null, unavailableReason?: string | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, contextTokens: number }> };
+export type GetAgentOrgRunInspectionQueryVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentOrgRunInspectionQuery = { __typename?: 'Query', getAgentOrgRunInspection: any };
+
+export type RunModelOptionsFieldsFragment = { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> };
 
 export type AgentRunModelOptionsQueryVariables = Exact<{
   agentRunId: Scalars['String']['input'];
 }>;
 
 
-export type AgentRunModelOptionsQuery = { __typename?: 'Query', agentRunModelOptions: { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, currentContextTokens?: number | null, unavailableReason?: string | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, contextTokens: number }> } };
+export type AgentRunModelOptionsQuery = { __typename?: 'Query', agentRunModelOptions: { __typename?: 'RunModelOptionsObject', currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> } };
 
 export type TeamRunModelOptionsQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
 }>;
 
 
-export type TeamRunModelOptionsQuery = { __typename?: 'Query', teamRunModelOptions: Array<{ __typename?: 'TeamScopeModelOptionsObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, currentContextTokens?: number | null, unavailableReason?: string | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, contextTokens: number }> }> };
+export type TeamRunModelOptionsQuery = { __typename?: 'Query', teamRunModelOptions: Array<{ __typename?: 'TeamScopeModelOptionsObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
+
+export type AgentOrgRunConfigQueryVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+}>;
+
+
+export type AgentOrgRunConfigQuery = { __typename?: 'Query', getAgentOrgRunConfig: { __typename?: 'AgentOrgRunConfigObject', orgRunId: string, executionTree: any, isActive: boolean, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
+
+export type AgentOrgRunModelOptionsQueryVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+  teamWorkspacePatches: Array<AgentOrgTeamWorkspacePatchInput> | AgentOrgTeamWorkspacePatchInput;
+}>;
+
+
+export type AgentOrgRunModelOptionsQuery = { __typename?: 'Query', agentOrgRunModelOptions: Array<{ __typename?: 'AgentOrgRunModelOptionObject', scopeKind: string, scopeAddress: string, currentModelIdentifier: string, unavailableReason?: string | null, currentModel?: { __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean } | null, replacements: Array<{ __typename?: 'RunModelOptionObject', llmModelIdentifier: string, providerName: string, displayName: string, canonicalName: string, description?: string | null, configSchema?: any | null, recommended: boolean }> }> };
+
+export type RuntimeCurrentModelDescriptorsQueryVariables = Exact<{
+  runtimeKind: Scalars['String']['input'];
+  identifiers: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type RuntimeCurrentModelDescriptorsQuery = { __typename?: 'Query', runtimeCurrentModelDescriptors: Array<{ __typename?: 'RuntimeCurrentModelDescriptorObject', identifier: string, model?: { __typename?: 'ModelDetail', modelIdentifier: string, name: string, canonicalName: string, providerName: string, providerType: string, description?: string | null, configSchema?: any | null } | null }> };
 
 export type GetRuntimeAvailabilitiesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3935,6 +4486,15 @@ export type GetTeamMemberTokenUsageSummaryQueryVariables = Exact<{
 
 
 export type GetTeamMemberTokenUsageSummaryQuery = { __typename?: 'Query', getTeamMemberTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
+
+export type GetAgentOrgMemberTokenUsageSummaryQueryVariables = Exact<{
+  orgRunId: Scalars['String']['input'];
+  memberAddress: Scalars['String']['input'];
+  agentRunId: Scalars['String']['input'];
+}>;
+
+
+export type GetAgentOrgMemberTokenUsageSummaryQuery = { __typename?: 'Query', getAgentOrgMemberTokenUsageSummary: { __typename?: 'TokenUsageRunSummaryGraphql', runId: string, rootTeamRunId?: string | null, agentDefinitionId?: string | null, workspaceId?: string | null, grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, latestPromptTokens?: number | null, effectiveContextWindowTokens?: number | null, contextWindowUsagePercent?: number | null, latestModelProvider?: string | null, latestModelIdentifier?: string | null, latestRuntimeKind?: string | null, latestSelectedRawModelId?: string | null, hasCacheWriteRateAssumption: boolean, usageReportCount: number, updatedAt?: string | null, unitPrices: { __typename?: 'TokenUsageUnitPricesGraphql', standardInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheReadInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreationInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation5mInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, cacheCreation1hInput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, output: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null }, reasoningOutput: { __typename?: 'TokenUsageUnitPriceSummaryGraphql', status: string, pricePerMillion?: number | null } } } };
 
 export type TokenUsageTaskStatisticsRowFieldsFragment = { __typename?: 'TokenUsageTaskStatisticsRowGraphql', rowId: string, rowKind: string, runId?: string | null, taskId?: string | null, rootTeamRunId?: string | null, displayName: string, summary?: string | null, createdAt: string, createdTimeSource: string, models: Array<string>, modelDisplayNames: Array<string>, runtimeKinds: Array<string>, aggregate: { __typename?: 'TokenUsageCostSummaryAggregateGraphql', grossInputTokens: number, standardInputTokens: number, cacheMissInputTokens: number, cacheReadInputTokens: number, cacheCreationInputTokens: number, cacheCreation5mInputTokens: number, cacheCreation1hInputTokens: number, outputTokens: number, reasoningOutputTokens: number, billableOutputTokens: number, totalTokens: number, cacheReadInputTokenRate?: number | null, standardInputTokenRate?: number | null, cacheCreationInputTokenRate?: number | null, cacheState: string, estimatedApiInputCost?: number | null, estimatedApiStandardInputCost?: number | null, estimatedApiCacheReadInputCost?: number | null, estimatedApiCacheCreationInputCost?: number | null, estimatedApiCacheCreation5mInputCost?: number | null, estimatedApiCacheCreation1hInputCost?: number | null, estimatedApiOutputCost?: number | null, estimatedApiReasoningOutputCost?: number | null, estimatedApiTotalCost?: number | null, currency?: string | null, apiCostStatus: string, missingPriceDimensions: Array<string>, pricingPolicyKey?: string | null, selectedPricingTierId?: string | null, usageReportCount: number, updatedAt?: string | null, observedRuntimeKinds: Array<string>, observedModelIdentifiers: Array<string>, observedModelProviders: Array<string> } };
 
@@ -4172,6 +4732,33 @@ export const AgentDefinitionMutationFieldsFragmentDoc = gql`
   }
 }
     `;
+export const AgentOrgDefinitionFieldsFragmentDoc = gql`
+    fragment AgentOrgDefinitionFields on AgentOrgDefinition {
+  id
+  name
+  description
+  instructions
+  category
+  avatarUrl
+  revision
+  handoffs {
+    from
+    to
+    rules
+  }
+  members {
+    memberName
+    ref
+    refType
+    refScope
+  }
+  defaultLaunchConfig {
+    llmModelIdentifier
+    runtimeKind
+    llmConfig
+  }
+}
+    `;
 export const AgentTeamDefinitionMutationFieldsFragmentDoc = gql`
     fragment AgentTeamDefinitionMutationFields on AgentTeamDefinition {
   __typename
@@ -4182,6 +4769,12 @@ export const AgentTeamDefinitionMutationFieldsFragmentDoc = gql`
   category
   avatarUrl
   coordinatorMemberName
+  revision
+  handoffs {
+    from
+    to
+    rules
+  }
   ownershipScope
   ownerApplicationId
   ownerApplicationName
@@ -4196,7 +4789,6 @@ export const AgentTeamDefinitionMutationFieldsFragmentDoc = gql`
     __typename
     memberName
     ref
-    refType
     refScope
   }
 }
@@ -4367,7 +4959,6 @@ export const ProviderModelCatalogSnapshotFieldsFragmentDoc = gql`
     metadataProvenance
     selectionPresentation {
       recommended
-      aliasOfModelIdentifier
     }
   }
   audioModels {
@@ -4505,11 +5096,24 @@ export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
 export const RunModelOptionsFieldsFragmentDoc = gql`
     fragment RunModelOptionsFields on RunModelOptionsObject {
   currentModelIdentifier
-  currentContextTokens
   unavailableReason
+  currentModel {
+    llmModelIdentifier
+    providerName
+    displayName
+    canonicalName
+    description
+    configSchema
+    recommended
+  }
   replacements {
     llmModelIdentifier
-    contextTokens
+    providerName
+    displayName
+    canonicalName
+    description
+    configSchema
+    recommended
   }
 }
     `;
@@ -5285,6 +5889,287 @@ export function useApproveToolInvocationMutation(options: VueApolloComposable.Us
   return VueApolloComposable.useMutation<ApproveToolInvocationMutation, ApproveToolInvocationMutationVariables>(ApproveToolInvocationDocument, options);
 }
 export type ApproveToolInvocationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ApproveToolInvocationMutation, ApproveToolInvocationMutationVariables>;
+export const CreateAgentOrgDefinitionDocument = gql`
+    mutation CreateAgentOrgDefinition($input: CreateAgentOrgDefinitionInput!) {
+  createAgentOrgDefinition(input: $input) {
+    ...AgentOrgDefinitionFields
+  }
+}
+    ${AgentOrgDefinitionFieldsFragmentDoc}`;
+
+/**
+ * __useCreateAgentOrgDefinitionMutation__
+ *
+ * To run a mutation, you first call `useCreateAgentOrgDefinitionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAgentOrgDefinitionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useCreateAgentOrgDefinitionMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAgentOrgDefinitionMutation(options: VueApolloComposable.UseMutationOptions<CreateAgentOrgDefinitionMutation, CreateAgentOrgDefinitionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateAgentOrgDefinitionMutation, CreateAgentOrgDefinitionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateAgentOrgDefinitionMutation, CreateAgentOrgDefinitionMutationVariables>(CreateAgentOrgDefinitionDocument, options);
+}
+export type CreateAgentOrgDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateAgentOrgDefinitionMutation, CreateAgentOrgDefinitionMutationVariables>;
+export const UpdateAgentOrgDefinitionDocument = gql`
+    mutation UpdateAgentOrgDefinition($input: UpdateAgentOrgDefinitionInput!) {
+  updateAgentOrgDefinition(input: $input) {
+    ...AgentOrgDefinitionFields
+  }
+}
+    ${AgentOrgDefinitionFieldsFragmentDoc}`;
+
+/**
+ * __useUpdateAgentOrgDefinitionMutation__
+ *
+ * To run a mutation, you first call `useUpdateAgentOrgDefinitionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateAgentOrgDefinitionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateAgentOrgDefinitionMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateAgentOrgDefinitionMutation(options: VueApolloComposable.UseMutationOptions<UpdateAgentOrgDefinitionMutation, UpdateAgentOrgDefinitionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateAgentOrgDefinitionMutation, UpdateAgentOrgDefinitionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateAgentOrgDefinitionMutation, UpdateAgentOrgDefinitionMutationVariables>(UpdateAgentOrgDefinitionDocument, options);
+}
+export type UpdateAgentOrgDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateAgentOrgDefinitionMutation, UpdateAgentOrgDefinitionMutationVariables>;
+export const DeleteAgentOrgDefinitionDocument = gql`
+    mutation DeleteAgentOrgDefinition($id: String!) {
+  deleteAgentOrgDefinition(id: $id)
+}
+    `;
+
+/**
+ * __useDeleteAgentOrgDefinitionMutation__
+ *
+ * To run a mutation, you first call `useDeleteAgentOrgDefinitionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteAgentOrgDefinitionMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useDeleteAgentOrgDefinitionMutation({
+ *   variables: {
+ *     id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteAgentOrgDefinitionMutation(options: VueApolloComposable.UseMutationOptions<DeleteAgentOrgDefinitionMutation, DeleteAgentOrgDefinitionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteAgentOrgDefinitionMutation, DeleteAgentOrgDefinitionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteAgentOrgDefinitionMutation, DeleteAgentOrgDefinitionMutationVariables>(DeleteAgentOrgDefinitionDocument, options);
+}
+export type DeleteAgentOrgDefinitionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteAgentOrgDefinitionMutation, DeleteAgentOrgDefinitionMutationVariables>;
+export const CreateAgentOrgRunDocument = gql`
+    mutation CreateAgentOrgRun($input: CreateAgentOrgRunInput!) {
+  createAgentOrgRun(input: $input) {
+    success
+    message
+    agentOrgRunId
+  }
+}
+    `;
+
+/**
+ * __useCreateAgentOrgRunMutation__
+ *
+ * To run a mutation, you first call `useCreateAgentOrgRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateAgentOrgRunMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useCreateAgentOrgRunMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateAgentOrgRunMutation(options: VueApolloComposable.UseMutationOptions<CreateAgentOrgRunMutation, CreateAgentOrgRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateAgentOrgRunMutation, CreateAgentOrgRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateAgentOrgRunMutation, CreateAgentOrgRunMutationVariables>(CreateAgentOrgRunDocument, options);
+}
+export type CreateAgentOrgRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateAgentOrgRunMutation, CreateAgentOrgRunMutationVariables>;
+export const RestoreAgentOrgRunDocument = gql`
+    mutation RestoreAgentOrgRun($agentOrgRunId: String!) {
+  restoreAgentOrgRun(agentOrgRunId: $agentOrgRunId) {
+    success
+    message
+    agentOrgRunId
+  }
+}
+    `;
+
+/**
+ * __useRestoreAgentOrgRunMutation__
+ *
+ * To run a mutation, you first call `useRestoreAgentOrgRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRestoreAgentOrgRunMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRestoreAgentOrgRunMutation({
+ *   variables: {
+ *     agentOrgRunId: // value for 'agentOrgRunId'
+ *   },
+ * });
+ */
+export function useRestoreAgentOrgRunMutation(options: VueApolloComposable.UseMutationOptions<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables>(RestoreAgentOrgRunDocument, options);
+}
+export type RestoreAgentOrgRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RestoreAgentOrgRunMutation, RestoreAgentOrgRunMutationVariables>;
+export const TerminateAgentOrgRunDocument = gql`
+    mutation TerminateAgentOrgRun($agentOrgRunId: String!) {
+  terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) {
+    success
+    message
+    agentOrgRunId
+  }
+}
+    `;
+
+/**
+ * __useTerminateAgentOrgRunMutation__
+ *
+ * To run a mutation, you first call `useTerminateAgentOrgRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useTerminateAgentOrgRunMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useTerminateAgentOrgRunMutation({
+ *   variables: {
+ *     agentOrgRunId: // value for 'agentOrgRunId'
+ *   },
+ * });
+ */
+export function useTerminateAgentOrgRunMutation(options: VueApolloComposable.UseMutationOptions<TerminateAgentOrgRunMutation, TerminateAgentOrgRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<TerminateAgentOrgRunMutation, TerminateAgentOrgRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<TerminateAgentOrgRunMutation, TerminateAgentOrgRunMutationVariables>(TerminateAgentOrgRunDocument, options);
+}
+export type TerminateAgentOrgRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TerminateAgentOrgRunMutation, TerminateAgentOrgRunMutationVariables>;
+export const UpdateStoppedAgentOrgRunConfigDocument = gql`
+    mutation UpdateStoppedAgentOrgRunConfig($input: UpdateStoppedAgentOrgRunConfigInput!) {
+  updateStoppedAgentOrgRunConfig(input: $input) {
+    success
+    outcome
+    message
+    isActive
+    editability {
+      editable
+      reason
+    }
+    fieldErrors {
+      path
+      message
+    }
+    canonical
+  }
+}
+    `;
+
+/**
+ * __useUpdateStoppedAgentOrgRunConfigMutation__
+ *
+ * To run a mutation, you first call `useUpdateStoppedAgentOrgRunConfigMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStoppedAgentOrgRunConfigMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateStoppedAgentOrgRunConfigMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateStoppedAgentOrgRunConfigMutation(options: VueApolloComposable.UseMutationOptions<UpdateStoppedAgentOrgRunConfigMutation, UpdateStoppedAgentOrgRunConfigMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateStoppedAgentOrgRunConfigMutation, UpdateStoppedAgentOrgRunConfigMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateStoppedAgentOrgRunConfigMutation, UpdateStoppedAgentOrgRunConfigMutationVariables>(UpdateStoppedAgentOrgRunConfigDocument, options);
+}
+export type UpdateStoppedAgentOrgRunConfigMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateStoppedAgentOrgRunConfigMutation, UpdateStoppedAgentOrgRunConfigMutationVariables>;
+export const ArchiveStoredAgentOrgRunDocument = gql`
+    mutation ArchiveStoredAgentOrgRun($orgRunId: String!) {
+  archiveStoredAgentOrgRun(orgRunId: $orgRunId) {
+    success
+    message
+    orgRunId
+  }
+}
+    `;
+
+/**
+ * __useArchiveStoredAgentOrgRunMutation__
+ *
+ * To run a mutation, you first call `useArchiveStoredAgentOrgRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useArchiveStoredAgentOrgRunMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useArchiveStoredAgentOrgRunMutation({
+ *   variables: {
+ *     orgRunId: // value for 'orgRunId'
+ *   },
+ * });
+ */
+export function useArchiveStoredAgentOrgRunMutation(options: VueApolloComposable.UseMutationOptions<ArchiveStoredAgentOrgRunMutation, ArchiveStoredAgentOrgRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ArchiveStoredAgentOrgRunMutation, ArchiveStoredAgentOrgRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ArchiveStoredAgentOrgRunMutation, ArchiveStoredAgentOrgRunMutationVariables>(ArchiveStoredAgentOrgRunDocument, options);
+}
+export type ArchiveStoredAgentOrgRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ArchiveStoredAgentOrgRunMutation, ArchiveStoredAgentOrgRunMutationVariables>;
+export const DeleteStoredAgentOrgRunDocument = gql`
+    mutation DeleteStoredAgentOrgRun($orgRunId: String!) {
+  deleteStoredAgentOrgRun(orgRunId: $orgRunId) {
+    success
+    message
+    orgRunId
+  }
+}
+    `;
+
+/**
+ * __useDeleteStoredAgentOrgRunMutation__
+ *
+ * To run a mutation, you first call `useDeleteStoredAgentOrgRunMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteStoredAgentOrgRunMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useDeleteStoredAgentOrgRunMutation({
+ *   variables: {
+ *     orgRunId: // value for 'orgRunId'
+ *   },
+ * });
+ */
+export function useDeleteStoredAgentOrgRunMutation(options: VueApolloComposable.UseMutationOptions<DeleteStoredAgentOrgRunMutation, DeleteStoredAgentOrgRunMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteStoredAgentOrgRunMutation, DeleteStoredAgentOrgRunMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteStoredAgentOrgRunMutation, DeleteStoredAgentOrgRunMutationVariables>(DeleteStoredAgentOrgRunDocument, options);
+}
+export type DeleteStoredAgentOrgRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteStoredAgentOrgRunMutation, DeleteStoredAgentOrgRunMutationVariables>;
 export const CreateAgentTeamDefinitionDocument = gql`
     mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
   createAgentTeamDefinition(input: $input) {
@@ -7055,6 +7940,196 @@ export function useGetAgentDefinitionsLazyQuery(options: VueApolloComposable.Use
   return VueApolloComposable.useLazyQuery<GetAgentDefinitionsQuery, GetAgentDefinitionsQueryVariables>(GetAgentDefinitionsDocument, {}, options);
 }
 export type GetAgentDefinitionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentDefinitionsQuery, GetAgentDefinitionsQueryVariables>;
+export const GetAgentOrgDefinitionsDocument = gql`
+    query GetAgentOrgDefinitions {
+  agentOrgDefinitions {
+    id
+    name
+    description
+    instructions
+    category
+    avatarUrl
+    revision
+    handoffs {
+      from
+      to
+      rules
+    }
+    members {
+      memberName
+      ref
+      refType
+      refScope
+    }
+    defaultLaunchConfig {
+      llmModelIdentifier
+      runtimeKind
+      llmConfig
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAgentOrgDefinitionsQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgDefinitionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgDefinitionsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgDefinitionsQuery();
+ */
+export function useGetAgentOrgDefinitionsQuery(options: VueApolloComposable.UseQueryOptions<GetAgentOrgDefinitionsQuery, GetAgentOrgDefinitionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgDefinitionsQuery, GetAgentOrgDefinitionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgDefinitionsQuery, GetAgentOrgDefinitionsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgDefinitionsQuery, GetAgentOrgDefinitionsQueryVariables>(GetAgentOrgDefinitionsDocument, {}, options);
+}
+export function useGetAgentOrgDefinitionsLazyQuery(options: VueApolloComposable.UseQueryOptions<GetAgentOrgDefinitionsQuery, GetAgentOrgDefinitionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgDefinitionsQuery, GetAgentOrgDefinitionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgDefinitionsQuery, GetAgentOrgDefinitionsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgDefinitionsQuery, GetAgentOrgDefinitionsQueryVariables>(GetAgentOrgDefinitionsDocument, {}, options);
+}
+export type GetAgentOrgDefinitionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgDefinitionsQuery, GetAgentOrgDefinitionsQueryVariables>;
+export const GetAgentOrgEndpointCatalogDocument = gql`
+    query GetAgentOrgEndpointCatalog($id: String!) {
+  agentOrgEndpointCatalog(id: $id) {
+    from {
+      kind
+      address
+      memberName
+      definitionId
+      coordinatorAddress
+      coordinatorMemberName
+    }
+    to {
+      kind
+      address
+      memberName
+      definitionId
+      coordinatorAddress
+      coordinatorMemberName
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAgentOrgEndpointCatalogQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgEndpointCatalogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgEndpointCatalogQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgEndpointCatalogQuery({
+ *   id: // value for 'id'
+ * });
+ */
+export function useGetAgentOrgEndpointCatalogQuery(variables: GetAgentOrgEndpointCatalogQueryVariables | VueCompositionApi.Ref<GetAgentOrgEndpointCatalogQueryVariables> | ReactiveFunction<GetAgentOrgEndpointCatalogQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgEndpointCatalogQuery, GetAgentOrgEndpointCatalogQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgEndpointCatalogQuery, GetAgentOrgEndpointCatalogQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgEndpointCatalogQuery, GetAgentOrgEndpointCatalogQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgEndpointCatalogQuery, GetAgentOrgEndpointCatalogQueryVariables>(GetAgentOrgEndpointCatalogDocument, variables, options);
+}
+export function useGetAgentOrgEndpointCatalogLazyQuery(variables?: GetAgentOrgEndpointCatalogQueryVariables | VueCompositionApi.Ref<GetAgentOrgEndpointCatalogQueryVariables> | ReactiveFunction<GetAgentOrgEndpointCatalogQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgEndpointCatalogQuery, GetAgentOrgEndpointCatalogQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgEndpointCatalogQuery, GetAgentOrgEndpointCatalogQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgEndpointCatalogQuery, GetAgentOrgEndpointCatalogQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgEndpointCatalogQuery, GetAgentOrgEndpointCatalogQueryVariables>(GetAgentOrgEndpointCatalogDocument, variables, options);
+}
+export type GetAgentOrgEndpointCatalogQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgEndpointCatalogQuery, GetAgentOrgEndpointCatalogQueryVariables>;
+export const GetAgentOrgReferencedAgentDocument = gql`
+    query GetAgentOrgReferencedAgent($id: String!) {
+  agentDefinition(id: $id) {
+    id
+    name
+    description
+    ownershipScope
+    ownerOrgId
+    ownerTeamId
+  }
+}
+    `;
+
+/**
+ * __useGetAgentOrgReferencedAgentQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgReferencedAgentQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgReferencedAgentQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgReferencedAgentQuery({
+ *   id: // value for 'id'
+ * });
+ */
+export function useGetAgentOrgReferencedAgentQuery(variables: GetAgentOrgReferencedAgentQueryVariables | VueCompositionApi.Ref<GetAgentOrgReferencedAgentQueryVariables> | ReactiveFunction<GetAgentOrgReferencedAgentQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedAgentQuery, GetAgentOrgReferencedAgentQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedAgentQuery, GetAgentOrgReferencedAgentQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedAgentQuery, GetAgentOrgReferencedAgentQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgReferencedAgentQuery, GetAgentOrgReferencedAgentQueryVariables>(GetAgentOrgReferencedAgentDocument, variables, options);
+}
+export function useGetAgentOrgReferencedAgentLazyQuery(variables?: GetAgentOrgReferencedAgentQueryVariables | VueCompositionApi.Ref<GetAgentOrgReferencedAgentQueryVariables> | ReactiveFunction<GetAgentOrgReferencedAgentQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedAgentQuery, GetAgentOrgReferencedAgentQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedAgentQuery, GetAgentOrgReferencedAgentQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedAgentQuery, GetAgentOrgReferencedAgentQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgReferencedAgentQuery, GetAgentOrgReferencedAgentQueryVariables>(GetAgentOrgReferencedAgentDocument, variables, options);
+}
+export type GetAgentOrgReferencedAgentQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgReferencedAgentQuery, GetAgentOrgReferencedAgentQueryVariables>;
+export const GetAgentOrgReferencedTeamDocument = gql`
+    query GetAgentOrgReferencedTeam($id: String!) {
+  agentTeamDefinition(id: $id) {
+    id
+    name
+    description
+    instructions
+    category
+    avatarUrl
+    revision
+    handoffs {
+      from
+      to
+      rules
+    }
+    ownershipScope
+    ownerOrgId
+    ownerOrgName
+    coordinatorMemberName
+    ownerTeamId
+    ownerTeamName
+    ownerApplicationId
+    ownerApplicationName
+    ownerPackageId
+    ownerLocalApplicationId
+    defaultLaunchConfig {
+      llmModelIdentifier
+      runtimeKind
+      llmConfig
+    }
+    nodes {
+      memberName
+      ref
+      refScope
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetAgentOrgReferencedTeamQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgReferencedTeamQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgReferencedTeamQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgReferencedTeamQuery({
+ *   id: // value for 'id'
+ * });
+ */
+export function useGetAgentOrgReferencedTeamQuery(variables: GetAgentOrgReferencedTeamQueryVariables | VueCompositionApi.Ref<GetAgentOrgReferencedTeamQueryVariables> | ReactiveFunction<GetAgentOrgReferencedTeamQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedTeamQuery, GetAgentOrgReferencedTeamQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedTeamQuery, GetAgentOrgReferencedTeamQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedTeamQuery, GetAgentOrgReferencedTeamQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgReferencedTeamQuery, GetAgentOrgReferencedTeamQueryVariables>(GetAgentOrgReferencedTeamDocument, variables, options);
+}
+export function useGetAgentOrgReferencedTeamLazyQuery(variables?: GetAgentOrgReferencedTeamQueryVariables | VueCompositionApi.Ref<GetAgentOrgReferencedTeamQueryVariables> | ReactiveFunction<GetAgentOrgReferencedTeamQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedTeamQuery, GetAgentOrgReferencedTeamQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedTeamQuery, GetAgentOrgReferencedTeamQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgReferencedTeamQuery, GetAgentOrgReferencedTeamQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgReferencedTeamQuery, GetAgentOrgReferencedTeamQueryVariables>(GetAgentOrgReferencedTeamDocument, variables, options);
+}
+export type GetAgentOrgReferencedTeamQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgReferencedTeamQuery, GetAgentOrgReferencedTeamQueryVariables>;
 export const GetAgentTeamDefinitionsDocument = gql`
     query GetAgentTeamDefinitions {
   agentTeamDefinitions {
@@ -7066,6 +8141,12 @@ export const GetAgentTeamDefinitionsDocument = gql`
     category
     avatarUrl
     coordinatorMemberName
+    revision
+    handoffs {
+      from
+      to
+      rules
+    }
     ownershipScope
     ownerTeamId
     ownerTeamName
@@ -7082,7 +8163,6 @@ export const GetAgentTeamDefinitionsDocument = gql`
       __typename
       memberName
       ref
-      refType
       refScope
     }
   }
@@ -7231,6 +8311,46 @@ export function useGetApplicationByIdLazyQuery(variables?: GetApplicationByIdQue
   return VueApolloComposable.useLazyQuery<GetApplicationByIdQuery, GetApplicationByIdQueryVariables>(GetApplicationByIdDocument, variables, options);
 }
 export type GetApplicationByIdQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetApplicationByIdQuery, GetApplicationByIdQueryVariables>;
+export const ListCollaborationRootHistoryDocument = gql`
+    query ListCollaborationRootHistory {
+  listCollaborationRootHistory {
+    __typename
+    ... on AgentOrgRootHistoryObject {
+      root_subject_kind
+      root_run_id
+      created_at
+      archived_at
+      is_active
+      summary
+      org
+    }
+    ... on AgentTeamRootHistoryObject {
+      root_subject_kind
+      root_run_id
+    }
+  }
+}
+    `;
+
+/**
+ * __useListCollaborationRootHistoryQuery__
+ *
+ * To run a query within a Vue component, call `useListCollaborationRootHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListCollaborationRootHistoryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useListCollaborationRootHistoryQuery();
+ */
+export function useListCollaborationRootHistoryQuery(options: VueApolloComposable.UseQueryOptions<ListCollaborationRootHistoryQuery, ListCollaborationRootHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListCollaborationRootHistoryQuery, ListCollaborationRootHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListCollaborationRootHistoryQuery, ListCollaborationRootHistoryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<ListCollaborationRootHistoryQuery, ListCollaborationRootHistoryQueryVariables>(ListCollaborationRootHistoryDocument, {}, options);
+}
+export function useListCollaborationRootHistoryLazyQuery(options: VueApolloComposable.UseQueryOptions<ListCollaborationRootHistoryQuery, ListCollaborationRootHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<ListCollaborationRootHistoryQuery, ListCollaborationRootHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<ListCollaborationRootHistoryQuery, ListCollaborationRootHistoryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<ListCollaborationRootHistoryQuery, ListCollaborationRootHistoryQueryVariables>(ListCollaborationRootHistoryDocument, {}, options);
+}
+export type ListCollaborationRootHistoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<ListCollaborationRootHistoryQuery, ListCollaborationRootHistoryQueryVariables>;
 export const GetFileContentDocument = gql`
     query GetFileContent($workspaceId: String!, $filePath: String!) {
   fileContent(workspaceId: $workspaceId, filePath: $filePath)
@@ -8668,6 +9788,44 @@ export function useGetTeamMemberEventMonitorActiveTracePageLazyQuery(variables?:
   return VueApolloComposable.useLazyQuery<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>(GetTeamMemberEventMonitorActiveTracePageDocument, variables, options);
 }
 export type GetTeamMemberEventMonitorActiveTracePageQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberEventMonitorActiveTracePageQuery, GetTeamMemberEventMonitorActiveTracePageQueryVariables>;
+export const GetAgentOrgMemberEventMonitorActiveTracePageDocument = gql`
+    query GetAgentOrgMemberEventMonitorActiveTracePage($orgRunId: String!, $memberAddress: String!, $agentRunId: String!, $beforeCursor: String) {
+  getAgentOrgMemberEventMonitorActiveTracePage(
+    orgRunId: $orgRunId
+    memberAddress: $memberAddress
+    agentRunId: $agentRunId
+    beforeCursor: $beforeCursor
+  ) {
+    ...EventMonitorActiveTracePageFields
+  }
+}
+    ${EventMonitorActiveTracePageFieldsFragmentDoc}`;
+
+/**
+ * __useGetAgentOrgMemberEventMonitorActiveTracePageQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgMemberEventMonitorActiveTracePageQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgMemberEventMonitorActiveTracePageQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgMemberEventMonitorActiveTracePageQuery({
+ *   orgRunId: // value for 'orgRunId'
+ *   memberAddress: // value for 'memberAddress'
+ *   agentRunId: // value for 'agentRunId'
+ *   beforeCursor: // value for 'beforeCursor'
+ * });
+ */
+export function useGetAgentOrgMemberEventMonitorActiveTracePageQuery(variables: GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables | VueCompositionApi.Ref<GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables> | ReactiveFunction<GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgMemberEventMonitorActiveTracePageQuery, GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberEventMonitorActiveTracePageQuery, GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberEventMonitorActiveTracePageQuery, GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgMemberEventMonitorActiveTracePageQuery, GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables>(GetAgentOrgMemberEventMonitorActiveTracePageDocument, variables, options);
+}
+export function useGetAgentOrgMemberEventMonitorActiveTracePageLazyQuery(variables?: GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables | VueCompositionApi.Ref<GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables> | ReactiveFunction<GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgMemberEventMonitorActiveTracePageQuery, GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberEventMonitorActiveTracePageQuery, GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberEventMonitorActiveTracePageQuery, GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgMemberEventMonitorActiveTracePageQuery, GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables>(GetAgentOrgMemberEventMonitorActiveTracePageDocument, variables, options);
+}
+export type GetAgentOrgMemberEventMonitorActiveTracePageQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgMemberEventMonitorActiveTracePageQuery, GetAgentOrgMemberEventMonitorActiveTracePageQueryVariables>;
 export const GetTeamRunResumeConfigDocument = gql`
     query GetTeamRunResumeConfig($teamRunId: String!) {
   getTeamRunResumeConfig(teamRunId: $teamRunId) {
@@ -8772,6 +9930,80 @@ export function useGetTeamMemberRunProjectionLazyQuery(variables?: GetTeamMember
   return VueApolloComposable.useLazyQuery<GetTeamMemberRunProjectionQuery, GetTeamMemberRunProjectionQueryVariables>(GetTeamMemberRunProjectionDocument, variables, options);
 }
 export type GetTeamMemberRunProjectionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberRunProjectionQuery, GetTeamMemberRunProjectionQueryVariables>;
+export const GetAgentOrgMemberRunProjectionDocument = gql`
+    query GetAgentOrgMemberRunProjection($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+  getAgentOrgMemberRunProjection(
+    orgRunId: $orgRunId
+    memberAddress: $memberAddress
+    agentRunId: $agentRunId
+  ) {
+    agentRunId
+    memberAddress
+    summary
+    lastActivityAt
+    conversation
+    activities
+    hasEarlierActiveTraceEvents
+  }
+}
+    `;
+
+/**
+ * __useGetAgentOrgMemberRunProjectionQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgMemberRunProjectionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgMemberRunProjectionQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgMemberRunProjectionQuery({
+ *   orgRunId: // value for 'orgRunId'
+ *   memberAddress: // value for 'memberAddress'
+ *   agentRunId: // value for 'agentRunId'
+ * });
+ */
+export function useGetAgentOrgMemberRunProjectionQuery(variables: GetAgentOrgMemberRunProjectionQueryVariables | VueCompositionApi.Ref<GetAgentOrgMemberRunProjectionQueryVariables> | ReactiveFunction<GetAgentOrgMemberRunProjectionQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunProjectionQuery, GetAgentOrgMemberRunProjectionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunProjectionQuery, GetAgentOrgMemberRunProjectionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunProjectionQuery, GetAgentOrgMemberRunProjectionQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgMemberRunProjectionQuery, GetAgentOrgMemberRunProjectionQueryVariables>(GetAgentOrgMemberRunProjectionDocument, variables, options);
+}
+export function useGetAgentOrgMemberRunProjectionLazyQuery(variables?: GetAgentOrgMemberRunProjectionQueryVariables | VueCompositionApi.Ref<GetAgentOrgMemberRunProjectionQueryVariables> | ReactiveFunction<GetAgentOrgMemberRunProjectionQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunProjectionQuery, GetAgentOrgMemberRunProjectionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunProjectionQuery, GetAgentOrgMemberRunProjectionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberRunProjectionQuery, GetAgentOrgMemberRunProjectionQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgMemberRunProjectionQuery, GetAgentOrgMemberRunProjectionQueryVariables>(GetAgentOrgMemberRunProjectionDocument, variables, options);
+}
+export type GetAgentOrgMemberRunProjectionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgMemberRunProjectionQuery, GetAgentOrgMemberRunProjectionQueryVariables>;
+export const GetAgentOrgExecutionCheckpointDocument = gql`
+    query GetAgentOrgExecutionCheckpoint($orgRunId: String!) {
+  getAgentOrgExecutionCheckpoint(orgRunId: $orgRunId) {
+    orgRunId
+    changeSequence
+    hasOpenExecutionWork
+  }
+}
+    `;
+
+/**
+ * __useGetAgentOrgExecutionCheckpointQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgExecutionCheckpointQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgExecutionCheckpointQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgExecutionCheckpointQuery({
+ *   orgRunId: // value for 'orgRunId'
+ * });
+ */
+export function useGetAgentOrgExecutionCheckpointQuery(variables: GetAgentOrgExecutionCheckpointQueryVariables | VueCompositionApi.Ref<GetAgentOrgExecutionCheckpointQueryVariables> | ReactiveFunction<GetAgentOrgExecutionCheckpointQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables>(GetAgentOrgExecutionCheckpointDocument, variables, options);
+}
+export function useGetAgentOrgExecutionCheckpointLazyQuery(variables?: GetAgentOrgExecutionCheckpointQueryVariables | VueCompositionApi.Ref<GetAgentOrgExecutionCheckpointQueryVariables> | ReactiveFunction<GetAgentOrgExecutionCheckpointQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables>(GetAgentOrgExecutionCheckpointDocument, variables, options);
+}
+export type GetAgentOrgExecutionCheckpointQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgExecutionCheckpointQuery, GetAgentOrgExecutionCheckpointQueryVariables>;
 export const GetTeamCommunicationMessagesDocument = gql`
     query GetTeamCommunicationMessages($teamRunId: String!) {
   getTeamCommunicationMessages(teamRunId: $teamRunId) {
@@ -8925,6 +10157,34 @@ export function useGetAgentRunResumeConfigLazyQuery(variables?: GetAgentRunResum
   return VueApolloComposable.useLazyQuery<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables>(GetAgentRunResumeConfigDocument, variables, options);
 }
 export type GetAgentRunResumeConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentRunResumeConfigQuery, GetAgentRunResumeConfigQueryVariables>;
+export const GetAgentOrgRunInspectionDocument = gql`
+    query GetAgentOrgRunInspection($orgRunId: String!) {
+  getAgentOrgRunInspection(orgRunId: $orgRunId)
+}
+    `;
+
+/**
+ * __useGetAgentOrgRunInspectionQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgRunInspectionQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgRunInspectionQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgRunInspectionQuery({
+ *   orgRunId: // value for 'orgRunId'
+ * });
+ */
+export function useGetAgentOrgRunInspectionQuery(variables: GetAgentOrgRunInspectionQueryVariables | VueCompositionApi.Ref<GetAgentOrgRunInspectionQueryVariables> | ReactiveFunction<GetAgentOrgRunInspectionQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgRunInspectionQuery, GetAgentOrgRunInspectionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgRunInspectionQuery, GetAgentOrgRunInspectionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgRunInspectionQuery, GetAgentOrgRunInspectionQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgRunInspectionQuery, GetAgentOrgRunInspectionQueryVariables>(GetAgentOrgRunInspectionDocument, variables, options);
+}
+export function useGetAgentOrgRunInspectionLazyQuery(variables?: GetAgentOrgRunInspectionQueryVariables | VueCompositionApi.Ref<GetAgentOrgRunInspectionQueryVariables> | ReactiveFunction<GetAgentOrgRunInspectionQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgRunInspectionQuery, GetAgentOrgRunInspectionQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgRunInspectionQuery, GetAgentOrgRunInspectionQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgRunInspectionQuery, GetAgentOrgRunInspectionQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgRunInspectionQuery, GetAgentOrgRunInspectionQueryVariables>(GetAgentOrgRunInspectionDocument, variables, options);
+}
+export type GetAgentOrgRunInspectionQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgRunInspectionQuery, GetAgentOrgRunInspectionQueryVariables>;
 export const AgentRunModelOptionsDocument = gql`
     query AgentRunModelOptions($agentRunId: String!) {
   agentRunModelOptions(agentRunId: $agentRunId) {
@@ -8961,11 +10221,24 @@ export const TeamRunModelOptionsDocument = gql`
     scopeKind
     scopeAddress
     currentModelIdentifier
-    currentContextTokens
     unavailableReason
+    currentModel {
+      llmModelIdentifier
+      providerName
+      displayName
+      canonicalName
+      description
+      configSchema
+      recommended
+    }
     replacements {
       llmModelIdentifier
-      contextTokens
+      providerName
+      displayName
+      canonicalName
+      description
+      configSchema
+      recommended
     }
   }
 }
@@ -8993,6 +10266,140 @@ export function useTeamRunModelOptionsLazyQuery(variables?: TeamRunModelOptionsQ
   return VueApolloComposable.useLazyQuery<TeamRunModelOptionsQuery, TeamRunModelOptionsQueryVariables>(TeamRunModelOptionsDocument, variables, options);
 }
 export type TeamRunModelOptionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<TeamRunModelOptionsQuery, TeamRunModelOptionsQueryVariables>;
+export const AgentOrgRunConfigDocument = gql`
+    query AgentOrgRunConfig($orgRunId: String!) {
+  getAgentOrgRunConfig(orgRunId: $orgRunId) {
+    orgRunId
+    executionTree
+    isActive
+    editability {
+      editable
+      reason
+    }
+  }
+}
+    `;
+
+/**
+ * __useAgentOrgRunConfigQuery__
+ *
+ * To run a query within a Vue component, call `useAgentOrgRunConfigQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAgentOrgRunConfigQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useAgentOrgRunConfigQuery({
+ *   orgRunId: // value for 'orgRunId'
+ * });
+ */
+export function useAgentOrgRunConfigQuery(variables: AgentOrgRunConfigQueryVariables | VueCompositionApi.Ref<AgentOrgRunConfigQueryVariables> | ReactiveFunction<AgentOrgRunConfigQueryVariables>, options: VueApolloComposable.UseQueryOptions<AgentOrgRunConfigQuery, AgentOrgRunConfigQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<AgentOrgRunConfigQuery, AgentOrgRunConfigQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<AgentOrgRunConfigQuery, AgentOrgRunConfigQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<AgentOrgRunConfigQuery, AgentOrgRunConfigQueryVariables>(AgentOrgRunConfigDocument, variables, options);
+}
+export function useAgentOrgRunConfigLazyQuery(variables?: AgentOrgRunConfigQueryVariables | VueCompositionApi.Ref<AgentOrgRunConfigQueryVariables> | ReactiveFunction<AgentOrgRunConfigQueryVariables>, options: VueApolloComposable.UseQueryOptions<AgentOrgRunConfigQuery, AgentOrgRunConfigQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<AgentOrgRunConfigQuery, AgentOrgRunConfigQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<AgentOrgRunConfigQuery, AgentOrgRunConfigQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<AgentOrgRunConfigQuery, AgentOrgRunConfigQueryVariables>(AgentOrgRunConfigDocument, variables, options);
+}
+export type AgentOrgRunConfigQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<AgentOrgRunConfigQuery, AgentOrgRunConfigQueryVariables>;
+export const AgentOrgRunModelOptionsDocument = gql`
+    query AgentOrgRunModelOptions($orgRunId: String!, $teamWorkspacePatches: [AgentOrgTeamWorkspacePatchInput!]!) {
+  agentOrgRunModelOptions(
+    orgRunId: $orgRunId
+    teamWorkspacePatches: $teamWorkspacePatches
+  ) {
+    scopeKind
+    scopeAddress
+    currentModelIdentifier
+    unavailableReason
+    currentModel {
+      llmModelIdentifier
+      providerName
+      displayName
+      canonicalName
+      description
+      configSchema
+      recommended
+    }
+    replacements {
+      llmModelIdentifier
+      providerName
+      displayName
+      canonicalName
+      description
+      configSchema
+      recommended
+    }
+  }
+}
+    `;
+
+/**
+ * __useAgentOrgRunModelOptionsQuery__
+ *
+ * To run a query within a Vue component, call `useAgentOrgRunModelOptionsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useAgentOrgRunModelOptionsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useAgentOrgRunModelOptionsQuery({
+ *   orgRunId: // value for 'orgRunId'
+ *   teamWorkspacePatches: // value for 'teamWorkspacePatches'
+ * });
+ */
+export function useAgentOrgRunModelOptionsQuery(variables: AgentOrgRunModelOptionsQueryVariables | VueCompositionApi.Ref<AgentOrgRunModelOptionsQueryVariables> | ReactiveFunction<AgentOrgRunModelOptionsQueryVariables>, options: VueApolloComposable.UseQueryOptions<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>(AgentOrgRunModelOptionsDocument, variables, options);
+}
+export function useAgentOrgRunModelOptionsLazyQuery(variables?: AgentOrgRunModelOptionsQueryVariables | VueCompositionApi.Ref<AgentOrgRunModelOptionsQueryVariables> | ReactiveFunction<AgentOrgRunModelOptionsQueryVariables>, options: VueApolloComposable.UseQueryOptions<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>(AgentOrgRunModelOptionsDocument, variables, options);
+}
+export type AgentOrgRunModelOptionsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<AgentOrgRunModelOptionsQuery, AgentOrgRunModelOptionsQueryVariables>;
+export const RuntimeCurrentModelDescriptorsDocument = gql`
+    query RuntimeCurrentModelDescriptors($runtimeKind: String!, $identifiers: [String!]!) {
+  runtimeCurrentModelDescriptors(
+    runtimeKind: $runtimeKind
+    identifiers: $identifiers
+  ) {
+    identifier
+    model {
+      modelIdentifier
+      name
+      canonicalName
+      providerName
+      providerType
+      description
+      configSchema
+    }
+  }
+}
+    `;
+
+/**
+ * __useRuntimeCurrentModelDescriptorsQuery__
+ *
+ * To run a query within a Vue component, call `useRuntimeCurrentModelDescriptorsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRuntimeCurrentModelDescriptorsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useRuntimeCurrentModelDescriptorsQuery({
+ *   runtimeKind: // value for 'runtimeKind'
+ *   identifiers: // value for 'identifiers'
+ * });
+ */
+export function useRuntimeCurrentModelDescriptorsQuery(variables: RuntimeCurrentModelDescriptorsQueryVariables | VueCompositionApi.Ref<RuntimeCurrentModelDescriptorsQueryVariables> | ReactiveFunction<RuntimeCurrentModelDescriptorsQueryVariables>, options: VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>(RuntimeCurrentModelDescriptorsDocument, variables, options);
+}
+export function useRuntimeCurrentModelDescriptorsLazyQuery(variables?: RuntimeCurrentModelDescriptorsQueryVariables | VueCompositionApi.Ref<RuntimeCurrentModelDescriptorsQueryVariables> | ReactiveFunction<RuntimeCurrentModelDescriptorsQueryVariables>, options: VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>(RuntimeCurrentModelDescriptorsDocument, variables, options);
+}
+export type RuntimeCurrentModelDescriptorsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<RuntimeCurrentModelDescriptorsQuery, RuntimeCurrentModelDescriptorsQueryVariables>;
 export const GetRuntimeAvailabilitiesDocument = gql`
     query GetRuntimeAvailabilities {
   runtimeAvailabilities {
@@ -9430,6 +10837,42 @@ export function useGetTeamMemberTokenUsageSummaryLazyQuery(variables?: GetTeamMe
   return VueApolloComposable.useLazyQuery<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables>(GetTeamMemberTokenUsageSummaryDocument, variables, options);
 }
 export type GetTeamMemberTokenUsageSummaryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetTeamMemberTokenUsageSummaryQuery, GetTeamMemberTokenUsageSummaryQueryVariables>;
+export const GetAgentOrgMemberTokenUsageSummaryDocument = gql`
+    query GetAgentOrgMemberTokenUsageSummary($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+  getAgentOrgMemberTokenUsageSummary(
+    orgRunId: $orgRunId
+    memberAddress: $memberAddress
+    agentRunId: $agentRunId
+  ) {
+    ...TokenUsageRunSummaryFields
+  }
+}
+    ${TokenUsageRunSummaryFieldsFragmentDoc}`;
+
+/**
+ * __useGetAgentOrgMemberTokenUsageSummaryQuery__
+ *
+ * To run a query within a Vue component, call `useGetAgentOrgMemberTokenUsageSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAgentOrgMemberTokenUsageSummaryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetAgentOrgMemberTokenUsageSummaryQuery({
+ *   orgRunId: // value for 'orgRunId'
+ *   memberAddress: // value for 'memberAddress'
+ *   agentRunId: // value for 'agentRunId'
+ * });
+ */
+export function useGetAgentOrgMemberTokenUsageSummaryQuery(variables: GetAgentOrgMemberTokenUsageSummaryQueryVariables | VueCompositionApi.Ref<GetAgentOrgMemberTokenUsageSummaryQueryVariables> | ReactiveFunction<GetAgentOrgMemberTokenUsageSummaryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgMemberTokenUsageSummaryQuery, GetAgentOrgMemberTokenUsageSummaryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberTokenUsageSummaryQuery, GetAgentOrgMemberTokenUsageSummaryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberTokenUsageSummaryQuery, GetAgentOrgMemberTokenUsageSummaryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetAgentOrgMemberTokenUsageSummaryQuery, GetAgentOrgMemberTokenUsageSummaryQueryVariables>(GetAgentOrgMemberTokenUsageSummaryDocument, variables, options);
+}
+export function useGetAgentOrgMemberTokenUsageSummaryLazyQuery(variables?: GetAgentOrgMemberTokenUsageSummaryQueryVariables | VueCompositionApi.Ref<GetAgentOrgMemberTokenUsageSummaryQueryVariables> | ReactiveFunction<GetAgentOrgMemberTokenUsageSummaryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetAgentOrgMemberTokenUsageSummaryQuery, GetAgentOrgMemberTokenUsageSummaryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberTokenUsageSummaryQuery, GetAgentOrgMemberTokenUsageSummaryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetAgentOrgMemberTokenUsageSummaryQuery, GetAgentOrgMemberTokenUsageSummaryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetAgentOrgMemberTokenUsageSummaryQuery, GetAgentOrgMemberTokenUsageSummaryQueryVariables>(GetAgentOrgMemberTokenUsageSummaryDocument, variables, options);
+}
+export type GetAgentOrgMemberTokenUsageSummaryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgMemberTokenUsageSummaryQuery, GetAgentOrgMemberTokenUsageSummaryQueryVariables>;
 export const GetTokenUsageTaskStatisticsInPeriodDocument = gql`
     query GetTokenUsageTaskStatisticsInPeriod($startTime: DateTime!, $endTime: DateTime!) {
   tokenUsageTaskStatisticsInPeriod(startTime: $startTime, endTime: $endTime) {

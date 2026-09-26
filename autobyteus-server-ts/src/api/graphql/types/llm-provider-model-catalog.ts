@@ -36,7 +36,6 @@ export class CatalogProviderObject {
 @ObjectType('ModelSelectionPresentation')
 export class ModelSelectionPresentationObject {
   @Field(() => Boolean) recommended!: boolean;
-  @Field(() => String, { nullable: true }) aliasOfModelIdentifier!: string | null;
 }
 
 @ObjectType()
@@ -90,10 +89,10 @@ type ModelInfoWithMetadata = ModelInfoWithSelectionPresentation & {
 const mapSelectionPresentation = (
   presentation: ModelSelectionPresentation | null | undefined,
 ): ModelSelectionPresentationObject | null => presentation
-  ? { recommended: presentation.recommended, aliasOfModelIdentifier: presentation.aliasOfModelIdentifier }
+  ? { recommended: presentation.recommended }
   : null;
 
-const mapLlm = (model: ModelInfoWithMetadata): ModelDetail => ({
+export const mapLlm = (model: ModelInfoWithMetadata): ModelDetail => ({
   modelIdentifier: model.model_identifier,
   name: model.display_name,
   description: model.description ?? null,

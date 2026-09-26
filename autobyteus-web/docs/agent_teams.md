@@ -98,6 +98,12 @@ Assigned task execution retains its separate durable preparation/release journey
 The effective standalone configuration is resolved for each direct Agent from
 the Team root plus any exact Agent override. Definition defaults seed the new
 draft but are not persisted merely because a schema default is displayed.
+For a root or member seeded with an exact saved model ID absent from the
+backend's offered choices, launch controls request an exact-current descriptor
+and retain the ID/schema as a current-only value. In particular, a stored
+Claude `default` is not silently changed to its recommended offered sibling.
+Each configured scope still needs valid catalog/schema evidence before launch;
+the descriptor lookup does not make an arbitrary new ID selectable.
 
 ## Execution Identity And Commands
 
@@ -222,8 +228,14 @@ The existing-run form permits a stopped standalone Team root or exact direct
 Agent to edit its model/settings pair while runtime, workspace, approval policy,
 addresses, and execution/provider identities remain locked. Model options are
 advisory: Save revalidates every affected scope against its original saved model
-and requires verified target context capacity at least that baseline. Same-model
-settings still require a current model/schema, but no replacement-capacity check.
+and validates current catalog membership and target schema. External runtime
+models are not capacity-gated; AutoByteus still requires verified positive
+non-decreasing context capacity. Same-model settings require a current
+model/schema, but no replacement-capacity check.
+Stopped options carry backend current/replacement descriptors. A proven
+redundant Claude `default` is omitted from new offers, while an exact saved
+`default` remains a current-only descriptor for same-model settings and is not
+rewritten during an unrelated Team edit.
 
 Root pair changes propagate only to Agents linked by draft-start
 runtime/model/settings equality. Divergent or directly edited Agents remain

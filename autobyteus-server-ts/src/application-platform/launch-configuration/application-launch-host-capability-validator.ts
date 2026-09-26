@@ -21,7 +21,7 @@ type RuntimeAvailabilityReader = Pick<
   RuntimeAvailabilityService,
   "getRuntimeAvailability"
 >;
-type ModelCatalogReader = Pick<ModelCatalogService, "listLlmModels">;
+type ModelCatalogReader = Pick<ModelCatalogService, "resolveExactCurrentLlmModel">;
 type EffectiveLaunchSubject =
   | ApplicationEffectiveTeamLaunchProfile
   | ApplicationEffectiveLeafLaunchProfile;
@@ -109,7 +109,7 @@ export class ApplicationLaunchHostCapabilityValidator {
 
       let models;
       try {
-        models = await this.dependencies.modelCatalogService.listLlmModels(runtimeKind);
+        models = await this.dependencies.modelCatalogService.resolveExactCurrentLlmModel(runtimeKind, leaf.llmModelIdentifier);
       } catch (error) {
         const failure = error instanceof Error ? error : new Error(String(error));
         issues.push(issue(
@@ -122,8 +122,7 @@ export class ApplicationLaunchHostCapabilityValidator {
         continue;
       }
       const modelIdentifier = leaf.llmModelIdentifier.trim();
-      const model = models.find((candidate) =>
-        candidate.model_identifier === modelIdentifier);
+      const model = models?.model_identifier === modelIdentifier ? models : null;
       if (!model) {
         issues.push(issue(
           configuration,

@@ -1,0 +1,15 @@
+{
+  "data": {
+    "createAgentTeamDefinition": {
+      "id": "rev004-saved-default-team",
+      "name": "REV004 Saved Default Team",
+      "defaultLaunchConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "default",
+        "llmConfig": {
+          "reasoning_effort": "high"
+        }
+      }
+    }
+  }
+}

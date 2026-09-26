@@ -37,6 +37,7 @@
         <SearchableGroupedSelect
           :model-value="draft.defaults.llmModelIdentifier"
           :options="groupedModelOptions"
+          :selected-display="currentDefaultDisplay"
           :disabled="disabled || preserveInvalidSavedOverride || !canSelectTeamModel || !availableProviderGroups.length"
           :placeholder="hasMixedInheritedRuntimes && !draft.defaults.runtimeKind
             ? $t('applications.components.applications.ApplicationLaunchSetupPanel.mixedInheritedRuntime')
@@ -105,6 +106,7 @@
         :global-llm-model-identifier="draft.defaults.llmModelIdentifier"
         :inherited-runtime-kind="inheritedProfileForMember(member)?.runtimeKind ?? inheritedTeamRuntimeKind"
         :inherited-llm-model-identifier="inheritedProfileForMember(member)?.llmModelIdentifier ?? ''"
+        :current-model-descriptor="currentDescriptorForMember(member)"
         :allow-runtime-override="supportsMemberRuntimeOverride"
         :allow-model-override="supportsMemberModelOverride"
         :disabled="disabled || preserveInvalidSavedOverride"
@@ -120,6 +122,7 @@ import SearchableGroupedSelect from '~/components/agentTeams/SearchableGroupedSe
 import ApplicationTeamMemberOverrideItem from '~/components/applications/setup/ApplicationTeamMemberOverrideItem.vue'
 import ApplicationWorkspaceRootSelector from '~/components/applications/setup/ApplicationWorkspaceRootSelector.vue'
 import { useLocalization } from '~/composables/useLocalization'
+import { formatRuntimeCurrentModelDisplay, loadRuntimeCurrentModelDescriptors, type RuntimeCurrentModelDescriptor } from '~/composables/useRuntimeCurrentModelDescriptor'
 import {
   loadRuntimeProviderGroupsForSelection,
   useRuntimeScopedModelSelection,
@@ -141,6 +144,7 @@ const props = withDefaults(defineProps<{
   slot: import('@autobyteus/application-sdk-contracts').ApplicationExecutionResourceSlotDeclaration
   draft: ApplicationTeamLaunchProfileDraft
   inheritedProfiles?: ApplicationResolvedLaunchBaselineLeaf[]
+  serverOriginDraft?: ApplicationTeamLaunchProfileDraft | null
   preserveInvalidSavedOverride?: boolean
   disabled?: boolean
 }>(), {
@@ -156,6 +160,8 @@ const emit = defineEmits<{
 
 const { t: $t } = useLocalization()
 const runtimeModelCatalogs = ref<TeamLaunchProfileRuntimeModelCatalogs>({})
+const exactCurrentByRuntime = ref<Record<string, Record<string, RuntimeCurrentModelDescriptor | null>>>({})
+const catalogReadError = ref<string | null>(null)
 
 const supportsRuntimeKind = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.runtimeKind === true)
 const supportsModelIdentifier = computed(() => props.slot.supportedLaunchConfig?.AGENT_TEAM?.llmModelIdentifier === true)
@@ -237,6 +243,53 @@ const catalogRuntimeKinds = computed(() => Array.from(new Set([
     .filter(Boolean),
 ])))
 
+const currentDescriptorForMember = (member: ApplicationTeamMemberProfileDraft): RuntimeCurrentModelDescriptor | null => {
+  const runtime = (member.runtimeKind || props.draft.defaults.runtimeKind
+    || inheritedProfileForMember(member)?.runtimeKind || '').trim()
+  const identifier = (member.llmModelIdentifier || props.draft.defaults.llmModelIdentifier
+    || inheritedProfileForMember(member)?.llmModelIdentifier || '').trim()
+  return exactCurrentByRuntime.value[runtime]?.[identifier] ?? null
+}
+const currentDefaultDisplay = computed(() => {
+  const runtime = (props.draft.defaults.runtimeKind || inheritedTeamRuntimeKind.value).trim()
+  const current = exactCurrentByRuntime.value[runtime]?.[props.draft.defaults.llmModelIdentifier]
+  return current ? formatRuntimeCurrentModelDisplay(runtime, current) : null
+})
+const serverOriginPairs = computed(() => {
+  const values = new Set<string>()
+  const add = (runtime: string | null | undefined, identifier: string | null | undefined) => {
+    if (runtime?.trim() && identifier?.trim()) values.add(`${runtime.trim()}\u0000${identifier.trim()}`)
+  }
+  props.inheritedProfiles.forEach((profile) => add(profile.runtimeKind, profile.llmModelIdentifier))
+  const saved = props.serverOriginDraft
+  if (saved) {
+    add(saved.defaults.runtimeKind || inheritedTeamRuntimeKind.value, saved.defaults.llmModelIdentifier)
+    saved.memberProfiles.forEach((member) => {
+      const inherited = inheritedProfileForMember(member)
+      add(member.runtimeKind || saved.defaults.runtimeKind || inherited?.runtimeKind,
+        member.llmModelIdentifier || saved.defaults.llmModelIdentifier || inherited?.llmModelIdentifier)
+    })
+  }
+  return values
+})
+const currentIdentifiersByRuntime = computed(() => {
+  const entries: Record<string, string[]> = {}
+  const defaultRuntime = (props.draft.defaults.runtimeKind || inheritedTeamRuntimeKind.value).trim()
+  const defaultIdentifier = props.draft.defaults.llmModelIdentifier.trim()
+  if (serverOriginPairs.value.has(`${defaultRuntime}\u0000${defaultIdentifier}`))
+    (entries[defaultRuntime] ??= []).push(defaultIdentifier)
+  for (const member of props.draft.memberProfiles) {
+    const runtime = (member.runtimeKind || props.draft.defaults.runtimeKind
+      || inheritedProfileForMember(member)?.runtimeKind || '').trim()
+    const identifier = (member.llmModelIdentifier || props.draft.defaults.llmModelIdentifier
+      || inheritedProfileForMember(member)?.llmModelIdentifier || '').trim()
+    if (runtime && identifier && serverOriginPairs.value.has(`${runtime}\u0000${identifier}`))
+      (entries[runtime] ??= []).push(identifier)
+  }
+  return Object.fromEntries(Object.entries(entries).map(([runtime, identifiers]) =>
+    [runtime, [...new Set(identifiers)]]))
+})
+
 const memberProfilesAlignedToCurrentMembers = computed(() => (
   resolvedMembers.value.length > 0
   && resolvedMembers.value.length === props.draft.memberProfiles.length
@@ -308,22 +361,42 @@ watch(
 )
 
 watch(
-  () => [
-    requiresModelCatalogs.value,
-    catalogRuntimeKinds.value,
-  ] as const,
-  async ([nextRequiresModelCatalogs, runtimeKinds]) => {
+  () => [requiresModelCatalogs.value, catalogRuntimeKinds.value, currentIdentifiersByRuntime.value] as const,
+  async ([nextRequiresModelCatalogs, runtimeKinds, identifiersByRuntime], _previous, onCleanup) => {
     if (!nextRequiresModelCatalogs) {
       runtimeModelCatalogs.value = {}
+      exactCurrentByRuntime.value = {}
+      catalogReadError.value = null
       return
     }
-
+    let active = true
+    onCleanup(() => { active = false })
     const nextCatalogs: TeamLaunchProfileRuntimeModelCatalogs = {}
-    await Promise.all(runtimeKinds.map(async (runtimeKind) => {
-      const rows = await loadRuntimeProviderGroupsForSelection(runtimeKind as never)
-      nextCatalogs[runtimeKind] = rows.flatMap((row) => row.models.map((model) => model.modelIdentifier))
-    }))
-    runtimeModelCatalogs.value = nextCatalogs
+    const nextCurrent: Record<string, Record<string, RuntimeCurrentModelDescriptor | null>> = {}
+    try {
+      await Promise.all(runtimeKinds.map(async (runtimeKind) => {
+        const [rows, current] = await Promise.all([
+          loadRuntimeProviderGroupsForSelection(runtimeKind as never),
+          loadRuntimeCurrentModelDescriptors(runtimeKind, identifiersByRuntime[runtimeKind] ?? []),
+        ])
+        nextCurrent[runtimeKind] = current
+        nextCatalogs[runtimeKind] = [...new Set([
+          ...rows.flatMap((row) => row.models.map((model) => model.modelIdentifier)),
+          ...Object.entries(current).filter(([, model]) => model).map(([id]) => id),
+        ])]
+      }))
+      if (active) {
+        runtimeModelCatalogs.value = nextCatalogs
+        exactCurrentByRuntime.value = nextCurrent
+        catalogReadError.value = null
+      }
+    } catch {
+      if (active) {
+        runtimeModelCatalogs.value = {}
+        exactCurrentByRuntime.value = {}
+        catalogReadError.value = 'Current model descriptors could not be verified.'
+      }
+    }
   },
   { deep: true, immediate: true },
 )
@@ -336,11 +409,16 @@ watch(
     resolvedMembers.value,
     memberProfilesAlignedToCurrentMembers.value,
     runtimeModelCatalogs.value,
+    catalogReadError.value,
     requiresModelCatalogs.value,
     props.preserveInvalidSavedOverride,
     props.inheritedProfiles,
   ] as const,
   () => {
+    if (catalogReadError.value) {
+      emit('readiness-change', { isReady: false, blockingReason: catalogReadError.value, hasEffectiveResource: true })
+      return
+    }
     if (props.preserveInvalidSavedOverride) {
       emit('readiness-change', {
         isReady: false,

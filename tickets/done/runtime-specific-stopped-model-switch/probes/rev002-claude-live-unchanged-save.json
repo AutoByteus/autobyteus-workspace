@@ -1,0 +1,64 @@
+{
+  "stop": {
+    "data": {
+      "terminateAgentRun": {
+        "success": true
+      }
+    }
+  },
+  "before": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "runId": "daily_assistant_f8bf08d3efcb42b593bb0c9608bd61b8",
+        "isActive": false,
+        "metadataConfig": {
+          "llmModelIdentifier": "default",
+          "llmConfig": null,
+          "runtimeReference": {
+            "runtimeKind": "claude_agent_sdk",
+            "sessionId": "613413a3-8024-4486-bfd3-ff46a1eb5934",
+            "threadId": null
+          }
+        }
+      }
+    }
+  },
+  "save": {
+    "data": {
+      "updateStoppedAgentRunModelConfig": {
+        "success": true,
+        "outcome": "UPDATED",
+        "message": "Model settings updated. They will be used when this run resumes.",
+        "canonicalSelection": {
+          "llmModelIdentifier": "default",
+          "llmConfig": {
+            "reasoning_effort": "high"
+          }
+        },
+        "fieldErrors": []
+      }
+    }
+  },
+  "after": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "runId": "daily_assistant_f8bf08d3efcb42b593bb0c9608bd61b8",
+        "isActive": false,
+        "metadataConfig": {
+          "llmModelIdentifier": "default",
+          "llmConfig": {
+            "reasoning_effort": "high"
+          },
+          "runtimeReference": {
+            "runtimeKind": "claude_agent_sdk",
+            "sessionId": "613413a3-8024-4486-bfd3-ff46a1eb5934",
+            "threadId": null
+          }
+        }
+      }
+    }
+  },
+  "traceHashBefore": "bbae8a7a79763db6397ea972644f552d41732db31a9a5497d2dbee682d8017e2",
+  "traceHashAfter": "bbae8a7a79763db6397ea972644f552d41732db31a9a5497d2dbee682d8017e2",
+  "traceBytes": 1072
+}

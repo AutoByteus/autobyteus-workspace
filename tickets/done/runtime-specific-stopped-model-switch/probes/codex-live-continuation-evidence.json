@@ -1,0 +1,57 @@
+{
+  "id": "daily_assistant_79724120b0b5454bb2ac78e40631a475",
+  "startedAt": "2026-09-25T15:42:50.353Z",
+  "events": [
+    {
+      "type": "sent",
+      "time": "2026-09-25T15:42:52.018Z"
+    },
+    {
+      "type": "checkpoint",
+      "seconds": 0,
+      "tail": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude\nagent-codex\nagent-codex-live\nDA\nDaily Assistant\n(1)\nReply with exactly PROBE_ALPHA and no other text.\nnow\nagent-native\norg-antigravity\nteam-claude\nTemp Workspace\nSettings\nDA\nDaily Assistant - A475\nOffline\nYou\nReply with exactly PROBE_ALPHA and no other text.\nDA\nDaily Assistant\n\nPROBE_ALPHA\n\nYou\nReply with exactly PROBE_BETA and no other text.\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n~/autobyteus_org/autobyteus-worktrees/runtime-speci\nbyteus-server-ts/tests/.tmp/runtime-switch-browser-\ns/agent-codex-live $ orkspaces"
+    },
+    {
+      "type": "marker-visible",
+      "seconds": 4,
+      "tail": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude\nagent-codex\nagent-codex-live\nDA\nDaily Assistant\n(1)\nReply with exactly PROBE_ALPHA and no other text.\nnow\nagent-native\norg-antigravity\nteam-claude\nTemp Workspace\nSettings\nDA\nDaily Assistant - A475\nRunning\nYou\nReply with exactly PROBE_ALPHA and no other text.\nDA\nDaily Assistant\n\nPROBE_ALPHA\n\nYou\nReply with exactly PROBE_BETA and no other text.\nDA\nDaily Assistant\n\nPROBE_BETA\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n~/autobyteus_org/autobyteus-worktrees/runtime-speci\nbyteus-server-ts/tests/.tmp/runtime-switch-browser-\ns/agent-codex-live $ orkspaces"
+    }
+  ],
+  "errors": [],
+  "before": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "runId": "daily_assistant_79724120b0b5454bb2ac78e40631a475",
+        "isActive": false,
+        "metadataConfig": {
+          "llmModelIdentifier": "gpt-6-luna",
+          "runtimeReference": {
+            "runtimeKind": "codex_app_server",
+            "sessionId": null,
+            "threadId": "01a0d93a-3ae0-79b2-a9a5-40c15215b8d6",
+            "metadata": null
+          }
+        }
+      }
+    }
+  },
+  "after": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "runId": "daily_assistant_79724120b0b5454bb2ac78e40631a475",
+        "isActive": true,
+        "metadataConfig": {
+          "llmModelIdentifier": "gpt-6-luna",
+          "runtimeReference": {
+            "runtimeKind": "codex_app_server",
+            "sessionId": null,
+            "threadId": "01a0d93a-3ae0-79b2-a9a5-40c15215b8d6",
+            "metadata": null
+          }
+        }
+      }
+    }
+  },
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude\nagent-codex\nagent-codex-live\nDA\nDaily Assistant\n(1)\nReply with exactly PROBE_ALPHA and no other text.\nnow\nagent-native\norg-antigravity\nteam-claude\nTemp Workspace\nSettings\nDA\nDaily Assistant - A475\nRunning\nYou\nReply with exactly PROBE_ALPHA and no other text.\nDA\nDaily Assistant\n\nPROBE_ALPHA\n\nYou\nReply with exactly PROBE_BETA and no other text.\nDA\nDaily Assistant\n\nPROBE_BETA\n\nContext Files (0)\n(drag, paste, or upload)\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n~/autobyteus_org/autobyteus-worktrees/runtime-speci\nbyteus-server-ts/tests/.tmp/runtime-switch-browser-\ns/agent-codex-live $ orkspaces",
+  "status": "Assistant Marker Visible"
+}

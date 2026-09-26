@@ -1,0 +1,43 @@
+{
+  "enable": {
+    "data": {
+      "setApplicationsEnabled": {
+        "enabled": true,
+        "scope": "BOUND_NODE",
+        "source": "SERVER_SETTING"
+      }
+    }
+  },
+  "import": {
+    "data": {
+      "importApplicationPackage": [
+        {
+          "packageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fruntime-specific-stopped-model-switch%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package",
+          "displayName": "importable-package",
+          "applicationCount": 1
+        }
+      ]
+    }
+  },
+  "list": {
+    "data": {
+      "applicationsCapability": {
+        "enabled": true,
+        "scope": "BOUND_NODE",
+        "source": "SERVER_SETTING"
+      },
+      "listApplications": [
+        {
+          "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672756e74696d652d73706563696669632d73746f707065642d6d6f64656c2d7377697463682532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+          "name": "Brief Studio",
+          "executionResourceSlots": [
+            {
+              "slotKey": "draftingTeam",
+              "required": true
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

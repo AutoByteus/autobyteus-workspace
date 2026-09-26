@@ -13,6 +13,9 @@ import { AgentOrgTaskDelegationRecordsV1Store } from '../../../src/agent-org-exe
 import { AgentOrgCommunicationMessagesV1Store } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
 import { applyAgentOrgRunModelConfigPatches, listAgentOrgRunModelConfigScopes, resolveAgentOrgRunModelConfigTargets } from '../../../src/agent-org-execution/services/agent-org-run-config-mutator.js';
 
+const view = (rows: any[]) => ({ offeredModels: rows,
+  findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
+
 const roots: string[] = [];
 afterEach(async () => { vi.restoreAllMocks(); await Promise.all(roots.splice(0).map(p => fs.rm(p, { recursive: true, force: true }))); });
 const select = (scopeKind: 'CONFIGURED_ORG'|'CONFIGURED_TEAM'|'CONFIGURED_AGENT', scopeAddress: string, model = 'equal') =>
@@ -30,9 +33,9 @@ async function setup() {
   const store = new AgentOrgRunExecutionTreeStore(); await store.write(dir, tree);
   await new AgentOrgTaskDelegationRecordsV1Store().write(dir, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', records: [] });
   await new AgentOrgCommunicationMessagesV1Store().write(dir, { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', messages: [] });
-  const catalog = { listLlmModels: vi.fn().mockResolvedValue(['test-model','equal','larger','smaller'].map(model_identifier =>
-    ({ model_identifier, config_schema: { properties: { temperature: { type: 'number', minimum: 0, maximum: 1 }, enabled: { type: 'boolean' } } } }))) };
-  const capacity = { resolveMany: vi.fn().mockResolvedValue({
+  const catalog = { runtimeModelSelectionCatalog: vi.fn().mockResolvedValue(view(['test-model','equal','larger','smaller'].map(model_identifier =>
+    ({ model_identifier, config_schema: { properties: { temperature: { type: 'number', minimum: 0, maximum: 1 }, enabled: { type: 'boolean' } } } })))) };
+  const capacity = { resolveMany: vi.fn().mockReturnValue({
     'test-model': { kind: 'known', tokens: 100, source: 'provider' }, equal: { kind: 'known', tokens: 100, source: 'provider' },
     larger: { kind: 'known', tokens: 200, source: 'provider' }, smaller: { kind: 'known', tokens: 50, source: 'provider' },
   }) };
