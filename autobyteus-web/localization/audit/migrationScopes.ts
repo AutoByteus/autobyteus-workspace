@@ -13,7 +13,8 @@ export type LocalizationMigrationScope = {
     | 'M-011'
     | 'M-012'
     | 'M-013'
-    | 'M-014';
+    | 'M-014'
+    | 'M-015';
   status: 'closed';
   description: string;
   include: string[];
@@ -113,6 +114,13 @@ export const localizationMigrationScopes: LocalizationMigrationScope[] = [
       'components/workspace/org/AgentOrgWorkspaceView.vue',
       'components/agentTeams/AgentTeamDetail.vue',
     ],
+    strictVueLiterals: true,
+  },
+  {
+    scopeId: 'M-015',
+    status: 'closed',
+    description: 'Projects index, detail, and workspace-link UI',
+    include: ['pages/projects/', 'components/projects/'],
     strictVueLiterals: true,
   },
 ];

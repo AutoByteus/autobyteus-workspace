@@ -8,6 +8,7 @@ const shellMessages = {
   'shell.navigation.skills': '技能',
   'shell.navigation.memory': '记忆',
   'shell.navigation.nodes': '节点',
+  'shell.navigation.projects': '项目',
   'shell.navigation.settings': '设置',
   'shell.rightTabs.files': '文件',
   'shell.rightTabs.team': '团队',

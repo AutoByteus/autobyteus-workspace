@@ -9,6 +9,7 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 - `pages/applications/index.vue`
 - `pages/applications/[id].vue`
 - `stores/applicationsCapabilityStore.ts`
+- `stores/capabilities/createBoundNodeCapabilityStore.ts`
 - `stores/applicationStore.ts`
 - `stores/applicationHostStore.ts`
 - `middleware/feature-flags.global.ts`
@@ -34,9 +35,10 @@ Shows Applications as a first-class top-level module, resolves whether the modul
 
 Applications availability is resolved from a backend-owned per-node capability.
 
-- `applicationsCapabilityStore` resolves whether Applications are enabled for the currently bound node.
+- `applicationsCapabilityStore` resolves whether Applications are enabled for the currently bound node. It is a thin instance of the shared `createBoundNodeCapabilityStore` factory (store id `applicationsCapability`, public API unchanged); resolution, binding-revision invalidation, and set-with-restore-on-failure live in that factory. See `settings.md` › Server Settings: Feature Capability Toggles.
 - navigation surfaces show or hide the Applications module from that store.
-- `middleware/feature-flags.global.ts` redirects away from `/applications` when the bound node says Applications is unavailable.
+- `middleware/feature-flags.global.ts` redirects away from `/applications` when the bound node says Applications is unavailable. The middleware is table-driven (`CAPABILITY_GATED_ROUTES`); the same table gates `/projects` (see `projects.md`).
+- Settings › Server Settings › Basics renders `ApplicationsFeatureToggleCard`, a thin wrapper over the shared `FeatureCapabilityToggleCard`. An Advanced-table edit of `ENABLE_APPLICATIONS` refreshes this store through the `CAPABILITY_STORE_BY_SETTING_KEY` table in `stores/serverSettings.ts`.
 - `applicationStore` clears cached catalog state when capability resolution changes or the bound node changes.
 
 This means two windows bound to different nodes can legitimately show different Applications visibility at the same time.

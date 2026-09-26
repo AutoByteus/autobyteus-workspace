@@ -1,0 +1,31 @@
+
+> autobyteus@1.4.85 test:e2e:projects /Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/autobyteus-web
+> node tests/e2e/projects-feature-probe.mjs --output-dir=/tmp/proj-delivery/probe
+
+[E2E-001] Flag off by default: nav hidden, routes redirect, Basics toggle disabled
+[E2E-001] Pass
+[E2E-002] Basics toggle on/off shows/hides nav without reload, persists, and a capability error still hides + redirects
+[E2E-002] Pass
+[E2E-003] Create, validate, duplicate, search, no-match, open, edit and rename collision
+[E2E-003] Pass
+[E2E-004] Add-workspace default path links a registered workspace; Temp never offered; register-then-link
+[E2E-004] Pass
+[E2E-005] Removed workspace stays linked as Unavailable; re-registration restores; edit and unlink
+[E2E-005] Pass
+[E2E-006] Delete requires confirmation; cancel keeps everything; confirm removes only the Project
+[E2E-006] Pass
+[E2E-007] Keyboard-only journey: create, search, open, edit, link, unlink, delete with focus trap/return
+[E2E-007] Pass
+[E2E-008] zh-CN renders Projects surfaces; no Task wording on any Project surface
+[E2E-008] Pass
+[E2E-009] Advanced-table ENABLE_PROJECTS edit hides/shows nav live; open Project route redirects when off
+[E2E-009] Pass
+[E2E-010] Backend restart keeps ENABLE_PROJECTS and Projects with their links
+[E2E-010] Pass
+[E2E-011] Rebinding to node B shows B’s Projects; rebinding back shows A’s
+[E2E-011] Pass
+[E2E-012] Applications and Skill Improvement toggles and Applications gating are unchanged
+[E2E-012] Pass
+[E2E-013] Narrow desktop width (1024x700): index, detail and dialogs fit without horizontal overflow
+[E2E-013] Pass
+Pass: /tmp/proj-delivery/probe/result.json

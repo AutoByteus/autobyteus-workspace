@@ -34,6 +34,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | LLM Management | [llm_management.md](./llm_management.md) |
 | MCP Server Management | [mcp_server_management.md](./mcp_server_management.md) |
 | Multimedia Management | [multimedia_management.md](./multimedia_management.md) |
+| Projects | [projects.md](./projects.md) |
 | Prompt Engineering | [prompt_engineering.md](./prompt_engineering.md) |
 | Run History | [run_history.md](./run_history.md) |
 | Search | [search.md](./search.md) |

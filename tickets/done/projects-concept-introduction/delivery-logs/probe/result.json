@@ -1,0 +1,571 @@
+{
+  "startedAt": "2026-09-26T14:25:32.779Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "playwright-default",
+  "cases": {
+    "E2E-001": {
+      "title": "Flag off by default: nav hidden, routes redirect, Basics toggle disabled",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:25:58.360Z",
+      "observations": {
+        "navLabels": [
+          "Agents",
+          "Agent Teams",
+          "Agent Orgs",
+          "Skills",
+          "Memory",
+          "Nodes"
+        ],
+        "toggleChecked": "false",
+        "statusText": "Disabled",
+        "capability": {
+          "enabled": false,
+          "settingKey": "ENABLE_PROJECTS",
+          "source": "SERVER_SETTING"
+        },
+        "persistedDefault": true
+      },
+      "finishedAt": "2026-09-26T14:26:00.202Z"
+    },
+    "E2E-002": {
+      "title": "Basics toggle on/off shows/hides nav without reload, persists, and a capability error still hides + redirects",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:00.202Z",
+      "observations": {
+        "navAfterEnable": [
+          "Agents",
+          "Agent Teams",
+          "Agent Orgs",
+          "Skills",
+          "Memory",
+          "Nodes",
+          "Projects"
+        ],
+        "capabilityAfterEnable": {
+          "enabled": true,
+          "settingKey": "ENABLE_PROJECTS",
+          "source": "SERVER_SETTING"
+        },
+        "capabilityAfterDisable": {
+          "enabled": false,
+          "settingKey": "ENABLE_PROJECTS",
+          "source": "SERVER_SETTING"
+        },
+        "capabilityError": {
+          "intercepted": 2,
+          "finalPath": "/agents",
+          "navHasProjects": false
+        }
+      },
+      "finishedAt": "2026-09-26T14:26:02.774Z"
+    },
+    "E2E-003": {
+      "title": "Create, validate, duplicate, search, no-match, open, edit and rename collision",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:02.774Z",
+      "observations": {
+        "emptyName": {
+          "text": "Enter a project name.",
+          "role": "alert",
+          "ariaInvalid": "true",
+          "describedBy": true
+        },
+        "duplicateError": "A project with this name already exists. Choose a different name.",
+        "indexNames": [
+          "autobyteus",
+          "Marketing site"
+        ],
+        "searchFocusAfterClear": "projects-search-input",
+        "renameCollision": "A project with this name already exists. Choose a different name."
+      },
+      "finishedAt": "2026-09-26T14:26:04.195Z"
+    },
+    "E2E-004": {
+      "title": "Add-workspace default path links a registered workspace; Temp never offered; register-then-link",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:04.195Z",
+      "observations": {
+        "triggerText": "Select a workspace...",
+        "submitDisabledInitially": true,
+        "options": [
+          "e2e-marketing/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-marketing",
+          "e2e-superrepo/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-superrepo",
+          "e2e-web-prototype/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-web-prototype"
+        ],
+        "linkedRow": {
+          "text": "e2e-web-prototype /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-web-prototype UI prototype workspace Edit Unlink",
+          "availability": "AVAILABLE"
+        },
+        "optionsAfterLink": [
+          "e2e-marketing/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-marketing",
+          "e2e-superrepo/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-superrepo"
+        ],
+        "linkOrder": [
+          "e2e-web-prototype",
+          "e2e-superrepo",
+          "e2e-new-root"
+        ]
+      },
+      "finishedAt": "2026-09-26T14:26:04.867Z"
+    },
+    "E2E-005": {
+      "title": "Removed workspace stays linked as Unavailable; re-registration restores; edit and unlink",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:04.867Z",
+      "observations": {
+        "removal": {
+          "success": true,
+          "message": "Workspace removed from Workspaces. Files, memories, and run history were not deleted."
+        },
+        "unavailableRow": "e2e-web-prototype Unavailable /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-web-prototype UI prototype workspace This workspace is not registered on this node. Add the same folder again under Workspaces to make it available. Edit Unlink",
+        "rowCountAfterRestore": 3,
+        "linksAfterUnlink": [
+          "e2e-web-prototype:AVAILABLE",
+          "e2e-superrepo:AVAILABLE"
+        ]
+      },
+      "finishedAt": "2026-09-26T14:26:05.614Z"
+    },
+    "E2E-006": {
+      "title": "Delete requires confirmation; cancel keeps everything; confirm removes only the Project",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:05.614Z",
+      "observations": {
+        "initialFocus": "project-delete-cancel",
+        "workspacesJsonUnchanged": true,
+        "workspaceIdsUnchanged": true
+      },
+      "finishedAt": "2026-09-26T14:26:06.197Z"
+    },
+    "E2E-007": {
+      "title": "Keyboard-only journey: create, search, open, edit, link, unlink, delete with focus trap/return",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:06.197Z",
+      "observations": {
+        "tabsToNewButton": 20,
+        "emptySubmitFocus": "project-name-input",
+        "createDialogTabWalk": [
+          "project-description-input:true",
+          "Cancel:true",
+          "project-form-submit:true",
+          "project-name-input:true"
+        ],
+        "focusAfterEscape": "projects-new-button",
+        "keyboardLinkExisting": {
+          "openedWithEnter": {
+            "activeRole": "combobox",
+            "activeControls": "searchable-select-listbox-1",
+            "triggerControls": "searchable-select-listbox-1",
+            "triggerExpanded": "true",
+            "activeInPageBehindModal": false
+          },
+          "afterTabInList": {
+            "tag": "BUTTON",
+            "testId": null,
+            "text": "Select a workspace...",
+            "inDialog": true
+          },
+          "expandedAfterTab": "false",
+          "afterShiftTabInList": {
+            "tag": "BUTTON",
+            "testId": null,
+            "text": "Select a workspace...",
+            "inDialog": true
+          },
+          "afterFirstEscape": {
+            "focus": {
+              "tag": "BUTTON",
+              "testId": null,
+              "text": "Select a workspace...",
+              "inDialog": true
+            },
+            "dialogOpen": true,
+            "expanded": "false"
+          },
+          "afterSecondEscape": "project-add-workspace-button",
+          "optionsOffered": [
+            "e2e-marketing/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-marketing",
+            "e2e-new-root/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-new-root",
+            "e2e-superrepo/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-superrepo",
+            "e2e-web-prototype/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0/roots/e2e-web-prototype"
+          ],
+          "afterSelect": {
+            "tag": "BUTTON",
+            "testId": null,
+            "text": "e2e-superrepo/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/",
+            "inDialog": true
+          },
+          "linked": [
+            "e2e-superrepo:Keyboard-linked monorepo:AVAILABLE"
+          ]
+        },
+        "keyboardLinkNewPath": [
+          "e2e-superrepo",
+          "e2e-kbd-root"
+        ],
+        "unlinkAccessibleName": "Unlink e2e-superrepo from this project",
+        "softFailures": []
+      },
+      "finishedAt": "2026-09-26T14:26:07.580Z"
+    },
+    "E2E-008": {
+      "title": "zh-CN renders Projects surfaces; no Task wording on any Project surface",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:07.580Z",
+      "observations": {
+        "zhIndex": {
+          "hasTitle": true,
+          "hasNewProject": true,
+          "navHasProjects": true,
+          "hasEnglishNewProject": false
+        },
+        "zhDetail": [],
+        "zhLinkDialog": {
+          "hasTitle": true,
+          "preExistingEnglishSelectorLiterals": [
+            "Existing",
+            "New"
+          ]
+        },
+        "taskWordingMatches": []
+      },
+      "finishedAt": "2026-09-26T14:26:09.291Z"
+    },
+    "E2E-009": {
+      "title": "Advanced-table ENABLE_PROJECTS edit hides/shows nav live; open Project route redirects when off",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:09.291Z",
+      "observations": {
+        "capabilityAfterFalse": {
+          "enabled": false,
+          "settingKey": "ENABLE_PROJECTS",
+          "source": "SERVER_SETTING"
+        },
+        "webStoreSettleMs": 1,
+        "webStoreAfterFalse": {
+          "isEnabled": false,
+          "capability": null
+        },
+        "historyBack": {
+          "redirected": true
+        },
+        "capabilityAfterTrue": {
+          "enabled": true,
+          "settingKey": "ENABLE_PROJECTS",
+          "source": "SERVER_SETTING"
+        }
+      },
+      "finishedAt": "2026-09-26T14:26:10.104Z"
+    },
+    "E2E-010": {
+      "title": "Backend restart keeps ENABLE_PROJECTS and Projects with their links",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:10.105Z",
+      "observations": {
+        "stopped": "terminated:85993",
+        "projectsBefore": [
+          "autobyteus:2",
+          "Marketing site:0"
+        ],
+        "projectsAfter": [
+          "autobyteus:2",
+          "Marketing site:0"
+        ],
+        "rowsAfterRestart": 2
+      },
+      "finishedAt": "2026-09-26T14:26:17.995Z"
+    },
+    "E2E-011": {
+      "title": "Rebinding to node B shows B’s Projects; rebinding back shows A’s",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:17.995Z",
+      "observations": {
+        "originalBinding": {
+          "nodeId": "embedded-local",
+          "baseUrl": "http://127.0.0.1:56179",
+          "revision": 0
+        },
+        "onB": [
+          "node-b-only"
+        ],
+        "backOnA": [
+          "autobyteus",
+          "Marketing site"
+        ],
+        "graphqlOrigins": [
+          "http://127.0.0.1:56180",
+          "http://127.0.0.1:56179"
+        ]
+      },
+      "finishedAt": "2026-09-26T14:26:18.435Z"
+    },
+    "E2E-012": {
+      "title": "Applications and Skill Improvement toggles and Applications gating are unchanged",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:18.435Z",
+      "observations": {
+        "initial": {
+          "applicationsCapability": {
+            "enabled": false,
+            "source": "SERVER_SETTING"
+          },
+          "skillImprovementCapability": {
+            "enabled": false,
+            "source": "SERVER_SETTING"
+          }
+        },
+        "afterAppsFlip": {
+          "backend": {
+            "enabled": true,
+            "source": "SERVER_SETTING"
+          },
+          "nav": [
+            "Agents",
+            "Agent Teams",
+            "Agent Orgs",
+            "Applications",
+            "Skills",
+            "Memory",
+            "Nodes",
+            "Projects"
+          ],
+          "projectsCapability": {
+            "enabled": true,
+            "settingKey": "ENABLE_PROJECTS",
+            "source": "SERVER_SETTING"
+          }
+        },
+        "afterSiFlip": {
+          "backend": {
+            "enabled": true,
+            "source": "SERVER_SETTING"
+          },
+          "status": "Enabled"
+        },
+        "final": {
+          "applicationsCapability": {
+            "enabled": false,
+            "source": "SERVER_SETTING"
+          },
+          "skillImprovementCapability": {
+            "enabled": false,
+            "source": "SERVER_SETTING"
+          }
+        }
+      },
+      "finishedAt": "2026-09-26T14:26:20.008Z"
+    },
+    "E2E-013": {
+      "title": "Narrow desktop width (1024x700): index, detail and dialogs fit without horizontal overflow",
+      "result": "Pass",
+      "startedAt": "2026-09-26T14:26:20.008Z",
+      "observations": {
+        "index": {
+          "docOverflowX": 0,
+          "elements": {
+            "[data-testid=\"projects-new-button\"]": {
+              "left": 856,
+              "right": 992,
+              "top": 24,
+              "bottom": 60,
+              "inViewportX": true,
+              "overflowX": 0
+            },
+            "[data-testid=\"projects-search-input\"]": {
+              "left": 355,
+              "right": 803,
+              "top": 128,
+              "bottom": 166,
+              "inViewportX": true,
+              "overflowX": 0
+            },
+            "[data-testid=\"projects-grid\"]": {
+              "left": 355,
+              "right": 992,
+              "top": 186,
+              "bottom": 328,
+              "inViewportX": true,
+              "overflowX": 0
+            }
+          }
+        },
+        "detail": {
+          "docOverflowX": 0,
+          "elements": {
+            "[data-testid=\"project-edit-button\"]": {
+              "left": 848,
+              "right": 907,
+              "top": 64,
+              "bottom": 102,
+              "inViewportX": true,
+              "overflowX": 0
+            },
+            "[data-testid=\"project-delete-button\"]": {
+              "left": 915,
+              "right": 992,
+              "top": 64,
+              "bottom": 102,
+              "inViewportX": true,
+              "overflowX": 0
+            },
+            "[data-testid=\"project-add-workspace-button\"]": {
+              "left": 822,
+              "right": 971,
+              "top": 177,
+              "bottom": 213,
+              "inViewportX": true,
+              "overflowX": 0
+            },
+            "[data-testid=\"project-workspace-list\"]": {
+              "left": 356,
+              "right": 991,
+              "top": 260,
+              "bottom": 489,
+              "inViewportX": true,
+              "overflowX": 0
+            },
+            "[data-testid=\"project-workspace-path\"]": {
+              "left": 376,
+              "right": 840,
+              "top": 298,
+              "bottom": 330,
+              "inViewportX": true,
+              "overflowX": 0
+            },
+            "[data-testid=\"project-workspace-unlink\"]": {
+              "left": 909,
+              "right": 971,
+              "top": 276,
+              "bottom": 306,
+              "inViewportX": true,
+              "overflowX": 0
+            }
+          }
+        },
+        "addButtonSingleLine": true,
+        "linkDialog": {
+          "docOverflowX": 0,
+          "elements": {
+            "[data-testid=\"project-workspace-link-dialog\"]": {
+              "left": 176,
+              "right": 848,
+              "top": 123,
+              "bottom": 577,
+              "inViewportX": true,
+              "overflowX": 0
+            },
+            "[data-testid=\"project-link-submit\"]": {
+              "left": 691,
+              "right": 824,
+              "top": 523,
+              "bottom": 561,
+              "inViewportX": true,
+              "overflowX": 0
+            }
+          }
+        },
+        "formDialog": {
+          "docOverflowX": 0,
+          "elements": {
+            "[data-testid=\"project-form-dialog\"]": {
+              "left": 256,
+              "right": 768,
+              "top": 160,
+              "bottom": 540,
+              "inViewportX": true,
+              "overflowX": 0
+            },
+            "[data-testid=\"project-form-submit\"]": {
+              "left": 621,
+              "right": 744,
+              "top": 486,
+              "bottom": 524,
+              "inViewportX": true,
+              "overflowX": 0
+            }
+          }
+        }
+      },
+      "finishedAt": "2026-09-26T14:26:21.013Z"
+    }
+  },
+  "browserErrors": [
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to load resource: the server responded with a status of 500 (Internal Server Error)",
+    "console: Access to fetch at 'http://127.0.0.1:56179/rest/health' from origin 'http://127.0.0.1:56224' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "console: Failed to load resource: net::ERR_FAILED",
+    "console: Access to fetch at 'http://127.0.0.1:56179/rest/health' from origin 'http://127.0.0.1:56224' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "console: Failed to load resource: net::ERR_FAILED",
+    "console: Access to fetch at 'http://127.0.0.1:56179/rest/health' from origin 'http://127.0.0.1:56224' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource.",
+    "console: Failed to load resource: net::ERR_FAILED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to load resource: net::ERR_CONNECTION_REFUSED",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocket@10.",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke",
+    "console: Failed to fetch agent team definitions: ApolloError: Failed to fetch\n    at new ApolloError (http://127.0.0.1:56224/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/node_modules/.pnpm/@apollo+client@3.14.0_@types+react@19.2.14_graphql-ws@6.0.7_@fastify+websocke"
+  ],
+  "cleanup": {
+    "frontend": "terminated:86648",
+    "nodeA": "terminated:88927",
+    "nodeB": "terminated:85994",
+    "tempRoot": "removed"
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-e2e-msoPy0",
+    "nodeA": "http://127.0.0.1:56179",
+    "nodeB": "http://127.0.0.1:56180",
+    "frontend": "http://127.0.0.1:56224",
+    "scrubbedEnvPrefix": "ENABLE_"
+  },
+  "homePath": "/agents",
+  "summary": {
+    "E2E-001": "Pass",
+    "E2E-002": "Pass",
+    "E2E-003": "Pass",
+    "E2E-004": "Pass",
+    "E2E-005": "Pass",
+    "E2E-006": "Pass",
+    "E2E-007": "Pass",
+    "E2E-008": "Pass",
+    "E2E-009": "Pass",
+    "E2E-010": "Pass",
+    "E2E-011": "Pass",
+    "E2E-012": "Pass",
+    "E2E-013": "Pass"
+  },
+  "finishedAt": "2026-09-26T14:26:21.123Z"
+}

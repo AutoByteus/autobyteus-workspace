@@ -7,8 +7,12 @@ const createHarness = (options?: {
 }) => {
   let persisted = options?.persisted ?? null;
   const serverSettingsService = {
-    getApplicationsEnabledSetting: vi.fn(() => persisted),
-    setApplicationsEnabledSetting: vi.fn((enabled: boolean) => {
+    getBooleanSetting: vi.fn((key: string) => {
+      expect(key).toBe('ENABLE_APPLICATIONS');
+      return persisted;
+    }),
+    setBooleanSetting: vi.fn((key: string, enabled: boolean) => {
+      expect(key).toBe('ENABLE_APPLICATIONS');
       persisted = enabled;
     }),
   };
@@ -64,7 +68,7 @@ describe('ApplicationCapabilityService', () => {
       settingKey: 'ENABLE_APPLICATIONS',
       source: 'SERVER_SETTING',
     });
-    expect(harness.serverSettingsService.setApplicationsEnabledSetting).toHaveBeenCalledWith(true);
+    expect(harness.serverSettingsService.setBooleanSetting).toHaveBeenCalledWith('ENABLE_APPLICATIONS', true);
     expect(harness.applicationBundleService.hasDiscoverableApplications).toHaveBeenCalledTimes(1);
     expect(harness.getPersisted()).toBe(true);
   });
@@ -80,7 +84,7 @@ describe('ApplicationCapabilityService', () => {
       settingKey: 'ENABLE_APPLICATIONS',
       source: 'INITIALIZED_EMPTY_CATALOG',
     });
-    expect(harness.serverSettingsService.setApplicationsEnabledSetting).toHaveBeenCalledWith(false);
+    expect(harness.serverSettingsService.setBooleanSetting).toHaveBeenCalledWith('ENABLE_APPLICATIONS', false);
     expect(harness.getPersisted()).toBe(false);
   });
 
@@ -95,8 +99,8 @@ describe('ApplicationCapabilityService', () => {
       settingKey: 'ENABLE_APPLICATIONS',
       source: 'SERVER_SETTING',
     });
-    expect(harness.serverSettingsService.setApplicationsEnabledSetting).toHaveBeenNthCalledWith(1, true);
-    expect(harness.serverSettingsService.setApplicationsEnabledSetting).toHaveBeenNthCalledWith(2, false);
+    expect(harness.serverSettingsService.setBooleanSetting).toHaveBeenNthCalledWith(1, 'ENABLE_APPLICATIONS', true);
+    expect(harness.serverSettingsService.setBooleanSetting).toHaveBeenNthCalledWith(2, 'ENABLE_APPLICATIONS', false);
     expect(harness.getPersisted()).toBe(false);
   });
 });
