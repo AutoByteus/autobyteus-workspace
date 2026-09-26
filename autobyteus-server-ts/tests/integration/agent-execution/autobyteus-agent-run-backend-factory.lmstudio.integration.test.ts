@@ -496,6 +496,7 @@ runLiveIntegration("AutoByteusAgentRunBackendFactory live LM Studio integration"
         codexBackendFactory: unavailableBackendFactory,
         claudeBackendFactory: unavailableBackendFactory,
         agyBackendFactory: unavailableBackendFactory,
+        grokBackendFactory: unavailableBackendFactory,
         activationRegistry: infrastructure.activationRegistry,
         memoryRecorder: infrastructure.memoryRecorder,
         providerInputNormalizer: infrastructure.providerInputNormalizer,

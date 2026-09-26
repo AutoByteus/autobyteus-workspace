@@ -221,6 +221,8 @@ const messages = {
     "AutoByteus-supplied · Claude SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
     "AutoByteus-supplied · Codex baseInstructions",
+  "workspace.components.progress.SystemInstructionActivityItem.source.grok":
+    "AutoByteus-supplied · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "AutoByteus-supplied system instructions",
   "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":

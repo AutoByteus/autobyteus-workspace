@@ -7,10 +7,11 @@ import { validateModelConfigSchema } from "./model-config-schema-validation.js";
 import { NativeModelCapacityService } from "./native-model-capacity.js";
 import { RuntimeKind, isExternalProviderRuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { toAgyDiscoveryDiagnostic, type AgyDiscoveryDiagnostic } from "../../runtime-management/antigravity-cli-capability.js";
+import { toGrokBuildDiagnostic, type GrokBuildDiagnostic } from "../../runtime-management/grok/grok-build-capability.js";
 
 export type RunModelSelectionValidationResult =
   | Readonly<{ kind: "valid"; selection: RunModelSelection }>
-  | Readonly<{ kind: "model_unavailable"; catalogDiagnostic?: AgyDiscoveryDiagnostic }>
+  | Readonly<{ kind: "model_unavailable"; catalogDiagnostic?: AgyDiscoveryDiagnostic | GrokBuildDiagnostic }>
   | Readonly<{ kind: "schema_unavailable" }>
   | Readonly<{ kind: "invalid"; errors: readonly RunModelConfigFieldError[] }>;
 type SelectionInput = { context: RunModelSelectionContext; selection: { llmModelIdentifier: string; llmConfig: unknown } };
@@ -53,7 +54,9 @@ export class RunModelSelectionService {
     try { catalog = await evidence.catalog.runtimeModelSelectionCatalog(context.runtimeKind, context.workspaceRootPath); }
     catch (error) { return context.runtimeKind === RuntimeKind.ANTIGRAVITY_CLI
       ? { kind: "model_unavailable", catalogDiagnostic: toAgyDiscoveryDiagnostic(error) }
-      : { kind: "model_unavailable" }; }
+      : context.runtimeKind === RuntimeKind.GROK_BUILD
+        ? { kind: "model_unavailable", catalogDiagnostic: toGrokBuildDiagnostic(error) }
+        : { kind: "model_unavailable" }; }
     const unchanged = selection.llmModelIdentifier === context.currentModelIdentifier;
     const model = unchanged ? catalog.findExactCurrent(selection.llmModelIdentifier)
       : catalog.offeredModels.find((row) => row.model_identifier === selection.llmModelIdentifier);

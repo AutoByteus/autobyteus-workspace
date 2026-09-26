@@ -105,6 +105,7 @@ const createManagerFixture = (input: {
       codexBackendFactory,
       claudeBackendFactory,
       agyBackendFactory: unavailableBackendFactory,
+      grokBackendFactory: unavailableBackendFactory,
       activationRegistry,
       memoryRecorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },

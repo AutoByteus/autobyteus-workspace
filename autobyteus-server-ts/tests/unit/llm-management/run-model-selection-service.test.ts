@@ -2,6 +2,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
 import { RunModelSelectionService } from '../../../src/llm-management/services/run-model-selection-service.js';
 import { AgyDiscoveryError } from '../../../src/runtime-management/antigravity-cli-capability.js';
+import { GrokBuildDiscoveryError } from '../../../src/runtime-management/grok/grok-build-capability.js';
 
 const catalogView = (rows: any[]) => ({ offeredModels: rows,
   findExactCurrent: (id: string) => rows.find((row) => row.model_identifier === id) ?? null });
@@ -47,7 +48,18 @@ describe('RunModelSelectionService', () => {
     await expect(service.validate({ context: agy, selection })).resolves.toEqual({ kind: 'model_unavailable' });
   });
 
-  it.each([RuntimeKind.CLAUDE_AGENT_SDK, RuntimeKind.CODEX_APP_SERVER, RuntimeKind.ANTIGRAVITY_CLI])(
+  it('retains only a safe Grok Build discovery diagnostic', async () => {
+    const { service, catalog } = harness();
+    const grok = { ...context, runtimeKind: RuntimeKind.GROK_BUILD };
+    catalog.runtimeModelSelectionCatalog.mockRejectedValue(new GrokBuildDiscoveryError('GROK_MODEL_DISCOVERY_TIMEOUT'));
+    await expect(service.validate({ context: grok, selection })).resolves.toEqual({ kind: 'model_unavailable',
+      catalogDiagnostic: { code: 'GROK_MODEL_DISCOVERY_TIMEOUT', message: 'Grok Build model discovery timed out; check the CLI and retry.' } });
+    catalog.runtimeModelSelectionCatalog.mockRejectedValue(new Error('secret /private/token'));
+    await expect(service.validate({ context: grok, selection })).resolves.toMatchObject({ kind: 'model_unavailable',
+      catalogDiagnostic: { code: 'GROK_MODEL_DISCOVERY_FAILED' } });
+  });
+
+  it.each([RuntimeKind.CLAUDE_AGENT_SDK, RuntimeKind.CODEX_APP_SERVER, RuntimeKind.ANTIGRAVITY_CLI, RuntimeKind.GROK_BUILD])(
     'offers and accepts any current %s catalog replacement without reading capacity', async runtimeKind => {
       const { service, nativeCapacity } = harness(null, null);
       const scoped = { ...context, runtimeKind };
