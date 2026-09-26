@@ -9,8 +9,8 @@ Ticket `projects-concept-introduction` (`PROJ-CONCEPT-20260926-001`), slice 1: P
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/tickets/done/projects-concept-introduction/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/tickets/done/projects-concept-introduction/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: holding for explicit user verification.
+- Current delivery revision ID: `DR-002`
+- Notes: user verified. Finalization and the v1.4.86 release are in progress.
 
 ## Initial Delivery Integration Refresh
 
@@ -35,11 +35,11 @@ Ticket `projects-concept-introduction` (`PROJ-CONCEPT-20260926-001`), slice 1: P
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No` (pending)
-- Initial verification / acceptance reference: —
-- Renewed verification required after later re-integration: —
-- Renewed verification received: —
-- Renewed verification / acceptance reference: —
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: 2026-09-26. After testing the local macOS Electron build of `8ee41728b`, the user wrote: "i tested. the task is done. lets finaliize and release a new version. i guess remote original has been updated."
+- Renewed verification required after later re-integration: `No`. The post-verification refresh integrated 27 `origin/personal` commits (`fc2a60527..542d0e621`). All of them are AGY runtime and skills work on the server, plus two web spec files. No file overlaps with this ticket, no lockfile, `package.json` or `autobyteus-ts` change, and the verified Projects behavior is unchanged. All re-integration checks passed.
+- Renewed verification received: `Not needed`
+- Renewed verification / acceptance reference: N/A
 
 ## Docs Sync Result
 
@@ -50,24 +50,30 @@ Ticket `projects-concept-introduction` (`PROJ-CONCEPT-20260926-001`), slice 1: P
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/projects-concept-introduction`: `No` (after verification)
-- Archived ticket path: —
+- Ticket moved to `tickets/done/projects-concept-introduction`: `Yes` (commit `ed2ed5bb1`, together with the long-lived docs sync)
+- Archived ticket path: `tickets/done/projects-concept-introduction/`
 
 ## Version / Tag / Release Commit
 
-Pending user decision. The documented method is `pnpm release <x.y.z>` from `personal` after merge (see `autobyteus-web/AGENTS.md` › Release Guidelines). `release-notes.md` is prepared.
+The user requested a new release at verification. Target version: `1.4.86` (latest tag `v1.4.85`). Method: `scripts/desktop-release.sh release 1.4.86 --release-notes tickets/done/projects-concept-introduction/release-notes.md` on a local delivery branch cut from `origin/personal`, with `--no-push`, followed by an explicit push of `personal` and the tag. This is the same pattern used for v1.4.85, and it leaves the user's shared checkout untouched. The result is recorded in the post-release delivery record.
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` (finalization target `origin` / `personal`); `design-spec.md`
 - Ticket branch: `codex/projects-concept-introduction`
-- Ticket branch commit result: pending verification (delivery docs/artifacts are uncommitted in the worktree)
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`: `ed2ed5bb1` (docs sync + archive), then the re-integration merge `b5d5a7788`, then this record update
+- Ticket branch push result: see the post-release record
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: —
-- Delivery-owned edits protected before re-integration: —
-- Re-integration before final merge result: —
+- Target advanced after verification / acceptance: `Yes`: `fc2a60527` → `542d0e621` (27 commits, AGY runtime and skills work)
+- Delivery-owned edits protected before re-integration: `Completed` (committed in `ed2ed5bb1` before merging)
+- Re-integration before final merge result: `Completed`. `git merge --no-edit origin/personal` → `b5d5a7788`, no conflicts. Rerun checks:
+  - server `tsc -p tsconfig.build.json --noEmit`: Pass
+  - server Projects/capability/settings/architecture/e2e Vitest: 8 files / 89 tests Pass
+  - web focused Vitest, now also covering the two incoming spec files `ToolCallIndicator.spec.ts` and `toolLifecycleHandler.spec.ts`: 136 files / 843 tests Pass
+  - browser probe `pnpm test:e2e:projects`: 13/13 Pass
+  - Evidence: `delivery-logs/reintegration-2/`
+  - Environment note: the first server rerun failed only API-001's precondition `expect(config.get("ENABLE_PROJECTS")).toBeFalsy()`. The delivery shell had inherited `ENABLE_PROJECTS=true` (and other `ENABLE_*` variables) from its parent AutoByteus process after the user's Electron testing, and `AppConfig.get()` reads `process.env` first. With those variables cleared (`env -u ENABLE_PROJECTS -u ENABLE_APPLICATIONS -u ENABLE_SKILL_IMPROVEMENT -u ENABLE_SELF_EVOLUTION`), all 89 tests pass; the browser probe was run the same way. This is not a code regression. It is recorded as a non-blocking test-isolation follow-up: API-001 and the probe assume no ambient `ENABLE_*` variables.
 - Target branch update result: —
 - Merge into target result: —
 - Push target branch result: —

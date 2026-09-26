@@ -1,7 +1,7 @@
 # Handoff Summary — Projects concept introduction (slice 1)
 
 ## Status and route
-`Awaiting explicit user verification.` This is ticket `PROJ-CONCEPT-20260926-001`, classified `task_size=Large`, `architectural_risk=High`. It took the full independent-review route: ARCH-REV-001 (Fail) → SR-003 → architecture review Pass → implementation → source review CRR-003 Pass (9.3/10, CR-001 resolved) → API/E2E API-REV-002 Pass (95%) → test-code review CRR-004 Pass (no findings).
+`User-verified (2026-09-26); finalization and v1.4.86 release in progress. See release-deployment-report.md for the final state.` The branch was re-integrated with `origin/personal@542d0e621` as `b5d5a7788` after verification, and all checks were rerun green (`delivery-logs/reintegration-2/`). This is ticket `PROJ-CONCEPT-20260926-001`, classified `task_size=Large`, `architectural_risk=High`. It took the full independent-review route: ARCH-REV-001 (Fail) → SR-003 → architecture review Pass → implementation → source review CRR-003 Pass (9.3/10, CR-001 resolved) → API/E2E API-REV-002 Pass (95%) → test-code review CRR-004 Pass (no findings).
 
 ## Integrated candidate for verification
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction`, branch `codex/projects-concept-introduction`.
