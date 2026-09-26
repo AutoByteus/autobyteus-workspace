@@ -1,14 +1,17 @@
+# Release Notes — v1.4.82
+
 ## What's New
-- Antigravity CLI is available as an Agent runtime for standalone Agents, Teams, and AgentOrgs, with model selection, scoped Agent Tools collaboration, and conversation continuation after restart.
+- **More choices for stopped external-runtime runs.** In stopped Agent, Team and Agent Org Settings, you can select any distinct model currently offered by that run's Claude Agent SDK, Codex App Server or Antigravity CLI runtime without AutoByteus blocking it based on context-window size. AutoByteus's own verified non-decreasing capacity rule is unchanged.
+- **Agent Orgs in Memory.** Browse stored Org runs and their members from the new Agent Orgs memory tab, including delegated task members with memory.
 
 ## Improvements
-- Large Antigravity AgentOrgs launch with responsive health checks while model discovery runs. Invalid configurations finish with a clear, member-specific error instead of remaining on the starting screen.
-- Agent and member conversations retain their identity, history, and visible prior replies across an app restart.
-- Antigravity tool activity appears in the existing conversation and Activity/Event Monitor views; new selections default to automatic tool execution while an explicit off choice is preserved.
+- **Faster team and org memory browsing.** Memory lists and member views load promptly, show a loading state during navigation and keep the selected run/member context stable. Newly imported memory sources appear when returning to Memory home.
+- **Clearer model selection.** A redundant Claude `default` alias is hidden from new choices only when it is proven to refer to another listed model. Distinct model variants remain selectable. Existing saved `default` selections stay visible and keep their settings without being silently changed to the recommended model.
 
 ## Fixes
-- Team-local configured skills with safe links to files in their own Team package now start correctly in Antigravity member runs. Linked files are copied into the run-private skill snapshot without changing the source package or selected workspace.
+- Saved Application Agent and Team Launch Setup reopens with its selected resource/model/settings instead of showing a blank or error page.
+- A delegated task memory entry opens its own memory, and Team member labels display correctly.
 
 ## Notes
-- A provider-reported `DONE` tool step is displayed as a successful provider step; it does not independently verify an underlying shell exit code.
-- Antigravity CLI must be installed and available to the app. No persisted-data migration is required.
+- A model offered for an external runtime may still be rejected by that provider when continuing an existing conversation; AutoByteus preserves the saved history and surfaces the failure rather than silently resetting it.
+- Imported Memory Sync sources do not yet include Org memory, so their Agent Orgs tab may be empty.
