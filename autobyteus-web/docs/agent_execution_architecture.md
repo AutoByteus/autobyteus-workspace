@@ -1127,6 +1127,19 @@ the persisted run is available, unarchived, and inactive. Locked forms keep
 their disclosures operable, but expose no launch action, workspace authoring,
 runtime selection, or stopped-run Reset.
 
+Saved standalone Team root/member workspaces use the canonical execution
+tree's `workspace_root_path` as the sole displayed value. The Team projector
+marks those fields `workspacePresentation: { kind: 'fixed-path' }`; the shared
+root/member renderers pass the already-projected `effectiveConfig.workspaceRootPath`
+to `FixedWorkspacePath`, which renders one read-only path (or a neutral empty
+value) and fixed-run context. It performs no workspace-ID lookup or physical
+availability check. The former Team `historical-only` selector projection and
+parallel `workspaceControl`/`storedWorkspace` fields are removed in favor of
+the discriminated `fixed-path`/`selector` presentation. AgentOrg projection
+continues to use the `selector` variant for its distinct mounted-Team editing
+policy; new-Team launch still uses the editable workspace selector. Model
+Save does not mutate saved Team workspace paths.
+
 `existingRunModelOptionsClient` reads server-owned Agent or configured-Team
 options for the saved subject. It receives self-contained current and
 replacement descriptors; it does not intersect server choices with a second

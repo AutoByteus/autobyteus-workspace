@@ -999,6 +999,16 @@ disclosures remain usable while locked so users can inspect the persisted
 hierarchy and fields. There is no existing-run runtime selector, launch button,
 per-Agent workspace editor, or Reset action.
 
+For a saved standalone Team, the canonical root and member
+`workspace_root_path` values are presented directly as fixed, read-only
+Workspace Directory paths. The root and each member show their exact stored
+path once with neutral fixed-run context; a missing member path remains a
+neutral empty value. This display does not consult the current workspace
+inventory, infer path availability from a missing workspace ID, or route the
+path through the Existing/New selector and its selection feedback. It does not
+change saved paths or the model-only Save payload. Editable new-Team launch
+selection and the stopped AgentOrg mounted-Team selector remain separate flows.
+
 Replacement choices come from server-owned options for the saved run/scope.
 For Claude Agent SDK, Codex App Server, and Antigravity CLI, every **distinct
 model offered by the backend selection catalog** is eligible without a platform

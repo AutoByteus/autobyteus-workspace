@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.85 test:e2e:existing-run-model-config /Users/normy/autobyteus_org/autobyteus-worktrees/team-workspace-saved-value-warning/autobyteus-web
+> node tests/e2e/existing-run-model-config-probe.mjs -- --output-dir ../tickets/in-progress/team-workspace-saved-value-warning/evidence/existing-run-model-config
+
+Existing run model-config probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/team-workspace-saved-value-warning/tickets/in-progress/team-workspace-saved-value-warning/evidence/existing-run-model-config/existing-run-model-config-evidence.json

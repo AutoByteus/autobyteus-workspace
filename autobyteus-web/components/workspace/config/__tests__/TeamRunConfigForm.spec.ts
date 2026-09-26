@@ -187,6 +187,15 @@ describe('TeamRunConfigForm launch and existing-run presentation', () => {
 
   it('keeps fixed Team facts locked while emitting only existing-run model-config edits', async () => {
     const model = existingModel()
+    expect(model.root.workspacePresentation).toEqual({ kind: 'fixed-path' })
+    expect(model.root.effectiveConfig.workspaceRootPath).toBe('/workspace/root')
+    expect(model.members.map((member) => member.kind === 'agent' && [
+      member.workspacePresentation.kind, member.effectiveConfig.workspaceRootPath,
+    ])).toEqual([
+      ['fixed-path', '/workspace/root'],
+      ['fixed-path', '/workspace/student'],
+      ['fixed-path', '/workspace/root'],
+    ])
     const wrapper = mountForm(model)
     const root = wrapper.findComponent(TeamScopeConfigEditor)
     const tree = wrapper.findComponent(TeamMemberConfigTree)
