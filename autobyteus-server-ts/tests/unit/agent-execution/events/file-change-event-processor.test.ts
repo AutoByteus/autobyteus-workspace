@@ -1,4 +1,6 @@
 import path from "node:path";
+import fs from "node:fs";
+import os from "node:os";
 import { describe, expect, it, vi } from "vitest";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { ClaudeSessionEventConverter } from "../../../../src/agent-execution/backends/claude/events/claude-session-event-converter.js";
@@ -8,11 +10,12 @@ import { CodexThreadEventName } from "../../../../src/agent-execution/backends/c
 import { AgentRunEventPipeline } from "../../../../src/agent-execution/events/agent-run-event-pipeline.js";
 import { FileChangePayloadBuilder } from "../../../../src/agent-execution/events/processors/file-change/file-change-payload-builder.js";
 import { FileChangeEventProcessor } from "../../../../src/agent-execution/events/processors/file-change/file-change-event-processor.js";
+import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 
-const createPipelineHarness = (workspaceRoot: string) => {
+const createPipelineHarness = (workspaceRoot: string, runtimeKind = RuntimeKind.AUTOBYTEUS) => {
   const runContext = {
     runId: "run-file-change-pipeline",
-    config: { workspaceId: "workspace-1" },
+    config: { workspaceId: "workspace-1", runtimeKind },
     runtimeContext: null,
   } as any;
   const workspaceManager = {
@@ -110,6 +113,29 @@ describe("FileChangeEventProcessor", () => {
       sourceTool: expectedSourceTool,
       sourceInvocationId: `invoke-${toolName}`,
     });
+  });
+
+  it("does not project pathless AGY-native image DONE; preserves ordinary generated-output projection", async () => {
+    const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "agy-file-projection-"));
+    try {
+      const imagePath = path.join(workspaceRoot, "generated.png");
+      const nativeEvent = (result: Record<string, unknown>) => event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+        invocation_id: "native-image-1",
+        tool_name: "generate_image",
+        result,
+      });
+      const agy = createPipelineHarness(workspaceRoot, RuntimeKind.ANTIGRAVITY_CLI);
+      expect(agy.fileChanges(await agy.process([nativeEvent({ provider_state: "DONE", output: null })]))).toEqual([]);
+      expect(agy.fileChanges(await agy.process([nativeEvent({ provider_state: "DONE", file_path: imagePath })]))).toMatchObject([
+        { payload: { path: "generated.png", status: "available", sourceTool: "generated_output" } },
+      ]);
+      const nonAgy = createPipelineHarness(workspaceRoot, RuntimeKind.CODEX_APP_SERVER);
+      expect(nonAgy.fileChanges(await nonAgy.process([nativeEvent({ provider_state: "DONE", file_path: path.join(workspaceRoot, "not-on-disk.png") })]))).toMatchObject([
+        { payload: { path: "not-on-disk.png", status: "available", sourceTool: "generated_output" } },
+      ]);
+    } finally {
+      fs.rmSync(workspaceRoot, { recursive: true, force: true });
+    }
   });
 
   it("emits streaming, pending, and available FILE_CHANGE updates for write_file preview", async () => {

@@ -1,0 +1,407 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+Custom app data directory set to: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa
+Updated config file path to /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/.env
+Loading environment from: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa
+DB DIRECTORY: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/db
+LOGS DIRECTORY: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/logs
+DOWNLOAD DIRECTORY: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/download
+MEMORY DIRECTORY: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-26T13:14:31.326Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stderr | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+DEFINITION_ADMISSION_UNAVAILABLE:agent_org:autobyteus-org:DEFINITION_REFERENCE_UNRESOLVED:/Users/normy/autobyteus-org/autobyteus-agents/agent-orgs/autobyteus-org
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Creating temp workspace at: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/temp_workspace.
+Initialized TempWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Registered required tool unit: Browser Tools
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Successfully registered tool definition: 'search_web'
+
+stderr | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Agent definition cache populated with 10 items.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Populating agent definition cache for the first time...
+[2026-09-26T13:14:31.632Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+Agent definition cache populated with 10 items.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport)
+[2026-09-26T13:14:31.637Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 12 items.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+In-memory cache: Added new agent definition with ID agy-ping-ceb61a68-3946-4782-810a-9195e5e5be74.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Agent Definition created successfully with ID: agy-ping-ceb61a68-3946-4782-810a-9195e5e5be74
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+In-memory cache: Added new agent definition with ID agy-pong-ceb61a68-3946-4782-810a-9195e5e5be74.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Agent Definition created successfully with ID: agy-pong-ceb61a68-3946-4782-810a-9195e5e5be74
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+[2026-09-26T13:14:33.806Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-roundtrip-team-ceb61a68-3946-4782-810a-9195e5e5be74.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Agent Team Definition created successfully with ID: agy-roundtrip-team-ceb61a68-3946-4782-810a-9195e5e5be74
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Creating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-roundtrip-e2e-mvVq0U
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-roundtrip-e2e-mvVq0U.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Created and registered workspace ID: agent_ws_69bbc40033c67931eaea4518c4e3a35f666f508e5849411069c651c4286812ec
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Agent team websocket attached for team run agy_roundtrip_team_ceb61a68_3946_4782_810a_9195e_04afcfd52cf04750b4e86e92fc0e24f5
+Created agent session d5379529-7970-40d9-ac28-b52050fc5c02 for run agy_roundtrip_team_ceb61a68_3946_4782_810a_9195e_04afcfd52cf04750b4e86e92fc0e24f5
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Agent Team WebSocket connected: session=d5379529-7970-40d9-ac28-b52050fc5c02, run=agy_roundtrip_team_ceb61a68_3946_4782_810a_9195e_04afcfd52cf04750b4e86e92fc0e24f5
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Creating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-roundtrip-e2e-mvVq0U
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-roundtrip-e2e-mvVq0U.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Reusing registered workspace ID: agent_ws_69bbc40033c67931eaea4518c4e3a35f666f508e5849411069c651c4286812ec
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Published antigravity_cli agent run 'agy_ping_ceb61a68_3946_4782_810a_9195e5e5be74_b85d09d8518f45a799bbd070c07f87dc'.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Creating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-roundtrip-e2e-mvVq0U
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-roundtrip-e2e-mvVq0U.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Reusing registered workspace ID: agent_ws_69bbc40033c67931eaea4518c4e3a35f666f508e5849411069c651c4286812ec
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Published antigravity_cli agent run 'agy_pong_ceb61a68_3946_4782_810a_9195e5e5be74_cf8dabbaaf09419ca886cc5e9fee9e2c'.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Creating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-roundtrip-e2e-mvVq0U
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-roundtrip-e2e-mvVq0U.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Reusing registered workspace ID: agent_ws_69bbc40033c67931eaea4518c4e3a35f666f508e5849411069c651c4286812ec
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Published antigravity_cli agent run 'agy_pong_ceb61a68_3946_4782_810a_9195e5e5be74_cf8dabbaaf09419ca886cc5e9fee9e2c'.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Closed agent session d5379529-7970-40d9-ac28-b52050fc5c02
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+[2026-09-26T13:15:03.632Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID agy-roundtrip-team-ceb61a68-3946-4782-810a-9195e5e5be74.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Agent Team Definition with ID agy-roundtrip-team-ceb61a68-3946-4782-810a-9195e5e5be74 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+In-memory cache: Removed agent definition with ID agy-ping-ceb61a68-3946-4782-810a-9195e5e5be74.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Agent Definition with ID agy-ping-ceb61a68-3946-4782-810a-9195e5e5be74 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+In-memory cache: Removed agent definition with ID agy-pong-ceb61a68-3946-4782-810a-9195e5e5be74.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket
+Agent Definition with ID agy-pong-ceb61a68-3946-4782-810a-9195e5e5be74 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+In-memory cache: Added new agent definition with ID agy-org-director-396f46cf-9f20-4ccb-bc94-643c3f0c1b70.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Agent Definition created successfully with ID: agy-org-director-396f46cf-9f20-4ccb-bc94-643c3f0c1b70
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+In-memory cache: Added new agent definition with ID agy-org-worker-396f46cf-9f20-4ccb-bc94-643c3f0c1b70.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Agent Definition created successfully with ID: agy-org-worker-396f46cf-9f20-4ccb-bc94-643c3f0c1b70
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+[2026-09-26T13:15:05.163Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID agy-org-team-396f46cf-9f20-4ccb-bc94-643c3f0c1b70.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Agent Team Definition created successfully with ID: agy-org-team-396f46cf-9f20-4ccb-bc94-643c3f0c1b70
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Creating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-org-runtime-e2e-VHuHux
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-org-runtime-e2e-VHuHux.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Created and registered workspace ID: agent_ws_d07bacd12992cf0d9b445446af76ecfe3e1c3d239ac0fda74e63e9ffdbc93061
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Creating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-org-runtime-e2e-VHuHux
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-org-runtime-e2e-VHuHux.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Reusing registered workspace ID: agent_ws_d07bacd12992cf0d9b445446af76ecfe3e1c3d239ac0fda74e63e9ffdbc93061
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Published antigravity_cli agent run 'agy_org_director_396f46cf_9f20_4ccb_bc94_643c3f0_915460cd96664d0e8ecf73da5d2b14fd'.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Creating new workspace for rootPath: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-org-runtime-e2e-VHuHux
+Created metadata-only FileSystemWorkspace at /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-org-runtime-e2e-VHuHux.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Reusing registered workspace ID: agent_ws_d07bacd12992cf0d9b445446af76ecfe3e1c3d239ac0fda74e63e9ffdbc93061
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Published antigravity_cli agent run 'agy_org_worker_396f46cf_9f20_4ccb_bc94_643c3f0c1_e8bd3bfb3b55406a9c77f2c60c8d60fc'.
+
+stderr | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Memory file missing: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/memory/agent_orgs/agy_org_396f46cf_9f20_4ccb_bc94_643c3f0c1b70_f71a12c7107846269fa6969819a71590/agy_org_director_396f46cf_9f20_4ccb_bc94_643c3f0_915460cd96664d0e8ecf73da5d2b14fd/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Memory file missing: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/memory/agent_orgs/agy_org_396f46cf_9f20_4ccb_bc94_643c3f0c1b70_f71a12c7107846269fa6969819a71590/agy_org_team_396f46cf_9f20_4ccb_bc94_643c3f0c1b7_73fed822bb7148fa85c2c1c5d9bcb270/agy_org_worker_396f46cf_9f20_4ccb_bc94_643c3f0c1_e8bd3bfb3b55406a9c77f2c60c8d60fc/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Memory file missing: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/memory/agent_orgs/agy_org_396f46cf_9f20_4ccb_bc94_643c3f0c1b70_f71a12c7107846269fa6969819a71590/agy_org_director_396f46cf_9f20_4ccb_bc94_643c3f0_915460cd96664d0e8ecf73da5d2b14fd/raw_traces_manifest.json
+
+stderr | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Memory file missing: /var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/agy-team-runtime-e2e-appdata-x1yZDa/memory/agent_orgs/agy_org_396f46cf_9f20_4ccb_bc94_643c3f0c1b70_f71a12c7107846269fa6969819a71590/agy_org_team_396f46cf_9f20_4ccb_bc94_643c3f0c1b7_73fed822bb7148fa85c2c1c5d9bcb270/agy_org_worker_396f46cf_9f20_4ccb_bc94_643c3f0c1_e8bd3bfb3b55406a9c77f2c60c8d60fc/raw_traces_manifest.json
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+[2026-09-26T13:15:30.111Z] [INFO] [agent-team-definition.cache] In-memory cache: Removed agent team definition with ID agy-org-team-396f46cf-9f20-4ccb-bc94-643c3f0c1b70.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Agent Team Definition with ID agy-org-team-396f46cf-9f20-4ccb-bc94-643c3f0c1b70 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+In-memory cache: Removed agent definition with ID agy-org-director-396f46cf-9f20-4ccb-bc94-643c3f0c1b70.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Agent Definition with ID agy-org-director-396f46cf-9f20-4ccb-bc94-643c3f0c1b70 deleted successfully.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+In-memory cache: Removed agent definition with ID agy-org-worker-396f46cf-9f20-4ccb-bc94-643c3f0c1b70.
+
+stdout | tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts > AGY Team and Org collaboration e2e (live transport) > launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns
+Agent Definition with ID agy-org-worker-396f46cf-9f20-4ccb-bc94-643c3f0c1b70 deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts (2 tests) 58813ms
+     ✓ routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket  31977ms
+     ✓ launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns  26476ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  15:14:25
+   Duration  64.15s (transform 3.60s, setup 11ms, import 4.89s, tests 58.81s, environment 0ms)
+

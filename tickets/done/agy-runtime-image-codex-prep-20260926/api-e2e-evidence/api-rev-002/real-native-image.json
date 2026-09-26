@@ -1,0 +1,120 @@
+{
+  "name": "real-native-image",
+  "cliVersion": "1.2.11",
+  "model": "gemini-3.8-flash-low",
+  "initAgent": "autobyteus-420d11a3391667e0",
+  "initToolCount": 57,
+  "initToolNames": [
+    "ask_custom_permission",
+    "ask_permission",
+    "ask_question",
+    "browser_click_element",
+    "browser_drag_pixel_to_pixel",
+    "browser_get_dom",
+    "browser_get_network_request",
+    "browser_input",
+    "browser_list_network_requests",
+    "browser_mouse_down",
+    "browser_mouse_up",
+    "browser_move_mouse",
+    "browser_press_key",
+    "browser_refresh_page",
+    "browser_resize_window",
+    "browser_scroll",
+    "browser_scroll_dom",
+    "browser_select_option",
+    "browser_subagent",
+    "call_mcp_tool",
+    "capture_browser_console_logs",
+    "capture_browser_screenshot",
+    "click_browser_pixel",
+    "command_status",
+    "define_subagent",
+    "delete_knowledge",
+    "execute_browser_javascript",
+    "find_by_name",
+    "finish",
+    "generate_image",
+    "grep_search",
+    "invoke_subagent",
+    "list_browser_pages",
+    "list_dir",
+    "list_permissions",
+    "list_resources",
+    "manage_inbox",
+    "manage_subagents",
+    "manage_task",
+    "multi_replace_file_content",
+    "notebook_edit",
+    "notebook_execution",
+    "open_browser_url",
+    "read_browser_page",
+    "read_resource",
+    "read_url_content",
+    "replace_file_content",
+    "run_command",
+    "schedule",
+    "search_web",
+    "sed_file",
+    "send_command_input",
+    "send_message",
+    "view_file",
+    "wait",
+    "wait_5_seconds",
+    "write_to_file"
+  ],
+  "manifestSkills": [],
+  "configuredNativeToolCount": 8,
+  "toolSteps": [
+    {
+      "toolName": "generate_image",
+      "state": "ACTIVE",
+      "stepKeys": [
+        "conversation_id",
+        "step_index",
+        "state",
+        "step_type",
+        "tool_name",
+        "tool_info"
+      ],
+      "toolInfoFieldTypes": {
+        "name": "string",
+        "parameters": "object"
+      },
+      "parameterKeys": [
+        "ImageName",
+        "Prompt"
+      ],
+      "outputType": "undefined",
+      "outputKeys": []
+    },
+    {
+      "toolName": "generate_image",
+      "state": "DONE",
+      "stepKeys": [
+        "conversation_id",
+        "step_index",
+        "state",
+        "step_type",
+        "tool_name",
+        "duration_seconds",
+        "tool_info"
+      ],
+      "toolInfoFieldTypes": {
+        "name": "string",
+        "parameters": "object"
+      },
+      "parameterKeys": [
+        "ImageName",
+        "Prompt"
+      ],
+      "outputType": "undefined",
+      "outputKeys": []
+    }
+  ],
+  "resultStatus": "SUCCESS",
+  "response": "I have generated a small, simple illustration of a blue dog for you! Let me know if you would like any adjustments to the style, pose, or color.\n",
+  "unknownToolNames": [],
+  "closeReasons": [],
+  "terminalCount": 1
+}

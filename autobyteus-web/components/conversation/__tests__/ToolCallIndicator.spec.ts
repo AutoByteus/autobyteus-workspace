@@ -127,6 +127,19 @@ describe('ToolCallIndicator.vue', () => {
     expect(wrapper.text().toLowerCase()).not.toContain('success');
   });
 
+  it('renders AGY native generate_image pathless success and safe denial as normal chat cards', () => {
+    const success = mountIndicator({ toolName: 'generate_image', args: {},
+      result: { provider_state: 'DONE', output: null }, status: 'success' });
+    expect(success.text()).toContain('generate_image');
+    expect(success.find('[data-icon="heroicons:check-circle-solid"]').exists()).toBe(true);
+
+    const denied = mountIndicator({ toolName: 'generate_image', args: {}, status: 'denied',
+      errorMessage: 'Antigravity denied this tool invocation.' });
+    expect(denied.text()).toContain('generate_image');
+    expect(denied.find('[data-icon="heroicons:x-circle-solid"]').exists()).toBe(true);
+    expect(denied.text()).not.toContain('PRIVATE_AGY_SECRET');
+  });
+
   it('keeps the full command summary available for responsive truncation instead of hard-cutting it in JavaScript', () => {
     const command = 'printf "alpha beta gamma delta epsilon zeta eta theta iota kappa lambda"';
     const wrapper = mountIndicator({

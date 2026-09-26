@@ -10,6 +10,7 @@ import {
   handleToolLog,
 } from '../toolLifecycleHandler';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
+import { buildToolCardPresentation } from '~/utils/toolCardPresentation';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type {
   EditFileSegment,
@@ -149,6 +150,27 @@ describe('toolLifecycleHandler', () => {
       setToolActivityResult: vi.fn(),
     };
     (useAgentActivityStore as any).mockReturnValue(mockActivityStore);
+  });
+
+  it('projects AGY native generate_image pathless DONE and safe denial as ordinary chat tool cards', () => {
+    const successContext = buildEmptyContext();
+    const invocation_id = 'agy-native-image-1';
+    handleToolExecutionStarted({ invocation_id, tool_name: 'generate_image', turn_id: 'agy-turn', arguments: {} }, successContext);
+    const running = (successContext.conversation.messages[0] as any).segments[0] as ToolCallSegment;
+    expect(buildToolCardPresentation(running)).toMatchObject({ toolName: 'generate_image', statusKey: 'running' });
+    handleToolExecutionSucceeded({ invocation_id, tool_name: 'generate_image', turn_id: 'agy-turn',
+      result: { provider_state: 'DONE', output: null } }, successContext);
+    expect(running.result).toEqual({ provider_state: 'DONE', output: null });
+    expect(buildToolCardPresentation(running)).toMatchObject({ toolName: 'generate_image', statusKey: 'success' });
+
+    const deniedContext = buildEmptyContext();
+    handleToolExecutionStarted({ invocation_id: 'agy-native-image-2', tool_name: 'generate_image',
+      turn_id: 'agy-turn-2', arguments: {} }, deniedContext);
+    handleToolDenied({ invocation_id: 'agy-native-image-2', tool_name: 'generate_image', turn_id: 'agy-turn-2',
+      reason: 'Antigravity denied this tool invocation.' }, deniedContext);
+    const denied = (deniedContext.conversation.messages[0] as any).segments[0] as ToolCallSegment;
+    expect(buildToolCardPresentation(denied)).toMatchObject({ toolName: 'generate_image', statusKey: 'denied' });
+    expect(JSON.stringify(denied)).not.toContain('PRIVATE_AGY_SECRET');
   });
 
   it('creates synthetic terminal segment and activity when TOOL_EXECUTION_STARTED arrives first', () => {

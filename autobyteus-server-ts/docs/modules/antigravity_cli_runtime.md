@@ -14,9 +14,10 @@ subagent orchestration. AutoByteus, Codex, and Claude retain their separate
 provider paths.
 
 Availability depends on the installed `agy` CLI. Model discovery is owned by
-the runtime-aware model catalog rather than a Codex fallback. The supported
-integration was exercised against AGY CLI 1.2.10; other CLI versions require
-their own compatibility check.
+the runtime-aware model catalog rather than a Codex fallback. New run capsules
+use a native-tool profile validated against AGY CLI **1.2.11**; a different CLI
+version fails safely until its exact tool exposure is validated. Existing
+saved capsules are not silently rewritten.
 
 AGY version, feature, and model discovery on backend request paths uses one
 bounded asynchronous child-process owner. A slow CLI can still delay the
@@ -82,6 +83,19 @@ two links into its Team `shared/` directory passed a disposable full-Org
 first prompt and distinct-backend same-member browser continuation, with
 ordinary exact-byte capsule files and an unchanged selected workspace.
 
+For AGY configured skills, a missing source or semantically invalid
+`SKILL.md` (including malformed/unreadable content or a mismatched name) is
+warned about with a sanitized identity/reason and omitted; other valid skills
+and an otherwise healthy startup continue. Merely copying a skill does not
+claim the provider loaded it. Unsafe provenance, source mutation, escaping or
+invalid links, protected destination collisions, and unrelated provider
+startup failures still fail closed. The packaged Codex definition needs its
+`software-engineering-workflow-skill` in the **selected** current agent package
+root; an older same-name package checkout can shadow that skill. Check the
+definition's source identity and package revision before rollout rather than
+assuming any root named `autobyteus-agents` is current. Live updates to
+already-running skill links are not provided by this AGY capsule snapshot.
+
 `AgyStreamProcess` communicates over stdin/stdout stream-JSON pipes, not a PTY.
 The created provider `init.conversation_id` is stored as
 `platformAgentRunId`, distinct from the AutoByteus AgentRun ID. Restore reuses
@@ -96,6 +110,15 @@ AutoByteus exposes its selected run-scoped Agent Tools through the existing
 loopback MCP authority. Team/Org `send_message_to` therefore uses the same
 exact sender/recipient run identities and addresses as other external members;
 it is not an unscoped provider-global tool endpoint.
+
+For **new** AGY 1.2.11 capsules, the native custom-agent allowlist is exactly
+`view_file`, `write_to_file`, `replace_file_content`, `grep_search`, `list_dir`,
+`find_by_name`, `run_command`, and `generate_image`. This is an allowlist of
+model-exposed native names, not the CLI's broader `init.tools` registry.
+AGY-native collaboration/subagent/messaging and native `call_mcp_tool` are not
+granted in that frontmatter. Separately configured, run-scoped AutoByteus MCP
+remains available through its own authority; an MCP image tool is not proof of
+native `generate_image` exposure.
 
 For a new editable AGY launch selection, the web draft defaults
 `autoExecuteTools` to true; a later explicit off choice is retained, including
@@ -114,6 +137,18 @@ convention. `ERROR` or explicit permission denial is failed/denied and
 non-green, even if the overall turn succeeds. A `DONE` step does **not** prove
 that an underlying shell command exited zero: retain provider state/output and
 do not invent an exit code.
+
+The provider-native `generate_image` ACTIVE/DONE step becomes the ordinary
+STARTED/SUCCEEDED tool-card lifecycle, with matching invocation and turn IDs.
+AGY may report DONE without output or a path; that is a truthful native-tool
+success with `output: null`, not an AutoByteus-owned image artifact. AGY owns
+image storage. AutoByteus does **not** find/copy/serve/index/render/retain
+image bytes or paths, nor infer a file from assistant prose. Native image
+ERROR or explicit denial is a non-green failed/denied tool event with fixed
+safe public wording and a bounded private diagnostic. A failed or unknown
+terminal provider result emits a safe turn error, not a successful turn or a
+raw provider response. Successful turns retain ordinary assistant text and
+completion ordering; no image-specific finalization barrier is used.
 
 ## Persistence and validation boundary
 

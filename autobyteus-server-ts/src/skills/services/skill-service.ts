@@ -15,11 +15,13 @@ import {
   scanSkillDirectory,
   searchBundledSkillDirectory,
   searchDirectoryRecursive,
+  searchConfiguredSkillCandidate,
 } from "./skill-discovery.js";
 import { ConfiguredAgentSkillResolver } from "./configured-agent-skill-resolver.js";
 import {
   collectResolvedConfiguredSkills,
   type ConfiguredAgentSkillBinding,
+  type DetailedConfiguredSkillResolution,
 } from "../domain/configured-agent-skill-binding.js";
 
 const logger = {
@@ -227,6 +229,26 @@ export class SkillService {
       logger,
     });
     return resolver.resolveForAgent(agentDefinition);
+  }
+
+  resolveConfiguredSkillBindingsForAgentDetailed(
+    agentDefinition: AgentDefinition | null | undefined,
+  ): DetailedConfiguredSkillResolution[] {
+    const resolver = new ConfiguredAgentSkillResolver({
+      loader: this.loader,
+      isReadonlyPath: this.isReadonlyPath.bind(this),
+      resolveGlobalSkill: this.getGlobalSkill.bind(this),
+      globalCandidatePaths: (name) => {
+        for (const root of getAllSkillDirectories(this.config)) {
+          const candidate = searchConfiguredSkillCandidate(root, name);
+          if (candidate) return [{ path: candidate, configuredRoot: root }];
+        }
+        return [];
+      },
+      isSkillDisabled: this.disabledStore.isDisabled.bind(this.disabledStore),
+      logger,
+    });
+    return resolver.resolveForAgentDetailed(agentDefinition);
   }
 
   createSkill(name: string, description: string, content: string): Skill {

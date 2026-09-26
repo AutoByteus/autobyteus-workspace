@@ -1,0 +1,8 @@
+{
+  "provider_file_path": "/Users/normy/.gemini/antigravity-cli/brain/6be321dd-cd1f-49e9-bc3c-6e14a19ddc4e/blue_dog_1790417624595.jpg",
+  "regular_file": true,
+  "bytes": 220997,
+  "signature": "JPEG",
+  "sha256": "cec6914451df8779f3258cff82be7841fa80322bd03e44d75bad0e7452b2e74f",
+  "source": "final model response only; tool step has ImageName/Prompt arguments, no output/path field"
+}

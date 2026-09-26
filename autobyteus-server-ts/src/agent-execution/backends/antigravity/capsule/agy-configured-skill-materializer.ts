@@ -1,7 +1,8 @@
 import fs from "node:fs/promises";
 import { constants, type BigIntStats } from "node:fs";
 import path from "node:path";
-import type { ConfiguredAgentSkillBinding } from "../../../../skills/domain/configured-agent-skill-binding.js";
+import type { DetailedConfiguredSkillResolution } from "../../../../skills/domain/configured-agent-skill-binding.js";
+import { fingerprintConfiguredSkillSource } from "../../../../skills/services/configured-skill-source-fingerprint.js";
 
 export type AgySkillSnapshot = { name: string; relativePath: string };
 
@@ -12,6 +13,7 @@ const safeName = (value: string): string => {
   return name;
 };
 const failure = (code: string, name: string): Error => new Error(`${code}: ${name}`);
+const logIdentity = (value: string): string => /^[a-zA-Z0-9._-]{1,80}$/.test(value) ? value : "[redacted]";
 const contains = (root: string, candidate: string): boolean => {
   const relative = path.relative(root, candidate);
   return relative === "" || (relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative));
@@ -21,13 +23,19 @@ const same = (a: BigIntStats, b: BigIntStats): boolean =>
   && a.mtimeNs === b.mtimeNs && a.ctimeNs === b.ctimeNs;
 
 /** Copy one checked source tree into a newly created capsule path, never dereferencing a directory link. */
-const snapshotSkill = async (binding: Extract<ConfiguredAgentSkillBinding, { kind: "resolved" }>, target: string, name: string): Promise<void> => {
+const snapshotSkill = async (binding: Extract<DetailedConfiguredSkillResolution, { kind: "resolved" }>, target: string, name: string): Promise<void> => {
   const descriptor = binding.source;
   if (!descriptor || !["agent_private", "team_shared", "global"].includes(descriptor.origin)
     || !path.isAbsolute(descriptor.sourceRoot) || !path.isAbsolute(descriptor.trustedRoot))
     throw failure("AGY_SKILL_SOURCE_PROVENANCE_INVALID", name);
   const sourcePath = binding.skill.rootPath;
-  const sourceRoot = await fs.realpath(sourcePath);
+  let sourceRoot: string;
+  try { sourceRoot = await fs.realpath(sourcePath); }
+  catch { throw failure("AGY_SKILL_SOURCE_CHANGED", name); }
+  const sourceTreeHash = (): string => {
+    try { return fingerprintConfiguredSkillSource(sourceRoot, trustedRoot); }
+    catch { throw failure("AGY_SKILL_SOURCE_CHANGED", name); }
+  };
   const trustedRoot = await fs.realpath(descriptor.trustedRoot);
   const targetRoot = path.join(await fs.realpath(path.dirname(target)), path.basename(target));
   const parts = path.relative(trustedRoot, sourceRoot).split(path.sep);
@@ -40,6 +48,8 @@ const snapshotSkill = async (binding: Extract<ConfiguredAgentSkillBinding, { kin
     || !(await fs.lstat(sourcePath)).isDirectory()
     || contains(trustedRoot, targetRoot))
     throw failure("AGY_SKILL_SOURCE_PROVENANCE_INVALID", name);
+  if (sourceTreeHash() !== binding.sourceTreeSha256)
+    throw failure("AGY_SKILL_SOURCE_CHANGED", name);
 
   const checks: Array<() => Promise<void>> = [];
   const verify = async (entry: string, before: BigIntStats, canonical: string): Promise<void> => {
@@ -108,13 +118,17 @@ const snapshotSkill = async (binding: Extract<ConfiguredAgentSkillBinding, { kin
   if (!(await fs.lstat(path.join(target, "SKILL.md"))).isFile())
     throw failure("AGY_SKILL_SOURCE_INVALID", name);
   for (const check of checks) await check();
+  if (sourceTreeHash() !== binding.sourceTreeSha256)
+    throw failure("AGY_SKILL_SOURCE_CHANGED", name);
 };
 
 export const materializeAgyConfiguredSkills = async (input: {
   capsulePath: string;
   workspacePath: string;
-  bindings: readonly ConfiguredAgentSkillBinding[];
+  bindings: readonly DetailedConfiguredSkillResolution[];
   enabled: boolean;
+  runId: string;
+  agentDefinitionId: string;
 }): Promise<AgySkillSnapshot[]> => {
   if (!input.enabled) return [];
   const names = new Set<string>();
@@ -122,7 +136,15 @@ export const materializeAgyConfiguredSkills = async (input: {
   const targetRoot = path.join(input.capsulePath, ".agents", "skills");
   await fs.mkdir(targetRoot, { recursive: true, mode: 0o700 });
   for (const binding of input.bindings) {
-    if (binding.kind !== "resolved") throw failure("AGY_CONFIGURED_SKILL_UNRESOLVED", binding.name);
+    if (binding.kind === "certified_absent") {
+      console.warn(`AGY configured skill skipped: run=${logIdentity(input.runId)}, agent=${logIdentity(input.agentDefinitionId)}, skill=${logIdentity(binding.name)}, disposition=skipped-missing`);
+      continue;
+    }
+    if (binding.kind === "invalid_candidate") {
+      const skillName = binding.reason === "unsafe_name" ? "[invalid-name]" : logIdentity(binding.name);
+      console.warn(`AGY configured skill skipped: run=${logIdentity(input.runId)}, agent=${logIdentity(input.agentDefinitionId)}, skill=${skillName}, disposition=skipped-invalid, reason=${binding.reason}`);
+      continue;
+    }
     const name = safeName(binding.skill.name);
     if (names.has(name.toLowerCase())) throw failure("AGY_SKILL_NAME_COLLISION", name);
     names.add(name.toLowerCase());

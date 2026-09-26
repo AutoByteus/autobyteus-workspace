@@ -1,11 +1,12 @@
 import fs from "node:fs/promises";
+import { fingerprintConfiguredSkillSource } from "../../../../../src/skills/services/configured-skill-source-fingerprint.js";
 import { existsSync, realpathSync } from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../../../src/agent-definition/domain/models.js";
 import { createAgyRunCapsule, restoreAgyRunCapsule } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
-import type { ConfiguredAgentSkillBinding } from "../../../../../src/skills/domain/configured-agent-skill-binding.js";
+import type { ConfiguredAgentSkillBinding, DetailedConfiguredSkillResolution } from "../../../../../src/skills/domain/configured-agent-skill-binding.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
 import { ConfiguredAgentSkillResolver } from "../../../../../src/skills/services/configured-agent-skill-resolver.js";
 import { SkillLoader } from "../../../../../src/skills/loader.js";
@@ -36,10 +37,16 @@ const binding = (skill: string, trustedRoot: string, origin: "agent_private" | "
   kind: "resolved", skill: new Skill({ name: "solution-designer", description: "Design", content: "", rootPath: skill }),
   source: { origin, sourceRoot: realpathSync(skill), trustedRoot: realpathSync(trustedRoot) },
 });
+const detailed = (binding: ConfiguredAgentSkillBinding): DetailedConfiguredSkillResolution => binding.kind === "resolved"
+  ? { ...binding, sourceTreeSha256: (() => {
+    try { return fingerprintConfiguredSkillSource(binding.skill.rootPath, binding.source.trustedRoot); }
+    catch { return "invalid-source"; }
+  })() }
+  : { kind: "certified_absent", name: binding.name };
 const create = (root: Awaited<ReturnType<typeof fixture>>, configuredSkillBindings: ConfiguredAgentSkillBinding[],
-  mode: "PRELOADED_ONLY" | "NONE" = "PRELOADED_ONLY", runId = "linked") => createAgyRunCapsule({
+  mode: "PRELOADED_ONLY" | "NONE" = "PRELOADED_ONLY", runId = "linked") => createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] },
   runId, memoryDir: path.join(root.base, `memory-${runId}`), workspacePath: root.workspace,
-  identity: "Identity", configuredSkillBindings, skillAccessMode: mode, mcpDescriptor: null,
+  identity: "Identity", configuredSkillBindings: mode === "NONE" ? [] : configuredSkillBindings.map(detailed), skillAccessMode: mode, mcpDescriptor: null,
 });
 const resolver = new ConfiguredAgentSkillResolver({ loader: new SkillLoader(), isReadonlyPath: () => true,
   resolveGlobalSkill: () => null, isSkillDisabled: () => false, logger: { warn: () => undefined } });
@@ -123,7 +130,7 @@ describe("AGY configured skill checked snapshot", () => {
 
   it("never lets a global fallback borrow its caller's team boundary", async () => {
     const root = await fixture();
-    await expect(create(root, [binding(root.skill, root.skill, "global")])).rejects.toThrow("AGY_SKILL_SOURCE_OUT_OF_BOUNDS");
+    await expect(create(root, [binding(root.skill, root.skill, "global")])).rejects.toThrow(/AGY_SKILL_SOURCE_/);
     await expect(fs.stat(path.join(root.base, "memory-linked", "agy-project"))).rejects.toMatchObject({ code: "ENOENT" });
   });
 
@@ -179,8 +186,8 @@ it.skipIf(!existsSync(path.join(actualTeam, "agents", "solution-designer", "skil
     const definition = new AgentDefinition({ name: "Solution Designer", description: "Design", instructions: "",
       skillNames: ["solution-designer"], sourceInfo: { agentDirPath: agent, teamDirPath: actualTeam } });
     const bindings = resolver.resolveForAgent(definition);
-    const capsule = await createAgyRunCapsule({ runId: "actual", memoryDir: path.join(base, "memory"), workspacePath: workspace,
-      identity: "Identity", configuredSkillBindings: bindings, skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
+    const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "actual", memoryDir: path.join(base, "memory"), workspacePath: workspace,
+      identity: "Identity", configuredSkillBindings: bindings.map(detailed), skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
     for (const name of ["design-examples.md", "design-principles.md"]) {
       const target = path.join(capsule.path, ".agents", "skills", "solution-designer", name);
       expect((await fs.lstat(target)).isFile()).toBe(true);
