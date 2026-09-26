@@ -1076,6 +1076,24 @@ second authoritative mode or path. `mode` is the active-choice discriminator,
 while the inactive Existing id and New path may remain buffered so switching
 tabs does not discard the other value.
 
+`WorkspaceSelector.vue` also accepts an opt-in `candidateWorkspaceIds` prop
+(default `null`). Run-configuration callers never pass it, so their behavior
+is unchanged. When a non-null list is supplied, the Existing options are
+exactly those ids in the given order, no Temp entry is prepended, and the
+selector never auto-selects a default. The selector stays policy-free: callers
+own the candidate rule. For example, the Projects link dialog supplies
+`selectLinkableWorkspaceIds` (see `projects.md`).
+
+The Existing picker is the shared `components/common/SearchableSelect.vue`,
+which is keyboard-operable as a combobox/listbox (including inside modal
+dialogs). ArrowUp/ArrowDown on the trigger opens it. In the search input,
+ArrowUp/ArrowDown/Home/End move the active option (`aria-activedescendant`)
+and Enter selects it. Escape closes only the popover and does not propagate to
+the enclosing dialog. Tab closes the popover. Selection, Escape, and Tab return
+focus to the trigger because the popover is teleported to `body`, outside any
+dialog focus scope. Pointer behavior, filtering, and emitted values are
+unchanged.
+
 Existing mode applies the selected visible workspace id to the active launch
 config immediately. New mode keeps the entered absolute path transient until
 submission; it does not render a user-facing **Load** button, pressing Enter in

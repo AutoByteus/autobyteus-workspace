@@ -21,7 +21,8 @@ reviewable.
 Skill Improvement is disabled by default for every server node; the clean-state setting names use the `SKILL_IMPROVEMENT` spelling.
 
 - `SkillImprovementCapabilityService` reads and writes the `ENABLE_SKILL_IMPROVEMENT`
-  server setting.
+  server setting through `ServerSettingsService.getBooleanSetting` /
+  `setBooleanSetting`.
 - If the setting is missing, the capability initializes disabled and records the
   source as `INITIALIZED_DISABLED`.
 - Every eligibility query and manual start mutation checks the capability gate.
