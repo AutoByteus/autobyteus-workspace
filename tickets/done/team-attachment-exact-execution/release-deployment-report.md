@@ -88,3 +88,11 @@ d65f86674c037656b4455ea2fdfe83a9923a7a26. Remove only the unintended unpublished
 v1.4.88 draft/tag after runs stop; retain audit commits and run evidence. Push
 corrected personal first, then the corrected v1.4.87 tag (one normal workflow set;
 no simultaneous manual dispatch). Status In progress; no terminal completion yet.
+
+### v1.4.88 withdrawal outcome
+All four runs reached Cancelled. A race during cancellation published Android APK
+and checksum at 2026-09-26T19:43:56Z; both reported zero downloads at inspection.
+Release 397371396 was returned to **draft** (withdrawn, retained privately for audit),
+not falsely treated as never published. Remote/local v1.4.88 tags removed with exact
+old-object lease. Audit commits remain. No claim that cancellation alone prevents
+publication. Corrective v1.4.87 will be the public release.
