@@ -9,6 +9,7 @@ remain authoritative. No previous delivery result was inferred from absent recor
 | DR-001 | CRR-002 test review Pass / API-REV-001 Pass | N/A | Blocked — user-verification hold; docs sync Pass | docs-sync-report.md; handoff-summary.md; release-deployment-report.md; release-notes.md |
 | DR-002 | Explicit user acceptance and release request | DR-001 verification hold | Repository finalized; publication blocked by archived evidence paths | release-deployment-report.md; handoff-summary.md; release-notes.md; delivery-evidence/ |
 | DR-003 | Release-local correction | DR-002 publication blocked | Corrective v1.4.88 stopped at user direction; same-version recovery required | release-deployment-report.md; release-notes.md; delivery-evidence/ |
+| DR-004 | Explicit user same-version correction | DR-003 superseded release attempt | Delivery Completed — v1.4.87 | handoff-summary.md; release-deployment-report.md; docs-sync-report.md; delivery-evidence/ |
 
 ## DR-001 — Integrated documentation baseline
 - Date: 2026-09-26. Package docker-image-http400-20260926.
@@ -53,3 +54,17 @@ remain authoritative. No previous delivery result was inferred from absent recor
 - Next action: restore package/notes to 1.4.87, remove unintended unpublished 1.4.88 release/tag after cancellation, and retarget 1.4.87 to corrected commit using an exact old-tag lease.
 - This is the user-authorized exception to tag immutability. No source changes or verification invalidation.
 - Terminal not eligible until corrected publication succeeds and safe cleanup completes.
+
+## DR-004 — Same-version publication and terminal readiness
+- Prior DR-003: v1.4.88 stopped at explicit user request.
+- Current **Delivery Completed — v1.4.87**. Accepted code unchanged, evidence paths shortened with equal hashes.
+- 1.4.88 all runs cancelled; Android publication raced cancellation, zero downloads observed, withdrawn to private draft. Local/remote 1.4.88 tags removed; Docker image lookup not found.
+- Package restored to 1.4.87. Final release commit 1284fe5233718564a4618eb2e355c9e07c1e3177; exact-lease tag retarget authorized by user. No duplicate dispatch.
+- Desktop 36267210438, Android 36267210457, Docker 36267210420, iOS 36267210472 all Success; iOS attempt 2 after failed-job-only retry, no code change.
+- Public release 17 assets; Docker amd64/arm64 index inspected. iOS archive/upload successful, not Apple review approval.
+- Ticket/auxiliary worktrees and local branches removed, prune completed; remote ticket retained. Removal remainder recovered only after clean-state/merged-ancestry checks.
+- Docs sync and explicit user verification Completed. Repository finalization/publication/cleanup Completed. Installed deployment Not required for publication, not performed.
+- Original acceptance and same-version instruction recorded in release-deployment-report.md. Initial verified base unchanged; post-release concurrent personal advance was other-ticket docs only, preserved.
+- Latest canonical authorities rewritten to final state: handoff-summary.md, release-deployment-report.md; supporting docs-sync report and evidence updated.
+- Terminal return eligible; prepared for rule-selected Solution Designer. Send acknowledgment recorded in tool transcript.
+- Remaining limitations: installed corpus not migrated; no Electron shell claim; retain no-loss upgrade/rollback safeguards. No blocker.

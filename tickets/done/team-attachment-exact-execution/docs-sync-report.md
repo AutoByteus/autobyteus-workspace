@@ -44,3 +44,10 @@ production transition inferred from representative test data.
 User message, 2026-09-26: “i tested. its done. lets finalize and release a new version”. Post-acceptance base unchanged; docs remain accurate.
 Ticket archived under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-attachment-exact-execution`. Release notes prepared for v1.4.87.
 The DR-001 hold was resolved by this user signal; release progress is owned by release-deployment-report.md.
+
+## DR-004 final continuation
+Delivery Completed: user accepted, requested same-version retry, all release workflows
+passed for v1.4.87; canonical terminal handoff/report finalized. No application behavior
+changed since docs synchronization. Original draft/rollout holds above are DR-001 history,
+not current blockers. Installed rollout is outside publication scope; runbook remains
+mandatory when installing. Archive filenames shortened without changing evidence bytes.
