@@ -16,7 +16,7 @@ const arg = process.argv[2];
 if (arg === '--version') {
   if (mode === 'hang-version') { setInterval(() => {}, 1000); }
   else if (mode === 'oversized-version') process.stdout.write('x'.repeat(70 * 1024));
-  else process.stdout.write(mode === 'bad-version' ? 'agy version 1.2.9\\n' : 'agy version 1.2.10\\n');
+  else process.stdout.write(mode === 'bad-version' ? 'agy version 1.2.10\\n' : 'agy version 1.2.11\\n');
 } else if (arg === '--help') {
   process.stdout.write(mode === 'bad-flags' ? '--agent\\n' : '--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\\n');
 } else if (arg === 'models') {

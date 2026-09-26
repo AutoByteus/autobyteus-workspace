@@ -1,13 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
-import type { ConfiguredAgentSkillBinding } from "../../../../skills/domain/configured-agent-skill-binding.js";
+import type { DetailedConfiguredSkillResolution } from "../../../../skills/domain/configured-agent-skill-binding.js";
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import { materializeAgyMcpConfig } from "./agy-mcp-config-materializer.js";
 import { materializeAgyConfiguredSkills, type AgySkillSnapshot } from "./agy-configured-skill-materializer.js";
+import type { AgyNativeToolProfile } from "./agy-native-tool-policy.js";
 
 const sha256 = (value: string): string => createHash("sha256").update(value).digest("hex");
-const codingTools = "view_file, write_to_file, replace_file_content, multi_replace_file_content, grep_search, list_dir, find_by_name, run_command";
 
 export type AgyCapsuleManifest = {
   version: 1;
@@ -29,7 +29,9 @@ export const createAgyRunCapsule = async (input: {
   memoryDir: string;
   workspacePath: string;
   identity: string;
-  configuredSkillBindings: readonly ConfiguredAgentSkillBinding[];
+  agentDefinitionId: string;
+  configuredSkillBindings: readonly DetailedConfiguredSkillResolution[];
+  nativeToolProfile: AgyNativeToolProfile;
   skillAccessMode: "PRELOADED_ONLY" | "NONE";
   mcpDescriptor: AgentToolMcpDescriptor | null;
 }): Promise<AgyRunCapsule> => {
@@ -41,7 +43,7 @@ export const createAgyRunCapsule = async (input: {
   try {
     const agentName = `autobyteus-${sha256(input.runId).slice(0, 16)}`;
     const markdown = [
-      "---", `name: ${agentName}`, "description: Run-specific AutoByteus main agent.", "mainAgent: true", `tools: [${codingTools}]`, "---", "",
+      "---", `name: ${agentName}`, "description: Run-specific AutoByteus main agent.", "mainAgent: true", `tools: [${input.nativeToolProfile.permittedNativeToolNames.join(", ")}]`, "---", "",
       input.identity,
       "", "## Working Environment", `- Agent workspace: \`${workspacePath}\``,
       "- Resolve task and project locations from the agent workspace unless an explicit target says otherwise.", "",
@@ -50,6 +52,7 @@ export const createAgyRunCapsule = async (input: {
     await fs.writeFile(agentPath(root, agentName), markdown, { mode: 0o600, flag: "wx" });
     const skills = await materializeAgyConfiguredSkills({
       capsulePath: root, workspacePath, bindings: input.configuredSkillBindings,
+      runId: input.runId, agentDefinitionId: input.agentDefinitionId,
       enabled: input.skillAccessMode === "PRELOADED_ONLY",
     });
     await materializeAgyMcpConfig({ capsulePath: root, workspacePath, descriptor: input.mcpDescriptor });

@@ -1,0 +1,38 @@
+[
+  {
+    "seq": 1,
+    "turn_id": "df757e73-b3ef-49cf-9e2d-c64fa910857a",
+    "trace_type": "user",
+    "tool_name": null,
+    "tool_call_id": null,
+    "source_event": "AgentRun.postUserMessage"
+  },
+  {
+    "seq": 2,
+    "turn_id": "df757e73-b3ef-49cf-9e2d-c64fa910857a",
+    "trace_type": "tool_call",
+    "tool_name": "generate_image",
+    "tool_call_id": "agy-tool-df757e73-b3ef-49cf-9e2d-c64fa910857a-2",
+    "source_event": "TOOL_EXECUTION_STARTED",
+    "tool_result_type": "NoneType",
+    "tool_result_summary": "None"
+  },
+  {
+    "seq": 3,
+    "turn_id": "df757e73-b3ef-49cf-9e2d-c64fa910857a",
+    "trace_type": "tool_result",
+    "tool_name": "generate_image",
+    "tool_call_id": "agy-tool-df757e73-b3ef-49cf-9e2d-c64fa910857a-2",
+    "source_event": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_result_type": "dict",
+    "tool_result_summary": "{'provider_state': 'DONE', 'output': None}"
+  },
+  {
+    "seq": 4,
+    "turn_id": "df757e73-b3ef-49cf-9e2d-c64fa910857a",
+    "trace_type": "assistant",
+    "tool_name": null,
+    "tool_call_id": null,
+    "source_event": "SEGMENT_END"
+  }
+]

@@ -10,6 +10,10 @@ import { registerRunFileChangeRoutes } from "../../../src/api/rest/run-file-chan
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { RunFileChangeProjectionService } from "../../../src/run-history/services/run-file-change-projection-service.js";
+import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 
 const toPosix = (value: string): string => value.replace(/\\/g, "/");
 
@@ -32,6 +36,8 @@ describe("Run file changes API integration", () => {
   let externalOutputsDir: string;
   let originalServerHostEnv: string | undefined;
   const activeRuns = new Map<string, unknown>();
+  let ownedAgentRunManager: AgentRunManager | null = null;
+  let ownedTeamRunManager: AgentTeamRunManager | null = null;
 
   const getMemoryDir = (): string => path.join(appDataDir, "memory");
 
@@ -86,40 +92,13 @@ describe("Run file changes API integration", () => {
     const teamDir = path.join(getMemoryDir(), "agent_teams", input.teamRunId);
     const memberDir = path.join(teamDir, input.memberRunId);
     await fs.mkdir(memberDir, { recursive: true });
-    await fs.writeFile(
-      path.join(teamDir, "team_run_metadata.json"),
-      JSON.stringify(
-        {
-          teamRunId: input.teamRunId,
-          teamDefinitionId: "team-def-1",
-          teamDefinitionName: "Team Definition",
-          coordinatorMemberRouteKey: input.memberRouteKey,
-          runVersion: 1,
-          createdAt: timestamp,
-          updatedAt: timestamp,
-          archivedAt: null,
-          memberMetadata: [
-            {
-              memberRouteKey: input.memberRouteKey,
-              memberName: input.memberName,
-              memberRunId: input.memberRunId,
-              runtimeKind: RuntimeKind.AUTOBYTEUS,
-              platformAgentRunId: null,
-              agentDefinitionId: "agent-def-1",
-              llmModelIdentifier: "model-1",
-              autoExecuteTools: true,
-              skillAccessMode: SkillAccessMode.NONE,
-              llmConfig: null,
-              workspaceRootPath: input.workspaceRootPath,
-              applicationExecutionContext: null,
-            },
-          ],
-        },
-        null,
-        2,
-      ),
-      "utf-8",
-    );
+    const memberAddress = `/${input.memberRouteKey}`;
+    await new TeamRunExecutionTreeStore().write(teamDir, testExecutionTree({
+      rootTeamRunId: input.teamRunId, rootTeamDefinitionId: "team-def-1",
+      teamDefinitionName: "Team Definition", coordinatorAddress: memberAddress,
+      children: [testAgentNode(memberAddress, { agentRunId: input.memberRunId,
+        workspaceRootPath: input.workspaceRootPath, skillAccessMode: SkillAccessMode.NONE })],
+    }));
     await fs.writeFile(
       path.join(memberDir, "file_changes.json"),
       JSON.stringify(input.projection, null, 2),
@@ -162,6 +141,24 @@ describe("Run file changes API integration", () => {
     appConfigProvider.config.setCustomAppDataDir(appDataDir);
     appConfigProvider.config.initialize();
 
+    ownedAgentRunManager = AgentRunManager.initializeProcessInstance({
+      autoByteusBackendFactory: {} as never, codexBackendFactory: {} as never,
+      claudeBackendFactory: {} as never, agyBackendFactory: {} as never,
+      activationRegistry: { getActiveRun: (runId: string) => activeRuns.get(runId) ?? null } as never,
+      memoryRecorder: {} as never,
+      providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
+      agentToolMcpRunSessionDeactivator: {} as never,
+    });
+    ownedTeamRunManager = AgentTeamRunManager.initializeProcessInstance({
+      memoryDir: getMemoryDir(), flatTeamExecutionFactory: {} as never,
+      memberExecutionContextBuilder: {} as never,
+      taskExecutionIdentity: {
+        agentRuns: { allocateForAgentDefinition: () => "unused-agent-run" },
+        taskTeams: { create: () => "unused-task-team" },
+      } as never,
+      modelSelectionValidator: { validate: () => undefined } as never,
+    });
+
     const projectionService = new RunFileChangeProjectionService({
       agentRunManager: {
         getActiveRun: (runId: string) => (activeRuns.get(runId) as any) ?? null,
@@ -176,6 +173,8 @@ describe("Run file changes API integration", () => {
   afterAll(async () => {
     activeRuns.clear();
     await app.close();
+    if (ownedTeamRunManager) AgentTeamRunManager.releaseProcessInstance(ownedTeamRunManager);
+    if (ownedAgentRunManager) AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
     await Promise.all([
       fs.rm(appDataDir, { recursive: true, force: true }),
       fs.rm(workspaceRootPath, { recursive: true, force: true }),

@@ -1,8 +1,17 @@
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { agyRecord, agyString, type AgyStreamMessage } from "./agy-stream-message.js";
+import type { AgyProviderFailureDiagnostic } from "./agy-provider-diagnostic-sink.js";
 
 const number = (value: unknown): number | null => typeof value === "number" && Number.isFinite(value) ? value : null;
 const denial = (error: string): boolean => /permission|denied|not allowed|approval/i.test(error);
+const hasProviderError = (value: unknown): boolean => {
+  if (value === null || value === undefined) return false;
+  if (typeof value === "string") return value.trim().length > 0;
+  if (Array.isArray(value)) return value.length > 0;
+  if (typeof value === "object") return Object.keys(value).length > 0;
+  return true;
+};
+const errorText = (value: unknown): string => agyString(value) ?? agyString(agyRecord(value)?.message) ?? "";
 
 export class AgyStreamEventConverter {
   private turnId: string | null = null;
@@ -12,7 +21,8 @@ export class AgyStreamEventConverter {
   private readonly toolTerminals = new Set<number>();
   private textSeen = false;
 
-  constructor(private readonly runId: string, private readonly conversationId: string, private readonly model: string) {}
+  constructor(private readonly runId: string, private readonly conversationId: string, private readonly model: string,
+    private readonly onProviderFailure?: (diagnostic: AgyProviderFailureDiagnostic) => void) {}
 
   startTurn(turnId: string): AgentRunEvent[] {
     if (this.turnId) throw new Error("AGY_TURN_ALREADY_ACTIVE");
@@ -70,7 +80,8 @@ export class AgyStreamEventConverter {
     const info = agyRecord(payload.tool_info);
     const name = agyString(payload.tool_name) ?? agyString(info?.name);
     if (!name) throw new Error("AGY_STREAM_INVALID_TOOL_NAME");
-    const args = agyRecord(info?.parameters) ?? {};
+    const nativeImage = name === "generate_image";
+    const args = nativeImage ? {} : agyRecord(info?.parameters) ?? {};
     const invocationId = `agy-tool-${turnId}-${stepIndex}`;
     const common = { turn_id: turnId, invocation_id: invocationId, tool_name: name, arguments: args };
     const events: AgentRunEvent[] = [];
@@ -80,12 +91,25 @@ export class AgyStreamEventConverter {
     }
     if (state === "ACTIVE") return events;
     this.toolTerminals.add(stepIndex);
-    const explicitError = agyRecord(info?.error)?.message ?? info?.error;
-    if (state === "ERROR" || explicitError !== undefined && explicitError !== null) {
-      const message = agyString(explicitError) ?? "Antigravity tool failed.";
+    const explicitError = info?.error;
+    if (nativeImage && (state === "ERROR" || hasProviderError(explicitError))) {
+      const denied = denial(errorText(explicitError));
+      const message = denied ? "Antigravity denied this image-generation request." : "Antigravity image generation failed.";
+      this.onProviderFailure?.({ kind: "tool", runId: this.runId, turnId, invocationId, providerState: state,
+        providerError: explicitError, providerOutput: info?.output });
+      events.push(this.event(denied ? AgentRunEventType.TOOL_DENIED : AgentRunEventType.TOOL_EXECUTION_FAILED,
+        { ...common, error: message, reason: message, provider_state: state,
+          result: { provider_state: state, output: null } }, "ERROR"));
+    } else if (state === "ERROR" || hasProviderError(explicitError)) {
+      const message = errorText(explicitError) || "Antigravity tool failed.";
       events.push(this.event(denial(message) ? AgentRunEventType.TOOL_DENIED : AgentRunEventType.TOOL_EXECUTION_FAILED,
         { ...common, error: message, reason: message, provider_state: state,
           result: { provider_state: state, output: info?.output ?? null } }, "ERROR"));
+    } else if (nativeImage) {
+      // AGY owns the generated file. Its native DONE does not provide a path.
+      events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+        ...common, result: { provider_state: "DONE", output: null }, provider_state: "DONE",
+      }));
     } else {
       events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
         ...common, result: { provider_state: "DONE", output: info?.output ?? null }, provider_state: "DONE",
@@ -96,6 +120,18 @@ export class AgyStreamEventConverter {
 
   private result(payload: Record<string, unknown>, turnId: string): AgentRunEvent[] {
     const events = this.closeText(turnId);
+    const status = payload.status;
+    if (status !== "SUCCESS" || hasProviderError(payload.error)) {
+      this.onProviderFailure?.({ kind: "turn", runId: this.runId, turnId,
+        safeReasonCode: status !== "SUCCESS" ? "TERMINAL_STATUS_NOT_SUCCESS" : "TERMINAL_ERROR_PRESENT",
+        providerStatus: status, providerError: payload.error, providerResponse: payload.response });
+      events.push(this.event(AgentRunEventType.ERROR, {
+        turn_id: turnId, code: "AGY_TURN_ERROR", message: "Antigravity could not complete this turn.",
+        error_scope: "turn", error_effect: "terminal",
+      }, "ERROR"));
+      this.turnId = null;
+      return events;
+    }
     const response = agyString(payload.response);
     if (!this.textSeen && response) {
       const id = `agy-text-${turnId}-result`;
@@ -122,10 +158,7 @@ export class AgyStreamEventConverter {
       raw_usage_json: usage,
       quality_flags: ["agy_provider_reported_cumulative_usage"],
     }));
-    const status = agyString(payload.status);
-    if (status && status !== "SUCCESS") events.push(this.event(AgentRunEventType.ERROR,
-      { turn_id: turnId, code: "AGY_TURN_ERROR", message: agyString(payload.error) ?? `Antigravity turn ended with ${status}.` }, "ERROR"));
-    events.push(this.event(AgentRunEventType.TURN_COMPLETED, { turn_id: turnId, provider_status: status ?? "UNKNOWN" }, status === "SUCCESS" ? "IDLE" : "ERROR"));
+    events.push(this.event(AgentRunEventType.TURN_COMPLETED, { turn_id: turnId, provider_status: "SUCCESS" }, "IDLE"));
     this.turnId = null;
     return events;
   }

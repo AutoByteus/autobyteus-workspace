@@ -6,7 +6,8 @@ import { AgyAgentRunContext } from "./agy-agent-run-context.js";
 import { AgyAgentRunBackend } from "./agy-agent-run-backend.js";
 import { AgyStreamProcess } from "../stream/agy-stream-process.js";
 import { createAgyRunCapsule, restoreAgyRunCapsule, type AgyRunCapsule } from "../capsule/agy-run-capsule.js";
-import { listAntigravityModels } from "../../../../runtime-management/antigravity-cli-capability.js";
+import { discoverAntigravityRuntime, listAntigravityModels } from "../../../../runtime-management/antigravity-cli-capability.js";
+import { resolveAgyNativeToolProfile } from "../capsule/agy-native-tool-policy.js";
 import type { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../skills/services/skill-service.js";
 import type { ClaudeWorkspaceResolver } from "../../claude/claude-workspace-resolver.js";
@@ -27,17 +28,21 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
   ) {}
 
   async createBackend(config: AgentRunConfig, runId: string): Promise<AgyAgentRunBackend> {
-    await this.assertAvailable(config);
+    const runtime = await discoverAntigravityRuntime();
+    if (!runtime.models.some((model) => model.id === config.llmModelIdentifier))
+      throw new Error(`AGY_MODEL_UNAVAILABLE: ${config.llmModelIdentifier}`);
+    const nativeToolProfile = resolveAgyNativeToolProfile(runtime.version);
     const memoryDir = this.requireMemoryDir(config);
     const workspacePath = await this.workspaces.resolveWorkingDirectory(config.workspaceId);
     const definition = await this.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`AGY_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
-    const bindings = this.skills.resolveConfiguredSkillBindingsForAgent(definition);
-    const skillAccessMode = resolveSkillAccessMode(config.skillAccessMode, bindings.length);
+    const skillAccessMode = resolveSkillAccessMode(config.skillAccessMode, definition.skillNames?.length ?? 0);
+    const bindings = skillAccessMode === "NONE" ? [] : this.skills.resolveConfiguredSkillBindingsForAgentDetailed(definition);
     const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext });
     const descriptor = this.activateMcp(runId, config, workspacePath, definition);
     const capsule = await createAgyRunCapsule({ runId, memoryDir, workspacePath, identity,
-      configuredSkillBindings: bindings, skillAccessMode, mcpDescriptor: descriptor });
+      agentDefinitionId: config.agentDefinitionId, configuredSkillBindings: bindings, nativeToolProfile,
+      skillAccessMode, mcpDescriptor: descriptor });
     return this.launch(config, runId, capsule, null);
   }
 
