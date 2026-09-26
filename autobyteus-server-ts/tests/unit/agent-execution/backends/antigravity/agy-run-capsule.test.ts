@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { realpathSync } from "node:fs";
-import { describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createAgyRunCapsule, restoreAgyRunCapsule } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
 import type { ConfiguredAgentSkillBinding } from "../../../../../src/skills/domain/configured-agent-skill-binding.js";
@@ -19,7 +19,77 @@ const globalBinding = (source: string, name = "example-skill"): ConfiguredAgentS
   source: { origin: "global", sourceRoot: realpathSync(source), trustedRoot: realpathSync(source) },
 });
 
+const mcpDescriptor = { name: "autobyteus_agent_tools", transport: "streamable_http" as const,
+  serverUrl: "http://127.0.0.1:12345/mcp/agent-tools/session", enabledTools: ["send_message_to"] };
+
 describe("AGY run capsule", () => {
+  let isolatedHome: string;
+  beforeEach(async () => {
+    // Isolate ~/.gemini/config/mcp_config.json so results never depend on the developer machine.
+    isolatedHome = await fs.mkdtemp(path.join(os.tmpdir(), "agy-capsule-home-"));
+    vi.spyOn(os, "homedir").mockReturnValue(isolatedHome);
+  });
+  afterEach(() => { vi.restoreAllMocks(); });
+
+  const writeUserMcpConfig = async (configPath: string, content: string) => {
+    await fs.mkdir(path.dirname(configPath), { recursive: true });
+    await fs.writeFile(configPath, content);
+  };
+  const createWithDescriptor = (root: Awaited<ReturnType<typeof roots>>, runId: string) =>
+    createAgyRunCapsule({ runId, memoryDir: root.memoryDir, workspacePath: root.workspacePath,
+      identity: "Identity", configuredSkillBindings: [], skillAccessMode: "NONE", mcpDescriptor });
+  const expectCapsuleHasAgentTools = async (capsulePath: string) => {
+    const generated = JSON.parse(await fs.readFile(path.join(capsulePath, ".agents", "mcp_config.json"), "utf8"));
+    expect(generated.mcpServers.autobyteus_agent_tools.serverUrl).toBe(mcpDescriptor.serverUrl);
+  };
+
+  it("treats an empty workspace MCP config as no servers and leaves it untouched", async () => {
+    const root = await roots();
+    const userConfig = path.join(root.workspacePath, ".agents", "mcp_config.json");
+    await writeUserMcpConfig(userConfig, "");
+    const capsule = await createWithDescriptor(root, "empty-workspace-mcp");
+    await expectCapsuleHasAgentTools(capsule.path);
+    expect(await fs.readFile(userConfig, "utf8")).toBe("");
+  });
+
+  it("treats an empty global ~/.gemini MCP config as no servers and leaves it untouched", async () => {
+    const root = await roots();
+    const globalConfig = path.join(isolatedHome, ".gemini", "config", "mcp_config.json");
+    await writeUserMcpConfig(globalConfig, "");
+    const capsule = await createWithDescriptor(root, "empty-global-mcp");
+    await expectCapsuleHasAgentTools(capsule.path);
+    expect(await fs.readFile(globalConfig, "utf8")).toBe("");
+    const restored = await restoreAgyRunCapsule({ runId: "empty-global-mcp", memoryDir: root.memoryDir,
+      selectedWorkspacePath: root.workspacePath, mcpDescriptor });
+    await expectCapsuleHasAgentTools(restored.path);
+  });
+
+  it("treats a whitespace-only MCP config as no servers", async () => {
+    const root = await roots();
+    const userConfig = path.join(root.workspacePath, ".agents", "mcp_config.json");
+    await writeUserMcpConfig(userConfig, "  \n\t\r\n");
+    const capsule = await createWithDescriptor(root, "whitespace-mcp");
+    await expectCapsuleHasAgentTools(capsule.path);
+    expect(await fs.readFile(userConfig, "utf8")).toBe("  \n\t\r\n");
+  });
+
+  it("still rejects malformed non-empty MCP config", async () => {
+    const root = await roots();
+    const userConfig = path.join(root.workspacePath, ".agents", "mcp_config.json");
+    await writeUserMcpConfig(userConfig, "{ not json");
+    await expect(createWithDescriptor(root, "malformed-mcp")).rejects.toThrow("Cannot inspect AGY MCP collision");
+    expect(await fs.readFile(userConfig, "utf8")).toBe("{ not json");
+  });
+
+  it("still rejects a global MCP config that defines the AutoByteus server name", async () => {
+    const root = await roots();
+    const globalConfig = path.join(isolatedHome, ".gemini", "config", "mcp_config.json");
+    const original = '{"mcpServers":{"autobyteus_agent_tools":{"command":"user-tool"}}}';
+    await writeUserMcpConfig(globalConfig, original);
+    await expect(createWithDescriptor(root, "global-collision")).rejects.toThrow("AGY_MCP_NAME_COLLISION");
+    expect(await fs.readFile(globalConfig, "utf8")).toBe(original);
+  });
+
   it("snapshots full identity and selected workspace without writing user .agents", async () => {
     const root = await roots();
     const capsule = await createAgyRunCapsule({ runId: "run-1", memoryDir: root.memoryDir,
@@ -75,11 +145,7 @@ describe("AGY run capsule", () => {
     await fs.mkdir(path.dirname(userConfig), { recursive: true });
     const original = '{"mcpServers":{"autobyteus_agent_tools":{"command":"user-tool"}}}';
     await fs.writeFile(userConfig, original);
-    await expect(createAgyRunCapsule({ runId: "mcp-collision", memoryDir: root.memoryDir,
-      workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [],
-      skillAccessMode: "NONE", mcpDescriptor: { name: "autobyteus_agent_tools", transport: "streamable_http",
-        serverUrl: "http://127.0.0.1:12345/mcp/agent-tools/session", enabledTools: ["send_message_to"] } }))
-      .rejects.toThrow("AGY_MCP_NAME_COLLISION");
+    await expect(createWithDescriptor(root, "mcp-collision")).rejects.toThrow("AGY_MCP_NAME_COLLISION");
     expect(await fs.readFile(userConfig, "utf8")).toBe(original);
   });
 
