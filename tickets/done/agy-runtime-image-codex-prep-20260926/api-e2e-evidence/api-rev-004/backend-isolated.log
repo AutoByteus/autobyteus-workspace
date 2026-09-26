@@ -1,0 +1,280 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+App data directory: /tmp/agy-browser-api-rev-004-zw14bL
+AppConfig instance created.
+Config file path: /tmp/agy-browser-api-rev-004-zw14bL/.env
+Loading environment from: /tmp/agy-browser-api-rev-004-zw14bL/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../tmp/agy-browser-api-rev-004-zw14bL/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:18080
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:18080
+APP ROOT DIRECTORY: /Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/autobyteus-server-ts
+APP DATA DIRECTORY: /tmp/agy-browser-api-rev-004-zw14bL
+DB DIRECTORY: /tmp/agy-browser-api-rev-004-zw14bL/db
+LOGS DIRECTORY: /tmp/agy-browser-api-rev-004-zw14bL/logs
+DOWNLOAD DIRECTORY: /tmp/agy-browser-api-rev-004-zw14bL/download
+MEMORY DIRECTORY: /tmp/agy-browser-api-rev-004-zw14bL/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/tmp/agy-browser-api-rev-004-zw14bL/db/test.db"
+
+SQLite database test.db created at file:/tmp/agy-browser-api-rev-004-zw14bL/db/test.db
+
+26 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 20 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-26T13:48:03.987Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /tmp/agy-browser-api-rev-004-zw14bL/workspace
+Created metadata-only FileSystemWorkspace at /tmp/agy-browser-api-rev-004-zw14bL/workspace.
+Initialized TempWorkspace at /tmp/agy-browser-api-rev-004-zw14bL/workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-09-26T13:48:04.090Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-26T13:48:04.090Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1790430484096,"pid":91915,"hostname":"NormyMac","msg":"Server listening at http://127.0.0.1:60127"}
+{"level":30,"time":1790430484119,"pid":91915,"hostname":"NormyMac","msg":"Server listening at http://127.0.0.1:18080"}
+[2026-09-26T13:48:04.119Z] [INFO] [server.runtime] Server listening on 127.0.0.1:18080
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+{"level":30,"time":1790430486677,"pid":91915,"hostname":"NormyMac","reqId":"req-1","err":{"type":"GraphQLError","message":"Unknown query","stack":"FastifyError: Unknown query\n    at executeQuery (/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:227:14)\n    at executeRegularQuery (/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\n    at Object.handler (/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:317:14)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)","extensions":{}},"msg":"Unknown query"}
+{"level":40,"time":1790430486679,"pid":91915,"hostname":"NormyMac","reqId":"req-1","method":"GET","url":"/graphql","statusCode":400,"elapsedMs":3.6806670427322388,"msg":"http request completed"}
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+Populating agent definition cache for the first time...
+Agent definition cache populated with 10 items.
+[2026-09-26T13:48:40.334Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-26T13:48:40.345Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 12 items.
+Created terminal session a30c74e6-2800-4898-baa2-07a7cd3ffe56 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: a30c74e6-2800-4898-baa2-07a7cd3ffe56
+Terminal websocket attached for cwd /Users/normy
+Closed PTY session a30c74e6-2800-4898-baa2-07a7cd3ffe56
+Terminal WebSocket disconnected: a30c74e6-2800-4898-baa2-07a7cd3ffe56
+Created WorkspaceFileExplorer for temp_ws_default (graphql-folder-children).
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+FileSystemWatcher initialized for '/tmp/agy-browser-api-rev-004-zw14bL/workspace' with ignore strategies: SpecificFolderIgnoreStrategy, GitIgnoreStrategy
+Could not connect to LM Studio at http://localhost:1234. Ensure the server is running. fetch failed
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+Started filesystem watcher for workspace /tmp/agy-browser-api-rev-004-zw14bL/workspace
+Acquired file watcher lease for /tmp/agy-browser-api-rev-004-zw14bL/workspace (file-explorer-websocket); active leases: 1
+FileExplorerSession created: 19744635-4c01-4ece-9848-e559a8c25e39 for workspace temp_ws_default
+Created file explorer session 19744635-4c01-4ece-9848-e559a8c25e39 for workspace temp_ws_default. Active sessions: 1
+File explorer WebSocket connected: 19744635-4c01-4ece-9848-e559a8c25e39 for workspace temp_ws_default
+File explorer websocket attached for workspace temp_ws_default
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run codex_15a770dc22854bb4abeb43f2046ccbc2
+Created agent session 530bf436-0af3-48f7-b70f-47c33cf8a632 for run codex_15a770dc22854bb4abeb43f2046ccbc2
+Agent WebSocket connected: session=530bf436-0af3-48f7-b70f-47c33cf8a632, run=codex_15a770dc22854bb4abeb43f2046ccbc2
+Resolved configured temp workspace root to TempWorkspace.
+Published antigravity_cli agent run 'codex_15a770dc22854bb4abeb43f2046ccbc2'.
+{"level":40,"time":1790430634181,"pid":91915,"hostname":"NormyMac","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_ROSwwTfSVcq0CV_Ue4Qy08-9e0-KAgh_jUdqgCcw2gQ","statusCode":400,"elapsedMs":1.0143330097198486,"msg":"http request completed"}
+{"level":40,"time":1790430634182,"pid":91915,"hostname":"NormyMac","reqId":"req-3","method":"GET","url":"/mcp/agent-tools/agtrun_ROSwwTfSVcq0CV_Ue4Qy08-9e0-KAgh_jUdqgCcw2gQ","statusCode":405,"elapsedMs":0.13287502527236938,"msg":"http request completed"}
+{"level":40,"time":1790430634183,"pid":91915,"hostname":"NormyMac","reqId":"req-5","method":"GET","url":"/.well-known/oauth-protected-resource/mcp/agent-tools/agtrun_ROSwwTfSVcq0CV_Ue4Qy08-9e0-KAgh_jUdqgCcw2gQ","statusCode":404,"elapsedMs":0.15999996662139893,"msg":"http request completed"}
+{"level":40,"time":1790430634183,"pid":91915,"hostname":"NormyMac","reqId":"req-6","method":"GET","url":"/.well-known/oauth-protected-resource","statusCode":404,"elapsedMs":0.07533299922943115,"msg":"http request completed"}
+Released file watcher lease for /tmp/agy-browser-api-rev-004-zw14bL/workspace (file-explorer-websocket); active leases: 0
+Logically stopped filesystem watcher for workspace /tmp/agy-browser-api-rev-004-zw14bL/workspace
+FileExplorerSession closed: 19744635-4c01-4ece-9848-e559a8c25e39
+Closed file explorer session 19744635-4c01-4ece-9848-e559a8c25e39. Active sessions: 0
+File explorer WebSocket disconnected: 19744635-4c01-4ece-9848-e559a8c25e39
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run codex_d99775c7702b4caf9fc30854759d74e6
+Created agent session 72a2df7a-4b60-482e-bd0c-46a5b95e388e for run codex_d99775c7702b4caf9fc30854759d74e6
+Agent WebSocket connected: session=72a2df7a-4b60-482e-bd0c-46a5b95e388e, run=codex_d99775c7702b4caf9fc30854759d74e6
+Resolved configured temp workspace root to TempWorkspace.
+Published antigravity_cli agent run 'codex_d99775c7702b4caf9fc30854759d74e6'.
+{"level":40,"time":1790430815013,"pid":91915,"hostname":"NormyMac","reqId":"req-8","method":"POST","url":"/mcp/agent-tools/agtrun_KeJTZ0E7G7qbFPkF2k9XfjhjS-4X1vM8GW-soWlMLIo","statusCode":400,"elapsedMs":0.38762497901916504,"msg":"http request completed"}
+{"level":40,"time":1790430815014,"pid":91915,"hostname":"NormyMac","reqId":"req-a","method":"GET","url":"/mcp/agent-tools/agtrun_KeJTZ0E7G7qbFPkF2k9XfjhjS-4X1vM8GW-soWlMLIo","statusCode":405,"elapsedMs":0.1408330202102661,"msg":"http request completed"}
+{"level":40,"time":1790430815015,"pid":91915,"hostname":"NormyMac","reqId":"req-c","method":"GET","url":"/.well-known/oauth-protected-resource/mcp/agent-tools/agtrun_KeJTZ0E7G7qbFPkF2k9XfjhjS-4X1vM8GW-soWlMLIo","statusCode":404,"elapsedMs":0.09966599941253662,"msg":"http request completed"}
+{"level":40,"time":1790430815015,"pid":91915,"hostname":"NormyMac","reqId":"req-d","method":"GET","url":"/.well-known/oauth-protected-resource","statusCode":404,"elapsedMs":0.06266605854034424,"msg":"http request completed"}
+Closed agent session 530bf436-0af3-48f7-b70f-47c33cf8a632
+Agent WebSocket disconnected: 530bf436-0af3-48f7-b70f-47c33cf8a632
+Closed agent session 72a2df7a-4b60-482e-bd0c-46a5b95e388e
+Agent WebSocket disconnected: 72a2df7a-4b60-482e-bd0c-46a5b95e388e
+Created terminal session df84c914-0dec-4c21-977e-172bf82abaf9 using backend IsolatedPtySession for target /Users/normy
+Terminal WebSocket connected: df84c914-0dec-4c21-977e-172bf82abaf9
+Terminal websocket attached for cwd /Users/normy
+Agent websocket attached for run codex_d99775c7702b4caf9fc30854759d74e6
+Created agent session fb3a4427-5e09-4098-b13e-c556e9e9b4ac for run codex_d99775c7702b4caf9fc30854759d74e6
+Agent WebSocket connected: session=fb3a4427-5e09-4098-b13e-c556e9e9b4ac, run=codex_d99775c7702b4caf9fc30854759d74e6
+Agent websocket attached for run codex_15a770dc22854bb4abeb43f2046ccbc2
+Created agent session 3cb70aff-6502-489d-895f-0708ca7cc6cf for run codex_15a770dc22854bb4abeb43f2046ccbc2
+Agent WebSocket connected: session=3cb70aff-6502-489d-895f-0708ca7cc6cf, run=codex_15a770dc22854bb4abeb43f2046ccbc2
+Closed agent session 3cb70aff-6502-489d-895f-0708ca7cc6cf
+Agent WebSocket disconnected: 3cb70aff-6502-489d-895f-0708ca7cc6cf
+Closed agent session fb3a4427-5e09-4098-b13e-c556e9e9b4ac
+Agent WebSocket disconnected: fb3a4427-5e09-4098-b13e-c556e9e9b4ac
+Closed PTY session df84c914-0dec-4c21-977e-172bf82abaf9
+Terminal WebSocket disconnected: df84c914-0dec-4c21-977e-172bf82abaf9
+Agent websocket attached for run codex_d99775c7702b4caf9fc30854759d74e6
+Created agent session fd351b8d-146e-47e9-ab04-694cbf1a0699 for run codex_d99775c7702b4caf9fc30854759d74e6
+Agent WebSocket connected: session=fd351b8d-146e-47e9-ab04-694cbf1a0699, run=codex_d99775c7702b4caf9fc30854759d74e6
+Agent websocket attached for run codex_15a770dc22854bb4abeb43f2046ccbc2
+Created agent session 7981cb3f-7cfb-432b-81cd-912a797c42b1 for run codex_15a770dc22854bb4abeb43f2046ccbc2
+Agent WebSocket connected: session=7981cb3f-7cfb-432b-81cd-912a797c42b1, run=codex_15a770dc22854bb4abeb43f2046ccbc2

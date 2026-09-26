@@ -82,6 +82,17 @@ the same session.
 
 ## Package-Contained Configured Skills
 
+When rolling out a package-dependent runtime change, install or select the
+matching package revision before validating a newly created Agent run.
+`AUTOBYTEUS_AGENT_PACKAGE_ROOTS` and imported local/managed package records
+can expose different checkouts of the same definition. A root that exists is
+not necessarily the root the selected definition came from: inspect its
+reported source identity, remove or deprioritize stale duplicates, reload the
+catalog when appropriate, and confirm the required skill files are in that
+selected source. In particular, the AGY Codex workflow skill is supplied by
+the `autobyteus-agents` package rather than the server repository. Do not
+interpret a server-only update as deploying that package content.
+
 Agent packages may carry skill content that is private to a package agent or
 shared by members of a package team. These skills participate in two related
 surfaces:

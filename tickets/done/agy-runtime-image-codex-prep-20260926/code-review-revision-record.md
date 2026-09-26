@@ -13,6 +13,7 @@ The current `code-review-report.md` is authoritative. This file records complete
 | CRR-005 | `code-review-report.md` | Full Implementation Review / IR-005 | Fail — Design Impact (CRR-004 failure origin) | Pass | Prior F-001 remains resolved; F-API-001 design recovered; F-API-002 obligation superseded |
 | CRR-006 | `api-e2e-test-review-report.md` | Proportional durable test review / API-REV-002 Pass | Pass (CRR-005 source review); no prior test review | Fail — Local Fix | F-TEST-001 new |
 | CRR-007 | `api-e2e-test-review-report.md` | Focused proportional test re-review / API-REV-003 Pass | Fail — Local Fix (CRR-006) | Pass | F-TEST-001 resolved |
+| CRR-008 | `api-e2e-test-review-report.md` | No-test-edit disposition / API-REV-004 browser Pass | Pass (CRR-007 test review) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -174,3 +175,25 @@ None — first successful-API/E2E proportional test-review round.
 - Score/classification: No implementation scorecard or API confidence rescore by Code Reviewer; API-REV-003 reports Pass/95.0%. Medium/High retained.
 - Recommended recipient: `/delivery_engineer` with cumulative package and both current review reports.
 - Remaining risks: One installed AGY/model/account sampled; Delivery must select the current Codex bundle and synchronize older runtime documentation. Browser/Electron shell source was unchanged; no full shell execution was claimed.
+
+### CRR-008 — Live browser result has no durable test-code delta
+
+- Canonical review report updated: `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926/tickets/agy-runtime-image-codex-prep-20260926/api-e2e-test-review-report.md`. CRR-005 `code-review-report.md` source Pass remains unchanged.
+- Review entry point/round: successful API/E2E proportional test-code disposition, round 3.
+- Trigger: `/api_e2e_engineer`, API-REV-004 Pass/95.0% after user-requested actual Chrome/backend/Nuxt AGY package/import/image/skill journey.
+- Relevant solution revisions: SR-013, SR-018, SR-021/E-055, SR-023. Architecture: ARCH-REV-008. Implementation: IR-005. Code reviews: CRR-005/007. API/E2E: API-REV-004. Delivery context: DR-001 integrated worktree/docs and user-verification hold.
+- Prior authoritative result: CRR-007 proportional test-code Pass; F-TEST-001 resolved.
+- Current authoritative result: **Not Applicable** — API-REV-004 made no durable test-code edit; no open findings. Medium/High unchanged.
+- Change and evidence: Current API round added live browser/process evidence and updated API reports/ledger only. Seven task-specific durable test/fixture paths have no diff from `98922d6a8` to integrated `ee0e2c313` and no current worktree edits. The intervening Delivery merge contains unrelated upstream test changes, not API-REV-004 task coverage.
+- Supported scenario basis: SCN-001/002/004 and current ACs unchanged; browser run corroborates native image card/reply and selected bundled Codex first turn without an app-owned image artifact.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related revisions | Verification evidence |
+| --- | --- | --- | --- | --- |
+| F-TEST-001 | Resolved in CRR-007 | Remains resolved | CRR-007, API-REV-003/004 | Task-specific durable paths unchanged; API-REV-004 browser/raw trace again shows one native image card and correlated invocation. |
+
+- New/remaining finding IDs: None.
+- Score/classification: No implementation scorecard or Code Reviewer API-confidence rescore; API-REV-004 reports Pass/95.0%. No-test-edit result is Not Applicable.
+- Recommended recipient: `/delivery_engineer` with cumulative updated API/browser evidence.
+- Remaining risks: One installed provider/model/account; Delivery's user verification, current-package selection and docs/finalization gates remain. Owned loopback services and marked Chrome result tab are intentionally retained for user inspection.
