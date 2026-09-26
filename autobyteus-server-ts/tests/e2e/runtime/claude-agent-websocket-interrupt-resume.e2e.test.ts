@@ -9,6 +9,7 @@ import websocket from "@fastify/websocket";
 import { describe, expect, it, vi } from "vitest";
 import WebSocket from "ws";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
@@ -329,6 +330,7 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
 }): Promise<{
   app: FastifyInstance;
   socket: WebSocket;
+  agentRun: AgentRun;
   runContext: AgentRunContext<ClaudeAgentRunContext>;
   sdkCalls: SdkQueryCall[];
   sessionManager: ClaudeSessionManager;
@@ -403,6 +405,7 @@ const createClaudeWebSocketHarnessWithSdkClient = async (input: {
   return {
     app,
     socket,
+    agentRun,
     runContext,
     sdkCalls: input.sdkCalls,
     sessionManager,
@@ -516,6 +519,68 @@ describe("Claude Agent SDK websocket streaming session (fake CLI)", () => {
       await waitForJsonMessage(harness.socket, (message) => message.type === "TURN_COMPLETED", "single TURN_COMPLETED");
 
       expect(clis[0]?.userTexts).toEqual(["run a 20 second command", "also say BANANA"]);
+      expect(sdkCalls).toHaveLength(1);
+    } finally {
+      await closeHarness(harness);
+    }
+  });
+
+  it("requeues an append that reaches Claude after its turn settled and starts it as the next turn (AC-016)", async () => {
+    const runId = "claude-ws-append-after-settle";
+    const turnOneUuids: string[] = [];
+    const { sdkClient, sdkCalls, clis } = createFakeCliSdkClient({
+      onInput: (message, cli) => {
+        if (cli.userTexts.length === 1) {
+          turnOneUuids.push(message.uuid);
+          cli.init();
+          cli.toolUse();
+          return;
+        }
+        cli.init();
+        cli.assistant("B_ANSWERED");
+        cli.result([message.uuid]);
+      },
+    });
+    const harness = await createClaudeWebSocketHarnessWithSdkClient({ runId, sdkClient, sdkCalls });
+    const session = harness.sessionManager.requireRunSession(runId);
+    const originalSubmit = session.submitInput.bind(session);
+    const dispatchKinds: string[] = [];
+    // The race: AgentRun still sees turn T active and claims B as an append, but Claude's
+    // turn T settles (its result arrives) before B reaches the session.
+    session.submitInput = async (message, dispatch) => {
+      dispatchKinds.push(dispatch.kind);
+      if (dispatch.kind === "append_to_active_turn" && dispatchKinds.length === 2) {
+        clis[0]!.emit({ type: "user", message: { role: "user", content: [{ type: "tool_result", tool_use_id: "toolu-long", content: "A_DONE" }] } });
+        clis[0]!.assistant("A_ANSWERED");
+        clis[0]!.result([...turnOneUuids]);
+        await waitForCondition(() => session.activeTurnId === null, "turn T settles before the append arrives");
+      }
+      return originalSubmit(message, dispatch);
+    };
+
+    try {
+      sendE2eSendMessageCommand(harness.socket, { content: "run a long command" });
+      await waitForCondition(() => clis[0]?.userTexts.length === 1 && session.activeTurnId !== null, "turn T running");
+      const turnT = session.activeTurnId!;
+
+      const facts: Array<Record<string, unknown>> = [];
+      const bAnswered = waitForAccumulatedSegmentContent(harness.socket, "B_ANSWERED", "B answered in its own turn");
+      const posted = await harness.agentRun.postUserMessage(
+        new AgentInputUserMessage("B: message that arrives as T ends"),
+        { lifecycleObserver: (fact) => facts.push({ ...fact }) },
+      );
+      expect(posted).toMatchObject({ accepted: true, turnId: turnT });
+      await bAnswered;
+      await waitForCondition(() => facts.some((fact) => fact.kind === "completed"), "B completes");
+
+      expect(dispatchKinds).toEqual(["start_turn", "append_to_active_turn", "start_turn"]);
+      const terminal = facts.filter((fact) => ["completed", "interrupted", "failed", "cancelled"].includes(String(fact.kind)));
+      expect(terminal).toHaveLength(1);
+      expect(terminal[0]).toMatchObject({ kind: "completed" });
+      expect(terminal[0]!.turnId).not.toBe(turnT);
+      expect(facts.some((fact) => fact.kind === "failed")).toBe(false);
+      // B reached the CLI exactly once, after T, from the same process.
+      expect(clis[0]?.userTexts).toEqual(["run a long command", "B: message that arrives as T ends"]);
       expect(sdkCalls).toHaveLength(1);
     } finally {
       await closeHarness(harness);

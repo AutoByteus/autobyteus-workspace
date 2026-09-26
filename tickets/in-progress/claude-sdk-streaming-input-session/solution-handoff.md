@@ -2,7 +2,7 @@
 
 - Result classification: `Architecture Design Complete`
 - Package identifier: `claude-sdk-streaming-input-session`
-- Current solution revision: `SR-011` (shared AgentRun append claim after IMP-DI-001; requirements re-approved with REQ-012)
+- Current solution revision: `SR-012` (usage accounting across process generations after CR-002; SR-011 reviewed in ARCH-REV-004)
 - Task size / architectural risk: `Large` / `High` (evidence: `design-spec.md` → "Task Size And Architectural Risk")
 - Approval state: requirements `Approved` at SR-006 by explicit user decisions on 2026-09-24/25 (quotes in `requirements-doc.md` → Document Status; SR-003..SR-006). Design is not user-approved content; it realizes the approved requirements.
 
@@ -34,7 +34,11 @@ The user reported that Claude agents' background Bash never finishes (predecesso
 - Predecessor: `origin/personal:tickets/done/claude-sdk-background-task-lifecycle/`
 - Prior review artifacts: `design-review-report.md` and `architecture-review-revision-record.md` (ARCH-REV-001, reviewed basis SR-007; Fail/Design Impact). The resolution map is at the end of `design-spec.md`
 
-## Points Worth Reviewer Attention (round 4)
+## Points Worth Reviewer Attention (round 5)
+
+- Round 5: CR-002 (from API-F-001/RSK-007). Please review design-spec "Usage Accounting Across Process Generations (SR-012)": the `claude_sdk_series_restart` marker on the first result of each resume-opened process generation, and the reconciler admitting per-turn main-loop usage and re-anchoring. It also covers the undetectable-reset case. OBS-2 is resolved as warning + doc (no env override). Implementation HEAD: `b7c6d86b3`; API/E2E durable test changes are uncommitted in the worktree.
+
+### Round 4 points (history)
 
 - Round 4: implementation raised IMP-DI-001. `AgentRunInputAdmissionState.claimNext` blocks every append behind the forwarded entry that started the turn. That also leaves Codex steer unreachable. The user chose to fix the shared rule for every append-capable runtime (DEC-007 = A, REQ-012/AC-014..016). Please review design-spec "Shared AgentRun Append Claim (SR-011)" (the claim walk rule, `undeliveredRetryAsStart` requeue with the `notInto` guard, invariants). All other sections are unchanged since ARCH-REV-003 Pass. Implementation checkpoint: `26450e6b0` (`implementation-handoff.md`).
 
@@ -60,3 +64,4 @@ The user reported that Claude agents' background Bash never finishes (predecesso
 - Handoff rule outcome (SR-008): the same rule matched again for the revised package → `/architecture_reviewer`
 - Handoff rule outcome (SR-009): the same rule matched again → `/architecture_reviewer`
 - Handoff rule outcome (SR-011): the same rule matched (Large/High revised package) → `/architecture_reviewer`
+- Handoff rule outcome (SR-012): the same rule matched → `/architecture_reviewer`

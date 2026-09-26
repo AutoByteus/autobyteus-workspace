@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/requirements-doc.md` (Approved, SR-006; unchanged)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/investigation-notes.md` (new section "Architecture Review Round 1 Evidence (SR-008)")
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-spec.md` (SR-011; round 4 reviewed the new section "Shared AgentRun Append Claim (SR-011)" and its file/test mapping; all other sections are unchanged since ARCH-REV-003)
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-spec.md` (SR-012; round 5 reviewed the new section "Usage Accounting Across Process Generations (SR-012)", including OBS-2; all other sections are unchanged since ARCH-REV-004)
 - Supplemental Task Artifacts Reviewed: `solution-handoff.md`; `probe-evidence/` including the new `probeP.log` (cq/cam on the PATH 2.1.281 and bundled 2.1.280 CLIs), `probeP-prewait.log` and `probeQ.log`
-- Relevant Solution Revision IDs: SR-006, SR-007, SR-008, SR-009, SR-010, SR-011 (requirements re-approved at SR-011 with DEC-007 = A: REQ-012, BEH-009, AC-014..016, SCN-008)
+- Relevant Solution Revision IDs: SR-006, SR-007, SR-008, SR-009, SR-010, SR-011, SR-012 (requirements re-approved at SR-011 with DEC-007 = A: REQ-012, BEH-009, AC-014..016, SCN-008)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: 4
-- Trigger: revised `Architecture Design Complete` (SR-011) after implementation Design Impact IMP-DI-001 (the shared AgentRun append claim). Implementation checkpoint `26450e6b0`
-- Prior Review Round Reviewed: 3 (ARCH-REV-003, `Pass`)
-- Latest Authoritative Round: 4
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: 5
+- Trigger: revised `Architecture Design Complete` (SR-012) after code-review failure-origin CR-002 (CRR-003) of API-F-001 / RSK-007 and API/E2E OBS-2. Implementation HEAD `b7c6d86b3`
+- Prior Review Round Reviewed: 4 (ARCH-REV-004, `Pass`)
+- Latest Authoritative Round: 5
 - Current-State Evidence Basis: round-1 code reads still apply (base `6f7b5e371` unchanged). Additionally checked `agent-run-interrupt-state.ts` (`observeTerminal` clears the interrupt reservation on any terminal of the turn), the new unfiltered probe captures, and SDK 0.3.280 `sdk.d.ts` `SDKControlInterruptRequest.cancel_queued`.
 
 ## Routing Classification Review
@@ -206,6 +206,11 @@ None blocking. All prior findings are resolved; see `architecture-review-revisio
 
   Only the pre-RPC path may map to `undeliveredRetryAsStart`. Give it a distinct code or flag, and keep the post-RPC mismatch and `CODEX_TURN_STEER_REJECTED` as visible failures. Add a Codex backend unit test for each path.
 - **IC-4 (round 4; non-blocking):** `AgentRun.postUserMessage` returns `turnId: appendTurnId` at claim time. After an `undeliveredRetryAsStart` requeue that id is no longer the input's turn. No current caller consumes it (the websocket coordinator uses lifecycle observer facts; checked `agent-run-command-coordinator.ts` and the routers). Either leave the return as-is and document it as a claim-time hint, or return `null` for append claims. Do not add consumers that depend on it.
+- **IC-5 (round 5; REQ-010, REQ-008):** attach `claude_sdk_series_restart` to the **first usage observation actually emitted** for a resume-opened process generation, not to the first raw `result`.
+  - The existing zero-usage guard in `claude-session-token-usage.ts` drops non-success results whose `modelUsage` rows are all zero (CAND-003).
+  - If such a result is the generation's first, the marker must carry over to the next emitted observation. Otherwise that observation would be differenced against the previous generation's checkpoint, which reintroduces the regression or silent under-count.
+  - Consume the flag only when an event is emitted.
+  - Add a unit test: a resume generation whose first result is a dropped zeroed error, followed by a success result that carries the marker.
 
 ## Classification
 
@@ -219,7 +224,7 @@ N/A (Pass)
 
 - Append-mismatch race (Codex parity): the entry fails visibly and is not lost silently. Accepted.
 - RSK-006: the undeclared `cancelQueued` option is isolated in one adapter, capability-checked, and covered by a live gated test on the PATH and bundled CLIs (sequence step 1).
-- RSK-007: usage after a crash reopen or a zeroed error result. Verify against the SDK `modelUsage` contract in implementation and API/E2E (escalation trigger present).
+- RSK-007: addressed by SR-012. The remaining approximation is the flagged main-loop delta on the first observation of each resume-opened generation.
 - P-prewait: a Stop that reaches the SDK before our message is flushed settles `TURN_COMPLETED`. It is accounted correctly, the window is sub-millisecond on a warm process, and it is further narrowed by the send-state rule.
 - A non-interrupt error result with further written input settles the canonical turn as `ERROR` after the remaining input is answered. It is visible and accounted.
 - Process memory (~170 MB per live run) is accepted (DEC-002).
@@ -250,8 +255,27 @@ N/A (Pass)
   - Persisted data: `Not Affected`
   - Change safety: `Pass`
 
+## Round 5 Review — Usage Accounting Across Process Generations (SR-012)
+
+- Basis: REQ-010 (preserved per-turn token accounting) and REQ-008 (crash reopen). No requirement change. The API/E2E evidence (`c08-life-05`, `c08b-rsk007`, both CLIs) shows a lost turn per crash that base did not have, so this is a real regression against preserved behavior. My round-1 residual note on RSK-007 anticipated this exposure. The premise that the resumed session continues from the transcript total holds only after a clean exit.
+- Rule soundness: `Pass`.
+  - Marking the first observation of every resume-opened generation needs no knowledge of how the previous process exited. A clean exit and a crash are indistinguishable after a server restart, so a uniform rule is justified.
+  - Admitting the per-turn main-loop usage for that one observation never reads the cumulative value across the generation boundary. It is therefore correct for any restart origin, including the undetectable case where the origin sits above the old checkpoint.
+  - Re-anchoring the checkpoint makes the rest of the generation exact again.
+  - `create` generations and same-process observations are unchanged.
+- Approximation: the main loop excludes auxiliary calls on the selected model within that one turn. Probe N shows about 900 input tokens of first-turn auxiliary usage when haiku is selected. Later same-process turns match exactly. This is bounded to one observation per process open, flagged with `claude_sdk_series_restart_main_loop_delta`, and accepted as proportionate. Exact alternatives would require knowing the restart origin, which the CLI does not expose.
+- Clean restore trade-off: the first result after a clean restore was exact before this change and is now approximated in the same flagged way. This is accepted: a clean exit cannot be proven after an arbitrary server stop, so uniformity is safer.
+- Ownership: the Claude session owns the signal (process generation + binding kind), and the shared reconciler owns the accounting rule. The payload field is optional and Claude-only. The checkpoint JSON shape is unchanged, so persisted data is `Directly Usable — No Migration` (an additive optional payload field).
+- Test mapping covers: origin 0, a restore-time origin above the checkpoint, clean restore, same-process, create, and missing main-loop usage. The existing live e2e `-t "RSK-007"` encodes the outcome. IC-5 adds the zeroed-first-result case.
+- OBS-2: `Pass`. Not overriding an operator-supplied `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS` avoids reintroducing hidden runtime policy (REQ-009). A per-open warning plus an operator doc note is proportionate and adds no product behavior.
+- Verdicts for the new section:
+  - Spine / ownership / interface: `Pass`
+  - Legacy: `Pass`
+  - Persisted data: `Pass`
+  - Change safety: `Pass`, with IC-5
+
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. P-001..P-009 are resolved. P-010 is covered by IC-1. The round-4 end-of-turn append race is Reachable and handled by `undeliveredRetryAsStart` with `notInto`.
-- Notes (round 4): the SR-011 shared append-claim section passes, with IC-3 and IC-4 added. The design is ready for implementation to resume from `26450e6b0`. The strongest risk controls are the live gated `cancelQueued` check (step 1), the tracker and registry frame-sequence tests from unfiltered captures (step 2), and IC-1.
+- Material-Premise Gate: `Pass`. P-001..P-009 are resolved. P-010 is covered by IC-1. The round-4 end-of-turn append race is handled by `undeliveredRetryAsStart` with `notInto`. The round-5 crash-restart origin is Reachable, observed live on both CLIs, and handled by the series-restart rule plus IC-5.
+- Notes (round 5): SR-012 passes, with IC-5 added. Round 4: the SR-011 shared append-claim section passes, with IC-3 and IC-4 added. Implementation resumes from HEAD `b7c6d86b3` (the API/E2E durable changes are uncommitted in the worktree). The strongest risk controls are the live gated `cancelQueued` check (step 1), the tracker and registry frame-sequence tests from unfiltered captures (step 2), and IC-1.

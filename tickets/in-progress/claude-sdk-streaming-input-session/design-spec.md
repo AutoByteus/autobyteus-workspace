@@ -2,10 +2,10 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-011` (adds the shared AgentRun append claim rule after IMP-DI-001; SR-007..SR-009 reviewed in ARCH-REV-001..003)
+- Current solution revision ID: `SR-012` (adds usage accounting across process generations after CR-002 / API-F-001; SR-011 reviewed in ARCH-REV-004)
 - Approved requirements baseline: `requirements-doc.md` at SR-011 (SR-006 plus REQ-012/AC-014..016, DEC-007 = A, user approval 2026-09-26). Earlier basis: SR-006 (BEH-001..008, UC-001..005, REQ-001..011, AC-001..013, SCN-001..007, DEC-001..006 all decided by the user on 2026-09-24/25; quotes in the requirements Document Status and SR-003..SR-006).
 - Behavior-defining supplements: none. `probe-evidence/` is evidence only.
-- Design status: `Ready` (round 4: the new section "Shared AgentRun Append Claim (SR-011)" and its file/test mapping need review; every other section is unchanged from ARCH-REV-003 Pass)
+- Design status: `Ready` (round 5: the new section "Usage Accounting Across Process Generations (SR-012)" needs review; every other section is unchanged since ARCH-REV-004 Pass)
 - Canonical investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/investigation-notes.md` (see "Architecture Investigation Findings (SR-007)" and "Architecture Review Round 1 Evidence (SR-008)").
 - Base: `origin/personal` @ `6f7b5e371` (v1.4.81).
 
@@ -407,3 +407,54 @@ Runtimes without append support (native AutoByteus, and AGY if it declares unsup
 ### Classification impact
 
 It stays `Large` / `High`. This adds a shared input-contract change that affects Codex runtime behavior (mid-turn delivery now reachable) and narrows a documented rule. Independent architecture review is required for this section.
+
+## Usage Accounting Across Process Generations (SR-012, CR-002 / API-F-001 / RSK-007)
+
+### Evidence
+
+- API/E2E API-REV-001, live on PATH 2.1.283 and bundled 2.1.280 (`api-e2e-evidence/c08-life-05-crash-and-usage.log`, `c08b-rsk007-usage-probe.log`):
+  - After SIGKILL, the resumed process restarts its cumulative `modelUsage` from the **last clean-exit persisted total** (0 in the test). The first post-crash result's cumulative equalled its main-loop usage (16,084).
+  - `reconcileClaudeSdkResult` sees a regression against the same session and raw-model checkpoint and suppresses the row (`claude_sdk_selected_regressed`). This loses one completed turn per crash.
+  - A clean close followed by restore continues from the persisted total and counts correctly (13,930 / 14,015 == main loop).
+- On base, every turn was its own process and exited cleanly, so this loss did not happen. This is a regression against REQ-010.
+- Origin is not always 0. A restored run that crashes later restarts from its restore-time total. If that origin plus the new turn exceeds the pre-crash checkpoint, the reset is **not detectable** as a regression, and the reconciler would under-count silently. So a regression-only rule is insufficient.
+
+### Rule (owner: token-usage reconciler; signal owner: Claude session)
+
+1. The Claude session marks the **first result of every process generation opened with `resume`** by setting `claude_sdk_series_restart: true` on that result's `TOKEN_USAGE_UPDATED` params. This covers first input after restore, reopen after an unexpected exit, and reopen after any close. The session knows this from `ClaudeSessionProcess` (binding kind + a first-result flag per open). It does not need to know whether the previous exit was clean.
+2. `reconcileClaudeSdkResult` (`src/token-usage/projections/claude-sdk-model-usage-reconciler.ts`), for an observation with `claude_sdk_series_restart: true`:
+   - **Selected row** (matched): the admitted delta is the observation's **per-turn main-loop usage** (`claude_sdk_main_loop_usage`: input, output, cache read, cache creation). The CLI's result `usage` is documented as per turn (probe N), so it does not depend on the unknown restart origin. The selected-model checkpoint for this session is then **set to the observed cumulative row**, which re-anchors the series. Flag: `claude_sdk_series_restart_main_loop_delta`, not `regressed`.
+   - Non-selected rows: re-anchor the checkpoint to the observed row without contributing (they never reach the public meter).
+   - Selected match missing or ambiguous, or main-loop usage unavailable: keep today's handling (flags and partial), with no guessing.
+3. Observations without the marker keep today's cumulative differencing and regression semantics unchanged. That includes same-process turns (exact) and `create` generations (zero origin).
+4. The first result of a `create` generation is unchanged: a new session has a zero origin, so differencing is exact.
+
+### Why this rule
+
+- It is correct for any restart origin (0, restore-time total, or anything else), because it never reads the cumulative value across a generation boundary.
+- Approximation: main-loop usage excludes selected-model usage by auxiliary loops within that one turn (e.g. background compaction). There are no Agent/subagent tools in AutoByteus's tool list. This applies to at most one turn per process open, and the flag marks it.
+- There is no persisted lifecycle state and no new series identity; the existing checkpoint JSON shape is unchanged.
+
+### Files and tests (additions)
+
+| File | Status | Responsibility |
+| --- | --- | --- |
+| `src/agent-execution/backends/claude/session/claude-session.ts` / `claude-session-process.ts` | Modify | Track the first result per resume-opened generation; pass the marker |
+| `src/agent-execution/backends/claude/session/claude-session-token-usage.ts` | Modify | Emit `claude_sdk_series_restart` |
+| `src/agent-execution/domain/claude-sdk-usage.ts` (payload types) | Modify | Optional `claude_sdk_series_restart` field |
+| `src/token-usage/projections/claude-sdk-model-usage-reconciler.ts` | Modify | Rule 2 |
+| `docs/modules/token_usage.md` | Modify | Correct "a resumed process continues from the totals its transcript saved" to "only after a clean exit". Document the series-restart rule and its flag |
+| `tests/unit/token-usage/...reconciler...test.ts` | Modify/New | Crash restart from origin 0 (the regression case), restart from a restore-time origin whose value exceeds the old checkpoint (undetectable-reset case), clean restore, same-process turns unchanged, create unchanged, missing main-loop usage |
+| `tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts` `-t "RSK-007"` | Existing | Already encodes the intended outcome (counted, not regressed, main-loop ≤ total ≤ cumulative) |
+
+### OBS-2 (inherited `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS=1`)
+
+Decision: AutoByteus does **not** override an operator's explicit environment. That would be a new hidden policy, which is the reverse of REQ-009. Instead:
+- when the streaming session opens and the spawn env contains `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`, log one warning per process open that background tasks are disabled by the environment;
+- add an operator note to `agent_execution.md`.
+
+Files: `claude-sdk-client.ts` (warning at `openStreamingSession`), `docs/modules/agent_execution.md`.
+
+### Classification impact
+
+It stays `Large` / `High`. This change touches the shared token-usage reconciler contract (a new observation field and rule) for Claude observations only.

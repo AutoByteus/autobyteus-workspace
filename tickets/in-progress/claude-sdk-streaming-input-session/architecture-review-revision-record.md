@@ -8,6 +8,7 @@
 | ARCH-REV-002 | Round 2 / Revised design SR-008 | SR-008 | Fail | Fail | ARCH-F-001..006 (resolved); ARCH-F-007, ARCH-F-008 (new) |
 | ARCH-REV-003 | Round 3 / Revised design SR-009 | SR-009 | Fail | Pass | ARCH-F-007, ARCH-F-008 (resolved); IC-1, IC-2 (constraints) |
 | ARCH-REV-004 | Round 4 / SR-011 shared append claim (IMP-DI-001) | SR-010, SR-011 | Pass | Pass | none; IC-3, IC-4 (constraints) |
+| ARCH-REV-005 | Round 5 / SR-012 usage across process generations (CR-002) | SR-012 | Pass | Pass | none; IC-5 (constraint) |
 
 ## Revision Entries
 
@@ -116,3 +117,31 @@ None
   - The Codex steer path becomes reachable in production for the first time; it is covered by the gated live AC-014 check.
   - RSK-006: the undeclared `cancelQueued` option (unchanged).
   - RSK-007: token usage after a crash reopen (unchanged).
+
+### ARCH-REV-005 — Round 5: SR-012 usage accounting across process generations — Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-review-report.md`
+- Review round and trigger: round 5; revised `Architecture Design Complete` (SR-012) after code-review failure-origin CR-002 (CRR-003) of API-F-001 / RSK-007, plus API/E2E OBS-2
+- Triggering role, report path, and finding IDs: `/solution_designer`, `solution-handoff.md`; `code-review-report.md` CR-002; `api-e2e-execution-coverage-report.md` API-F-001, OBS-2
+- Relevant solution revision IDs: SR-012
+- Prior authoritative decision: `Pass` (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - Reviewed the new section "Usage Accounting Across Process Generations (SR-012)" and the OBS-2 decision against the reconciler (`claude-sdk-model-usage-reconciler.ts`), the Claude token-usage emitter with its zero-usage guard (HEAD `b7c6d86b3`), and probe N.
+  - Confirmed the rule is origin-independent and bounded.
+  - Added IC-5: the series-restart marker goes on the first emitted observation of the generation, so a dropped zeroed first result does not strip it.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-F-001..008 | Resolved | Resolved | SR-008, SR-009 | Sections unchanged in SR-012 |
+| Residual risk RSK-007 (usage after a crash reopen) | Open residual (verify) | Resolved by design | SR-012; CR-002; API-F-001 | Live evidence on both CLIs. The series-restart rule is correct for any restart origin, with a bounded, flagged approximation |
+
+- New or remaining finding IDs: none. Constraints IC-1..IC-4 (earlier rounds) and IC-5 (new)
+- Material classification changes: none; still Large / High
+- Recommended recipient: `/implementation_engineer` (primary); `/solution_designer` (informational)
+- Remaining risks or uncertainty:
+  - The main-loop approximation applies to the first observation per resume-opened generation; it is flagged.
+  - OBS-2: operator env is respected with a warning.
+  - RSK-006 is unchanged.

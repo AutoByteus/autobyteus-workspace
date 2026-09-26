@@ -2,28 +2,33 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `Implementation Review` (round 4: the SR-012 delta). Round 3 was the API/E2E failure-origin review (CRR-003, CR-002)
 - Requirements Doc Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/requirements-doc.md` (Approved, SR-011)
 - Investigation Notes Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/investigation-notes.md`
 - Solution Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/solution-revision-record.md`
 - Design Spec Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-spec.md` (SR-011)
 - Supplemental Task Artifacts Reviewed As Context: `solution-handoff.md`; `probe-evidence/` (evidence only)
-- Relevant Solution Revision IDs: SR-006..SR-011
+- Relevant Solution Revision IDs: SR-006..SR-012
 - Design Review Report Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/design-review-report.md` (ARCH-REV-004 Pass; IC-1..IC-4)
 - Architecture Review Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-003, ARCH-REV-004
+- Relevant Architecture Review Revision IDs: ARCH-REV-003, ARCH-REV-004, ARCH-REV-005
 - Implementation Handoff Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003, IR-004
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Trigger: `Implementation Complete` from `/implementation_engineer` (IR-002; commits `26450e6b0`, `f33b175d4` on `codex/claude-sdk-streaming-input-session`; base `origin/personal` @ `6f7b5e371`)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
-- Coverage Investigation / Execution Coverage / API/E2E Revision Record: N/A (implementation review)
+- Current Code Review Revision ID: `CRR-004`
+- Current Review Round: 4
+- Trigger (round 4): `Implementation Complete` IR-004 from `/implementation_engineer` (commit `d3e227389` on top of `b7c6d86b3`; SR-012; ARCH-REV-005 Pass with IC-5). Trigger (round 3): API/E2E `Fail` API-REV-001 from `/api_e2e_engineer`, with one failure: API-F-001 / RSK-007. Round 2 trigger: `Local Fix complete` for CR-001 from `/implementation_engineer` (IR-003; commit `b7c6d86b3` on top of `f33b175d4`). Round 1 (CRR-001) reviewed IR-002 (`26450e6b0`, `f33b175d4`; base `origin/personal` @ `6f7b5e371`)
+- Prior Review Round Reviewed: 2 (CRR-002, `Pass`). Round 1: CRR-001, `Fail`, CR-001
+- Latest Authoritative Round: 4
+- Coverage Investigation Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/api-e2e-execution-coverage-report.md` (section "Failure Detail — RSK-007")
+- API/E2E Revision Record Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: API-REV-001
 - Delivery Revision Record: N/A
-- Failing Scenario IDs / Commands / Evidence: N/A
+- Failing Scenario IDs: API-F-001 (RSK-007; REQ-010 preserved per-turn token accounting; REQ-008 crash reopen)
+- Exact Failing Commands / Execution Mode: `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts -t "RSK-007" --no-watch`, run live on PATH claude 2.1.283 and SDK-bundled 2.1.280; both fail
+- Failure Evidence Paths: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/api-e2e-evidence/c08-life-05-crash-and-usage.log`, `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/api-e2e-evidence/c08b-rsk007-usage-probe.log`
 
 ## Routing Classification Review
 
@@ -53,6 +58,7 @@
 - Checks the reviewer ran:
   - The changed-area unit suites: 27 files, 284 tests, all pass.
   - One throwaway reviewer probe of `AgentRunInputAdmissionState`, deleted after running (evidence for CR-001).
+  - Round 2: reviewed the `b7c6d86b3` diff. Reran the input, AgentRun, Claude-backend and Codex-backend suites: 19 files, 204 tests, all pass.
 - Explicit exclusions:
   - Live API/E2E execution; that stage owns AC-001/004/006..009/012/014.
   - The rendered web check.
@@ -73,7 +79,7 @@
 | --- | --- | --- | --- |
 | BEH-004 (REQ-001/006) | Confirmed | `ClaudeSession.submitInput` → `ClaudeSessionProcess.ensureOpen` (lazy; `buildOpenBinding` create→resume) → `ClaudeSdkClient.openStreamingSession` (`prompt: ClaudeSdkInputChannel`). No idle timer. Close only via `closeProcess` (manager `terminateRun`/cleanup) | — |
 | BEH-007 | Confirmed | `ClaudeProviderSessionLifecycle.noteProcessOpened/noteProcessClosed`; the phase moves to resume after the first open | — |
-| BEH-002 / BEH-009 (REQ-004/012) | Confirmed, with defect CR-001 in the AC-016 sub-path | `claimNext` walk skips entries forwarded into the active IDENTIFIED turn and stops at any other non-queued entry. Claude `registerInput` handles append/join. Codex routes through `turn/steer`. Requeue on `undeliveredRetryAsStart` | — |
+| BEH-002 / BEH-009 (REQ-004/012) | Confirmed (CR-001 resolved in round 2) | `claimNext` walk skips entries forwarded into the active IDENTIFIED turn and stops at any other non-queued entry. Claude `registerInput` handles append/join. Codex routes through `turn/steer`. Requeue on `undeliveredRetryAsStart` | — |
 | BEH-001 / BEH-008 (REQ-002/003/009) | Confirmed | Policy env removed. `ClaudeBackgroundTaskRegistry` feeds the tracker opener → `notice` → `SYSTEM_TASK_NOTIFICATION` → accumulator (sender-scoped) → replay → web segment | — |
 | BEH-003 (REQ-005) | Confirmed | `ClaudeSession.interruptActiveTurn` → `tracker.requestInterrupt` (IC-1: `anySent \|\| cliTurnOpen`) → `interruptAndCancelQueued` → `applyInterruptResponse` → settlement | — |
 | BEH-006 (REQ-007) | Confirmed | `closeProcess`: `tracker.close()` (settles interrupted) → `process.close()` (awaits the opening, closes the query, awaits the pump) | — |
@@ -93,9 +99,9 @@
 
 | Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Reason / Proportionate Response |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| CAND-001 | The requeue path in `applyDispatchResult` keeps a stale `pendingTerminal` from turn T | CR-SCN-001 | A message arrives as T ends (AC-016) | See CR-001. Because the terminal is observed during the in-flight append claim, `claim.pendingTerminal = T terminal`. The requeue then resets state, dispatch kind and associated turn, but not `pendingTerminal`. On the later `start_turn` forward into T2, `applyPendingTerminal` finishes the entry at once with T's terminal (`completed`, `interrupted` or `failed` for T), and T2's real terminal never reaches it | `agent-run-input-admission-state.ts` L212-219, L306-310, L414-421. `agent-run.ts` L310 enqueues the result application after `await backend.dispatchUserInput`. The Claude backend emits `TURN_COMPLETED` synchronously into `dispatchProcessedAgentRunEvents` → `dispatchQueue.enqueue` before `registerInput` rejects, so in the Claude race the terminal task always precedes the result application. Reviewer probe output: `[admitted, forwarded(start_turn,T2), turn_associated(T2), completed(T)]` | Promote | Bounded local fix plus a unit test for the terminal-before-result ordering |
+| CAND-001 | The requeue path in `applyDispatchResult` keeps a stale `pendingTerminal` from turn T | CR-SCN-001 | A message arrives as T ends (AC-016) | See CR-001. Because the terminal is observed during the in-flight append claim, `claim.pendingTerminal = T terminal`. The requeue then resets state, dispatch kind and associated turn, but not `pendingTerminal`. On the later `start_turn` forward into T2, `applyPendingTerminal` finishes the entry at once with T's terminal (`completed`, `interrupted` or `failed` for T), and T2's real terminal never reaches it | `agent-run-input-admission-state.ts` L212-219, L306-310, L414-421. `agent-run.ts` L310 enqueues the result application after `await backend.dispatchUserInput`. The Claude backend emits `TURN_COMPLETED` synchronously into `dispatchProcessedAgentRunEvents` → `dispatchQueue.enqueue` before `registerInput` rejects, so in the Claude race the terminal task always precedes the result application. Reviewer probe output: `[admitted, forwarded(start_turn,T2), turn_associated(T2), completed(T)]` | Promote | Bounded local fix plus a unit test for the terminal-before-result ordering. Resolved in round 2 (`b7c6d86b3`) |
 | CAND-002 | The provider-UUID "unconfirmed completion" guard was dropped | Contract: BEH-007 resumability | A `result` with no `session_id` on any frame of the process | Every SDK frame carries `session_id`; `handleFrame` confirms it; a conflicting id throws → pump failure → close → turn `ERROR` | SDK stream shape (probe logs P/Q show `session_id` on every frame) | Reject | No supported path produces an unconfirmed completion |
-| CAND-003 | RSK-007 zeroed-usage guard drops non-success results whose `modelUsage` rows are all zero | Token accounting contract (`token_usage.md`) | Crash/startup-error result (SDK doc) | Forwarding it would regress the reconciler baseline (`regressed` → re-baseline) and the next result would count the whole session again; the guard drops only all-zero rows, which carry no usage | `claude-session-token-usage.ts`; reconciler L156-164 | Reject (as a defect) | Proportionate, and it loses no real usage. Totals after a crash reopen remain a live API/E2E check |
+| CAND-003 | RSK-007 zeroed-usage guard drops non-success results whose `modelUsage` rows are all zero | Token accounting contract (`token_usage.md`) | Crash/startup-error result (SDK doc) | Forwarding it would regress the reconciler baseline (`regressed` → re-baseline) and the next result would count the whole session again; the guard drops only all-zero rows, which carry no usage | `claude-session-token-usage.ts`; reconciler L156-164 | Reject (as a defect) | Proportionate, and it loses no real usage. Totals after a crash reopen remain a live API/E2E check. **Round 3:** the guard itself is still correct. Its supporting premise ("a resumed process continues from the totals its transcript saved") holds only after a clean exit, so see CR-002 |
 | CAND-004 | Registry: a `result` with `origin.kind === "task-notification"` consumes completions recorded before that CLI turn | CR-SCN-004 | Completion while a canonical input turn spans a CLI-started continuation turn | Without it, a later provider turn would re-announce a completion the model already reported | Tracker test "treats a completion delivered by a notification-origin continuation CLI turn as consumed"; probe Q origin field | Reject (as a defect) | A consistent refinement of the ARCH-F-005/007 intent |
 | CAND-005 | The event-monitor active-trace page has no visual for `system_task_notification` | DEC-006; design "Web: no change expected" | — | The notice replays in the conversation; the monitor ignores it | Requirements UI section (the notice appears in the conversation only) | Reject | Not required by the approved UI scope |
 | CAND-006 | `failInput` with other live work cancels the failed uuid, so the canonical turn can complete while that input never reached Claude | REQ-004 | Build or send throws after `ensureOpen` succeeded | The builder never throws for image problems (AC-013 note); `send` throws only when the process is not open, and exit settles the turn with `ERROR` | builder + process code | Reject | No supported initiating failure identified |
@@ -126,10 +132,10 @@
 | No unjustified duplication of code / repeated structures in changed scope | Pass | — | — |
 | Patch-on-patch complexity control | Pass | A clean rewrite; no dual path | — |
 | Dead/obsolete code cleanup completeness in changed scope | Pass | No remaining references to `startQueryTurn`, `closeQuery`, `activeQueriesByRunId`, the policy env, `claude-active-turn-execution`, `assertCurrentQueryConfirmed` or the client auto-approve | — |
-| Relevant test scenarios and assertions are clear and requirement-aligned | Fail | The AC-016 tests cover only the terminal-after-requeue ordering, not the terminal-during-claim ordering that production Claude produces (CR-001) | Add that ordering at the admission-state and AgentRun levels |
+| Relevant test scenarios and assertions are clear and requirement-aligned | Pass | Round 2 covers the terminal-during-claim ordering: admission-state `it.each` (T completed, T failed) and the AgentRun test with a pending append dispatch. B resolves exactly once, with `completed(turn-B)` | — |
 | Test fixtures/helpers are reasonably reusable and test structure remains coherent | Pass | `tests/helpers/fake-claude-streaming-sdk.ts`; admission-state `createState` helper | — |
 | No stale, duplicated, or compatibility-only tests are retained in changed scope | Pass | The runtime-policy integration test was deleted; the background-bash E2E was replaced | — |
-| API/E2E readiness for the next workflow stage | Fail | AC-016 lifecycle resolution is wrong in its dominant ordering (CR-001) | Fix CR-001 before API/E2E |
+| API/E2E readiness for the next workflow stage | Pass | CR-001 is fixed; the remaining live ACs are listed under Residual Risks | — |
 
 ## Source File Size And Structure Audit (If Applicable)
 
@@ -138,7 +144,7 @@
 | `backends/claude/session/claude-session.ts` | 477 | Pass | Triggered (+330/−355, a design-mandated rewrite) | Pass: composition plus the public operations; turn, process and registry logic are delegated | Pass | Accepted | — |
 | `backends/claude/session/claude-turn-tracker.ts` | 368 | Pass | Triggered (new, +409) | Pass: one state machine | Pass | Accepted | — |
 | `runtime-management/claude/client/claude-sdk-client.ts` | 471 | Pass | Pass | Pass | Pass | Accepted | — |
-| `input/agent-run-input-admission-state.ts` | 418 | Pass | Pass | Pass | Pass | Local defect (CR-001) | Fix |
+| `input/agent-run-input-admission-state.ts` | 418 | Pass | Pass | Pass | Pass | Accepted (CR-001 fixed in round 2) | — |
 | `backends/codex/thread/codex-thread.ts` | 500 | Pass (at the limit; unchanged size) | Pass | Pass | Pass | Accepted | — |
 | `backends/claude/events/claude-session-event-converter.ts` | 497 | Pass (near the limit, +12) | Pass | Pass | Pass | Accepted; watch future growth | — |
 | All other changed source files | ≤ 320 | Pass | Pass | Pass | Pass | Accepted | — |
@@ -178,8 +184,8 @@ No new or reclassified premise.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.0
-- Overall score (`/100`): 90
+- Overall score (`/10`): 9.3
+- Overall score (`/100`): 93
 - Score calculation note: simple average; the decision follows the findings.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
@@ -190,14 +196,105 @@ No new or reclassified premise.
 | `4` | `Separation of Concerns and File Placement` | 9.2 | New files match their owners | `claude-session.ts` (477) and the converter (497) are near the limit | Keep future additions out of these files |
 | `5` | `Shared-Structure / Data-Model Tightness and Reusable Owned Structures` | 9.3 | Shared image source; additive trace fields | — | — |
 | `6` | `Naming Quality and Local Readability` | 9.3 | Names match the design vocabulary; comments explain probe-derived rules | — | — |
-| `7` | `API/E2E Readiness` | 8.5 | Broad unit and fake-CLI coverage; live Claude suites pass on both CLIs | AC-016 resolves wrongly in its production ordering and no test covers that ordering (CR-001) | Fix and test CR-001 |
-| `8` | `Runtime Correctness And Behavioral Fidelity` | 8.0 | Tracker settlement, IC-1, IC-2, crash and close paths are sound | CR-001: a requeued input resolves early with the previous turn's terminal (completed/interrupted/failed), and its real turn's terminal is lost | Reset `pendingTerminal` on requeue |
+| `7` | `API/E2E Readiness` | 9.2 | Broad unit and fake-CLI coverage, now including the production AC-016 ordering; live Claude suites pass on both CLIs | Live AC-014 and AC-004 are not run yet (API/E2E-owned) | — |
+| `8` | `Runtime Correctness And Behavioral Fidelity` | 9.2 | Tracker settlement, IC-1, IC-2, crash and close paths are sound. The requeue now clears `pendingTerminal`/`observedTurnId`, so a requeued input resolves only at its own turn | Live verification of the race is still pending | — |
 | `9` | `No Backward-Compatibility / No Legacy Retention` | 9.5 | Clean cut | — | — |
 | `10` | `Cleanup Completeness` | 9.5 | Obsolete code, tests and docs removed | — | — |
 
+## Round 4 Implementation Review — SR-012 Delta (CR-002)
+
+- Scope:
+  - `d3e227389`: `claude-session.ts`, `claude-session-token-usage.ts`, `agent-run-token-usage.ts`, `claude-sdk-model-usage-reconciler.ts`, `claude-sdk-client.ts` (OBS-2), `token_usage.md`, `agent_execution.md`.
+  - Tests: `claude-sdk-usage-series-restart.test.ts` (new); `claude-session.test.ts` and `claude-sdk-client.test.ts` (updated).
+  - The API/E2E durable test changes are still uncommitted and out of scope here; they get a proportional test review later.
+- Design conformance (SR-012 rules 1-4, IC-5):
+  - Signal owner: `ClaudeSession` sets `seriesRestartPending = binding.kind === "resume"` per process open (`handleProcessOpened`). It is consumed only when `emitClaudeTokenUsageEvent` actually emitted (IC-5), so a dropped zeroed first result passes the marker on. A reopen after an exit creates a new `openProcess` state, so every resume generation is marked once.
+  - Payload: optional `claude_sdk_series_restart?: true`, preserved only for SDK observations in `createTokenUsageUpdatedPayload`. The checkpoint JSON shape is unchanged, consistent with `Directly Usable — No Migration`.
+  - Reconciler:
+    - A marked observation skips the regression check and re-anchors every row.
+    - The selected matched row admits exactly the per-turn main-loop counts, flagged `claude_sdk_series_restart_main_loop_delta`.
+    - Missing or incomplete main-loop counts admit nothing, flagged `claude_sdk_series_restart_main_loop_unavailable`, with `partial` set.
+    - Unmarked observations are byte-for-byte unchanged in behavior.
+  - Correct for any restart origin, including the undetectable restore-time origin, because it never differences across a generation boundary.
+- Candidate gate for the delta:
+  - A duplicate marked observation double-counting the main loop: **Reject**. `foldTokenUsageObservation` suppresses duplicate `usage_event_id`/idempotency digests before `reconcileClaudeSdkResult` (token-usage-run-fold L109-115).
+  - A marker consumed by an unmatched-selected observation: **Reject** as a defect. The rows are still re-anchored, so later differencing is exact, and the loss is bounded and flagged as today.
+  - A clean restore is now approximated by the main loop: accepted in ARCH-REV-005 (uniformity; a clean exit cannot be proven).
+- OBS-2: one warning per open when the spawn env has `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`; no override (REQ-009 honored); operator doc note added.
+- Docs: `token_usage.md` corrects the clean-exit premise and documents the rule, both flags, and the IC-5 carry-over.
+- Tests:
+  - Reconciler: origin 0; restore-time origin above the checkpoint; clean restore; same-process and create unchanged; missing main loop.
+  - Session: only the first observation is marked; IC-5 zeroed-first carry; reopen after exit marked and create not marked.
+  - The mutation checks reported by the implementer are consistent with the assertions.
+- Reviewer checks: 35 files and 317 tests pass (the changed tests plus `tests/unit/token-usage`, Claude backend, input and AgentRun); `tsc -p tsconfig.build.json --noEmit` is clean.
+- Sizes: `claude-session.ts` 487, `claude-sdk-client.ts` 479, reconciler 211, `agent-run-token-usage.ts` 370. All ≤ 500, and the deltas are small.
+- Implementer's live evidence: RSK-007 passes 2/2 on both CLIs. The post-crash turn is counted (13,727 / 13,706), flagged `claude_sdk_series_restart_main_loop_delta`, and the next turn is exact. The API/E2E rerun will confirm it.
+- Result: `Pass`. CR-002 is resolved. There are no new findings.
+
+## API/E2E Failure-Origin Review (Round 3) — API-F-001 / RSK-007
+
+### Scenario And Contract Basis
+
+- The scenario is still approved behavior:
+  - REQ-008 / AC-009: an unexpected Claude process exit fails the active turn, and the next input reopens via `resume`. AC-009 passes live.
+  - REQ-010 preserves per-turn token usage and cost accounting.
+  - The design lists RSK-007 and an explicit escalation trigger: "the usage reconciler double-counts or loses usage in the streaming lifecycle".
+- Scenario validity: `Supported Explicit Edge Scenario`.
+  - Initiator: an unexpected CLI exit (a supported operational/system event with an approved outcome).
+  - Forward production path: `ClaudeSessionProcess.runPump` → `EXITED` → the next `submitInput` → `ensureOpen` (resume binding) → first `result` → `emitClaudeTokenUsageEvent` → `TokenUsageRunPersistenceTransformer` → `reconcileClaudeSdkResult`.
+- The test reproduces an established production path; it does not invent one. The SIGKILL only simulates the supported crash event, and all accounting runs through production code.
+
+### Evidence And Mechanism (verified)
+
+- Both CLIs show the same pattern:
+  - Turns 1 and 2 are counted exactly.
+  - After the SIGKILL during turn 3, the resumed process's first result reports cumulative `modelUsage` equal to that turn's main loop (16,084 == 16,084; bundled 13,683 == 13,683). The counter restarted from the last cleanly persisted total, which was 0 here.
+  - Turn 5 is exact again.
+- In `claude-sdk-model-usage-reconciler.ts` (L141-164):
+  - A checkpoint series is keyed only by `sessionId` + raw model (`sameSeries`).
+  - The lower cumulative total is therefore `regressed`. The row is suppressed (`claude_sdk_selected_regressed`) and becomes the new baseline.
+  - That turn's usage is lost. Later deltas are exact, and nothing is double counted.
+- Control: a clean close then restore continues totals correctly (c08b: 13,930 / 14,015 == main loop).
+- Regression against base:
+  - Base ran one process per turn, and each turn ended with a clean exit that persisted totals.
+  - After a crash, the next per-turn process resumed from the totals saved at the previous turn's end, which equal the checkpoint, so that turn was counted.
+  - Streaming mode persists totals only when the long-lived process exits cleanly, so a crash now also costs the first post-reopen turn's usage.
+  - The killed turn's own usage is lost in both modes, since it has no `result`.
+- Consequence: usage and cost are under-counted by one completed turn per unexpected Claude process exit. This is bounded and visible via a quality flag, but it is a regression of preserved accounting behavior (REQ-010) and exactly the design's escalation trigger.
+
+### Origin Classification
+
+- `Design Impact`, not an implementation defect:
+  - The implementation follows the reviewed design: it reuses the reconciler "unchanged; verify" and adds the zeroed-result guard.
+  - The design premise behind RSK-007 is contradicted by runtime evidence: after an unexpected exit, the resumed CLI's cumulative counter does not continue from the last reported totals. That premise appears in the design's "verify against … the resumed saved total", and the implementation repeated it in `token_usage.md` ("A resumed process continues from the totals its transcript saved").
+  - A correct fix needs a decision across two contracts, the Claude session lifecycle and the token-usage reconciler checkpoint series. Options include:
+    - a process-open generation or reopen-after-exit marker in the usage observation and series identity;
+    - treating the first post-crash result as a zero-origin series;
+    - accepting the loss as a documented residual risk (a user-facing accounting outcome, so it needs Solution Designer and possibly user approval).
+  - The unknown restart origin also matters: the counter restarts from the last *clean-exit* total, not always 0. For example, a restored run that crashes later restarts from its restore-time total. The rule must stay correct for both origins.
+- Not a test, fixture or environment issue: the assertion encodes the approved REQ-010 and RSK-007 intent, and the evidence comes from production transformers.
+- Not a reasonable source-review gap: CAND-003 correctly judged the zeroed guard. That the CLI persists cumulative totals only on a clean exit is runtime-only behavior; it is not visible in source, the SDK types or the probes N/G. The design routed it to live verification (RSK-007), which is where it surfaced.
+- Docs follow-up, owned with the design fix: the `token_usage.md` sentence "A resumed process continues from the totals its transcript saved" is accurate only for a clean close then restore.
+
 ## Findings
 
-### CR-001 — Requeued undelivered append keeps the previous turn's pending terminal (High; Local Fix)
+### CR-002 — Usage of the first turn after a crash reopen is lost (Design Impact; API-F-001 / RSK-007) — RESOLVED in round 4 (SR-012, IR-004, `d3e227389`)
+
+- Basis: REQ-010 (preserved token accounting); REQ-008 / AC-009 (crash reopen); design RSK-007 and its escalation trigger.
+- Evidence and mechanism: see "API/E2E Failure-Origin Review (Round 3)" above.
+- Required action (Solution Designer):
+  - Decide how token accounting identifies a Claude cumulative-usage series across an unexpected process exit and resume, or obtain approval to accept the bounded loss.
+  - Then revise the design (Claude session ↔ reconciler contract) and correct `token_usage.md`.
+  - The durable RSK-007 E2E case in `claude-agent-streaming-session-lifecycle.e2e.test.ts` already encodes the intended outcome.
+
+### CR-001 — Requeued undelivered append keeps the previous turn's pending terminal (High; Local Fix) — RESOLVED in round 2
+
+- Resolution:
+  - `b7c6d86b3`: the requeue branch now also sets `entry.observedTurnId = null` and `entry.pendingTerminal = null`, with a comment explaining why.
+  - `observedTurnId` is always null for append claims, so resetting it is harmless.
+  - New tests cover the terminal-during-claim ordering at the admission-state level (completed and failed) and the AgentRun level (the append dispatch is held pending while `TURN_COMPLETED(turn-A)` is published). The implementer reports all three fail with the fix reverted; the assertions (no `completed` before turn-B's terminal, then exactly `[{completed, turn-B}]`) support that claim.
+
+Original finding (round 1):
 
 - Basis: REQ-012, AC-016, QR-003 and REQ-004 ("each input's … status resolves exactly once"; the message "starts the next turn instead of failing"). Scenario CR-SCN-001; candidate CAND-001.
 - Where: `autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts` `applyDispatchResult`, requeue branch (L212-219).
@@ -218,13 +315,15 @@ No new or reclassified premise.
 
 ## Classification
 
-- `Local Fix`: a bounded implementation defect in the correct owner. No design or requirement change is needed; the design text already specifies the correct behavior.
+- Round 4: N/A (`Pass`).
+- Round 3 (failure-origin): `Design Impact`, CR-002, now resolved.
+- Round 2 implementation review was `Pass`. Round 1 was a `Local Fix` (CR-001, resolved).
 
 ## Recommended Recipient
 
-- `/implementation_engineer`
-
-Routing note: after the fix, source review runs again (focused on CR-001 and its tests), then API/E2E.
+- Round 4: `/api_e2e_engineer` (primary; rerun API/E2E including RSK-007). `/implementation_engineer` gets an informational notice.
+- Round 3: `/solution_designer` (`Design Impact`).
+- After the solution revision, the route returns through architecture review as applicable, then implementation, code review and API/E2E rerun.
 
 ## Residual Risks
 
@@ -240,11 +339,13 @@ Routing note: after the fix, source review runs again (focused on CR-001 and its
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass` (round 4, implementation review of the SR-012 delta)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass`
-- Score Summary: 9.0/10 (90/100). Runtime Correctness 8.0 and API/E2E Readiness 8.5 are below the clean-pass bar because of CR-001; every other category is ≥ 9.2.
-- Failure Origin: N/A
-- Recommended Recipient: `/implementation_engineer` (`Local Fix`)
-- Notes: everything else passes, including IC-1..IC-4, tracker settlement and I-1..I-3, the claim walk, the registry consumption and notice-origin refinement, the RSK-007 guard, the dropped UUID guard (rejected premise), the notice history path, and cleanup. The re-review can stay focused on CR-001.
+- Material-Premise Gate: `Pass`. The round-3 reclassified RSK-007 premise (resume continues totals only after a clean exit) is now handled by the series-restart rule plus IC-5
+- Score Summary: 9.3/10 (93/100); every category ≥ 9.2. Runtime Correctness stays 9.2, now covering accounting across a crash reopen. The scorecard is otherwise unchanged from round 2
+- Failure Origin: N/A (round 3 origin CR-002 resolved)
+- Recommended Recipient: `/api_e2e_engineer`
+- Notes:
+  - API/E2E should rerun the RSK-007 case on both CLIs and re-validate the previously passing AC set as it judges proportionate. The code outside the SR-012 delta is unchanged since API-REV-001.
+  - The durable API/E2E test changes remain uncommitted and need the proportional test-code review after a successful run.

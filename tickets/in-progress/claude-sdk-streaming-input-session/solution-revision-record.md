@@ -15,6 +15,7 @@
 | SR-009 | Design | Architecture review ARCH-REV-002 (Fail, Design Impact): ARCH-F-007, 008 | ARCH-F-007, ARCH-F-008 | Design Ready (round 2) | Design Ready (round 3) | none (requirements unchanged) | Consumption rule excludes abort frames; unsent-input Stop path defined; re-routed |
 | SR-010 | Requirements | Implementation Design Impact IMP-DI-001 (IR-001): shared AgentRun claim rule blocks append | IMP-DI-001 | Approved; Design Ready (reviewed) | Ready for Approval (DEC-007); design Needs Revision | REQ-004, AC-003, AC-004; proposed REQ-012/AC-014 | Requirement Gap: shared/Codex scope decision needed from the user |
 | SR-011 | Mixed | User decision DEC-007 = A (2026-09-26); design section for the shared claim rule | IMP-DI-001 | Ready for Approval; design Needs Revision | Approved; Design Ready (round 4) | REQ-012, BEH-009, AC-014..016, SCN-008, DEC-007 | Shared AgentRun append claim designed; re-routed to architecture review |
+| SR-012 | Design | Code review failure-origin CRR-003 (CR-002) from API-REV-001 API-F-001 / RSK-007; API/E2E OBS-2 | CR-002, API-F-001, OBS-2 | Approved; Design Ready (ARCH-REV-004 Pass) | Approved; Design Ready (round 5) | none (restores REQ-010) | Series-restart usage rule designed; OBS-2 = warn + doc; re-routed to architecture review |
 
 ## Revision Entries
 
@@ -135,3 +136,13 @@
   - IC-3: Codex reuses `CODEX_TURN_STEER_ID_MISMATCH` both before the RPC and for a returned-id mismatch after it; only the pre-RPC case may set `undeliveredRetryAsStart`.
   - IC-4 (non-blocking): the append turnId that `postUserMessage` returns at claim time can go stale after a requeue; no current caller reads it.
   The reviewer forwarded the package to `/implementation_engineer`. The Solution Designer did not forward it again.
+
+### SR-012 — Usage accounting across process generations (CR-002)
+
+- Phase and classification: Design / Design Impact (RSK-007 escalation trigger hit)
+- Trigger: `/code_reviewer` CRR-003 finding CR-002 (failure-origin review of API-REV-001 API-F-001). Evidence: `api-e2e-evidence/c08-life-05-crash-and-usage.log`, `c08b-rsk007-usage-probe.log`. After an unexpected exit, the resumed CLI restarts cumulative `modelUsage` from the last clean-exit total, and the reconciler suppresses that turn as a regression (one turn lost per crash). The design premise "resumed saved total" held only after a clean exit
+- Design change: new section "Usage Accounting Across Process Generations (SR-012)". The session marks the first result of every resume-opened process generation (`claude_sdk_series_restart`). The reconciler admits that result's per-turn main-loop usage as the selected delta and re-anchors the checkpoint. This is correct for any restart origin, including the undetectable reset where the new cumulative exceeds the old checkpoint. OBS-2: no env override; warning + operator doc note
+- Requirements: unchanged. The fix restores REQ-010 accounting, and the OBS-2 choice preserves operator env (REQ-009 has no hidden policy)
+- Task size/risk: unchanged `Large` / `High`
+- Next action: architecture review → implementation → code review → API/E2E rerun (`-t "RSK-007"` already encodes the outcome)
+- Review outcome for SR-012 (recorded 2026-09-26): ARCH-REV-005 **Pass** (usage accounting across process generations, including OBS-2). Constraint IC-5: the series-restart marker goes on the generation's first *emitted* observation. If the zero-usage guard drops the first raw result, the marker carries over to the next emitted result. The reviewer forwarded the package to `/implementation_engineer`; the Solution Designer did not forward it again. OBS-2 was also discussed with the user on 2026-09-26: AutoByteus no longer sets the variable (removed on the branch). Operator-set values are honored with a warning. The user has not asked for an override.
