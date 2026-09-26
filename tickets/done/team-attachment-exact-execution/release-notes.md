@@ -1,4 +1,4 @@
-# v1.4.87 — Exact Team attachment ownership
+# v1.4.88 — Exact Team attachment ownership
 
 Fixes Team image/file delivery when configured and delegated executions share an address.
 
@@ -16,3 +16,5 @@ Rehearse on an installation copy and retain consistent backups before production
 See the server FILE_RENDERING_AND_MEDIA_PIPELINE guide for cutover/recovery.
 202 automated tests and real browser/live-Codex scenarios passed upstream; no
 installed-corpus migration, Electron-shell or production rollout proof is claimed.
+
+This release supersedes the unpublished v1.4.87 attempt, which was blocked by archived evidence path lengths before desktop builds. No application behavior changed in the correction.

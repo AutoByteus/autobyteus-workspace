@@ -1,4 +1,4 @@
-# Delivery / Release / Deployment Report — DR-002 (in progress)
+# Delivery / Release / Deployment Report — DR-003 (recovery in progress)
 
 Package docker-image-http400-20260926. Medium / High / Reviewed.
 Authoritative archived package: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-attachment-exact-execution`.
@@ -63,3 +63,13 @@ in raw logs and the stored historical diff. Those evidence bytes were deliberate
 preserved; this was not a source failure. A base-to-merged-tree check restricted to
 autobyteus-server-ts and autobyteus-web passed. No full archived-evidence whitespace
 Pass is claimed.
+
+## v1.4.87 outcome and corrective release
+Helper-created release commit 5e53d026d114475f5254ce29a6c3dadd05bad3d0 was pushed
+to personal before tag v1.4.87. Desktop 36266706007 failed repository artifact hygiene
+on two archived log paths, not source or tests. Three sibling runs cancellation
+requested successfully; release not found at recovery check. Tag not rewritten.
+Delivery corrected only archived filenames, preserving SHA-256 and full mapping
+(delivery-evidence/evidence-renames.json). No new product verification needed.
+Current publication target **v1.4.88**, same helper/no-push/personal-then-tag method.
+No manual duplicate dispatch. Result pending all corrective workflows and cleanup.
