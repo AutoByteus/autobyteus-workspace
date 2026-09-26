@@ -1,0 +1,4 @@
+PASS Current v5 snapshot stores and restores plain Markdown checkpoint without memory-category IDs
+PASS Current v5 snapshot also round-trips older category-rendered summary as ordinary checkpoint text
+PASS Current renderer reproducer: per-item 2000-character cap can remove a mid-checkpoint constraint
+PASS Current renderer reproducer: same cap can remove a genuine user constraint

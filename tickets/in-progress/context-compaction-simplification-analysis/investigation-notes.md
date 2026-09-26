@@ -1,0 +1,370 @@
+# Context-compaction simplification — investigation notes
+
+## Bootstrap
+
+- Package: `context-compaction-simplification-analysis`
+- Request: analyze whether AutoByteus runtime context compaction is over-engineered by coupling a JSON episodic/semantic split to prompt continuation; compare simpler summary-based approaches.
+- Git worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`
+- Branch: `codex/context-compaction-simplification-analysis`
+- Initial base: `origin/personal` @ `a2694ed453e353550d8b345fa82ef489634dcaf2` (SR-001/SR-002). Current base refreshed and fast-forwarded on 2026-09-26 to `046279298f53fb98d7688ee9dc2b2ba0fa827685` for SR-003; worktree/branch unchanged.
+- Finalization target: `origin/personal` if a later approved change is delivered.
+- Existing work: earlier `compression-current-behavior` investigation and active `memory-compaction-file-backed-redesign` worktree. Both are external historical/WIP packages, not this package's authority; do not edit them.
+- Bootstrap blocker: none.
+- Current status: `SR-013`; requirements SR-012 explicitly Approved; architecture investigation completed; saved-context, restore checks and raw-trace contents explained; user previously confirmed clean replacement and future-memory separation; output-extraction/detail proposal under discussion; source collection complete and user-requested targeted prompt refinement proposed; original-prompt assessment and minimal prompt refinement completed; requested prompt proposal and further feasibility investigation complete. Core one-call/one-summary direction explicitly approved. Complete requirements preservation boundary is Ready for Approval; no authoritative architecture/implementation handoff yet. Earlier sections below preserve the historical evidence and decision state of their rounds.
+
+## Evidence and uncertainty to resolve
+
+- Current selected-message planning, helper prompt/response, persisted artifacts, next-request projection, repeated compaction, and failure gates.
+- Whether episodic and semantic storage serve any independent current production consumer beyond reconstructing the compacted prompt.
+- What raw trace, lineage, and snapshot provide independently of the categorized result.
+- Comparison limited to primary public documentation/source. User's names `dsh` and `zcode` may be speech transcription ambiguity; do not attribute behavior to them without identification.
+
+## Initial source log
+
+| Date | Source | Finding |
+| --- | --- | --- |
+| 2026-09-25 | `git fetch origin personal`, `git worktree add ...` | Isolated task workspace on current tracked `origin/personal`. |
+| 2026-09-25 | `tickets/done/agent-based-compaction/*`; earlier `compression-current-behavior` worktree | Prior current-state and file-backed analysis exists; earlier target still retained episodic/semantic concepts. |
+| 2026-09-25 | `autobyteus-ts/src/memory/compaction/*`, projection/store/lineage files | Direct code inspection in progress. |
+| 2026-09-25 | `autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts`, `working-context-compaction-prompt-builder.ts`, `agent-compaction-summarizer.ts`, `compaction-response-parser.ts`, `compaction-result-normalizer.ts` | Default compaction strategy packages selected history inline; helper returns strict six-array JSON; parser/normalizer and one correction attempt enforce that representation. |
+| 2026-09-25 | `autobyteus-ts/src/memory/compaction/accepted-compaction-builder.ts`, `accepted-compaction-committer.ts`, `autobyteus-ts/src/memory/projection/compacted-memory-message-builder.ts` | Accepted JSON becomes episodic/semantic rows, then a single compacted-memory user message; commit writes rows, lineage and snapshot and archives selected raw traces. |
+| 2026-09-25 | `autobyteus-ts/src/memory/compaction/working-context-message-window-planner.ts`, `working-context-message-unit-builder.ts`, `autobyteus-ts/src/memory/working-context-finalizer.ts` | Prior compacted-memory constituent participates in later compactable prefix, not recent retained suffix; protected tool tail and recent suffix are preserved. Adjacent user messages may be composed with provenance. |
+| 2026-09-25 | `rg -n '\bRetriever\b|\.retrieve\(' autobyteus-ts/src autobyteus-server-ts/src`; server Memory Inspector API and web tabs | `Retriever` is exported but no runtime production caller found in this source search. Server/UI do expose episodic/semantic records for inspection, so they are not literally unused. |
+| 2026-09-25 | `autobyteus-ts/src/memory/store/memory-file-names.ts`, `autobyteus-ts/src/memory/lineage/compaction-lineage-record.ts`, `autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts` | Shipped persisted shape includes episodic/semantic JSONL, snapshot JSON and lineage JSONL; restart validates compacted-memory region against lineage. |
+| 2026-09-25 | `/Users/normy/autobyteus_org/autobyteus-worktrees/memory-compaction-file-backed-redesign/tickets/in-progress/memory-compaction-file-backed-redesign/requirements.md` and `memory-layer-taxonomy-design-clarification.md` | Existing unintegrated redesign requires three Markdown memory outputs and describes legacy-data migration; its latest requirement revision is pending user review. This package is read-only evidence, not this analysis's authority. |
+| 2026-09-25 | [Hermes compression docs](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/developer-guide/context-compression-and-caching.md), [Hermes persistent-memory docs](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/user-guide/features/memory.md), [Hermes micro-compaction docs](https://github.com/NousResearch/hermes-agent/blob/main/website/docs/developer-guide/micro-compaction.md) | Context checkpoint is a structured natural-language summary with prior-summary integration and retained tail; persistent memory is a separate facility. Hermes algorithm itself is nontrivial. |
+| 2026-09-25 | [Codex CLI `compact.rs`](https://github.com/openai/codex/blob/main/codex-rs/core/src/compact.rs), [OpenAI API compaction docs](https://developers.openai.com/api/docs/guides/compaction) | Codex CLI builds replacement history around summary plus preserved user messages; API server-side compaction may be opaque. Avoid claiming all Codex compaction is plain text. |
+| 2026-09-25 | User follow-up: “episodic and semantic belongs to long-term memory management, but compaction is not about that … create a really good summary so that the agent can continue after the compaction is done” | Direct user articulation of the desired conceptual boundary. This clarifies the candidate direction, but does not yet explicitly approve the scope, persisted-data treatment, or revision of the existing redesign. |
+| 2026-09-25 | User follow-up: compaction reduces “very big … working evidence into smaller one, and then into smaller one”; an agent may do compaction, but “there's no need … to introduce a semantic memory and episodic memory” | Confirms iterative continuation-checkpoint outcome and rejects mandatory episodic/semantic output for compaction itself. Still no direction on old data, Inspector/API, or existing redesign package transition. |
+
+## Supported current scenario and behavior
+
+| ID | Kind | Trigger | Current product/runtime sequence | Outcome | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| `SCN-001` / `BEH-001` | System | A supported AutoByteus agent run reaches the compaction budget after a provider response | Runtime plans settled old context, invokes configured helper, parses six-array output, writes episodic/semantic and lineage, rebuilds context as compacted-memory message + recent retained messages | Next provider request receives a smaller prompt while preserved head/tool-safe tail remain | `pending-compaction-executor.ts`; planner, builder, committer above |
+| `SCN-002` / `BEH-002` | User | User opens the Memory Inspector for a run | Server reads episodic and semantic JSONL into Memory View; web renders separate tabs | User can inspect those memory kinds | `agent-memory-service.ts`; `MemoryInspector.vue` |
+| `SCN-003` / `BEH-003` | System | A previous compacted run needs another compaction | Prior compacted memory is included in the selected prefix for the new summary pass | New output is a replacement current summary, not direct addition of prior rows to the prompt | unit builder and window planner; compactor template |
+
+## Evidence-backed assessment
+
+- The category split and re-rendering is a real output-model cycle, not just a naming concern. It adds schema parsing, categorization, persistence, and projection to achieve one prompt message.
+- No independent runtime retrieval use was found for current episodic/semantic rows. The Memory Inspector is an independent UI reader; external consumers were not audited.
+- The representation could be simplified without discarding distinct safety boundaries: message/window planning, tool protocol integrity, budget validation, trace archive, lineage, snapshot recovery.
+- Output simplification alone does not address inline-history prompt capacity or helper-agent recursion. These are separate known risks in the earlier `compression-current-behavior` assessment; this round did not reproduce them.
+- No production traces, live-model summary benchmark, or A/B quality comparisons were run; quality and operational upside remain hypotheses. SR-002 adds deterministic/mock-provider contract evidence, not quality evidence.
+
+## Persisted data and transition uncertainty
+
+- Shipped paths: `episodic.jsonl`, `semantic.jsonl`, `working_context_snapshot.json`, `compaction_lineage.jsonl` under run memory storage; raw traces may be archived separately.
+- Legacy episodic/semantic rows may be nonempty. The active redesign's investigation reports sampled nonempty local records, but this analysis did not inspect user content or independently measure volume.
+- Requirements decision needed: historical visibility/retention, new checkpoint bootstrap for existing runs, Memory Inspector/API compatibility, and whether categorized records continue in any separate memory product. Do not silently drop or reconstruct these from heuristics.
+
+## SR-001 historical decisions / risks
+
+| ID | Type | Description | Owner / next step |
+| --- | --- | --- | --- |
+| `DEC-001` | Intended behavior | User clearly states one iterative continuation checkpoint and separate long-term memory; full requirements baseline remains unapproved | Requirements baseline approval before design |
+| `DEC-002` | Data continuity | Fate of existing JSONL and inspection/API views | User approval before design |
+| `DEC-003` | Package authority | Revise/supersede unintegrated file-backed redesign | User direction before editing that package |
+| `RISK-001` | Quality | Free-text summary could lose factual salience/retrievability; current JSON taxonomy has not been shown superior by benchmark here | Evaluate repeated-compaction recall if approved |
+| `RISK-002` | Capacity | Inline selected history can exceed helper model context regardless of output format | Separate execution design investigation if approved |
+
+## SR-001 historical supplement inventory
+
+| Artifact | Purpose | Status | Approval |
+| --- | --- | --- | --- |
+| `analysis-report.md` | Evidence-backed assessment, comparison, recommendation, complete result context | Complete | Not behavior-defining approval |
+| `solution-revision-record.md` | Cumulative index of Draft requirements direction | `SR-001` recorded | Requirements approval still pending |
+
+## Product Design
+
+Not requested. No UI or prototype scope.
+
+## 2026-09-26 upstream source experiments — completed in SR-002
+
+- User explicitly requested cloning Hermes, OpenCode, ZCode, DSH, and Codex into a temporary folder and analyzing/running experiments against their compaction code. This authorizes research/probes, not AutoByteus implementation or a behavior change.
+- Temporary research root: `/tmp/autobyteus-compaction-research-20260926.kVSGz5`.
+- Repositories resolved from primary sources: `NousResearch/hermes-agent`, `anomalyco/opencode`, `zai-org/ZCode` (likely requested Z.ai project), `deepseek-ai/deepseek-harness` (README explicitly calls it `dsh`), `openai/codex`.
+- Method: shallow clones, record exact commit pins; trace trigger/input/model-facing output/persisted envelope/repeated-compaction/reinjection/long-term-memory coupling; run isolated deterministic or mock-provider probes where feasible. No unrequested live paid model calls, real user histories, or credentials in fixtures.
+- Existing isolated reporting worktree reused; requirements, report, revision record, and investigation notes read before resuming. AutoByteus base remains the previously inspected `a2694ed4`; no claim of freshly revalidating all AutoByteus runtime code this round.
+- Comparison will not assume that a simple model-facing output implies a small implementation, nor confuse JSON persistence with a JSON response contract.
+
+### SR-002 results and supplement inventory
+
+- Complete source-pinned comparison, command context, caveats, constraints and next action: `upstream-compaction-research.md` (Solution Designer; explanatory evidence, not behavior-defining approval).
+- Five clean clones: Hermes `9fc7f179`, OpenCode `696f41bc`, ZCode `29628c9a`, DSH `477b4f42`, Codex `25270df2`; full manifest `upstream-experiments/repositories.json`.
+- Model output: one structured text checkpoint in the inspected text-summary paths. ZCode asks for text tags; OpenCode and DSH request Markdown; Hermes iterative natural-language template; Codex local handoff text. No mandatory episodic/semantic output in these paths.
+- Qualification: Hermes `_pre_compress_memory_context` has optional/configurable required memory-provider checkpoint coordination. Codex remote-v2 accepts one opaque compaction item; server internals are not available. Avoid blanket absence-of-memory or all-plain-text claims.
+- Hermes canonical runner: 42 tests passed in four focused files; isolated Python 3.11.15 environment. Initial missing-ruamel collection failure followed by successful dependency-corrected run; both retained.
+- TypeScript source-declaration probes: 19 passed, including fresh/iterative prompt construction and valid/invalid synthetic model output. Actual DSH assembler used; no live model. Boundaries documented in `upstream-experiments/README.md` and script.
+- Codex static inspection only; Rust/Cargo unavailable. Full upstream app/integration suites and live-model quality benchmarks not run.
+- `upstream-experiments/` is a reproducibility/evidence supplement owned by Solution Designer, scope SR-002 investigation only, no approval applicability.
+- Intended behavior remains unchanged from SR-001 Draft; no design or migration chosen. The next action for this user request is to return the research, not initiate implementation.
+
+
+## SR-003 — Prompt synthesis and current-runtime feasibility (2026-09-26)
+
+### Trigger, approval and real-scenario boundary
+
+User explicitly agreed with the single-call recommendation and asked to inspect the upstream prompts, construct an AutoByteus prompt and start design under the design principles. Subsequent messages asked to respect real user scenarios and clarified that the earlier misunderstanding was resolved: “sorry i misunderstood you. please continue”. Record the core approval; do not continue claiming the user only requested research.
+
+The reference to accepting text means runtime acceptance of LLM-generated output, not a human submitting a summary. No such UI/API workflow is introduced. Automatic compaction, repeated compaction, normal resume, existing inspection and supported failure/retry are the scenario basis. Four synthetic probes reproduce transformations within those paths, not new product requirements. No general manual-corruption or distributed crash-recovery scope is inferred.
+
+A preservation question was already sent asynchronously: keep currently resumable runs and historical records readable, or make a clean break. No answer has been received. Conservative preservation is recommended; deletion is not authorized. Requirements now separate the explicitly approved core from this remaining scope decision rather than treating all approval as absent.
+
+### Workspace and reproducibility
+
+- Read canonical requirements/history/investigation and bundled solution-designer standards before continued authoring. Reused the isolated task worktree; shared integration checkout not edited.
+- `git fetch origin personal` succeeded, then `git merge --ff-only origin/personal` moved the clean tracked branch to `046279298f53fb98d7688ee9dc2b2ba0fa827685`. Refresh output was captured at `/tmp/compaction-design-base-refresh.log`; task documents remain untracked in the task worktree. No feature source edits.
+- Core compaction source is unchanged from the earlier analyzed baseline; server/web memory surfaces had evolved, so server readers were rechecked at the refreshed revision.
+- All five previously pinned clones retained and their relevant prompt files reread. No new upstream branch-tip claim. Exact source links and adaptation rationale are in `compaction-prompt-proposal.md`.
+- Source searches include `rg` for `CompleteResponse`, termination/status fields, `sendMessages`, current-compaction-output callers, snapshot/provenance and archival methods. A guessed-path lookup for former event handlers/resume service failed; `rg --files` resolved the actual current loop and restore paths listed below. No failed lookup was used as evidence of absence.
+
+### Source observations (paths relative to task worktree)
+
+| Evidence | Observation / consequence | Confidence / limit |
+| --- | --- | --- |
+| `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts`, `agent/loop/llm-phase.ts`, `agent/llm-request-assembler.ts`; `memory/compaction/pending-compaction-executor.ts` | Threshold observation and next-request preparation invoke existing pending compaction under its admission gate; started/completed/failed reporting already exists. This is an internal continuation flow. | Actual source; no live run executed. |
+| `memory/compaction/working-context-message-unit-builder.ts`, `working-context-message-window-planner.ts`, `compaction-conversation-history-renderer.ts`; `memory/policies/compaction-policy.ts` | Structured provenance distinguishes previous compacted region from recent natural user content. Current max-item default is 2,000 characters and clips user/assistant/old checkpoint text as well as tool evidence. | Probes reproduce middle-constraint loss; not a production incidence estimate. |
+| `memory/working-context-snapshot-serializer.ts`, `working-context-finalizer.ts`, `working-context-provenance.ts` | v5 snapshot root contains schema_version, agent_id, messages. A composed-user constituent stores compacted text by range; model-generated category IDs are not necessary to serialize that text. Arbitrary message metadata is retained. | Serializer/finalizer/unit-builder probes pass; does not prove full restore. |
+| `memory/restore/working-context-snapshot-bootstrapper.ts`; `agent/bootstrap-steps/working-context-snapshot-restore-step.ts`; `memory/projection/current-compaction-output-loader.ts` | Normal restore validates strict v5 shape then queries categorized lineage output to require exactly one compacted region iff a head exists. This dependency must change for category-free compaction. | Clear current runtime dependency; transition design remains open. |
+| `memory/compaction/accepted-compaction-committer.ts`; `memory/store/working-context-snapshot-store.ts`; `memory/memory-manager-working-context-controller.ts` | Current commit archives selected raw traces, writes category rows, appends lineage, installs in-memory context, then saves snapshot. Snapshot file write itself is temp+rename; entire multi-store operation is not atomic. | Do not claim existing whole-operation rollback or propose a general journal without a supported need. |
+| `memory/store/run-memory-file-store.ts:archiveCompactedRawTraces`, `memory/store/raw-trace-archive-manager.ts` | Exact archive requires selected IDs still active; repeat call after a successful archive fails. Existing archive boundary/manifest helpers can recognize completed segments. | Candidate snapshot/trace ordering must account for this; no new mechanism chosen. |
+| `autobyteus-server-ts/src/agent-memory/services/agent-memory-service.ts` | Inspector reads snapshot.messages and category files independently; it does not reconstruct current context from lineage. | Historical reads need not imply continued category writes. External consumers were not audited. |
+| `autobyteus-ts/src/llm/base.ts`, `llm/utils/response-types.ts`, seven direct adapter files under `llm/api/` | A direct call is already available. CompleteResponse has content/reasoning/usage/media/native-turn but no completion reason; raw provider status is discarded by current adapters. | No new provider status mapping implemented or certified. |
+| `llm/api/autobyteus-llm.ts` | Native direct adapter requires a nonempty logicalConversationId and owns cleanup of used conversation IDs. Nonstream output selects response/content/message and usage, without terminal status. | External native model-server terminal contract remains unknown; do not promise a universal empty-kwargs direct call. |
+| `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts`, `memory-compactor-agent-launch-resolver.ts`, `compaction-run-output-collector.ts`; backend factory | Existing path creates a helper AgentRun, resolves its definition/model, collects output, and terminates it. Recursion prevention is helper-specific. | Remove run lifecycle rather than imitate it in a direct-call service. Model availability/secret resolution remains owned by existing LLM construction. |
+| `autobyteus-ts/src/agent/token-budget.ts`, `memory/compaction/compaction-planning-budget.ts`, output validator | Existing code computes input/output reservation and post-compaction target and validates composed context/tool safety. | Reuse ownership; a text prompt target alone is not capacity enforcement. |
+
+Paths beginning `memory/` or `llm/` in this table are under `autobyteus-ts/src/`.
+
+### Executed additional probes
+
+Copied the actual-source script, log and result manifest into `design-investigation-probes/` for downstream reproducibility. Four passes: Markdown snapshot round-trip; category-rendered text snapshot round-trip; reproduction of middle-constraint clipping in old checkpoint; reproduction in long user text. Details, source hashes, Node/TypeScript versions and limitations are in the supplement. These are not implementation checks or live-model quality tests. The two loss reproductions indicate a current shortcoming, not success of a fix. Earlier 42 Hermes tests and 19 TypeScript probes remain distinct results; do not count reruns as additional cases.
+
+No paid/live provider generation, full application test suite, production run-content sampling, or representative persisted-volume census occurred. Data continuity remains a requirements decision; any eventual no-migration claim needs evidence beyond serializer feasibility.
+
+### Prompt synthesis and feasibility conclusions
+
+- Prompt-v1 intentionally has six prose headings, not six machine-validated memory categories. It tells the model to update older context, preserve important constraints/corrections, distinguish plans/results/approval, and not answer or act on the supplied history.
+- Do not copy ZCode's requested analysis block/full user-message inventory or combine all upstream headings. Do not claim hosted Codex is fully inspected or Hermes entirely independent of memory hooks.
+- One existing snapshot containing a checkpoint is a stronger simplification candidate than adding another summary-file authority. Current restore-lineage and commit ordering prevent declaring that transition finished.
+- Stop-reason handling belongs at the provider response boundary; it is about a real bounded model output, not a human text-validation workflow. Unknown native-provider semantics are a technical gap, not grounds to silently narrow provider support.
+- Prompt quality remains a hypothesis until first/repeated-compaction outputs are evaluated. A concise fixture rubric is supplied; no new evaluation platform is proposed.
+
+### Current decision state and supplement inventory
+
+`DEC-001` resolved: core one-call/one-summary target approved. `DEC-002` pending: recommended preserve supported resume and historical read access; no destructive assumption. `DEC-003` resolved for this package's target: latest request supersedes the prior three-output design premise, without editing or canceling that external worktree. No final architecture risk/size classification before full design.
+
+| Artifact | Owner / purpose | Scope / status | Approval applicability |
+| --- | --- | --- | --- |
+| `analysis-report.md` | Solution Designer; historical initial assessment | SR-001/SR-002 evidence | Explanatory, not current requirements authority |
+| `upstream-compaction-research.md` | Solution Designer; five pinned code comparisons | SR-002 complete | Evidence only |
+| `upstream-experiments/` | Solution Designer; scripts/pins/logs | SR-002 reproducibility | Evidence only |
+| `compaction-prompt-proposal.md` | Solution Designer; original prompt-v1, rationale, real-scenario evaluation rubric and lean feasibility | SR-003 proposed | Prompt continuation semantics accompany the requirements baseline; not an approved design spec |
+| `design-investigation-probes/` | Solution Designer; current-source feasibility and clipping reproducers | SR-003, four passes | Evidence only, no model-quality claim |
+| `solution-revision-record.md` | Solution Designer; cumulative status and approval index | Through SR-003 | Index, not an additional behavioral authority |
+| `solution-progress-result.md` | Solution Designer; complete current round/route context | SR-003 approval hold | Handoff/result context, not implementation authorization |
+
+Product artifacts and independent architecture/code-review artifacts: `N/A — not applicable` at this stage.
+
+
+## SR-004 — Preserve the original prompt's useful guidance
+
+- Trigger: user asked whether the original compactor prompt was already good and primarily needed bullet/output changes from JSON to Markdown; explicitly scoped the question to the prompt.
+- Read current requirements, revision history, current prompt proposal and actual built-in source. Worktree/base unchanged (`046279298f53fb98d7688ee9dc2b2ba0fa827685`); no production source changes.
+- Exact source: `autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md:8–37`. This is the repository template, not a sample of a custom persisted agent definition. Lines 8–10 already state continuation and rolling-summary updates; line 12 has broad resume-relevant information; lines 14–16 contain good anti-noise guidance expressed as episode/fact counting; line 18 forbids invention; lines 20–37 require the categorized JSON object.
+- `autobyteus-ts/src/memory/compaction/working-context-compaction-prompt-builder.ts` separately adds history separators and a JSON-specific correction message. `agent-compaction-summarizer.ts` parses/corrects output. Changing the model prompt alone will not remove runtime parser/store dependencies; user correctly scoped this discussion to prompt content.
+- Assessment: original content guidance is strong as written; no live-model evidence establishes prompt-v1 rewrite as superior. Prefer retaining the original continuation, update, salience and factuality paragraphs. Replace episode/fact-count wording with concise non-overlapping bullets, replace JSON schema with Markdown headings, and retain only small task-boundary/budget clarifications. This is an engineering assessment, not a benchmark result.
+- Current supplement: `compaction-prompt-proposal.md` now `SR-004/prompt-v2`, original-derived. Historical exact SR-003 proposal preserved at `history/compaction-prompt-proposal.sr003.md` (Solution Designer; historical rationale; not current behavior authority). Other inventory supplements remain relevant unchanged.
+- Requirements/ACs/scenarios: unchanged. No additional approval is needed to answer this assessment or refine a proposed prompt. Full requirements preservation confirmation remains pending; do not turn a format question into approval of data policy.
+- No tests executed this round: source/prompt comparison only; previous four probes and upstream counts not repeated or inflated. No provider call, implementation or Product/reviewer artifact edits.
+
+## SR-005 — User confirms tuned-original preservation
+
+User states the original prompt was carefully written and tuned and explicitly directs reusing it with small JSON/category-to-Markdown changes. This is user-provided provenance, not independent model-quality evidence. Prompt-v3 retains the original continuation, rolling-update, content-selection and factuality paragraphs verbatim; only episode/fact-output wording and final format change. Removed the extra task-boundary/token-target prose added in the previous proposal; runtime control responsibilities are unchanged. Historical prompt-v2 archived at `history/compaction-prompt-proposal.sr004.md` (Solution Designer; historical, non-authoritative). Requirements record approval of this adaptation boundary, not unrelated data policy. No production changes, tests or new research this round.
+
+### SR-005 standalone reading file
+
+User requested the proposed prompt in a file to read later. Extracted the current prompt verbatim into `proposed-compaction-prompt.md` and replaced the inline duplicate in `compaction-prompt-proposal.md` with a link. This is the canonical literal prompt; Solution Designer owns it, scope/status SR-005/prompt-v3, proposed wording under the already approved minimal-adaptation approach. No behavioral, approval, design or implementation change. Requirements supplement inventory and result link updated.
+
+
+## SR-006 — Source-faithful prompt files for comparison
+
+- User request: save the other platforms' compaction prompts in files so they can compare. Interpreted “problems” in the transcribed sentence as prompts, as explicitly specified in the following sentence.
+- Reused all five pinned clones from SR-002; checked each HEAD against `upstream-experiments/repositories.json`. All five were clean at the source check. No need to move the research to a newer revision or change the proposal.
+- Created `upstream-prompts/README.md` plus `hermes.md`, `opencode.md`, `zcode.md`, `dsh.md`, `codex.md`, and historical `autobyteus-original.md`. Each identifies sources/revisions, extracted layer/variant, and provenance. Preserved upstream root licenses and available notices.
+- Hermes: called the actual imported `_build_summary_prompt` without running a constructor/provider. Rendered first/repeated, has_user_turn=True, default lean mode, illustrative summary-budget argument 4096, no optional focus/memory context. History/prior summary use visible placeholders; the clock helper is bound to `{{CURRENT_DATE}}`. Isolated HOME/HERMES_HOME and cleared inherited environment; no credentials or model call. Not an exhaustive collection of optional/no-user/legacy-mode variants.
+- OpenCode: actual application instruction plus unchanged core buildPrompt declarations rendered with placeholder history for first/repeated requests. Kept the application/core layer distinction explicit.
+- ZCode: actual default buildCompactPrompt(undefined), including preamble/reminder and requested analysis/summary tags. These are copied prompt instructions, not generated reasoning and not a recommendation to adopt those tags.
+- DSH: actual evaluated array/join instruction and separate checkpoint preamble; final-user-message placement documented.
+- Codex: verbatim public default local prompt and separate summary prefix; no claim to know the private remote prompt or every custom override.
+- AutoByteus comparison: original built-in definition copied as a clearly labelled read-only source snapshot; current proposed prompt linked to its canonical file, not duplicated or changed.
+- Reproduction: `upstream-prompts/extract-hermes.py`, `extract-prompts.cjs`, machine-readable Hermes output and `extraction-manifest.json`. Manifest records source/output SHA-256 hashes, exact pins, Node/TypeScript versions and extraction settings. Verified output hashes, fences and local per-project links. Successful extraction is not a summary-quality experiment or additional upstream test count.
+- Inventory addition: `upstream-prompts/` (Solution Designer; SR-006 comparative evidence; no behavior approval applicability). Previous supplements remain relevant. No implementation source modifications, paid/provider generation, full integration test run or quality benchmark.
+- Approval state unchanged: original-based Markdown direction confirmed; remaining data-continuity policy still unanswered. No architecture-complete classification, independent review or implementation handoff applies to this request.
+
+
+## SR-007 — Add only important missing or implicit continuity guidance
+
+- Trigger: user explicitly asks to take important upstream points ours may have missed and adapt ours. Latest direction permits focused substantive additions; do not keep treating SR-005's formatting-only boundary as immutable.
+- Re-read canonical literal/rationale, requirements/history, and the saved source-faithful prompts from all five pinned projects. No upstream revision changes or new claims about hosted behavior.
+- Gap analysis: original already covers continuation, previous-summary updating, information salience, concision and no invention. Five selected additions clarify unanswered requests/cancellations, older constraints not repeated, completed/planned/blocked state, exact continuation references and source-only summarization. OpenCode/Hermes/DSH provide the most direct evidence; ZCode reinforces alignment with the current request; Codex's concise checklist is already covered and adds no necessary rule.
+- Scenario basis: ordinary questions/approval waits/corrections during work; repeated compaction where constraints are not restated; proposed versus executed validation; precise artifact references; internal summarizer sees a conversation rather than becoming its next answering agent. Existing SCN-001/003 and REQ-001/005/006 apply. User reopening resolved work remains allowed. No new manual-text-entry or threat-model scenario is introduced.
+- Added one short five-bullet block to the canonical literal; preserved all earlier text and six headings. Previous literal archived at `history/proposed-compaction-prompt.sr005.md`; exact diff at `history/prompt-v3-to-v4.diff`.
+- Supplement inventory: `prompt-refinement-notes.md` (Solution Designer; SR-007/prompt-v4 rationale, source mapping, included/excluded points and proposed example checks; supports review of the current behavior-defining prompt). Historical literal/diff are evidence of revision, not alternative current authorities.
+- Verification: additive edit-integrity and unchanged-heading checks only. No actual summarization calls, live-model recall/quality evaluation, implementation tests or production source edits. Prompt quality remains to be evaluated, not assumed improved because more instructions were added.
+- Approval: adaptation work explicitly requested; draft wording returned for review. Overall existing data-preservation decision still unanswered. No Architecture Design Complete or downstream-ready classification.
+
+### SR-007 clarification: input separators versus output headings
+
+User asked whether Markdown output is enclosed in separators. Rechecked `working-context-compaction-prompt-builder.ts`: START/END OF TARGET AGENT CONVERSATION HISTORY markers enclose the source history sent to the compactor, not its returned summary. Original built-in prompt asks for one bare JSON object; current proposed prompt asks for one bare Markdown summary under six headings, without a code fence or surrounding commentary. No outer output marker is proposed; a dedicated call returns the summary body. No prompt, requirement or design change; evidence-only clarification.
+
+
+## SR-008 — Extraction guarantees versus summary completeness
+
+- User feedback: a model may prepend commentary before Markdown and may produce too few entries; user recalls the earlier array structure encouraging fuller content. These are actual output-contract/quality concerns within ordinary SCN-001/003/005, not manual text submission.
+- Re-read `autobyteus-ts/src/memory/compaction/compaction-response-parser.ts` and `compaction-result-normalizer.ts` at the unchanged recorded base. Current parser explicitly attempts full response, JSON fences and balanced object extraction, requires six arrays, permits one nonempty episode plus five empty arrays, and rejects multiple distinct valid objects. The normalizer cleans/deduplicates/filters, not semantic coverage. No claim that it enforces multiple entries per category.
+- Correction to earlier explanation: “the whole returned text is the summary” was too strong as a reliability claim. Dedicated purpose and prompt instructions do not guarantee absence of surrounding prose.
+- Prompt fidelity correction: original minimum-episode guidance was separate from source-dependent fact counts. Rewording it as minimum bullets changed its effect by minimizing every output item. Prompt-v5 instead asks for enough concrete bullets; existing non-repetition and no-invention guidance remains.
+- Proposed response: one explicit output block, extract a single complete nonempty body, reject malformed/ambiguous candidates rather than guessing, and retain provider truncation/budget checks. Markers do not prove meaningful completeness. A single JSON summary envelope is discussed only as an unselected alternative; provider-wide strict structured-output support is not asserted.
+- Inventory: `output-format-and-coverage.md` (Solution Designer; SR-008 proposed response/detail semantics and real-scenario verification examples; accompanies the current prompt for review), prior literal `history/proposed-compaction-prompt.sr007.md` and diff `history/prompt-v4-to-v5.diff`. The latter are historical evidence, not competing current prompts.
+- Prompt remains draft; no production code, parser implementation, model quality evaluation or tests executed this round. Full requirements baseline is not Approved. Existing pending continuity decision remains separate; do not infer approval from the user asking how extraction works.
+
+
+## SR-009 — Strategy support and clean-cut simplification
+
+- Trigger: user asks for the solution design, identifies replacing the combined episodic/semantic message, preserving prefix/recent context and simplifying the agent path; asks whether another strategy is supported, then emphasizes simplification over adding machinery.
+- Canonical requirements/history/result read; same isolated workspace/source base. Read web AGENTS.md before inspecting the settings surface. No application source edits.
+- `autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts`: only production registration found is `structured-json`. Registry/register/list and resolver code support extensibility in principle. Source search across core/server/web did not find a second production registration; this is not an audit of external library consumers.
+- `working-context-compaction-strategy.ts` construction/diagnostics embed child-runner and episode/semantic concepts. `working-context-compaction-proposal.ts` output is `NormalizedCompactionResult`; accepted output includes category records/lineage. `accepted-compaction-builder.ts` requires episodes, creates IDs/items and calls the category renderer. Therefore another strategy cannot simply return text and bypass the shared category path.
+- `message-budget-strategy.ts` provides `EstimatedMessageBudgetStrategy`, consumed by the window planner: this is internal cost calculation, not a second full compaction algorithm. Do not remove budgeting merely because its type contains Strategy.
+- Current call wiring: `autobyteus-ts/src/agent/loop/llm-phase.ts` constructs resolver/registry context and emits child-agent/episode/fact diagnostics; pending executor invokes the resolved strategy. Planner already separates system, compacted region, retained/protected suffix and selected trace IDs.
+- Server settings/catalogue: `autobyteus-server-ts/src/config/working-context-compaction-strategy-setting.ts`, `src/services/server-settings-service.ts`, `src/api/graphql/types/working-context-compaction-strategy.ts`, GraphQL schema. Web: `components/settings/CompactionConfigCard.vue`, `stores/serverSettings.ts`, strategy-catalog store and server-settings queries. Strategy-selection removal has actual API/UI wiring; retain threshold/context/debug controls rather than deleting the card indiscriminately.
+- Child execution: `autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts` creates/posts/subscribes/collects/terminates a separate run; launch resolver and output collector are specific to that mechanism. `backends/autobyteus/available-llm-construction.ts` already owns availability plus provider secret/Gemini resolution for direct model creation. Reuse that boundary, not raw provider clients or a renamed child-agent workflow.
+- Proposal: replace one compaction path and simplify its shared output boundary; retain clear planner/summarizer/context-commit responsibilities instead of either dual algorithms or one oversized new class. Candidate removal map and scope distinctions in `simplification-design-direction.md`. That document is discussion/feasibility, not an authoritative completed design-spec.
+- Persistence implications were not re-proven by this read: existing v5 stores text but restore/category-lineage and archive/commit ordering still need final design. Historical read access does not require continuing old generation. Data-policy approval remains pending; no migration-free claim.
+- Inventory addition: `simplification-design-direction.md` (Solution Designer; SR-009 behavior-to-flow/refactor proposal; surfaced settings/strategy-removal boundary for review; not implementation-ready). All earlier prompt/evidence supplements remain relevant; prompt-v5 unchanged in this round.
+- No live model, implementation test, integration validation or formal size/risk classification; no independent specialist-owned artifact edits. Next result is explain clean replacement and required retained safeguards to the user.
+
+
+## SR-010 approval evidence — replacement, not another strategy
+
+- Source: latest user message explicitly selects simplification/removal and says clearing mixed concepts will allow a future memory module to be developed separately.
+- Interpretation/authority: the user approves the SR-009 replacement direction. Canonical intended behavior is recorded in requirements, not inferred from the source call graph. No approval of historical-data deletion or final technical transition is implied.
+- Artifact-only round: reread current requirements, direction, result and revision history; confirmed isolated workspace status (only ticket artifacts untracked). Updated approval references and removal boundary; no fresh source findings, model generation, execution test, production change or quality claim.
+- Remaining evidence gaps unchanged: provider completion metadata/lifecycle, exact model/configuration mapping, safe snapshot/trace commit and category-independent restore. Data-continuity decision remains pending.
+
+
+### SR-010 clarification: resume risk is conditional, not demonstrated
+
+Re-read `working-context-snapshot-bootstrapper.ts` and `current-compaction-output-loader.ts`. Restore deserializes the saved context, loads categorized output by lineage membership and checks summary-region/lineage-head agreement. A mismatch or removed backing rows can reject restore; changing future summary generation alone does not invalidate an intact existing snapshot. No post-refactor failure exists because no implementation has occurred. The earlier preservation question must not imply inherent incompatibility or a need to keep the old algorithm. A category-independent restore design still needs meaningful snapshot/protocol validation and tests. User asks for explanation, not permission for data loss; approval state unchanged.
+
+
+## SR-011 — Saved context, categorized restore gate and raw trace contents
+
+### Scope and observations
+
+User asks why episodic/semantic data is read when a saved summary exists, and what the raw trace contains. Rechecked native AutoByteus runtime source at `046279298f53fb98d7688ee9dc2b2ba0fa827685`; this is not an assertion about every provider-native runtime. “Reopen” here means restoring the execution to continue work, not merely displaying the chat-history screen.
+
+Persisted artifacts have distinct roles:
+- `working_context_snapshot.json`: strict v5 envelope (`schema_version`, `agent_id`, `messages`). Serialized messages include roles, text, media, tool payloads and metadata/provenance. The combined summary is already stored as text in the marked compacted-memory region, possibly physically composed with adjacent user content; required context and retained messages are also present. It is the saved current working context, not the whole historical transcript.
+- `episodic.jsonl`: generated episode records; `semantic.jsonl`: generated categorized fact records. These are derived outputs, not raw evidence.
+- `compaction_lineage.jsonl`: records compaction identity/previous identity, exactly which episode/semantic IDs form its output, time and execution metadata. It is compaction bookkeeping, not another copy of the summary.
+- `raw_traces_active.jsonl` and completed numbered raw-trace segments with archive manifest (SR-013 correction: current segments are run-root `raw_traces_000001.jsonl` files; the reader also supports historical locations): normalized chronological event evidence. Compaction archives selected older source records; removing them from the active set does not mean deleting the archived corpus.
+
+### Actual restore path and limits
+
+1. `WorkingContextSnapshotRestoreStep` invokes the bootstrapper when runtime restore options exist.
+2. Bootstrapper reads strict v5 snapshot, validates envelope/run identity and deserializes messages.
+3. `loadCurrentCompactionOutput()` reads the latest lineage head, finds exactly its listed episodic/semantic rows, and enforces ordered ID membership. File-store exact lookup rejects missing or duplicate referenced rows.
+4. Bootstrapper only uses the returned bundle as a non-null boolean. It requires exactly one compacted-memory region when a lineage head exists, and no such region when absent. It does not re-render or regenerate saved summary text from those rows.
+5. It installs the saved working context, checks/repairs tool protocol using active raw-trace facts, validates the resulting snapshot and persists it.
+
+The category reads therefore enforce a structural invariant of the existing multi-artifact design; they are not necessary because text is unavailable. The inferred rationale is detecting orphaned/inconsistent compaction artifacts, not a documented author intention newly established by this inspection. Important limit: these checks do not compare the saved summary's text with a freshly rendered category bundle or prove semantic fidelity; they are existence/membership/region-count checks. Removing this dependency while keeping snapshot identity/schema/provenance and tool-protocol checks is consistent with the already selected simplification direction, but still needs complete design and tests.
+
+### Raw-trace contents
+
+Normal turn-scoped records have `id`, `ts`, `turn_id`, per-turn `seq`, `trace_type`, `content`, `source_event`, plus optional fields for the event:
+- `user`: processed LLM-user-message text, image/audio/video URL values, and original non-media file references (`uri`, `file_type`, `file_name`). References are not an independent copy of the attached file bytes.
+- `assistant`: response content; a separate `reasoning` record is stored when the provider response supplies reasoning text. No claim that providers always expose it.
+- `tool_call`: tool name, call ID and arguments. Main `content` may be empty; payload is in typed tool fields.
+- `tool_result`: result value, error/denial and IDs/arguments as applicable; not just a rendered chat string. Runtime interruption/recovery may also produce explicit terminal tool-result records.
+- `operation_boundary`: native runtime interruption/cancellation note, written by the turn runner.
+- The same raw JSONL stream also contains `system_instruction` records for captured supplied system instructions; these have their own smaller schema without turn ID/sequence. Repeated identical active system-instruction capture is deduplicated. Turn-specific readers intentionally filter these records out.
+
+“Raw” means recorded event-level evidence rather than an LLM-generated memory summary. It does not mean a byte-for-byte record of every original UI input, hidden provider state or HTTP request/response. User text is already processed; provider-native replay metadata is not wholly represented by these generic raw fields. Do not claim exact request reconstruction from the raw corpus alone. Normal restore requires the snapshot rather than rebuilding all history from raw traces, although raw tool facts have an independent repair role.
+
+### Sources and validation
+
+- `autobyteus-ts/src/agent/bootstrap-steps/working-context-snapshot-restore-step.ts`: restoreOptions guard and call.
+- `autobyteus-ts/src/memory/restore/working-context-snapshot-bootstrapper.ts:35–90`: saved-text restore, category gate and active-trace tool repair.
+- `autobyteus-ts/src/memory/projection/current-compaction-output-loader.ts:11–39`: exact referenced category load; no summary rendering.
+- `autobyteus-ts/src/memory/working-context-snapshot-serializer.ts:30–109`: snapshot representation and validation.
+- `autobyteus-ts/src/memory/lineage/compaction-lineage-record.ts` and `compaction/accepted-compaction-committer.ts`: membership schema and current multi-store write ordering.
+- `autobyteus-ts/src/memory/models/raw-trace-item.ts`; `raw-trace-ingestion.ts:13–158`: normal recorded fields and native event constructors.
+- `autobyteus-ts/src/memory/store/run-memory-file-store.ts:167–213,274–295,348–395,455–470`: system capture, corpus/active distinction, archiving, exact category lookup.
+- `autobyteus-ts/src/memory/models/system-instruction-trace.ts`; `agent/bootstrap-steps/system-prompt-processing-step.ts:29–41`: separate system trace schema and capture caller.
+- `autobyteus-ts/src/agent/loop/agent-turn-runner.ts:126–155`; `memory/memory-manager-tool-protocol-safety.ts:37–103`: interruption records and tool repair evidence.
+- Inspected, not executed: `autobyteus-ts/tests/unit/memory/working-context-snapshot-bootstrapper.test.ts` (direct restore, strict v5/no raw replay, absent-lineage rejection); `current-compaction-output-loader.test.ts` (exact category membership/no raw archive access). Two initial guessed source/test paths were absent; actual paths found through repository search.
+
+No production edits, new experiments/test execution, live-model calls or user-data inspection this round. Working tree remains ticket-only untracked changes. No new user approval, final architecture or forward-ready classification.
+
+
+## SR-012 — Requirements consolidation, no new implementation evidence
+
+User asks whether the requirements are now clear. Re-read canonical requirements, current output-contract supplement, latest result and skill readiness standard. Consolidated previously discussed one-call/tagged-summary/clean-replacement behavior, preserved safety/resume/history and separate future-memory scope into one approval baseline. Added REQ-009/AC-011 for traceability of the existing tagged-output contract, not new user workflow. Prompt-v5 unchanged. Status Ready for Approval; prior core approvals retained, complete-baseline approval not fabricated. No fresh production source findings, tests, model calls or data inspection. Isolated working tree remains only untracked ticket artifacts. Technical design gaps retain their existing evidence/ownership; no final architecture or risk classification.
+
+
+## SR-013 — Post-approval architecture investigation
+
+Approval: user “Correct. approve” covers SR-012 requirements/ACs and prompt-v5/output supplement after the repeated-compaction clarification. No new intended behavior introduced below. Workspace remains isolated at `046279298f53fb98d7688ee9dc2b2ba0fa827685`; source unchanged.
+
+### E13-1: direct generation and configuration
+
+- Re-read core BaseLLM.sendMessages/cleanup, response-types, seven direct adapter families and request capacity. BaseLLM already accepts AbortSignal/turnId; logicalConversationId is an internal kwarg filtered from provider request bodies except the owning AutoByteus adapter. A fresh per-attempt LLM avoids sharing parent system prompt/extensions or remote conversation identity. Core completion response currently drops terminal reason; direct adapters have the raw data except AutoByteus RPA.
+- Server createAvailableLlm owns model availability + LLMFactory + secret resolver + Gemini runtime resolver. Reuse this construction, not ad-hoc clients or secret lookup. Existing compactor defaultLaunchConfig supplies model/config overrides and otherwise parent-model fallback; no reason to keep a runtime/agent definition lookup in the new execution path.
+- BuiltInAgentBootstrapper unconditionally copies templates, including null-defaultLaunchConfig memory-compactor config, during application preparation. Preserve a currently present override before that phase through a bounded one-time settings migration; do not carry a permanent legacy reader. AppConfig.setDurably already atomically persists a setting and only then updates runtime config. Ordinary set() can silently retain session-only values after write failure, so it is not appropriate for the migration completion marker.
+- Startup integration is `application-platform/runtime/build-application-platform-runtime.ts` preparation hook before builtin bootstrapping and definition readiness. One compound non-secret setting suffices for modelIdentifier + llmConfig; its valid persisted presence is the migration completion marker. Existing `.env` file is authoritative; no second settings store.
+- Exact source inventory/hash supplement: `design-investigation-probes/sr013-source-inventory.json`; matched references are an audit index, not blanket deletion permission. AgentConfig/factory, server backend construction, GraphQL/catalog/settings, frontend status types and tests reference old types. SDK wildcard exports expose deep paths: coordinated breaking replacement is required, not compatibility wrappers. No external SDK consumers audited; rollout/docs must identify removed APIs.
+
+### E13-2: provider completion evidence and bounded inference
+
+- Direct OpenAI-compatible response: choices[0].finish_reason. Mistral SDK uses choices[0].finishReason (installed declaration includes stop/length/model_length/tool_calls/error). Anthropic: stop_reason. Gemini: candidates[0].finishReason and promptFeedback. Ollama: done/done_reason. OpenAI Responses: status/incomplete_details and output item kinds. Map at each existing adapter, not a compaction-owned provider switch. Preserve unknown as unknown, never fabricate successful terminal status.
+- Official primary references checked 2026-09-26: [OpenAI Chat completion](https://developers.openai.com/api/reference/resources/chat/subresources/completions/methods/create), [Claude stop reasons](https://platform.claude.com/docs/en/build-with-claude/handling-stop-reasons), [Gemini GenerateContent](https://ai.google.dev/api/generate-content), [Mistral chat](https://docs.mistral.ai/api/endpoint/chat), [Ollama chat](https://docs.ollama.com/api/chat). OpenAI Responses web open returned an internal error; used installed official SDK response declarations and actual adapter source rather than claiming the page was read. Research excluded non-primary results.
+- Additional read-only external repository: `/Users/normy/autobyteus_org/autobyteus_rpa_llm_workspace/autobyteus_rpa_llm_server`, HEAD `8c1051780b30dc6ece9464a5c234b476469d7ddd`, file hashes in inventory. Its `services/llm_service.py:52–100` and `api/schemas.py:37–44` expose content/reasoning/media, no completion reason, token usage explicitly null. Generation config is a generic extra-params map; no portable max-token enforcement is established for all RPA providers. This is local contract evidence, not verification of every deployed host. Keep AutoByteus support with unknown completion status, unique request conversation and cleanup; validate returned framing and accepted-context budget. No new RPA server/API change or claim of universal truncation detection.
+
+### E13-3: safe snapshot and raw-evidence replacement
+
+- Existing committer archives/prunes active records, writes category rows/lineage, installs context, then writes snapshot. It can fail after active mutation. Current context controller.replace similarly installs before persistence. Do not copy that ordering into the simplified flow.
+- RawTraceArchiveManager.archiveRecords can persist a complete archive COPY independently of active pruning and reuses a completed boundary key. RunMemoryFileStore exposes readCompleteSegmentTraceIds and removal by boundary. Corpus reader deduplicates active/archive records by ID. Reuse those owners: stage complete archive copy without deleting active -> validate/prebuild candidate -> atomic snapshot write (commit point) -> no-I/O install/complete -> best-effort prune already archived IDs. Precommit failure leaves old snapshot and active records; postcommit pruning failure leaves duplicate evidence, not a failed summary.
+- Do not add a compaction transaction journal, second summary file or category lineage replacement. A process stop before snapshot commit leaves the old active context; after commit it restores the new snapshot. Cleanup uses snapshot raw provenance and archived membership, never removes a trace still referenced by restored context. This needs target implementation fault/cancellation tests, not merely the probes.
+- Physical-location correction to earlier explanation: current archiveManager.resolveNewSegmentPath writes numbered segments under run root and current manifest is raw_traces_manifest.json. Its existing reader also handles older manifest/locations; that unrelated already-existing archive compatibility is not removed in this task.
+
+### E13-4: executed design probes and representative data
+
+`node design-investigation-probes/sr013-persistence-probes.cjs <task-worktree> <shared-workspace>` transpiles unchanged selected TS modules and exercises actual serializer, file snapshot store, raw archive owner and raw store on isolated synthetic data. Six PASS results: old category-rendered v5 text directly readable without category files; current bootstrap rejects absent lineage; staging copies leaves active/snapshot intact; stop after staging retains baseline and deduplicated corpus; completed boundary reuse creates no second segment; replacement snapshot then pruning preserves retained trace and full corpus, with idempotent repeated prune. Temporary data removed.
+
+Files: script, log and sr013-persistence-results.json (source hashes, Node v22.23.1, TypeScript 5.9.3). Representative fixture: 3 traces, 898-byte replacement snapshot, 266-byte archive. Not production volume sampling, actual crash/power-loss test, typecheck, provider integration or implemented target tests. Earlier four source probes and 42 Hermes/19 upstream TS probe results remain unchanged.
+
+### E13-5: transition decisions and residuals
+
+- Strict supported v5 snapshots: directly usable, no schema bump/rewrite/re-summary. Both old combined and new Markdown text are ordinary strings under the SAME existing provenance representation; normal reader validates schema/message identity/protocol without consulting category files or branching on text headings. Earlier serializer probes plus E13-4 show representative preservation; target end-to-end verification is still required.
+- Historical episodic/semantic files: retained unchanged for existing independent Memory Inspector readers; no new writes from compaction. Historical lineage files left as unused data, no active dependency. Raw record/manifest schemas unchanged; current archive placement corrected above. Deployed history volume unknown, but no upgrade traversal/rewrite proportional to it is designed.
+- Model settings: one bounded migration of at most one prior builtin config (source preserved), because its model/config value otherwise would be stranded when child-agent wiring is removed. No run-memory migration. Default template contains null override. New valid setting wins; absent setting imports model/config or explicit inherit default, then durably marks completion. Runtime kind/tools/skills/old compactor prompt do not govern the new direct invocation. Old invalid model remains explicit/unavailable until changed, never silently replaced.
+- No live-model quality guarantee, exhaustive external-consumer census or universal provider completion visibility. These are disclosed validation/rollout risks, not grounds for another strategy or an autonomous fallback.
+
+### Supplement inventory additions
+
+| Path | Owner/purpose | Related IDs | Status |
+| --- | --- | --- | --- |
+| design-spec.md | Solution Designer, complete technical architecture against approved baseline | all BEH/REQ/AC | design completion recorded in result |
+| design-investigation-probes/sr013-persistence-probes.cjs + .log + sr013-persistence-results.json | Solution Designer, six reproducible unchanged-source feasibility probes | REQ-003/004/007; AC-004/005/008/009 | executed PASS, not target implementation evidence |
+| design-investigation-probes/sr013-source-inventory.json | Solution Designer, affected-reference/source hashes and external RPA contract pin | REQ-002/005/008 | evidence-only, not a deletion command |
+
+### E13-6: final current-model and shared-contract audit
+
+- `autobyteus-ts/src/llm/models.ts:185` exposes `modelIdentifier`; `agent/loop/llm-phase.ts` owns the current `llmInstance` per invocation. Direct factory inheritance must receive that current identifier per attempt, not capture it at run creation. Explicit compactor selection still wins; settings are resolved once at attempt start. This tightens technical realization of approved model behavior, not scope.
+- Repository-wide search extends the initial 59-file core/server/web reference scan: `autobyteus-agent-presentation-contracts/src/agent-presentation-message-dtos.ts:53–78` has a strict COMPACTION_STATUS schema with required nullable obsolete child/fact fields. Update its tests and team/collaboration/web adapters in the same change. Shared-package build is part of coordinated validation/release. `test-support/live-e2e/live-e2e-harness.ts:700–990` contains child-compactor configuration and result assertions; retain the realistic retention fixture but rework those assertions for direct compaction. These tests were read, not run.
+- Distinguish live execution from historical readers: raw-trace-to-historical-replay-events.ts:133, event-monitor-active-trace-page-projection.ts:135, web Event Monitor mapping and CompactionActivityItem currently preserve/display old semantic fact counts. Do not blanket-remove these historical read/display fields under a grep cleanup. Keep the existing historical boundary without a new writer or legacy algorithm. The design explicitly separates removed current live fields from preserved historical view-only fields.
+- Final audit file hashes are under `finalAuditFiles` in sr013-source-inventory.json. No production edits or additional runtime tests.
