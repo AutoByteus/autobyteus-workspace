@@ -3,7 +3,7 @@
 ## Release / Publication / Deployment Scope
 - Ticket: `agy-runtime-image-codex-prep-20260926`; `task_size=Medium`, `architectural_risk=High`, reviewed route (ARCH-REV-008, CRR-005 source, CRR-007 test, API-REV-004 Pass/95.0%; CRR-008 test-code review Not Applicable because no durable test changed).
 - Server finalization target: `origin/personal` from `solution-result.md` bootstrap; separate `autobyteus-agents` package target: `origin/main` from `implementation-handoff.md`. The package is part of the completion boundary, not a server-owned bundled file.
-- Status: **User verified, repository finalization in progress; package target `main` requires PR #14 review.** This is not yet `Delivery Completed`.
+- Status: **User verified; server repository finalized; package target `main` blocked by PR #14 review.** This is not yet `Delivery Completed`.
 
 ## Handoff Summary
 - Artifact: `handoff-summary.md`; status Updated for user verification.
@@ -36,10 +36,10 @@
 - Not required. The user explicitly declined a new version/release. No version bump, tag, release commit, publication or deployment. The pre-verification `release-notes.md` draft was withdrawn before archive.
 
 ## Repository Finalization
-- Server task branch: `task/agy-runtime-capabilities-20260926@cf0e0e7e` before the final archive/docs commit; target `origin/personal`. Latest remote base `cf005d377` was integrated after verification; 36 focused AGY unit tests passed with one preexisting skip. Final task push/target merge remain pending at this report snapshot.
+- Server task branch: `task/agy-runtime-capabilities-20260926@b5574da79` after archive/docs commit, pushed to `origin/task/agy-runtime-capabilities-20260926`. Latest remote base `cf005d377` was integrated as `cf0e0e7e` after verification; 36 focused AGY unit tests passed with one preexisting skip. A detached target worktree merged the task branch into `personal` as `9f7fb71296f6200de643d626201acd0c2cf7adca`, then pushed `origin/personal`; the merge tree equals the verified task tree. The primary `personal` checkout was not touched by that merge operation.
 - Separate package task branch: `task/agy-codex-skill-bundle-20260926@a140474`, pushed to `origin/task/agy-codex-skill-bundle-20260926`; target `origin/main@1b1a75e`.
-- GitHub rejected direct package-main push with protected-branch `GH006` (review-required). [Package PR #14](https://github.com/AutoByteus/autobyteus-agents/pull/14) is open, mergeable but `REVIEW_REQUIRED`; its merge/push cannot be claimed until policy-approved review completes.
-- Repository finalization: In progress for server; Blocked for package main by independent PR approval. No completed target push is claimed in this snapshot.
+- GitHub rejected direct package-main push with protected-branch `GH006` (review-required). [Package PR #14](https://github.com/AutoByteus/autobyteus-agents/pull/14) is open, mergeable but `REVIEW_REQUIRED`; auto-merge is disabled for this repository. Its merge/push cannot be claimed until policy-approved independent review completes. The unrelated dirty `autobyteus-agents` primary `main` checkout was left untouched.
+- Repository finalization: **Completed for server target** (`origin/personal@9f7fb7129`); **Blocked for package main** by required independent PR approval. Do not claim full repository finalization.
 
 ## Release / Publication / Deployment
 - Applicability: No — the user explicitly requested repository finalization without a new version or release. No release helper, tag-triggered workflow or direct deployment will run.
@@ -47,7 +47,7 @@
 - Release notes handoff: Not required; draft withdrawn. Result: Not required.
 
 ## Post-Finalization Cleanup
-- Dedicated server and package worktrees/local task branches exist. No cleanup is safe before both target finalizations and any applicable release; none performed.
+- Dedicated server and package task worktrees/local branches remain. Server worktree retains the user-tested unsigned Electron App; package worktree is the selected current local Codex bundle and is the source named by the isolated manual launcher. Removing either now could break a user test or imported package root, so task-worktree/local-branch cleanup is not currently safe. The temporary detached merge worktrees are delivery-owned and may be removed after their evidence is persisted. Remote server task branch cleanup is deferred until the overall package PR gate resolves.
 
 ## Environment / Persisted-Data Transition
 - Approved design: Directly Usable — No Migration. New grant applies to new capsules; old capsules remain immutable. No app-owned image index/files to migrate, delete, or recover. Provider-owned image storage remains provider-owned.
@@ -59,5 +59,5 @@
 - Rollback criterion: if installed CLI differs from 1.2.11, selected Codex package source is stale/missing, native image cards are uncorrelated/unsafe, or a provider failure leaks private output, stop rollout. Revert target commits or deploy prior known-good release as appropriate; do not rewrite old capsules or delete AGY-owned images.
 
 ## Final Status
-- Explicit user verification: Yes — final acceptance after DR-004 rebuild. Repository finalization: Pending package PR review and server target push. Applicable release/rollout: Not required. Safe cleanup: Pending safety assessment — the power-off ended the prior 18080/13080 processes, but any residual isolated test files must be handled only by recorded ownership after verification. The separate installed app on 29695 remains untouched. Terminal package eligible: **No**; no message to Solution Designer.
+- Explicit user verification: Yes — final acceptance after DR-004 rebuild. Repository finalization: Server target completed; package target blocked by PR #14 review. Applicable release/rollout: Not required. Safe cleanup: Task worktrees intentionally retained because the tested App/current package root may still be used; temporary detached worktrees eligible for cleanup — the power-off ended the prior 18080/13080 processes, but any residual isolated test files must be handled only by recorded ownership after verification. The separate installed app on 29695 remains untouched. Terminal package eligible: **No**; no message to Solution Designer.
 - Current hold is protected package-branch review, not user verification or an implementation/design finding. Do not bypass GitHub branch policy or send a successful terminal handoff yet.

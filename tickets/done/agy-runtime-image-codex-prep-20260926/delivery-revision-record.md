@@ -7,7 +7,7 @@
 | DR-002 | CRR-008 N/A after API-REV-004 browser Pass | DR-001 verification hold | Browser-evidenced verification hold | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-003 | User requested README-guided Electron build | DR-002 verification hold | Initial artifact later failed with blank renderer; superseded by DR-004 | `delivery-electron-build-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-004 | User blank-screen feedback and rebuild request | DR-003 artifact unusable | Clean rebuilt unsigned ARM64 artifact ready for retest | `delivery-electron-build-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
-| DR-005 | Explicit user test acceptance; repository-only finalization | DR-004 retest hold | Server finalization underway; package PR #14 review hold | `handoff-summary.md`, `release-deployment-report.md`, `delivery-final-reintegration-test.log` |
+| DR-005 | Explicit user test acceptance; repository-only finalization | DR-004 retest hold | Server target pushed; package PR #14 review hold | `handoff-summary.md`, `release-deployment-report.md`, `delivery-final-reintegration-test.log` |
 
 ## Revision Entries
 ### DR-001 — Initial integrated delivery baseline
@@ -62,8 +62,8 @@
 - Prior authoritative result: DR-004 clean Electron rebuild awaiting retest.
 - Current authoritative result: user verification passed; finalization underway. Server latest `origin/personal@cf005d377` had one unrelated ticket-doc advance, merged as `cf0e0e7e`; focused AGY post-merge rerun passed 36/36 with one preexisting skip. No material user-facing change or renewed verification need. Package `origin/main@1b1a75e` was current and package task branch `a140474` was pushed; direct protected-main push was denied by GitHub, so PR #14 was opened and requires independent review.
 - Docs sync report: existing `docs-sync-report.md` remains authoritative; latest handoff and `release-deployment-report.md` track finalization. Initial/post-verification check: `delivery-final-reintegration-test.log`.
-- User verification/finalization: accepted for repository-only finalization; ticket archived before server final commit. Server task/target commits and package PR merge remain to be completed or recorded as blocked.
+- User verification/finalization: accepted for repository-only finalization; ticket archived before server final commit. Server task branch `b5574da79` was pushed; detached target merge `9f7fb7129` was pushed to `origin/personal`. Package PR #14 remains blocked by `REVIEW_REQUIRED`; no auto-merge facility is enabled. Full repository finalization remains incomplete.
 - Terminal return to Solution Designer: Not eligible until both repository targets and safe cleanup are complete; no terminal message.
 - Why revised: new explicit acceptance, post-acceptance base refresh, and protected package target change the delivery gate state.
-- Next action: finish server branch/target finalization, obtain required GitHub approval/merge for package PR #14, then final report/cleanup and terminal receipt. No version, tag, release or deployment.
+- Next action: obtain required independent GitHub approval/merge for package PR #14, then final report/safe cleanup and terminal receipt. No version, tag, release or deployment.
 - Remaining blocker: package `main` protection requires PR approval. Do not bypass it or claim full delivery completion.
