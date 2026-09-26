@@ -91,7 +91,6 @@ const convergeModelCatalogAfterSettingCommit = (key: string): void => {
 
 type ServerSettingsBindingAwareStore = {
   settings: ServerSetting[]
-  effectiveWorkingContextCompactionStrategyId: string | null
   effectiveStreamingContentFlushIntervalMs: number | null
   searchConfig: SearchConfigState
   error: string | null
@@ -192,7 +191,6 @@ export const useServerSettingsStore = defineStore('serverSettings', {
   state: () => ({
     settings: [] as ServerSetting[],
     settingsBindingRevision: null as number | null,
-    effectiveWorkingContextCompactionStrategyId: null as string | null,
     effectiveStreamingContentFlushIntervalMs: null as number | null,
     searchConfig: defaultSearchConfig() as SearchConfigState,
     searchConfigBindingRevision: null as number | null,
@@ -210,7 +208,6 @@ export const useServerSettingsStore = defineStore('serverSettings', {
       activeSettingsReadTokens.delete(this)
       this.settings = []
       this.settingsBindingRevision = null
-      this.effectiveWorkingContextCompactionStrategyId = null
       this.effectiveStreamingContentFlushIntervalMs = null
       this.searchConfig = defaultSearchConfig()
       this.searchConfigBindingRevision = null
@@ -243,16 +240,11 @@ export const useServerSettingsStore = defineStore('serverSettings', {
           return this.settings
         }
 
-        const effectiveStrategyId = data?.getEffectiveWorkingContextCompactionStrategyId
-        if (typeof effectiveStrategyId !== 'string' || !effectiveStrategyId.trim()) {
-          throw new Error('Server did not return an effective compaction strategy id')
-        }
         const effectiveStreamingInterval = data?.getEffectiveStreamingContentFlushIntervalMs
         if (!Number.isInteger(effectiveStreamingInterval)) {
           throw new Error('Server did not return an effective live response update interval')
         }
         this.settings = data?.getServerSettings ?? []
-        this.effectiveWorkingContextCompactionStrategyId = effectiveStrategyId.trim()
         this.effectiveStreamingContentFlushIntervalMs = effectiveStreamingInterval
         this.settingsBindingRevision = bindingRevisionAtStart
         return this.settings
@@ -262,7 +254,6 @@ export const useServerSettingsStore = defineStore('serverSettings', {
           console.error('Failed to fetch server settings:', error)
           this.settings = []
           this.settingsBindingRevision = null
-          this.effectiveWorkingContextCompactionStrategyId = null
           this.effectiveStreamingContentFlushIntervalMs = null
         }
         throw error
@@ -294,16 +285,11 @@ export const useServerSettingsStore = defineStore('serverSettings', {
           return this.settings
         }
 
-        const effectiveStrategyId = data?.getEffectiveWorkingContextCompactionStrategyId
-        if (typeof effectiveStrategyId !== 'string' || !effectiveStrategyId.trim()) {
-          throw new Error('Server did not return an effective compaction strategy id')
-        }
         const effectiveStreamingInterval = data?.getEffectiveStreamingContentFlushIntervalMs
         if (!Number.isInteger(effectiveStreamingInterval)) {
           throw new Error('Server did not return an effective live response update interval')
         }
         this.settings = data?.getServerSettings ?? []
-        this.effectiveWorkingContextCompactionStrategyId = effectiveStrategyId.trim()
         this.effectiveStreamingContentFlushIntervalMs = effectiveStreamingInterval
         this.settingsBindingRevision = bindingRevisionAtStart
         return this.settings
@@ -313,7 +299,6 @@ export const useServerSettingsStore = defineStore('serverSettings', {
           console.error('Failed to reload server settings:', error)
           this.settings = []
           this.settingsBindingRevision = null
-          this.effectiveWorkingContextCompactionStrategyId = null
           this.effectiveStreamingContentFlushIntervalMs = null
         }
         throw error

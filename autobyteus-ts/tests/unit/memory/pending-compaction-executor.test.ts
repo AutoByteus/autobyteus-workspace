@@ -1,320 +1,54 @@
 import fs from 'node:fs';
-import os from 'node:os';
 import path from 'node:path';
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
-import type { WorkingContextCompactionProposal } from '../../../src/memory/compaction/working-context-compaction-proposal.js';
-import { PendingCompactionExecutor } from '../../../src/memory/compaction/pending-compaction-executor.js';
-import { WorkingContextCompactionStrategyRegistry } from '../../../src/memory/compaction/working-context-compaction-strategy-registry.js';
-import { WorkingContextCompactionStrategyResolver } from '../../../src/memory/compaction/working-context-compaction-strategy-resolver.js';
-import type { CompactionLineageScope } from '../../../src/memory/lineage/compaction-lineage-scope.js';
+import { makeHarness, summary, execution } from './direct-compaction-harness.js';
+import { countCompactedMemoryRegions, collectMessageRawTraceIds } from '../../../src/memory/working-context-provenance.js';
+import { WorkingContextSnapshotBootstrapper } from '../../../src/memory/restore/working-context-snapshot-bootstrapper.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
-import { RawTraceItem } from '../../../src/memory/models/raw-trace-item.js';
-import { FileCompactionLineageStore } from '../../../src/memory/store/file-compaction-lineage-store.js';
-import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
-import { WorkingContextSnapshotStore } from '../../../src/memory/store/working-context-snapshot-store.js';
-import {
-  createNaturalUserMessageProvenance,
-  WorkingContextFinalizer,
-} from '../../../src/memory/working-context-finalizer.js';
-import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
-import { resolveCompactionPlanningBudget } from '../../../src/memory/compaction/compaction-planning-budget.js';
-import { createEnabledMemoryCompactionConfiguration } from '../../../src/memory/compaction/memory-compaction-configuration.js';
-import { CompactionPromptConstructionError } from '../../../src/memory/compaction/working-context-compaction-prompt-builder.js';
-import { CompactionPolicy } from '../../../src/memory/policies/compaction-policy.js';
-
-const planningBudget = resolveCompactionPlanningBudget(
-  { inputBudget: 10_000, triggerThresholdTokens: 8_000 },
-  9_000,
-);
-
-const tempDirs: string[] = [];
-
-afterEach(() => {
-  tempDirs.splice(0).forEach((dir) => fs.rmSync(dir, { recursive: true, force: true }));
-  vi.restoreAllMocks();
-});
-
-const proposal = (episodeSummary = 'Current compacted episode'): WorkingContextCompactionProposal => ({
-  selectedNewRawTraceIds: ['raw-1'],
-  retainedMessages: [],
-  output: {
-    episodes: [{ summary: episodeSummary }],
-    semanticEntries: [{
-      category: 'durable_fact',
-      fact: 'Current durable fact',
-      salience: 200,
-    }],
-  },
-  execution: {
-    runtimeKind: 'autobyteus',
-    provider: 'openai',
-    modelIdentifier: 'test-model',
-    taskId: 'task-current',
-    renderedInputSha256: 'a'.repeat(64),
-  },
-  budgetAssessment: {
-    planningBudget,
-    estimatedCurrentWorkingContextTokens: 100,
-    estimatedUntrackedOverheadTokens: 0,
-    requiredSystemTokens: 20,
-    protectedSuffixTokens: 0,
-    replacementMemoryReserveTokens: planningBudget.replacementMemoryReserveTokens,
-    retainedRecentTokens: 0,
-    estimatedPlannedPromptTokens: 20 + planningBudget.replacementMemoryReserveTokens,
-    estimatedFinalizedContextTokens: null,
-  },
-});
-
-const makeHarness = () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'pending-compaction-executor-'));
-  tempDirs.push(dir);
-  const agentId = 'agent-1';
-  const scope: CompactionLineageScope = {
-    targetKind: 'agent_run',
-    runId: agentId,
-    memberId: null,
-  };
-  const store = new FileMemoryStore(dir, agentId);
-  const lineageStore = new FileCompactionLineageStore(store.agentDir, scope);
-  const snapshotStore = new WorkingContextSnapshotStore(dir, agentId);
-  store.add([new RawTraceItem({
-    id: 'raw-1',
-    ts: 1,
-    turnId: 'turn-1',
-    seq: 1,
-    traceType: 'user',
-    content: 'old',
-    sourceEvent: 'UserMessageReceivedEvent',
-  })]);
-  const workingContext = new WorkingContextFinalizer().finalize({
-    messages: [
-      new Message(MessageRole.SYSTEM, { content: 'System' }),
-      createNaturalUserMessageProvenance(
-        new Message(MessageRole.USER, { content: 'old' }),
-        {
-          kind: 'current_user',
-          rawTraceIds: ['raw-1'],
-          turnId: 'turn-1',
-        },
-      ),
-    ],
+const harnesses: ReturnType<typeof makeHarness>[] = [];
+const setup = () => { const h = makeHarness(); harnesses.push(h); return h; };
+afterEach(() => { harnesses.splice(0).forEach((h) => h.dispose()); vi.restoreAllMocks(); });
+describe('PendingCompactionExecutor direct path', () => {
+  it('commits first/repeated summaries once, keeps the head/recent tail and creates no categories', async () => {
+    const h = setup();
+    await expect(h.executor.executeIfAuthorized(h.input)).resolves.toBe(true);
+    expect(h.summarize).toHaveBeenCalledOnce();
+    const first = h.manager.getWorkingContextMessages();
+    expect(first[0].content).toBe('System'); expect(first.at(-1)?.content).toBe('ack-11');
+    expect(countCompactedMemoryRegions(first)).toBe(1);
+    expect(JSON.stringify(first)).not.toContain('request-0:');
+    expect(h.manager.getPendingCompactionGate()).toEqual({ kind: 'none' });
+    expect(h.emitStatus.mock.calls.at(-1)?.[0]).toMatchObject({ phase: 'completed', compaction_operation_id: h.operationId, summarizer_provider: 'fixture' });
+    for (const file of ['episodic.jsonl', 'semantic.jsonl', 'compaction_lineage.jsonl']) expect(fs.existsSync(path.join(h.store.agentDir, file))).toBe(false);
+    h.request();
+    await h.executor.executeIfAuthorized({ ...h.input, turnId: 'execute-2' });
+    expect(countCompactedMemoryRegions(h.manager.getWorkingContextMessages())).toBe(1);
+    expect(h.summarize.mock.calls[1]?.[0].units.filter((u: any) => u.kind === 'compacted_memory')).toHaveLength(1);
+    expect(h.store.listTurnRawTraceCorpusOrdered()).toHaveLength(12);
   });
-  const manager = new MemoryManager({
-    store,
-    memoryCompaction: createEnabledMemoryCompactionConfiguration(
-      new CompactionPolicy(),
-      { runCompactionTask: vi.fn() },
-    ),
-    lineageStore,
-    lineageScope: scope,
-    workingContextSnapshotStore: snapshotStore,
-    workingContext,
-    agentId,
+  it('rejects generation failure without mutation and requires explicit distinct user retry', async () => {
+    const h = setup(); const before = h.snapshotStore.read('agent');
+    h.summarize.mockRejectedValueOnce(new Error('provider failed'));
+    await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow('provider failed');
+    expect(h.snapshotStore.read('agent')).toEqual(before); expect(h.store.listTurnRawTracesOrdered()).toHaveLength(12);
+    await expect(h.executor.executeIfAuthorized({ ...h.input, turnId: 'agent-retry', turnOrigin: 'agent' })).rejects.toThrow('user_retry_required');
+    expect(h.summarize).toHaveBeenCalledOnce();
+    await expect(h.executor.executeIfAuthorized({ ...h.input, turnId: 'user-retry' })).resolves.toBe(true);
   });
-  manager.persistWorkingContextSnapshot();
-  const operationId = manager.requestCompaction({
-    requestedTurnId: 'turn-requested',
-    requestKind: 'threshold_crossing',
-    planningBudget,
+  it('cannot commit a late cancelled result', async () => {
+    const h = setup(); const before = h.snapshotStore.read('agent');
+    h.summarize.mockImplementationOnce(async () => { h.controller.abort(); return { summary, execution }; });
+    await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow();
+    expect(h.snapshotStore.read('agent')).toEqual(before); expect(h.store.listTurnRawTracesOrdered()).toHaveLength(12);
   });
-  return { dir, store, lineageStore, snapshotStore, manager, operationId };
-};
-
-const resolverFor = (
-  propose: (input: unknown) => Promise<WorkingContextCompactionProposal>,
-) => {
-  const registry = new WorkingContextCompactionStrategyRegistry();
-  registry.register({
-    id: 'test-strategy',
-    name: 'Test Strategy',
-    create: () => ({
-      id: 'test-strategy',
-      name: 'Test Strategy',
-      propose: propose as any,
-    }),
-  });
-  return new WorkingContextCompactionStrategyResolver({
-    registry,
-    settingsResolver: {
-      resolve: () => ({ strategyId: 'test-strategy' }),
-    } as any,
-    constructionContext: {
-      agentId: 'agent-1',
-      compactionAgentRunner: null,
-      maxItemChars: 200,
-      diagnostics: null,
-    },
-  });
-};
-
-describe('PendingCompactionExecutor', () => {
-  it('uses the manager-owned accept/commit path and reports success only after durable commit', async () => {
-    const harness = makeHarness();
-    const propose = vi.fn(async () => proposal());
-    const reporter = { emitStatus: vi.fn() };
-    const executor = new PendingCompactionExecutor(harness.manager, {
-      strategyResolver: resolverFor(propose),
-      reporter: reporter as any,
-    });
-
-    await expect(executor.executeIfAuthorized({ turnId: 'turn-execution', turnOrigin: 'agent' }))
-      .resolves.toBe(true);
-
-    expect(propose).toHaveBeenCalledTimes(1);
-    expect(harness.manager.getPendingCompactionRequest()).toBeNull();
-    expect(harness.lineageStore.readHead()?.compactionId).toBe(harness.operationId);
-    expect(harness.lineageStore.readHead()?.execution.promptContractVersion).toBe(3);
-    expect(harness.store.readArchiveRawTraces().map(({ id }) => id)).toEqual(['raw-1']);
-    expect(harness.manager.requireCurrentCompactionOutput()).toMatchObject({
-      lineageHead: { compactionId: harness.operationId },
-      episodes: [{ summary: 'Current compacted episode' }],
-      semantics: [{ fact: 'Current durable fact' }],
-    });
-    const snapshot = harness.snapshotStore.read('agent-1')!;
-    expect(WorkingContextSnapshotSerializer.validate(snapshot)).toBe(true);
-    expect(JSON.stringify(snapshot)).not.toContain(harness.operationId);
-    expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase))
-      .toEqual(['started', 'completed']);
-    expect(reporter.emitStatus).toHaveBeenLastCalledWith(expect.objectContaining({
-      phase: 'completed',
-      compaction_operation_id: harness.operationId,
-      compaction_strategy_id: 'test-strategy',
-    }));
-
-    const belowBudget = resolveCompactionPlanningBudget(
-      { inputBudget: 10_000, triggerThresholdTokens: 8_000 },
-      7_000,
-    );
-    expect(harness.manager.evaluateCompactionObservation({
-      requestedTurnId: 'turn-observed-below',
-      planningBudget: belowBudget,
-    })).toMatchObject({ kind: 'reset', operationId: null });
-    expect(harness.manager.evaluateCompactionObservation({
-      requestedTurnId: 'turn-crossed-later',
-      planningBudget,
-    })).toMatchObject({ kind: 'requested', requestKind: 'threshold_crossing' });
-  });
-
-  it.each([
-    ['runner', new Error('compaction runner unavailable')],
-    ['parser', new Error('Could not parse a valid JSON object from the compaction response.')],
-  ])('preserves the same pending ID and every durable surface across a %s failure, then retries', async (_kind, failure) => {
-    const harness = makeHarness();
-    const beforeContext = harness.manager.getWorkingContextMessages().map((message) => message.toDict());
-    const beforeSnapshot = fs.readFileSync(
-      path.join(harness.dir, 'agents', 'agent-1', 'working_context_snapshot.json'),
-      'utf-8',
-    );
-    const propose = vi.fn()
-      .mockRejectedValueOnce(failure)
-      .mockResolvedValueOnce(proposal());
-    const reporter = { emitStatus: vi.fn() };
-    const executor = new PendingCompactionExecutor(harness.manager, {
-      strategyResolver: resolverFor(propose),
-      reporter: reporter as any,
-    });
-
-    await expect(executor.executeIfAuthorized({ turnId: 'turn-failed', turnOrigin: 'system' }))
-      .rejects.toThrow(failure.message);
-
-    expect(harness.manager.requirePendingCompactionRequest().operationId)
-      .toBe(harness.operationId);
-    expect(harness.manager.getWorkingContextMessages().map((message) => message.toDict()))
-      .toEqual(beforeContext);
-    expect(fs.readFileSync(
-      path.join(harness.dir, 'agents', 'agent-1', 'working_context_snapshot.json'),
-      'utf-8',
-    )).toBe(beforeSnapshot);
-    expect(harness.lineageStore.list()).toEqual([]);
-    expect(harness.store.readArchiveRawTraces()).toEqual([]);
-    expect(harness.store.listTurnRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-1']);
-
-    await expect(executor.executeIfAuthorized({ turnId: 'turn-retry', turnOrigin: 'user' }))
-      .resolves.toBe(true);
-    expect(harness.lineageStore.readHead()?.compactionId).toBe(harness.operationId);
-    expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase))
-      .toEqual(['started', 'failed', 'started', 'completed']);
-  });
-
-  it('fails an unknown selected strategy without creating partial artifacts', async () => {
-    const harness = makeHarness();
-    const registry = new WorkingContextCompactionStrategyRegistry();
-    const executor = new PendingCompactionExecutor(harness.manager, {
-      strategyResolver: new WorkingContextCompactionStrategyResolver({
-        registry,
-        settingsResolver: { resolve: () => ({ strategyId: 'unknown' }) } as any,
-        constructionContext: {
-          agentId: 'agent-1',
-          compactionAgentRunner: null,
-          maxItemChars: 200,
-          diagnostics: null,
-        },
-      }),
-    });
-
-    await expect(executor.executeIfAuthorized({ turnId: 'turn-failed', turnOrigin: 'user' }))
-      .rejects.toThrow("Unknown working-context compaction strategy 'unknown'");
-    expect(harness.manager.requirePendingCompactionRequest().operationId).toBe(harness.operationId);
-    expect(harness.lineageStore.list()).toEqual([]);
-    expect(harness.store.readArchiveRawTraces()).toEqual([]);
-  });
-
-  it('retains the pending gate and mutates no canonical state when the finalized context exceeds the target', async () => {
-    const harness = makeHarness();
-    const reporter = { emitStatus: vi.fn() };
-    const executor = new PendingCompactionExecutor(harness.manager, {
-      strategyResolver: resolverFor(async () => proposal('x'.repeat(20_000))),
-      reporter: reporter as any,
-    });
-
-    await expect(executor.executeIfAuthorized({ turnId: 'turn-oversized', turnOrigin: 'user' }))
-      .rejects.toThrow('post_compaction_target_exceeded');
-    expect(harness.manager.getPendingCompactionGate().kind).toBe('awaiting_user_retry');
-    expect(harness.lineageStore.list()).toEqual([]);
-    expect(harness.store.readArchiveRawTraces()).toEqual([]);
-    expect(harness.store.listTurnRawTracesOrdered().map(({ id }) => id)).toEqual(['raw-1']);
-    expect(reporter.emitStatus.mock.calls.map(([payload]) => payload.phase))
-      .toEqual(['started', 'failed']);
-  });
-
-  it('classifies a local prompt invariant failure without committing canonical state', async () => {
-    const harness = makeHarness();
-    const reporter = { emitStatus: vi.fn() };
-    const executor = new PendingCompactionExecutor(harness.manager, {
-      strategyResolver: resolverFor(async () => {
-        throw new CompactionPromptConstructionError('provider-safe prompt invariant failed');
-      }),
-      reporter: reporter as any,
-    });
-
-    await expect(executor.executeIfAuthorized({ turnId: 'turn-unsafe', turnOrigin: 'user' }))
-      .rejects.toThrow('[input_construction_failure]');
-    expect(harness.manager.getPendingCompactionGate().kind).toBe('awaiting_user_retry');
-    expect(harness.lineageStore.list()).toEqual([]);
-    expect(harness.store.readArchiveRawTraces()).toEqual([]);
-    expect(reporter.emitStatus).toHaveBeenLastCalledWith(expect.objectContaining({
-      phase: 'failed',
-      error_message: expect.stringContaining('[input_construction_failure]'),
-    }));
-  });
-
-  it('does not resolve a strategy when no compaction is pending', async () => {
-    const harness = makeHarness();
-    const completedAttempt = harness.manager.beginPendingCompactionAttempt({
-      operationId: harness.operationId,
-      turnId: 'turn-clear',
-      turnOrigin: 'user',
-    });
-    expect(completedAttempt.authorized).toBe(true);
-    harness.manager.retainCompactionFailure(harness.operationId, 'turn-clear', 'test_failure');
-    const resolve = vi.fn();
-    const executor = new PendingCompactionExecutor(harness.manager, {
-      strategyResolver: { resolve } as any,
-    });
-
-    await expect(executor.executeIfAuthorized({ turnId: 'turn-clear', turnOrigin: 'system' }))
-      .rejects.toThrow('user_retry_required');
-    expect(resolve).not.toHaveBeenCalled();
+  it('treats postcommit prune/reporter failure as committed and restores from that same snapshot', async () => {
+    const h = setup(); vi.spyOn(h.store, 'prunePreparedCompactionArchive').mockImplementation(() => { throw new Error('prune'); });
+    h.emitStatus.mockImplementation(() => { throw new Error('report'); });
+    await expect(h.executor.executeIfAuthorized(h.input)).resolves.toBe(true);
+    expect(h.manager.hasPendingCompaction()).toBe(false); expect(h.store.listTurnRawTracesOrdered()).toHaveLength(12);
+    const resumed = new MemoryManager({ store: h.store, workingContextSnapshotStore: h.snapshotStore, agentId: 'agent' });
+    new WorkingContextSnapshotBootstrapper().bootstrap(resumed, '', { maxItemChars: null });
+    expect(resumed.getWorkingContextMessages()).toEqual(h.manager.getWorkingContextMessages());
+    expect(collectMessageRawTraceIds(resumed.getWorkingContextMessages()).length).toBeGreaterThan(0);
   });
 });

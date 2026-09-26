@@ -1,3 +1,4 @@
+import { completionFromReason } from './completion-status.js';
 import { Mistral } from '@mistralai/mistralai';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
@@ -73,6 +74,7 @@ export class MistralLLM extends BaseLLM {
       }
 
       return new CompleteResponse({
+        ...completionFromReason(response.choices?.[0]?.finishReason, ['stop'], ['length', 'model_length', 'tool_calls', 'error'], Boolean(message?.toolCalls?.length)),
         content,
         usage: this.toTokenUsage(response.usage)
       });

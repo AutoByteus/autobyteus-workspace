@@ -208,7 +208,7 @@ export const projectCompactionStatusToActivity = (
   const compactionOperationId = normalizeText(payload.compaction_operation_id);
   const requestedTurnId = normalizeText(payload.requested_turn_id);
   const executionTurnId = normalizeText(payload.execution_turn_id);
-  const compactionRuntimeKind = normalizeText(payload.compaction_runtime_kind) ?? normalizeText(payload.runtime_kind);
+  const completionStatus = normalizeText(payload.completion_status);
   const provider = normalizeText(payload.provider);
   const sourceSurface = normalizeText(payload.source_surface);
   const boundaryKey = normalizeText(payload.boundary_key);
@@ -227,13 +227,13 @@ export const projectCompactionStatusToActivity = (
     selectedBlockCount: normalizeNumber(payload.selected_block_count),
     compactedBlockCount: normalizeNumber(payload.compacted_block_count),
     rawTraceCount: normalizeNumber(payload.raw_trace_count),
-    semanticFactCount: normalizeNumber(payload.semantic_fact_count),
-    compactionAgentDefinitionId: normalizeText(payload.compaction_agent_definition_id),
-    compactionAgentName: normalizeText(payload.compaction_agent_name),
-    compactionRuntimeKind,
+    summaryCharCount: normalizeNumber(payload.summary_char_count),
+    compactionInvocationId: normalizeText(payload.compaction_invocation_id),
+    summarizerProvider: normalizeText(payload.summarizer_provider),
+    completionStatus,
     compactionModelIdentifier: normalizeText(payload.compaction_model_identifier),
-    compactionRunId: normalizeText(payload.compaction_run_id),
-    compactionTaskId: normalizeText(payload.compaction_task_id),
+    completionReason: normalizeText(payload.completion_reason),
+    summaryTokenCount: normalizeNumber(payload.summary_token_count),
     ...(provider ? { provider } : {}),
     ...(sourceSurface ? { sourceSurface } : {}),
     ...(boundaryKey ? { boundaryKey } : {}),
@@ -257,13 +257,13 @@ export const projectCompactionStatusToActivity = (
       selectedBlockCount: status.selectedBlockCount,
       compactedBlockCount: status.compactedBlockCount,
       rawTraceCount: status.rawTraceCount,
-      semanticFactCount: status.semanticFactCount,
-      compactionAgentDefinitionId: status.compactionAgentDefinitionId,
-      compactionAgentName: status.compactionAgentName,
-      compactionRuntimeKind,
+      summaryCharCount: status.summaryCharCount,
+      compactionInvocationId: status.compactionInvocationId,
+      summarizerProvider: status.summarizerProvider,
+      completionStatus,
       compactionModelIdentifier: status.compactionModelIdentifier,
-      compactionRunId: status.compactionRunId,
-      compactionTaskId: status.compactionTaskId,
+      completionReason: status.completionReason,
+      summaryTokenCount: status.summaryTokenCount,
       provider,
       sourceSurface,
       boundaryKey,

@@ -1,4 +1,4 @@
-import type { CompactionAgentRunner } from './compaction-agent-runner.js';
+import type { DirectLlmCompactionSummarizer } from './direct-llm-compaction-summarizer.js';
 import { CompactionPolicy } from '../policies/compaction-policy.js';
 
 export type DisabledMemoryCompactionConfiguration = Readonly<{
@@ -8,7 +8,7 @@ export type DisabledMemoryCompactionConfiguration = Readonly<{
 export type EnabledMemoryCompactionConfiguration = Readonly<{
   kind: 'enabled';
   policy: CompactionPolicy;
-  runner: CompactionAgentRunner;
+  summarizer: DirectLlmCompactionSummarizer;
 }>;
 
 export type MemoryCompactionConfiguration =
@@ -23,15 +23,15 @@ export const createDisabledMemoryCompactionConfiguration = (
 
 export const createEnabledMemoryCompactionConfiguration = (
   policy: CompactionPolicy,
-  runner: CompactionAgentRunner,
+  summarizer: DirectLlmCompactionSummarizer,
 ): EnabledMemoryCompactionConfiguration => {
   if (!(policy instanceof CompactionPolicy)) {
     throw new TypeError('Enabled memory compaction requires a CompactionPolicy instance.');
   }
-  if (!runner || typeof runner.runCompactionTask !== 'function') {
-    throw new TypeError('Enabled memory compaction requires a compaction agent runner.');
+  if (!summarizer || typeof summarizer.summarize !== 'function') {
+    throw new TypeError('Enabled memory compaction requires a direct compaction summarizer.');
   }
-  return Object.freeze({ kind: 'enabled', policy, runner });
+  return Object.freeze({ kind: 'enabled', policy, summarizer });
 };
 
 export const copyMemoryCompactionConfiguration = (
@@ -46,6 +46,6 @@ export const copyMemoryCompactionConfiguration = (
       maxItemChars: configuration.policy.maxItemChars,
       safetyMarginTokens: configuration.policy.safetyMarginTokens,
     }),
-    configuration.runner,
+    configuration.summarizer,
   );
 };

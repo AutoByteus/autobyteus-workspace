@@ -194,7 +194,7 @@ export abstract class BaseLLM {
     options?: LLMInvocationOptions
   ): AsyncGenerator<ChunkResponse, void, unknown>;
 
-  async cleanup(): Promise<void> {
+  async cleanup(_options: { signal?: AbortSignal } = {}): Promise<void> {
     for (const ext of this.extensionRegistry.getAll()) {
       await ext.cleanup();
     }

@@ -1,3 +1,4 @@
+import { responsesCompletion } from './completion-status.js';
 import { OpenAI as OpenAIClient } from 'openai';
 import { ResponseStreamEvent } from 'openai/resources/responses/responses.mjs';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
@@ -201,6 +202,7 @@ export class OpenAIResponsesLLM extends BaseLLM {
       const { content, reasoning } = this.extractOutputContent(response.output ?? []);
 
       return new CompleteResponse({
+        ...responsesCompletion(response),
         content,
         reasoning: reasoning ?? null,
         usage: this.createTokenUsage(response.usage)

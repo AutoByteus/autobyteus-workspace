@@ -1,3 +1,4 @@
+import { completionFromReason } from './completion-status.js';
 import type { ClientOptions as OpenAIClientOptions, OpenAI } from 'openai';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
@@ -139,6 +140,7 @@ export class OpenAICompatibleLLM extends BaseLLM {
       const content = message.content || "";
       const reasoning = this.extractReasoningFromRecord(message);
       return new CompleteResponse({
+        ...completionFromReason(choice.finish_reason, ['stop'], ['length', 'content_filter', 'tool_calls', 'function_call'], Boolean(message.tool_calls?.length || message.function_call || message.refusal)),
         content,
         reasoning,
         usage: this.createTokenUsage(response.usage),

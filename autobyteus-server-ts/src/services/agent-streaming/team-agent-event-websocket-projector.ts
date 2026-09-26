@@ -84,9 +84,9 @@ export const projectTeamAgentEventMessage = (
     case "COMPACTION_STATUS": return parseTeamStreamServerMessage({ type: event.eventType, payload: {
       ...base, phase: event.details.phase, kind: event.details.kind, status: event.details.status, turn_id: event.details.turnId,
       compaction_operation_id: event.details.compactionOperationId, requested_turn_id: event.details.requestedTurnId, execution_turn_id: event.details.executionTurnId,
-      selected_block_count: event.details.selectedBlockCount, compacted_block_count: event.details.compactedBlockCount, raw_trace_count: event.details.rawTraceCount, semantic_fact_count: event.details.semanticFactCount,
-      compaction_agent_definition_id: event.details.compactionAgentDefinitionId, compaction_agent_name: event.details.compactionAgentName, compaction_runtime_kind: event.details.compactionRuntimeKind,
-      compaction_model_identifier: event.details.compactionModelIdentifier, compaction_run_id: event.details.compactionRunId, compaction_task_id: event.details.compactionTaskId,
+      selected_block_count: event.details.selectedBlockCount, compacted_block_count: event.details.compactedBlockCount, raw_trace_count: event.details.rawTraceCount, summary_char_count: event.details.summaryCharCount,
+      compaction_invocation_id: event.details.compactionInvocationId, summarizer_provider: event.details.summarizerProvider, completion_status: event.details.completionStatus,
+      compaction_model_identifier: event.details.compactionModelIdentifier, completion_reason: event.details.completionReason, summary_token_count: event.details.summaryTokenCount,
       error_message: event.details.errorMessage, provider: event.details.provider, source_surface: event.details.sourceSurface, boundary_key: event.details.boundaryKey,
       provider_event_id: event.details.providerEventId, provider_session_id: event.details.providerSessionId, provider_thread_id: event.details.providerThreadId,
       provider_timestamp: event.details.providerTimestamp, trigger: event.details.trigger, pre_tokens: event.details.preTokens, rotation_eligible: event.details.rotationEligible,

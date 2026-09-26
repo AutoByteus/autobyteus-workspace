@@ -1,3 +1,4 @@
+import { completionFromReason } from './completion-status.js';
 import Anthropic from '@anthropic-ai/sdk';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
@@ -263,6 +264,7 @@ export class AnthropicLLM extends BaseLLM {
       }
 
       return new CompleteResponse({
+        ...completionFromReason(response.stop_reason, ['end_turn', 'stop_sequence'], ['max_tokens', 'model_context_window_exceeded', 'tool_use', 'pause_turn', 'refusal'], response.content?.some((block) => block.type === 'tool_use')),
         content: content ?? '',
         reasoning,
         usage: createAnthropicTokenUsageObservation(response.usage, this.model),

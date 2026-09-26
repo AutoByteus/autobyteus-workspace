@@ -22,7 +22,7 @@ import type { GeminiRuntimeResolver } from '../utils/gemini-runtime.js';
 import { CurrentModelSelectionRequiredError } from './current-model-selection-error.js';
 export { CurrentModelSelectionRequiredError } from './current-model-selection-error.js';
 
-export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides;
+export type LLMFactoryConfigInput = LLMConfig | RawLlmConfigOverrides | ((model: LLMModel, defaults: LLMConfig) => LLMConfig);
 
 const buildSupportedModels = async (): Promise<LLMModel[]> => {
   const metadataResolver = new ModelMetadataResolver();
@@ -185,6 +185,8 @@ export class LLMFactory {
 
   private static composeEffectiveConfig(model: LLMModel, configInput?: LLMFactoryConfigInput): LLMConfig {
     const config = model.defaultConfig ? model.defaultConfig.clone() : new LLMConfig();
+
+    if (typeof configInput === 'function') return configInput(model, config);
 
     if (configInput instanceof LLMConfig) {
       config.mergeWith(configInput);

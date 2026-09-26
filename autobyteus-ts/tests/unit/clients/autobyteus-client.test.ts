@@ -97,6 +97,14 @@ describe('AutobyteusClient', () => {
     expect(closeSpy).toHaveBeenCalled();
   });
 
+  it('passes the isolated cleanup deadline to the HTTP request', async () => {
+    const client = new AutobyteusClient('http://localhost:1', 'synthetic-test-key');
+    const signal = AbortSignal.timeout(10_000);
+    const post = vi.fn().mockResolvedValue({data:{ok:true}}); client.asyncClient.post = post;
+    await client.cleanup('isolated-compaction', {signal});
+    expect(post).toHaveBeenCalledExactlyOnceWith('http://localhost:1/cleanup', {conversation_id:'isolated-compaction'}, {signal});
+  });
+
   it('normalizes media to data URIs for sendMessage', async () => {
     const client = new AutobyteusClient(undefined, 'synthetic-test-key');
     const postMock = vi.fn().mockResolvedValue({ data: { ok: true } });

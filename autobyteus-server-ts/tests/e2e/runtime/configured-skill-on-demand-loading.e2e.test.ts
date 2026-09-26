@@ -169,9 +169,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
           workspaceId === workspace.workspaceId ? workspace : undefined,
         getOrCreateTempWorkspace: async () => workspace,
       } as any,
-      compactionAgentRunnerFactory: async () => ({
-        runCompactionTask: vi.fn(),
-      }),
+      compactionLlmFactory: async () => { throw new Error("Unexpected compaction in skill probe"); },
     });
     const backend = await factory.createBackend(
       new AgentRunConfig({

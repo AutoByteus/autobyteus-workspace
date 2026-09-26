@@ -9,10 +9,7 @@ import { LLMRequestAssembler, type RequestPackage } from '../llm-request-assembl
 import { CompactionPreparationError } from '../compaction/compaction-preparation-error.js';
 import { CompactionRuntimeReporter } from '../compaction/compaction-runtime-reporter.js';
 import { CompactionRuntimeSettingsResolver } from '../../memory/compaction/compaction-runtime-settings.js';
-import { defaultWorkingContextCompactionStrategyRegistry } from '../../memory/compaction/default-working-context-compaction-strategy-registry.js';
 import { PendingCompactionExecutor } from '../../memory/compaction/pending-compaction-executor.js';
-import type { WorkingContextCompactionDiagnostics } from '../../memory/compaction/working-context-compaction-strategy.js';
-import { WorkingContextCompactionStrategyResolver } from '../../memory/compaction/working-context-compaction-strategy-resolver.js';
 import { isAgentInterruptionError } from '../interruption/agent-interruption.js';
 import { resolveTurnToolNames } from './llm-phase-tools.js';
 import { evaluateLlmPhaseCompaction } from './llm-phase-compaction.js';
@@ -133,62 +130,9 @@ export class LlmPhase {
         context.statusManager?.notifier ?? null,
       );
       const reporter = compactionReporter;
-      const compactionDiagnostics: WorkingContextCompactionDiagnostics = {
-        reportPlan: (details) => {
-          reporter.recordStrategyPlanDiagnostics(details);
-          const pending = memoryManager.getPendingCompactionRequest();
-          reporter.logExecutionContext({
-            turn_id: activeTurnId,
-            compaction_operation_id: pending?.operationId ?? null,
-            requested_turn_id: pending?.requestedTurnId ?? null,
-            execution_turn_id: activeTurnId,
-            pending_compaction: true,
-            selected_unit_count: details.selectedUnitCount,
-            protected_suffix_unit_count: details.protectedSuffixUnitCount,
-            retained_unit_count: details.retainedUnitCount,
-            working_context_message_count: details.workingContextMessageCount,
-            raw_trace_count: details.rawTraceCount,
-          }, runtimeSettings.detailedLogsEnabled);
-        },
-        reportResult: (details) => {
-          reporter.recordStrategyResultDiagnostics(details);
-          const pending = memoryManager.getPendingCompactionRequest();
-          const metadata = details.compactionMetadata;
-          reporter.logResultSummary({
-            turn_id: activeTurnId,
-            compaction_operation_id: pending?.operationId ?? null,
-            requested_turn_id: pending?.requestedTurnId ?? null,
-            execution_turn_id: activeTurnId,
-            selected_block_count: details.selectedUnitCount,
-            compacted_block_count: details.compactedUnitCount,
-            raw_trace_count: details.rawTraceCount,
-            episode_summary_length: details.episodeSummaryLength,
-            semantic_fact_count: details.semanticFactCount,
-            compaction_agent_definition_id: metadata?.compactionAgentDefinitionId ?? null,
-            compaction_agent_name: metadata?.compactionAgentName ?? null,
-            compaction_runtime_kind: metadata?.runtimeKind ?? null,
-            compaction_model_identifier: metadata?.modelIdentifier ?? null,
-            compaction_run_id: metadata?.compactionRunId ?? null,
-            compaction_task_id: metadata?.taskId ?? null,
-          }, runtimeSettings.detailedLogsEnabled);
-        },
-        reportFailure: (metadata) => {
-          reporter.recordStrategyFailureMetadata(metadata);
-        },
-      };
-      const strategyResolver = new WorkingContextCompactionStrategyResolver({
-        registry: defaultWorkingContextCompactionStrategyRegistry,
-        settingsResolver: runtimeSettingsResolver,
-        constructionContext: {
-          agentId,
-          compactionAgentRunner: automaticCompaction.runner,
-          maxItemChars: automaticCompaction.policy.maxItemChars,
-          diagnostics: compactionDiagnostics,
-        },
-      });
       pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
-        reporter,
-        strategyResolver,
+        reporter, summarizer: automaticCompaction.summarizer,
+        maxItemChars: automaticCompaction.policy.maxItemChars,
       });
     }
     const assembler = new LLMRequestAssembler(
@@ -207,7 +151,7 @@ export class LlmPhase {
         { kind: 'llm_request_assembly' },
         () => assembler.prepareRequest(
           input.llmUserMessage,
-          { turnId: activeTurnId, requestId: llmCallId, turnOrigin: turn.startOrigin, isToolContinuation: turn.toolInvocationBatches.length > 0 },
+          { turnId: activeTurnId, requestId: llmCallId, turnOrigin: turn.startOrigin, isToolContinuation: turn.toolInvocationBatches.length > 0, parentModelIdentifier: llmInstance.model.modelIdentifier, signal: turn.executionScope.signal },
           systemPrompt ?? undefined,
         )
       );
@@ -429,6 +373,7 @@ export class LlmPhase {
         await pendingCompactionExecutor.executeIfAuthorized({
           turnId: activeTurnId,
           turnOrigin: turn.startOrigin,
+          parentModelIdentifier: llmInstance.model.modelIdentifier, signal: turn.executionScope.signal,
         });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : String(error);

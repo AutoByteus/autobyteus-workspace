@@ -13,7 +13,6 @@ import {
   resolveMemoryBaseDir
 } from '../../memory/index.js';
 import { WorkingContextSnapshotStore } from '../../memory/store/working-context-snapshot-store.js';
-import { FileCompactionLineageStore } from '../../memory/store/file-compaction-lineage-store.js';
 import { WorkingContextSnapshotBootstrapOptions } from '../../memory/restore/working-context-snapshot-bootstrapper.js';
 import { MemoryIngestInputProcessor } from '../input-processor/memory-ingest-input-processor.js';
 import { AgentRuntime } from '../runtime/agent-runtime.js';
@@ -128,18 +127,10 @@ export class AgentFactory extends Singleton {
       : { agentRootSubdir: 'agents' };
     const memoryStore = new FileMemoryStore(memoryDir, agentId, memoryLayoutOptions);
     const snapshotStore = new WorkingContextSnapshotStore(memoryDir, agentId, memoryLayoutOptions);
-    const lineageScope = config.compactionLineageScope ?? {
-      targetKind: 'agent_run' as const,
-      runId: agentId,
-      memberId: null,
-    };
-    const lineageStore = new FileCompactionLineageStore(memoryStore.agentDir, lineageScope);
     runtimeState.memoryManager = new MemoryManager({
       store: memoryStore,
       memoryCompaction: config.memoryCompaction,
       workingContextSnapshotStore: snapshotStore,
-      lineageStore,
-      lineageScope,
       agentId,
     });
     runtimeState.restoreOptions = restoreOptions;

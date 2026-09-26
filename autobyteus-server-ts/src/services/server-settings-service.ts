@@ -22,10 +22,9 @@ import {
 } from "../config/featured-catalog-items-setting.js";
 import { reloadMediaToolSchemas } from "../agent-tools/media/register-media-tools.js";
 import {
-  WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
-  normalizeWorkingContextCompactionStrategyForPersistence,
-} from "../config/working-context-compaction-strategy-setting.js";
-import { normalizeWorkingContextCompactionStrategyId } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-setting.js";
+  COMPACTION_MODEL_SETTINGS_KEY,
+  normalizeCompactionModelSettingsForPersistence,
+} from "../config/compaction-model-settings.js";
 import {
   normalizeStreamingContentFlushIntervalForPersistence,
   resolveStreamingContentFlushIntervalMs,
@@ -114,11 +113,11 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
-      WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
-      "Process-global working-context compaction strategy used by subsequent compaction operations.",
+      COMPACTION_MODEL_SETTINGS_KEY,
+      "Direct compaction model/configuration. Null model inherits the current parent model.",
       true,
       {
-        normalizeForPersistence: normalizeWorkingContextCompactionStrategyForPersistence,
+        normalizeForPersistence: normalizeCompactionModelSettingsForPersistence,
       },
     );
 
@@ -308,7 +307,8 @@ export class ServerSettingsService {
       }
 
       const config = appConfigProvider.config;
-      config.set(key, normalizedValueOrError);
+      if (key === COMPACTION_MODEL_SETTINGS_KEY) config.setDurably(key, normalizedValueOrError);
+      else config.set(key, normalizedValueOrError);
       this.refreshDependentSettingsAfterUpdate(key);
 
       if (!this.settingsInfo.has(key)) {
@@ -410,12 +410,6 @@ export class ServerSettingsService {
     }
     const normalized = rawValue.trim();
     return normalized.length > 0 ? normalized : null;
-  }
-
-  getEffectiveWorkingContextCompactionStrategyId(): string {
-    return normalizeWorkingContextCompactionStrategyId(
-      appConfigProvider.config.get(WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY),
-    );
   }
 
   getEffectiveStreamingContentFlushIntervalMs(): number {

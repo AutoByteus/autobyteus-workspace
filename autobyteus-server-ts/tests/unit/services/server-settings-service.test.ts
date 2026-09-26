@@ -4,6 +4,7 @@ const mockConfig = vi.hoisted(() => ({
   getConfigData: vi.fn(),
   get: vi.fn(),
   set: vi.fn(),
+  setDurably: vi.fn(() => ({persisted: true})),
   delete: vi.fn(),
 }));
 
@@ -31,7 +32,7 @@ import {
   FEATURED_CATALOG_ITEMS_SETTING_KEY,
   serializeFeaturedCatalogItemsSetting,
 } from "../../../src/config/featured-catalog-items-setting.js";
-import { WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY } from "../../../src/config/working-context-compaction-strategy-setting.js";
+import { COMPACTION_MODEL_SETTINGS_KEY } from "../../../src/config/compaction-model-settings.js";
 import { STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY } from "../../../src/config/streaming-content-flush-interval-setting.js";
 
 describe("ServerSettingsService", () => {
@@ -108,7 +109,7 @@ describe("ServerSettingsService", () => {
     mockConfig.get.mockImplementation((key: string) =>
       ({
         AUTOBYTEUS_COMPACTION_TRIGGER_RATIO: "0.8",
-        [WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY]: "structured-json",
+        [COMPACTION_MODEL_SETTINGS_KEY]: '{"modelIdentifier":null,"llmConfig":null}',
         AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE: "4096",
         AUTOBYTEUS_COMPACTION_DEBUG_LOGS: "true",
       })[key],
@@ -124,9 +125,9 @@ describe("ServerSettingsService", () => {
       isDeletable: false,
     });
     expect(settings.find((item) => item.key === "AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID")).toBeUndefined();
-    expect(settings.find((item) => item.key === WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY)).toMatchObject({
-      value: "structured-json",
-      description: expect.stringContaining("Process-global working-context compaction strategy"),
+    expect(settings.find((item) => item.key === COMPACTION_MODEL_SETTINGS_KEY)).toMatchObject({
+      value: '{"modelIdentifier":null,"llmConfig":null}',
+      description: expect.stringContaining("compaction model"),
       isEditable: true,
       isDeletable: false,
     });
@@ -240,48 +241,11 @@ describe("ServerSettingsService", () => {
     expect(mockConfig.set).toHaveBeenCalledWith("CUSTOM_SETTING", "next");
   });
 
-  it("normalizes a registered working-context compaction strategy before persistence", () => {
+  it("persists the compound model/config with the durable setting writer", () => {
     const service = new ServerSettingsService();
-    const [ok] = service.updateSetting(
-      WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
-      " structured-json ",
-    );
-
-    expect(ok).toBe(true);
-    expect(mockConfig.set).toHaveBeenCalledWith(
-      WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
-      "structured-json",
-    );
-  });
-
-  it("rejects an unknown working-context compaction strategy before persistence", () => {
-    const service = new ServerSettingsService();
-    const [ok, message] = service.updateSetting(
-      WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
-      "unknown",
-    );
-
-    expect(ok).toBe(false);
-    expect(message).toContain("structured-json");
-    expect(mockConfig.set).not.toHaveBeenCalled();
-  });
-
-  it.each([
-    "read-only",
-    "workspace-write",
-    "danger-full-access",
-  ])("trims and saves valid predefined Codex sandbox value %s", (mode) => {
-    mockConfig.set.mockImplementation(() => undefined);
-
-    const service = new ServerSettingsService();
-    const [ok, message] = service.updateSetting("CODEX_APP_SERVER_SANDBOX", ` ${mode} `);
-
-    expect(ok).toBe(true);
-    expect(message).toMatch(/updated successfully/i);
-    expect(mockConfig.set).toHaveBeenCalledWith(
-      "CODEX_APP_SERVER_SANDBOX",
-      mode,
-    );
+    expect(service.updateSetting(COMPACTION_MODEL_SETTINGS_KEY, '{"modelIdentifier":" custom ","llmConfig":{"temperature":0.2}}')[0]).toBe(true);
+    expect(mockConfig.setDurably).toHaveBeenCalledWith(COMPACTION_MODEL_SETTINGS_KEY, '{"modelIdentifier":"custom","llmConfig":{"temperature":0.2}}');
+    expect(service.updateSetting(COMPACTION_MODEL_SETTINGS_KEY, 'unknown')[0]).toBe(false);
   });
 
   it("rejects invalid predefined Codex sandbox values before persistence", () => {
@@ -555,17 +519,5 @@ describe("ServerSettingsService", () => {
     });
   });
 
-  it.each([
-    [undefined, "structured-json"],
-    ["", "structured-json"],
-    ["   ", "structured-json"],
-    [" structured-json ", "structured-json"],
-    [" removed-strategy ", "removed-strategy"],
-  ])("reads runtime-effective compaction strategy %j as %s without persisting", (configured, expected) => {
-    const service = new ServerSettingsService();
-    mockConfig.get.mockReturnValueOnce(configured);
 
-    expect(service.getEffectiveWorkingContextCompactionStrategyId()).toBe(expected);
-    expect(mockConfig.set).not.toHaveBeenCalled();
-  });
 });

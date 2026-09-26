@@ -33,53 +33,14 @@
     </div>
 
     <div class="space-y-4">
-      <div>
-        <label for="compaction-strategy-select" class="mb-1 block text-sm font-medium text-gray-900">
-          {{ t('settings.components.settings.CompactionConfigCard.compactionStrategy') }}
-        </label>
-        <select
-          id="compaction-strategy-select"
-          v-model="strategyId"
-          class="h-11 w-full rounded-lg border border-gray-300 bg-white px-3 disabled:bg-slate-50"
-          :disabled="!strategyControlReady || isSaving"
-          :aria-busy="strategyLoading"
-          data-testid="compaction-strategy-select"
-        >
-          <option v-if="unknownStrategyId" :value="unknownStrategyId" disabled>
-            {{ t('settings.components.settings.CompactionConfigCard.unavailableStrategy', { id: unknownStrategyId }) }}
-          </option>
-          <option v-for="option in catalogStore.strategies" :key="option.id" :value="option.id">
-            {{ option.name }}
-          </option>
-        </select>
-        <p class="mt-1 text-xs text-gray-500">
-          {{ t('settings.components.settings.CompactionConfigCard.strategyHelp') }}
-        </p>
-        <p v-if="strategyLoading" class="mt-2 text-sm text-gray-500" role="status" data-testid="compaction-strategy-loading">
-          {{ t('settings.components.settings.CompactionConfigCard.loadingStrategies') }}
-        </p>
-        <div v-else-if="catalogStore.error" class="mt-2 text-sm text-red-700" role="alert" data-testid="compaction-strategy-error">
-          <span>{{ t('settings.components.settings.CompactionConfigCard.catalogError') }}</span>
-          <button type="button" class="ml-2 font-medium underline" :disabled="isSaving" @click="retryReads">
-            {{ t('settings.components.settings.CompactionConfigCard.retry') }}
-          </button>
-        </div>
-        <div v-else-if="settingsStore.error && !settingsReady" class="mt-2 text-sm text-red-700" role="alert" data-testid="compaction-effective-error">
-          <span>{{ t('settings.components.settings.CompactionConfigCard.effectiveSelectionError') }}</span>
-          <button type="button" class="ml-2 font-medium underline" :disabled="isSaving" @click="retryReads">
-            {{ t('settings.components.settings.CompactionConfigCard.retry') }}
-          </button>
-        </div>
-        <div v-else-if="catalogReady && catalogStore.strategies.length === 0" class="mt-2 text-sm text-red-700" role="alert" data-testid="compaction-strategy-empty">
-          <span>{{ t('settings.components.settings.CompactionConfigCard.emptyCatalog') }}</span>
-          <button type="button" class="ml-2 font-medium underline" :disabled="isSaving" @click="retryReads">
-            {{ t('settings.components.settings.CompactionConfigCard.retry') }}
-          </button>
-        </div>
-        <p v-if="unknownStrategyId" class="mt-2 text-sm text-amber-700" role="alert" data-testid="compaction-strategy-unknown">
-          {{ t('settings.components.settings.CompactionConfigCard.unknownStrategyWarning') }}
-        </p>
+      <div v-if="settingsStore.error && !settingsReady" class="text-sm text-red-700" role="alert">
+        {{ t('settings.components.settings.CompactionConfigCard.settingsError') }}
+        <button type="button" class="ml-2 underline" @click="retryReads">{{ t('settings.components.settings.CompactionConfigCard.retry') }}</button>
       </div>
+      <p v-if="settingsReady && !currentModelSettings" class="text-sm text-red-700" role="alert">
+        {{ t('settings.components.settings.CompactionConfigCard.invalidModelSettings') }}
+      </p>
+      <CompactionModelSettings :key="currentRevision" v-model="modelSettings" :disabled="universalControlsDisabled" @valid="modelConfigValid = $event" />
 
       <div>
         <label for="compaction-ratio-input" class="mb-1 block text-sm font-medium text-gray-900">
@@ -141,19 +102,19 @@ import { computed, ref, watch } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useServerSettingsStore } from '~/stores/serverSettings'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
-import { useWorkingContextCompactionStrategyCatalogStore } from '~/stores/workingContextCompactionStrategyCatalog'
+import CompactionModelSettings from './CompactionModelSettings.vue'
+import { COMPACTION_MODEL_SETTINGS_KEY, parseCompactionModelSettings, type CompactionModelSettings as ModelSettings } from '~/utils/compactionModelSettings'
 
-const COMPACTION_STRATEGY_KEY = 'AUTOBYTEUS_COMPACTION_STRATEGY'
 const COMPACTION_TRIGGER_RATIO_KEY = 'AUTOBYTEUS_COMPACTION_TRIGGER_RATIO'
 const ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY = 'AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE'
 const COMPACTION_DEBUG_LOGS_KEY = 'AUTOBYTEUS_COMPACTION_DEBUG_LOGS'
 
 const settingsStore = useServerSettingsStore()
-const catalogStore = useWorkingContextCompactionStrategyCatalogStore()
 const windowNodeContextStore = useWindowNodeContextStore()
 const { t } = useLocalization()
 
-const strategyId = ref('')
+const modelSettings = ref<ModelSettings>({ modelIdentifier: null, llmConfig: null })
+const modelConfigValid = ref(true)
 const triggerRatioPercent = ref('')
 const activeContextTokensOverride = ref('')
 const detailedLogsEnabled = ref(false)
@@ -171,23 +132,13 @@ const ratioPercentFromSetting = (value: unknown): string => {
   return Number.isFinite(ratio) && ratio > 0 ? String(Math.round(ratio * 100)) : '80'
 }
 
-const currentStrategyId = computed(() => normalizeText(settingsStore.effectiveWorkingContextCompactionStrategyId))
+const currentModelSettings = computed(() => parseCompactionModelSettings(settingsStore.getSettingByKey(COMPACTION_MODEL_SETTINGS_KEY)?.value))
 const currentTriggerRatioPercent = computed(() => ratioPercentFromSetting(settingsStore.getSettingByKey(COMPACTION_TRIGGER_RATIO_KEY)?.value))
 const currentActiveContextTokensOverride = computed(() => normalizeText(settingsStore.getSettingByKey(ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY)?.value))
 const currentDetailedLogsEnabled = computed(() => parseDetailedLogs(settingsStore.getSettingByKey(COMPACTION_DEBUG_LOGS_KEY)?.value))
 const currentRevision = computed(() => windowNodeContextStore.bindingRevision)
-const settingsReady = computed(() =>
-  settingsStore.settingsBindingRevision === currentRevision.value && Boolean(currentStrategyId.value),
-)
-const catalogReady = computed(() => catalogStore.bindingRevision === currentRevision.value)
-const strategyLoading = computed(() => settingsStore.isLoading || catalogStore.isLoading)
-const strategyControlReady = computed(() => settingsReady.value && catalogReady.value && catalogStore.strategies.length > 0)
+const settingsReady = computed(() => settingsStore.settingsBindingRevision === currentRevision.value)
 const universalControlsDisabled = computed(() => !settingsReady.value || isSaving.value)
-const unknownStrategyId = computed(() => {
-  const selected = normalizeText(strategyId.value)
-  if (!selected || catalogStore.strategies.some((option) => option.id === selected)) return ''
-  return selected
-})
 
 const ratioValid = computed(() => {
   const value = Number(triggerRatioPercent.value)
@@ -199,22 +150,12 @@ const overrideValid = computed(() => {
   const numeric = Number(value)
   return Number.isInteger(numeric) && numeric > 0
 })
-const strategyDirty = computed(() => normalizeText(strategyId.value) !== currentStrategyId.value)
-const isDirty = computed(() =>
-  strategyDirty.value ||
+const modelDirty = computed(() => JSON.stringify(modelSettings.value) !== JSON.stringify(currentModelSettings.value))
+const isDirty = computed(() => modelDirty.value ||
   normalizeText(triggerRatioPercent.value) !== currentTriggerRatioPercent.value ||
   normalizeText(activeContextTokensOverride.value) !== currentActiveContextTokensOverride.value ||
-  detailedLogsEnabled.value !== currentDetailedLogsEnabled.value,
-)
-const strategyChangeValid = computed(() =>
-  !strategyDirty.value || (
-    strategyControlReady.value &&
-    catalogStore.strategies.some((option) => option.id === normalizeText(strategyId.value))
-  ),
-)
-const canSave = computed(() =>
-  isDirty.value && !isSaving.value && settingsReady.value && ratioValid.value && overrideValid.value && strategyChangeValid.value,
-)
+  detailedLogsEnabled.value !== currentDetailedLogsEnabled.value)
+const canSave = computed(() => isDirty.value && !isSaving.value && settingsReady.value && ratioValid.value && overrideValid.value && (!modelDirty.value || modelConfigValid.value))
 
 const saveButtonBaseClass = 'inline-flex h-9 w-9 items-center justify-center rounded-lg border transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:border-slate-200 disabled:bg-slate-50 disabled:text-slate-400 disabled:shadow-none disabled:ring-0'
 const saveButtonIdleClass = 'border-slate-200 bg-white text-slate-400'
@@ -226,14 +167,14 @@ const saveButtonClass = computed(() => [
 
 const syncFromStore = (): void => {
   if (!settingsReady.value || isSaving.value) return
-  strategyId.value = currentStrategyId.value
+  modelSettings.value = structuredClone(currentModelSettings.value ?? { modelIdentifier: null, llmConfig: null })
   triggerRatioPercent.value = currentTriggerRatioPercent.value
   activeContextTokensOverride.value = currentActiveContextTokensOverride.value
   detailedLogsEnabled.value = currentDetailedLogsEnabled.value
 }
 
 const resetDraftForBinding = (): void => {
-  strategyId.value = ''
+  modelSettings.value = { modelIdentifier: null, llmConfig: null }
   triggerRatioPercent.value = ''
   activeContextTokensOverride.value = ''
   detailedLogsEnabled.value = false
@@ -242,7 +183,6 @@ const resetDraftForBinding = (): void => {
 watch(
   () => [
     settingsStore.settings,
-    settingsStore.effectiveWorkingContextCompactionStrategyId,
     settingsStore.settingsBindingRevision,
   ],
   syncFromStore,
@@ -253,7 +193,6 @@ const loadForCurrentBinding = async (force = false): Promise<void> => {
   statusMessage.value = ''
   await Promise.allSettled([
     force ? settingsStore.reloadServerSettings() : settingsStore.fetchServerSettings(),
-    catalogStore.fetchStrategies(force),
   ])
   syncFromStore()
 }
@@ -273,8 +212,8 @@ const retryReads = (): void => {
 
 const buildChanges = (): ReadonlyArray<Readonly<{ key: string; value: string }>> => {
   const changes: Array<Readonly<{ key: string; value: string }>> = []
-  if (strategyDirty.value) {
-    changes.push({ key: COMPACTION_STRATEGY_KEY, value: normalizeText(strategyId.value) })
+  if (modelDirty.value) {
+    changes.push({ key: COMPACTION_MODEL_SETTINGS_KEY, value: JSON.stringify(modelSettings.value) })
   }
   if (normalizeText(triggerRatioPercent.value) !== currentTriggerRatioPercent.value) {
     changes.push({ key: COMPACTION_TRIGGER_RATIO_KEY, value: String(Number(triggerRatioPercent.value) / 100) })
@@ -293,9 +232,11 @@ const save = async (): Promise<void> => {
 
   isSaving.value = true
   statusMessage.value = ''
+  const savingRevision = currentRevision.value
   let completed = false
   try {
     for (const change of buildChanges()) {
+      if (savingRevision !== currentRevision.value) throw new Error(t('settings.components.settings.CompactionConfigCard.nodeChanged'))
       await settingsStore.updateServerSetting(change.key, change.value)
     }
     completed = true
@@ -306,7 +247,7 @@ const save = async (): Promise<void> => {
     })
   } finally {
     isSaving.value = false
-    if (completed) syncFromStore()
+    if (completed && savingRevision === currentRevision.value) syncFromStore()
   }
 }
 </script>

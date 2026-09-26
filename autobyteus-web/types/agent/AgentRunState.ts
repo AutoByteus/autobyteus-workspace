@@ -15,6 +15,13 @@ export interface AgentCompactionStatus {
   selectedBlockCount?: number | null;
   compactedBlockCount?: number | null;
   rawTraceCount?: number | null;
+  summaryCharCount?: number | null;
+  summaryTokenCount?: number | null;
+  summarizerProvider?: string | null;
+  compactionInvocationId?: string | null;
+  completionStatus?: string | null;
+  completionReason?: string | null;
+  // Historical read-only metadata; never produced by current direct compaction.
   semanticFactCount?: number | null;
   compactionAgentDefinitionId?: string | null;
   compactionAgentName?: string | null;

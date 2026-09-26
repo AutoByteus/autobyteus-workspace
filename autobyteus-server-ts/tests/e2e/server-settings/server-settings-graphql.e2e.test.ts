@@ -5,26 +5,6 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { afterEach, beforeAll, beforeEach, describe, expect, it } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { LLMRequestAssembler } from "autobyteus-ts/agent/llm-request-assembler.js";
-import { BasePromptRenderer } from "autobyteus-ts/llm/prompt-renderers/base-prompt-renderer.js";
-import { LLMUserMessage } from "autobyteus-ts/llm/user-message.js";
-import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
-import { CompactionRuntimeSettingsResolver } from "autobyteus-ts/memory/compaction/compaction-runtime-settings.js";
-import { defaultWorkingContextCompactionStrategyRegistry } from "autobyteus-ts/memory/compaction/default-working-context-compaction-strategy-registry.js";
-import { PendingCompactionExecutor } from "autobyteus-ts/memory/compaction/pending-compaction-executor.js";
-import { resolveCompactionPlanningBudget } from "autobyteus-ts/memory/compaction/compaction-planning-budget.js";
-import { AUTOBYTEUS_COMPACTION_STRATEGY } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-setting.js";
-import { WorkingContextCompactionStrategyResolver } from "autobyteus-ts/memory/compaction/working-context-compaction-strategy-resolver.js";
-import type { CompactionLineageScope } from "autobyteus-ts/memory/lineage/compaction-lineage-scope.js";
-import { MemoryManager } from "autobyteus-ts/memory/memory-manager.js";
-import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
-import { FileCompactionLineageStore } from "autobyteus-ts/memory/store/file-compaction-lineage-store.js";
-import { FileMemoryStore } from "autobyteus-ts/memory/store/file-store.js";
-import { WorkingContextSnapshotStore } from "autobyteus-ts/memory/store/working-context-snapshot-store.js";
-import {
-  createNaturalUserMessageProvenance,
-  WorkingContextFinalizer,
-} from "autobyteus-ts/memory/working-context-finalizer.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { normalizeSandboxMode } from "../../../src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js";
@@ -42,15 +22,8 @@ import {
   DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS,
   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
 } from "../../../src/config/streaming-content-flush-interval-setting.js";
-import { WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY } from "../../../src/config/working-context-compaction-strategy-setting.js";
 
 const AUTOBYTEUS_STREAM_PARSER_SETTING_KEY = "AUTOBYTEUS_STREAM_PARSER";
-
-class RecordingPromptRenderer extends BasePromptRenderer {
-  async render(messages: Message[]): Promise<Array<Record<string, unknown>>> {
-    return messages.map((message) => ({ role: message.role, content: message.content }));
-  }
-}
 
 describe("Server settings GraphQL e2e", () => {
   let schema: GraphQLSchema;
@@ -58,7 +31,6 @@ describe("Server settings GraphQL e2e", () => {
   let tempDir: string;
   let originalServerHostEnv: string | undefined;
   let originalCodexSandboxEnv: string | undefined;
-  let originalCompactionStrategyEnv: string | undefined;
   let originalFeaturedCatalogItemsEnv: string | undefined;
   let originalStreamParserEnv: string | undefined;
   let originalStreamingContentFlushIntervalEnv: string | undefined;
@@ -77,7 +49,6 @@ describe("Server settings GraphQL e2e", () => {
     appConfigProvider.resetForTests();
     originalServerHostEnv = process.env.AUTOBYTEUS_SERVER_HOST;
     originalCodexSandboxEnv = process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
-    originalCompactionStrategyEnv = process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
     originalFeaturedCatalogItemsEnv = process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     originalStreamParserEnv = process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
     originalStreamingContentFlushIntervalEnv =
@@ -95,7 +66,6 @@ describe("Server settings GraphQL e2e", () => {
     );
     process.env.AUTOBYTEUS_SERVER_HOST = "http://localhost:8000";
     delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
-    delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
     delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
     delete process.env[AUTOBYTEUS_STREAM_PARSER_SETTING_KEY];
     delete process.env[STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY];
@@ -116,11 +86,6 @@ describe("Server settings GraphQL e2e", () => {
       delete process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY];
     } else {
       process.env[CODEX_APP_SERVER_SANDBOX_SETTING_KEY] = originalCodexSandboxEnv;
-    }
-    if (originalCompactionStrategyEnv === undefined) {
-      delete process.env[AUTOBYTEUS_COMPACTION_STRATEGY];
-    } else {
-      process.env[AUTOBYTEUS_COMPACTION_STRATEGY] = originalCompactionStrategyEnv;
     }
     if (originalFeaturedCatalogItemsEnv === undefined) {
       delete process.env[FEATURED_CATALOG_ITEMS_SETTING_KEY];
@@ -665,197 +630,4 @@ describe("Server settings GraphQL e2e", () => {
     );
   });
 
-  it("exposes the production compaction strategy catalog and effective default without persisting it", async () => {
-    const strategyQuery = `
-      query GetWorkingContextCompactionStrategyState {
-        getWorkingContextCompactionStrategies {
-          id
-          name
-        }
-        getEffectiveWorkingContextCompactionStrategyId
-      }
-    `;
-
-    const result = await execGraphql<{
-      getWorkingContextCompactionStrategies: Array<{ id: string; name: string }>;
-      getEffectiveWorkingContextCompactionStrategyId: string;
-    }>(strategyQuery);
-
-    expect(result).toEqual({
-      getWorkingContextCompactionStrategies: [
-        { id: "structured-json", name: "Structured JSON" },
-      ],
-      getEffectiveWorkingContextCompactionStrategyId: "structured-json",
-    });
-    expect(process.env[AUTOBYTEUS_COMPACTION_STRATEGY]).toBeUndefined();
-    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).not.toContain(
-      AUTOBYTEUS_COMPACTION_STRATEGY,
-    );
-  });
-
-  it("persists a registered global compaction strategy and selects it for an existing runtime's next operation", async () => {
-    const testStrategyId = "graphql-test-direct";
-    if (!defaultWorkingContextCompactionStrategyRegistry.get(testStrategyId)) {
-      defaultWorkingContextCompactionStrategyRegistry.register({
-        id: testStrategyId,
-        name: "GraphQL Test Direct",
-        create: (_constructionContext, executionContext) => ({
-          id: testStrategyId,
-          name: "GraphQL Test Direct",
-          propose: async () => ({
-            selectedNewRawTraceIds: ["settings-raw-1"],
-            retainedMessages: [],
-            output: {
-              episodes: [{ summary: "selected by GraphQL update" }],
-              semanticEntries: [],
-            },
-            execution: {
-              runtimeKind: "autobyteus",
-              provider: "test-provider",
-              modelIdentifier: "test-model",
-              taskId: "settings-compaction-task",
-              renderedInputSha256: "a".repeat(64),
-            },
-            budgetAssessment: {
-              planningBudget: executionContext.planningBudget,
-              estimatedCurrentWorkingContextTokens: 100,
-              estimatedUntrackedOverheadTokens: 0,
-              requiredSystemTokens: 10,
-              protectedSuffixTokens: 0,
-              replacementMemoryReserveTokens:
-                executionContext.planningBudget.replacementMemoryReserveTokens,
-              retainedRecentTokens: 0,
-              estimatedPlannedPromptTokens: 100,
-              estimatedFinalizedContextTokens: null,
-            },
-          }),
-        }),
-      });
-    }
-
-    const agentId = "existing-runtime-agent";
-    const scope: CompactionLineageScope = {
-      targetKind: "agent_run",
-      runId: agentId,
-      memberId: null,
-    };
-    const memoryStore = new FileMemoryStore(
-      path.join(tempDir, "existing-runtime-memory"),
-      agentId,
-    );
-    const lineageStore = new FileCompactionLineageStore(memoryStore.agentDir, scope);
-    const snapshotStore = new WorkingContextSnapshotStore(
-      path.join(tempDir, "existing-runtime-memory"),
-      agentId,
-    );
-    memoryStore.add([new RawTraceItem({
-      id: "settings-raw-1",
-      ts: 1,
-      turnId: "turn-before-setting-update",
-      seq: 1,
-      traceType: "user",
-      content: "old context",
-      sourceEvent: "api-e2e",
-    })]);
-    const initialContext = new WorkingContextFinalizer().finalize({
-      messages: [
-        new Message(MessageRole.SYSTEM, { content: "System" }),
-        createNaturalUserMessageProvenance(
-          new Message(MessageRole.USER, { content: "old context" }),
-          {
-            kind: "current_user",
-            rawTraceIds: ["settings-raw-1"],
-            turnId: "turn-before-setting-update",
-          },
-        ),
-      ],
-    });
-    const manager = new MemoryManager({
-      store: memoryStore,
-      lineageStore,
-      lineageScope: scope,
-      workingContextSnapshotStore: snapshotStore,
-      workingContext: initialContext,
-      agentId,
-    });
-    manager.persistWorkingContextSnapshot();
-    manager.requestCompaction({
-      requestedTurnId: "turn-before-setting-update",
-      requestKind: "threshold_crossing",
-      planningBudget: resolveCompactionPlanningBudget(
-        { inputBudget: 100_000, triggerThresholdTokens: 80_000 },
-        90_000,
-      ),
-    });
-    const strategyResolver = new WorkingContextCompactionStrategyResolver({
-      registry: defaultWorkingContextCompactionStrategyRegistry,
-      settingsResolver: new CompactionRuntimeSettingsResolver(),
-      constructionContext: {
-        agentId,
-        compactionAgentRunner: null,
-        maxItemChars: 200,
-        diagnostics: null,
-      },
-    });
-    const assembler = new LLMRequestAssembler(
-      manager,
-      new RecordingPromptRenderer(),
-      new PendingCompactionExecutor(manager, { strategyResolver }),
-    );
-
-    const updateMutation = `
-      mutation UpdateServerSetting($key: String!, $value: String!) {
-        updateServerSetting(key: $key, value: $value)
-      }
-    `;
-    const updated = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
-      key: WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
-      value: `  ${testStrategyId}  `,
-    });
-    expect(updated.updateServerSetting).toContain("updated successfully");
-    expect(process.env[AUTOBYTEUS_COMPACTION_STRATEGY]).toBe(testStrategyId);
-    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).toContain(
-      `${AUTOBYTEUS_COMPACTION_STRATEGY}=${testStrategyId}`,
-    );
-
-    const request = await assembler.prepareRequest(
-      new LLMUserMessage({ content: "after GraphQL update" }),
-      {
-        turnId: "turn-after-setting-update",
-        requestId: "turn-after-setting-update:llm:1",
-        turnOrigin: "user",
-      },
-      "System",
-    );
-    expect(request.didCompact).toBe(true);
-    expect(request.canonicalMessages).toHaveLength(2);
-    expect(request.canonicalMessages[0]?.content).toBe("System");
-    expect(request.canonicalMessages[1]?.content).toContain("selected by GraphQL update");
-    expect(request.canonicalMessages[1]?.content).toContain("after GraphQL update");
-    expect(request.renderedPayload).toEqual([
-      { role: MessageRole.SYSTEM, content: "System" },
-      {
-        role: MessageRole.USER,
-        content: expect.stringContaining("selected by GraphQL update"),
-      },
-    ]);
-    expect(lineageStore.readHead()).toMatchObject({
-      scope,
-      execution: {
-        runtimeKind: "autobyteus",
-        provider: "test-provider",
-        model: "test-model",
-      },
-    });
-
-    const invalid = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
-      key: WORKING_CONTEXT_COMPACTION_STRATEGY_SETTING_KEY,
-      value: "unknown-strategy",
-    });
-    expect(invalid.updateServerSetting).toContain("must be one of");
-    expect(process.env[AUTOBYTEUS_COMPACTION_STRATEGY]).toBe(testStrategyId);
-    expect(fs.readFileSync(path.join(tempDir, ".env"), "utf8")).not.toContain(
-      `${AUTOBYTEUS_COMPACTION_STRATEGY}=unknown-strategy`,
-    );
-  });
 });

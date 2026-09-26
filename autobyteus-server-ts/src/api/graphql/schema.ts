@@ -1,7 +1,6 @@
 import { buildSchema } from 'type-graphql';
 import { HealthResolver } from './types/health.js';
 import { ServerSettingsResolver } from './types/server-settings.js';
-import { WorkingContextCompactionStrategyResolver } from './types/working-context-compaction-strategy.js';
 import { ApplicationResolver } from './types/application.js';
 import { ApplicationCapabilityResolver } from './types/application-capability.js';
 import { SkillResolver } from './types/skills.js';
@@ -44,7 +43,6 @@ export async function buildGraphqlSchema() {
     resolvers: [
       HealthResolver,
       ServerSettingsResolver,
-      WorkingContextCompactionStrategyResolver,
       ApplicationResolver,
       ApplicationCapabilityResolver,
       SkillResolver,

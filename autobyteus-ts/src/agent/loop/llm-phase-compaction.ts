@@ -86,7 +86,6 @@ export function evaluateLlmPhaseCompaction(input: {
       selected_block_count: null,
       compacted_block_count: null,
       raw_trace_count: null,
-      semantic_fact_count: null,
     });
   } else if (decision.kind === 'suppressed' && decision.diagnosticRequired) {
     compactionReporter.reportInadequateReduction({

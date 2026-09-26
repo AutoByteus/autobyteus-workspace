@@ -7,7 +7,6 @@ import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import { MemoryManager } from "autobyteus-ts/memory/memory-manager.js";
 import { WorkingContextSnapshotBootstrapper } from "autobyteus-ts/memory/restore/working-context-snapshot-bootstrapper.js";
 import { FileMemoryStore } from "autobyteus-ts/memory/store/file-store.js";
-import { FileCompactionLineageStore } from "autobyteus-ts/memory/store/file-compaction-lineage-store.js";
 import {
   COMPACTION_LINEAGE_FILE_NAME,
   RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
@@ -417,16 +416,9 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
 
     const migratedSnapshotStore = new WorkingContextSnapshotStore(memoryDir, runId);
     const restoredMemoryStore = new FileMemoryStore(memoryDir, runId);
-    const restoredLineageScope = {
-      targetKind: "agent_run" as const,
-      runId,
-      memberId: null,
-    };
     const restoredManager = new MemoryManager({
       store: restoredMemoryStore,
       workingContextSnapshotStore: migratedSnapshotStore,
-      lineageStore: new FileCompactionLineageStore(restoredMemoryStore.agentDir, restoredLineageScope),
-      lineageScope: restoredLineageScope,
       agentId: runId,
     });
     new WorkingContextSnapshotBootstrapper(migratedSnapshotStore).bootstrap(

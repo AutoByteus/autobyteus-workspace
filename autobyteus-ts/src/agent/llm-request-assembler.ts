@@ -19,6 +19,8 @@ export type LlmRequestAssemblyIdentity = Readonly<{
   requestId: string;
   turnOrigin: TurnStartOrigin;
   isToolContinuation?: boolean;
+  parentModelIdentifier: string;
+  signal: AbortSignal;
 }>;
 
 export type RequestPackage = {
@@ -54,6 +56,8 @@ export class LLMRequestAssembler {
       ? await this.pendingCompactionExecutor.executeIfAuthorized({
           turnId: identity.turnId,
           turnOrigin: identity.turnOrigin,
+          parentModelIdentifier: identity.parentModelIdentifier,
+          signal: identity.signal,
         })
       : false;
 

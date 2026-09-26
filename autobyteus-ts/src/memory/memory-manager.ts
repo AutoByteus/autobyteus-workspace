@@ -11,8 +11,6 @@ import { toolCallIdentityKey } from './models/tool-call-identity.js';
 import { MemoryType } from './models/memory-types.js';
 import { MemoryStore } from './store/base-store.js';
 import type { SystemInstructionCaptureResult } from './models/system-instruction-trace.js';
-import type { CompactionLineageStore } from './lineage/compaction-lineage-store.js';
-import type { CompactionLineageScope } from './lineage/compaction-lineage-scope.js';
 import { TurnTracker } from './turn-tracker.js';
 import { WorkingContext } from './working-context.js';
 import { WorkingContextSnapshotStore } from './store/working-context-snapshot-store.js';
@@ -23,7 +21,6 @@ import type {
   AcceptedWorkingContextCompaction,
   WorkingContextCompactionProposal,
 } from './compaction/working-context-compaction-proposal.js';
-import type { CompactedMemoryProjectionBundle } from './projection/compacted-memory-projection-bundle.js';
 import {
   MemoryManagerCompactionCoordinator,
   type BeginPendingCompactionAttemptResult,
@@ -109,8 +106,6 @@ export class MemoryManager {
     memoryCompaction?: MemoryCompactionConfiguration;
     workingContext?: WorkingContext;
     workingContextSnapshotStore?: WorkingContextSnapshotStore | null;
-    lineageStore?: CompactionLineageStore | null;
-    lineageScope?: CompactionLineageScope | null;
     agentId?: string | null }) {
     this.store = options.store;
     this.turnTracker = options.turnTracker ?? new TurnTracker();
@@ -123,12 +118,9 @@ export class MemoryManager {
     });
     this.compactionCoordinator = new MemoryManagerCompactionCoordinator({
       store: this.store,
-      lineageStore: options.lineageStore ?? null,
-      lineageScope: options.lineageScope ?? null,
+      contextController: this.workingContextController,
       snapshotStore: this.workingContextSnapshotStore,
       agentId: options.agentId ?? this.workingContextSnapshotStore?.agentId ?? null,
-      getContext: () => this.workingContextController.getContext(),
-      installContext: (context) => this.workingContextController.install(context),
     });
     this.toolLifecycleState = new ToolTraceLifecycleState(this.store.listTurnRawTraceCorpusOrdered());
     this.llmRequestRecovery = new LlmRequestRecoveryBoundary({
@@ -525,9 +517,7 @@ export class MemoryManager {
 
   installWorkingContextWithoutSnapshot(workingContext: WorkingContext): void { this.workingContextController.install(workingContext); }
 
-  requireCurrentCompactionOutput(): CompactedMemoryProjectionBundle { return this.compactionCoordinator.requireCurrentOutput(); }
 
-  loadCurrentCompactionOutput(): CompactedMemoryProjectionBundle | null { return this.compactionCoordinator.loadCurrentOutput(); }
 
   captureCompactionBaseline(): MemoryManagerCompactionBaseline { return this.compactionCoordinator.captureBaseline(); }
 
@@ -538,7 +528,7 @@ export class MemoryManager {
     return this.compactionCoordinator.prepare(baseline, proposal);
   }
 
-  commitAcceptedCompaction(accepted: AcceptedWorkingContextCompaction): void { this.compactionCoordinator.commit(accepted); }
+  commitAcceptedCompaction(accepted: AcceptedWorkingContextCompaction, signal: AbortSignal): void { this.compactionCoordinator.commit(accepted, signal); }
 
   persistWorkingContextSnapshot(): void { this.workingContextController.persist(); }
 

@@ -4,7 +4,6 @@ import {
   resolveAutoByteusRuntimeAgentToolExposure,
 } from "../../../../../src/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.js";
 import { TeamBackendKind } from "../../../../../src/agent-team-execution/domain/team-backend-kind.js";
-import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../../../src/built-in-agents/built-in-agent-registry.js";
 
 describe("autobyteus runtime tool exposure", () => {
   it("adds the exact foundation baseline when no tools are configured", () => {
@@ -62,17 +61,5 @@ describe("autobyteus runtime tool exposure", () => {
     ]);
   });
 
-  it("keeps the built-in Memory Compactor outside every native default exposure", () => {
-    const configuredToolNames: string[] = [];
-    const exposure = resolveAutoByteusRuntimeAgentToolExposure(
-      {
-        id: MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
-        toolNames: configuredToolNames,
-      },
-      { teamBackendKind: TeamBackendKind.MIXED } as any,
-    );
 
-    expect(exposure.requestedToolNames).toEqual([]);
-    expect(configuredToolNames).toEqual([]);
-  });
 });

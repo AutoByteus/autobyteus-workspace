@@ -185,10 +185,10 @@ describe('WorkingContextCompactionPromptBuilder', () => {
     expect(prompt.indexOf('M1: retain')).toBeLessThan(prompt.indexOf('R2 user text'));
     expect(prompt.indexOf('R2 user text')).toBeLessThan(prompt.indexOf('R2 visible assistant text'));
     expect(prompt.match(/^Assistant:$/gm)).toHaveLength(2);
-    expect(prompt.match(/^Tool:$/gm)).toHaveLength(2);
+    expect(prompt.match(/^Tool \(.*\):$/gm)).toHaveLength(2);
     expect(prompt.indexOf('name: run_command')).toBeLessThan(prompt.indexOf('name: read_file'));
-    expect(prompt).toContain('Tool:\nname: run_command\nstatus: success');
-    expect(prompt).toContain('Tool:\nname: read_file\nstatus: error');
+    expect(prompt).toContain('Tool (backend-call-success; argument/result values may be excerpted):\nname: run_command\nstatus: success');
+    expect(prompt).toContain('Tool (backend-call-error; argument/result values may be excerpted):\nname: read_file\nstatus: error');
     expect(prompt).toContain('result:');
     expect(prompt).toContain('error:');
     expect(prompt).toMatch(/… \[\d+ characters omitted\] …/);
@@ -201,8 +201,6 @@ describe('WorkingContextCompactionPromptBuilder', () => {
       'SEPARATE_PRIVATE_REASONING',
       'Assistant work notes',
       'Assistant tool call',
-      'backend-call-success',
-      'backend-call-error',
       'raw-tool-call',
       '[CONVERSATION_HISTORY_TO_SUMMARIZE]',
       '[REQUIRED_FINAL_JSON_SHAPE]',
@@ -216,30 +214,6 @@ describe('WorkingContextCompactionPromptBuilder', () => {
     }
     expect(units.map((unit) => unit.messages.map((message) => message.toDict())))
       .toEqual(before);
-  });
-
-  it('prepends only the exact bounded correction text to the unchanged initial prompt', () => {
-    const builder = new WorkingContextCompactionPromptBuilder();
-    const initialPrompt = builder.buildTaskPrompt([
-      messageUnit(
-        'user',
-        'message',
-        new Message(MessageRole.USER, { content: 'Target history.' }),
-      ),
-    ]);
-    const correctionPrompt = builder.buildCorrectionTaskPrompt(
-      initialPrompt,
-      'six_array_schema_validation',
-    );
-
-    expect(correctionPrompt).toBe(
-      'A prior compaction attempt failed host validation at the `six_array_schema_validation` stage. This is the single corrective attempt. Return exactly one JSON object with all six required arrays: `episodes`, `critical_issues`, `unresolved_work`, `durable_facts`, `user_preferences`, and `important_artifacts`. At least one `episodes` entry must contain a non-empty `summary`; entries in the five fact arrays use `fact`. Do not add Markdown fences or prose.\n\n'
-      + initialPrompt,
-    );
-    expect(correctionPrompt.endsWith(initialPrompt)).toBe(true);
-    expect(correctionPrompt.endsWith(
-      '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------',
-    )).toBe(true);
   });
 
   it('builds a provider-safe prompt from the exact shield tool-result fixture', () => {
@@ -284,19 +258,6 @@ describe('WorkingContextCompactionPromptBuilder', () => {
       name: 'CompactionPromptConstructionError',
       code: 'input_construction_failure',
     }));
-  });
-
-  it('defensively normalizes malformed external text in a derived correction prompt', () => {
-    const correctionPrompt = new WorkingContextCompactionPromptBuilder()
-      .buildCorrectionTaskPrompt(
-        'external\r\ntext\0\uD83D',
-        'json_object_extraction',
-      );
-
-    expect(correctionPrompt).toContain('external\ntext�');
-    expect(correctionPrompt).not.toContain('\r');
-    expect(correctionPrompt).not.toContain('\0');
-    expect(providerSafeCompactionText.isProviderSafeText(correctionPrompt)).toBe(true);
   });
 
   it('rejects incomplete or orphaned tool protocol rather than inventing a transcript', () => {

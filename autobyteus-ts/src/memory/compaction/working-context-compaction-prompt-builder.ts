@@ -1,5 +1,4 @@
 import { CompactionConversationHistoryRenderer } from './compaction-conversation-history-renderer.js';
-import type { CompactionResponseValidationStage } from './compaction-response-parser.js';
 import type { WorkingContextMessageUnit } from './working-context-message-unit.js';
 import {
   providerSafeCompactionText,
@@ -13,9 +12,6 @@ export type WorkingContextCompactionPromptBuildOptions = {
 const TARGET_HISTORY_INTRODUCTION = 'Here is the conversation history of the target agent whose conversation history needs to be compacted. This conversation history is contained between the START and END separators below.';
 const TARGET_HISTORY_START_SEPARATOR = '---------------- START OF TARGET AGENT CONVERSATION HISTORY ----------------';
 const TARGET_HISTORY_END_SEPARATOR = '----------------- END OF TARGET AGENT CONVERSATION HISTORY -----------------';
-const CORRECTION_PREFIX = (validationStage: CompactionResponseValidationStage): string =>
-  `A prior compaction attempt failed host validation at the \`${validationStage}\` stage. This is the single corrective attempt. Return exactly one JSON object with all six required arrays: \`episodes\`, \`critical_issues\`, \`unresolved_work\`, \`durable_facts\`, \`user_preferences\`, and \`important_artifacts\`. At least one \`episodes\` entry must contain a non-empty \`summary\`; entries in the five fact arrays use \`fact\`. Do not add Markdown fences or prose.`;
-
 type ProviderSafeTextBoundary = Pick<
   ProviderSafeCompactionText,
   'finalize' | 'isProviderSafeText'
@@ -37,7 +33,7 @@ export class WorkingContextCompactionPromptBuilder {
   ) {}
 
   buildTaskPrompt(
-    units: WorkingContextMessageUnit[],
+    units: readonly WorkingContextMessageUnit[],
     options: WorkingContextCompactionPromptBuildOptions = {},
   ): string {
     const renderedHistory = this.conversationRenderer.render(
@@ -51,15 +47,6 @@ export class WorkingContextCompactionPromptBuilder {
       renderedHistory,
       TARGET_HISTORY_END_SEPARATOR,
     ].join('\n'));
-  }
-
-  buildCorrectionTaskPrompt(
-    initialPrompt: string,
-    validationStage: CompactionResponseValidationStage,
-  ): string {
-    return this.finalizePrompt(
-      `${CORRECTION_PREFIX(validationStage)}\n\n${initialPrompt}`,
-    );
   }
 
   private finalizePrompt(prompt: string): string {

@@ -47,8 +47,8 @@ describe('MemoryManager automatic-compaction configuration', () => {
 
   it('owns and applies the supplied complete enabled configuration', () => {
     const policy = new CompactionPolicy({ triggerRatio: 0.2 });
-    const runner = { runCompactionTask: vi.fn() };
-    const configuration = createEnabledMemoryCompactionConfiguration(policy, runner);
+    const summarizer = { summarize: vi.fn() };
+    const configuration = createEnabledMemoryCompactionConfiguration(policy, summarizer);
     const { manager, tempDir } = makeManager(configuration);
     try {
       expect(manager.getAutomaticCompactionConfiguration()).toBe(configuration);
@@ -60,7 +60,7 @@ describe('MemoryManager automatic-compaction configuration', () => {
       expect(manager.getAutomaticCompactionConfiguration()).toMatchObject({
         kind: 'enabled',
         policy,
-        runner,
+        summarizer,
       });
     } finally {
       fs.rmSync(tempDir, { recursive: true, force: true });

@@ -11,12 +11,9 @@ const planningBudget = (observedPromptTokens = 249_416) =>
 
 const coordinator = () => new MemoryManagerCompactionCoordinator({
   store: {} as any,
-  lineageStore: null,
-  lineageScope: null,
   snapshotStore: null,
   agentId: 'agent-1',
-  getContext: () => new WorkingContext(),
-  installContext: () => undefined,
+  contextController: { getContext: () => new WorkingContext(), installOwned: () => undefined } as any,
 });
 
 describe('MemoryManagerCompactionCoordinator attempt authorization', () => {

@@ -1,3 +1,4 @@
+import { migrateCompactionModelSettings } from '../../startup/compaction-model-settings-migration.js';
 import type { AppConfig } from "../../config/app-config.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
@@ -198,6 +199,7 @@ export const buildApplicationPlatformRuntime = (
             executionScope.toolReadiness.publishedArtifactPublisher,
         }),
         bootstrapBuiltInAgents: async () => {
+          await migrateCompactionModelSettings(input.appConfig);
           await bootstrapBuiltInAgents({
             agentsDir: input.appConfig.getAgentsDir(),
             agentDefinitionService: input.agentDefinitionService,

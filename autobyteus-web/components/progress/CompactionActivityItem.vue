@@ -98,6 +98,11 @@ const detailRows = computed(() => {
   add('Source', props.activity.sourceSurface ?? null);
   add('Run', props.activity.compactionRunId ?? null);
   add('Agent', props.activity.compactionAgentName ?? null);
+  add('Model', props.activity.compactionModelIdentifier);
+  add('Summarizer provider', props.activity.summarizerProvider);
+  add('Completion', props.activity.completionStatus);
+  add('Summary characters', formatNumber(props.activity.summaryCharCount));
+  add('Summary tokens (estimated)', formatNumber(props.activity.summaryTokenCount));
   add('Raw traces', formatNumber(props.activity.rawTraceCount));
   add('Compacted blocks', formatNumber(props.activity.compactedBlockCount));
   add('Facts', formatNumber(props.activity.semanticFactCount));

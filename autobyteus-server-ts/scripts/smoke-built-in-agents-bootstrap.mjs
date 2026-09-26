@@ -13,28 +13,33 @@ const assertDistAssetPresent = async (templateDirName, fileName) => {
   return filePath;
 };
 
+const assertDistTemplateAbsent = async (templateDirName) => {
+  const filePath = path.join(templatesDistDir, templateDirName);
+  await assert.rejects(
+    () => fs.stat(filePath),
+    (error) => error && error.code === "ENOENT",
+    `${filePath} must not exist in built output`,
+  );
+};
+
 const [
-  compactorDistAgentMdPath,
-  compactorDistAgentConfigPath,
   skillImproverDistAgentMdPath,
   skillImproverDistAgentConfigPath,
   dailyAssistantDistAgentMdPath,
   dailyAssistantDistAgentConfigPath,
 ] = await Promise.all([
-  assertDistAssetPresent("memory-compactor", "agent.md"),
-  assertDistAssetPresent("memory-compactor", "agent-config.json"),
   assertDistAssetPresent("retrospective-skill-improver", "agent.md"),
   assertDistAssetPresent("retrospective-skill-improver", "agent-config.json"),
   assertDistAssetPresent("daily-assistant", "agent.md"),
   assertDistAssetPresent("daily-assistant", "agent-config.json"),
 ]);
+await assertDistTemplateAbsent("memory-compactor");
 
 const { bootstrapBuiltInAgents } = await import(
   "../dist/built-in-agents/built-in-agent-bootstrapper.js"
 );
 const {
   DAILY_ASSISTANT_AGENT_DEFINITION_ID,
-  MEMORY_COMPACTOR_AGENT_DEFINITION_ID,
   RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
 } = await import(
   "../dist/built-in-agents/built-in-agent-registry.js"
@@ -73,7 +78,7 @@ const fakeServerSettingsService = {
 };
 
 try {
-  const staleCompactorAgentDir = path.join(agentsDir, MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
+  const staleCompactorAgentDir = path.join(agentsDir, 'autobyteus-memory-compactor');
   const staleSkillImproverAgentDir = path.join(agentsDir, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   const standaloneAgentDir = path.join(agentsDir, "daily-assistant");
   await fs.mkdir(staleCompactorAgentDir, { recursive: true });
@@ -96,27 +101,15 @@ try {
     },
   });
 
-  assert.equal(result.builtInAgents.length, 3);
+  assert.equal(result.builtInAgents.length, 2);
   assert.equal(result.refreshedCache, true);
 
   const resultById = new Map(result.builtInAgents.map((item) => [item.agentDefinitionId, item]));
-  assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).syncedAgentMd, true);
-  assert.equal(resultById.get(MEMORY_COMPACTOR_AGENT_DEFINITION_ID).syncedAgentConfig, true);
   assert.equal(resultById.get(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID).syncedAgentMd, true);
   assert.equal(resultById.get(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID).syncedAgentConfig, true);
 
-  const compactorAgentDir = path.join(agentsDir, MEMORY_COMPACTOR_AGENT_DEFINITION_ID);
-  const [compactorAgentMd, compactorAgentConfig, compactorDistAgentMd, compactorDistAgentConfig] =
-    await Promise.all([
-      fs.readFile(path.join(compactorAgentDir, "agent.md"), "utf8"),
-      fs.readFile(path.join(compactorAgentDir, "agent-config.json"), "utf8"),
-      fs.readFile(compactorDistAgentMdPath, "utf8"),
-      fs.readFile(compactorDistAgentConfigPath, "utf8"),
-    ]);
-
-  assert.equal(compactorAgentMd, compactorDistAgentMd);
-  assert.equal(compactorAgentConfig, compactorDistAgentConfig);
-  assert.match(compactorAgentMd, /Memory Compactor/);
+  assert.equal(await fs.readFile(path.join(staleCompactorAgentDir, 'agent.md'), 'utf8'), 'stale memory compactor');
+  assert.equal(await fs.readFile(path.join(staleCompactorAgentDir, 'agent-config.json'), 'utf8'), '{"toolNames":["stale_tool"]}');
   const skillImproverAgentDir = path.join(agentsDir, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   const [skillImproverAgentMd, skillImproverAgentConfig, skillImproverDistAgentMd, skillImproverDistAgentConfig] =
     await Promise.all([

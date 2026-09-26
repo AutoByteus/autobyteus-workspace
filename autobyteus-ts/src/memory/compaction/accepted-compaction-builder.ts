@@ -1,131 +1,34 @@
 import { createHash } from 'node:crypto';
-
 import { MessageRole } from '../../llm/utils/messages.js';
 import { withoutAnthropicThinkingInMessage } from '../../llm/utils/provider-native-assistant-turn.js';
-import { COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION } from '../lineage/compaction-lineage-record.js';
-import type { CompactionLineageScope } from '../lineage/compaction-lineage-scope.js';
-import { EpisodicItem } from '../models/episodic-item.js';
-import { SemanticItem } from '../models/semantic-item.js';
-import { CompactedMemoryMessageBuilder } from '../projection/compacted-memory-message-builder.js';
-import type { MemoryStore } from '../store/base-store.js';
-import {
-  createCompactedMemoryUserMessage,
-  WorkingContextFinalizer,
-} from '../working-context-finalizer.js';
+import { createCompactedMemoryUserMessage, WorkingContextFinalizer } from '../working-context-finalizer.js';
 import type { WorkingContext } from '../working-context.js';
-import type {
-  AcceptedWorkingContextCompaction,
-  WorkingContextCompactionProposal,
-} from './working-context-compaction-proposal.js';
+import type { AcceptedWorkingContextCompaction, WorkingContextCompactionProposal } from './working-context-compaction-proposal.js';
 import { estimateMessagesTokens } from './message-budget-strategy.js';
 
-export type AcceptedCompactionBuildInput = {
-  compactionId: string;
-  expectedPreviousCompactionId: string | null;
-  baseline: WorkingContext;
-  proposal: WorkingContextCompactionProposal;
-};
-
 export const workingContextFingerprint = (context: WorkingContext): string =>
-  createHash('sha256')
-    .update(JSON.stringify(context.buildMessages().map((message) => message.toDict())), 'utf8')
-    .digest('hex');
-
-const artifactId = (prefix: 'ep' | 'sem', compactionId: string, ordinal: number): string =>
-  `${prefix}_${createHash('sha256').update(compactionId).digest('hex').slice(0, 24)}_${ordinal + 1}`;
-
-const requiredExecutionText = (value: string | null | undefined, name: string): string => {
-  const normalized = value?.trim();
-  if (!normalized) throw new Error(`Accepted compaction requires ${name}.`);
-  return normalized;
-};
+  createHash('sha256').update(JSON.stringify(context.buildMessages().map((message) => message.toDict())), 'utf8').digest('hex');
 
 export class AcceptedCompactionBuilder {
-  constructor(
-    private readonly store: MemoryStore,
-    private readonly scope: CompactionLineageScope,
-    private readonly memoryMessageBuilder = new CompactedMemoryMessageBuilder(),
-    private readonly finalizer = new WorkingContextFinalizer(),
-  ) {}
+  constructor(private readonly finalizer = new WorkingContextFinalizer()) {}
 
-  build(input: AcceptedCompactionBuildInput): AcceptedWorkingContextCompaction {
+  build(input: { compactionId: string; baseline: WorkingContext; proposal: WorkingContextCompactionProposal }): AcceptedWorkingContextCompaction {
     const { compactionId, proposal } = input;
-    if (!compactionId.trim()) throw new Error('Compaction ID must be non-empty.');
-    if (proposal.output.episodes.length < 1) {
-      throw new Error('Accepted compaction requires at least one episode.');
+    if (!compactionId.trim() || !proposal.summary.trim()) throw new Error('Compaction ID and summary must be non-empty.');
+    const selected = proposal.selectedNewRawTraceIds;
+    if (!selected.length || selected.some((id) => !id.trim() || id !== id.trim()) || new Set(selected).size !== selected.length) {
+      throw new Error('Accepted compaction requires unique non-empty selected raw-trace IDs.');
     }
-    const selected = proposal.selectedNewRawTraceIds.map((id) => id.trim()).filter(Boolean);
-    if (!selected.length || new Set(selected).size !== selected.length) {
-      throw new Error('Accepted compaction requires unique selected new raw-trace IDs.');
-    }
-
-    const now = new Date();
-    const ts = now.getTime() / 1000;
-    const episodicItems = proposal.output.episodes.map((episode, index) => new EpisodicItem({
-      id: artifactId('ep', compactionId, index),
-      ts,
-      summary: episode.summary,
-    }));
-    const semanticItems = proposal.output.semanticEntries.map((entry, index) => new SemanticItem({
-      id: artifactId('sem', compactionId, index),
-      ts,
-      category: entry.category,
-      fact: entry.fact,
-      salience: entry.salience,
-    }));
-    if (this.store.hasMemoryArtifactIds({
-      episodeIds: episodicItems.map(({ id }) => id),
-      semanticIds: semanticItems.map(({ id }) => id),
-    })) {
-      throw new Error('Deterministic compaction artifact IDs already exist.');
-    }
-    const bundle = {
-      episodes: episodicItems,
-      semantics: semanticItems,
-    };
-    const memoryContent = this.memoryMessageBuilder.build(bundle);
-    if (!memoryContent) throw new Error('Accepted compaction rendered no memory content.');
-    const finalizedContext = this.finalizer.finalize({
-      messages: [
-        ...input.baseline.buildMessages().filter(
-        (message) => message.role === MessageRole.SYSTEM,
-        ),
-        createCompactedMemoryUserMessage(memoryContent),
-        ...this.finalizer.markNaturalUserMessagesRetained(proposal.retainedMessages).map(withoutAnthropicThinkingInMessage),
-      ],
-    });
-    const derivedAt = now.toISOString();
+    const finalizedContext = this.finalizer.finalize({ messages: [
+      ...input.baseline.buildMessages().filter((message) => message.role === MessageRole.SYSTEM),
+      createCompactedMemoryUserMessage(proposal.summary),
+      ...this.finalizer.markNaturalUserMessagesRetained(proposal.retainedMessages).map(withoutAnthropicThinkingInMessage),
+    ] });
     return {
-      compactionId,
-      baselineFingerprint: workingContextFingerprint(input.baseline),
-      expectedPreviousCompactionId: input.expectedPreviousCompactionId,
-      selectedNewRawTraceIds: selected,
-      episodicItems,
-      semanticItems,
-      lineageRecord: {
-        schemaVersion: 1,
-        scope: this.scope,
-        compactionId,
-        previousCompactionId: input.expectedPreviousCompactionId,
-        episodeIds: episodicItems.map(({ id }) => id),
-        semanticIds: semanticItems.map(({ id }) => id),
-        derivedAt,
-        execution: {
-          runtimeKind: requiredExecutionText(proposal.execution.runtimeKind, 'runtime kind'),
-          provider: requiredExecutionText(proposal.execution.provider, 'provider'),
-          model: requiredExecutionText(proposal.execution.modelIdentifier, 'model identifier'),
-          selectionPolicyVersion: 1,
-          promptContractVersion: COMPACTION_LINEAGE_CURRENT_PROMPT_CONTRACT_VERSION,
-          ...(proposal.execution.renderedInputSha256
-            ? { renderedInputSha256: proposal.execution.renderedInputSha256 }
-            : {}),
-        },
-      },
-      finalizedContext,
-      budgetAssessment: {
-        ...proposal.budgetAssessment,
-        estimatedFinalizedContextTokens: estimateMessagesTokens(finalizedContext.buildMessages()),
-      },
+      compactionId, baselineFingerprint: workingContextFingerprint(input.baseline),
+      selectedNewRawTraceIds: [...selected], finalizedContext,
+      budgetAssessment: { ...proposal.budgetAssessment,
+        estimatedFinalizedContextTokens: estimateMessagesTokens(finalizedContext.buildMessages()) },
     };
   }
 }

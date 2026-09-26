@@ -1,3 +1,4 @@
+import type { CompactionLlmFactory } from 'autobyteus-ts/memory/compaction/direct-llm-compaction-summarizer.js';
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../skills/services/skill-service.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -7,7 +8,6 @@ import {
   type AutoByteusAgentFactoryLike,
   type AutoByteusAgentIdleWaiter,
   type AutoByteusLlmFactory,
-  type CompactionAgentRunnerFactory,
   type ProcessorRegistries,
 } from "../backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import { CodexAgentRunBackendFactory } from "../backends/codex/backend/codex-agent-run-backend-factory.js";
@@ -35,7 +35,7 @@ export type AgentProviderFactoryBuilderProcessInput = Readonly<{
     createLlm: AutoByteusLlmFactory;
     processorRegistries: Readonly<ProcessorRegistries>;
     waitForIdle: AutoByteusAgentIdleWaiter;
-    compactionAgentRunnerFactory: CompactionAgentRunnerFactory;
+    compactionLlmFactory: CompactionLlmFactory;
   }>;
   codex: Readonly<{
     workspaceSkillMaterializer: WorkspaceSkillMaterializer;
@@ -98,7 +98,7 @@ const freezeProcessInput = (
     "agentFactory",
     "createLlm",
     "waitForIdle",
-    "compactionAgentRunnerFactory",
+    "compactionLlmFactory",
   ] as const) {
     requireLeaf(autoByteus[field], `autoByteus.${field}`);
   }
@@ -186,8 +186,8 @@ export const createAgentProviderFactoryBuilder = (
           skillService: process.skillService,
           registries: process.autoByteus.processorRegistries,
           waitForIdle: process.autoByteus.waitForIdle,
-          compactionAgentRunnerFactory:
-            process.autoByteus.compactionAgentRunnerFactory,
+          compactionLlmFactory:
+            process.autoByteus.compactionLlmFactory,
           applicationAgentTools: input.applicationAgentTools,
         }),
         codex: new CodexAgentRunBackendFactory(

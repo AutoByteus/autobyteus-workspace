@@ -1,3 +1,4 @@
+import { completionFromReason } from './completion-status.js';
 import { GoogleGenAI, type ThinkingConfig } from '@google/genai';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
@@ -223,6 +224,7 @@ export class GeminiLLM extends BaseLLM {
     }
 
     return new CompleteResponse({
+        ...completionFromReason(response.candidates?.[0]?.finishReason ?? response.promptFeedback?.blockReason, ['STOP'], ['MAX_TOKENS', 'SAFETY', 'RECITATION', 'LANGUAGE', 'OTHER', 'BLOCKLIST', 'PROHIBITED_CONTENT', 'SPII', 'MALFORMED_FUNCTION_CALL', 'IMAGE_SAFETY', 'IMAGE_PROHIBITED_CONTENT', 'IMAGE_OTHER', 'NO_IMAGE', 'IMAGE_RECITATION', 'UNEXPECTED_TOOL_CALL', 'TOO_MANY_TOOL_CALLS'], parts.some((part) => Boolean(part.functionCall))),
       content,
       reasoning: reasoning ?? null,
       usage: this.toTokenUsage(response.usageMetadata ?? null)
