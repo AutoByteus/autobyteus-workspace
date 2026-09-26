@@ -54,20 +54,6 @@ export class CompactionRuntimeReporter {
     console.info('compaction_budget_skipped_no_usage', { agent_id: this.agentId, ...payload });
   }
 
-  logExecutionContext(payload: Record<string, unknown>, enabled: boolean): void {
-    if (!enabled) {
-      return;
-    }
-    console.info('compaction_execution_context', { agent_id: this.agentId, ...payload });
-  }
-
-  logResultSummary(payload: Record<string, unknown>, enabled: boolean): void {
-    if (!enabled) {
-      return;
-    }
-    console.info('compaction_result_summary', { agent_id: this.agentId, ...payload });
-  }
-
   reportInadequateReduction(input: {
     turnId: string;
     completedOperationId: string | null;
