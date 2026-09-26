@@ -238,9 +238,13 @@ export class SkillService {
       loader: this.loader,
       isReadonlyPath: this.isReadonlyPath.bind(this),
       resolveGlobalSkill: this.getGlobalSkill.bind(this),
-      globalCandidatePaths: (name) => getAllSkillDirectories(this.config)
-        .map((root) => searchConfiguredSkillCandidate(root, name))
-        .filter((candidate): candidate is string => candidate !== null),
+      globalCandidatePaths: (name) => {
+        for (const root of getAllSkillDirectories(this.config)) {
+          const candidate = searchConfiguredSkillCandidate(root, name);
+          if (candidate) return [{ path: candidate, configuredRoot: root }];
+        }
+        return [];
+      },
       isSkillDisabled: this.disabledStore.isDisabled.bind(this.disabledStore),
       logger,
     });

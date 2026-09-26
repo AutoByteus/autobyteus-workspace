@@ -150,7 +150,7 @@ describe("SkillService", () => {
       source: { origin: "global" } });
     fs.mkdirSync(path.join(agentDir, "skills", "workflow"), { recursive: true });
     expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toEqual([
-      { kind: "invalid_candidate", name: "workflow", reason: "present_invalid" },
+      { kind: "invalid_candidate", name: "workflow", reason: "missing_manifest" },
     ]);
     expect(service.resolveConfiguredSkillBindingsForAgent(definition)[0]).toMatchObject({ kind: "resolved" });
   });
@@ -162,13 +162,99 @@ describe("SkillService", () => {
     const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
       skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
     fs.writeFileSync(path.join(candidate, "SKILL.md"), "malformed");
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]?.kind).toBe("invalid_candidate");
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({ kind: "invalid_candidate", reason: "malformed_manifest" });
     writeSkillDirectory(candidate, "other", "Wrong name", "Body");
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]?.kind).toBe("invalid_candidate");
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({ kind: "invalid_candidate", reason: "name_mismatch" });
     fs.rmSync(candidate, { recursive: true });
     const globalCandidate = path.join(skillsDir, "workflow");
     fs.mkdirSync(globalCandidate);
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]?.kind).toBe("invalid_candidate");
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({ kind: "invalid_candidate", reason: "missing_manifest" });
+    fs.writeFileSync(path.join(globalCandidate, "SKILL.md"), "malformed");
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({ kind: "invalid_candidate", reason: "malformed_manifest" });
+    writeSkillDirectory(globalCandidate, "other", "Wrong name", "Body");
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({ kind: "invalid_candidate", reason: "name_mismatch" });
+  });
+
+  it("warn-classifies an unreadable manifest without absorbing a provenance failure", () => {
+    const agentDir = path.join(tempRoot, "agents", "codex");
+    const candidate = writeSkillDirectory(path.join(agentDir, "skills", "workflow"), "workflow", "Test", "Body");
+    const manifest = path.join(candidate, "SKILL.md");
+    const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
+      skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
+    const readFile = fs.readFileSync;
+    vi.spyOn(fs, "readFileSync").mockImplementation(((file: fs.PathOrFileDescriptor, ...args: unknown[]) => {
+      if (file === manifest) throw Object.assign(new Error("private-content-marker"), { code: "EACCES" });
+      return readFile(file, ...args as []);
+    }) as typeof fs.readFileSync);
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({
+      kind: "invalid_candidate", reason: "unreadable_manifest",
+    });
+  });
+
+  it("keeps unsafe source links and oversized source files outside semantic invalidity", () => {
+    const agentDir = path.join(tempRoot, "agents", "codex");
+    const candidate = writeSkillDirectory(path.join(agentDir, "skills", "workflow"), "workflow", "Test", "Body");
+    const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
+      skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
+    const outside = path.join(tempRoot, "outside-secret");
+    fs.writeFileSync(outside, "private");
+    fs.symlinkSync(outside, path.join(candidate, "reference.md"));
+    expect(() => service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toThrow("AGY_SKILL_SOURCE_PROVENANCE_INVALID");
+    fs.unlinkSync(path.join(candidate, "reference.md"));
+    const large = path.join(candidate, "large.bin");
+    fs.closeSync(fs.openSync(large, "w"));
+    fs.truncateSync(large, 32 * 1024 * 1024 + 1);
+    expect(() => service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toThrow("AGY_SKILL_SOURCE_TOO_LARGE");
+  });
+
+  it("rejects an out-of-bounds candidate directory before loading its manifest", () => {
+    const agentDir = path.join(tempRoot, "agents", "codex");
+    const outside = writeSkillDirectory(path.join(tempRoot, "outside", "workflow"), "workflow", "Test", "Body");
+    fs.mkdirSync(path.join(agentDir, "skills"), { recursive: true });
+    fs.symlinkSync(outside, path.join(agentDir, "skills", "workflow"));
+    const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
+      skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
+    expect(() => service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toThrow("AGY_SKILL_SOURCE_PROVENANCE_INVALID");
+  });
+
+  it("does not downgrade unsafe content links just because the manifest is malformed", () => {
+    const agentDir = path.join(tempRoot, "agents", "codex");
+    const candidate = path.join(agentDir, "skills", "workflow");
+    fs.mkdirSync(candidate, { recursive: true });
+    fs.writeFileSync(path.join(candidate, "SKILL.md"), "malformed");
+    const outside = path.join(tempRoot, "private-content-marker");
+    fs.writeFileSync(outside, "secret");
+    fs.symlinkSync(outside, path.join(candidate, "reference.md"));
+    const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
+      skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
+    expect(() => service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toThrow("AGY_SKILL_SOURCE_PROVENANCE_INVALID");
+  });
+
+  it("checks team-shared and global source safety under their configured roots", () => {
+    const teamDir = path.join(tempRoot, "agent-teams", "team");
+    const agentDir = path.join(teamDir, "agents", "worker");
+    fs.mkdirSync(agentDir, { recursive: true });
+    const shared = writeSkillDirectory(path.join(teamDir, "skills", "workflow"), "workflow", "Team", "Body");
+    const definition = new AgentDefinition({ name: "Worker", description: "Test", instructions: "",
+      skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir, teamDirPath: teamDir } });
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({
+      kind: "resolved", source: { origin: "team_shared" },
+    });
+    fs.writeFileSync(path.join(shared, "SKILL.md"), "malformed");
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({
+      kind: "invalid_candidate", reason: "malformed_manifest",
+    });
+    fs.rmSync(shared, { recursive: true });
+    const outside = writeSkillDirectory(path.join(tempRoot, "outside", "workflow"), "workflow", "Outside", "Body");
+    fs.symlinkSync(outside, path.join(skillsDir, "workflow"));
+    expect(() => service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toThrow("AGY_SKILL_SOURCE_PROVENANCE_INVALID");
+  });
+
+  it("rejects cyclic global nested-skill lookup instead of certifying absence", () => {
+    fs.symlinkSync(skillsDir, path.join(skillsDir, "skills"));
+    const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
+      skillNames: ["missing"] });
+    expect(() => service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toThrow("AGY_SKILL_SOURCE_PROVENANCE_INVALID");
   });
 
   it("returns resolved skills by configured names and skips unknown entries", () => {

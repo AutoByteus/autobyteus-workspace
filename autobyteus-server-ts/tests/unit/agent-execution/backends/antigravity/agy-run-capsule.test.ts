@@ -140,7 +140,7 @@ describe("AGY run capsule", () => {
     expect(warning).toHaveBeenCalledWith(expect.stringContaining("run=missing-mixed, agent=codex, skill=missing, disposition=skipped-missing"));
   });
 
-  it("rejects a present invalid candidate and source removed after resolution", async () => {
+  it("warns/omits semantic invalidity but rejects source removed after resolution", async () => {
     const root = await roots();
     const source = path.join(root.base, "skill-source");
     await fs.mkdir(source);
@@ -148,13 +148,44 @@ describe("AGY run capsule", () => {
     const common = { agentDefinitionId: "codex", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image"] },
       memoryDir: root.memoryDir, workspacePath: root.workspacePath, identity: "Identity",
       skillAccessMode: "PRELOADED_ONLY" as const, mcpDescriptor: null };
-    await expect(createAgyRunCapsule({ ...common, runId: "invalid", configuredSkillBindings: [
-      { kind: "invalid_candidate", name: "example-skill", reason: "present_invalid" }],
-    })).rejects.toThrow("AGY_CONFIGURED_SKILL_INVALID_CANDIDATE");
+    const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const invalid = await createAgyRunCapsule({ ...common, runId: "invalid", configuredSkillBindings: [
+      { kind: "invalid_candidate", name: "example-skill", reason: "malformed_manifest" }],
+    });
+    expect(invalid.manifest.skills).toEqual([]);
+    expect(warning).toHaveBeenCalledWith(expect.stringContaining("disposition=skipped-invalid, reason=malformed_manifest"));
     const resolved = globalBinding(source);
+    const mixed = await createAgyRunCapsule({ ...common, runId: "invalid-mixed", memoryDir: path.join(root.base, "mixed-memory"), configuredSkillBindings: [
+      { kind: "invalid_candidate", name: "bad-skill", reason: "name_mismatch" }, resolved,
+    ] });
+    expect(mixed.manifest.skills.map((entry) => entry.name)).toEqual(["example-skill"]);
+    expect(warning).toHaveBeenCalledWith(expect.stringContaining("skill=bad-skill, disposition=skipped-invalid, reason=name_mismatch"));
     await fs.rm(source, { recursive: true });
-    await expect(createAgyRunCapsule({ ...common, runId: "changed", configuredSkillBindings: [resolved] }))
+    await expect(createAgyRunCapsule({ ...common, runId: "changed", memoryDir: path.join(root.base, "changed-memory"), configuredSkillBindings: [resolved] }))
       .rejects.toThrow("AGY_SKILL_SOURCE_CHANGED");
+  });
+
+  it("does not resolve or warn about configured skills in NONE mode", async () => {
+    const root = await roots();
+    const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const capsule = await createAgyRunCapsule({ agentDefinitionId: "codex", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image"] },
+      runId: "none-invalid", memoryDir: root.memoryDir, workspacePath: root.workspacePath,
+      identity: "Identity", configuredSkillBindings: [{ kind: "invalid_candidate", name: "broken", reason: "malformed_manifest" }],
+      skillAccessMode: "NONE", mcpDescriptor: null });
+    expect(capsule.manifest.skills).toEqual([]);
+    expect(warning).not.toHaveBeenCalled();
+  });
+
+  it("never prints an unsafe configured name or unsafe run identity in skip warnings", async () => {
+    const root = await roots();
+    const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const capsule = await createAgyRunCapsule({ agentDefinitionId: "codex\nTOKEN=secret", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image"] },
+      runId: "unsafe-log-run", memoryDir: root.memoryDir, workspacePath: root.workspacePath,
+      identity: "Identity", configuredSkillBindings: [{ kind: "invalid_candidate", name: "../../TOKEN=secret", reason: "unsafe_name" }],
+      skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
+    expect(capsule.manifest.skills).toEqual([]);
+    expect(warning).toHaveBeenCalledWith(expect.stringContaining("skill=[invalid-name], disposition=skipped-invalid, reason=unsafe_name"));
+    expect(warning.mock.calls.flat().join(" ")).not.toContain("TOKEN=secret");
   });
 
   it("rejects non-manifest source content changed after detailed resolution", async () => {

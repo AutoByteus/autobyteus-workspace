@@ -193,12 +193,35 @@ export const searchDirectoryRecursive = (
 /** Candidate lookup follows the same global root / nested `skills` precedence,
  * but deliberately does not require a valid manifest. */
 export const searchConfiguredSkillCandidate = (directory: string, name: string): string | null => {
-  if (!isExistingDirectory(directory)) return null;
-  const candidate = path.join(directory, name);
-  try { fs.lstatSync(candidate); return candidate; }
-  catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") return candidate; }
-  const nested = path.join(directory, "skills");
-  return isExistingDirectory(nested) ? searchConfiguredSkillCandidate(nested, name) : null;
+  let configuredRoot: string;
+  try {
+    if (!fs.statSync(directory).isDirectory()) throw new Error("AGY_SKILL_SOURCE_ROOT_INVALID");
+    configuredRoot = fs.realpathSync(directory);
+  }
+  catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+    throw error;
+  }
+  const seen = new Set<string>();
+  const search = (root: string): string | null => {
+    const canonical = fs.realpathSync(root);
+    const relative = path.relative(configuredRoot, canonical);
+    if (seen.has(canonical) || relative === ".." || relative.startsWith(`..${path.sep}`) || path.isAbsolute(relative))
+      throw new Error("AGY_SKILL_SOURCE_PROVENANCE_INVALID");
+    seen.add(canonical);
+    if (!fs.statSync(root).isDirectory()) throw new Error("AGY_SKILL_SOURCE_ROOT_INVALID");
+    const candidate = path.join(root, name);
+    try { fs.lstatSync(candidate); return candidate; }
+    catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+    const nested = path.join(root, "skills");
+    try { fs.lstatSync(nested); }
+    catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") return null;
+      throw error;
+    }
+    return search(nested);
+  };
+  return search(directory);
 };
 
 export const scanSkillDirectory = (

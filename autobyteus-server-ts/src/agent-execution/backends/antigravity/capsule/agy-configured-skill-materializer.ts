@@ -13,6 +13,7 @@ const safeName = (value: string): string => {
   return name;
 };
 const failure = (code: string, name: string): Error => new Error(`${code}: ${name}`);
+const logIdentity = (value: string): string => /^[a-zA-Z0-9._-]{1,80}$/.test(value) ? value : "[redacted]";
 const contains = (root: string, candidate: string): boolean => {
   const relative = path.relative(root, candidate);
   return relative === "" || (relative !== ".." && !relative.startsWith(`..${path.sep}`) && !path.isAbsolute(relative));
@@ -136,10 +137,14 @@ export const materializeAgyConfiguredSkills = async (input: {
   await fs.mkdir(targetRoot, { recursive: true, mode: 0o700 });
   for (const binding of input.bindings) {
     if (binding.kind === "certified_absent") {
-      console.warn(`AGY configured skill skipped: run=${input.runId}, agent=${input.agentDefinitionId}, skill=${binding.name}, disposition=skipped-missing`);
+      console.warn(`AGY configured skill skipped: run=${logIdentity(input.runId)}, agent=${logIdentity(input.agentDefinitionId)}, skill=${logIdentity(binding.name)}, disposition=skipped-missing`);
       continue;
     }
-    if (binding.kind === "invalid_candidate") throw failure("AGY_CONFIGURED_SKILL_INVALID_CANDIDATE", binding.name);
+    if (binding.kind === "invalid_candidate") {
+      const skillName = binding.reason === "unsafe_name" ? "[invalid-name]" : logIdentity(binding.name);
+      console.warn(`AGY configured skill skipped: run=${logIdentity(input.runId)}, agent=${logIdentity(input.agentDefinitionId)}, skill=${skillName}, disposition=skipped-invalid, reason=${binding.reason}`);
+      continue;
+    }
     const name = safeName(binding.skill.name);
     if (names.has(name.toLowerCase())) throw failure("AGY_SKILL_NAME_COLLISION", name);
     names.add(name.toLowerCase());

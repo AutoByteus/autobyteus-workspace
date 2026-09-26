@@ -8,7 +8,7 @@ export type ConfiguredAgentSkillBinding =
 export type DetailedConfiguredSkillResolution =
   | { kind: "resolved"; skill: Skill; source: ConfiguredSkillSource; sourceTreeSha256: string }
   | { kind: "certified_absent"; name: string }
-  | { kind: "invalid_candidate"; name: string; reason: "unsafe_name" | "present_invalid" };
+  | { kind: "invalid_candidate"; name: string; reason: "unsafe_name" | "missing_manifest" | "unreadable_manifest" | "malformed_manifest" | "name_mismatch" };
 
 /** The resolver's winning lookup branch, not a root guessed by a runtime adapter. */
 export type ConfiguredSkillSource = Readonly<{
