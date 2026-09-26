@@ -2,6 +2,7 @@ import {
   AgentRunEventType,
   type AgentRunEvent,
 } from "../../../domain/agent-run-event.js";
+import fs from "node:fs";
 import {
   type AgentRunFileChangePayload,
   type AgentRunFileChangeSourceTool,
@@ -309,6 +310,14 @@ export class FileChangeEventProcessor implements AgentRunEventProcessor {
     );
     if (!outputPath) {
       return null;
+    }
+
+    // A provider-native AGY image is outside the workspace in some runs. Do
+    // not publish an "available" image based on a stale or fabricated path.
+    if (toolName === "generate_image" && (result as { provider_state?: unknown } | null)?.provider_state === "DONE") {
+      try {
+        if (!fs.statSync(fs.realpathSync(outputPath)).isFile()) return null;
+      } catch { return null; }
     }
 
     return this.buildPayload(input, {

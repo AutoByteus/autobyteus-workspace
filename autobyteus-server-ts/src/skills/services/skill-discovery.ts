@@ -190,6 +190,17 @@ export const searchDirectoryRecursive = (
   return null;
 };
 
+/** Candidate lookup follows the same global root / nested `skills` precedence,
+ * but deliberately does not require a valid manifest. */
+export const searchConfiguredSkillCandidate = (directory: string, name: string): string | null => {
+  if (!isExistingDirectory(directory)) return null;
+  const candidate = path.join(directory, name);
+  try { fs.lstatSync(candidate); return candidate; }
+  catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") return candidate; }
+  const nested = path.join(directory, "skills");
+  return isExistingDirectory(nested) ? searchConfiguredSkillCandidate(nested, name) : null;
+};
+
 export const scanSkillDirectory = (
   directory: string,
   dependencies: SkillDiscoveryDependencies,

@@ -7,6 +7,7 @@ import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtim
 import type { AgyRunContext } from "./agy-agent-run-context.js";
 import { AgyStreamProcess } from "../stream/agy-stream-process.js";
 import { AgyStreamEventConverter } from "../stream/agy-stream-event-converter.js";
+import { recordAgyNativeImageDiagnostic } from "../stream/agy-native-image-diagnostic-sink.js";
 
 export class AgyAgentRunBackend implements AgentRunBackend {
   readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
@@ -18,7 +19,12 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   private phase: AgentRuntimeLifecycleSnapshot["phase"] = "idle";
 
   constructor(private readonly context: AgyRunContext, private readonly process: AgyStreamProcess) {
-    this.converter = new AgyStreamEventConverter(context.runId, context.runtimeContext.conversationId, context.config.llmModelIdentifier);
+    this.converter = new AgyStreamEventConverter(context.runId, context.runtimeContext.conversationId, context.config.llmModelIdentifier,
+      (diagnostic) => {
+        if (!context.config.memoryDir) return;
+        void recordAgyNativeImageDiagnostic(context.config.memoryDir, diagnostic)
+          .catch(() => console.warn(`AGY_NATIVE_IMAGE_DIAGNOSTIC_WRITE_FAILED: run=${context.runId}`));
+      });
     process.subscribe((message) => {
       if (message.event === "init") return;
       try {
@@ -52,10 +58,10 @@ export class AgyAgentRunBackend implements AgentRunBackend {
       this.publish(this.converter.startTurn(turnId));
       await this.process.sendUserMessage(dispatch.message.content);
       return { forwarded: true, turnId, platformAgentRunId: this.getPlatformAgentRunId() };
-    } catch (error) {
+    } catch {
       this.publish(this.converter.interrupt());
       this.turnId = null; this.phase = "error";
-      return { forwarded: false, code: "RUNTIME_COMMAND_FAILED", message: String(error), turnId: null };
+      return { forwarded: false, code: "RUNTIME_COMMAND_FAILED", message: "Antigravity could not accept this message.", turnId: null };
     }
   }
 
@@ -83,14 +89,14 @@ export class AgyAgentRunBackend implements AgentRunBackend {
     }).catch((error) => { console.error(`AGY event dispatch failed for '${this.runId}':`, error); });
   }
 
-  private fail(cause: unknown): void {
+  private fail(_cause: unknown): void {
     if (!this.active) return;
     const turnId = this.turnId;
     this.active = false; this.phase = "error"; this.turnId = null;
     this.process.stop();
     const events: AgentRunEvent[] = [{
       eventType: AgentRunEventType.ERROR, runId: this.runId, statusHint: "ERROR",
-      payload: { code: "AGY_PROCESS_ERROR", message: String(cause), ...(turnId ? { turn_id: turnId } : {}) },
+      payload: { code: "AGY_PROCESS_ERROR", message: "Antigravity runtime stopped unexpectedly.", ...(turnId ? { turn_id: turnId } : {}) },
     }];
     if (turnId) events.push(...this.converter.interrupt());
     this.publish(events);

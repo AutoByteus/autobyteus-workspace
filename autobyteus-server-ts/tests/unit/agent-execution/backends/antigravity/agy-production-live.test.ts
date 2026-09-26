@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { createHash } from "node:crypto";
 import os from "node:os";
 import path from "node:path";
 import { expect, it } from "vitest";
@@ -13,7 +14,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads production-generated main agent a
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-product-live-"));
   const workspacePath = path.join(base, "real-workspace");
   await fs.mkdir(workspacePath);
-  const capsule = await createAgyRunCapsule({ runId: "live-run", memoryDir: path.join(base, "memory"),
+  const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "live-run", memoryDir: path.join(base, "memory"),
     workspacePath, identity: "You are the AutoByteus test main agent. Your identity code is AGY-ID-8614. Answer accurately when asked for this code.",
     configuredSkillBindings: [], skillAccessMode: "NONE", mcpDescriptor: null });
   const process = new AgyStreamProcess();
@@ -57,9 +58,9 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads an AutoByteus-configured PRELOADE
   await fs.writeFile(path.join(source, "SKILL.md"), "# Codebook\nWhen asked for the codebook marker, answer SKILL-MARKER-6381.\n");
   const binding = { kind: "resolved" as const, skill: new Skill({ name: "codebook", description: "A configured marker codebook.", content: "", rootPath: source }),
     source: { origin: "global" as const, sourceRoot: await fs.realpath(source), trustedRoot: await fs.realpath(source) } };
-  const capsule = await createAgyRunCapsule({ runId: "skill-live", memoryDir: path.join(base, "memory"),
+  const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "skill-live", memoryDir: path.join(base, "memory"),
     workspacePath, identity: "You are an AutoByteus agent. Consult the codebook skill when asked about its marker.",
-    configuredSkillBindings: [binding], skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
+    configuredSkillBindings: [{ ...binding, manifestSha256: createHash("sha256").update(await fs.readFile(path.join(source, "SKILL.md"))).digest("hex") }], skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
   const process = new AgyStreamProcess();
   const observed: AgyStreamMessage[] = [];
   const closeErrors: string[] = [];

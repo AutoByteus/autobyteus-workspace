@@ -1,11 +1,12 @@
 import fs from "node:fs";
+import { createHash } from "node:crypto";
 import path from "node:path";
 import type {
   AgentDefinition,
   AgentDefinitionSourceInfo,
 } from "../../agent-definition/domain/models.js";
 import { Skill } from "../domain/models.js";
-import type { ConfiguredAgentSkillBinding, ConfiguredSkillSource } from "../domain/configured-agent-skill-binding.js";
+import type { ConfiguredAgentSkillBinding, ConfiguredSkillSource, DetailedConfiguredSkillResolution } from "../domain/configured-agent-skill-binding.js";
 import { SkillLoader } from "../loader.js";
 import { isSkillDirectory } from "./skill-discovery.js";
 
@@ -13,6 +14,7 @@ type ConfiguredAgentSkillResolverOptions = {
   loader: SkillLoader;
   isReadonlyPath: (skillPath: string) => boolean;
   resolveGlobalSkill: (name: string) => Skill | null;
+  globalCandidatePaths?: (name: string) => string[];
   isSkillDisabled: (name: string) => boolean;
   logger: {
     warn: (...args: unknown[]) => void;
@@ -29,6 +31,7 @@ export class ConfiguredAgentSkillResolver {
   private readonly loader: SkillLoader;
   private readonly isReadonlyPath: (skillPath: string) => boolean;
   private readonly resolveGlobalSkill: (name: string) => Skill | null;
+  private readonly globalCandidatePaths: (name: string) => string[];
   private readonly isSkillDisabled: (name: string) => boolean;
   private readonly logger: ConfiguredAgentSkillResolverOptions["logger"];
 
@@ -36,6 +39,7 @@ export class ConfiguredAgentSkillResolver {
     this.loader = options.loader;
     this.isReadonlyPath = options.isReadonlyPath;
     this.resolveGlobalSkill = options.resolveGlobalSkill;
+    this.globalCandidatePaths = options.globalCandidatePaths ?? (() => []);
     this.isSkillDisabled = options.isSkillDisabled;
     this.logger = options.logger;
   }
@@ -77,6 +81,46 @@ export class ConfiguredAgentSkillResolver {
     }
 
     return bindings;
+  }
+
+  resolveForAgentDetailed(agentDefinition: AgentDefinition | null | undefined): DetailedConfiguredSkillResolution[] {
+    if (!agentDefinition) return [];
+    const outcomes: DetailedConfiguredSkillResolution[] = [];
+    for (const rawName of agentDefinition.skillNames ?? []) {
+      const name = typeof rawName === "string" ? rawName.trim() : "";
+      if (!name || !/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(name)) {
+        outcomes.push({ kind: "invalid_candidate", name, reason: "unsafe_name" });
+        continue;
+      }
+      const sourceInfo = agentDefinition.sourceInfo ?? null;
+      const candidates: { path: string; origin: ConfiguredSkillSource["origin"]; trustedRoot: string }[] = [];
+      const agentDir = this.normalizeExistingDirectory(sourceInfo?.agentDirPath);
+      const teamDir = this.normalizeExistingDirectory(sourceInfo?.teamDirPath);
+      if (agentDir) candidates.push({ path: path.join(agentDir, "skills", name), origin: "agent_private", trustedRoot: teamDir ?? agentDir });
+      if (teamDir) candidates.push({ path: path.join(teamDir, "skills", name), origin: "team_shared", trustedRoot: teamDir });
+      for (const candidate of this.globalCandidatePaths(name))
+        candidates.push({ path: candidate, origin: "global", trustedRoot: candidate });
+      let outcome: DetailedConfiguredSkillResolution | null = null;
+      for (const candidate of candidates) {
+        try { fs.lstatSync(candidate.path); }
+        catch (error) {
+          if ((error as NodeJS.ErrnoException).code === "ENOENT") continue;
+          outcome = { kind: "invalid_candidate", name, reason: "present_invalid" }; break;
+        }
+        try {
+          if (!fs.statSync(candidate.path).isDirectory()) throw new Error("not a directory");
+          const skill = this.loader.loadSkill(candidate.path, this.isReadonlyPath(candidate.path));
+          if (skill.name !== name) throw new Error("declared name differs");
+          skill.isDisabled = this.isSkillDisabled(name);
+          outcome = { kind: "resolved", skill,
+            source: this.sourceFor(candidate.origin, skill, candidate.trustedRoot),
+            manifestSha256: createHash("sha256").update(fs.readFileSync(path.join(candidate.path, "SKILL.md"))).digest("hex") };
+        } catch { outcome = { kind: "invalid_candidate", name, reason: "present_invalid" }; }
+        break;
+      }
+      outcomes.push(outcome ?? { kind: "certified_absent", name });
+    }
+    return outcomes;
   }
 
   private validateConfiguredSkillName(

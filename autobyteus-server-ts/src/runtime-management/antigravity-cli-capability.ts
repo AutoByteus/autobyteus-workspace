@@ -85,7 +85,7 @@ export const probeAntigravityCli = async (): Promise<{
   try {
     const version = await runCommand(["--version"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
     const match = /\b(\d+)\.(\d+)\.(\d+)\b/.exec(version.stdout);
-    if (!match || Number(match[1]) !== 1 || Number(match[2]) !== 2 || Number(match[3]) < 10)
+    if (!match || `${match[1]}.${match[2]}.${match[3]}` !== "1.2.11")
       throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
     const help = await runCommand(["--help"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
     if (REQUIRED_FLAGS.some((flag) => !(help.stdout + help.stderr).includes(flag)))
@@ -97,14 +97,23 @@ export const probeAntigravityCli = async (): Promise<{
   }
 };
 
-export const listAntigravityModels = async (): Promise<{ id: string; name: string }[]> => {
-  const capability = await probeAntigravityCli();
-  if (!capability.available) throw new AgyDiscoveryError(capability.diagnostic?.code ?? "AGY_MODEL_DISCOVERY_FAILED");
+export const discoverAntigravityRuntime = async (): Promise<{ version: string; models: { id: string; name: string }[] }> => {
+  const versionOutput = await runCommand(["--version"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
+  const match = /\b(\d+\.\d+\.\d+)\b/.exec(versionOutput.stdout);
+  if (!match) throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
+  const version = match[1];
+  if (version !== "1.2.11") throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
+  const help = await runCommand(["--help"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
+  if (REQUIRED_FLAGS.some((flag) => !(help.stdout + help.stderr).includes(flag)))
+    throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
   const result = await runCommand(["models"], MODELS_TIMEOUT_MS, MODELS_OUTPUT_LIMIT);
   const models = result.stdout.split(/\r?\n/).map((line) => {
     const [id, name] = line.split("\t", 2);
     return id && /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(id) && name ? { id, name } : null;
   }).filter((model): model is { id: string; name: string } => model !== null);
   if (models.length === 0) throw new AgyDiscoveryError("AGY_MODEL_CATALOG_INVALID");
-  return models;
+  return { version, models };
 };
+
+export const listAntigravityModels = async (): Promise<{ id: string; name: string }[]> =>
+  (await discoverAntigravityRuntime()).models;

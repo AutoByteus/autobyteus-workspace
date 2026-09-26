@@ -137,6 +137,40 @@ describe("SkillService", () => {
     expect(service.getSkill("nonexistent")).toBeNull();
   });
 
+  it("certifies absence only when no contextual or global candidate exists", () => {
+    const agentDir = path.join(tempRoot, "agents", "codex");
+    fs.mkdirSync(agentDir, { recursive: true });
+    const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
+      skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toEqual([
+      { kind: "certified_absent", name: "workflow" },
+    ]);
+    writeSkill(skillsDir, "workflow", "Global", "Global content");
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]).toMatchObject({ kind: "resolved",
+      source: { origin: "global" } });
+    fs.mkdirSync(path.join(agentDir, "skills", "workflow"), { recursive: true });
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)).toEqual([
+      { kind: "invalid_candidate", name: "workflow", reason: "present_invalid" },
+    ]);
+    expect(service.resolveConfiguredSkillBindingsForAgent(definition)[0]).toMatchObject({ kind: "resolved" });
+  });
+
+  it("treats malformed and wrong-name contextual or global manifests as invalid candidates", () => {
+    const agentDir = path.join(tempRoot, "agents", "codex");
+    const candidate = path.join(agentDir, "skills", "workflow");
+    fs.mkdirSync(candidate, { recursive: true });
+    const definition = new AgentDefinition({ name: "Codex", description: "Test", instructions: "",
+      skillNames: ["workflow"], sourceInfo: { agentDirPath: agentDir } });
+    fs.writeFileSync(path.join(candidate, "SKILL.md"), "malformed");
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]?.kind).toBe("invalid_candidate");
+    writeSkillDirectory(candidate, "other", "Wrong name", "Body");
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]?.kind).toBe("invalid_candidate");
+    fs.rmSync(candidate, { recursive: true });
+    const globalCandidate = path.join(skillsDir, "workflow");
+    fs.mkdirSync(globalCandidate);
+    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(definition)[0]?.kind).toBe("invalid_candidate");
+  });
+
   it("returns resolved skills by configured names and skips unknown entries", () => {
     service.createSkill("configured_skill", "Configured skill", "Configured content");
 

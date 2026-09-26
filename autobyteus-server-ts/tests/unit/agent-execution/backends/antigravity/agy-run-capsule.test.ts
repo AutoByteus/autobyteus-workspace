@@ -1,11 +1,12 @@
 import fs from "node:fs/promises";
+import { createHash } from "node:crypto";
 import os from "node:os";
 import path from "node:path";
-import { realpathSync } from "node:fs";
+import { realpathSync, readFileSync } from "node:fs";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { createAgyRunCapsule, restoreAgyRunCapsule } from "../../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
-import type { ConfiguredAgentSkillBinding } from "../../../../../src/skills/domain/configured-agent-skill-binding.js";
+import type { DetailedConfiguredSkillResolution } from "../../../../../src/skills/domain/configured-agent-skill-binding.js";
 
 const roots = async () => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-capsule-test-"));
@@ -14,9 +15,10 @@ const roots = async () => {
   await fs.mkdir(workspacePath);
   return { base, workspacePath, memoryDir };
 };
-const globalBinding = (source: string, name = "example-skill"): ConfiguredAgentSkillBinding => ({
+const globalBinding = (source: string, name = "example-skill"): DetailedConfiguredSkillResolution => ({
   kind: "resolved", skill: new Skill({ name, description: "test", content: "", rootPath: source }),
   source: { origin: "global", sourceRoot: realpathSync(source), trustedRoot: realpathSync(source) },
+  manifestSha256: createHash("sha256").update(readFileSync(path.join(source, "SKILL.md"))).digest("hex"),
 });
 
 const mcpDescriptor = { name: "autobyteus_agent_tools", transport: "streamable_http" as const,
@@ -36,7 +38,7 @@ describe("AGY run capsule", () => {
     await fs.writeFile(configPath, content);
   };
   const createWithDescriptor = (root: Awaited<ReturnType<typeof roots>>, runId: string) =>
-    createAgyRunCapsule({ runId, memoryDir: root.memoryDir, workspacePath: root.workspacePath,
+    createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId, memoryDir: root.memoryDir, workspacePath: root.workspacePath,
       identity: "Identity", configuredSkillBindings: [], skillAccessMode: "NONE", mcpDescriptor });
   const expectCapsuleHasAgentTools = async (capsulePath: string) => {
     const generated = JSON.parse(await fs.readFile(path.join(capsulePath, ".agents", "mcp_config.json"), "utf8"));
@@ -92,7 +94,7 @@ describe("AGY run capsule", () => {
 
   it("snapshots full identity and selected workspace without writing user .agents", async () => {
     const root = await roots();
-    const capsule = await createAgyRunCapsule({ runId: "run-1", memoryDir: root.memoryDir,
+    const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "run-1", memoryDir: root.memoryDir,
       workspacePath: root.workspacePath, identity: "IDENTITY-SENTINEL and enclosing team instructions",
       configuredSkillBindings: [], skillAccessMode: "NONE", mcpDescriptor: null });
     const markdown = await fs.readFile(path.join(capsule.path, ".agents", "agents", capsule.manifest.agentName, "agent.md"), "utf8");
@@ -113,15 +115,46 @@ describe("AGY run capsule", () => {
     await fs.mkdir(source);
     await fs.writeFile(path.join(source, "SKILL.md"), "# Example skill");
     const binding = globalBinding(source);
-    const preloaded = await createAgyRunCapsule({ runId: "preload", memoryDir: root.memoryDir,
+    const preloaded = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "preload", memoryDir: root.memoryDir,
       workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [binding],
       skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
     expect(await fs.readFile(path.join(preloaded.path, ".agents", "skills", "example-skill", "SKILL.md"), "utf8")).toBe("# Example skill");
-    const none = await createAgyRunCapsule({ runId: "none", memoryDir: path.join(root.base, "none-memory"),
+    const none = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "none", memoryDir: path.join(root.base, "none-memory"),
       workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [binding],
       skillAccessMode: "NONE", mcpDescriptor: null });
     expect(none.manifest.skills).toEqual([]);
     await expect(fs.stat(path.join(none.path, ".agents", "skills", "example-skill"))).rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("warns and omits only certified absence while retaining resolved snapshots", async () => {
+    const root = await roots();
+    const source = path.join(root.base, "skill-source");
+    await fs.mkdir(source);
+    await fs.writeFile(path.join(source, "SKILL.md"), "# Example skill");
+    const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const capsule = await createAgyRunCapsule({ agentDefinitionId: "codex", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image"] },
+      runId: "missing-mixed", memoryDir: root.memoryDir, workspacePath: root.workspacePath,
+      identity: "Identity", configuredSkillBindings: [{ kind: "certified_absent", name: "missing" }, globalBinding(source)],
+      skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
+    expect(capsule.manifest.skills).toEqual([{ name: "example-skill", relativePath: path.join(".agents", "skills", "example-skill") }]);
+    expect(warning).toHaveBeenCalledWith(expect.stringContaining("run=missing-mixed, agent=codex, skill=missing, disposition=skipped-missing"));
+  });
+
+  it("rejects a present invalid candidate and source removed after resolution", async () => {
+    const root = await roots();
+    const source = path.join(root.base, "skill-source");
+    await fs.mkdir(source);
+    await fs.writeFile(path.join(source, "SKILL.md"), "# Example skill");
+    const common = { agentDefinitionId: "codex", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image"] },
+      memoryDir: root.memoryDir, workspacePath: root.workspacePath, identity: "Identity",
+      skillAccessMode: "PRELOADED_ONLY" as const, mcpDescriptor: null };
+    await expect(createAgyRunCapsule({ ...common, runId: "invalid", configuredSkillBindings: [
+      { kind: "invalid_candidate", name: "example-skill", reason: "present_invalid" }],
+    })).rejects.toThrow("AGY_CONFIGURED_SKILL_INVALID_CANDIDATE");
+    const resolved = globalBinding(source);
+    await fs.rm(source, { recursive: true });
+    await expect(createAgyRunCapsule({ ...common, runId: "changed", configuredSkillBindings: [resolved] }))
+      .rejects.toThrow("AGY_SKILL_SOURCE_CHANGED");
   });
 
   it("rejects configured skill collisions without overwriting the selected workspace", async () => {
@@ -132,7 +165,7 @@ describe("AGY run capsule", () => {
     await fs.writeFile(path.join(source, "SKILL.md"), "# Configured");
     await fs.writeFile(path.join(userSkill, "SKILL.md"), "# User owned");
     const binding = globalBinding(source);
-    await expect(createAgyRunCapsule({ runId: "collision", memoryDir: root.memoryDir,
+    await expect(createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "collision", memoryDir: root.memoryDir,
       workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [binding],
       skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null })).rejects.toThrow("AGY_SKILL_NAME_COLLISION");
     expect(await fs.readFile(path.join(userSkill, "SKILL.md"), "utf8")).toBe("# User owned");
@@ -151,10 +184,10 @@ describe("AGY run capsule", () => {
 
   it("isolates two run capsules sharing one selected workspace", async () => {
     const root = await roots();
-    const one = await createAgyRunCapsule({ runId: "one", memoryDir: root.memoryDir,
+    const one = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "one", memoryDir: root.memoryDir,
       workspacePath: root.workspacePath, identity: "ONE-IDENTITY", configuredSkillBindings: [],
       skillAccessMode: "NONE", mcpDescriptor: null });
-    const two = await createAgyRunCapsule({ runId: "two", memoryDir: path.join(root.base, "memory-two"),
+    const two = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "two", memoryDir: path.join(root.base, "memory-two"),
       workspacePath: root.workspacePath, identity: "TWO-IDENTITY", configuredSkillBindings: [],
       skillAccessMode: "NONE", mcpDescriptor: null });
     expect(one.path).not.toBe(two.path);

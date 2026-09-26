@@ -1,5 +1,7 @@
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { agyRecord, agyString, type AgyStreamMessage } from "./agy-stream-message.js";
+import { verifiedAgyNativeImagePath } from "./agy-native-image-result.js";
+import type { AgyNativeImageFailureDiagnostic } from "./agy-native-image-diagnostic-sink.js";
 
 const number = (value: unknown): number | null => typeof value === "number" && Number.isFinite(value) ? value : null;
 const denial = (error: string): boolean => /permission|denied|not allowed|approval/i.test(error);
@@ -11,13 +13,15 @@ export class AgyStreamEventConverter {
   private readonly toolStarts = new Set<number>();
   private readonly toolTerminals = new Set<number>();
   private textSeen = false;
+  private nativeImageFailed = false;
 
-  constructor(private readonly runId: string, private readonly conversationId: string, private readonly model: string) {}
+  constructor(private readonly runId: string, private readonly conversationId: string, private readonly model: string,
+    private readonly onNativeImageFailure?: (diagnostic: AgyNativeImageFailureDiagnostic) => void) {}
 
   startTurn(turnId: string): AgentRunEvent[] {
     if (this.turnId) throw new Error("AGY_TURN_ALREADY_ACTIVE");
     this.turnId = turnId;
-    this.textSteps.clear(); this.textOpen.clear(); this.toolStarts.clear(); this.toolTerminals.clear(); this.textSeen = false;
+    this.textSteps.clear(); this.textOpen.clear(); this.toolStarts.clear(); this.toolTerminals.clear(); this.textSeen = false; this.nativeImageFailed = false;
     return [this.event(AgentRunEventType.TURN_STARTED, { turn_id: turnId })];
   }
 
@@ -49,6 +53,7 @@ export class AgyStreamEventConverter {
 
   private agentResponse(payload: Record<string, unknown>, turnId: string, stepIndex: number, state: string): AgentRunEvent[] {
     const events: AgentRunEvent[] = [];
+    if (this.nativeImageFailed) return events;
     const delta = agyString(payload.text_delta);
     const id = `agy-text-${turnId}-${stepIndex}`;
     if (delta) {
@@ -70,7 +75,8 @@ export class AgyStreamEventConverter {
     const info = agyRecord(payload.tool_info);
     const name = agyString(payload.tool_name) ?? agyString(info?.name);
     if (!name) throw new Error("AGY_STREAM_INVALID_TOOL_NAME");
-    const args = agyRecord(info?.parameters) ?? {};
+    const nativeImage = name === "generate_image";
+    const args = nativeImage ? {} : agyRecord(info?.parameters) ?? {};
     const invocationId = `agy-tool-${turnId}-${stepIndex}`;
     const common = { turn_id: turnId, invocation_id: invocationId, tool_name: name, arguments: args };
     const events: AgentRunEvent[] = [];
@@ -81,11 +87,35 @@ export class AgyStreamEventConverter {
     if (state === "ACTIVE") return events;
     this.toolTerminals.add(stepIndex);
     const explicitError = agyRecord(info?.error)?.message ?? info?.error;
-    if (state === "ERROR" || explicitError !== undefined && explicitError !== null) {
+    if (nativeImage && (state === "ERROR" || explicitError !== undefined && explicitError !== null)) {
+      this.nativeImageFailed = true;
+      this.onNativeImageFailure?.({ runId: this.runId, turnId, invocationId, providerState: state,
+        providerError: info?.error, providerOutput: info?.output });
+      const denied = denial(String(explicitError ?? ""));
+      const message = denied
+        ? "Antigravity denied this image-generation request. No image was added to this run."
+        : "Antigravity image generation failed. No image was added to this run.";
+      events.push(this.event(denied ? AgentRunEventType.TOOL_DENIED : AgentRunEventType.TOOL_EXECUTION_FAILED,
+        { ...common, error: message, reason: message, provider_state: state,
+          result: { provider_state: state, output: null } }, "ERROR"));
+    } else if (state === "ERROR" || explicitError !== undefined && explicitError !== null) {
       const message = agyString(explicitError) ?? "Antigravity tool failed.";
       events.push(this.event(denial(message) ? AgentRunEventType.TOOL_DENIED : AgentRunEventType.TOOL_EXECUTION_FAILED,
         { ...common, error: message, reason: message, provider_state: state,
           result: { provider_state: state, output: info?.output ?? null } }, "ERROR"));
+    } else if (nativeImage) {
+      const filePath = verifiedAgyNativeImagePath(info?.output);
+      if (!filePath) {
+        this.nativeImageFailed = true;
+        this.onNativeImageFailure?.({ runId: this.runId, turnId, invocationId, providerState: state,
+          providerError: "verified_output_missing", providerOutput: info?.output });
+        const message = "Antigravity image generation returned no accessible image. No image was added to this run.";
+        events.push(this.event(AgentRunEventType.TOOL_EXECUTION_FAILED,
+          { ...common, error: message, reason: message, provider_state: state,
+            result: { provider_state: state, output: null } }, "ERROR"));
+      } else events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+        ...common, result: { provider_state: "DONE", file_path: filePath }, provider_state: "DONE",
+      }));
     } else {
       events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
         ...common, result: { provider_state: "DONE", output: info?.output ?? null }, provider_state: "DONE",
@@ -97,7 +127,7 @@ export class AgyStreamEventConverter {
   private result(payload: Record<string, unknown>, turnId: string): AgentRunEvent[] {
     const events = this.closeText(turnId);
     const response = agyString(payload.response);
-    if (!this.textSeen && response) {
+    if (!this.nativeImageFailed && !this.textSeen && response) {
       const id = `agy-text-${turnId}-result`;
       events.push(this.event(AgentRunEventType.SEGMENT_START, { id, segment_type: "text", turn_id: turnId }));
       events.push(this.event(AgentRunEventType.SEGMENT_CONTENT, { id, turn_id: turnId, delta: response }));
@@ -124,7 +154,9 @@ export class AgyStreamEventConverter {
     }));
     const status = agyString(payload.status);
     if (status && status !== "SUCCESS") events.push(this.event(AgentRunEventType.ERROR,
-      { turn_id: turnId, code: "AGY_TURN_ERROR", message: agyString(payload.error) ?? `Antigravity turn ended with ${status}.` }, "ERROR"));
+      { turn_id: turnId, code: "AGY_TURN_ERROR", message: this.nativeImageFailed
+        ? "Antigravity image generation failed. No image was added to this run."
+        : agyString(payload.error) ?? `Antigravity turn ended with ${status}.` }, "ERROR"));
     events.push(this.event(AgentRunEventType.TURN_COMPLETED, { turn_id: turnId, provider_status: status ?? "UNKNOWN" }, status === "SUCCESS" ? "IDLE" : "ERROR"));
     this.turnId = null;
     return events;

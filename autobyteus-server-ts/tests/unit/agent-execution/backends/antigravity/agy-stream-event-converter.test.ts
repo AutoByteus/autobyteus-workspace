@@ -7,8 +7,9 @@ import { AgentRunEventType } from "../../../../../src/agent-execution/domain/age
 import { AgentSegmentLifecycleEventTransformer } from "../../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.js";
 import { AgentSegmentLifecycleState } from "../../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-state.js";
 import { AgentTurnLifecycleState } from "../../../../../src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
+import os from "node:os";
 
-const fixture = (name: string, directory = "agy-tool-event-capture") => fs.readFileSync(path.resolve(process.cwd(), `../tickets/in-progress/antigravity-cli-runtime-redesign-20260924/${directory}/${name}.stdout.jsonl`), "utf8")
+const fixture = (name: string, directory = "agy-tool-event-capture") => fs.readFileSync(path.resolve(process.cwd(), `../tickets/done/antigravity-cli-runtime-redesign-20260924/${directory}/${name}.stdout.jsonl`), "utf8")
   .split("\n").filter(Boolean).map((line) => parseAgyStreamMessage(line)).filter((event) => event !== null);
 
 const convert = (name: string, directory?: string) => {
@@ -27,6 +28,39 @@ const convert = (name: string, directory?: string) => {
 };
 
 describe("AGY canonical stream conversion", () => {
+  it("redacts native image denial but does not classify an MCP image call as native", () => {
+    const diagnostics: unknown[] = [];
+    const converter = new AgyStreamEventConverter("run", "conversation", "gemini", (value) => diagnostics.push(value));
+    converter.startTurn("turn");
+    const active = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
+      step_index: 1, step_type: "tool", state: "ACTIVE", tool_name: "generate_image",
+      tool_info: { parameters: { secret: "token=private" } } } });
+    const terminal = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
+      step_index: 1, step_type: "tool", state: "ERROR", tool_name: "generate_image",
+      tool_info: { error: "permission denied token=private /private/path", output: "secret-output" } } });
+    expect(JSON.stringify([...active, ...terminal])).not.toMatch(/token=private|private\/path|secret-output/);
+    expect(terminal[0]?.eventType).toBe(AgentRunEventType.TOOL_DENIED);
+    expect(diagnostics).toHaveLength(1);
+    const mcp = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
+      step_index: 2, step_type: "tool", state: "DONE", tool_name: "call_mcp_tool",
+      tool_info: { parameters: { ToolName: "generate_image" }, output: { file_path: "/tmp/mcp.png" } } } });
+    expect(mcp.find((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)?.payload.tool_name).toBe("call_mcp_tool");
+  });
+
+  it("accepts a real native image only from an explicit output path", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "agy-native-image-"));
+    try {
+      const file = path.join(dir, "image.png");
+      fs.writeFileSync(file, Buffer.from([137, 80, 78, 71, 13, 10, 26, 10, 0, 0, 0, 0, 0, 0, 0, 0]));
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
+      converter.startTurn("turn");
+      const events = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
+        step_index: 1, step_type: "tool", state: "DONE", tool_name: "generate_image",
+        tool_info: { output: { file_path: file } } } });
+      expect(events.find((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)?.payload.result)
+        .toEqual({ provider_state: "DONE", file_path: fs.realpathSync(file) });
+    } finally { fs.rmSync(dir, { recursive: true, force: true }); }
+  });
   it("keeps multi-turn text/tool order without repeating result.response", () => {
     const events = convert("multi_turn");
     expect(events.filter((event) => event.eventType === AgentRunEventType.TURN_COMPLETED)).toHaveLength(2);
