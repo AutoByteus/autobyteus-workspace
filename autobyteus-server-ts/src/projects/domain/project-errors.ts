@@ -4,7 +4,9 @@ export type ProjectErrorCode =
   | "PROJECT_NOT_FOUND"
   | "WORKSPACE_NOT_REGISTERED"
   | "WORKSPACE_ALREADY_LINKED"
-  | "WORKSPACE_LINK_NOT_FOUND";
+  | "WORKSPACE_LINK_NOT_FOUND"
+  | "TASK_DESCRIPTION_REQUIRED"
+  | "TASK_NOT_FOUND";
 
 export class ProjectError extends Error {
   constructor(

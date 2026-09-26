@@ -1,7 +1,7 @@
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { readJsonArrayFile, updateJsonArrayFile } from "../../persistence/file/store-utils.js";
-import type { Project, ProjectWorkspaceLink } from "../domain/models.js";
+import type { Project, ProjectTask, ProjectTaskStatus, ProjectWorkspaceLink } from "../domain/models.js";
 
 type AppConfigLike = {
   getAppDataDir(): string;
@@ -19,8 +19,22 @@ const isValidLink = (link: unknown): link is ProjectWorkspaceLink => {
     && isNonEmptyString(candidate?.addedAt);
 };
 
-const isValidProject = (record: unknown): record is Project => {
-  const candidate = record as Partial<Project> | null;
+const PROJECT_TASK_STATUSES: ReadonlySet<ProjectTaskStatus> = new Set(["TODO", "IN_PROGRESS", "DONE"]);
+
+const isValidTask = (task: unknown): task is ProjectTask => {
+  const candidate = task as Partial<ProjectTask> | null;
+  return Boolean(candidate)
+    && isNonEmptyString(candidate?.taskId)
+    && isNonEmptyString(candidate?.description)
+    && PROJECT_TASK_STATUSES.has(candidate?.status as ProjectTaskStatus)
+    && isNonEmptyString(candidate?.createdAt)
+    && isNonEmptyString(candidate?.updatedAt);
+};
+
+type StoredProjectRow = Omit<Project, "tasks"> & { tasks?: unknown };
+
+const isValidProject = (record: unknown): record is StoredProjectRow => {
+  const candidate = record as Partial<StoredProjectRow> | null;
   return Boolean(candidate)
     && isNonEmptyString(candidate?.projectId)
     && isNonEmptyString(candidate?.name)
@@ -30,10 +44,15 @@ const isValidProject = (record: unknown): record is Project => {
     && Array.isArray(candidate?.workspaces);
 };
 
+/**
+ * Projects each valid row onto the current model. A row without a `tasks` array
+ * (for example one written before Tasks existed) has no Tasks.
+ */
 const normalizeRecords = (rows: unknown[]): Project[] =>
   rows.filter(isValidProject).map((project) => ({
     ...project,
     workspaces: project.workspaces.filter(isValidLink),
+    tasks: Array.isArray(project.tasks) ? project.tasks.filter(isValidTask) : [],
   }));
 
 /**
