@@ -1,0 +1,119 @@
+
+> autobyteus@1.4.81 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web
+> cross-env NUXT_TEST=true vitest components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts components/workspace/config/__tests__/MemberOverrideItem.spec.ts components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts stores/__tests__/existingRunConfigStore.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web
+
+stderr | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/existingRunConfigStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/MemberOverrideItem.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/existingRunConfigStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/applications/setup/__tests__/ApplicationAgentLaunchProfileEditor.spec.ts (6 tests) 23ms
+ ✓ components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (4 tests) 35ms
+ ✓ components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts (13 tests) 130ms
+ ✓ stores/__tests__/existingRunConfigStore.spec.ts (22 tests) 166ms
+ ✓ components/workspace/config/__tests__/MemberOverrideItem.spec.ts (12 tests) 173ms
+ ✓ components/workspace/config/__tests__/AgentOrgRunConfigForm.spec.ts (3 tests) 117ms
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header copies freshly saved config (different member model=false) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header copies freshly saved config (different member model=true) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > group copies freshly saved config (different member model=false) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > group copies freshly saved config (different member model=true) through real hydration/editor/loader/draft/Create serializer without replacing retained state
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <RunConfigPanel ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header coalesces clicks and preserves screen/draft on failure; same action retries
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after selection
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after unmount
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after replacement
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts > Team canonical Save -> Back -> both Plus consumers > header rejects late copy after newer-intent
+[Vue warn]: injection "Symbol(route location)" not found. 
+  at <TeamWorkspaceView ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ✓ components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts (15 tests) 497ms
+
+ Test Files  7 passed (7)
+      Tests  75 passed (75)
+   Start at  20:31:59
+   Duration  7.73s (transform 4.44s, setup 38.79s, collect 2.92s, tests 1.14s, environment 1.82s, prepare 1.46s)
+

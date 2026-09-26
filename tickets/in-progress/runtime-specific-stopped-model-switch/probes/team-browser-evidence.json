@@ -1,0 +1,224 @@
+{
+  "id": "classroom_simulation_team_c5d9eb34675b4816a8fab34e01e1fc02",
+  "startedAt": "2026-09-25T15:35:48.731Z",
+  "operations": [
+    {
+      "operationName": "UpdateStoppedTeamRunModelConfigs",
+      "variables": {
+        "input": {
+          "teamRunId": "classroom_simulation_team_c5d9eb34675b4816a8fab34e01e1fc02",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_TEAM",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "claude-opus-4-7",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/professor",
+              "llmModelIdentifier": "claude-opus-4-7",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/student",
+              "llmModelIdentifier": "claude-opus-4-7",
+              "llmConfig": null
+            }
+          ]
+        }
+      },
+      "query": "mutation UpdateStoppedTeamRunModelConfigs($input: UpdateStoppedTeamRunModelConfigsInput!) {\n  updateStoppedTeamRunModelConfigs(input: $input) {\n    success\n    outcome\n    message\n    isActive\n    editability {\n      editable\n      reason\n      __typename\n    }\n    canonicalExecutionTree\n    fieldErrors {\n      path\n      message\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  ],
+  "before": {
+    "data": {
+      "getTeamRunResumeConfig": {
+        "teamRunId": "classroom_simulation_team_c5d9eb34675b4816a8fab34e01e1fc02",
+        "isActive": false,
+        "executionTree": {
+          "schema_version": 2,
+          "created_at": "2026-09-25T15:24:53.597Z",
+          "archived_at": null,
+          "application_binding": null,
+          "handoffs": [
+            {
+              "from": "/professor",
+              "to": "/student",
+              "rules": [
+                "When the professor gives the student a question or problem to solve, including a math problem, conceptual question, quiz item, or challenge, and expects an answer or worked reasoning.",
+                "When the professor assigns homework, an exercise, project, reading, writing, experiment, practice task, or other work that requires the student to produce a result.",
+                "When the professor requests student participation such as an explanation, reflection, example, interpretation, correction, revision, or follow-up response.",
+                "When the professor asks the student to clarify understanding, inspect feedback, retry an answer, or resolve a misunderstanding before the lesson can continue."
+              ]
+            },
+            {
+              "from": "/student",
+              "to": "/professor",
+              "rules": [
+                "When the student has completed or attempted assigned work and has an answer, solution, explanation, reflection, or other result for the professor to review.",
+                "When the student has a question, needs clarification, identifies a misunderstanding, or requests an example or hint from the professor.",
+                "When the student cannot complete the assignment, encounters a blocker, or needs to report what was tried and what is needed next."
+              ]
+            }
+          ],
+          "root_team": {
+            "address": "/",
+            "team_definition_id": "classroom-simulation-team",
+            "team_definition_name": "Classroom Simulation Team",
+            "team_run_id": "classroom_simulation_team_c5d9eb34675b4816a8fab34e01e1fc02",
+            "coordinator_address": "/professor",
+            "default_launch_configuration": {
+              "runtime_kind": "claude_agent_sdk",
+              "llm_model_identifier": "default",
+              "llm_config": null,
+              "auto_execute_tools": false,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/team-claude"
+            },
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/professor",
+                "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+                "role": null,
+                "description": null,
+                "agent_run_id": "professor_28e618ee8c8344778ec0ccc0a19c11f7",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "claude_agent_sdk",
+                  "llm_model_identifier": "default",
+                  "llm_config": null,
+                  "auto_execute_tools": false,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/team-claude"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/student",
+                "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_0dcf00de0e6842bd970637c46120c772",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "claude_agent_sdk",
+                  "llm_model_identifier": "default",
+                  "llm_config": null,
+                  "auto_execute_tools": false,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/team-claude"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        }
+      }
+    }
+  },
+  "options": [
+    "default",
+    "claude-opus-5-5RecommendedOpus 5.5 · Most capable for ambitious work",
+    "claude-fable-5Fable 5 · Most capable for your hardest and longest-running tasks",
+    "claude-fable-5-1Fable 5.1 · For your toughest challenges",
+    "claude-haiku-4-5-20251001Haiku 4.5 · Fastest for quick answers",
+    "claude-opus-4-6Opus 4.6 · Best for everyday, complex tasks",
+    "claude-opus-4-7Opus 4.7 · Best for everyday, complex tasks",
+    "claude-opus-4-8Opus 4.8 · Best for everyday, complex tasks",
+    "claude-opus-5Opus 5 · Best for everyday, complex tasks",
+    "claude-sonnet-4-6Sonnet 4.6 · Efficient for routine tasks",
+    "claude-sonnet-5Sonnet 5 · Most efficient for everyday tasks"
+  ],
+  "after": {
+    "data": {
+      "getTeamRunResumeConfig": {
+        "teamRunId": "classroom_simulation_team_c5d9eb34675b4816a8fab34e01e1fc02",
+        "isActive": false,
+        "executionTree": {
+          "schema_version": 2,
+          "created_at": "2026-09-25T15:24:53.597Z",
+          "archived_at": null,
+          "application_binding": null,
+          "handoffs": [
+            {
+              "from": "/professor",
+              "to": "/student",
+              "rules": [
+                "When the professor gives the student a question or problem to solve, including a math problem, conceptual question, quiz item, or challenge, and expects an answer or worked reasoning.",
+                "When the professor assigns homework, an exercise, project, reading, writing, experiment, practice task, or other work that requires the student to produce a result.",
+                "When the professor requests student participation such as an explanation, reflection, example, interpretation, correction, revision, or follow-up response.",
+                "When the professor asks the student to clarify understanding, inspect feedback, retry an answer, or resolve a misunderstanding before the lesson can continue."
+              ]
+            },
+            {
+              "from": "/student",
+              "to": "/professor",
+              "rules": [
+                "When the student has completed or attempted assigned work and has an answer, solution, explanation, reflection, or other result for the professor to review.",
+                "When the student has a question, needs clarification, identifies a misunderstanding, or requests an example or hint from the professor.",
+                "When the student cannot complete the assignment, encounters a blocker, or needs to report what was tried and what is needed next."
+              ]
+            }
+          ],
+          "root_team": {
+            "address": "/",
+            "team_definition_id": "classroom-simulation-team",
+            "team_definition_name": "Classroom Simulation Team",
+            "team_run_id": "classroom_simulation_team_c5d9eb34675b4816a8fab34e01e1fc02",
+            "coordinator_address": "/professor",
+            "default_launch_configuration": {
+              "runtime_kind": "claude_agent_sdk",
+              "llm_model_identifier": "claude-opus-4-7",
+              "llm_config": null,
+              "auto_execute_tools": false,
+              "skill_access_mode": "PRELOADED_ONLY",
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/team-claude"
+            },
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/professor",
+                "agent_definition_id": "team-local-agent:classroom-simulation-team:professor",
+                "role": null,
+                "description": null,
+                "agent_run_id": "professor_28e618ee8c8344778ec0ccc0a19c11f7",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "claude_agent_sdk",
+                  "llm_model_identifier": "claude-opus-4-7",
+                  "llm_config": null,
+                  "auto_execute_tools": false,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/team-claude"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/student",
+                "agent_definition_id": "team-local-agent:classroom-simulation-team:student",
+                "role": null,
+                "description": null,
+                "agent_run_id": "student_0dcf00de0e6842bd970637c46120c772",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "claude_agent_sdk",
+                  "llm_model_identifier": "claude-opus-4-7",
+                  "llm_config": null,
+                  "auto_execute_tools": false,
+                  "skill_access_mode": "PRELOADED_ONLY",
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/team-claude"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        }
+      }
+    }
+  },
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude\nagent-codex\nagent-native\norg-antigravity\nteam-claude\nTEAMS\nClassroom Simulation Team\n(1)\nNew - Classroom Simulation Team\n11m\nP\nprofessor\n11m\nS\nstudent\n11m\nTemp Workspace\nSettings\nTeam Configuration\nTeam Definition\nClassroom Simulation Team\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nAntigravity CLI\n\nRuntime is fixed for this saved run.\n\nDefault LLM Model (Global)\nAnthropic / claude-opus-4-7\n\nChoose any model offered by this runtime. The runtime handles context limits when the run resumes.\n\nLoading replacement models…\n\nThinking\nUse setting\nAdvanced\nReasoning Effort ⓘ\nlow\nmedium\nhigh\nxhigh\nmax\nWorkspace Directory\nExisting\nNew\n\nSaved value is unavailable in current options.\n\nWorkspace: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/team-claude\n\nAuto approve tools\n\nHigh-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nTeam Members Override (2)\n●\nThis team is stopped. Saved model settings will be used when it resumes.\n\nTeam model settings updated. They will be used when this team resumes.\n\nSave\nFiles\nTeam\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nMessages\n0 Messages\n\nNo team messages yet\n\nAccepted inter-agent messages will appear here with their reference files.\n\nTasks\n0 tasks",
+  "status": "Pass"
+}

@@ -85,6 +85,13 @@ Those values are used in two places:
 - application-authored backend flows that may reuse persisted definition defaults when an application backend decides to start runtime work.
 
 Definition editors can leave runtime blank to mean “choose when launching”, while run-config forms resolve to an effective runtime immediately.
+Model pickers show the backend's offered choices. For an exact model ID seeded
+from a persisted definition but absent from offered rows (such as a proven
+redundant Claude `default`), the editor and direct Run setup request a separate
+exact-current descriptor for its label and schema. Displaying or reselecting
+that current-only value keeps the saved ID; only choosing an offered row changes
+it. An unknown current ID remains visibly unavailable rather than becoming a
+new choice.
 
 Direct run-config forms do not expose a launch-time skill-access selector.
 Runtime skill exposure is defined by the agent definition's configured

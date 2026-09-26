@@ -1,0 +1,25 @@
+# DR-003 local macOS ARM64 package verification
+Fri Sep 25 19:45:49 UTC 2026
+Build command exit: 0 (electron-build-rev005-macos-arm64.log)
+Ticket HEAD: 2c4699a142deaaf8f11361d8a10b937f23179da4
+Bundle ID/version/architecture:
+com.autobyteus.app
+1.4.81
+electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus: Mach-O 64-bit executable arm64
+Bundled backend dist/index.js: present
+Signature:
+Signature=adhoc
+TeamIdentifier=not set
+Artifacts:
+-rw-r--r--@ 2 normy  staff   457M Sep 25 21:43 electron-dist/AutoByteus_runtime-specific-stopped-model-switch_DR003_macos-arm64-1.4.81-test.dmg
+-rw-r--r--@ 2 normy  staff   452M Sep 25 21:45 electron-dist/AutoByteus_runtime-specific-stopped-model-switch_DR003_macos-arm64-1.4.81-test.zip
+SHA-256:
+bb2f31048b532d74df586823dfca5830a7a48eea7c31cd5823b0e5f9e74355d7  electron-dist/AutoByteus_runtime-specific-stopped-model-switch_DR003_macos-arm64-1.4.81-test.dmg
+7b32161cfac0dc42bd2df2fe73d839cb3dc2b6d2c725e14d542bad77a58e3c4b  electron-dist/AutoByteus_runtime-specific-stopped-model-switch_DR003_macos-arm64-1.4.81-test.zip
+DMG integrity:
+hdiutil: verify: checksum of "electron-dist/AutoByteus_runtime-specific-stopped-model-switch_DR003_macos-arm64-1.4.81-test.dmg" is VALID
+ZIP integrity:
+Pass
+Owned isolated root removed: Pass
+Port cleanup: Pass
+Packaged process cleanup: Pass

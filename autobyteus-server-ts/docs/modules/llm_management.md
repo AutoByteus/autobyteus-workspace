@@ -158,9 +158,9 @@ Every capability list carries the existing provider-owned `ModelDetail`:
 
 - `modelIdentifier`, `name`, `value`, and `canonicalName`;
 - nullable `description` display metadata;
-- nullable `selectionPresentation { recommended, aliasOfModelIdentifier }`
-  picker hint (currently emitted only by the Claude Agent SDK catalog; `null`
-  for every other runtime);
+- nullable `selectionPresentation { recommended }` picker hint (currently
+  emitted only by the Claude Agent SDK selection catalog; `null` for every
+  other runtime);
 - `providerId`, `providerName`, `providerType`, and `runtime`;
 - optional host/config/token-limit fields;
 - nullable `metadataProvenance`.
@@ -192,22 +192,28 @@ results; it does not guess a replacement model, silently drop an unsupported
 key, or write a rendered default merely because the UI displayed it.
 
 Replacement for Claude Agent SDK, Codex App Server, and Antigravity CLI
-requires fresh membership in that runtime/workspace catalog and target-schema
-validation, not a platform context-capacity comparison. AutoByteus replacement
+requires fresh membership in that runtime/workspace **offered** catalog and
+target-schema validation, not a platform context-capacity comparison. AutoByteus replacement
 continues to require verified positive saved and target context capacities with
 target >= saved capacity; the focused native evidence resolver accepts only
 live or static-definition provenance and a valid active context no greater than
 the evidenced maximum. Same-model settings bypass native capacity lookup but
 still require ordinary catalog/schema validation.
 
-Catalog reads can be shared inside one options or Save request for matching
+`ModelCatalogService.runtimeModelSelectionCatalog` separates offered rows for
+new selections from `findExactCurrent(id)` over the same raw runtime snapshot.
+An unchanged saved ID, including a Claude `default` omitted from offered rows,
+must resolve exactly and pass its own schema; a changed ID must be in offered
+rows. Catalog reads can be shared inside one options or Save request for matching
 runtime/workspace contexts, never reused across Saves. Agent, Team, and Org
-options expose current ID, replacement IDs, and an unavailability reason, not
-numeric context fields. The existing stopped lifecycle owners reread canonical
-state and validate every intended scope before writing. A missing catalog
-keeps the saved model visible and blocks a false replacement; provider-native
-continuation may later reject a smaller-window history without a Save-time
-reset or silent new conversation.
+options expose the persisted current ID, a nullable exact-current descriptor,
+replacement descriptors, and an unavailability reason, not numeric context
+fields. Descriptors include provider/display/canonical names, description,
+config schema, and recommendation. The existing stopped lifecycle owners reread
+canonical state and validate every intended scope before writing. A missing
+catalog keeps the saved ID visible and blocks a false replacement;
+provider-native continuation may later reject a smaller-window history without
+a Save-time reset or silent new conversation.
 
 Standalone and Team updates share this boundary. Every intended Team patch
 validates against its own original saved selection before any tree write. Only
@@ -241,7 +247,7 @@ copy and do not resolve aliases into different persisted identifiers. Frontend
 runtime-model selectors may render and search the optional description as
 selection guidance; missing descriptions remain valid name-only options.
 
-### Claude Agent SDK Canonical Model IDs And Picker Hints
+### Claude Agent SDK Offered Models And Exact Saved IDs
 
 For Claude rows, `canonicalName` is the SDK-reported `resolvedModel` for that
 row (for example `claude-opus-5-5[1m]`), owned by
@@ -253,22 +259,28 @@ and persisted selection, and catalog validation, launch, capacity, and
 per-turn token-usage resolution are unaffected by `canonicalName`.
 
 `deriveClaudeModelSelectionPresentation`
-(`claude-sdk-model-selection-presentation.ts`) computes each row's
-`selectionPresentation` over the full SDK row set during `listModels()`:
+(`claude-sdk-model-selection-presentation.ts`) derives internal identity
+evidence over one raw SDK snapshot. `ClaudeModelCatalog` owns the selection-facing
+normalization: only when `default` resolves unambiguously to the same concrete
+ID as another listed SDK row does it omit the redundant `default` from
+`offeredModels` and recommend the first matching sibling in SDK order. If no
+matching sibling is proven, `default` remains offered and recommended. Other
+equal-looking or `[1m]` IDs are not deduplicated by label, name, or capacity.
+Both `listLlmModels` and provider snapshots expose the normalized offered set;
+the public presentation hint contains only `recommended`, not alias matching.
 
-- the `default` row folds into the first other row, in SDK order, that
-  resolves to the same canonical ID: `default` gets
-  `aliasOfModelIdentifier = <that row>` and that row gets
-  `recommended = true`;
-- when no such sibling exists (or `default` has no canonical ID), `default`
-  stays its own option with `recommended = true`;
-- every other row is `{ recommended: false, aliasOfModelIdentifier: null }`.
-
-The hint is presentation-only. `default` remains a catalog row, so saved
-configs and runs using `default` keep validating and launching unchanged; the
-frontend folds it into the aliased option and never special-cases the string
-`default` itself. If a future SDK renames `default`, the list stays correct but
-loses the badge and the fold.
+`findExactCurrent(id)` and `resolveExactCurrentLlmModel` preserve a separately
+addressable raw exact row for a persisted/effective selection. Thus a saved
+`default` retains its identifier, current display/schema, same-model settings,
+Application readiness, and ordinary provider continuation while SDK discovery
+still reports it. A fresh changed selection cannot use a filtered `default`;
+choosing the offered sibling explicitly persists that sibling's ID. GraphQL
+`runtimeCurrentModelDescriptors` supplies batched exact-current descriptors to
+definition, launch, mobile, and Application Setup callers with server-origin
+current IDs. This lookup is not a new-choice list or Save authorization. If the
+raw SDK no longer reports a saved ID, the ID remains visible but no valid schema
+or successful Save is invented. Frontend display must not perform alias folding
+or rewrite the stored ID merely because it rendered a recommended sibling.
 
 ### Claude Agent SDK Authentication
 

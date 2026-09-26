@@ -1,0 +1,102 @@
+{
+  "id": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+  "startedAt": "2026-09-25T15:44:30.877Z",
+  "operations": [
+    {
+      "operationName": "UpdateStoppedAgentRunModelConfig",
+      "variables": {
+        "input": {
+          "agentRunId": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+          "llmModelIdentifier": "haiku",
+          "llmConfig": null
+        }
+      },
+      "query": "mutation UpdateStoppedAgentRunModelConfig($input: UpdateStoppedAgentRunModelConfigInput!) {\n  updateStoppedAgentRunModelConfig(input: $input) {\n    success\n    outcome\n    message\n    isActive\n    editability {\n      editable\n      reason\n      __typename\n    }\n    canonicalSelection {\n      llmModelIdentifier\n      llmConfig\n      __typename\n    }\n    fieldErrors {\n      path\n      message\n      __typename\n    }\n    __typename\n  }\n}"
+    }
+  ],
+  "before": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "runId": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+        "isActive": false,
+        "metadataConfig": {
+          "llmModelIdentifier": "claude-fable-5-1[1m]",
+          "llmConfig": null,
+          "runtimeReference": {
+            "runtimeKind": "claude_agent_sdk",
+            "sessionId": "82e58331-35c4-488d-ada4-f33eb84f41a6",
+            "threadId": null,
+            "metadata": null
+          }
+        }
+      }
+    }
+  },
+  "traceBefore": "62186ad761726bab6a2a6bffdee1743434fb6cdc3f2c47f261cef6680488c37a",
+  "metadataBefore": {
+    "runId": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+    "agentDefinitionId": "daily-assistant",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/agent-claude-live",
+    "memoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/memory/agents/daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+    "llmModelIdentifier": "claude-fable-5-1[1m]",
+    "llmConfig": null,
+    "autoExecuteTools": false,
+    "skillAccessMode": "PRELOADED_ONLY",
+    "runtimeKind": "claude_agent_sdk",
+    "platformAgentRunId": "82e58331-35c4-488d-ada4-f33eb84f41a6",
+    "preparedAt": "2026-09-25T15:43:38.133Z",
+    "preparedExpiresAt": "2026-09-26T15:43:38.133Z",
+    "startedAt": "2026-09-25T15:43:38.160Z",
+    "applicationExecutionContext": null
+  },
+  "options": [
+    "default",
+    "claude-opus-5-5RecommendedOpus 5.5 · Most capable for ambitious work",
+    "claude-fable-5Fable 5 · Most capable for your hardest and longest-running tasks",
+    "claude-fable-5-1Fable 5.1 · For your toughest challenges",
+    "claude-haiku-4-5-20251001Haiku 4.5 · Fastest for quick answers",
+    "claude-opus-4-6Opus 4.6 · Best for everyday, complex tasks",
+    "claude-opus-4-7Opus 4.7 · Best for everyday, complex tasks",
+    "claude-opus-4-8Opus 4.8 · Best for everyday, complex tasks",
+    "claude-opus-5Opus 5 · Best for everyday, complex tasks",
+    "claude-sonnet-4-6Sonnet 4.6 · Efficient for routine tasks",
+    "claude-sonnet-5Sonnet 5 · Most efficient for everyday tasks"
+  ],
+  "after": {
+    "data": {
+      "getAgentRunResumeConfig": {
+        "runId": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+        "isActive": false,
+        "metadataConfig": {
+          "llmModelIdentifier": "haiku",
+          "llmConfig": null,
+          "runtimeReference": {
+            "runtimeKind": "claude_agent_sdk",
+            "sessionId": "82e58331-35c4-488d-ada4-f33eb84f41a6",
+            "threadId": null,
+            "metadata": null
+          }
+        }
+      }
+    }
+  },
+  "traceAfter": "62186ad761726bab6a2a6bffdee1743434fb6cdc3f2c47f261cef6680488c37a",
+  "metadataAfter": {
+    "runId": "daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+    "agentDefinitionId": "daily-assistant",
+    "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/agent-claude-live",
+    "memoryDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/memory/agents/daily_assistant_8c6ef1b907a84e55944f4fc5f05b5f35",
+    "llmModelIdentifier": "haiku",
+    "llmConfig": null,
+    "autoExecuteTools": false,
+    "skillAccessMode": "PRELOADED_ONLY",
+    "runtimeKind": "claude_agent_sdk",
+    "platformAgentRunId": "82e58331-35c4-488d-ada4-f33eb84f41a6",
+    "preparedAt": "2026-09-25T15:43:38.133Z",
+    "preparedExpiresAt": "2026-09-26T15:43:38.133Z",
+    "startedAt": "2026-09-25T15:43:38.160Z",
+    "applicationExecutionContext": null
+  },
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude\nagent-claude-live\nDA\nDaily Assistant\n(1)\nReply with exactly PROBE_CLAUDE_ALPHA and no other text.\nnow\nagent-codex\nagent-codex-live\nagent-native\norg-antigravity\nteam-claude\nTemp Workspace\nSettings\nAgent Configuration\nAgent Definition\nDaily Assistant\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nAntigravity CLI\n\nRuntime is fixed for this saved run.\n\nLLM Model\nAnthropic / claude-haiku-4-5-20251001\n\nChoose any model offered by this runtime. The runtime handles context limits when the run resumes.\n\nLoading replacement models…\n\nThis model has no adjustable settings.\n\nWorkspace Directory\nExisting\nNew\nagent-claude-live\n/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-server-ts/tests/.tmp/runtime-switch-browser-92847-1790349785948/workspaces/agent-claude-live\n\nWorkspace is fixed for existing runs.\n\nAuto approve tools\n\nHigh-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\n●\nThis run is stopped. Saved model settings will be used when it resumes.\n\nModel settings updated. They will be used when this run resumes.\n\nSave\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\n➜ Terminal initialized\nThe default interactive shell is now zsh.\nTo update your account to use zsh, please run `chsh\n -s /bin/zsh`.\nFor more details, please visit https://support.appl\ne.com/kb/HT208050.\n~/autobyteus_org/autobyteus-worktrees/runtime-speci\nbyteus-server-ts/tests/.tmp/runtime-switch-browser-\ns/agent-claude-live $ rkspaces",
+  "status": "Pass"
+}

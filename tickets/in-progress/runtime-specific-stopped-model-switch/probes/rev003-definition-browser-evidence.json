@@ -1,0 +1,88 @@
+{
+  "startedAt": "2026-09-25T18:58:02.208Z",
+  "steps": [],
+  "graphql": [
+    {
+      "name": "GetApplicationsCapability",
+      "variables": {}
+    },
+    {
+      "name": "GetAllWorkspaces",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "ListWorkspaceRunHistory",
+      "variables": {
+        "limitPerAgent": 6
+      }
+    },
+    {
+      "name": "ListCollaborationRootHistory",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentTeamDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetAgentOrgDefinitions",
+      "variables": {}
+    },
+    {
+      "name": "GetServerSettings",
+      "variables": {}
+    },
+    {
+      "name": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "name": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk"
+      }
+    },
+    {
+      "name": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk",
+        "identifiers": [
+          "default"
+        ]
+      }
+    },
+    {
+      "name": "GetFolderChildren",
+      "variables": {
+        "workspaceId": "temp_ws_default",
+        "folderPath": ""
+      }
+    }
+  ],
+  "errors": [],
+  "url": "http://127.0.0.1:52364/workspace",
+  "current": "Anthropic / claude-opus-5-5",
+  "effort": "high",
+  "body": "Agents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nagent-claude-default\nagent-codex\nagent-native\norg-claude-default\nteam-claude-default\nTemp Workspace\nSettings\nAgent Definition\nREV003 Saved Default Agent\nRuntime\nAutoByteus\nClaude Agent SDK\n\nSelects the runtime backend used for this run.\n\nRuntime is not available in current capabilities.\n\nLLM Model\nAnthropic / claude-opus-5-5\n\nSelect a model...\n\nThinking\nUse setting\nAdvanced\nWorkspace Directory\nExisting\nNew\n📁 Temp Workspace (Default)\nDefault temporary workspace\n\nWorkspace: Temp Workspace\n\nAuto approve tools\n\nHigh-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.\n\nAuto approve tools\nRun Agent\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nNo file selected\n\nSelect a file from the explorer to view or edit its content.",
+  "store": {
+    "seedModelIdentifier": "default",
+    "model": "default"
+  },
+  "choices": [
+    "claude-opus-5-5RecommendedOpus 5.5 · Most capable for ambitious work",
+    "claude-fable-5Fable 5 · Most capable for your hardest and longest-running tasks",
+    "claude-fable-5-1Fable 5.1 · For your toughest challenges",
+    "claude-haiku-4-5-20251001Haiku 4.5 · Fastest for quick answers",
+    "claude-opus-4-6Opus 4.6 · Best for everyday, complex tasks",
+    "claude-opus-4-7Opus 4.7 · Best for everyday, complex tasks",
+    "claude-opus-4-8Opus 4.8 · Best for everyday, complex tasks",
+    "claude-opus-5Opus 5 · Best for everyday, complex tasks",
+    "claude-sonnet-4-6Sonnet 4.6 · Efficient for routine tasks",
+    "claude-sonnet-5Sonnet 5 · Most efficient for everyday tasks"
+  ],
+  "status": "Pass"
+}

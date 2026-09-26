@@ -303,10 +303,13 @@ metadata cannot be loaded, Files shows unavailable feedback rather than the old
 workspace or an unrelated launch draft; reopening Settings retries canonical
 metadata without repeating Save. Existing launch drafts are preserved.
 While the enclosing Org is stopped, explicit **Save** can also change compatible
-same-runtime models (all current external-runtime catalog choices, or verified
+same-runtime models (all distinct backend-offered external-runtime catalog choices, or verified
 equal/larger context capacity for AutoByteus) and schema-valid parameters across configured
 scopes. Parent-linked scopes follow root or Team edits until directly edited;
 pre-existing and directly edited overrides stay independent.
+The Org picker consumes each scope's backend current/replacement descriptors:
+an exact saved Claude `default` can remain current-only after the backend omits
+its redundant alias from new offers, without rewriting an unaffected scope.
 Active/unknown, archived and application-owned roots stay noneditable; task
 inspection does not acquire configuration editing. A failed or uncertain Save
 never reports success; an uncertain outcome requires explicit canonical refresh.

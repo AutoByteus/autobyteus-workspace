@@ -1,230 +1,220 @@
 # Design Review Report — Runtime-specific stopped-run model switching
 
 ## Review Round Meta
-
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/requirements-doc.md` (Approved, SR-002)
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/investigation-notes.md` (E01–E15, AE-01–AE-09)
-- Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/design-spec.md` (SR-003)
-- Supplemental Task Artifacts Reviewed: user screenshot and read-only predecessor package as indexed in investigation notes; no behavior-defining supplement or Product prototype.
-- Relevant Solution Revision IDs: SR-001–003; approved basis SR-002, reviewed design SR-003.
-- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: ARCH-REV-001
-- Current Review Round: 1
-- Trigger: High-risk completed architecture-design handoff.
-- Prior Review Round Reviewed: N/A; no prior architecture-review result.
-- Latest Authoritative Round: 1.
-- Current-State Evidence Basis: source inspection of `run-model-selection-service.ts`, capacity service, catalog, GraphQL option type, Web picker/composable/store, Agent/Team/Org stopped Save owners, and Org query facade in this worktree; E01–E15/AE-01–AE-09. No code change, test execution or live provider probe in this review.
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/requirements-doc.md` (SR-006 Approved; REQ-001–008, AC-001–011).
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/investigation-notes.md` (E01–E23, AE-01–16).
+- Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/solution-revision-record.md` (SR-001–009).
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/design-spec.md` (SR-009).
+- Supplemental Task Artifacts Reviewed: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/model-picker-verification-investigation.md` (evidence only); screenshots/prior packages indexed in investigation notes; historical `tickets/done/claude-sdk-canonical-model-ids/api-e2e-test-case-ledger.md` for supported definition-to-Run path. Product UI/UX spec N/A.
+- Relevant Solution Revision IDs: SR-002/003 historical capacity basis; SR-006 approved Claude correction; SR-007 failed design; SR-008 recovery evidence; SR-009 current design.
+- Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/tickets/in-progress/runtime-specific-stopped-model-switch/architecture-review-revision-record.md`.
+- Current Architecture Review Revision ID: **ARCH-REV-003**; Current Review Round: **3**; Latest Authoritative Round: **3**.
+- Trigger: revised SR-009 recovery of ARCH-REV-002 DR-001.
+- Prior Review Round Reviewed: ARCH-REV-002 Fail/Design Impact, DR-001; ARCH-REV-001 Pass applied only to SR-003/SR-002.
+- Current-State Evidence Basis: prior independently inspected Claude SDK/client/catalog, shared selection, GraphQL, Web picker/launch, Agent/Team definition-to-Run and Application Setup/readiness source paths; re-read SR-009 design and AE-16/E23. `CodexModelCatalog.listModels(cwd)` was checked to bound the environment-key concern. No implementation or tests were performed by this reviewer.
 
 ## Routing Classification Review
-
 - Task size: **Medium**.
 - Architectural risk: **High**.
-- Classification rationale reviewed: shared eligibility owner and GraphQL/Web option-shape removal reach Agent, Team and Org; restore/provider continuation is a preserved but unverified downstream boundary. Changes are bounded to existing subsystems rather than a new runtime or storage schema.
-- Independent Architecture Review required by the classification: **Yes**.
-- Classification evidence or correction required: none.
+- Classification rationale reviewed: shared backend catalog, stopped selection and GraphQL/Web option contracts, preserved Agent/Team definition and application launch consumers, exact persisted IDs. No new subsystem or storage shape; independent review remains warranted.
+- Independent Architecture Review required: **Yes**.
+- Correction required: none.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
-
 - Overall Basis Status: **Confirmed**.
-- Approved requirements / intended behavior understood: SR-002 expressly removes AutoByteus's context-size gate for all current external runtime-catalog models in stopped Agent/Team/Org Settings, while retaining the verified non-decreasing AutoByteus rule. It does not guarantee provider acceptance of every long-history/model pair.
-- Relevant existing behavior and evidence confirmed: the shared selection service gates both options and Save by capacity for every runtime; the Web picker further intersects server IDs with a separately fetched display catalog; Agent/Team/Org stopped owners validate before write; normal restore passes saved model and provider binding. Static code supports E02–E09 and AE-01–09. Screenshot alone does not establish live Claude catalog contents.
-- Scope guardrail confirmed: in scope are existing stopped Settings, catalog/schema validation, configured linked scopes, accurate copy and normal resume/error; out of scope are runtime switching, active hot-swap, new discovery, Save-time compaction/reset, migration and universal provider success. Preserved boundary includes lifecycle, ownership, atomicity, identity/history and AutoByteus eligibility. Review authority is technical, not a renewed business-policy decision.
+- Approved requirements/intended behavior: external stopped-run choices are runtime-catalog based without platform capacity comparison; AutoByteus retains verified non-decrease. Claude backend omits a proven redundant `default` from **newly offered** rows, but exact SDK-reported saved `default` remains current/continuable and is never implicitly rewritten. No universal provider continuation guarantee. Existing definition/launch-default behavior is outside the change.
+- Relevant existing behavior/evidence: E17–22/AE-10–15 establish raw SDK alias and split backend/frontend policy; E23 found five locally indexed exact-`default` Claude run histories, without proving manual selection or definition prevalence. Prior live E2E-02–07 demonstrates supported saved-definition `default` → Agent/Team Run. Current Web launch picker checks exact provider snapshot membership/schema, and Application host validator exact-checks `listLlmModels`; ARCH-REV-002 MP-001/002 trace both product paths.
+- Scope guardrail: stopped Agent/Team/Org, backend provider catalog, exact current continuity, fresh Save, copy and validation in scope; definitions/launch defaults, runtime switching, hot-swap, migration and provider internals outside. SR-009's launch/application work contains the shared catalog change rather than adding new launch policy.
 - Approved change, preserved behavior, and outside scope understood: **Yes**.
-- Every prospective blocking Design Impact finding is traceable to approved REQ/AC/preserved IDs: **Yes**; no blocking finding was accepted.
-- Remaining material ambiguity: none for the architecture decision; live smaller-window provider behavior is a downstream validation risk, not approval ambiguity.
+- Every prospective blocking Design Impact finding maps to approved/preserved authority: **Yes**; no new blocking finding accepted.
+- Remaining material ambiguity: none for architecture; provider pair behavior and installed definition/application prevalence remain bounded downstream facts, not a design-policy gap.
 
-| Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
+| Behavior ID | Kind | Design Alignment | Trigger/Current Evidence | Target Path/Spine | Status | Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User, stopped Agent/Team/Org picker | Pass | Pass — user opens exposed Settings; E01–05/E09 and inspected selection service/Web picker | Pass — DS-01/03, catalog IDs without external capacity gate, saved-ID fallback | Confirmed | None |
-| BEH-002 | User Save / server contract | Pass | Pass — explicit Save through lifecycle owner; E02/E04/E06, inspected validation/commit paths | Pass — DS-02/04, fresh catalog/schema, atomic result | Confirmed | None |
-| BEH-003 | User AutoByteus replacement | Pass | Pass — same stopped Settings; E02/E07 and inspected native capacity resolver | Pass — DS-01/02 preserve verified non-decrease and same-model exception | Confirmed | None |
-| BEH-004 | System normal resume after Save | Pass | Pass — user's next message initiates restore; E08/E10 and inspected lifecycle handoff; smaller-window provider success not proven | Pass — DS-05 preserves binding/history and visible native rejection | Confirmed | Validate representative providers downstream; do not claim a universal pass |
-| BEH-005 | User-facing Settings status/copy | Pass | Pass — exposed Agent/Team/Org Settings; E01/E05/E12 and inspected component/localization path | Pass — DS-03/06 distinguish external catalog vs native capacity; workspace warning remains separate | Confirmed | None |
-| BEH-006 | Team/Org configured-scope edit | Pass | Pass — Team/Org operator uses existing Settings; E04/E09/E13 and inspected managers | Pass — DS-02/04, exact scope addresses, per-scope validation and one commit | Confirmed | None |
+| BEH-001 | Stopped Agent/Team/Org options | Pass | Pass — exposed Settings, E17–21 | Pass — DS-01/03 normalized offered choices plus exact saved current | Confirmed | None |
+| BEH-002 | Explicit stopped Save | Pass | Pass — existing service/lifecycle guards | Pass — DS-02/04 fresh offered changed ID or fresh exact unchanged ID, schema/atomicity | Confirmed | None |
+| BEH-003 | AutoByteus | Pass | Pass — native capacity source | Pass — verified non-decrease and same-model exception | Confirmed | None |
+| BEH-004 | Normal continuation | Pass | Pass — next message/restore E08 | Pass — DS-05 exact model/binding/history retained | Confirmed | Validate representative providers downstream |
+| BEH-005 | Settings copy/current | Pass | Pass — picker/supplement | Pass — DS-03/06 distinct current display and backend descriptors | Confirmed | None |
+| BEH-006 | Team/Org scopes | Pass | Pass — existing managers/tree writers | Pass — per-scope validation and one commit | Confirmed | None |
+| BEH-007 (preserved, provisional) | Saved definition/current profile `default` → Agent/Team Run or Application Setup | Pass | Pass — prior live E2E, exposed UI, current host validator; MP-001/002 | Pass — DS-07/08 backend exact-current resolution, current-only Web display/schema, application credential metadata, offered list still normalized | Confirmed | None |
+
+BEH-007 remains a provisional ID for supported preserved behavior, not new product intent.
 
 ## Supplemental Artifact Coherence Verdict
-
-| Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
+| Artifact | Purpose/Scope | Linked | Complete for Role | Consistent | Status/Approval Clear | Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| User Claude Team Settings screenshot | Pass | Pass | Pass — sufficient as a current-surface observation, not catalog proof | Pass | Pass — evidence only | None |
-| Completed `stopped-run-compatible-model` package | Pass | Pass | Pass — predecessor authority and limited live Codex evidence are identified | Pass | Pass — read-only, not this delta's approval | None |
+| Model-picker verification investigation | Pass | Pass | Pass | Pass — early UI-label proposal superseded | Pass — evidence only | None |
+| User screenshots, predecessor and historical E2E package | Pass | Pass | Pass for evidence role | Pass | Pass — not SR-006 design authority | None |
 
-Investigation notes contain the canonical supplement inventory; requirements and design link both relevant items. No behavior-defining supplement is missing.
+Investigation notes contain the canonical supplement inventory. No behavior-defining supplement or Product prototype is missing.
 
 ## Task Design Health Assessment Verdict
-
-| Assessment Area | Result | Evidence | Required Action |
+| Area | Result | Evidence | Action |
 | --- | --- | --- | --- |
-| Assessment is present for current task posture | Pass | Design explicitly calls this a behavior change under a new approved policy. | None |
-| Root-cause classification is explicit and evidence-backed | Pass | Universal shared-service invariant and unused capacity-bearing option DTO are demonstrated by AE-01/02/04/05 and current source. | None |
-| Refactor decision is explicit | Pass | Bounded refactor now: one runtime branch, native-only capacity evidence, removal of obsolete external readers/option numerics. | None |
-| Refactor decision is reflected in concrete design | Pass | Interfaces, file/removal map, sequence and tests name the affected owners and obsolete code. | None |
+| Assessment present | Pass | SR-009 names user-directed correction and bounded refactor. | None |
+| Root cause evidence-backed | Pass | AE-10–16: raw alias, client fold, ID-only stopped options and exact-current launch consumers. | None |
+| Refactor decision explicit | Pass | Claude catalog normalization, one offered/current owner, stopped DTO, launch descriptor query and application current lookup. | None |
+| Decision reflected throughout design | Pass | DS-01–08, API/file/removal map, sequence and tests now include the DR-001 consumers. | None |
 
 ## Spine Inventory Verdict
-
-| Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
+| Spine | Scope | Readable | Narrative | Facade/Owner | Naming | Ownership | Off-Spine | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-01 | Primary options, BEH-001/003 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-02 | Primary Save, BEH-002/003/006 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-03 | Return to picker/draft | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-04 | Return to canonical reconciliation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-05 | Primary normal resume, BEH-004 | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-06 | Bounded presentation copy | Pass | Pass | N/A — no additional facade | Pass | Pass | Pass | Pass |
+| DS-01 | Stopped options | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-02 | Stopped Save | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-03 | Return to stopped picker | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-04 | Save reconciliation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-05 | Normal continuation | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-06 | Bounded copy | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-07 | Definition → Run launch | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-08 | Application Setup/readiness | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
 
-The primary spines start at the actual Settings/next-message surface, cross the authoritative owner and reach returned options, persistence or provider outcome; they do not stop at the edited helper.
+DS-07/08 now extend from exposed user surfaces through the shared catalog/current boundary to launch/readiness outcomes, rather than stopping at the normalized list.
 
 ## Boundary Encapsulation Verdict
-
-| Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
+| Owner | Public Entry | Internals Encapsulated | Bypass Controlled | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `RunModelSelectionService` | Pass | Pass | Pass | Pass | Catalog, eligibility and schema stay behind one options/validate owner; no UI or lifecycle parallel policy. |
-| Agent/Team/Org stopped lifecycle owners | Pass | Pass | Pass | Pass | GraphQL delegates to existing guarded, aggregate-commit owners; no direct metadata edit. |
-| Existing Web config store | Pass | Pass | Pass | Pass | Components display/draft; canonical Save and reconciliation remain store/server-owned. |
-| Restore/runtime adapters | Pass | Pass | Pass | Pass | Saved binding/provider continuation is not replaced by selection logic. |
+| ClaudeModelCatalog / ModelCatalogService | Pass | Pass | Pass | Pass | Raw SDK snapshot is internal; offered and exact-current meanings are explicit. |
+| RunModelSelectionService | Pass | Pass | Pass | Pass | One ModelCatalogService view; no direct SDK lookup. |
+| Stopped Agent/Team/Org owners | Pass | Pass | Pass | Pass | Existing lifecycle/atomic writers retained. |
+| Web stopped and launch config | Pass | Pass | Pass | Pass | Offered snapshots/run DTO plus current-only descriptor; no frontend alias policy. |
+| Application host validator | Pass | Pass | Pass | Pass | Resolves exact effective current through public ModelCatalogService, not offered-only list or raw SDK. |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
-
-| Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
+| Boundary | Allowed Dependencies | Forbidden Shortcuts | Coherent Direction | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Selection owner → catalog/schema/native evidence | Pass | Pass | Pass | Pass | External capacity calls removed; native evidence serves selection only. |
-| Stopped owners → selection validator and stores | Pass | Pass | Pass | Pass | Managers do not independently fetch capacity or implement a second rule. |
-| Web forms → config store/options projection | Pass | Pass | Pass | Pass | No local capacity veto or direct Save from picker. |
-| Restore adapter → provider | Pass | Pass | Pass | Pass | No fallback to a fresh conversation on rejection. |
+| Selection/application → ModelCatalogService → Claude catalog/SDK | Pass | Pass | Pass | Pass | No mixed-level SDK bypass. |
+| Lifecycle owners → selection validator | Pass | Pass | Pass | Pass | No second runtime-specific policy. |
+| Web → GraphQL options/snapshots/current query | Pass | Pass | Pass | Pass | Display/schema only; query is not Save authorization or offered list. |
+| Restore adapter → provider binding | Pass | Pass | Pass | Pass | Normal continuation unaffected. |
 
 ## Interface Boundary Verdict
-
-| Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
+| Interface | Subject | Singular Responsibility | Identity | Generic Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `listOptions` / `listOptionsMany` | Pass | Pass | Pass | Low | Pass |
-| `validate` / `validateMany` | Pass | Pass | Pass | Low | Pass |
-| Existing Agent/Team/Org Save commands | Pass | Pass | Pass | Low | Pass |
-| GraphQL `RunModelOptionsObject` and matching Web query/types | Pass | Pass | Pass | Low | Pass |
-| Settings copy/option projection | Pass | Pass | Pass | Low | Pass |
+| Catalog view `offeredModels/findExactCurrent` | Pass | Pass | Pass | Low | Pass |
+| `resolveExactCurrentLlmModel(runtime,id,cwd?)` | Pass | Pass | Pass | Low | Pass |
+| Stopped `RunModelOptions` current/replacements | Pass | Pass | Pass | Low | Pass |
+| Batched GraphQL `runtimeCurrentModelDescriptors` | Pass | Pass | Pass | Medium | Pass — read-only descriptors for caller-supplied server-origin seed; not an eligibility command |
+| Application host exact-current lookup | Pass | Pass | Pass | Low | Pass |
 
-The removed numeric option fields have no identified in-repo production consumer (AE-05); this is a deliberate clean-cut GraphQL contract change, not a nullable/zero compatibility shim. An independently established external consumer would require re-evaluation, not speculation here.
+The launch-current query is proportionate because launch Web already needs provider snapshots for offered choices; stopped Settings instead retains a self-contained run-options DTO to avoid its former second catalog intersection. Implementers must keep non-Claude workspace-scoped catalog lookup aligned with the run environment if that query is used for such IDs; no actual divergent Codex catalog was established here.
 
 ## Existing Capability / Subsystem Reuse Verdict
-
-| Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
+| Need | Existing Area Checked | Decision Sound | New Piece Justified | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Catalog, schema and request-local evidence | Pass | Pass | N/A | Pass | Existing LLM-management services reused. |
-| Native verified capacity | Pass | Pass | Pass | Pass | Focused simplification replaces mixed external dispatch. |
-| Stopped Save, persistence and restore | Pass | Pass | N/A | Pass | Existing lifecycle and provider owners retained. |
-| Web localization/copy | Pass | Pass | N/A | Pass | Existing presentation boundary extended; no new eligibility authority. |
+| Claude alias evidence/normalization | Pass | Pass | N/A | Pass | Existing SDK metadata and Claude catalog. |
+| Exact-current backend resolution | Pass | Pass | Pass | Pass | ModelCatalogService extends its current boundary, no generic alias registry. |
+| Launch/application display/readiness | Pass | Pass | Pass | Pass | Existing components/validator extended, not parallel policy owners. |
 
 ## Subsystem / Capability-Area Allocation Verdict
-
-| Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
+| Area | Ownership Clear | Reuse/Extend Sound | Spine Fit | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| LLM management + runtime catalogs | Pass | Pass | Pass | Pass | One shared selection owner; native evidence is off-spine. |
-| Run history, Team and Org execution | Pass | Pass | Pass | Pass | Existing stopped guards/writers, no second selection service. |
-| GraphQL + Web config | Pass | Pass | Pass | Pass | Transport and presentation only; option DTO narrowed consistently. |
-| Runtime restore adapters | Pass | Pass | Pass | Pass | Provider context behavior stays native. |
+| Claude catalog / LLM management | Pass | Pass | Pass | Pass | Backend offered/current authority. |
+| Stopped run history/Team/Org | Pass | Pass | Pass | Pass | Existing guards and writers. |
+| GraphQL/Web config and launch | Pass | Pass | Pass | Pass | Transport/current-only presentation. |
+| Application readiness | Pass | Pass | Pass | Pass | Exact effective current/credential metadata. |
 
 ## Reusable Owned Structures Verdict
-
-| Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
+| Structure | Extraction Evaluated | File Choice | Owner Clear | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Runtime-specific eligibility | Pass | Pass | Pass | Pass | Centralized in existing selection service rather than extracted duplicate policies. |
-| Run-model option result | Pass | Pass | Pass | Pass | Existing domain shape narrowed; GraphQL/Web are projections. |
-| Native capacity proof | Pass | Pass | Pass | Pass | Focused LLM-management evidence file. |
+| Claude offered-row normalization | Pass | Pass | Pass | Pass | Claude-specific. |
+| Same-snapshot offered/current view | Pass | Pass | Pass | Pass | No competing raw offered API. |
+| Run/current choice descriptor | Pass | Pass | Pass | Pass | One bounded display/schema mapping reused across transport. |
 
 ## Shared Structure / Data Model Tightness Verdict
-
-| Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
+| Structure | Field Meaning | Redundancy Removed | Overlap Controlled | Core/Variant Sound | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `RunModelOptions`/GraphQL/Web mirror | Pass | Pass | Pass | Pass | Pass | Identifier list and unavailability reason only; no dummy capacity. |
-| Native capacity evidence | Pass | Pass | Pass | N/A | Pass | Existing verified provenance retained only where policy needs it. |
+| `RunModelChoice/RunModelOptions` | Pass | Pass | Pass | Pass | Pass | Current identifier remains when descriptor null; schema null is distinct. |
+| Catalog view | Pass | Pass | Pass | Pass | Pass | Offered IDs versus exact SDK-reported current are not conflated. |
+| Launch-current query result | Pass | Pass | Pass | Pass | Pass | Same descriptor fields plus requested exact ID/null, no eligibility flag or second choice list. |
 
 ## File Responsibility Mapping Verdict
-
-| File | Responsibility Is Singular And Clear? | Responsibility Matches Intended Owner/Boundary? | Responsibilities Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
+| File/Area | Singular | Owner Match | Retightened | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `run-model-selection-service.ts` and focused native-capacity file | Pass | Pass | Pass | Pass | Shared policy plus off-spine native evidence. |
-| `domain/run-model-selection.ts`, GraphQL type, Web query/generated type | Pass | Pass | Pass | Pass | One reduced option contract across boundaries. |
-| `RuntimeModelConfigFields.vue`, config forms and localization | Pass | Pass | Pass | Pass | Picker/status and bounded copy changes; no server-policy copy in client code. |
-| Agent/Team/Org stopped owners and restore adapters | Pass | Pass | N/A | Pass | Retained, tested rather than assigned new policy. |
+| Claude SDK client/presentation and ClaudeModelCatalog | Pass | Pass | Pass | Pass | Raw adaptation versus offered normalization. |
+| ModelCatalogService / RunModelSelectionService | Pass | Pass | Pass | Pass | One owner and stopped policy. |
+| GraphQL run/current projections; Web existing-run/launch components | Pass | Pass | Pass | Pass | Self-contained stopped DTO, separate launch-current detail. |
+| Application host validator | Pass | Pass | Pass | Pass | Uses exact-current model for existing credential check. |
 
 ## Subsystem / Folder / File Placement Verdict
-
-| Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
+| Path | Placement Clear | Folder Matches Owner | Mixed/Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `S/llm-management/services` and domain | Pass | Pass | Low | Pass | Existing selection owner and focused native evidence. |
-| `S/runtime-management/*/client` capacity readers | Pass | Pass | Low | Pass | Obsolete selection-only readers removed, catalogs/restore retained. |
-| `S/api/graphql/types`, `W/graphql`, `W/generated` | Pass | Pass | Low | Pass | Transport projection/codegen remains at boundary. |
-| `W/components/*/config`, localization | Pass | Pass | Low | Pass | Existing UI folders fit the bounded change. |
+| Claude client and LLM-management catalog | Pass | Pass | Low | Pass | Existing subsystem depth is appropriate. |
+| GraphQL/Web config and launch | Pass | Pass | Low | Pass | No extra alias subsystem. |
+| Application launch-configuration validator | Pass | Pass | Low | Pass | Current-value resolution remains in existing owner. |
 
 ## Removal / Decommission Completeness Verdict
-
-| Item / Area | Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
+| Item | Obsolete Piece Named | Replacement Owner | Scope Explicit | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Claude/Codex/Antigravity external capacity paths | Pass | Pass | Pass | Pass | Delete readers/SDK method/imports after call-site audit; do not remove catalogs or provider adapters. |
-| Mixed capacity domain/dispatch | Pass | Pass | Pass | Pass | Native-only positive verified resolver retained. |
-| GraphQL/Web numeric option fields, queries, fixtures | Pass | Pass | Pass | Pass | Remove `currentContextTokens`/`contextTokens` and regenerate client types. |
-| Universal capacity copy/docs | Pass | Pass | Pass | Pass | Runtime-specific accurate copy replaces obsolete claim. |
+| Frontend alias folding/`aliasIds` and alias-target GraphQL field | Pass | Pass | Pass | Pass | Remove only after stopped and launch current displays convert; caller audit. |
+| Stopped second catalog intersection/mixed fallback | Pass | Pass | Pass | Pass | Replaced by backend current/replacement descriptors. |
+| Launch selected-alias behavior | Pass | Pass | Pass | Pass | Current-only display override preserves exact saved ID, not a new offered option. |
+| Application offered-only exact validation | Pass | Pass | Pass | Pass | Replace with public exact-current resolver before publishing normalized list. |
 
 ## Legacy / Backward-Compatibility Verdict
-
-| Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
+| Area | Wrapper/Dual Path? | Clean-Cut Removal | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Selection/API option shape | No | Pass | Pass | No fake numeric fields, dual validator or old client path proposed. |
-| Persisted records | No | Pass | Pass | Existing current-schema reader remains; no version branch needed. |
+| Backend catalog/GraphQL/Web alias policy | No | Pass | Pass | No fake offered alias, dual DTO or frontend folding retained. |
+| Persisted `default` | No version branch | Pass | Pass | Exact current lookup is a present-value invariant for any saved ID. |
 
 ## Persisted-Data Transition Verdict
-
-| Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
+| Subject | Decision | Reader/Semantic Evidence | Choice Proportionate | Migration Safety | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| Agent `run_metadata.json`; Team V2 and Org V1 trees | Directly Usable — No Migration | Pass | Pass | N/A | Pass | AE-07 samples contain existing runtime/model/config; inspected stopped writers and restore already use those fields. New eligibility changes allowed values, not shape or identity semantics. No bulk rewrite is justified. |
+| Agent metadata; Team/Org trees | Directly Usable — No Migration | Pass | Pass | N/A | Pass | E23 found one Agent/four Team indexed exact-`default` files; raw exact lookup and restore keep ID/binding. |
+| Definition/application saved selections | Directly Usable — No Migration | Pass | Pass | N/A | Pass | Prior live E2E shows definition `default`; DS-07 current-only descriptor and DS-08 exact validation preserve it without stored-shape rewrite. Installed prevalence not assumed. |
 
 ## Change / Refactor Safety Verdict
-
-| Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
+| Area | Sequence Realistic | Temporary Seams Explicit | Cleanup Explicit | Verdict |
 | --- | --- | --- | --- | --- |
-| Shared eligibility/native capacity | Pass | Pass — branch and request-local evidence updated together | Pass | Pass |
-| GraphQL/Web DTO and generated types | Pass | Pass — schema/operations/codegen in one change | Pass | Pass |
-| UI copy, tests and docs | Pass | Pass — validate rendered options/errors across scopes | Pass | Pass |
+| Claude catalog and application validator | Pass | Pass — update current validator in same backend change before offered-only publication | Pass | Pass |
+| Stopped selection/GraphQL DTO | Pass | Pass — options/Save together | Pass | Pass |
+| Launch Web/current query and alias removal | Pass | Pass — convert callers first, then remove matching/fallback | Pass | Pass |
 
 ## Example Adequacy Verdict
-
-| Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
+| Topic | Needed? | Present/Clear | Bad Shape Explained | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| External vs native eligibility | Yes | Pass | Pass | Pass | Concrete `[a,b,c]` external and 128k/64k/200k native case; Save repeats fresh check. |
-| API capacity-field removal | Yes | Pass | Pass | Pass | Explicitly rejects `contextTokens: 0`, nullable fake values and dual contracts. |
-| Provider continuation | No | N/A | N/A | Pass | Risk boundary stated without inventing a provider success guarantee. |
+| Proven `default` sibling and stopped Save | Yes | Pass | Pass | Pass | Changed versus unchanged exact ID. |
+| Definition → Run and Application saved `default` | Yes | Pass | Pass | Pass | Concrete example keeps current-only label/schema, explicit `opus` switch and application metadata. |
 
 ## Material Premise Validation (Only When Needed)
 
-None. The provider-continuation risk is already established by approved SCN-006: a user selects a smaller external catalog model in stopped Settings, explicitly Saves, then sends the next message; current restore passes the saved model and provider binding to the external adapter, where native compaction or rejection may occur. E08/E10 support the path but not universal success. The separate Web catalog timing concern is within SCN-001–003's normal Settings load and AE-09; it remains a validation risk, not a new fallback mechanism or blocking finding.
+### MP-001 — Saved `default` definition enters Agent/Team Run
+- Related approved/preserved authority: REQ-008/AC-010–011 and no change to definitions/launch defaults. Behavior: BEH-007. Kind: **User**.
+- Independent trigger/evidence: user opens **Agents → Run** or **Agent Teams → Run** for a definition saved with exact Claude `default`; historical live E2E-02–05 exercised these product surfaces.
+- Forward path: saved definition → Run seed → normalized provider snapshot for offered choices plus batched GraphQL exact-current descriptor for server-origin seed → shared picker current-only display/schema → unchanged launch retains `default`, explicit sibling selection changes ID.
+- Preconditions/consequence: SDK still reports exact `default` and proven listed sibling; target now avoids the SR-007 false-unavailable state without re-offering `default`.
+- Reachability: **Reachable**; prior E2E confirms supported execution. Review consequence: **resolved design path**, no finding.
+
+### MP-002 — Application readiness evaluates an effective saved `default`
+- Related authority: REQ-008 and existing application launch-readiness contract. Behavior: BEH-007. Kind: **User/System**.
+- Independent trigger/evidence: user selects a saved Agent/Team resource in **Applications → Launch Setup** or active application startup evaluates its configured resource; current setup/view/readiness code and prior supported definition `default` evidence establish the path. No installed affected application count is claimed.
+- Forward path: selected resource/effective leaf → configuration view → ApplicationLaunchHostCapabilityValidator → ModelCatalogService exact-current descriptor → existing credential authority/readiness; Web current-only descriptor is separate from normalized offered choices.
+- Preconditions/consequence: raw SDK still reports saved `default`; target avoids `MODEL_UNAVAILABLE` merely because selection-facing output omits it.
+- Reachability: **Reachable** for supported setup/startup. Review consequence: **resolved design path**, no finding.
+
+No additional material scenario was introduced. Actual provider failure remains approved SCN-006 and downstream validation, not a speculative recovery requirement.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
-
-None. Representative live smaller-window continuation remains unvalidated and is explicitly assigned to implementation/API-E2E validation, not treated as proof of provider behavior.
+None. Implementation must still prove GraphQL/Web integration and representative provider behavior; that is validation, not unresolved design authority.
 
 ## Review Decision
-
-**Pass.** The behavior basis is confirmed, the high-risk shared selection/API change has one authoritative owner and an actionable clean-cut removal plan, and the preserved lifecycle/persisted-data boundaries are coherent.
+**Pass.** SR-009 resolves DR-001 through one backend offered-versus-exact-current authority and concrete DS-07/08 launch/readiness paths, while retaining stopped Save, AutoByteus, provider identity/history and no-migration boundaries.
 
 ## Findings
-
-None.
+None. DR-001 is resolved in ARCH-REV-003's prior-finding table; it is not silently dropped.
 
 ## Classification
-
-N/A — no failure finding.
+N/A — no current failure finding.
 
 ## Recommended Recipient
-
-Primary pass route: exact recipient returned by `get_handoff_rules` (expected `/implementation_engineer`); informational pass notification to the returned Solution Designer recipient only after primary handoff succeeds.
+Primary Pass handoff: exact implementation recipient returned by `get_handoff_rules`; then informational Pass to its returned Solution Designer recipient.
 
 ## Residual Risks
-
-- Actual smaller/unknown-window Claude, Codex and Antigravity continuation is not established by the old equal-window Codex test or static adapters. Validate representative pairs; report provider rejection visibly and preserve local history/binding. Do not reinstate the platform capacity gate merely because a provider pair fails.
-- The Web display/schema catalog is fetched separately from server options (AE-09). Implementation must keep server IDs authoritative and make a transient mismatch visible/retryable rather than silently treating it as capacity ineligibility; verify this on the normal Settings path.
-- Removing GraphQL numeric fields is a deliberate contract break for this package. No in-repo production consumer was found; if implementation discovers an applicable external consumer contract, return the concrete conflict for design/requirement handling rather than adding dummy fields.
+- Smaller-window provider continuation remains unverified for the full model/history matrix; visible rejection with retained history is the approved boundary.
+- Backend current-descriptor, provider snapshots, stopped DTO and generated Web operations must move together. Validate server-origin seeds, Team inheritance/application override, no-sibling Claude, stale catalog and exact-ID Save. Do not mutate E23's user records.
+- If the cross-runtime launch-current query is used for workspace-scoped Codex catalog data, implementation should preserve the run environment in lookup/cache keys; current design's Claude-specific recovery does not prove divergent Codex per-workspace catalogs.
 
 ## Latest Authoritative Result
-
 - Review Decision: **Pass**.
-- Material-Premise Gate: **Pass**.
-- Notes: ARCH-REV-001 reviews SR-003 design against SR-002-approved requirements; no implementation or provider test was performed by this reviewer.
+- Material-Premise Gate: **Pass** — MP-001/002 are supported and have coherent target paths.
+- Notes: ARCH-REV-003 reviews SR-009 against SR-006. Prior ARCH-REV-002 Fail is resolved only by the verified revised design. No implementation or tests by reviewer.
