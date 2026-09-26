@@ -89,12 +89,15 @@ warned about with a sanitized identity/reason and omitted; other valid skills
 and an otherwise healthy startup continue. Merely copying a skill does not
 claim the provider loaded it. Unsafe provenance, source mutation, escaping or
 invalid links, protected destination collisions, and unrelated provider
-startup failures still fail closed. The packaged Codex definition needs its
-`software-engineering-workflow-skill` in the **selected** current agent package
-root; an older same-name package checkout can shadow that skill. Check the
-definition's source identity and package revision before rollout rather than
-assuming any root named `autobyteus-agents` is current. Live updates to
-already-running skill links are not provided by this AGY capsule snapshot.
+startup failures still fail closed. A Codex definition may name
+`software-engineering-workflow-skill`, but this server change does not bundle
+or guarantee that content in `autobyteus-agents`. If it is absent from the
+selected source and global fallback roots, AGY warns, omits it, and can answer
+the first turn without claiming the skill loaded. If a run depends on an
+independently available skill, verify the selected definition's source identity
+and actual content rather than assuming a same-name package checkout is
+current. Live updates to already-running skill links are not provided by this
+AGY capsule snapshot.
 
 `AgyStreamProcess` communicates over stdin/stdout stream-JSON pipes, not a PTY.
 The created provider `init.conversation_id` is stored as
