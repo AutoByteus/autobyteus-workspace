@@ -115,23 +115,22 @@ describe("FileChangeEventProcessor", () => {
     });
   });
 
-  it("verifies AGY-native image files without changing non-AGY generated-output projection", async () => {
+  it("does not project pathless AGY-native image DONE; preserves ordinary generated-output projection", async () => {
     const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "agy-file-projection-"));
     try {
       const imagePath = path.join(workspaceRoot, "generated.png");
-      const nativeEvent = (filePath: string) => event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+      const nativeEvent = (result: Record<string, unknown>) => event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
         invocation_id: "native-image-1",
         tool_name: "generate_image",
-        result: { provider_state: "DONE", file_path: filePath },
+        result,
       });
       const agy = createPipelineHarness(workspaceRoot, RuntimeKind.ANTIGRAVITY_CLI);
-      expect(agy.fileChanges(await agy.process([nativeEvent(imagePath)]))).toEqual([]);
-      fs.writeFileSync(imagePath, "image-bytes");
-      expect(agy.fileChanges(await agy.process([nativeEvent(imagePath)]))).toMatchObject([
+      expect(agy.fileChanges(await agy.process([nativeEvent({ provider_state: "DONE", output: null })]))).toEqual([]);
+      expect(agy.fileChanges(await agy.process([nativeEvent({ provider_state: "DONE", file_path: imagePath })]))).toMatchObject([
         { payload: { path: "generated.png", status: "available", sourceTool: "generated_output" } },
       ]);
       const nonAgy = createPipelineHarness(workspaceRoot, RuntimeKind.CODEX_APP_SERVER);
-      expect(nonAgy.fileChanges(await nonAgy.process([nativeEvent(path.join(workspaceRoot, "not-on-disk.png"))]))).toMatchObject([
+      expect(nonAgy.fileChanges(await nonAgy.process([nativeEvent({ provider_state: "DONE", file_path: path.join(workspaceRoot, "not-on-disk.png") })]))).toMatchObject([
         { payload: { path: "not-on-disk.png", status: "available", sourceTool: "generated_output" } },
       ]);
     } finally {
