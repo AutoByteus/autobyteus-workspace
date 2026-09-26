@@ -7,7 +7,10 @@
 | DR-002 | CRR-008 N/A after API-REV-004 browser Pass | DR-001 verification hold | Browser-evidenced verification hold | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-003 | User requested README-guided Electron build | DR-002 verification hold | Initial artifact later failed with blank renderer; superseded by DR-004 | `delivery-electron-build-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
 | DR-004 | User blank-screen feedback and rebuild request | DR-003 artifact unusable | Clean rebuilt unsigned ARM64 artifact ready for retest | `delivery-electron-build-report.md`, `handoff-summary.md`, `release-deployment-report.md` |
-| DR-005 | Explicit user test acceptance; repository-only finalization | DR-004 retest hold | Server finalization underway; package PR #14 review hold | `handoff-summary.md`, `release-deployment-report.md`, `delivery-final-reintegration-test.log` |
+| DR-005 | Explicit user test acceptance; repository-only finalization | DR-004 retest hold | Server target pushed; package PR #14 review hold | `handoff-summary.md`, `release-deployment-report.md`, `delivery-final-reintegration-test.log` |
+| DR-006 | Finalization gate audit and blocked handoff classification | DR-005 package PR review hold | Server tip confirmed; package PR #14 still requires independent review; blocked reroute | `handoff-summary.md`, `release-deployment-report.md` |
+| DR-007 | User rejects cross-project package change and requests PR removal | DR-006 protected-package review hold | PR #14 closed unmerged; remote package task branch deleted; server-only scope reconciliation pending | `handoff-summary.md`, `release-deployment-report.md` |
+| DR-008 | User reaffirms current-project-only finalization | DR-007 scope reconciliation hold | Server remote task branch safely deleted after merged-ancestor check; authority reconciliation pending | `handoff-summary.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 ### DR-001 — Initial integrated delivery baseline
@@ -62,8 +65,32 @@
 - Prior authoritative result: DR-004 clean Electron rebuild awaiting retest.
 - Current authoritative result: user verification passed; finalization underway. Server latest `origin/personal@cf005d377` had one unrelated ticket-doc advance, merged as `cf0e0e7e`; focused AGY post-merge rerun passed 36/36 with one preexisting skip. No material user-facing change or renewed verification need. Package `origin/main@1b1a75e` was current and package task branch `a140474` was pushed; direct protected-main push was denied by GitHub, so PR #14 was opened and requires independent review.
 - Docs sync report: existing `docs-sync-report.md` remains authoritative; latest handoff and `release-deployment-report.md` track finalization. Initial/post-verification check: `delivery-final-reintegration-test.log`.
-- User verification/finalization: accepted for repository-only finalization; ticket archived before server final commit. Server task/target commits and package PR merge remain to be completed or recorded as blocked.
+- User verification/finalization: accepted for repository-only finalization; ticket archived before server final commit. Server task branch `b5574da79` was pushed; detached target merge `9f7fb7129` was pushed to `origin/personal`. Package PR #14 remains blocked by `REVIEW_REQUIRED`; no auto-merge facility is enabled. Full repository finalization remains incomplete.
 - Terminal return to Solution Designer: Not eligible until both repository targets and safe cleanup are complete; no terminal message.
 - Why revised: new explicit acceptance, post-acceptance base refresh, and protected package target change the delivery gate state.
-- Next action: finish server branch/target finalization, obtain required GitHub approval/merge for package PR #14, then final report/cleanup and terminal receipt. No version, tag, release or deployment.
+- Next action: obtain required independent GitHub approval/merge for package PR #14, then final report/safe cleanup and terminal receipt. No version, tag, release or deployment.
 - Remaining blocker: package `main` protection requires PR approval. Do not bypass it or claim full delivery completion.
+
+### DR-006 — Finalization gate audit; protected package review still pending
+- Trigger: final audit after user-confirmed repository-only finalization and DR-005 status persistence.
+- Prior authoritative result: DR-005 server target completed, package PR #14 open and review-blocked.
+- Current authoritative result: `origin/personal@dfca52164` and server task branch `b5574da79` confirmed remotely; package `origin/main@1b1a75e` and task branch `a140474` confirmed remotely. PR #14 remains `OPEN`, `MERGEABLE`, `REVIEW_REQUIRED`, with zero reviews and no checks reported. No source changes or additional runtime verification occurred.
+- User verification: explicit 2026-09-26 acceptance remains in force; the user requested no version/release. No tag, package publication, deployment or version bump is required.
+- Cleanup: temporary detached target worktrees were removed; server and package task worktrees are intentionally retained because they hold the user-tested App and selected Codex package root. The unrelated dirty primary package checkout and the installed app were not modified.
+- Result/classification: **Blocked — non-deployment repository-finalization approval**. Route to `/solution_designer` for upstream coordination of required independent PR review. Do not treat this as `Delivery Completed` or bypass branch policy.
+- Next action: obtain policy-compliant independent approval and merge of [package PR #14](https://github.com/AutoByteus/autobyteus-agents/pull/14); then verify remote target, complete only safe cleanup, update reports, and send the terminal delivery receipt. No release.
+
+### DR-007 — Cross-project package PR withdrawn at user request
+- Trigger: user clarified that changing `autobyteus-agents` is outside this ticket and explicitly requested deletion of its PR; their separate question to Solution Designer about why it was scoped remains pending.
+- Prior authoritative result: DR-006 server target completed, package PR review hold.
+- Current result: [PR #14](https://github.com/AutoByteus/autobyteus-agents/pull/14) closed with `mergedAt=null`; remote `task/agy-codex-skill-bundle-20260926` deleted; `origin/main@1b1a75e` unchanged. No package release, merge or deployment occurred. Server `origin/personal@db9ec6780` remained finalized before this documentation correction.
+- Test-evidence caveat: API-REV-002/004 and the manual launcher selected local package revision `a140474` for the Codex workflow-skill first-turn scenario. That local package worktree/branch remains temporarily to preserve the evidence; it is not an authorized cross-project finalization target. Native image and server-focused test results are not automatically invalidated, but the Codex-skill claim cannot be promoted as ambient-package behavior.
+- Classification: **Blocked — user requirement/scope correction**. Ask Solution Designer to reconcile the approved requirements/design and criterion disposition; do not silently reinterpret the earlier approval or reopen PR #14. Server-only finalization may be terminal only after that reconciliation and safe cleanup disposition.
+- No version bump, tag, release, publication or deployment requested or performed. The unrelated dirty primary package checkout and the separate installed app were not touched.
+
+### DR-008 — Current-project repository cleanup and scope audit
+- Trigger: user reaffirmed “finalize the current project” and confirmed the other-project PR was outside the ticket and should remain removed.
+- Prior authoritative result: DR-007 PR closed unmerged, package remote task branch deleted, server target merged/pushed, scope reconciliation pending.
+- Current result: confirmed `b5574da79378c4bd6c9ee4b4ec69a9ee72f54357` is an ancestor of `origin/personal@81278176156048dcfbb722936c6a46e3b92eb049`; deleted remote server task branch and verified only `personal` remained among the queried refs. The tested local Electron App and its worktree remain intact. No source or test changes, version bump, tag, release, publication or deployment.
+- Package status: PR #14 remains closed unmerged; remote package task branch absent; `autobyteus-agents/main@1b1a75e` unchanged. Local package worktree is historical test provenance, not a finalization target.
+- Classification: **Blocked — scope/acceptance authority reconciliation**, not repository push/PR approval. Solution Designer has been asked to reconcile the historical bundled-skill requirement/design and tests that selected local package `a140474` against the user's current-project-only direction. Do not claim ambient Codex package success or send terminal `Delivery Completed` until that correction is authoritative.
