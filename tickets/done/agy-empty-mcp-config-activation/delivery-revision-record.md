@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | API-REV-001 Pass (direct route) | N/A | Integrated, docs synced, awaiting user verification | docs-sync-report.md, handoff-summary.md, release-notes.md, release-deployment-report.md |
 | DR-002 | User: "finalize and release" | DR-001 hold | Re-integrated, archived, finalized, released as v1.4.83 | handoff-summary.md, release-deployment-report.md |
+| DR-003 | User: "i tested. lets finalize. no need to release a new version" | DR-002 finalized + released | AC-005 user-verified; no new release; nothing re-run | delivery-revision-record.md |
 
 ## Revision Entries
 
@@ -38,3 +39,11 @@
 - Terminal return to `/solution_designer`: see `release-deployment-report.md` Final Status.
 - Why this revision was recorded: Finalization and release round.
 - Remaining blockers, rollback concerns, or untested scope: The pre-existing converter-fixture failures are out of scope.
+
+### DR-003 — User verification recorded (no new release)
+
+- Delivery round and trigger: On 2026-09-26 the user wrote "the task is done. i tested. lets finalize. no need to release a new version".
+- Prior authoritative result: DR-002. The fix was already merged into `personal` (`b7ddd566d`) and released as `v1.4.83` (all 4 workflows succeeded). The worktree and local branch were already cleaned up.
+- Current authoritative result: The user has personally verified AC-005, which closes the DR-002 note that no personal AC-005 run had been reported. No new version was released, as the user asked. No finalization, release or cleanup step was replayed. The fix is confirmed present on `origin/personal` @ `fc2a60527`.
+- Terminal return to `/solution_designer`: DR-002 completion already sent. A supplementary verification note was sent for DR-003.
+- Remaining blockers: None.
