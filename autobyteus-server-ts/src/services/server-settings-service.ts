@@ -4,6 +4,7 @@ import {
   AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
   SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
 } from "../skill-improvement/domain/settings.js";
+import { PROJECTS_CAPABILITY_SETTING_KEY } from "../projects/domain/settings.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
@@ -144,6 +145,11 @@ export class ServerSettingsService {
     this.registerPredefinedSetting(
       SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
       "Controls whether manual Skill Improvement is available for this node at runtime. Defaults to disabled.",
+    );
+
+    this.registerPredefinedSetting(
+      PROJECTS_CAPABILITY_SETTING_KEY,
+      "Controls whether the Projects module is available for this node at runtime. Defaults to disabled.",
     );
 
     this.registerPredefinedSetting(
@@ -371,8 +377,8 @@ export class ServerSettingsService {
     return true;
   }
 
-  getApplicationsEnabledSetting(): boolean | null {
-    const rawValue = appConfigProvider.config.get(APPLICATIONS_CAPABILITY_SETTING_KEY)?.trim();
+  getBooleanSetting(key: string): boolean | null {
+    const rawValue = appConfigProvider.config.get(key)?.trim();
     if (!rawValue) {
       return null;
     }
@@ -380,27 +386,8 @@ export class ServerSettingsService {
     return rawValue.toLowerCase() === "true";
   }
 
-  setApplicationsEnabledSetting(enabled: boolean): void {
-    appConfigProvider.config.set(
-      APPLICATIONS_CAPABILITY_SETTING_KEY,
-      enabled ? "true" : "false",
-    );
-  }
-
-  getSkillImprovementEnabledSetting(): boolean | null {
-    const rawValue = appConfigProvider.config.get(SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY)?.trim();
-    if (!rawValue) {
-      return null;
-    }
-
-    return rawValue.toLowerCase() === "true";
-  }
-
-  setSkillImprovementEnabledSetting(enabled: boolean): void {
-    appConfigProvider.config.set(
-      SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
-      enabled ? "true" : "false",
-    );
+  setBooleanSetting(key: string, enabled: boolean): void {
+    appConfigProvider.config.set(key, enabled ? "true" : "false");
   }
 
   getSettingValue(key: string): string | null {
