@@ -1,17 +1,5 @@
-# Release Notes — v1.4.82
+# Release Notes — agy-empty-mcp-config-activation
 
-## What's New
-- **More choices for stopped external-runtime runs.** In stopped Agent, Team and Agent Org Settings, you can select any distinct model currently offered by that run's Claude Agent SDK, Codex App Server or Antigravity CLI runtime without AutoByteus blocking it based on context-window size. AutoByteus's own verified non-decreasing capacity rule is unchanged.
-- **Agent Orgs in Memory.** Browse stored Org runs and their members from the new Agent Orgs memory tab, including delegated task members with memory.
+## Fixed
 
-## Improvements
-- **Faster team and org memory browsing.** Memory lists and member views load promptly, show a loading state during navigation and keep the selected run/member context stable. Newly imported memory sources appear when returning to Memory home.
-- **Clearer model selection.** A redundant Claude `default` alias is hidden from new choices only when it is proven to refer to another listed model. Distinct model variants remain selectable. Existing saved `default` selections stay visible and keep their settings without being silently changed to the recommended model.
-
-## Fixes
-- Saved Application Agent and Team Launch Setup reopens with its selected resource/model/settings instead of showing a blank or error page.
-- A delegated task memory entry opens its own memory, and Team member labels display correctly.
-
-## Notes
-- A model offered for an external runtime may still be rejected by that provider when continuing an existing conversation; AutoByteus preserves the saved history and surfaces the failure rather than silently resetting it.
-- Imported Memory Sync sources do not yet include Org memory, so their Agent Orgs tab may be empty.
+- **Antigravity CLI runtime:** Agents, teams and orgs on `antigravity_cli` no longer fail with "Failed to prepare agent run" when `~/.gemini/config/mcp_config.json` (or the workspace `.agents/mcp_config.json`) is empty or whitespace-only. AGY tooling can create that empty file. It is now treated as "no MCP servers configured", which matches `agy` itself. User config files are still never modified. Malformed JSON and a same-name server conflict still stop activation, as before.
