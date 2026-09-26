@@ -1,25 +1,18 @@
-# Release Notes — Claude Agent SDK Long-Lived Sessions
+# Release Notes — Projects (preview, off by default)
 
-## What's new and improved
+## What's new
 
-- **Claude agents keep one live session per run.** Each Claude Agent SDK run now keeps a single Claude process for its whole life instead of starting and killing one per turn. The process closes when the run is terminated or the server shuts down.
-- **Background commands work.** A command a Claude agent runs in the background keeps running after the turn ends. When it finishes, the conversation shows "Background task completed: …" and the agent continues in a new turn with the result. The notice is kept in run history. This replaces the v1.4.78 stopgap that forced every Bash command into the foreground; Claude CLI defaults apply again.
-- **Messages to a busy agent arrive mid-turn.** A message sent to an agent (or a team member) that is still working is delivered into its running turn instead of waiting for the turn to end. This applies to Claude and Codex runs.
-- **Stop ends only the current turn.** The conversation, and any background commands, stay alive, and the next message continues the same session.
-- **Images are sent to Claude inline.** Attached images are sent as image content; an image that cannot be read becomes a visible note instead of a failure.
-- **Token usage stays accurate** across a long-lived session and after a Claude process restart.
+- **Projects (preview).** A new top-level **Projects** module lets you group related workspaces. A Project has a unique name, an optional description, and a list of linked workspaces. Each link has its own description.
+  - Create, rename, describe, and delete Projects. Deleting a Project removes only the Project and its links; it never touches your workspaces or files.
+  - Link an existing registered workspace, or enter (or, in the desktop app, browse to) a new folder, which is registered and then linked in one step.
+  - If a linked workspace is removed from Workspaces, the Project keeps the link and marks it **Unavailable**. Registering the same folder again makes it available again. Removing a workspace is never blocked by Projects.
+  - Search Projects by name or description. English and Simplified Chinese are supported.
+- **Turn it on per node** in Settings → Server Settings → Basics → **Projects**, or with the `ENABLE_PROJECTS` server setting. It is off by default. Turning it off hides Projects without deleting any data. Projects are not shown in the mobile app.
+
+## Improvements
+
+- The searchable pickers (for example the Existing workspace picker) can now be used fully from the keyboard: arrow keys, Home/End, Enter to choose, and Escape/Tab to close. Inside a dialog, Escape closes only the picker, not the dialog.
 
 ## Compatibility
 
-- No database migration. Existing Claude runs resume normally; older runs simply have no background-task notices.
-- Each live Claude run keeps its process in memory (about 170 MB). Terminate runs you no longer need.
-- If the server environment sets `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`, Claude agents cannot run background commands, and a warning is logged. Unset it to use the CLI defaults.
-
-## Validation boundary
-
-- The user explicitly verified the local macOS Electron build. The change was also validated live through the AutoByteus server with the real Claude CLI, both the PATH CLI (2.1.283) and the SDK-bundled CLI (2.1.280). The checks covered:
-  - session lifecycle, background tasks and their notices, and Stop/resume;
-  - images, and crash reopen with usage accounting;
-  - a live team with Claude and Codex workers, and Codex mid-turn steering;
-  - a browser render of the replayed notice.
-- API-key authentication mode was not validated live. After a Claude process restart, the first turn counts main-loop usage only.
+- No migration. Existing Applications and Skill Improvement settings keep their values and behave as before. Projects data is stored per node in `<app data>/projects/projects.json`, which is created on first use.
