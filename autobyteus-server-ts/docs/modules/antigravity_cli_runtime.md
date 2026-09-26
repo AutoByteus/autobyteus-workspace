@@ -56,6 +56,15 @@ there. User/provider-owned workspace skills and MCP configurations may still
 be visible; `skillAccessMode: NONE` only prevents materialization of
 AutoByteus-configured skills.
 
+Before writing the run-scoped MCP configuration, activation reads (never
+modifies) the selected workspace's `.agents/mcp_config.json` and the global
+`~/.gemini/config/mcp_config.json` to detect a user-defined server with the
+AutoByteus Agent Tools server name. A missing file, or an empty or
+whitespace-only file, means "no servers", which matches how `agy` itself treats
+them. A file whose content cannot be parsed as JSON fails activation with
+`Cannot inspect AGY MCP collision at '<path>'`, and a same-name server fails
+with `AGY_MCP_NAME_COLLISION`.
+
 Configured skill bindings carry the resolver's winning source provenance.
 For an agent-private skill in a Team, or a team-shared skill, AGY trusts only
 that owning Team package root; a standalone private skill uses its Agent
