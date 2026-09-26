@@ -1,0 +1,20 @@
+[
+  {
+    "id": "rt_1790450220232_eef486cd-a805-4644-afe1-ab55a7737bf6",
+    "ts": 1790450220.231,
+    "turn_id": "01a0df26-3cb2-7e60-b133-143c41d9ce23",
+    "seq": 1,
+    "trace_type": "user",
+    "content": "RESTORE_TEXT_ONLY_20260926: reply exactly RESTORE_OK here. Do not call any tools, resume tasks, or send other messages.",
+    "source_event": "AgentRun.postUserMessage"
+  },
+  {
+    "id": "rt_1790450223450_87c9a343-bbe7-4d41-b6dd-d353e2becf04",
+    "ts": 1790450223.45,
+    "turn_id": "01a0df26-3cb2-7e60-b133-143c41d9ce23",
+    "seq": 2,
+    "trace_type": "assistant",
+    "content": "RESTORE_OK",
+    "source_event": "SEGMENT_END"
+  }
+]

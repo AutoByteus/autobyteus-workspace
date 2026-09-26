@@ -17,19 +17,17 @@ export type StandaloneDraftContextFileOwner = { kind: "agent_draft"; draftRunId:
 export type TeamMemberDraftContextFileOwner = { kind: "team_member_draft"; teamDraftId: string; memberAddress: AgentTeamAddress };
 export type AgentOrgMemberDraftContextFileOwner = { kind: "org_member_draft"; orgRunId: string; agentRunId: string };
 export type StandaloneFinalContextFileOwner = { kind: "agent_final"; runId: string };
-export type TeamMemberFinalContextFileOwner = { kind: "team_member_final"; teamRunId: string; memberAddress: AgentTeamAddress };
+export type TeamMemberFinalContextFileOwner = { kind: "team_member_final"; teamRunId: string; agentRunId: string };
 export type AgentOrgMemberFinalContextFileOwner = { kind: "org_member_final"; orgRunId: string; agentRunId: string };
 export type ResolvedTeamMemberFinalContextFileOwner = TeamMemberFinalContextFileOwner & {
   rootTeamRunId: string;
   ancestorTeamRunIds: string[];
-  agentRunId: string;
   memoryDir: string;
 };
 export type ResolvedAgentOrgMemberFinalContextFileOwner = AgentOrgMemberFinalContextFileOwner & {
   rootSubjectKind: "agent_org";
   rootRunId: string;
   ancestorTeamRunIds: string[];
-  agentRunId: string;
   memoryDir: string;
 };
 export type ContextFileDraftOwnerDescriptor = StandaloneDraftContextFileOwner | TeamMemberDraftContextFileOwner | AgentOrgMemberDraftContextFileOwner;
@@ -40,18 +38,19 @@ const record = (value: unknown): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new ContextFileDescriptorError("owner descriptor is invalid.");
   return value as Record<string, unknown>;
 };
+const safeIdentity = (value: unknown, field: string): string => {
+  if (typeof value !== "string" || !value || value !== value.trim()
+    || /[\\/\x00-\x1f\x7f]/.test(value) || value === "." || value === "..") {
+    throw new ContextFileDescriptorError(`${field} must be a safe non-empty identity.`);
+  }
+  return value;
+};
+
 const exactOrgIdentity = (input: Record<string, unknown>): { orgRunId: string; agentRunId: string } => {
   if (Object.keys(input).some((key) => !["kind", "orgRunId", "agentRunId"].includes(key))) {
     throw new ContextFileDescriptorError("Org context-file owner has unsupported fields.");
   }
-  const segment = (value: unknown, field: string): string => {
-    if (typeof value !== "string" || !value || value !== value.trim()
-      || /[\\/\x00-\x1f\x7f]/.test(value) || value === "." || value === "..") {
-      throw new ContextFileDescriptorError(`${field} must be a safe non-empty identity.`);
-    }
-    return value;
-  };
-  return { orgRunId: segment(input.orgRunId, "orgRunId"), agentRunId: segment(input.agentRunId, "agentRunId") };
+  return { orgRunId: safeIdentity(input.orgRunId, "orgRunId"), agentRunId: safeIdentity(input.agentRunId, "agentRunId") };
 };
 export const parseDraftContextFileOwnerDescriptor = (value: unknown): ContextFileDraftOwnerDescriptor => {
   const input = record(value);
@@ -70,11 +69,13 @@ export const parseDraftContextFileOwnerDescriptor = (value: unknown): ContextFil
 export const parseFinalContextFileOwnerDescriptor = (value: unknown): ContextFileFinalOwnerDescriptor => {
   const input = record(value);
   if (input.kind === "agent_final") return { kind: "agent_final", runId: required(String(input.runId ?? ""), "runId") };
-  if (input.kind === "team_member_final") return {
-    kind: "team_member_final",
-    teamRunId: required(String(input.teamRunId ?? ""), "teamRunId"),
-    memberAddress: assertAgentTeamAddress(String(input.memberAddress ?? "")),
-  };
+  if (input.kind === "team_member_final") {
+    if (Object.keys(input).some((key) => !["kind", "teamRunId", "agentRunId"].includes(key))) {
+      throw new ContextFileDescriptorError("Team context-file owner has unsupported fields.");
+    }
+    return { kind: "team_member_final", teamRunId: safeIdentity(input.teamRunId, "teamRunId"),
+      agentRunId: safeIdentity(input.agentRunId, "agentRunId") };
+  }
   if (input.kind === "org_member_final") return {
     kind: "org_member_final",
     ...exactOrgIdentity(input),
@@ -91,7 +92,7 @@ export const buildFinalContextFileLocator = (owner: ContextFileFinalOwnerDescrip
   owner.kind === "agent_final"
     ? `/rest/runs/${encodeURIComponent(owner.runId)}/context-files/${encodeURIComponent(filename(storedFilename))}`
     : owner.kind === "team_member_final"
-      ? `/rest/team-runs/${encodeURIComponent(owner.teamRunId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${encodeURIComponent(filename(storedFilename))}`
+      ? `/rest/team-runs/${encodeURIComponent(owner.teamRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${encodeURIComponent(filename(storedFilename))}`
       : `/rest/agent-org-runs/${encodeURIComponent(owner.orgRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${encodeURIComponent(filename(storedFilename))}`;
 export const getStoredFilenameFromLocator = (locator: string): string | null => {
   const raw = locator.trim(); if (!raw) return null;

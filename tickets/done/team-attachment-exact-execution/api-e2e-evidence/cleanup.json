@@ -1,0 +1,24 @@
+{
+  "removedOwnedRoots": [
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-e2e-exact-kpgwwj97",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-TOBc6m",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-j06PBe",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-sElKx5-upgrade"
+  ],
+  "stoppedOwnedPids": [
+    52752,
+    63175,
+    79182,
+    48804,
+    83739
+  ],
+  "closedOwnedTabs": [
+    "1211483123",
+    "1211483126",
+    "1211483129",
+    "1211483135",
+    "1211483139"
+  ],
+  "productionDockerOrDataChanged": false,
+  "providerManagedTestThreads": "retained; no provider archive/deletion API invoked"
+}

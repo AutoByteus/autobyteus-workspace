@@ -1,0 +1,36 @@
+ M autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md
+ M autobyteus-server-ts/src/api/rest/context-files.ts
+ M autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts
+ M autobyteus-server-ts/src/context-files/domain/context-file-owner-types.ts
+ M autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts
+ M autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts
+ M autobyteus-server-ts/src/server-runtime.ts
+ M autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+ M autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts
+ M autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts
+ M autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-execution/input/agent-run-provider-input-normalizer.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/services/team-member-input-event-builder.test.ts
+ M autobyteus-server-ts/tests/unit/context-files/context-file-layout.test.ts
+ M autobyteus-server-ts/tests/unit/context-files/context-file-local-path-resolver.test.ts
+ M autobyteus-server-ts/tests/unit/context-files/context-file-owner-resolver.test.ts
+ M autobyteus-server-ts/tests/unit/context-files/context-file-owner-types.test.ts
+ M autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts
+ M autobyteus-server-ts/tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts
+ M autobyteus-web/docs/agent_execution_architecture.md
+ M autobyteus-web/docs/settings.md
+ M autobyteus-web/services/runHydration/__tests__/runProjectionConversation.spec.ts
+ M autobyteus-web/stores/__tests__/agentTeamRunStore.spec.ts
+ M autobyteus-web/stores/agentTeamRunStore.ts
+ M autobyteus-web/stores/teamRunConfigStore.ts
+ M autobyteus-web/utils/contextFiles/__tests__/contextAttachmentModel.spec.ts
+ M autobyteus-web/utils/contextFiles/contextAttachmentModel.ts
+ M autobyteus-web/utils/contextFiles/contextFileOwner.ts
+ M autobyteus-web/utils/teamRunLaunchConfigEdit.ts
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/
+?? autobyteus-server-ts/tests/e2e/helpers/context-file-process-fixture.ts
+?? autobyteus-server-ts/tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts
+?? autobyteus-server-ts/tests/unit/context-files/context-file-exact-execution.test.ts
+?? tickets/team-attachment-exact-execution/

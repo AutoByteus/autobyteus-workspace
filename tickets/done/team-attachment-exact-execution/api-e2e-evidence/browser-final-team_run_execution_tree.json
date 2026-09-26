@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 2,
+  "createdAt": "2026-09-26T19:03:52.157Z",
+  "archivedAt": null,
+  "applicationBinding": null,
+  "handoffs": [
+    {
+      "from": "/student_one",
+      "to": "/student_two",
+      "rules": [
+        "When the nested coordinator needs ordinary teammate help while completing a delegated classroom task."
+      ]
+    },
+    {
+      "from": "/student_two",
+      "to": "/student_one",
+      "rules": [
+        "When the supporting student has prepared an ordinary discussion response for the nested coordinator."
+      ]
+    }
+  ],
+  "rootTeam": {
+    "address": "/",
+    "teamDefinitionId": "attachment-study-group",
+    "teamDefinitionName": "Attachment Study Group",
+    "teamRunId": "attachment_study_group_c937c29a406b4120ae7d4895fb1afc8c",
+    "coordinatorAddress": "/student_one",
+    "defaultLaunchConfiguration": {
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-6-luna",
+      "llmConfig": null,
+      "autoExecuteTools": false,
+      "skillAccessMode": "PRELOADED_ONLY",
+      "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-e2e-exact-kpgwwj97"
+    },
+    "members": [
+      {
+        "address": "/student_one",
+        "agentDefinitionId": "team-local-agent:attachment-study-group:student-one",
+        "role": null,
+        "description": null,
+        "agentRunId": "student_one_8b8cd5aad8ce4bba8eeda205ad62145a",
+        "platformAgentRunId": "01a0df1b-5a39-7271-a9fe-caef7d111521",
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-e2e-exact-kpgwwj97"
+        }
+      },
+      {
+        "address": "/student_two",
+        "agentDefinitionId": "team-local-agent:attachment-study-group:student-two",
+        "role": null,
+        "description": null,
+        "agentRunId": "student_two_f99f196b7e06445d864f214795cf38c9",
+        "platformAgentRunId": null,
+        "launchConfiguration": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6-luna",
+          "llmConfig": null,
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-e2e-exact-kpgwwj97"
+        }
+      }
+    ],
+    "taskExecutions": [
+      {
+        "address": "/student_two",
+        "agentRunId": "student_two_4c9cf1f680a642b4b5b07aa8980042f4",
+        "platformAgentRunId": "01a0df1b-e6e6-7571-b065-9a9bd0d0a3c3",
+        "startedAt": "2026-09-26T19:05:42.506Z",
+        "settledAt": "2026-09-26T19:12:26.405Z"
+      },
+      {
+        "address": "/student_two",
+        "agentRunId": "student_two_0d3fcfccab2d477ba3b7a2ad2dffa743",
+        "platformAgentRunId": "01a0df21-09fc-74a2-8182-6ba7dde70f29",
+        "startedAt": "2026-09-26T19:11:19.516Z",
+        "settledAt": "2026-09-26T19:12:26.462Z"
+      }
+    ]
+  }
+}

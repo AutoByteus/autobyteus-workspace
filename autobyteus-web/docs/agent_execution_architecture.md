@@ -107,8 +107,8 @@ The Pinia stores act as the primary interface for the UI components to interact 
     `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
     `memberAddress`, and nullable `taskAgentRunId`). It launches or restores when
     necessary and resolves the focused AgentRun through the canonical execution
-    view to an exact attachment location (`containingTeamRunId` plus rooted
-    `memberAddress`) before local admission. Draft attachment ownership remains
+    view to an exact attachment location (`containingTeamRunId` plus canonical
+    `agentRunId`) before local admission. Draft attachment ownership remains
     launch/root scoped, while the `team_member_final` owner uses that containing
     TeamRun; a task-Team Agent below the flat configured root must not substitute the
     root TeamRun id. It then begins one local submission,
@@ -1053,7 +1053,7 @@ Browser-uploaded composer files now follow the same high-level orchestration pat
 2. `ContextFileUploadStore` owns upload, delete, and finalize transport. It stages browser uploads under an explicit draft owner and returns descriptors that keep `storedFilename` separate from the user-visible `displayName`.
 3. Shared UI helpers (`useContextAttachmentComposer` and `contextAttachmentPresentation`) own attachment-list mutation, display-label rendering, preview/open behavior, and pending-upload coordination so individual components do not parse locators themselves.
 4. `hydrateContextAttachment` is the single persisted-locator convergence boundary. It transforms a valid legacy absolute POSIX or Windows-drive `local-file://` locator into the canonical fixed-authority form before normal classification/presentation, leaves canonical locators unchanged, and classifies opaque, adorned, or malformed local locators as `unsupported_local_file` rather than guessing a filesystem identity.
-5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus rooted `memberAddress`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. Org owners use the exact `orgRunId` plus canonical `agentRunId`, captured before awaiting preparation. A missing exact Team location or Org owner fails rather than guessing a configured member. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible canonical reactive local message before runtime send. The submission handle retains that same proxy so the mounted chip observes the update.
+5. Send stores create or restore the final run/team identity and then finalize through exact logical ownership. Standalone final owners use the AgentRun id. Team-member final owners use the focused AgentRun's canonical execution location (`containingTeamRunId` plus canonical `agentRunId`) rather than assuming the root TeamRun owns every nested member; the draft owner remains the launch/root draft scope. Org owners use the exact `orgRunId` plus canonical `agentRunId`, captured before awaiting preparation. A missing exact Team location or Org owner fails rather than guessing a configured member. After local admission, `/context-files/finalize` receives `attachments[{ storedFilename, displayName }]`, and the store replaces draft uploaded descriptors with final run/member locators on the already-visible canonical reactive local message before runtime send. The submission handle retains that same proxy so the mounted chip observes the update.
 6. After finalization, `contextAttachmentSend.planContextAttachmentSubmission` is the only executable partition. The optimistic local message retains every current attachment, while only eligible current kinds enter `context_file_paths` or `image_urls`. A newly unsupported local locator remains visible/removable in the current composer/message and identity-matched live echo, but is excluded from every runtime/server media array and may disappear after a fresh reload because there is deliberately no metadata-only persistence transport. Historical unsupported records remain readable as non-executable metadata.
 7. The stable `storedFilename` remains the attachment identity key while `displayName` preserves the original uploaded filename even when the stored path has been sanitized.
 
@@ -1755,3 +1755,26 @@ turn.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.
+
+### Exact Team attachment execution ownership
+
+Team final owners are `{ kind: 'team_member_final', teamRunId, agentRunId }`, where
+`teamRunId` is the containing TeamRun, not necessarily the root. Final locators use
+`/rest/team-runs/:teamRunId/agent-runs/:agentRunId/context-files/:storedFilename`.
+Drafts retain their separate temporary scope and member address. Send captures the
+selected AgentRun before awaits; hydration focus changes cannot retarget it.
+
+The startup-only `20260926_team_context_file_execution_locators_v1` migration rewrites
+only typed stored attachment references using indexed ownership and physical-file
+proof. It leaves attachment blobs and unrelated history untouched. Original record
+backups and the hash/progress manifest live under
+`app-data-migration-backups/20260926_team_context_file_execution_locators_v1`.
+Both Studio and standalone startup require clean success before runtime admission.
+Ambiguous or missing proof blocks startup rather than choosing another execution.
+
+Upgrade server and web/Electron together with writers stopped. Do not restore old
+record backups over newer live history; rollback must restore the matching binary,
+changed records and migration ledger as one stopped-writer operation. Deployment
+and rollback remain operator/Delivery-owned.
+
+Operational procedure: [Team attachment cutover and recovery](../../autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md#exact-team-attachment-cutover-and-operations). Migration success on disposable test data is not installed-data rollout evidence.

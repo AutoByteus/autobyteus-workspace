@@ -13,10 +13,9 @@ describe("ContextFileLayout", () => {
     expect(layout.getFinalOwnerDirPath({
       kind: "team_member_final",
       teamRunId: "root-team-run",
-      memberRouteKey: "ReviewSquad/reviewer",
       rootTeamRunId: "root-team-run",
-      teamRunPath: ["child-team-run"],
-      memberRunId: "reviewer-run",
+      ancestorTeamRunIds: ["child-team-run"],
+      agentRunId: "reviewer-run",
       memoryDir,
     })).toBe(path.join(memoryDir, "context_files"));
   });

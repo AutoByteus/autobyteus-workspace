@@ -64,12 +64,83 @@ The actual artifact/output files remain where the runtime wrote them.
 - Draft uploaded context files are served from `/rest/drafts/.../context-files/:storedFilename` until send-time finalization.
 - Finalized uploaded context files are served from
   `/rest/runs/:runId/context-files/:storedFilename` or
-  `/rest/team-runs/:teamRunId/members/:memberAddress/context-files/:storedFilename`.
-  The team-member route requires one encoded canonical rooted address and
+  `/rest/team-runs/:teamRunId/agent-runs/:agentRunId/context-files/:storedFilename`.
+  The team-member route requires the exact canonical AgentRun ID plus containing TeamRun ID and
   resolves the exact memory location from active runtime context or persisted
   V2 Team execution tree; there is no suffix or route-key fallback.
 - The finalize request accepts `attachments[{ storedFilename, displayName }]` so the user-visible filename survives any storage-safe `storedFilename` normalization.
 - Artifacts-tab previews do not require copied media URLs; they stream current bytes from `/runs/:runId/file-change-content?path=...` using run-scoped indexed path resolution.
+
+## Exact Team attachment cutover and operations
+
+Final Team owners are `{ kind: 'team_member_final', teamRunId, agentRunId }`.
+`teamRunId` is the immediate containing TeamRun and `agentRunId` is the canonical
+application execution ID, not a provider thread, definition ID, or member address.
+Repeated member addresses do not select files. Missing/wrong-team IDs fail; no
+address fallback, redirect, newest/configured preference, or mixed-version shim
+exists. Draft owners retain their separate temporary scope and member address.
+Org and standalone contracts and the existing physical execution directories are
+unchanged. Both HTTP GET and provider local-path resolution use exact ownership.
+
+### Startup migration
+
+`20260926_team_context_file_execution_locators_v1` is startup-only, after Team V2,
+Org-family and trace-layout prerequisites. It enumerates typed attachment record
+sources across Team, Org and standalone memory, proves historical Team references
+against the execution index and contained files, and changes only typed locators.
+Source-trace provenance disambiguates only a matching physical candidate; otherwise
+one unique physical owner is required. Unresolved ownership blocks, never guesses.
+Prose, provider histories, attachment blobs, and unrelated record values are not
+rewritten. Serialization of changed JSON/JSONL records may differ.
+
+Original changed-record backups and `manifest.json` are under
+`<app-data-dir>/app-data-migration-backups/20260926_team_context_file_execution_locators_v1/`,
+outside live memory discovery. The manifest records original/target hashes,
+locator mappings and commit progress. Preflight precedes record writes; atomic
+commits and strict rereads precede completion. Retry accepts only original or
+target hashes, retains original backups, and re-finalizes uncertain commits.
+Both Studio and standalone hosts require ledger status `SUCCEEDED` before runtime
+admission; warnings, failure, missing status or an unfinished run do not suffice.
+
+### Coordinated upgrade checklist
+
+This is an operational procedure, not evidence that an installation was upgraded.
+
+1. Obtain deployment authorization and identify the exact node, app-data/memory
+   roots, database/ledger, package roots, configured origin and all writers. Record
+   current server/client versions and rollback binaries. Do not assume a test root
+   or earlier scan represents the installed corpus.
+2. Stop all writers, including standalone hosts, and prevent old clients from
+   reconnecting. Take a consistent recoverable snapshot of app data, memory,
+   database/ledger and configuration before starting new binaries. Migration's
+   changed-record backups alone are not a complete installation backup.
+3. Rehearse against an isolated consistent copy of that installation with the
+   matching candidate server and client. Preserve the configured-origin semantics
+   for historical absolute URLs; do not accidentally rebind external-host URLs.
+   Isolate credentials, package side effects and network access. There is no
+   separate dry-run CLI promised here: startup on the copy performs migration.
+4. Require clean ledger success and a complete manifest; compare original backup
+   hashes, attachment hashes, unaffected records and non-locator values. Verify
+   historical image/file Open and duplicate-address send to the selected execution.
+   Any unresolved ownership, unexpected record hash or missing original is a stop
+   condition: preserve evidence and escalate; never delete history or mark success
+   manually. Retry through normal startup/lock policy, not by bypassing it.
+5. With writers still stopped and a fresh consistent snapshot, deploy matching
+   web/Electron renderer and server versions together. Capture production migration
+   status/manifest, byte and history checks, and a controlled send/read/restart smoke
+   result before admitting users. Do not claim Electron shell validation from a
+   browser test. Retain backups and the operation log.
+
+### Recovery and rollback
+
+Keep writers stopped on failure. Preserve the failed manifest, diagnostics and
+original backups; source/target hash-safe startup retry is preferable to editing
+history. A pre-admission rollback must restore a coherent pre-upgrade snapshot
+(records, database/ledger, configuration and matching old binaries), not just the
+old server. **Never restore migration backups over newer writes.** If new writes
+have occurred, stop and preserve both states for a separately approved recovery or
+forward fix; a blind old snapshot restore would lose history. Unknown ownership
+requires evidence and escalation, not reassignment by member address.
 
 ## Request Flows
 

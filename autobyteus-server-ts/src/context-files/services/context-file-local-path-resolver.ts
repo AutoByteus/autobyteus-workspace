@@ -12,7 +12,7 @@ import { ContextFileOwnerResolver } from "./context-file-owner-resolver.js";
 
 const AGENT_FINAL_ROUTE = /^\/rest\/runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const TEAM_MEMBER_FINAL_ROUTE =
-  /^\/rest\/team-runs\/([^/]+)\/members\/([^/]+)\/context-files\/([^/?#]+)$/;
+  /^\/rest\/team-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const ORG_MEMBER_FINAL_ROUTE =
   /^\/rest\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const AGENT_DRAFT_ROUTE = /^\/rest\/drafts\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
@@ -120,7 +120,7 @@ export class ContextFileLocalPathResolver {
         parseFinalContextFileOwnerDescriptor({
           kind: "team_member_final",
           teamRunId: decodePathSegment(teamMatch[1]),
-          memberAddress: decodePathSegment(teamMatch[2]),
+          agentRunId: decodePathSegment(teamMatch[2]),
         }),
         decodePathSegment(teamMatch[3]),
       );
@@ -151,11 +151,12 @@ export class ContextFileLocalPathResolver {
       }
     }
 
-    if (locator.startsWith("rest/")) {
-      return `/${locator}`;
+    const pathname = locator.split(/[?#]/, 1)[0]!;
+    if (pathname.startsWith("rest/")) {
+      return `/${pathname}`;
     }
 
-    return locator.startsWith("/") ? locator : null;
+    return pathname.startsWith("/") ? pathname : null;
   }
 
   private resolveExistingFinalPath(
