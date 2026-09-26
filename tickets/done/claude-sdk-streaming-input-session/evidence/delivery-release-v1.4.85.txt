@@ -1,0 +1,22 @@
+Release verification for v1.4.85 — 2026-09-26 10:21 UTC (delivery waited in the foreground until all workflows completed, at the user's request)
+User verification: "the task is done. lets finalize and release a new version" (local macOS personal Electron build of integrated branch 3f1aa3dc4)
+Ticket commit: a0145bf14 (pushed to origin/codex/claude-sdk-streaming-input-session; deleted after ancestry check)
+Target merge: 86a0fd200 "Merge Claude SDK streaming-input session per run" (b6873f8cb..86a0fd200 -> personal)
+Release commit/tag target: d87f507f4670dc05fa050a04a1a1aa87d0a4ea32 (86a0fd200..d87f507f4 -> personal)
+Remote refs:
+d87f507f4670dc05fa050a04a1a1aa87d0a4ea32	refs/heads/personal
+590bf0f2b1b2ba9f81120a68c532f974dff29b51	refs/tags/v1.4.85
+d87f507f4670dc05fa050a04a1a1aa87d0a4ea32	refs/tags/v1.4.85^{}
+Package version: web=1.4.85 (the release helper no longer bumps the messaging gateway since 40f769e0d removed external messaging; v1.4.84 has the same 2-file release commit)
+GitHub release:
+https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.85	2026-09-26T09:51:15Z	draft=false	prerelease=false	assets=17 (same count as v1.4.84)
+Assets: android apk/.sha256; linux arm64/x64 AppImage; macos arm64/x64 dmg/zip (+blockmaps); windows exe; latest*.yml (4)
+Workflows:
+Desktop Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36233831455
+Android APK Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36233831564
+iOS App Store Connect Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36233831528
+Server Docker Release	completed	success	https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36233831533
+(Release Messaging Gateway no longer runs: external messaging removed from the product.)
+Docker Hub public tag:
+HTTP 200 tag 1.4.85 platforms linux/amd64,linux/arm64
+Release notes: published GitHub Release body matches tagged .github/release-notes/release-notes.md (whitespace-normalized), which equals archived release-notes.md; notes were written after user verification.

@@ -2,7 +2,7 @@
 
 ## Status
 
-- Stage: **User-verified; finalizing and releasing.** On 2026-09-26 the user tested the local macOS personal Electron build and wrote "the task is done. lets finalize and release a new version". The ticket is archived to `tickets/done/`. `origin/personal` was re-fetched after verification and is unchanged at `b6873f8cb`, so no re-integration and no renewed verification were needed.
+- Stage: **Delivered: finalized into `personal` and released as `v1.4.85`.** All 4 release workflows succeeded, the GitHub Release has 17 assets, and Docker `1.4.85` is live. On 2026-09-26 the user tested the local macOS personal Electron build and wrote "the task is done. lets finalize and release a new version". The ticket is archived to `tickets/done/`. `origin/personal` was re-fetched after verification and is unchanged at `b6873f8cb`, so no re-integration and no renewed verification were needed.
 - Classification (carried, unchanged): `task_size=Large`, `architectural_risk=High`. Route: reviewed route (Solution Design → Architecture Review → Implementation → Code Review → API/E2E → post-API/E2E test-code review → Delivery).
 - Review chain:
   - Architecture review: ARCH-REV-005 Pass (IC-1..IC-5).
@@ -83,7 +83,7 @@ Suggested checks:
 
 ## Release / Deployment
 
-- The user requested a new release. The ticket branch is merged `--no-ff` into `personal`, then `scripts/desktop-release.sh release 1.4.85 --release-notes tickets/done/claude-sdk-streaming-input-session/release-notes.md` bumps the versions, creates the annotated tag `v1.4.85`, and the tag push triggers the release workflows. Final evidence is in `release-deployment-report.md`.
+- Completed. The ticket branch was merged `--no-ff` into `personal` (`86a0fd200`), then `scripts/desktop-release.sh release 1.4.85 --release-notes tickets/done/claude-sdk-streaming-input-session/release-notes.md` bumps the versions, creates the annotated tag `v1.4.85`, and the tag push triggered the release workflows (release commit `d87f507f4`, all 4 workflows success). Final evidence: `release-deployment-report.md` and `evidence/delivery-release-v1.4.85.txt`.
 
 ## Artifacts
 
