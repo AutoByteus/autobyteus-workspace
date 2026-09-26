@@ -500,7 +500,11 @@ or team) and server shutdown close the process, which stops its background
 tasks. An unexpected exit fails the active turn with a turn-terminal `ERROR`
 carrying stderr diagnostics, and the next input reopens the session with
 `resume`. Claude CLI defaults apply: AutoByteus sets no background-task or Bash
-timeout environment variables. The intrinsic Agent Tools MCP descriptor alone
+timeout environment variables. An operator's own environment still passes through
+unchanged. If the server environment sets `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`,
+Claude agents cannot run background commands, and a warning is logged at each
+process open. Unset it (and any `BASH_*_TIMEOUT_MS` you did not intend) to get
+the CLI defaults. The intrinsic Agent Tools MCP descriptor alone
 is marked `alwaysLoad: true` so required Team tools are ready on the first
 turn. Tool exposure, the MCP descriptor, system-prompt capture, and the
 selected-model binding are resolved once per process open.

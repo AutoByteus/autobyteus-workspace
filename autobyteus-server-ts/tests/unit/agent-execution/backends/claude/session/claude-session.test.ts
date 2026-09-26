@@ -820,6 +820,75 @@ describe("ClaudeSession token usage", () => {
     });
   });
 
+  const usageFrame = (answers: string[], extra: Record<string, unknown> = {}) => ({
+    type: "result", subtype: "success", session_id: RESTORED_SESSION_ID, user_message_uuids: answers,
+    usage: { input_tokens: 3, output_tokens: 4, cache_read_input_tokens: 0, cache_creation_input_tokens: 0 },
+    modelUsage: { "claude-haiku-4-5": { inputTokens: 3, outputTokens: 4, cacheReadInputTokens: 0, cacheCreationInputTokens: 0 } },
+    ...extra,
+  });
+  const usageEvents = (events: RecordedEvent[]) =>
+    events.filter((event) => event.method === ClaudeSessionEventName.TOKEN_USAGE_UPDATED);
+
+  it("marks only the first usage observation of a resume-opened process as a series restart (SR-012)", async () => {
+    const { sdkClient, start, events } = createSession({ sessionId: RESTORED_SESSION_ID });
+    await start("first after restore");
+    const fake = sdkClient.current;
+    fake.init();
+    fake.emit(usageFrame([fake.sent[0]!.uuid], { uuid: "res-1" }));
+    await flushClaudeSession();
+    await start("second");
+    fake.init();
+    fake.emit(usageFrame([fake.sent[1]!.uuid], { uuid: "res-2" }));
+    await flushClaudeSession();
+
+    expect(usageEvents(events).map((event) => event.params?.claude_sdk_series_restart)).toEqual([true, undefined]);
+  });
+
+  it("carries the series-restart mark past a dropped zeroed first result to the next emitted observation (IC-5)", async () => {
+    const { sdkClient, start, events } = createSession({ sessionId: RESTORED_SESSION_ID });
+    await start("first after restore");
+    const fake = sdkClient.current;
+    fake.init();
+    fake.emit({
+      type: "result", subtype: "error_during_execution", session_id: RESTORED_SESSION_ID, is_error: true,
+      user_message_uuids: [fake.sent[0]!.uuid],
+      modelUsage: { "claude-haiku-4-5": { inputTokens: 0, outputTokens: 0, cacheReadInputTokens: 0, cacheCreationInputTokens: 0 } },
+    });
+    await flushClaudeSession();
+    expect(usageEvents(events)).toHaveLength(0);
+
+    await start("retry");
+    fake.init();
+    fake.emit(usageFrame([fake.sent[1]!.uuid], { uuid: "res-2" }));
+    await flushClaudeSession();
+    await start("third");
+    fake.init();
+    fake.emit(usageFrame([fake.sent[2]!.uuid], { uuid: "res-3" }));
+    await flushClaudeSession();
+
+    expect(usageEvents(events).map((event) => event.params?.claude_sdk_series_restart)).toEqual([true, undefined]);
+  });
+
+  it("marks the first observation after a reopen following an unexpected exit, but never a create generation", async () => {
+    const { sdkClient, start, events } = createSession();
+    await start("create generation");
+    const first = sdkClient.current;
+    first.init();
+    first.emit({ ...usageFrame([first.sent[0]!.uuid], { uuid: "c-1" }), session_id: RESERVED_SESSION_ID });
+    await flushClaudeSession();
+    first.fail(new Error("Claude Code process terminated by signal SIGKILL"));
+    await flushClaudeSession();
+
+    await start("after crash");
+    const second = sdkClient.current;
+    second.init();
+    second.emit({ ...usageFrame([second.sent[0]!.uuid], { uuid: "r-1" }), session_id: RESERVED_SESSION_ID });
+    await flushClaudeSession();
+
+    expect(usageEvents(events).map((event) => [event.params?.claude_sdk_query_kind, event.params?.claude_sdk_series_restart]))
+      .toEqual([["create", undefined], ["resume", true]]);
+  });
+
   it("does not forward zeroed crash-result usage that would reset the cumulative baseline (RSK-007)", async () => {
     const { sdkClient, start, events } = createSession();
     await start("crash");

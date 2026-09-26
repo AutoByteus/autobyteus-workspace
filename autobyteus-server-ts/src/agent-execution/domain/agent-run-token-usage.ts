@@ -99,6 +99,8 @@ export interface TokenUsageUpdatedPayload {
   claude_sdk_session_id?: string | null;
   claude_sdk_query_kind?: ClaudeSdkQueryKind | null;
   claude_sdk_main_loop_usage?: ClaudeSdkMainLoopUsage | null;
+  /** First emitted observation of a Claude process generation opened with `resume` (SR-012). */
+  claude_sdk_series_restart?: true;
   ingestion_kind: TokenUsageIngestionKind;
   usage_scope: TokenUsageScope;
   snapshot_series_key: string | null;
@@ -326,6 +328,7 @@ export const createTokenUsageUpdatedPayload = (input: {
     claude_sdk_query_kind: isSdk && (source.claude_sdk_query_kind === "create" || source.claude_sdk_query_kind === "resume")
       ? source.claude_sdk_query_kind : isSdk ? "unknown" : null,
     claude_sdk_main_loop_usage: isSdk && sdkIdentityValid ? source.claude_sdk_main_loop_usage as ClaudeSdkMainLoopUsage : null,
+    ...(isSdk && source.claude_sdk_series_restart === true ? { claude_sdk_series_restart: true as const } : {}),
     ingestion_kind: ingestionKind,
     usage_scope: usageScope,
     snapshot_series_key: asString(source.snapshot_series_key),

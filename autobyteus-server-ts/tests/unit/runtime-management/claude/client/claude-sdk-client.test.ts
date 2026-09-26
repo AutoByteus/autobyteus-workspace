@@ -137,6 +137,26 @@ describe("ClaudeSdkClient", () => {
     expect((queryFn.mock.calls[0]?.[0] as { options: { env: unknown } }).options.env).toEqual(env);
   });
 
+  it("warns once per open when the operator's environment disables CLI background tasks, without overriding it (OBS-2)", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const queryFn = vi.fn(async () => createMockQuery());
+      const client = new ClaudeSdkClient(vi.fn());
+      client.setCachedModuleForTesting({ query: queryFn });
+      const env = { CLAUDE_AGENT_SDK_AUTH_MODE: "cli", CLAUDE_CODE_DISABLE_BACKGROUND_TASKS: "1" };
+
+      await client.openStreamingSession({ ...baseOptions(), env });
+      await client.openStreamingSession({ ...baseOptions(), env: { CLAUDE_AGENT_SDK_AUTH_MODE: "cli" } });
+
+      const warnings = warn.mock.calls.filter((call) => String(call[0]).includes("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS"));
+      expect(warnings).toHaveLength(1);
+      expect((queryFn.mock.calls[0]?.[0] as { options: { env: Record<string, string> } }).options.env)
+        .toEqual(env);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
   it("resolves explicit api-key once immediately before launch and changes only ANTHROPIC_API_KEY", async () => {
     const resolveApiKey = vi.fn(async () => SecretValue.fromString("synthetic-vault-key"));
     const queryFn = vi.fn(async () => createMockQuery());

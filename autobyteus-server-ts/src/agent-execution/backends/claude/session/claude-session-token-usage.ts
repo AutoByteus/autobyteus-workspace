@@ -102,6 +102,7 @@ export const buildClaudeTokenUsageEvent = (input: {
   };
 };
 
+/** Emits the usage observation for `chunk`; returns whether an event was emitted (IC-5). */
 export const emitClaudeTokenUsageEvent = (
   chunk: unknown,
   runId: string,
@@ -111,7 +112,10 @@ export const emitClaudeTokenUsageEvent = (
   queryKind: ClaudeSdkQueryKind,
   selectedBinding: ClaudeSdkSelectedBinding,
   emitEvent: (event: ClaudeSessionEvent) => void,
-): void => {
+  seriesRestart = false,
+): boolean => {
   const event = buildClaudeTokenUsageEvent({ chunk, runId, turnId, sessionId, model, queryKind, selectedBinding });
-  if (event) emitEvent(event);
+  if (!event) return false;
+  emitEvent(seriesRestart ? { ...event, params: { ...event.params, claude_sdk_series_restart: true } } : event);
+  return true;
 };

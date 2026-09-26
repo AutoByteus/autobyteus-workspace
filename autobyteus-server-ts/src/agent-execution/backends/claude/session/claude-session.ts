@@ -53,6 +53,12 @@ type ClaudeOpenProcessState = {
   queryKind: ClaudeSdkQueryKind;
   selectedBinding: Promise<ClaudeSdkSelectedBinding>;
   capabilitiesChecked: boolean;
+  /**
+   * A `resume`-opened process restarts cumulative `modelUsage` from an unknown origin, so its
+   * first emitted usage observation is marked as a series restart (SR-012). The mark is
+   * consumed only when an event is actually emitted (IC-5).
+   */
+  seriesRestartPending: boolean;
 };
 
 const INTERRUPT_APPROVAL_REASON = "Tool approval interrupted.";
@@ -370,6 +376,7 @@ export class ClaudeSession {
       selectedBinding: bindClaudeSelectedModel.resolve(opened.session, this.model)
         .catch(() => bindClaudeSelectedModel.initial(this.model)),
       capabilitiesChecked: false,
+      seriesRestartPending: opened.binding.kind === "resume",
     };
   }
 
@@ -418,11 +425,14 @@ export class ClaudeSession {
       turnContent: (turnId, frame) => this.projectTurnFrame(turnId, frame),
       turnResult: (turnId, frame, isErrorResult) => {
         if (!isErrorResult) this.projectTurnFrame(turnId, frame);
-        emitClaudeTokenUsageEvent(
+        const openProcess = this.openProcess;
+        const emitted = emitClaudeTokenUsageEvent(
           frame, this.runId, turnId, this.sessionId, this.model,
-          this.openProcess?.queryKind ?? "unknown", this.selectedBinding,
+          openProcess?.queryKind ?? "unknown", this.selectedBinding,
           (event) => this.emitRuntimeEvent(event),
+          openProcess?.seriesRestartPending ?? false,
         );
+        if (emitted && openProcess) openProcess.seriesRestartPending = false;
       },
       turnSettled: (turnId, settlement) => this.handleTurnSettled(turnId, settlement),
       anomaly: (frameKind, reason) => {

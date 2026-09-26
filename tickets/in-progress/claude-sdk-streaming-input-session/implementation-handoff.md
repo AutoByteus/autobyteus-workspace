@@ -1,6 +1,6 @@
 # Implementation Handoff — claude-sdk-streaming-input-session
 
-Status: **CR-001 Local Fix applied (IR-003)**. Ready for focused code re-review (Large / High).
+Status: **SR-012 implemented (IR-004)**. Ready for code review (Large / High).
 
 ## Upstream Artifact Package
 
@@ -27,7 +27,7 @@ Claude runs now use one long-lived Claude CLI process per AgentRun in SDK stream
 
 - Implementation cycle: `Rework` (IR-003: CRR-001 Local Fix CR-001; a requeued append clears the targeted turn's `pendingTerminal`/`observedTurnId`)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/claude-sdk-streaming-input-session/tickets/in-progress/claude-sdk-streaming-input-session/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003`
+- Current implementation revision ID: `IR-004` (SR-012 usage accounting across process generations, IC-5, OBS-2; see the revision record)
 - Related revision IDs: SR-011; ARCH-REV-004; CRR-001. API-REV and DR are N/A.
 - Triggering finding IDs: CR-001 (fixed); IMP-DI-001 (resolved by design); IC-1..IC-4 (implemented)
 

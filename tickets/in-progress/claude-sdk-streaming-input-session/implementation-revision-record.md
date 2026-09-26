@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-001 | architecture_reviewer / `design-review-report.md` (ARCH-REV-003 Pass) / initial | IC-1, IC-2 (binding constraints) | `Design Impact` | SR-009; ARCH-REV-003; CRR N/A; API-REV N/A; DR N/A | Implementation largely built and checked; halted on escalation trigger IMP-DI-001 (AgentRun FIFO head-of-line blocks append) |
 | IR-002 | architecture_reviewer / `design-review-report.md` (ARCH-REV-004 Pass) / round 4 resume | IMP-DI-001; IC-1..IC-4 | `Initial Baseline` (completion after Design Impact) | SR-011; ARCH-REV-004; CRR N/A; API-REV N/A; DR N/A | Implementation complete; ready for code review |
 | IR-003 | code_reviewer / `code-review-report.md` (CRR-001 Fail) / round 1 | CR-001 | `Local Fix` | SR-011; ARCH-REV-004; CRR-001; API-REV N/A; DR N/A | Fixed; ready for focused re-review |
+| IR-004 | architecture_reviewer / `design-review-report.md` (ARCH-REV-005 Pass) / round 5 | CR-002, API-F-001, OBS-2, IC-5 | `Design Impact` resolution (SR-012) | SR-012; ARCH-REV-005; CRR-003; API-REV-001; DR N/A | Implemented; ready for code review |
 
 ## Revision Entries
 
@@ -95,3 +96,33 @@ The current code and `implementation-handoff.md` remain authoritative.
   - `tsc` build config: pass.
 - Next recipient or routing: `/code_reviewer` (focused re-review of CR-001)
 - Remaining limitations or risks: unchanged from IR-002
+
+### IR-004 — SR-012 usage accounting across process generations; IC-5; OBS-2
+
+- Triggering role, report path, and round: architecture_reviewer, `design-review-report.md` round 5 (ARCH-REV-005 Pass). Evidence: `code-review-report.md` (CR-002, CRR-003) and `api-e2e-execution-coverage-report.md` (API-F-001, OBS-2).
+- Triggering finding IDs: CR-002 / API-F-001 / RSK-007 (a crash reopen restarts cumulative `modelUsage`, so one turn was lost or silently under-counted); OBS-2; IC-5
+- Classification: implementation of the revised design SR-012
+- Prior authoritative result: IR-003 (a resume-opened generation's first result was differenced against the previous generation's checkpoint)
+- Current authoritative result: the first emitted observation of every resume-opened generation carries `claude_sdk_series_restart`. The reconciler admits the per-turn main-loop usage for it and re-anchors the checkpoints; all other observations are unchanged.
+- Related revision IDs: SR-012; ARCH-REV-005; CRR-003; API-REV-001. DR is N/A.
+- Why this revision is recorded: resume after the round-5 design revision
+- Approved behavior or requirement IDs affected: REQ-010 (token accounting preserved), REQ-008, REQ-009 (OBS-2, no override)
+- Implementation delta:
+  - `claude-session.ts`: `seriesRestartPending = binding.kind === "resume"` per process open, consumed only when a usage event is actually emitted (IC-5).
+  - `claude-session-token-usage.ts`: `emitClaudeTokenUsageEvent` returns whether it emitted and adds `claude_sdk_series_restart: true` when asked.
+  - `agent-run-token-usage.ts`: optional `claude_sdk_series_restart?: true`, preserved for SDK observations.
+  - `claude-sdk-model-usage-reconciler.ts`: no regression check for a series restart; the selected delta is the main-loop counts (flag `claude_sdk_series_restart_main_loop_delta`); missing main-loop → partial with flag `claude_sdk_series_restart_main_loop_unavailable`; all rows re-anchored.
+  - `claude-sdk-client.ts`: warns once per `openStreamingSession` when the spawn env sets `CLAUDE_CODE_DISABLE_BACKGROUND_TASKS`, without overriding it (OBS-2).
+  - Docs: `token_usage.md` (the clean-exit correction and the series-restart rule) and `agent_execution.md` (operator env note).
+- Changed files or areas: the files above plus these tests:
+  - new `tests/unit/token-usage/projections/claude-sdk-usage-series-restart.test.ts`: origin 0, a restore-time origin above the checkpoint, clean restore, same-process, missing main-loop usage;
+  - `claude-session.test.ts`: first-only marker, IC-5 zeroed first result dropped then the next result carries the marker, and reopen-after-exit vs create;
+  - `claude-sdk-client.test.ts`: OBS-2 warning.
+- Local validation and result:
+  - The reconciler restart tests fail on the old rule (3 of 5; clean restore and same-process are expected to be equal either way).
+  - The IC-5 test fails when the marker is consumed on the raw result.
+  - `tsc` build config: pass.
+  - Changed-area regression: only the 5 pre-existing base-failing files fail (15 tests).
+  - **Live `-t "RSK-007"`: 2/2 on PATH `claude` and the SDK-bundled CLI.** The post-crash turn is counted (13,727 / 13,706, flag `claude_sdk_series_restart_main_loop_delta`, not regressed), and the next same-process turn differences exactly (13,800 / 13,784).
+- Next recipient or routing: `/code_reviewer`
+- Remaining limitations or risks: the first observation of each resume-opened generation is an approximated, flagged main-loop delta (it excludes auxiliary selected-model calls within that turn). The API/E2E engineer's uncommitted durable test changes were left untouched in the worktree.

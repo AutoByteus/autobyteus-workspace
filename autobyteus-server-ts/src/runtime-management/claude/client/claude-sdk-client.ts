@@ -7,6 +7,7 @@ import {
   asObject,
   asString,
   CLAUDE_AGENT_SDK_MODULE_NAME,
+  logger,
   MODEL_DISCOVERY_PROBE_PROMPT,
   type ClaudeSdkPermissionMode,
 } from "../../../agent-execution/backends/claude/claude-runtime-shared.js";
@@ -281,6 +282,13 @@ export class ClaudeSdkClient {
     }
 
     const spawnEnvironment = await this.resolveSpawnEnvironment(options.env);
+    if (asString(spawnEnvironment.CLAUDE_CODE_DISABLE_BACKGROUND_TASKS)) {
+      // OBS-2: AutoByteus sets no CLI policy env, but an operator's own value passes through.
+      logger.warn(
+        "Claude CLI background tasks are disabled by the inherited CLAUDE_CODE_DISABLE_BACKGROUND_TASKS " +
+          "environment variable; unset it to let agents run background commands.",
+      );
+    }
     const queryOptions = this.buildQueryOptions(options, spawnEnvironment);
     const input = new ClaudeSdkInputChannel();
     const query = await this.createSdkQuery(options.workingDirectory, () =>
