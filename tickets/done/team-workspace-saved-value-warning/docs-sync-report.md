@@ -53,3 +53,8 @@ The durable web behavior/architecture guides described fixed existing-run worksp
 ## Post-acceptance finalization check
 - The user explicitly accepted the browser result and requested ticket finalization without a new release on 2026-09-26. A fresh `git fetch origin personal` still found `origin/personal@6f00cda64b75ca0097fbc08d862596f90e0e0ad8`; no re-integration or renewed verification was needed.
 - Archiving the ticket and declining a release do not change the two long-lived web behavior/architecture docs. Their DR-001 sync remains accurate.
+
+## Final branch-only delivery check
+- Archived ticket commit `1294927da89b403182d580f1a6844daf38c09f8c` and target merge/push `3421f1e0db586a0297d3052d81ef7517368145b4` contain both synchronized long-lived web docs. The merge tree equals the ticket commit tree, so no later integration changed behavior or docs.
+- User-directed release status: `Not required`. No version, tag, publication, deployment or rollout documentation update is necessary. The draft release notes were withdrawn.
+- Result: `Pass — terminal docs sync`. Durable report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-workspace-saved-value-warning/docs-sync-report.md`.
