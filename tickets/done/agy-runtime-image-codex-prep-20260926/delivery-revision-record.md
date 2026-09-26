@@ -10,6 +10,7 @@
 | DR-005 | Explicit user test acceptance; repository-only finalization | DR-004 retest hold | Server target pushed; package PR #14 review hold | `handoff-summary.md`, `release-deployment-report.md`, `delivery-final-reintegration-test.log` |
 | DR-006 | Finalization gate audit and blocked handoff classification | DR-005 package PR review hold | Server tip confirmed; package PR #14 still requires independent review; blocked reroute | `handoff-summary.md`, `release-deployment-report.md` |
 | DR-007 | User rejects cross-project package change and requests PR removal | DR-006 protected-package review hold | PR #14 closed unmerged; remote package task branch deleted; server-only scope reconciliation pending | `handoff-summary.md`, `release-deployment-report.md` |
+| DR-008 | User reaffirms current-project-only finalization | DR-007 scope reconciliation hold | Server remote task branch safely deleted after merged-ancestor check; authority reconciliation pending | `handoff-summary.md`, `release-deployment-report.md` |
 
 ## Revision Entries
 ### DR-001 — Initial integrated delivery baseline
@@ -86,3 +87,10 @@
 - Test-evidence caveat: API-REV-002/004 and the manual launcher selected local package revision `a140474` for the Codex workflow-skill first-turn scenario. That local package worktree/branch remains temporarily to preserve the evidence; it is not an authorized cross-project finalization target. Native image and server-focused test results are not automatically invalidated, but the Codex-skill claim cannot be promoted as ambient-package behavior.
 - Classification: **Blocked — user requirement/scope correction**. Ask Solution Designer to reconcile the approved requirements/design and criterion disposition; do not silently reinterpret the earlier approval or reopen PR #14. Server-only finalization may be terminal only after that reconciliation and safe cleanup disposition.
 - No version bump, tag, release, publication or deployment requested or performed. The unrelated dirty primary package checkout and the separate installed app were not touched.
+
+### DR-008 — Current-project repository cleanup and scope audit
+- Trigger: user reaffirmed “finalize the current project” and confirmed the other-project PR was outside the ticket and should remain removed.
+- Prior authoritative result: DR-007 PR closed unmerged, package remote task branch deleted, server target merged/pushed, scope reconciliation pending.
+- Current result: confirmed `b5574da79378c4bd6c9ee4b4ec69a9ee72f54357` is an ancestor of `origin/personal@81278176156048dcfbb722936c6a46e3b92eb049`; deleted remote server task branch and verified only `personal` remained among the queried refs. The tested local Electron App and its worktree remain intact. No source or test changes, version bump, tag, release, publication or deployment.
+- Package status: PR #14 remains closed unmerged; remote package task branch absent; `autobyteus-agents/main@1b1a75e` unchanged. Local package worktree is historical test provenance, not a finalization target.
+- Classification: **Blocked — scope/acceptance authority reconciliation**, not repository push/PR approval. Solution Designer has been asked to reconcile the historical bundled-skill requirement/design and tests that selected local package `a140474` against the user's current-project-only direction. Do not claim ambient Codex package success or send terminal `Delivery Completed` until that correction is authoritative.

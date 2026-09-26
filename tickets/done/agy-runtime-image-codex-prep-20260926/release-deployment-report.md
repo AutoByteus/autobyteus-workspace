@@ -1,13 +1,13 @@
-# Delivery / Release / Deployment Report — DR-007 user scope correction / PR withdrawal
+# Delivery / Release / Deployment Report — DR-008 server-only finalization audit
 
 ## Release / Publication / Deployment Scope
 - Ticket: `agy-runtime-image-codex-prep-20260926`; `task_size=Medium`, `architectural_risk=High`, reviewed route (ARCH-REV-008, CRR-005 source, CRR-007 test, API-REV-004 Pass/95.0%; CRR-008 test-code review Not Applicable because no durable test changed).
 - Server finalization target: `origin/personal` from `solution-result.md` bootstrap. Prior requirements/design/handoff also named separate `autobyteus-agents` package target `origin/main`; the user now explicitly rejects that cross-project change as out of this ticket's scope. Solution Designer owns reconciliation of that scope correction and its effect on the Codex-skill acceptance claim.
-- Status: **User verified; server repository finalized; package PR #14 closed unmerged and its remote task branch deleted at the user's request.** Full terminal scope/evidence reconciliation remains pending; this is not yet `Delivery Completed`.
+- Status: **User verified; server repository finalized; package PR #14 closed unmerged and its remote task branch deleted at the user's request.** The user reaffirmed server-only finalization and exclusion of the other project. The merged server task commit was verified as an ancestor of `origin/personal`, then its remote task branch was deleted. Full terminal scope/evidence reconciliation remains pending with Solution Designer; this is not yet `Delivery Completed`.
 
 ## Handoff Summary
 - Artifact: `handoff-summary.md`; status Updated for user verification.
-- Revision record: `delivery-revision-record.md`; current ID DR-007.
+- Revision record: `delivery-revision-record.md`; current ID DR-008.
 
 ## Initial Delivery Integration Refresh
 - Bootstrap server base: `origin/personal@ae3aba1bf`; fetched latest `origin/personal@fc2a60527` (advanced: Yes).
@@ -46,7 +46,7 @@
 - Release notes handoff: Not required; draft withdrawn. Result: Not required.
 
 ## Post-Finalization Cleanup
-- Dedicated server and package task worktrees/local branches remain. Server worktree retains the user-tested unsigned Electron App; the local package worktree is historical test evidence and is still named by the isolated manual launcher. Removing it before the scope/test-dependency audit could erase the provenance of the user-tested configuration. Both temporary detached merge worktrees were removed and worktrees pruned. The package remote task branch was deleted; package `main` is unchanged. Remote server task branch cleanup waits for truthful server-only terminal classification.
+- Dedicated server and package task worktrees/local branches remain. Server worktree retains the user-tested unsigned Electron App; the local package worktree is historical test evidence and is still named by the isolated manual launcher. Removing either before the scope/test-dependency audit could erase the provenance of the user-tested configuration or the App itself. Both temporary detached merge worktrees were removed and worktrees pruned. Both remote task branches were deleted after verification; package `main` is unchanged. Local worktree/branch retention is intentional until the user no longer needs the App and test provenance.
 
 ## Environment / Persisted-Data Transition
 - Approved design: Directly Usable — No Migration. New grant applies to new capsules; old capsules remain immutable. No app-owned image index/files to migrate, delete, or recover. Provider-owned image storage remains provider-owned.
@@ -58,5 +58,5 @@
 - Rollback criterion: if installed CLI differs from 1.2.11, selected Codex package source is stale/missing, native image cards are uncorrelated/unsafe, or a provider failure leaks private output, stop rollout. Revert target commits or deploy prior known-good release as appropriate; do not rewrite old capsules or delete AGY-owned images.
 
 ## Final Status
-- Explicit user verification: Yes — final acceptance after DR-004 rebuild. Repository finalization: Server target completed; package PR closed unmerged/remote branch deleted at user request. Applicable release/rollout: Not required. Safe cleanup: Server worktree retains tested App; local package worktree temporarily retains test provenance; detached worktrees removed. The separate installed app and unrelated package checkout remain untouched. Terminal package eligible: **No**, pending scope/evidence reconciliation.
+- Explicit user verification: Yes — final acceptance after DR-004 rebuild and renewed server-only direction. Repository finalization: Server target completed and remote task branch deleted; package PR closed unmerged/remote branch deleted at user request. Applicable release/rollout: Not required. Safe cleanup: local worktrees intentionally retain tested App and provenance; detached worktrees removed. The separate installed app and unrelated package checkout remain untouched. Terminal package eligible: **No**, pending scope/evidence reconciliation.
 - Classification: **Blocked — user requirement/scope correction**. Recommended recipient under the handoff rules: `/solution_designer`, to reconcile the approved requirements/design and Codex-skill acceptance evidence with the user's explicit exclusion of the other repository. Do not bypass the user's scope decision, reopen PR #14, or claim full terminal completion merely because the server merge is already pushed.
