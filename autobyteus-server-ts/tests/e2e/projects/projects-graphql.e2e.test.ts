@@ -12,6 +12,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectServiceForTests } from "../../../src/projects/services/project-service.js";
 import { resetProjectsCapabilityServiceForTests } from "../../../src/projects/services/projects-capability-service.js";
+import { resetProjectTaskServiceForTests } from "../../../src/projects/services/project-task-service.js";
 import { getServerSettingsService } from "../../../src/services/server-settings-service.js";
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 
@@ -43,13 +44,38 @@ const resetWorkspaceRegistryForTest = () => {
 const resetProjectsSingletons = () => {
   resetProjectStoreForTests();
   resetProjectServiceForTests();
+  resetProjectTaskServiceForTests();
   resetProjectsCapabilityServiceForTests();
+};
+
+// A fresh node must not inherit feature flags from the developer's shell (e.g. ENABLE_PROJECTS=true):
+// process.env overrides settings, which would make capability assertions depend on the machine.
+const stashFeatureFlagEnv = (): Record<string, string> => {
+  const stashed: Record<string, string> = {};
+  for (const key of Object.keys(process.env)) {
+    if (key.startsWith("ENABLE_")) {
+      stashed[key] = process.env[key] as string;
+      delete process.env[key];
+    }
+  }
+  return stashed;
 };
 
 const PROJECT_FIELDS = `
   projectId name description createdAt updatedAt
   workspaces { workspaceId workspaceRootPath displayName description addedAt availability }
+  openTaskCount
 `;
+const TASK_FIELDS = "taskId projectId description status createdAt updatedAt";
+
+type TaskResult = {
+  taskId: string;
+  projectId: string;
+  description: string;
+  status: "TODO" | "IN_PROGRESS" | "DONE";
+  createdAt: string;
+  updatedAt: string;
+};
 
 type ProjectWorkspaceResult = {
   workspaceId: string;
@@ -67,6 +93,7 @@ type ProjectResult = {
   createdAt: string;
   updatedAt: string;
   workspaces: ProjectWorkspaceResult[];
+  openTaskCount: number;
 };
 
 type Capability = { enabled: boolean; settingKey: string; source: string };
@@ -78,6 +105,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
   let rootsDir: string;
   let initialActiveWorkspaceIds: Set<string>;
   let originalTempWorkspaceDir: string | undefined;
+  let stashedFeatureFlagEnv: Record<string, string>;
 
   beforeAll(async () => {
     schema = await buildGraphqlSchema();
@@ -88,6 +116,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
   });
 
   beforeEach(() => {
+    stashedFeatureFlagEnv = stashFeatureFlagEnv();
     appConfigProvider.resetForTests();
     appDataDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-projects-e2e-"));
     rootsDir = path.join(appDataDir, "roots");
@@ -129,6 +158,10 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
       process.env.AUTOBYTEUS_TEMP_WORKSPACE_DIR = originalTempWorkspaceDir;
     }
     fs.rmSync(appDataDir, { recursive: true, force: true });
+    for (const key of Object.keys(process.env)) {
+      if (key.startsWith("ENABLE_")) delete process.env[key];
+    }
+    Object.assign(process.env, stashedFeatureFlagEnv);
   }, 20000);
 
   const exec = async (source: string, variableValues?: Record<string, unknown>) =>
@@ -182,6 +215,18 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
   const addLink = async (projectId: string, workspaceId: string, description?: string) =>
     (await execOk<{ addProjectWorkspace: ProjectResult }>(ADD_LINK, { input: { projectId, workspaceId, description } }))
       .addProjectWorkspace;
+
+  const createTask = async (projectId: string, description: string) =>
+    (await execOk<{ createProjectTask: TaskResult }>(
+      `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${TASK_FIELDS} } }`,
+      { input: { projectId, description } },
+    )).createProjectTask;
+
+  const listTasks = async (projectId: string) =>
+    (await execOk<{ projectTasks: TaskResult[] }>(
+      `query($projectId: String!) { projectTasks(projectId: $projectId) { ${TASK_FIELDS} } }`,
+      { projectId },
+    )).projectTasks;
 
   const readWorkspacesJson = () => fs.readFileSync(path.join(appDataDir, "workspaces.json"), "utf-8");
   const readProjectsJson = () =>
@@ -364,6 +409,7 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
     const prototype = await registerWorkspace("autobyteus-web-prototype");
     const project = await createProject("autobyteus", "AutoByteus product");
     await addLink(project.projectId, prototype.workspaceId, "UI prototype workspace");
+    const task = await createTask(project.projectId, "Write release notes for 1.4.87\nInclude Projects and Tasks");
     await execOk(`mutation { setProjectsEnabled(enabled: true) { enabled } }`);
     const persistedBefore = fs.readFileSync(path.join(appDataDir, "projects", "projects.json"), "utf-8");
 
@@ -382,8 +428,134 @@ describe("Projects GraphQL e2e (un-mocked)", () => {
         name: "autobyteus",
         description: "AutoByteus product",
         workspaces: [expect.objectContaining({ workspaceId: prototype.workspaceId, availability: "AVAILABLE" })],
+        openTaskCount: 1,
       }),
     ]);
+    expect(await listTasks(project.projectId)).toEqual([task]);
     expect(fs.readFileSync(path.join(appDataDir, "projects", "projects.json"), "utf-8")).toBe(persistedBefore);
+  });
+  it("API-007: creates, lists, edits and deletes Tasks through the real store without touching the Project or offering a status mutation", async () => {
+    const CREATE = `mutation($input: CreateProjectTaskInput!) { createProjectTask(input: $input) { ${TASK_FIELDS} } }`;
+    const UPDATE = `mutation($input: UpdateProjectTaskInput!) { updateProjectTask(input: $input) { ${TASK_FIELDS} } }`;
+    const DELETE = `mutation($input: DeleteProjectTaskInput!) { deleteProjectTask(input: $input) }`;
+    const project = await createProject("autobyteus", "AutoByteus product");
+    const other = await createProject("brand");
+    expect(project.openTaskCount).toBe(0);
+    expect(await listTasks(project.projectId)).toEqual([]);
+
+    const first = await createTask(project.projectId, "  Write release notes for 1.4.87\nInclude Projects and Tasks  ");
+    expect(first).toMatchObject({
+      projectId: project.projectId,
+      description: "Write release notes for 1.4.87\nInclude Projects and Tasks",
+      status: "TODO",
+    });
+    expect(first.taskId).toMatch(/^project_task_/);
+    const second = await createTask(project.projectId, "Fix the release pipeline");
+    const third = await createTask(project.projectId, "Plan the Tasks admission work");
+
+    await expectErrorCode(CREATE, { input: { projectId: project.projectId, description: " \n  " } }, "TASK_DESCRIPTION_REQUIRED");
+    await expectErrorCode(CREATE, { input: { projectId: "project_missing", description: "x" } }, "PROJECT_NOT_FOUND");
+    const missingList = await exec(`query { projectTasks(projectId: "project_missing") { taskId } }`);
+    expect(missingList.errors?.[0]?.extensions?.code).toBe("PROJECT_NOT_FOUND");
+
+    expect((await listTasks(project.projectId)).map((task) => task.taskId)).toEqual([third.taskId, second.taskId, first.taskId]);
+    expect(await listTasks(other.projectId)).toEqual([]);
+
+    // Editing moves the Task to the top (most recently updated first) and changes only the description.
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    const edited = (await execOk<{ updateProjectTask: TaskResult }>(UPDATE, {
+      input: { projectId: project.projectId, taskId: first.taskId, description: "Write release notes for 1.4.87 and 1.4.88" },
+    })).updateProjectTask;
+    expect(edited).toMatchObject({ taskId: first.taskId, status: "TODO", createdAt: first.createdAt });
+    expect(Date.parse(edited.updatedAt)).toBeGreaterThan(Date.parse(first.updatedAt));
+    expect((await listTasks(project.projectId))[0]?.taskId).toBe(first.taskId);
+    await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: first.taskId, description: "   " } }, "TASK_DESCRIPTION_REQUIRED");
+    await expectErrorCode(UPDATE, { input: { projectId: project.projectId, taskId: "project_task_missing", description: "x" } }, "TASK_NOT_FOUND");
+
+    // Task writes never touch the Project's own fields or updatedAt; the view exposes the open count only.
+    const projectAfterTasks = await getProject(project.projectId);
+    expect(projectAfterTasks).toMatchObject({
+      name: "autobyteus", description: "AutoByteus product", updatedAt: project.updatedAt, openTaskCount: 3,
+    });
+
+    expect((await execOk<{ deleteProjectTask: boolean }>(DELETE, { input: { projectId: project.projectId, taskId: second.taskId } })).deleteProjectTask).toBe(true);
+    expect((await execOk<{ deleteProjectTask: boolean }>(DELETE, { input: { projectId: project.projectId, taskId: second.taskId } })).deleteProjectTask).toBe(false);
+    await expectErrorCode(DELETE, { input: { projectId: "project_missing", taskId: second.taskId } }, "PROJECT_NOT_FOUND");
+    expect((await getProject(project.projectId))?.openTaskCount).toBe(2);
+    expect((await listProjects()).find((item) => item.projectId === other.projectId)?.openTaskCount).toBe(0);
+
+    // REQ-003: there is no status-changing operation, and Task types never reuse delegated-task names.
+    const mutationFields = Object.keys(schema.getMutationType()?.getFields() ?? {});
+    expect(mutationFields.filter((name) => /projecttask/i.test(name)).sort()).toEqual(
+      ["createProjectTask", "deleteProjectTask", "updateProjectTask"],
+    );
+    const updateInputFields = Object.keys((schema.getType("UpdateProjectTaskInput") as { getFields(): Record<string, unknown> }).getFields());
+    expect(updateInputFields.sort()).toEqual(["description", "projectId", "taskId"]);
+    expect(schema.getType("Task")).toBeUndefined();
+    expect(schema.getType("TaskStatus")).toBeUndefined();
+  });
+
+  it("API-008: deleting a Project removes its Tasks atomically and leaves other Projects and workspaces.json unchanged", async () => {
+    const prototype = await registerWorkspace("autobyteus-web-prototype");
+    const doomed = await createProject("autobyteus");
+    const kept = await createProject("brand");
+    await addLink(doomed.projectId, prototype.workspaceId, "UI");
+    for (let index = 1; index <= 5; index += 1) {
+      await createTask(doomed.projectId, `Doomed task ${index}`);
+    }
+    const keptTask = await createTask(kept.projectId, "Brand refresh");
+    expect((await getProject(doomed.projectId))?.openTaskCount).toBe(5);
+    const workspacesBefore = readWorkspacesJson();
+
+    expect((await execOk<{ deleteProject: boolean }>(
+      `mutation($projectId: String!) { deleteProject(projectId: $projectId) }`, { projectId: doomed.projectId },
+    )).deleteProject).toBe(true);
+
+    const persisted = readProjectsJson() as Array<{ projectId: string; tasks?: Array<{ taskId: string }> }>;
+    expect(persisted.map((row) => row.projectId)).toEqual([kept.projectId]);
+    expect(JSON.stringify(persisted)).not.toContain("Doomed task");
+    expect(persisted[0]?.tasks?.map((task) => task.taskId)).toEqual([keptTask.taskId]);
+    const missing = await exec(`query($projectId: String!) { projectTasks(projectId: $projectId) { taskId } }`, { projectId: doomed.projectId });
+    expect(missing.errors?.[0]?.extensions?.code).toBe("PROJECT_NOT_FOUND");
+    expect(readWorkspacesJson()).toBe(workspacesBefore);
+  });
+
+  it("API-009: a released v1.4.86 projects.json is read intact without a rewrite, and the first Task write keeps every released field", async () => {
+    const prototype = await registerWorkspace("autobyteus-web-prototype");
+    const releasedRow = {
+      projectId: "project_3f0c9a52-1b7e-4d1e-9d4f-0a6b2c1d7e11",
+      name: "autobyteus",
+      description: "AutoByteus product",
+      createdAt: "2026-09-20T08:00:00.000Z",
+      updatedAt: "2026-09-21T09:30:00.000Z",
+      workspaces: [{
+        workspaceId: prototype.workspaceId,
+        workspaceRootPath: prototype.workspaceRootPath,
+        description: "UI prototype workspace",
+        addedAt: "2026-09-21T09:30:00.000Z",
+      }],
+    };
+    const filePath = path.join(appDataDir, "projects", "projects.json");
+    fs.mkdirSync(path.dirname(filePath), { recursive: true });
+    const releasedContent = `${JSON.stringify([releasedRow], null, 2)}\n`;
+    fs.writeFileSync(filePath, releasedContent, "utf-8");
+    const mtimeBefore = fs.statSync(filePath).mtimeMs;
+
+    expect(await listProjects()).toEqual([
+      expect.objectContaining({
+        projectId: releasedRow.projectId, name: "autobyteus", description: "AutoByteus product",
+        createdAt: releasedRow.createdAt, updatedAt: releasedRow.updatedAt, openTaskCount: 0,
+        workspaces: [expect.objectContaining({ workspaceId: prototype.workspaceId, description: "UI prototype workspace", availability: "AVAILABLE" })],
+      }),
+    ]);
+    expect(await listTasks(releasedRow.projectId)).toEqual([]);
+    expect((await getProject(releasedRow.projectId))?.openTaskCount).toBe(0);
+    expect(fs.readFileSync(filePath, "utf-8")).toBe(releasedContent);
+    expect(fs.statSync(filePath).mtimeMs).toBe(mtimeBefore);
+
+    const task = await createTask(releasedRow.projectId, "First task on a released Project");
+    const [persisted] = readProjectsJson() as Array<Record<string, unknown>>;
+    expect(persisted).toEqual({ ...releasedRow, tasks: [expect.objectContaining({ taskId: task.taskId, status: "TODO" })] });
+    expect((persisted.tasks as Array<Record<string, unknown>>)[0]).not.toHaveProperty("projectId");
   });
 });

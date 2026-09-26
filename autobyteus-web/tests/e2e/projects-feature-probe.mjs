@@ -1,7 +1,9 @@
 #!/usr/bin/env node
-// Isolated browser/API regression for the feature-flagged Projects slice (PROJ-CONCEPT-20260926-001).
-// Starts two throwaway backend nodes (A, B) and a Nuxt dev frontend bound to A, then drives the
-// approved journeys AC-001..AC-012 in headless Chromium. Every case records Pass/Fail independently
+// Isolated browser/API regression for the feature-flagged Projects module: the Projects slice
+// (PROJ-CONCEPT-20260926-001, E2E-001..013) and Project Tasks on the two-pane page
+// (PROJ-TASKS-20260926-001, E2E-014..026). Starts throwaway backend nodes (A, B; C for the released-data
+// fixture) and a Nuxt dev frontend bound to A, then drives the approved journeys in headless
+// Chromium. Every case records Pass/Fail independently
 // in <output-dir>/result.json; owned processes and the temp root are always cleaned up.
 //
 // Usage: node tests/e2e/projects-feature-probe.mjs [--skip-server-build] [--output-dir=...]
@@ -132,7 +134,8 @@ const gql = async (node, query, variables = {}) => {
   }
   return body.data;
 };
-const PROJECT_FIELDS = 'projectId name description workspaces { workspaceId workspaceRootPath displayName description availability }';
+const PROJECT_FIELDS = 'projectId name description openTaskCount workspaces { workspaceId workspaceRootPath displayName description availability }';
+const TASK_FIELDS = 'taskId projectId description status createdAt updatedAt';
 const api = {
   capability: async node => (await gql(node, '{ projectsCapability { enabled settingKey source } }')).projectsCapability,
   setProjectsEnabled: async (node, enabled) => (await gql(node, 'mutation($e: Boolean!) { setProjectsEnabled(enabled: $e) { enabled } }', { e: enabled })).setProjectsEnabled,
@@ -144,6 +147,9 @@ const api = {
   registerWorkspace: async (node, rootPath) => (await gql(node, 'mutation($i: CreateWorkspaceInput!) { createWorkspace(input: $i) { workspaceId workspaceRootPath } }', { i: { rootPath } })).createWorkspace,
   removeWorkspace: async (node, workspaceId) => (await gql(node, 'mutation($i: RemoveWorkspaceInput!) { removeWorkspace(input: $i) { success message } }', { i: { workspaceId } })).removeWorkspace,
   workspaceIds: async node => (await gql(node, '{ workspaces { workspaceId } }')).workspaces.map(item => item.workspaceId),
+  tasks: async (node, projectId) => (await gql(node, `query($id: String!) { projectTasks(projectId: $id) { ${TASK_FIELDS} } }`, { id: projectId })).projectTasks,
+  createTask: async (node, projectId, description) => (await gql(node, `mutation($i: CreateProjectTaskInput!) { createProjectTask(input: $i) { ${TASK_FIELDS} } }`, { i: { projectId, description } })).createProjectTask,
+  deleteProject: async (node, projectId) => (await gql(node, 'mutation($id: String!) { deleteProject(projectId: $id) }', { id: projectId })).deleteProject,
 };
 const readEnvFile = node => fs.readFile(path.join(node.dataRoot, '.env'), 'utf-8');
 const readWorkspacesJson = node => fs.readFile(path.join(node.dataRoot, 'workspaces.json'), 'utf-8');
@@ -197,6 +203,20 @@ const openProjectDetail = async (projectId, { tab } = {}) => {
   await page.getByTestId('project-detail-name').waitFor({ state: 'visible', timeout: timeoutMs });
 };
 const listItem = projectId => page.getByTestId(`project-list-item-${projectId}`);
+const openCountText = async projectId => (await listItem(projectId).getByTestId('project-list-item-open-count').innerText()).trim();
+const taskDialog = () => page.getByTestId('project-task-dialog');
+const taskRowsOn = target => target.locator('[data-testid^="project-task-row-"]');
+const taskSummariesOn = async target => (await target.locator('[data-testid="project-task-list"] [data-testid="project-task-summary"]').allInnerTexts()).map(text => text.trim());
+const taskSummaries = () => taskSummariesOn(page);
+const taskRowBySummary = summary => page.locator('[data-testid^="project-task-row-"]', { has: page.locator('[data-testid="project-task-summary"]', { hasText: summary }) });
+const readProjectsFile = node => fs.readFile(path.join(node.dataRoot, 'projects', 'projects.json'), 'utf-8');
+const bindPageTo = (nodeId, baseUrl) => page.evaluate(({ id, url }) => {
+  document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('windowNodeContext').bindNodeContext(id, url);
+}, { id: nodeId, url: baseUrl });
+const currentBinding = () => page.evaluate(() => {
+  const store = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('windowNodeContext');
+  return { nodeId: store.nodeId, baseUrl: store.nodeBaseUrl };
+});
 const listNamesOn = async target => (await target.locator('[data-testid="project-list"] a span.truncate').allInnerTexts()).map(text => text.trim());
 const listNames = () => listNamesOn(page);
 const workspaceRow = workspaceId => page.getByTestId(`project-workspace-row-${workspaceId}`);
@@ -240,7 +260,7 @@ const runCase = async (caseId, title, fn) => {
   process.stdout.write(`[${caseId}] ${record.result}${record.error ? `: ${record.error.split('\n')[0]}` : ''}\n`);
 };
 
-let ownedRoot, nodeA, nodeB, frontend, browser;
+let ownedRoot, nodeA, nodeB, nodeC, frontend, browser;
 await fs.rm(outputDir, { recursive: true, force: true });
 await fs.mkdir(outputDir, { recursive: true });
 try {
@@ -250,7 +270,7 @@ try {
   assert(existsSync(path.join(serverDir, 'dist/app.js')), 'Build the worktree server with pnpm -C autobyteus-server-ts build first');
   ownedRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'autobyteus-projects-e2e-'));
   const rootsDir = path.join(ownedRoot, 'roots');
-  const folders = ['e2e-web-prototype', 'e2e-marketing', 'e2e-superrepo', 'e2e-new-root', 'e2e-kbd-root'];
+  const folders = ['e2e-web-prototype', 'e2e-marketing', 'e2e-superrepo', 'e2e-new-root', 'e2e-kbd-root', 'e2e-released-ws'];
   for (const folder of folders) await fs.mkdir(path.join(rootsDir, folder), { recursive: true });
   const rootOf = folder => path.join(rootsDir, folder);
   nodeA = await createNode(ownedRoot, 'node-a');
@@ -1002,6 +1022,660 @@ try {
     await narrow.close();
   });
 
+  // ------------------------------------------------------------ Project Tasks (PROJ-TASKS-20260926-001)
+  const RELEASE_NOTES = 'Write release notes for 1.4.87\nInclude Projects and Tasks';
+  const noStatusControlIn = async locator => locator.locator('select, input[type="radio"], input[type="checkbox"], [role="radio"], [role="listbox"], [role="combobox"], [role="menu"]').count();
+
+  await runCase('E2E-014', 'Create a Task from a description: To Do, first-line summary, empty rejected, count updates, newest first, no status control', async obs => {
+    await ensureProjectsEnabled();
+    seeded.tasksDemo = await api.createProject(nodeA, 'Tasks demo', 'Project Tasks journey');
+    await openProjectDetail(seeded.tasksDemo.projectId);
+    obs.tasksTabSelected = await page.getByTestId('project-tab-tasks').getAttribute('aria-selected');
+    assert(obs.tasksTabSelected === 'true', 'Tasks is not the default tab');
+    await page.getByTestId('project-tasks-empty').waitFor({ state: 'visible', timeout: timeoutMs });
+    assert(await page.getByTestId('project-tasks-new-button').isVisible(), 'Empty state has no New task button');
+    obs.emptyCount = await openCountText(seeded.tasksDemo.projectId);
+    assert(obs.emptyCount === '0 open', `Empty Project count: ${obs.emptyCount}`);
+
+    const marker = await markPage();
+    await page.getByTestId('project-tasks-new-button').click();
+    await taskDialog().waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.createInitialFocus = (await activeInfo()).testId;
+    assert(obs.createInitialFocus === 'project-task-description-input', `Create dialog focus: ${obs.createInitialFocus}`);
+    assert(await noStatusControlIn(taskDialog()) === 0, 'Create dialog offers a status control');
+    const input = page.getByTestId('project-task-description-input');
+    await input.fill('  \n  ');
+    await page.getByTestId('project-task-save').click();
+    const error = page.getByTestId('project-task-description-error');
+    await error.waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.emptyError = {
+      text: (await error.innerText()).trim(), role: await error.getAttribute('role'),
+      ariaInvalid: await input.getAttribute('aria-invalid'),
+      describedBy: (await input.getAttribute('aria-describedby')) === (await error.getAttribute('id')),
+    };
+    assert(obs.emptyError.role === 'alert' && obs.emptyError.ariaInvalid === 'true' && obs.emptyError.describedBy, `Empty-description error not associated: ${JSON.stringify(obs.emptyError)}`);
+    assert((await api.tasks(nodeA, seeded.tasksDemo.projectId)).length === 0, 'Empty description created a Task');
+
+    await input.fill(RELEASE_NOTES);
+    await page.getByTestId('project-task-save').click();
+    await taskDialog().waitFor({ state: 'detached', timeout: timeoutMs });
+    const [created] = await api.tasks(nodeA, seeded.tasksDemo.projectId);
+    assert(created && created.status === 'TODO' && created.description === RELEASE_NOTES, `Created Task: ${JSON.stringify(created)}`);
+    seeded.releaseTaskId = created.taskId;
+    const row = page.getByTestId(`project-task-row-${created.taskId}`);
+    await row.waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.row = {
+      status: (await row.getByTestId('project-task-status').innerText()).trim(),
+      dataStatus: await row.getAttribute('data-status'),
+      summary: (await row.getByTestId('project-task-summary').innerText()).trim(),
+      updated: (await row.getByTestId('project-task-updated').innerText()).trim(),
+      buttons: await row.locator('button').count(),
+      statusControls: await noStatusControlIn(row),
+    };
+    assert(obs.row.status === 'To Do' && obs.row.dataStatus === 'TODO', `Row status: ${JSON.stringify(obs.row)}`);
+    assert(obs.row.summary === 'Write release notes for 1.4.87', `Row summary: ${obs.row.summary}`);
+    assert(obs.row.buttons === 1 && obs.row.statusControls === 0, 'Row exposes more than the open action');
+    await waitFor('open count 1', async () => (await openCountText(seeded.tasksDemo.projectId)) === '1 open');
+    assert(await pageMarker() === marker, 'Page reloaded while creating a Task');
+
+    await row.getByTestId('project-task-open').click();
+    await page.getByTestId('project-task-view').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.view = {
+      description: await page.getByTestId('project-task-view-description').innerText(),
+      status: (await page.getByTestId('project-task-view-status').innerText()).trim(),
+      initialFocus: (await activeInfo()).testId,
+      statusControls: await noStatusControlIn(taskDialog()),
+      statusButtons: await taskDialog().locator('button', { hasText: /In Progress|Done|Start|Complete|Move|Status/ }).count(),
+    };
+    assert(obs.view.description === RELEASE_NOTES, `View description: ${JSON.stringify(obs.view.description)}`);
+    assert(obs.view.status === 'To Do' && obs.view.statusControls === 0 && obs.view.statusButtons === 0, `View offers status changes: ${JSON.stringify(obs.view)}`);
+    await page.getByTestId('project-task-edit').click();
+    obs.editStatusControls = await noStatusControlIn(taskDialog());
+    assert(obs.editStatusControls === 0, 'Edit mode offers a status control');
+    await page.getByTestId('project-task-cancel').click();
+    await page.getByTestId('project-task-close').click();
+    await taskDialog().waitFor({ state: 'detached', timeout: timeoutMs });
+
+    for (const description of ['Fix the release pipeline', 'Plan the Tasks admission work\nAgents will own status']) {
+      await page.getByTestId('project-tasks-new-button').click();
+      await page.getByTestId('project-task-description-input').fill(description);
+      await page.getByTestId('project-task-save').click();
+      await taskDialog().waitFor({ state: 'detached', timeout: timeoutMs });
+    }
+    obs.order = await taskSummaries();
+    assert(obs.order.join('|') === 'Plan the Tasks admission work|Fix the release pipeline|Write release notes for 1.4.87', `Order: ${obs.order}`);
+    await waitFor('open count 3', async () => (await openCountText(seeded.tasksDemo.projectId)) === '3 open');
+    obs.panelSelects = await page.getByTestId('project-tasks-panel').locator('select').count();
+    assert(obs.panelSelects === 1, 'The Tasks panel has a select other than the status filter');
+    await page.reload({ waitUntil: 'domcontentloaded' });
+    await waitFor('list after reload', async () => (await taskSummaries()).join('|') === obs.order.join('|'));
+  });
+
+  await runCase('E2E-015', 'Edit a Task description (Cancel discards, empty rejected, save) and delete with confirmation (Cancel keeps)', async obs => {
+    await ensureProjectsEnabled();
+    assert(seeded.tasksDemo && seeded.releaseTaskId, 'E2E-014 seed missing');
+    const projectId = seeded.tasksDemo.projectId;
+    await openProjectDetail(projectId);
+    const before = await api.tasks(nodeA, projectId);
+    await page.getByTestId(`project-task-row-${seeded.releaseTaskId}`).getByTestId('project-task-open').click();
+    await page.getByTestId('project-task-edit').click();
+    const input = page.getByTestId('project-task-description-input');
+    obs.editPrefill = await input.inputValue();
+    assert(obs.editPrefill === RELEASE_NOTES, 'Edit is not prefilled with the full description');
+    await input.fill('Discard me');
+    await page.getByTestId('project-task-cancel').click();
+    await page.getByTestId('project-task-view').waitFor({ state: 'visible', timeout: timeoutMs });
+    assert(await page.getByTestId('project-task-view-description').innerText() === RELEASE_NOTES, 'Cancel did not discard the edit');
+    assert(JSON.stringify(await api.tasks(nodeA, projectId)) === JSON.stringify(before), 'Cancel changed data');
+
+    await page.getByTestId('project-task-edit').click();
+    await input.fill('   ');
+    await page.getByTestId('project-task-save').click();
+    await page.getByTestId('project-task-description-error').waitFor({ state: 'visible', timeout: timeoutMs });
+    assert(JSON.stringify(await api.tasks(nodeA, projectId)) === JSON.stringify(before), 'Empty edit changed data');
+
+    const edited = 'Write release notes for 1.4.87 and 1.4.88\nInclude Projects, Tasks and search';
+    await input.fill(edited);
+    await page.getByTestId('project-task-save').click();
+    await page.getByTestId('project-task-view').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.viewAfterSave = await page.getByTestId('project-task-view-description').innerText();
+    assert(obs.viewAfterSave === edited, 'Saved description not shown in full');
+    obs.titleAfterSave = (await taskDialog().locator('h2').first().innerText()).trim();
+    await page.getByTestId('project-task-close').click();
+    await taskDialog().waitFor({ state: 'detached', timeout: timeoutMs });
+    obs.orderAfterEdit = await taskSummaries();
+    assert(obs.orderAfterEdit[0] === 'Write release notes for 1.4.87 and 1.4.88', `Edited Task not first / summary not updated: ${obs.orderAfterEdit}`);
+
+    const pipeline = (await api.tasks(nodeA, projectId)).find(task => task.description === 'Fix the release pipeline');
+    const pipelineRow = page.getByTestId(`project-task-row-${pipeline.taskId}`);
+    await pipelineRow.getByTestId('project-task-open').click();
+    await page.getByTestId('project-task-delete').click();
+    await page.getByTestId('project-task-delete-confirm').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.deleteMessage = (await page.getByTestId('project-task-delete-confirm').innerText()).trim();
+    obs.deleteInitialFocus = (await activeInfo()).testId;
+    assert(obs.deleteMessage.includes('Fix the release pipeline'), `Delete message: ${obs.deleteMessage}`);
+    await page.getByTestId('project-task-delete-cancel').click();
+    await page.getByTestId('project-task-view').waitFor({ state: 'visible', timeout: timeoutMs });
+    assert((await api.tasks(nodeA, projectId)).some(task => task.taskId === pipeline.taskId), 'Cancel deleted the Task');
+    await page.getByTestId('project-task-delete').click();
+    await page.getByTestId('project-task-delete-confirm-button').click();
+    await taskDialog().waitFor({ state: 'detached', timeout: timeoutMs });
+    await pipelineRow.waitFor({ state: 'detached', timeout: timeoutMs });
+    assert(!(await api.tasks(nodeA, projectId)).some(task => task.taskId === pipeline.taskId), 'Confirmed delete did not remove the Task');
+    await waitFor('open count 2', async () => (await openCountText(projectId)) === '2 open');
+  });
+
+  await runCase('E2E-016', '120 Tasks: search by description under 100 ms, status filter, no-match and clear; nothing changes', async obs => {
+    await ensureProjectsEnabled();
+    const scale = await api.createProject(nodeA, 'Scale', '120 Tasks');
+    seeded.scale = scale;
+    const descriptionOf = index => (index % 10 === 0
+      ? `Prepare release checklist ${index}\nOwner: web`
+      : `Routine chore ${index}\n${index % 25 === 0 ? 'Blocked on the release branch' : 'Nothing special'}`);
+    for (let index = 1; index <= 120; index += 1) await api.createTask(nodeA, scale.projectId, descriptionOf(index));
+    const all = await api.tasks(nodeA, scale.projectId);
+    assert(all.length === 120, 'Seeding 120 Tasks failed');
+    const expectedRelease = new Set(all.filter(task => task.description.toLowerCase().includes('release')).map(task => task.taskId));
+    obs.expectedReleaseMatches = expectedRelease.size;
+    await openProjectDetail(scale.projectId);
+    await waitFor('120 rows', async () => (await taskRowsOn(page).count()) === 120);
+    const visibleIds = async () => (await taskRowsOn(page).evaluateAll(rows => rows.map(row => row.getAttribute('data-testid').replace('project-task-row-', ''))));
+    const measure = query => page.evaluate(async value => {
+      const input = document.querySelector('[data-testid="project-tasks-search-input"]');
+      const count = () => document.querySelectorAll('[data-testid^="project-task-row-"]').length;
+      const start = performance.now();
+      input.value = value;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+      await new Promise(resolve => setTimeout(resolve, 0));
+      const updated = performance.now();
+      const rowsAfterUpdate = count();
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+      return { updateMs: updated - start, paintedMs: performance.now() - start, rows: rowsAfterUpdate, noMatch: Boolean(document.querySelector('[data-testid="project-tasks-no-match"]')) };
+    }, query);
+    const timings = [];
+    for (let attempt = 0; attempt < 3; attempt += 1) {
+      for (const query of ['release', 'RELEASE', '', 'zzz-no-match', '']) timings.push({ query, ...(await measure(query)) });
+    }
+    obs.maxUpdateMs = Math.max(...timings.map(item => item.updateMs));
+    obs.maxPaintedMs = Math.max(...timings.map(item => item.paintedMs));
+    obs.timingSample = timings.slice(0, 5).map(item => ({ query: item.query, updateMs: Math.round(item.updateMs * 10) / 10, paintedMs: Math.round(item.paintedMs * 10) / 10, rows: item.rows }));
+    assert(obs.maxUpdateMs < 100, `Search update exceeded 100 ms: ${obs.maxUpdateMs}`);
+    assert(obs.maxPaintedMs < 100, `Search to painted frame exceeded 100 ms: ${obs.maxPaintedMs}`);
+    assert(timings.filter(item => item.query.toLowerCase() === 'release').every(item => item.rows === expectedRelease.size), 'Search result count mismatch');
+    assert(timings.filter(item => item.query === 'zzz-no-match').every(item => item.rows === 0 && item.noMatch), 'No-match state missing');
+    assert(timings.filter(item => item.query === '').every(item => item.rows === 120), 'Clearing search did not restore all rows');
+
+    const search = page.getByTestId('project-tasks-search-input');
+    await search.fill('release');
+    const matched = await visibleIds();
+    assert(matched.length === expectedRelease.size && matched.every(id => expectedRelease.has(id)), 'Search shows a non-matching Task');
+    await search.fill('');
+    const filter = page.getByTestId('project-tasks-status-filter');
+    obs.filterAccessibleName = await filter.evaluate(element => element.labels?.[0]?.textContent?.trim() ?? null);
+    obs.filterOptions = await filter.locator('option').allInnerTexts();
+    await filter.selectOption('DONE');
+    await page.getByTestId('project-tasks-no-match').waitFor({ state: 'visible', timeout: timeoutMs });
+    await filter.selectOption('IN_PROGRESS');
+    await page.getByTestId('project-tasks-no-match').waitFor({ state: 'visible', timeout: timeoutMs });
+    await page.getByTestId('project-tasks-clear-filters').click();
+    await waitFor('filters cleared', async () => (await taskRowsOn(page).count()) === 120 && (await filter.inputValue()) === 'ALL');
+    obs.focusAfterClear = (await activeInfo()).testId;
+    await filter.selectOption('TODO');
+    await search.fill('release');
+    await waitFor('TODO + release', async () => (await taskRowsOn(page).count()) === expectedRelease.size);
+    await filter.selectOption('ALL');
+    await search.fill('');
+    const after = await api.tasks(nodeA, scale.projectId);
+    assert(JSON.stringify(after) === JSON.stringify(all), 'Searching or filtering changed Tasks');
+    assert(obs.filterOptions.join('|') === 'All statuses|To Do|In Progress|Done', `Filter options: ${obs.filterOptions}`);
+  });
+
+  await runCase('E2E-017', 'Project delete with 5 Tasks states the count (both tabs), Cancel keeps everything, confirm cascades; workspaces untouched', async obs => {
+    await ensureProjectsEnabled();
+    const five = await api.createProject(nodeA, 'Five tasks', 'Delete me with my Tasks');
+    for (let index = 1; index <= 5; index += 1) await api.createTask(nodeA, five.projectId, `Five-task item ${index}`);
+    const ws = seeded.superrepo ?? await api.registerWorkspace(nodeA, rootOf('e2e-superrepo'));
+    await api.addLink(nodeA, five.projectId, ws.workspaceId, 'Main');
+    const otherTasksBefore = await api.tasks(nodeA, seeded.tasksDemo.projectId);
+    const workspacesBefore = await readWorkspacesJson(nodeA);
+    const memoryBefore = (await fs.readdir(path.join(nodeA.dataRoot, 'memory'), { recursive: true })).sort().join('|');
+
+    await openProjectDetail(five.projectId);
+    await page.getByTestId('project-delete-button').click();
+    await page.getByTestId('project-delete-dialog').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.messageTasksTab = (await page.getByTestId('project-delete-message').innerText()).trim();
+    assert(/\b5 tasks\b/.test(obs.messageTasksTab), `Delete message: ${obs.messageTasksTab}`);
+    await page.getByTestId('project-delete-cancel').click();
+    await page.getByTestId('project-delete-dialog').waitFor({ state: 'detached', timeout: timeoutMs });
+    assert((await api.tasks(nodeA, five.projectId)).length === 5, 'Cancel removed Tasks');
+
+    await openProjectDetail(five.projectId, { tab: 'workspaces' });
+    await page.getByTestId('project-delete-button').click();
+    obs.messageWorkspacesTab = (await page.getByTestId('project-delete-message').innerText()).trim();
+    assert(/\b5 tasks\b/.test(obs.messageWorkspacesTab), `Delete message on the Workspaces tab: ${obs.messageWorkspacesTab}`);
+    await page.getByTestId('project-delete-confirm').click();
+    await waitFor('back to /projects', async () => pathname() === '/projects');
+    await page.getByTestId('projects-select-prompt').waitFor({ state: 'visible', timeout: timeoutMs });
+    await waitFor('list item gone', async () => (await listItem(five.projectId).count()) === 0);
+    assert(await api.project(nodeA, five.projectId) === null, 'Project still exists');
+    const fileText = await readProjectsFile(nodeA);
+    obs.fileHasDeletedProject = fileText.includes(five.projectId) || fileText.includes('Five-task item');
+    assert(!obs.fileHasDeletedProject, 'projects.json still contains the deleted Project or its Tasks');
+    obs.workspacesJsonUnchanged = (await readWorkspacesJson(nodeA)) === workspacesBefore;
+    obs.memoryDirUnchanged = (await fs.readdir(path.join(nodeA.dataRoot, 'memory'), { recursive: true })).sort().join('|') === memoryBefore;
+    assert(obs.workspacesJsonUnchanged && (await api.workspaceIds(nodeA)).includes(ws.workspaceId), 'Workspace registry changed');
+    assert(obs.memoryDirUnchanged, 'Run memory/history directory changed');
+    assert(JSON.stringify(await api.tasks(nodeA, seeded.tasksDemo.projectId)) === JSON.stringify(otherTasksBefore), 'Another Project\'s Tasks changed');
+  });
+
+  await runCase('E2E-018', 'List pane shows each Project\'s not-done count ("4 open", "0 open")', async obs => {
+    await ensureProjectsEnabled();
+    const four = await api.createProject(nodeA, 'Four tasks');
+    for (let index = 1; index <= 4; index += 1) await api.createTask(nodeA, four.projectId, `Four-task item ${index}`);
+    const none = await api.createProject(nodeA, 'Empty project');
+    seeded.four = four;
+    seeded.none = none;
+    await gotoAndSettle('/projects');
+    await listItem(four.projectId).waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.counts = {
+      four: await openCountText(four.projectId), none: await openCountText(none.projectId),
+      tasksDemo: await openCountText(seeded.tasksDemo.projectId), scale: await openCountText(seeded.scale.projectId),
+    };
+    assert(obs.counts.four === '4 open' && obs.counts.none === '0 open' && obs.counts.tasksDemo === '2 open' && obs.counts.scale === '120 open', `Counts: ${JSON.stringify(obs.counts)}`);
+  });
+
+  await runCase('E2E-019', 'Projects off hides Tasks; on shows the same Tasks', async obs => {
+    await ensureProjectsEnabled();
+    const before = await api.tasks(nodeA, seeded.tasksDemo.projectId);
+    await gotoAndSettle('/settings?section=server-settings&mode=quick');
+    const toggle = page.getByTestId('projects-feature-toggle');
+    await waitFor('toggle resolved', async () => !(await toggle.isDisabled()));
+    await toggle.click();
+    await waitFor('disabled', async () => (await api.capability(nodeA)).enabled === false);
+    await navAfterLeavingSettings('hides Projects', labels => !labels.includes('Projects'));
+    await routerPush(`/projects/${seeded.tasksDemo.projectId}`);
+    await expectRedirectHome('Project Tasks route while disabled');
+    await gotoAndSettle(`/projects/${seeded.tasksDemo.projectId}`);
+    await expectRedirectHome('deep link while disabled');
+    obs.tasksWhileHidden = (await api.tasks(nodeA, seeded.tasksDemo.projectId)).length;
+    await settingsClientSide('quick');
+    await waitFor('toggle resolved', async () => !(await toggle.isDisabled()));
+    await toggle.click();
+    await waitFor('enabled', async () => (await api.capability(nodeA)).enabled === true);
+    await navAfterLeavingSettings('shows Projects', labels => labels.includes('Projects'));
+    await nav().getByRole('button', { name: 'Projects', exact: true }).click();
+    await listItem(seeded.tasksDemo.projectId).click();
+    await waitFor('Tasks back', async () => (await taskSummaries()).length === before.length);
+    obs.summaries = await taskSummaries();
+    assert(JSON.stringify(await api.tasks(nodeA, seeded.tasksDemo.projectId)) === JSON.stringify(before), 'Tasks changed while hidden');
+  });
+
+  await runCase('E2E-020', 'Two-pane navigation: one click switches Projects with the same list pane; deep link; select prompt; unknown id not-found', async obs => {
+    await ensureProjectsEnabled();
+    await gotoAndSettle('/projects');
+    await page.getByTestId('projects-select-prompt').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.selectedOnIndex = await page.locator('[data-testid="project-list"] [aria-current="page"]').count();
+    assert(obs.selectedOnIndex === 0, 'A Project is highlighted without a selection');
+    await page.evaluate(() => { document.querySelector('[data-testid="project-list-pane"]').__probePaneTag = 'pane-original'; });
+    const marker = await markPage();
+    const paneTag = () => page.evaluate(() => document.querySelector('[data-testid="project-list-pane"]')?.__probePaneTag ?? null);
+
+    await listItem(seeded.tasksDemo.projectId).click();
+    await waitFor('A tasks', async () => (await taskSummaries()).join('|') === 'Write release notes for 1.4.87 and 1.4.88|Plan the Tasks admission work');
+    const clicksBefore = await page.evaluate(() => performance.now());
+    await listItem(seeded.four.projectId).click();
+    await waitFor('B tasks after one click', async () => (await page.getByTestId('project-detail-name').innerText()).trim() === 'Four tasks' && (await taskSummaries()).length === 4);
+    obs.switchMs = Math.round((await page.evaluate(() => performance.now())) - clicksBefore);
+    obs.sameListPaneNode = (await paneTag()) === 'pane-original';
+    obs.noReload = (await pageMarker()) === marker;
+    obs.highlighted = await listItem(seeded.four.projectId).getAttribute('aria-current');
+    assert(obs.sameListPaneNode && obs.noReload && obs.highlighted === 'page', `Switch: ${JSON.stringify(obs)}`);
+    await page.getByTestId('project-tab-workspaces').click();
+    await waitFor('workspaces tab', async () => new URL(page.url()).searchParams.get('tab') === 'workspaces');
+    assert((await paneTag()) === 'pane-original', 'Tab change remounted the list pane');
+    await listItem(seeded.tasksDemo.projectId).click();
+    await waitFor('back to A', async () => (await page.getByTestId('project-detail-name').innerText()).trim() === 'Tasks demo');
+    obs.tabAfterSwitch = await page.getByTestId('project-tab-tasks').getAttribute('aria-selected');
+    assert((await paneTag()) === 'pane-original', 'Switching back remounted the list pane');
+
+    await gotoAndSettle(`/projects/${seeded.four.projectId}`);
+    await waitFor('deep link Tasks', async () => (await taskSummaries()).length === 4);
+    obs.deepLinkTab = await page.getByTestId('project-tab-tasks').getAttribute('aria-selected');
+    assert(obs.deepLinkTab === 'true', 'Deep link did not open the Tasks tab');
+
+    await gotoAndSettle('/projects/project_does_not_exist');
+    await page.getByTestId('project-not-found').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.notFoundInRightPane = await page.getByTestId('projects-page-content').getByTestId('project-not-found').count() === 1;
+    obs.listPaneVisible = await page.getByTestId('project-list-pane').isVisible();
+    assert(obs.notFoundInRightPane && obs.listPaneVisible, 'Not-found is not in the right pane or the list pane is gone');
+    await listItem(seeded.tasksDemo.projectId).click();
+    await waitFor('recovered from not-found', async () => (await taskSummaries()).length === 2);
+  });
+
+  await runCase('E2E-021', 'Keyboard-only Task journey: create (Ctrl/⌘+Enter), validation, view/edit/cancel, delete with confirmation, tabs Home/End, Project delete', async obs => {
+    await ensureProjectsEnabled();
+    const failures = [];
+    const soft = (condition, message) => { if (!condition) failures.push(message); };
+    const projectId = seeded.tasksDemo.projectId;
+    await openProjectDetail(projectId);
+    await page.evaluate(() => { if (document.activeElement instanceof HTMLElement) document.activeElement.blur(); });
+    obs.tabsToNewTask = await tabUntil('New task button', info => info.testId === 'project-tasks-new-button');
+
+    // Empty submit through the Save button, then Escape with focus return.
+    await page.keyboard.press('Enter');
+    await taskDialog().waitFor({ state: 'visible', timeout: timeoutMs });
+    soft((await activeInfo()).testId === 'project-task-description-input', 'Create dialog did not focus the description');
+    await tabUntil('Save', info => info.testId === 'project-task-save', 3);
+    await page.keyboard.press('Enter');
+    await page.getByTestId('project-task-description-error').waitFor({ state: 'visible', timeout: timeoutMs });
+    soft((await activeInfo()).testId === 'project-task-description-input', 'Validation error did not return focus to the description');
+    const trapWalk = [];
+    for (let index = 0; index < 3; index += 1) { await page.keyboard.press('Tab'); trapWalk.push(await activeInfo()); }
+    obs.createTrapWalk = trapWalk.map(info => `${info.testId || info.text}:${info.inDialog}`);
+    soft(trapWalk.every(info => info.inDialog) && trapWalk.at(-1)?.testId === 'project-task-description-input', 'Tab did not cycle inside the create dialog');
+    await page.keyboard.press('Escape');
+    await taskDialog().waitFor({ state: 'detached', timeout: timeoutMs });
+    soft((await activeInfo()).testId === 'project-tasks-new-button', 'Focus did not return to New task after Escape');
+
+    // Multi-line create with Ctrl/⌘+Enter.
+    await page.keyboard.press('Enter');
+    await taskDialog().waitFor({ state: 'visible', timeout: timeoutMs });
+    await page.keyboard.type('Keyboard task line one');
+    await page.keyboard.press('Enter');
+    await page.keyboard.type('Keyboard task line two');
+    await page.keyboard.press('ControlOrMeta+Enter');
+    await taskDialog().waitFor({ state: 'detached', timeout: timeoutMs });
+    const keyboardTask = (await api.tasks(nodeA, projectId)).find(task => task.description.startsWith('Keyboard task line one'));
+    soft(keyboardTask?.description === 'Keyboard task line one\nKeyboard task line two', `Keyboard create: ${JSON.stringify(keyboardTask)}`);
+    soft((await activeInfo()).testId === 'project-tasks-new-button', 'Focus did not return to New task after creating');
+    assert(keyboardTask, 'Keyboard create failed');
+
+    // Open, edit (Cancel then Save), close with Escape.
+    await tabUntil('the new Task row', info => info.testId === 'project-task-open' && info.text.includes('Keyboard task line one'), 12);
+    await page.keyboard.press('Enter');
+    await page.getByTestId('project-task-view').waitFor({ state: 'visible', timeout: timeoutMs });
+    soft((await activeInfo()).testId === 'project-task-edit', 'View mode did not focus Edit');
+    const viewWalk = [];
+    for (let index = 0; index < 3; index += 1) { await page.keyboard.press('Tab'); viewWalk.push(await activeInfo()); }
+    obs.viewTrapWalk = viewWalk.map(info => `${info.testId}:${info.inDialog}`);
+    soft(viewWalk.every(info => info.inDialog) && viewWalk.at(-1)?.testId === 'project-task-edit', 'Tab did not cycle inside the view dialog');
+    await page.keyboard.press('Enter');
+    await page.getByTestId('project-task-description-input').waitFor({ state: 'visible', timeout: timeoutMs });
+    soft((await activeInfo()).testId === 'project-task-description-input', 'Edit mode did not focus the description');
+    await page.keyboard.press('ControlOrMeta+A');
+    await page.keyboard.type('Should be discarded');
+    await tabUntil('Cancel', info => info.testId === 'project-task-cancel', 3);
+    await page.keyboard.press('Enter');
+    await page.getByTestId('project-task-view').waitFor({ state: 'visible', timeout: timeoutMs });
+    soft((await page.getByTestId('project-task-view-description').innerText()) === 'Keyboard task line one\nKeyboard task line two', 'Keyboard Cancel did not discard');
+    soft((await activeInfo()).testId === 'project-task-edit', 'Cancel did not return focus to Edit');
+    await page.keyboard.press('Enter');
+    await page.keyboard.press('ControlOrMeta+A');
+    await page.keyboard.type('Keyboard task edited');
+    await tabUntil('Save', info => info.testId === 'project-task-save', 3);
+    await page.keyboard.press('Enter');
+    await page.getByTestId('project-task-view').waitFor({ state: 'visible', timeout: timeoutMs });
+    soft((await page.getByTestId('project-task-view-description').innerText()) === 'Keyboard task edited', 'Keyboard save did not persist the edit in view');
+    await page.keyboard.press('Escape');
+    await taskDialog().waitFor({ state: 'detached', timeout: timeoutMs });
+    obs.focusAfterViewEscape = await activeInfo();
+    soft(obs.focusAfterViewEscape.testId === 'project-task-open' && obs.focusAfterViewEscape.text.includes('Keyboard task edited'), 'Focus did not return to the Task row');
+
+    // Delete: Cancel returns to view, then confirm.
+    await page.keyboard.press('Enter');
+    await page.getByTestId('project-task-view').waitFor({ state: 'visible', timeout: timeoutMs });
+    await tabUntil('Delete', info => info.testId === 'project-task-delete', 3);
+    await page.keyboard.press('Enter');
+    await page.getByTestId('project-task-delete-confirm').waitFor({ state: 'visible', timeout: timeoutMs });
+    soft((await activeInfo()).testId === 'project-task-delete-cancel', 'Delete confirmation did not focus Cancel');
+    await page.keyboard.press('Enter');
+    await page.getByTestId('project-task-view').waitFor({ state: 'visible', timeout: timeoutMs });
+    await tabUntil('Delete', info => info.testId === 'project-task-delete', 3);
+    await page.keyboard.press('Enter');
+    await tabUntil('Confirm delete', info => info.testId === 'project-task-delete-confirm-button', 3);
+    await page.keyboard.press('Enter');
+    await taskDialog().waitFor({ state: 'detached', timeout: timeoutMs });
+    soft(!(await api.tasks(nodeA, projectId)).some(task => task.taskId === keyboardTask.taskId), 'Keyboard delete failed');
+    obs.focusAfterTaskDelete = await activeInfo();
+
+    // Tabs: arrows, Home and End.
+    await page.getByTestId('project-tab-tasks').focus();
+    await page.keyboard.press('End');
+    await waitFor('End selects Workspaces', async () => (await page.getByTestId('project-tab-workspaces').getAttribute('aria-selected')) === 'true');
+    soft((await activeInfo()).testId === 'project-tab-workspaces', 'End did not focus Workspaces');
+    await page.keyboard.press('Home');
+    await waitFor('Home selects Tasks', async () => (await page.getByTestId('project-tab-tasks').getAttribute('aria-selected')) === 'true');
+    soft((await activeInfo()).testId === 'project-tab-tasks', 'Home did not focus Tasks');
+    await page.keyboard.press('ArrowLeft');
+    await waitFor('ArrowLeft wraps to Workspaces', async () => (await page.getByTestId('project-tab-workspaces').getAttribute('aria-selected')) === 'true');
+    await page.keyboard.press('ArrowRight');
+    await waitFor('ArrowRight wraps to Tasks', async () => (await page.getByTestId('project-tab-tasks').getAttribute('aria-selected')) === 'true');
+    obs.tabsInTabOrder = await page.evaluate(() => Array.from(document.querySelectorAll('[role="tab"]')).map(tab => `${tab.getAttribute('data-testid')}:${tab.tabIndex}`));
+
+    // Search and filter are labelled, focusable controls.
+    await page.getByTestId('project-tasks-search-input').focus();
+    await page.keyboard.type('plan');
+    await waitFor('keyboard search', async () => (await taskSummaries()).join('|') === 'Plan the Tasks admission work');
+    await page.keyboard.press('Tab');
+    obs.afterSearchTab = (await activeInfo()).testId;
+    soft(obs.afterSearchTab === 'project-tasks-status-filter', 'Tab from search did not reach the status filter');
+    await page.getByTestId('project-tasks-search-input').fill('');
+
+    // Project delete with its Task count, keyboard only.
+    const doomed = await api.createProject(nodeA, 'Keyboard delete me');
+    await api.createTask(nodeA, doomed.projectId, 'Only task');
+    await openProjectDetail(doomed.projectId);
+    await page.getByTestId('project-delete-button').focus();
+    await page.keyboard.press('Enter');
+    await page.getByTestId('project-delete-dialog').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.projectDeleteMessage = (await page.getByTestId('project-delete-message').innerText()).trim();
+    soft(/\b1 task\b/.test(obs.projectDeleteMessage), `Project delete message: ${obs.projectDeleteMessage}`);
+    soft((await activeInfo()).testId === 'project-delete-cancel', 'Project delete did not focus Cancel');
+    await page.keyboard.press('Tab');
+    await page.keyboard.press('Enter');
+    await waitFor('project deleted by keyboard', async () => pathname() === '/projects');
+    soft(await api.project(nodeA, doomed.projectId) === null, 'Keyboard Project delete failed');
+
+    obs.softFailures = failures;
+    assert(failures.length === 0, `Keyboard journey failures:\n- ${failures.join('\n- ')}`);
+  });
+
+  await runCase('E2E-022', 'zh-CN Task surfaces: tabs, New task, status, open counts, dialogs, empty state; no raw keys or English Task strings', async obs => {
+    await ensureProjectsEnabled();
+    const zhContext = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'zh-CN', timezoneId: 'UTC' });
+    await zhContext.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'zh-CN'));
+    const zhPage = await zhContext.newPage();
+    const texts = [];
+    await zhPage.goto(`${frontendUrl}/projects`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await zhPage.getByTestId('projects-select-prompt').waitFor({ state: 'visible', timeout: timeoutMs });
+    texts.push(await zhPage.getByTestId('projects-page').innerText());
+    obs.promptZh = texts[0].includes('选择一个项目');
+    obs.countZh = (await zhPage.getByTestId(`project-list-item-${seeded.four.projectId}`).getByTestId('project-list-item-open-count').innerText()).trim();
+    await zhPage.goto(`${frontendUrl}/projects/${seeded.tasksDemo.projectId}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await zhPage.getByTestId('project-task-list').waitFor({ state: 'visible', timeout: timeoutMs });
+    const detail = await zhPage.getByTestId('project-detail').innerText();
+    texts.push(detail);
+    obs.detailZh = ['任务', '工作区', '新建任务', '待办', '全部状态'].filter(label => !detail.includes(label));
+    await zhPage.getByTestId('project-tasks-new-button').click();
+    await zhPage.getByTestId('project-task-dialog').waitFor({ state: 'visible', timeout: timeoutMs });
+    await zhPage.getByTestId('project-task-save').click();
+    await zhPage.getByTestId('project-task-description-error').waitFor({ state: 'visible', timeout: timeoutMs });
+    const createText = await zhPage.getByTestId('project-task-dialog').innerText();
+    texts.push(createText);
+    obs.createZh = ['新建任务', '描述', '创建任务', '请描述这项任务。'].filter(label => !createText.includes(label));
+    await zhPage.keyboard.press('Escape');
+    await zhPage.locator('[data-testid="project-task-open"]').first().click();
+    await zhPage.getByTestId('project-task-view').waitFor({ state: 'visible', timeout: timeoutMs });
+    await zhPage.getByTestId('project-task-delete').click();
+    const deleteText = await zhPage.getByTestId('project-task-dialog').innerText();
+    texts.push(deleteText);
+    obs.deleteZh = ['删除任务？', '此操作无法撤销'].filter(label => !deleteText.includes(label));
+    await zhPage.keyboard.press('Escape');
+    await zhPage.goto(`${frontendUrl}/projects/${seeded.none.projectId}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await zhPage.getByTestId('project-tasks-empty').waitFor({ state: 'visible', timeout: timeoutMs });
+    const emptyText = await zhPage.getByTestId('project-tasks-panel').innerText();
+    texts.push(emptyText);
+    obs.emptyZh = emptyText.includes('暂无任务');
+    await zhPage.getByTestId('project-delete-button').click();
+    texts.push(await zhPage.getByTestId('project-delete-dialog').innerText());
+    await zhPage.keyboard.press('Escape');
+    await zhContext.close();
+    const all = texts.join('\n');
+    obs.rawKeys = all.match(new RegExp(RAW_KEY.source, 'gi')) ?? [];
+    obs.englishTaskStrings = ['New task', 'To Do', 'All statuses', 'Search tasks', ' open', 'Create task', 'Delete task', 'Describe the task', 'No tasks yet', 'Choose a project'].filter(label => all.includes(label));
+    assert(obs.promptZh && obs.countZh === '4 项未完成' && obs.detailZh.length === 0 && obs.createZh.length === 0 && obs.deleteZh.length === 0 && obs.emptyZh, `zh-CN gaps: ${JSON.stringify(obs)}`);
+    assert(obs.rawKeys.length === 0 && obs.englishTaskStrings.length === 0, `Untranslated: ${JSON.stringify({ rawKeys: obs.rawKeys, english: obs.englishTaskStrings })}`);
+  });
+
+  await runCase('E2E-023', 'Narrow width below md (700x900): panes stack, no horizontal overflow, Task dialog fits', async obs => {
+    await ensureProjectsEnabled();
+    const narrow = await browser.newContext({ viewport: { width: 700, height: 900 }, locale: 'en-US', timezoneId: 'UTC' });
+    await narrow.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+    const narrowPage = await narrow.newPage();
+    await narrowPage.goto(`${frontendUrl}/projects/${seeded.tasksDemo.projectId}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await narrowPage.getByTestId('project-task-list').waitFor({ state: 'visible', timeout: timeoutMs });
+    const boxes = () => narrowPage.evaluate(() => {
+      const box = selector => { const element = document.querySelector(selector); if (!element) return null; const rect = element.getBoundingClientRect(); return { left: Math.round(rect.left), right: Math.round(rect.right), top: Math.round(rect.top), bottom: Math.round(rect.bottom), width: Math.round(rect.width), height: Math.round(rect.height) }; };
+      return {
+        viewport: { width: window.innerWidth, height: window.innerHeight },
+        docOverflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+        page: box('[data-testid="projects-page"]'), pane: box('[data-testid="project-list-pane"]'), content: box('[data-testid="projects-page-content"]'),
+        newTask: box('[data-testid="project-tasks-new-button"]'), filter: box('[data-testid="project-tasks-status-filter"]'), search: box('[data-testid="project-tasks-search-input"]'),
+        firstRow: box('[data-testid^="project-task-row-"]'), dialog: box('[data-testid="project-task-dialog"]'), save: box('[data-testid="project-task-save"]'),
+        flexDirection: getComputedStyle(document.querySelector('[data-testid="projects-page"]')).flexDirection,
+      };
+    });
+    obs.layout = await boxes();
+    const layout = obs.layout;
+    assert(layout.flexDirection === 'column', `Panes not stacked: ${layout.flexDirection}`);
+    assert(layout.pane.bottom <= layout.content.top + 1 && Math.abs(layout.pane.width - layout.content.width) <= 2, `Pane is not above the content: ${JSON.stringify({ pane: layout.pane, content: layout.content })}`);
+    assert(layout.docOverflowX <= 0, `Horizontal overflow ${layout.docOverflowX}px`);
+    for (const key of ['newTask', 'filter', 'search', 'firstRow']) {
+      assert(layout[key] && layout[key].left >= 0 && layout[key].right <= layout.viewport.width, `${key} clipped: ${JSON.stringify(layout[key])}`);
+    }
+    await narrowPage.screenshot({ path: path.join(outputDir, 'E2E-023-narrow-stacked.png') });
+    await narrowPage.getByTestId('project-tasks-new-button').click();
+    await narrowPage.getByTestId('project-task-dialog').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.dialogLayout = await boxes();
+    const dialog = obs.dialogLayout.dialog;
+    assert(dialog.left >= 0 && dialog.right <= 700 && dialog.top >= 0 && dialog.bottom <= 900, `Task dialog does not fit: ${JSON.stringify(dialog)}`);
+    assert(obs.dialogLayout.save.bottom <= 900, 'Save button off-screen');
+    await narrowPage.screenshot({ path: path.join(outputDir, 'E2E-023-narrow-dialog.png') });
+    await narrow.close();
+  });
+
+  await runCase('E2E-024', 'Released v1.4.86 projects.json on a live node: intact, 0 open, no rewrite while browsing; first Task write keeps released fields', async obs => {
+    nodeC = await createNode(ownedRoot, 'node-c');
+    await startNode(nodeC);
+    await api.setProjectsEnabled(nodeC, true);
+    const releasedWs = await api.registerWorkspace(nodeC, rootOf('e2e-released-ws'));
+    obs.stopForSeed = await stop(nodeC.process);
+    const releasedRow = {
+      projectId: 'project_7d1e4c2a-0b55-4f7e-8a31-5c9e2f0d4b16',
+      name: 'Released project',
+      description: 'Created with v1.4.86',
+      createdAt: '2026-09-20T08:00:00.000Z',
+      updatedAt: '2026-09-21T09:30:00.000Z',
+      workspaces: [{ workspaceId: releasedWs.workspaceId, workspaceRootPath: releasedWs.workspaceRootPath, description: 'Released link', addedAt: '2026-09-21T09:30:00.000Z' }],
+    };
+    const filePath = path.join(nodeC.dataRoot, 'projects', 'projects.json');
+    await fs.mkdir(path.dirname(filePath), { recursive: true });
+    const releasedContent = `${JSON.stringify([releasedRow], null, 2)}\n`;
+    await fs.writeFile(filePath, releasedContent, 'utf-8');
+    await startNode(nodeC);
+    const [apiView] = await api.projects(nodeC);
+    obs.apiView = { name: apiView.name, openTaskCount: apiView.openTaskCount, links: apiView.workspaces.map(link => `${link.displayName}:${link.availability}`) };
+    assert(apiView.projectId === releasedRow.projectId && apiView.openTaskCount === 0 && apiView.workspaces[0]?.availability === 'AVAILABLE', `API view: ${JSON.stringify(obs.apiView)}`);
+
+    await gotoAndSettle('/projects');
+    await listItem(seeded.tasksDemo.projectId).waitFor({ state: 'visible', timeout: timeoutMs });
+    seeded.originalBinding = await currentBinding();
+    await bindPageTo('probe-node-c', nodeC.url);
+    await listItem(releasedRow.projectId).waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.listNamesOnC = await listNames();
+    obs.countOnC = await openCountText(releasedRow.projectId);
+    await listItem(releasedRow.projectId).click();
+    await page.getByTestId('project-tasks-empty').waitFor({ state: 'visible', timeout: timeoutMs });
+    await page.getByTestId('project-tab-workspaces').click();
+    await workspaceRow(releasedWs.workspaceId).waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.releasedLinkRow = (await workspaceRow(releasedWs.workspaceId).innerText()).replace(/\s+/g, ' ');
+    obs.fileUnchangedAfterBrowsing = (await fs.readFile(filePath, 'utf-8')) === releasedContent;
+    assert(obs.listNamesOnC.join('|') === 'Released project' && obs.countOnC === '0 open', `Released list: ${JSON.stringify(obs)}`);
+    assert(obs.releasedLinkRow.includes('Released link'), 'Released link description missing');
+    assert(obs.fileUnchangedAfterBrowsing, 'Browsing rewrote the released projects.json');
+
+    await page.getByTestId('project-tab-tasks').click();
+    await page.getByTestId('project-tasks-new-button').click();
+    await page.getByTestId('project-task-description-input').fill('First task on a released Project');
+    await page.getByTestId('project-task-save').click();
+    await taskDialog().waitFor({ state: 'detached', timeout: timeoutMs });
+    await waitFor('count 1 on C', async () => (await openCountText(releasedRow.projectId)) === '1 open');
+    const [persisted] = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+    const { tasks, ...releasedFields } = persisted;
+    obs.releasedFieldsPreserved = JSON.stringify(releasedFields) === JSON.stringify(releasedRow);
+    obs.persistedTasks = tasks?.map(task => `${task.status}:${task.description}`);
+    assert(obs.releasedFieldsPreserved && tasks?.length === 1, `After first write: ${JSON.stringify(persisted)}`);
+  });
+
+  await runCase('E2E-026', 'Mixed-status file (stand-in for future agent-written status): status as text, per-status filter, "2 open" excludes Done', async obs => {
+    assert(nodeC?.process, 'E2E-024 node C missing');
+    const filePath = path.join(nodeC.dataRoot, 'projects', 'projects.json');
+    obs.stopForSeed = await stop(nodeC.process);
+    const rows = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+    const task = (id, status, description, updatedAt) => ({ taskId: `project_task_${id}`, description, status, createdAt: '2026-09-25T08:00:00.000Z', updatedAt });
+    rows.push({
+      projectId: 'project_mixed_status', name: 'Mixed status', description: '', createdAt: '2026-09-25T08:00:00.000Z', updatedAt: '2026-09-25T08:00:00.000Z', workspaces: [],
+      tasks: [
+        task('todo', 'TODO', 'Todo item', '2026-09-25T09:00:00.000Z'),
+        task('progress', 'IN_PROGRESS', 'In-progress item', '2026-09-25T10:00:00.000Z'),
+        task('done', 'DONE', 'Done item', '2026-09-25T11:00:00.000Z'),
+      ],
+    });
+    await fs.writeFile(filePath, `${JSON.stringify(rows, null, 2)}\n`, 'utf-8');
+    await startNode(nodeC);
+    await gotoAndSettle('/projects');
+    await listItem(seeded.tasksDemo.projectId).waitFor({ state: 'visible', timeout: timeoutMs });
+    await bindPageTo('probe-node-c', nodeC.url);
+    await listItem('project_mixed_status').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.count = await openCountText('project_mixed_status');
+    await listItem('project_mixed_status').click();
+    await waitFor('3 rows', async () => (await taskRowsOn(page).count()) === 3);
+    obs.rows = await taskRowsOn(page).evaluateAll(items => items.map(item => `${item.getAttribute('data-status')}:${item.querySelector('[data-testid="project-task-status"]').textContent.trim()}:${item.querySelector('[data-testid="project-task-summary"]').textContent.trim()}`));
+    assert(obs.count === '2 open', `Open count with a Done Task: ${obs.count}`);
+    assert(obs.rows.join('|') === 'DONE:Done:Done item|IN_PROGRESS:In Progress:In-progress item|TODO:To Do:Todo item', `Rows: ${obs.rows}`);
+    const filter = page.getByTestId('project-tasks-status-filter');
+    obs.filtered = {};
+    for (const status of ['TODO', 'IN_PROGRESS', 'DONE']) {
+      await filter.selectOption(status);
+      await waitFor(`filter ${status}`, async () => (await taskRowsOn(page).count()) === 1);
+      obs.filtered[status] = await taskRowsOn(page).first().getAttribute('data-status');
+    }
+    await filter.selectOption('ALL');
+    assert(obs.filtered.TODO === 'TODO' && obs.filtered.IN_PROGRESS === 'IN_PROGRESS' && obs.filtered.DONE === 'DONE', `Filter: ${JSON.stringify(obs.filtered)}`);
+    // Observation only (review note 1): the delete confirmation counts open Tasks; unreachable in this ticket without status mutation.
+    await page.getByTestId('project-delete-button').click();
+    obs.deleteMessageObserved = (await page.getByTestId('project-delete-message').innerText()).trim();
+    await page.getByTestId('project-delete-cancel').click();
+    await bindPageTo(seeded.originalBinding.nodeId, seeded.originalBinding.baseUrl);
+    await listItem(seeded.tasksDemo.projectId).waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.stoppedNodeC = await stop(nodeC.process);
+  });
+
+  await runCase('E2E-025', 'Tasks survive a real backend restart', async obs => {
+    await ensureProjectsEnabled();
+    const snapshot = async () => Promise.all((await api.projects(nodeA)).map(async project => ({ project, tasks: await api.tasks(nodeA, project.projectId) })));
+    const before = await snapshot();
+    obs.stopped = await stop(nodeA.process);
+    await startNode(nodeA);
+    const after = await snapshot();
+    obs.projectTaskCounts = after.map(item => `${item.project.name}:${item.tasks.length}`);
+    assert(JSON.stringify(after) === JSON.stringify(before), 'Projects or Tasks changed across restart');
+    await openProjectDetail(seeded.tasksDemo.projectId);
+    await waitFor('Tasks after restart', async () => (await taskSummaries()).join('|') === 'Write release notes for 1.4.87 and 1.4.88|Plan the Tasks admission work');
+    obs.countAfterRestart = await openCountText(seeded.tasksDemo.projectId);
+    assert(obs.countAfterRestart === '2 open', `Count after restart: ${obs.countAfterRestart}`);
+  });
+
   const results = Object.values(evidence.cases).map(item => item.result);
   evidence.summary = Object.fromEntries(Object.entries(evidence.cases).map(([id, item]) => [id, item.result]));
   evidence.result = results.every(result => result === 'Pass' || result === 'Not Tested') && results.some(result => result === 'Pass') ? 'Pass' : 'Fail';
@@ -1013,6 +1687,7 @@ try {
   try { evidence.cleanup.frontend = await stop(frontend); } catch (error) { evidence.cleanup.frontendError = error.message; }
   try { evidence.cleanup.nodeA = await stop(nodeA?.process); } catch (error) { evidence.cleanup.nodeAError = error.message; }
   try { evidence.cleanup.nodeB = await stop(nodeB?.process); } catch (error) { evidence.cleanup.nodeBError = error.message; }
+  try { evidence.cleanup.nodeC = await stop(nodeC?.process); } catch (error) { evidence.cleanup.nodeCError = error.message; }
   if (ownedRoot) {
     try { await fs.rm(ownedRoot, { recursive: true, force: true }); evidence.cleanup.tempRoot = 'removed'; }
     catch (error) { evidence.cleanup.tempRootError = error.message; }
