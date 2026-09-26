@@ -117,12 +117,7 @@ const storedNode = (changes: Partial<ResolvedTeamRunLaunchConfig> = {}): Existin
       displayName: resolved(changes).llmModelIdentifier, canonicalName: resolved(changes).llmModelIdentifier,
       description: null, configSchema: codexSchema, recommended: false,
     }, replacements: [], unavailableReason: null } },
-  storedWorkspace: {
-    workspaceId: null,
-    displayName: '/history/reviewer',
-    rootPath: '/history/reviewer',
-    availability: 'historical-only',
-  },
+  workspacePresentation: { kind: 'fixed-path' },
 })
 const mountItem = (node: EditableTeamFormAgentNode | ExistingTeamFormAgentNode, disabled = false) =>
   mount(MemberOverrideItem, { props: { node, memberBreadcrumb: 'reviewer', disabled } })
@@ -134,6 +129,30 @@ const ready = async () => {
 }
 
 describe('MemberOverrideItem', () => {
+  it('shows a saved Team member path once and a missing path neutrally', async () => {
+    const member = mountItem(storedNode({ workspaceRootPath: '/saved/member' }), true)
+    await ready()
+    expect(member.get('[data-test="fixed-workspace-value"]').text()).toBe('/saved/member')
+    expect(member.get('[data-test="fixed-workspace-value"]').attributes('aria-readonly')).toBe('true')
+    expect(member.find('[role="tablist"]').exists()).toBe(false)
+    expect(member.find('[data-test="stored-workspace-unavailable"]').exists()).toBe(false)
+    const missing = mountItem(storedNode(), true)
+    await ready()
+    expect(missing.get('[data-test="fixed-workspace-value"]').text()).toBe('—')
+  })
+
+  it('keeps saved Agent Org members on the selector variant', async () => {
+    const node = { ...storedNode({ workspaceRootPath: '/org/member' }), workspacePresentation: {
+      kind: 'selector' as const, model: { mode: 'stored' as const, workspace: {
+        workspaceId: null, displayName: '/org/member', rootPath: '/org/member', availability: 'historical-only' as const,
+      } },
+    } }
+    const wrapper = mountItem(node, true)
+    await ready()
+    expect(wrapper.find('[data-test="fixed-workspace-path"]').exists()).toBe(false)
+    expect(wrapper.find('[role="tablist"]').exists()).toBe(true)
+  })
+
   let llmStore: any
   let runtimeAvailabilityStore: any
 
@@ -409,7 +428,9 @@ describe('MemberOverrideItem', () => {
     await ready()
     expect((wrapper.get('#existing--reviewer-runtime-kind').element as HTMLSelectElement).value).toBe('removed-runtime')
     expect(wrapper.findComponent({ name: 'SearchableGroupedSelect' }).text()).toContain('removed-agent-model')
-    expect((wrapper.get('input[type="text"]').element as HTMLInputElement).value).toBe('/history/reviewer')
+    expect(wrapper.get('[data-test="fixed-workspace-value"]').text()).toBe('/history/reviewer')
+    expect(wrapper.find('[data-test="stored-workspace-unavailable"]').exists()).toBe(false)
+    expect(wrapper.find('[role="tablist"]').exists()).toBe(false)
     expect(wrapper.findAll('[data-historical-key="reasoning_effort"]')).toHaveLength(1)
     expect(wrapper.findAll('[data-historical-key="service_tier"]')).toHaveLength(1)
     expect(wrapper.findAll('[data-test="historical-model-config-residual"]')
