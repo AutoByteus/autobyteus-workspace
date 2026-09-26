@@ -1,4 +1,4 @@
-# Delivery / Release / Deployment Report — DR-003 (recovery in progress)
+# Delivery / Release / Deployment Report — DR-004 (same-version recovery in progress)
 
 Package docker-image-http400-20260926. Medium / High / Reviewed.
 Authoritative archived package: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-attachment-exact-execution`.
@@ -73,3 +73,18 @@ Delivery corrected only archived filenames, preserving SHA-256 and full mapping
 (delivery-evidence/evidence-renames.json). No new product verification needed.
 Current publication target **v1.4.88**, same helper/no-push/personal-then-tag method.
 No manual duplicate dispatch. Result pending all corrective workflows and cleanup.
+
+## Latest authority — user-directed same-version recovery
+User: “you can actually fix those and re-trigger the build for the same version.
+It's not good like we increased two versions.” This supersedes the v1.4.88 plan.
+All v1.4.88 runs cancellation requested. At initial check its GitHub release was
+a draft with zero assets and no publishedAt; v1.4.87 release absent. Docker default
+push was cancelled, zh and publish-summary skipped. Do not infer removal of registry
+artifacts solely from cancellation; publication-state checks are recorded separately.
+Package/curated notes restored to **1.4.87**; source/test code unchanged. Explicit
+user direction permits retargeting the failed, unpublished v1.4.87 tag. Guard the
+remote update with the observed old annotated-tag object
+d65f86674c037656b4455ea2fdfe83a9923a7a26. Remove only the unintended unpublished
+v1.4.88 draft/tag after runs stop; retain audit commits and run evidence. Push
+corrected personal first, then the corrected v1.4.87 tag (one normal workflow set;
+no simultaneous manual dispatch). Status In progress; no terminal completion yet.

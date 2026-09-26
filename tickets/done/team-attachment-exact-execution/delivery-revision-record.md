@@ -8,6 +8,7 @@ remain authoritative. No previous delivery result was inferred from absent recor
 |---|---|---|---|---|
 | DR-001 | CRR-002 test review Pass / API-REV-001 Pass | N/A | Blocked — user-verification hold; docs sync Pass | docs-sync-report.md; handoff-summary.md; release-deployment-report.md; release-notes.md |
 | DR-002 | Explicit user acceptance and release request | DR-001 verification hold | Repository finalized; publication blocked by archived evidence paths | release-deployment-report.md; handoff-summary.md; release-notes.md; delivery-evidence/ |
+| DR-003 | Release-local correction | DR-002 publication blocked | Corrective v1.4.88 stopped at user direction; same-version recovery required | release-deployment-report.md; release-notes.md; delivery-evidence/ |
 
 ## DR-001 — Integrated documentation baseline
 - Date: 2026-09-26. Package docker-image-http400-20260926.
@@ -41,3 +42,14 @@ remain authoritative. No previous delivery result was inferred from absent recor
 - Docs sync and acceptance remain valid. No source/behavior issue; Delivery owns archival filenames and publication recovery.
 - Next action: byte-preserving evidence filename shortening, local hygiene gate, corrective v1.4.88.
 - Terminal return Not yet eligible; cleanup deferred. Installed deployment Not required for publication.
+
+## DR-003 — Corrective version attempt stopped at user direction
+- Prior DR-002: first publication blocked by evidence path lengths.
+- Filename-only correction e47949fa1 passed the repository artifact hygiene gate; original log hashes retained.
+- Helper created/pushed 8c420f8743bb95e6b8235b60f4e447af372d7357 and v1.4.88.
+- Current result **Blocked — superseded by explicit same-version recovery request**, not Delivery Completed.
+- User rejected unnecessary version increment: “you can actually fix those and re-trigger the build for the same version.”
+- v1.4.88 cancellation requested for all four runs; at inspection GitHub release was an unpublished empty draft.
+- Next action: restore package/notes to 1.4.87, remove unintended unpublished 1.4.88 release/tag after cancellation, and retarget 1.4.87 to corrected commit using an exact old-tag lease.
+- This is the user-authorized exception to tag immutability. No source changes or verification invalidation.
+- Terminal not eligible until corrected publication succeeds and safe cleanup completes.

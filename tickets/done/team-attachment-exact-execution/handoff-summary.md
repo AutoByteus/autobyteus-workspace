@@ -1,8 +1,8 @@
-# Delivery Handoff Summary — DR-003 (recovery in progress)
+# Delivery Handoff Summary — DR-004 (same-version recovery in progress)
 
 Package `docker-image-http400-20260926`; **Medium / High / Reviewed**.
 User verification and new release authorized: User message, 2026-09-26: “i tested. its done. lets finalize and release a new version”.
-Target: origin/personal; corrective release v1.4.88. Production installation/data
+Target: origin/personal; release v1.4.87. Production installation/data
 migration is **Not required for this publication-only action**, not performed or
 claimed. Operators must follow the documented coordinated upgrade procedure.
 
@@ -39,3 +39,8 @@ dispatch. Monitor all standard tag-triggered workflows and perform safe ticket c
 
 ## Publication recovery
 Repository finalization succeeded. v1.4.87 desktop publication blocked on two archived log path lengths; tag retained. Byte-preserving evidence renames only, no application changes; v1.4.88 will supersede it. See DR-002 and release-deployment-report.md.
+
+## Latest user correction
+User explicitly directed same-version retry instead of consuming v1.4.88. Current
+authority is DR-004 recovery to **v1.4.87**. The v1.4.88 attempt is being cancelled
+and removed while unpublished. Same application code; archived filename fixes retained.
