@@ -1,7 +1,6 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { Readable, Writable } from "node:stream";
 
-const STDERR_TAIL_LIMIT = 4096;
 const STOP_GRACE_MS = 2_000;
 
 export type AcpAgentProcessSpec = Readonly<{
@@ -20,20 +19,17 @@ export type AcpAgentProcessExit = Readonly<{
 
 /**
  * Owns one ACP agent child process: spawn, Node-to-Web stream bridging for the SDK,
- * a bounded stderr tail kept for diagnostics only, exit detection and stop.
+ * stderr draining (agent output is never surfaced), exit detection and stop.
  */
 export class AcpAgentProcess {
   private readonly exitListeners = new Set<(exit: AcpAgentProcessExit) => void>();
   private exitInfo: AcpAgentProcessExit | null = null;
-  private stderr = "";
   readonly output: WritableStream<Uint8Array>;
   readonly input: ReadableStream<Uint8Array>;
 
   private constructor(private readonly child: ChildProcessWithoutNullStreams) {
-    child.stderr.setEncoding("utf8");
-    child.stderr.on("data", (chunk: string) => {
-      this.stderr = (this.stderr + chunk).slice(-STDERR_TAIL_LIMIT);
-    });
+    // Drained so the child never blocks on a full pipe; the content may hold paths or secrets.
+    child.stderr.resume();
     // Writes after exit fail with EPIPE; the connection observes the close instead.
     child.stdin.on("error", () => undefined);
     child.once("error", (error: NodeJS.ErrnoException) =>
@@ -50,9 +46,6 @@ export class AcpAgentProcess {
   }
 
   get exited(): AcpAgentProcessExit | null { return this.exitInfo; }
-
-  /** Diagnostics only; never surfaced to users because it may contain paths or secrets. */
-  stderrTail(): string { return this.stderr; }
 
   onExit(listener: (exit: AcpAgentProcessExit) => void): () => void {
     if (this.exitInfo) {

@@ -4,6 +4,7 @@ import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js"
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
+import { AgentCreationError } from "../../../errors.js";
 import type { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../skills/services/skill-service.js";
 import type { AgentToolMcpRunSessionActivator } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -21,6 +22,7 @@ import type { AcpAgentLaunchProfile } from "../../../../runtime-management/acp/a
 import { AcpAgentProcess } from "../../../../runtime-management/acp/acp-agent-process.js";
 import { AcpClientConnection } from "../../../../runtime-management/acp/acp-client-connection.js";
 import { AcpAgentCapabilities } from "../../../../runtime-management/acp/acp-agent-capabilities.js";
+import { describeAcpActivationError } from "../../../../runtime-management/acp/acp-error-message.js";
 import type { AcpAgentSessionProfile } from "../acp-agent-session-profile.js";
 import { AcpAgentSession } from "../session/acp-agent-session.js";
 import { AcpAgentRunBackend } from "./acp-agent-run-backend.js";
@@ -65,7 +67,8 @@ const reasoningEffortOf = (config: AgentRunConfig): string | null => {
 /**
  * Create/restore sequencing for any ACP agent, parameterized by its launch and session
  * profiles. Acquires workspace, skills, Agent Tools MCP, one agent process and one session;
- * on failure it stops the process and releases the skills it acquired.
+ * on failure it stops the process and releases the skills it acquired. Agent JSON-RPC errors
+ * and safe ACP errors surface as `AgentCreationError` so the caller shows the agent's text.
  */
 export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
   constructor(private readonly deps: AcpAgentRunBackendFactoryDependencies) {}
@@ -90,7 +93,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
   async restoreBackend(context: AgentRunContext<RuntimeAgentRunContext>): Promise<AcpAgentRunBackend> {
     const sessionId = context.runtimeContext instanceof AcpAgentRunContext ? context.runtimeContext.sessionId : null;
     if (!sessionId || sessionId === context.runId) {
-      throw new Error(`PLATFORM_AGENT_RUN_BINDING_INVALID: ${this.deps.launchProfile.agentLabel} restore requires the exact session id.`);
+      throw new AgentCreationError(`PLATFORM_AGENT_RUN_BINDING_INVALID: ${this.deps.launchProfile.agentLabel} restore requires the exact session id.`);
     }
     const prepared = await this.prepare(context.config, context.runId);
     return this.launch(context.config, context.runId, prepared, async (session) => {
@@ -164,7 +167,8 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
       session.close();
       await connection.close();
       await releaseSkills();
-      throw error;
+      const message = describeAcpActivationError(launchProfile.agentLabel, error);
+      throw message ? new AgentCreationError(message) : error;
     }
   }
 

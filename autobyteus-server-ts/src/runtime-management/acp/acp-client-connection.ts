@@ -1,5 +1,6 @@
 import {
   ClientSideConnection,
+  PROTOCOL_VERSION,
   RequestError,
   ndJsonStream,
   type AnyMessage,
@@ -128,7 +129,7 @@ export class AcpClientConnection {
 
   async initialize(): Promise<InitializeResponse> {
     return this.guard("initialize", withTimeout(this.sdk.initialize({
-      protocolVersion: 1,
+      protocolVersion: PROTOCOL_VERSION,
       clientCapabilities: { fs: { readTextFile: false, writeTextFile: false }, terminal: false },
       clientInfo: CLIENT_INFO,
     }), INITIALIZE_TIMEOUT_MS, "initialize"));

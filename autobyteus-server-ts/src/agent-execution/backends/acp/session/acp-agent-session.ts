@@ -1,5 +1,4 @@
 import {
-  RequestError,
   type ContentBlock,
   type LoadSessionRequest,
   type NewSessionRequest,
@@ -10,6 +9,7 @@ import {
 } from "@agentclientprotocol/sdk";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 import type { AcpClientConnection, AcpSessionFrameHandler } from "../../../../runtime-management/acp/acp-client-connection.js";
+import { describeAcpError } from "../../../../runtime-management/acp/acp-error-message.js";
 import type { AcpAgentSessionProfile, AcpMcpReadinessRequirement, AcpMcpServerStatus } from "../acp-agent-session-profile.js";
 import { AcpSessionUpdateConverter } from "../events/acp-session-update-converter.js";
 import { AcpPermissionBridge } from "./acp-permission-bridge.js";
@@ -40,17 +40,6 @@ export type AcpAgentSessionOptions = Readonly<{
 
 type McpWaiter = Readonly<{ serverName: string; resolve: () => void; reject: (error: Error) => void }>;
 
-const errorMessage = (error: unknown): string => {
-  if (error instanceof RequestError) {
-    const data = error.data as { message?: unknown; details?: unknown } | string | undefined;
-    const detail = typeof data === "string" ? data
-      : typeof data?.message === "string" ? data.message
-        : typeof data?.details === "string" ? data.details : null;
-    return detail && !error.message.includes(detail) ? `${error.message}: ${detail}` : error.message;
-  }
-  return error instanceof Error ? error.message : String(error);
-};
-
 /**
  * One ACP session: `created -> opening(new|load) -> ready -> prompting -> ready`, with
  * `prompting -> cancelling -> ready`, and any state to `failed` or `closed`. Suppresses the
@@ -61,6 +50,8 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
   private currentState: AcpSessionState = "created";
   private id: string | null = null;
   private callOrdinal = 1;
+  /** The user answered reject-once in the current turn (input to `cancelled` classification). */
+  private userDeniedInTurn = false;
   private idleTimer: ReturnType<typeof setTimeout> | null = null;
   private readonly converter: AcpSessionUpdateConverter;
   private readonly bridge = new AcpPermissionBridge();
@@ -121,13 +112,12 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     const sessionId = this.requireReady();
     this.currentState = "prompting";
     this.callOrdinal = 1;
+    this.userDeniedInTurn = false;
     const started = this.converter.startTurn(turnId);
     this.refreshIdleTimer();
     void this.options.connection.prompt({ sessionId, prompt }).then(
-      (response) => this.finishTurn(turnId, () => response.stopReason === "cancelled"
-        ? this.converter.interruptTurn()
-        : this.converter.completeTurn(response.stopReason)),
-      (error: unknown) => this.finishTurn(turnId, () => this.converter.failTurn("ACP_PROMPT_FAILED", errorMessage(error))),
+      (response) => this.finishTurn(turnId, () => this.endTurnFor(response.stopReason)),
+      (error: unknown) => this.finishTurn(turnId, () => this.converter.failTurn("ACP_PROMPT_FAILED", describeAcpError(error))),
     );
     return started;
   }
@@ -149,6 +139,7 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     if (result.kind === "option_unavailable") {
       return { accepted: false, code: "TOOL_APPROVAL_OPTION_UNAVAILABLE", message: "The agent offered no one-time approval for this tool call." };
     }
+    if (result.outcome === "rejected") this.userDeniedInTurn = true;
     this.options.emit(approved
       ? this.converter.approved(toolCallId, reason)
       : this.converter.denied(toolCallId, reason ?? "Tool execution denied by user."));
@@ -214,12 +205,24 @@ export class AcpAgentSession implements AcpSessionFrameHandler {
     return decision;
   }
 
+  /**
+   * `cancelled` is classified by state, interrupt first: a user interrupt (`cancelling`) is
+   * interrupted; an agent that ends its turn after the user rejected a permission in this turn
+   * completed it; any other agent-side cancel stays interrupted.
+   */
+  private endTurnFor(stopReason: string): AgentRunEvent[] {
+    if (stopReason !== "cancelled") return this.converter.completeTurn(stopReason);
+    if (this.currentState === "cancelling" || !this.userDeniedInTurn) return this.converter.interruptTurn();
+    return this.converter.completeTurn(stopReason);
+  }
+
   private finishTurn(turnId: string, build: () => AgentRunEvent[]): void {
     if (!this.isInTurn() || this.converter.activeTurnId !== turnId) return;
+    const events = build();
     this.currentState = "ready";
     this.clearIdleTimer();
     this.bridge.cancelAll();
-    this.options.emit(build());
+    this.options.emit(events);
   }
 
   private fail(failure: AcpSessionFailure): void {

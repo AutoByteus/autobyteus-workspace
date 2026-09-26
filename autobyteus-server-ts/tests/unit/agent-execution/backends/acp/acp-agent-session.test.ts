@@ -156,6 +156,64 @@ describe("AcpAgentSession over recorded Grok traffic", () => {
     expect(harness.session.approve(invocationId, true, null)).toMatchObject({ accepted: false, code: "TOOL_APPROVAL_NOT_PENDING" });
   });
 
+  describe("classifying an agent-side `cancelled` stop (CR-006, AC-004 as amended)", () => {
+    const permissionRows = readFixture("permission");
+    const promptRequest = permissionRows.find((row) => row.dir === "out" && row.msg.method === "session/prompt")!;
+    const answerIndex = permissionRows.findIndex((row) => row.dir === "out" && !row.msg.method && row.msg.result?.outcome);
+    const cancelledResult: FixtureRow = { dir: "in", msg: { jsonrpc: "2.0", id: promptRequest.msg.id, result: { stopReason: "cancelled" } } };
+
+    const denyAndWait = async (harness: SessionHarness): Promise<string> => {
+      await openNew(harness);
+      harness.events.push(...harness.session.startTurn("turn-1", [{ type: "text", text: "go" }]));
+      await waitFor(() => harness.events.some((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED));
+      const invocationId = String(harness.events.find((event) => event.eventType === AgentRunEventType.TOOL_APPROVAL_REQUESTED)!.payload.invocation_id);
+      expect(harness.session.approve(invocationId, false, null)).toEqual({ accepted: true });
+      return invocationId;
+    };
+
+    it("completes the turn when the agent ends it after the user's reject-once", async () => {
+      const harness = track(createSessionHarness({ fixture: writeCustomFixture([...permissionRows.slice(0, answerIndex + 1), cancelledResult]) }));
+      const invocationId = await denyAndWait(harness);
+      await waitFor(() => harness.events.some((event) => event.eventType === AgentRunEventType.TURN_COMPLETED));
+      expect(harness.events.filter((event) => event.payload.invocation_id === invocationId).map((event) => event.eventType))
+        .toEqual([AgentRunEventType.TOOL_APPROVAL_REQUESTED, AgentRunEventType.TOOL_DENIED]);
+      expect(harness.events.at(-1)).toMatchObject({ eventType: AgentRunEventType.TURN_COMPLETED, statusHint: "IDLE",
+        payload: { turn_id: "turn-1", provider_stop_reason: "cancelled" } });
+      expect(eventTypes(harness.events)).not.toContain(AgentRunEventType.TURN_INTERRUPTED);
+      expect(harness.session.state).toBe("ready");
+    });
+
+    it("keeps a user interrupt after a denial interrupted (interrupt is checked first)", async () => {
+      const harness = track(createSessionHarness({ fixture: writeCustomFixture([...permissionRows.slice(0, answerIndex + 1),
+        { dir: "out", msg: { jsonrpc: "2.0", method: "session/cancel" } }, cancelledResult]) }));
+      await denyAndWait(harness);
+      expect(await harness.session.cancel("turn-1")).toBe(true);
+      await waitFor(() => harness.events.some((event) => event.eventType === AgentRunEventType.TURN_INTERRUPTED));
+      expect(eventTypes(harness.events)).not.toContain(AgentRunEventType.TURN_COMPLETED);
+    });
+
+    it("keeps an agent-side cancel without a user denial interrupted", async () => {
+      const rows: FixtureRow[] = [...handshakeRows(), { dir: "out", msg: { jsonrpc: "2.0", id: 99, method: "session/prompt" } },
+        { dir: "in", msg: { jsonrpc: "2.0", id: 99, result: { stopReason: "cancelled" } } }];
+      const harness = track(createSessionHarness({ fixture: writeCustomFixture(rows) }));
+      await openNew(harness);
+      await runTurn(harness);
+      expect(harness.events.at(-1)).toMatchObject({ eventType: AgentRunEventType.TURN_INTERRUPTED });
+    });
+
+    it("resets the denial at the next turn", async () => {
+      const rows: FixtureRow[] = [...permissionRows.slice(0, answerIndex + 1), cancelledResult,
+        { dir: "out", msg: { jsonrpc: "2.0", id: 98, method: "session/prompt" } },
+        { dir: "in", msg: { jsonrpc: "2.0", id: 98, result: { stopReason: "cancelled" } } }];
+      const harness = track(createSessionHarness({ fixture: writeCustomFixture(rows) }));
+      await denyAndWait(harness);
+      await waitFor(() => harness.events.some((event) => event.eventType === AgentRunEventType.TURN_COMPLETED));
+      harness.events.length = 0;
+      await runTurn(harness, "turn-2");
+      expect(harness.events.at(-1)).toMatchObject({ eventType: AgentRunEventType.TURN_INTERRUPTED, payload: { turn_id: "turn-2" } });
+    });
+  });
+
   it("auto-approves permission requests once when auto-execute is on", async () => {
     const recordFile = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "acp-record-")), "client.jsonl");
     const harness = track(createSessionHarness({ fixture: fixturePath("permission"), recordFile, autoExecuteTools: true }));

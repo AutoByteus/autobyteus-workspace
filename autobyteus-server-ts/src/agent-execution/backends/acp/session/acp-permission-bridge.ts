@@ -8,7 +8,8 @@ type PendingPermission = Readonly<{
 }>;
 
 export type AcpPermissionDecisionResult =
-  | Readonly<{ kind: "answered" }>
+  /** `rejected` only when the agent's reject-once option was selected (never for `cancelled`). */
+  | Readonly<{ kind: "answered"; outcome: "allowed" | "rejected" | "cancelled" }>
   | Readonly<{ kind: "not_pending" }>
   | Readonly<{ kind: "option_unavailable" }>;
 
@@ -19,8 +20,6 @@ export type AcpPermissionDecisionResult =
  */
 export class AcpPermissionBridge {
   private readonly pending = new Map<string, PendingPermission>();
-
-  has(toolCallId: string): boolean { return this.pending.has(toolCallId); }
 
   pend(toolCallId: string, options: readonly PermissionOption[]): Promise<RequestPermissionResponse> {
     this.pending.get(toolCallId)?.resolve(CANCELLED);
@@ -36,11 +35,11 @@ export class AcpPermissionBridge {
   decide(toolCallId: string, approved: boolean): AcpPermissionDecisionResult {
     const pending = this.pending.get(toolCallId);
     if (!pending) return { kind: "not_pending" };
-    const response = AcpPermissionBridge.selectOnce(pending.options, approved) ?? (approved ? null : CANCELLED);
-    if (!response) return { kind: "option_unavailable" };
+    const selected = AcpPermissionBridge.selectOnce(pending.options, approved);
+    if (!selected && approved) return { kind: "option_unavailable" };
     this.pending.delete(toolCallId);
-    pending.resolve(response);
-    return { kind: "answered" };
+    pending.resolve(selected ?? CANCELLED);
+    return { kind: "answered", outcome: !selected ? "cancelled" : approved ? "allowed" : "rejected" };
   }
 
   /** Answers every pending request `cancelled`; returns the affected tool call ids. */

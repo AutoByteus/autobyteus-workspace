@@ -17,8 +17,8 @@ describe("AcpPermissionBridge", () => {
     const bridge = new AcpPermissionBridge();
     const approved = bridge.pend("a", OPTIONS);
     const denied = bridge.pend("b", OPTIONS);
-    expect(bridge.decide("a", true)).toEqual({ kind: "answered" });
-    expect(bridge.decide("b", false)).toEqual({ kind: "answered" });
+    expect(bridge.decide("a", true)).toEqual({ kind: "answered", outcome: "allowed" });
+    expect(bridge.decide("b", false)).toEqual({ kind: "answered", outcome: "rejected" });
     expect(await approved).toEqual({ outcome: { outcome: "selected", optionId: "allow-once" } });
     expect(await denied).toEqual({ outcome: { outcome: "selected", optionId: "reject-once" } });
     expect(bridge.decide("a", true)).toEqual({ kind: "not_pending" });
@@ -29,6 +29,13 @@ describe("AcpPermissionBridge", () => {
     const pending = bridge.pend("a", [OPTIONS[0], OPTIONS[3]]);
     expect(bridge.decide("a", true)).toEqual({ kind: "option_unavailable" });
     expect(bridge.cancelAll()).toEqual(["a"]);
+    expect(await pending).toEqual({ outcome: { outcome: "cancelled" } });
+  });
+
+  it("reports a denial without a reject-once option as cancelled, never as a user rejection", async () => {
+    const bridge = new AcpPermissionBridge();
+    const pending = bridge.pend("a", [OPTIONS[0], OPTIONS[3]]);
+    expect(bridge.decide("a", false)).toEqual({ kind: "answered", outcome: "cancelled" });
     expect(await pending).toEqual({ outcome: { outcome: "cancelled" } });
   });
 });
