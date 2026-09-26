@@ -1,0 +1,50 @@
+{
+  "case": "core8_replace_file_content",
+  "configured_tools": [
+    "view_file",
+    "write_to_file",
+    "replace_file_content",
+    "grep_search",
+    "list_dir",
+    "find_by_name",
+    "run_command",
+    "generate_image"
+  ],
+  "exit": 0,
+  "timed_out": false,
+  "seconds": 7.2,
+  "init_agent_match": true,
+  "status": "SUCCESS",
+  "response_length": 204,
+  "response_has_expected_marker": false,
+  "tool_steps": [
+    {
+      "name": "view_file",
+      "state": "ACTIVE",
+      "has_output": false,
+      "has_error": false
+    },
+    {
+      "name": "view_file",
+      "state": "DONE",
+      "has_output": true,
+      "has_error": false
+    },
+    {
+      "name": "replace_file_content",
+      "state": "ACTIVE",
+      "has_output": false,
+      "has_error": false
+    },
+    {
+      "name": "replace_file_content",
+      "state": "DONE",
+      "has_output": false,
+      "has_error": false
+    }
+  ],
+  "unknown_names": [],
+  "workspace_files": {
+    "replace.txt": "NEW\n"
+  }
+}

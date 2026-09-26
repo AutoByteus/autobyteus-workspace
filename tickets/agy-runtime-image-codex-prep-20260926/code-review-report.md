@@ -1,163 +1,140 @@
-# Code Review Report — CRR-002
+# Code Review Report — CRR-005
 
 ## Review Round Meta
 
-- Review Entry Point: Implementation Review; round 2, fresh full source review after CRR-001's authority hold.
-- Requirements, investigation, solution history, design, design review, architecture review history, implementation handoff and implementation history: canonical files in this ticket directory, reviewed as the cumulative context. Supplemental behavior artifacts: N/A.
-- Relevant solution revisions: SR-005, SR-009/SR-010, approved SR-013/SR-014/E-034 and design SR-015. Relevant architecture revision: ARCH-REV-004 Pass (ARCH-REV-003 historical). Relevant implementation revision: IR-002. API/E2E and delivery revisions: N/A.
-- Prior report/revision: `code-review-report.md` / `code-review-revision-record.md`, CRR-001 Blocked; C-001 held for authority, not a finding. Current revision: CRR-002.
-- Source revisions: server `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926@98893d019` (implementation `dd9efb39b`, baseline `ae3aba1bf`); separate package `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-codex-skill-bundle-20260926@a140474` (base `1b1a75ee`). Commit identity rebase is indexed in IR-002.
-- Failure-origin-only fields: N/A; no API/E2E execution result has arrived.
+- Review entry point: **Full Implementation Review**, round 5, on IR-005/server source commit `4fe185502` (handoff `ca801db64`) and unchanged Codex package `a140474`.
+- Authority/context reviewed: current approved `requirements-doc.md` (SR-021/E-055; SR-018/E-048; SR-013/E-034), `investigation-notes.md` E-036/037, E-045–056, `solution-revision-record.md`, SR-023 `design-spec.md`, ARCH-REV-008 Pass `design-review-report.md` and `architecture-review-revision-record.md`, IR-005 `implementation-handoff.md` and `implementation-revision-record.md`. Product/behavior supplement: **N/A — not applicable**. Prior `code-review-revision-record.md` CRR-001–004 and API-REV-001 failure evidence reviewed as history. Delivery revision: N/A.
+- Trigger: Implementation Engineer's IR-005 completed-source handoff after ARCH-REV-008. Historical CRR-004 was failure-origin Design Impact on superseded SR-015; it was not source signoff for SR-023.
+- Worktrees: server `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-runtime-capabilities-20260926`; separate Codex package `/Users/normy/autobyteus-org/autobyteus-task-worktrees/agy-codex-skill-bundle-20260926`.
+- Current code-review revision ID: CRR-005. Coverage reports: historical API-REV-001 only; no new API/E2E execution is claimed in this review.
 
 ## Routing Classification Review
 
-- Task size: **Medium**; architectural risk: **High**; selected route: independent Implementation Review.
-- Evidence: provider-native permissions, public/private native-image results, shared file projection, and skill provenance cross a separate package boundary. Classification remains proportionate; no silent reroute.
+- Task size: **Medium**; architectural risk: **High**; selected route: independent Implementation Review, then API/E2E on Pass.
+- Classification confirmed: bounded AGY policy/converter/backend cleanup, retained skill/package work, but native provider/MCP scope, public/private error and skill-source safety remain high risk. No correction.
 
 ## Review Scope
 
-- Reviewed complete integrated BEH-001/002/003 production paths from chat activation through AGY capsule/provider events/Files, plus current skill resolution/materialization and the portable package. Read implementation changes against `ae3aba1bf` and IR-002 delta against `04e873ba1`; sampled relevant unchanged manager, MCP authority, file-content route, Codex/Claude resolver consumers, and tests. `git diff --check` is clean; implementation logs show 110 focused tests passed/1 skipped, later 62 passed, and 25 file/projection/REST units passed. This review does not claim live AGY/API-E2E validation or rendered UI inspection.
-- Prior C-001 authority hold is resolved by explicit E-034 approval, SR-015 revised design and ARCH-REV-004 Pass; IR-002 now warns/omits semantic-invalid content. It was never a source finding.
+- Fresh integrated review of native tool policy, capsule/factory and scoped MCP path; AGY process/backend/converter and canonical lifecycle/file-change path; configured-skill resolver/materializer and Codex package; IR-005 changed unit tests and obsolete-code removal.
+- No production-source file is locally modified beyond the committed IR-005 implementation. Existing API/E2E worktree test/evidence changes are not a successful-test review. No live provider, UI, browser, Team/Org or Codex first-turn execution is claimed here.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved behavior basis: confirmed. SR-013/E-034 authorizes shared metadata/name validation, warn/omit for missing or semantic-invalid content, and hard safety/collision/source-change failures. SR-005 retains native AGY non-collaboration tool parity and native-image provenance; app MCP media is not a substitute.
-- Design map: DS-001 through DS-004 are represented by the actual code, except the shared file-change projection's AGY-specific branch lacks the explicit runtime provenance required by SR-015's interface/ownership contract (F-001 below).
-- No newly discovered product behavior or requirement gap. Provider's model-exposed tool profile and real image output remain verification gates, not inferred source findings.
+- Approved intent and SR-023 behavior map: **Confirmed** against source. ARCH-REV-008 passed the corrected terminal-result design; earlier ARCH-REV-006/SR-019 image-artifact path and CRR-004 path requirement are obsolete under E-055.
+- Changed/new supported behavior or ambiguity: **None**. The user-approved native image outcome is genuine invocation, provider tool status and ordinary reply, **not** an app-owned artifact.
 
-| Behavior ID | Current Status | Production path and lifecycle evidence | Contradiction / qualification |
+| Behavior ID | Status | Verified current production path and lifecycle | Contradiction |
 | --- | --- | --- | --- |
-| BEH-001 | Confirmed | Chat activation → `AgyAgentRunBackendFactory.createBackend` → CLI version/model discovery → `agy-native-tool-policy.ts` → run capsule frontmatter; separately scoped `activateMcp` descriptor → `AgyStreamProcess`. Restore keeps saved capsule. | 1.2.11 names and actual model exposure require API/E2E; no MCP substitution in source. |
-| BEH-003 | Confirmed with F-001 structural qualification | Native AGY `tool_name: generate_image` → `AgyStreamEventConverter` → explicit path/header verification or static failure → canonical tool event → `FileChangeEventProcessor` → projection/REST content/UI. | Shared projection's added branch does not check `RuntimeKind.ANTIGRAVITY_CLI`; F-001 is boundary fidelity, not a claim of observed wrong image output. |
-| BEH-002 | Confirmed | Codex first prompt → definition `sourceInfo.agentDirPath` → detailed `SkillService` resolver → `certified_absent`/`invalid_candidate` warning omission or trusted `resolved` snapshot → manifest v1 → AGY start. | Source-safety/collision/source-change errors stay blocking; live first reply still needs API/E2E. |
+| BEH-001; REQ-001/005/006 | Confirmed | User activates AGY run → factory validates installed version/model → `agy-native-tool-policy.ts` grants exact E-048 eight names in capsule frontmatter; separate run-scoped MCP descriptor/config remains additive; no native collaboration or native `call_mcp_tool` grant. | None in source; actual full-app model exposure remains API/E2E. |
+| BEH-003; REQ-002 | Confirmed | Chat input → `AgyStreamProcess` → converter `tool_name=generate_image` ACTIVE/DONE/ERROR and provider `result` → canonical tool/chat/lifecycle. Native arguments/output are empty/null publicly; DONE without path succeeds as provider-step fact; failed terminal result is fixed-safe and not completed. No image copy/Files entry is fabricated. | None in source; actual provider behavior remains API/E2E. |
+| BEH-002; REQ-003/004 | Confirmed | Definition's configured skills → detailed resolver → AGY materializer warns/omits absent or semantic-invalid; valid source fingerprints/copies into capsule; provenance/collision/source-change faults block; package-local Codex tree remains portable. | None in source; live first turn remains API/E2E. |
 
 ## Supported Product Scenario And Reachability Gate
 
-| Scenario ID | Related IDs | Kind / independent actor or event | Supported entry, forward path and lifecycle | Expected consequence / evidence | Validity / review use |
-| --- | --- | --- | --- | --- | --- |
-| SCN-001 | BEH-001/003; REQ-001/002/005; AC-001/002/005 | User asks AGY-backed Solution Designer for native image. | AutoByteus chat → new AGY run/capsule → native `generate_image` step → converter → file projection/content; failure takes safe public terminal path. | Real accessible image or accurate safe failure; SR-005, E-001/003/014/016–018. | Supported Normal Scenario / Use. |
-| SCN-002 | BEH-002; REQ-003; AC-003 | User starts standalone Codex and sends first prompt. | Agent package definition/skill → detailed resolution → run snapshot → AGY activation/first reply. | Intended bundled skill when valid; E-004/005/019/020 and SR-013. | Supported Normal Scenario / Use. |
-| SCN-003 | BEH-002; REQ-004; AC-004 | Supported skill-content/safety event during otherwise healthy first-turn preparation. | Contextual/global candidate inspection → typed skippable absence/semantic invalidity or coded source/collision failure → capsule/launch or safe failure. | Warn/omit invalid content, preserve peers, block unsafe source; E-028–E-034, SR-013/E-034. | Supported Explicit Edge Scenario / Use. |
-| SCN-004 | BEH-001; REQ-006; AC-006 | User-approved Team/Org native-collaboration exclusion contract. | New AGY Team/Org run → native profile excludes collaboration names while MCP authority grants configured collaboration. | Tracked AutoByteus team work; E-013 and SR-005. | Supported Explicit Edge Scenario / Use. |
+| Scenario ID | Related behavior/contract | Kind and initiator | Coherent goal/event and supported entry | Shape; forward production path/lifecycle | Expected consequence and independent evidence | Validity / use |
+| --- | --- | --- | --- | --- | --- | --- |
+| SCN-001 | BEH-001/003, AC-001/002 | User asks AGY agent for an image | AutoByteus AGY chat first turn, approved E-055 | Normal; activation → native profile/capsule → AGY step/result → canonical tool card and assistant reply | True native call and status/reply, no app file obligation; requirements SR-021, design SR-023, E-045/048 provider probes | Supported Normal Scenario / Use |
+| SCN-002 | BEH-002, AC-003 | User starts bundled Codex AGY agent | Selected Codex agent's first chat turn | Normal; package skill → configured resolver/materializer/capsule → AGY first reply | Skill available in first turn; requirements SR-013, design SR-023 and package provenance | Supported Normal Scenario / Use |
+| SCN-003 | BEH-002, AC-004 | Configured skill absent/semantically invalid or unsafe at AGY startup | Agent definition/selected skill source | Explicit edge; resolver → warning/omission or safety hard failure → startup outcome | Healthy peers survive invalid content; unsafe provenance/collision/mutation blocks; approved E-034/SR-013 and design | Supported Explicit Edge Scenario / Use |
+| SCN-004 | BEH-001, AC-005/006 | Team/Org member uses scoped communication while AGY native grants exclude collaboration | Configured Team/Org AGY activation and MCP session | Explicit edge; member identity → run-scoped MCP descriptor/capsule → provider calls | Additive MCP and no native subagent/messaging exposure; approved E-048/SR-018, design SR-023 | Supported Explicit Edge Scenario / Use |
+| SCN-005 | BEH-003, AC-002; safe public/private error contract | Provider emits failed/unknown terminal result after accepted chat turn | AGY `result` event; actual result-ERROR observed in API-REV-001/E-036 | Explicit edge; stream result → converter → AgentRun canonical error/status/ACK | No raw result fields or false completion; fixed terminal error, bounded private diagnostic; SR-023/ARCH-REV-008 | Supported Explicit Edge Scenario / Use |
 
 ### Candidate Finding And Mechanism Gate
 
-| Candidate ID | Observation or mechanism | Supported scenario / contract and independent trigger | Forward path / lifecycle / consequence | Evidence | Disposition / proportionate response |
-| --- | --- | --- | --- | --- | --- |
-| C-002 | Shared generated-file owner applies an AGY-specific file check without AGY runtime provenance. | SR-015 Interface Boundary and Ownership Map explicitly require AGY-native checks at file projection to use **run runtime kind and provider tool name**; SCN-001's independently supported image chat/run is the initiating path. | AGY converter emits `result.provider_state="DONE"` and `tool_name="generate_image"` → generic `FileChangeEventProcessor` branch at lines 315–321. Current gate proves only tool name/result-shape, not source runtime, so the shared owner cannot enforce its reviewed AGY-only boundary and could apply this policy to another generated-image event carrying the same shape. No current cross-provider corruption is claimed. | `design-spec.md` Interface Boundary Check, Ownership Map and Final File Responsibility Mapping; `file-change-event-processor.ts:315-321`; `agy-stream-event-converter.ts:106-118`; `AgentRunEventProcessorInput.runContext.config.runtimeKind`. | **Promote** as an established structural contract violation (F-001), not as a speculative current cross-provider failure. Add the AGY runtime-kind guard at the shared owner and a focused regression proving native AGY verification and preserved non-AGY projection. |
+| Candidate ID | Observation/mechanism | Scenario/contract and independent trigger | Forward path, lifecycle, consequence, evidence | Disposition and response |
+| --- | --- | --- | --- | --- |
+| C-005 | Old 49-name profile and explicit image-path gate had failed live. | SCN-001/004, actual first turn and provider DONE | API-REV-001 failed under SR-015; current exact-eight policy and pathless DONE converter remove both obsolete assumptions. | **Promote as a revalidation check, resolved** by SR-018/SR-021/IR-005; no current source finding. Real app success still awaits API/E2E. |
+| C-006 | Terminal result could leak failed response/error and falsely complete. | SCN-005, actual provider result-ERROR, independent E-036 | Converter lines 121–134 now emits fixed `AGY_TURN_ERROR`, no failed fallback/usage/`TURN_COMPLETED`; `AgentRun` recognizes terminal scope; private sink records bounded details. | **Promote as a revalidation check, resolved** by SR-023/IR-005; no current source finding. |
+| C-007 | Image-specific transcript copy/finalizing/input-admission machinery might be restored. | No longer has an approved product outcome after E-055 | IR-004 machinery was only for app-owned bytes/Files. Source search and diff show transcript/copy/finalizing and AGY-only file-stat branch removed. | **Reject as required machinery** under current scope. No score deduction or request to reinstate it. |
+| C-008 | Raw AGY CLI startup stderr might appear in public command ACK. | SCN-002/005 safe-startup contract; supported first-turn activation | `AgyStreamProcess` captures stderr in thrown cause, but `AgentRunManager.prepareCandidateOnce` converts unexpected backend errors into fixed `AgentCreationError("Failed to prepare agent run ...")` before coordinator ACK/status; raw cause is logged privately. | **Reject as current finding**: forward public path is sanitized. Live ACK redaction still warrants API/E2E. |
 
 ## Structural / Design Checks
 
-| Check | Result | Evidence | Required Action |
-| --- | --- | --- | --- |
-| Task design health assessment preserved | Pass | Bounded provider policy, output adapter, skill classification per SR-015 and IR-002. | None. |
-| Approved supplements | Pass | N/A; no behavior supplement. | None. |
-| Data-flow spine inventory | Pass | DS-001–004 trace from chat/provider to tool/Files or first reply. | None. |
-| Ownership boundary preservation | **Fail** | C-002: generic projection lacks explicit AGY provenance for AGY-only check. | F-001. |
-| Off-spine concern clarity | Pass | Native policy, diagnostic sink and fingerprinting serve named owners. | None. |
-| Existing subsystem reuse | Pass | Existing AGY capsule, MCP authority, events and projection reused. | None. |
-| Reusable owned structures | Pass | Narrow profile and detailed skill result, no duplicated skill package source in runtime. | None. |
-| Shared model tightness | Pass | Typed `resolved`/`certified_absent`/`invalid_candidate`, bounded fields, no MCP names in native profile. | None. |
-| Repeated coordination ownership | Pass | Resolver owns cause; materializer owns warn/snapshot; converter owns native image public mapping. | None. |
-| Empty indirection | Pass | New policy/normalizer/sink/fingerprint each own real behavior. | None. |
-| Separation of concerns/file responsibility | Pass | Backend/capsule/stream/skill/projection concerns remain distinct; F-001 is missing scope condition within correct owner. | F-001 only. |
-| Ownership-driven dependencies | Pass | Factory uses SkillService/MCP authority; shared projection does not import AGY internals. | None. |
-| Authoritative Boundary Rule | Pass | No caller depends on an outer owner and its internal helper/repository simultaneously in changed path. | None. |
-| File placement | Pass | Files remain with actual concern; AGY check belongs in projection but needs provenance. | F-001. |
-| Flat-vs-over-split layout | Pass | Small AGY-specific files prevent stream/capsule blobs without artificial hierarchy. | None. |
-| Interface/API/query/command clarity | **Fail** | C-002: shared projection infers AGY from `provider_state` rather than explicit `runtimeKind`. | F-001. |
-| Naming quality | Pass | AGY-native versus MCP names and safe skill-reason codes are explicit. | None. |
-| Duplication/repeated structures | Pass | No new media transport or duplicate source skill; policy list single owner. | None. |
-| Patch-on-patch complexity | Pass | IR-002 narrows resolver catch and changes only typed skip disposition. | None. |
-| Dead/obsolete cleanup | Pass | Old eight-tool constant and dangling Codex link removed. | None. |
-| Test scenarios/assertions | Pass | Focused profile, image redaction/provenance, absent/invalid/safety, projection and restore tests align with approved IDs. | Add F-001 regression. |
-| Fixture/helper reuse | Pass | Temporary skill/package builders and shared capsule helpers are coherent. | None. |
-| Stale/compatibility-only tests | Pass | Changed tests assert current warning policy; no old invalid-hard-failure expectation remains. | None. |
-| API/E2E readiness | **Fail** | Static boundary must be corrected before executable validation; live provider gates are otherwise explicitly carried. | F-001, then API/E2E. |
+| Check | Result | Evidence and required action |
+| --- | --- | --- |
+| Task design health assessment present/preserved | Pass | SR-023 narrow correction/removal matches actual ownership; no action. |
+| Approved supplemental artifacts | Pass | N/A — none applies. |
+| Data-flow spine inventory/clarity | Pass | Native grants, tool/turn return, skill snapshot and Team/Org MCP spines are traceable end-to-end above. |
+| Ownership boundaries | Pass | Policy owns grants; factory/capsule owns setup; converter owns provider interpretation; AgentRun owns canonical input/status; AGY owns image storage. |
+| Off-spine concerns | Pass | Private diagnostics and configured-skill fingerprint/copy serve their owners; no new main-line branch. |
+| Existing subsystem reuse | Pass | Existing MCP session, skill service, canonical events and file projection reused. |
+| Reusable owned structures | Pass | One provider diagnostic sink and one native allowlist; no copied policy across callers. |
+| Shared-structure/data-model tightness | Pass | Narrow typed tool/turn diagnostics; no image artifact parallel model. |
+| Repeated coordination ownership | Pass | Native policy remains one owner; terminal result rule sits in converter. |
+| Empty indirection | Pass | Removed transcript adapter rather than retain pass-through wrapper. |
+| Separation of concerns/file responsibility | Pass | Backend sequences stream/dispatch, converter maps events, diagnostic sink writes restricted evidence. |
+| Ownership-driven dependencies | Pass | AGY backend uses canonical AgentRun listener, not shared publisher internals or Files internals. |
+| Authoritative Boundary Rule | Pass | No caller newly depends on both AgentRun and its internal input/publisher components; IR-004 bypass removed. |
+| Placement | Pass | Policy/capsule, backend, stream and shared file-change files align with concerns. |
+| Flat-vs-over-split | Pass | Small AGY files and existing folders remain navigable; no image-only hierarchy retained. |
+| Interface/API/service shape | Pass | `resolveAgyNativeToolProfile`, converter events, diagnostic union and skill resolution have singular responsibilities. |
+| Naming/readability | Pass | `AgyProviderFailureDiagnostic` now covers step and turn; native DONE is named as provider state, not app delivery. |
+| Duplication | Pass | No second image result/path parser or app storage copy. |
+| Patch-on-patch complexity | Pass | IR-004 pending/deferred/finalizing logic deleted rather than layered over. |
+| Dead/obsolete cleanup | Pass | Transcript file/tests, path-required adapter and AGY stat special case removed; no in-scope references found. |
+| Relevant test scenarios/assertions | Pass | Exact eight, pathless DONE/no artifact, failed result with/without tool, status redaction, next turn, diagnostic permission and skill cases covered locally. |
+| Test fixtures/helpers | Pass | Focused converter fixtures and small fake process keep scenario boundaries readable. |
+| No stale/compatibility-only tests | Pass | IR-004 transcript/finalization tests deleted; changed assertions target E-055 outcome. |
+| API/E2E readiness | Pass | Source is review-ready; live native provenance, tool card/reply, MCP/Team/Org, skill first turn and public redaction remain explicit downstream gates, not static-review claims. |
 
 ## Source File Size And Structure Audit
 
-Changed implementation-source files only; effective nonempty lines and net changed-line signals against `ae3aba1bf`. All are below the >500 hard limit and >220 changed-line signal. Tests, fixtures, generated files and bundled Markdown skill content are excluded.
+Changed implementation-source files from the CRR-003 baseline through IR-005, excluding tests and deleted files:
 
-| Source file (under `autobyteus-server-ts/src/`) | Effective nonempty lines | >500 / >220 delta | SoC/placement | Verdict/action |
-| --- | ---: | --- | --- | --- |
-| `agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts` | 105 | No / No | Factory owns launch/MCP binding. | Pass |
-| `agent-execution/backends/antigravity/backend/agy-agent-run-backend.ts` | 95 | No / No | Run events and private diagnostic callback. | Pass |
-| `agent-execution/backends/antigravity/capsule/agy-configured-skill-materializer.ts` | 158 | No / No | Snapshot/warning owner. | Pass |
-| `agent-execution/backends/antigravity/capsule/agy-native-tool-policy.ts` | 30 | No / No | Versioned native profile. | Pass |
-| `agent-execution/backends/antigravity/capsule/agy-run-capsule.ts` | 88 | No / No | Capsule/manifest/restore. | Pass |
-| `agent-execution/backends/antigravity/stream/agy-native-image-diagnostic-sink.ts` | 37 | No / No | Private bounded sink. | Pass |
-| `agent-execution/backends/antigravity/stream/agy-native-image-result.ts` | 25 | No / No | Explicit verified path. | Pass |
-| `agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts` | 164 | No / No | Provider-specific event mapping. | Pass |
-| `agent-execution/events/processors/file-change/file-change-event-processor.ts` | 339 | No / No | Correct shared owner, but AGY check lacks origin guard. | F-001 |
-| `runtime-management/antigravity-cli-capability.ts` | 107 | No / No | CLI discovery/version boundary. | Pass |
-| `skills/domain/configured-agent-skill-binding.ts` | 21 | No / No | Narrow typed result. | Pass |
-| `skills/services/configured-agent-skill-resolver.ts` | 303 | No / No (140 additions) | Resolution, precedence, safety/content classification. | Pass |
-| `skills/services/configured-skill-source-fingerprint.ts` | 57 | No / No | Trusted tree identity. | Pass |
-| `skills/services/skill-discovery.ts` | 227 | No / No | Candidate search and cycle guard. | Pass |
-| `skills/services/skill-service.ts` | 430 | No / No | Existing catalog/service entrypoint, narrow new method. | Pass |
+| Source file | Effective nonempty lines | >500 hard limit | >220 delta | SoC/placement | Classification/action |
+| --- | ---: | --- | --- | --- | --- |
+| `agy-agent-run-backend.ts` | 123 | Pass | Pass (+67/-37) | AGY lifecycle/dispatch owner | None |
+| `agy-native-tool-policy.ts` | 17 | Pass | Pass (+2/-15) | Capsule grant policy | None |
+| `agy-provider-diagnostic-sink.ts` | 44 | Pass | Pass (+17/-10, rename) | Restricted AGY diagnostics | None |
+| `agy-stream-event-converter.ts` | 165 | Pass | Pass (+36/-35) | Provider event interpretation | None |
+| `file-change-event-processor.ts` | 331 | Pass | Pass (12 deletions) | Shared file projection; AGY-only branch removed | None |
+| `agy-native-image-result.ts` | deleted | N/A | Pass (27 deletions) | Obsolete explicit-path adapter | Removed |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No compatibility machinery | Pass | Unsupported AGY version fails; no old eight-tool or MCP-image fallback. |
-| No legacy behavior retention | Pass | Broken machine-specific Codex skill link removed; current skill policy reflected in package README. |
-| Dead/obsolete cleanup | Pass | No scoped obsolete path remains. |
-| Persisted-data transition | Pass | Existing manifest v1/restore unchanged, Directly Usable — No Migration. |
-| No version-specific dual reads/writes/request-time old-shape fallback | Pass | Existing snapshots restored without rewriting or re-resolving. |
-| Migration mechanics | Pass | N/A — no migration required. |
+| No backward-compatibility mechanisms in changed scope | Pass | Exact 1.2.11 profile for new capsules, no version fallback. |
+| No legacy old-behavior retention | Pass | 49-name and app-owned image-output paths removed. |
+| Dead/obsolete cleanup | Pass | No transcript reader/copy/finalizing or orphaned image adapter in source. |
+| Persisted-data transition | Pass | **Directly Usable — No Migration** as SR-023; existing capsule manifest v1/run metadata unchanged. |
+| No version-specific dual reads/writes | Pass | Restore uses current immutable capsule and manifest; no old-shape dual path. |
+| Transition mechanics | Pass | No migration or deletion of provider/user images; new grants only for newly created capsules. |
 
-## Dead / Obsolete / Legacy Items Requiring Removal
+Dead/obsolete items requiring removal: **None remaining** in the reviewed implementation.
+Docs impact: **Yes** — `autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md` still describes earlier 1.2.10 coverage and should be synchronized by Delivery Engineer after API/E2E establishes the current 1.2.11 outcome. This is documentation delivery work, not a source defect or live-validation claim.
 
-None remaining in changed scope.
-
-## Docs-Impact Verdict
-
-- Docs impact: Yes. Package README/provenance already updated; Delivery Engineer must sync any user-facing/native-tool/skill policy documentation after executable validation. No code-review-origin documentation blocker.
-
-## Additional Material Premise Validation
-
-- ARCH-REV-002/MP-001 (present invalid package candidate): Confirmed under approved SR-013, with changed **warn/omit** consequence; source now preserves provenance failures separately. ARCH-REV-004 carries the current design authority.
-- No new production/failure premise is asserted. C-002 relies on the explicit reviewed engineering boundary, not a conjectured current cross-provider event. No fallback, recovery or concurrency machinery is prescribed for a technical-only scenario.
+Additional material premise validation: ARCH-REV-008/F-004 terminal-result premise **confirmed in source**; ARCH-REV-005/006 image-artifact/finalizing premises **no longer relevant** after approved E-055. No new material premise is introduced.
 
 ## Review Scorecard
 
-- Overall: **9.12/10; 91.2/100** (simple ten-category mean, not the decision rule). Clean pass requires all categories >=9.0; two are below due F-001.
+- Overall: **9.30/10; 93.0/100** (simple mean; not a substitute for the Pass decision).
+- All categories meet the 9.0 clean-pass target. Minor score drag is downstream live proof, not an attributed implementation defect.
 
-| Priority | Category | Score | Why this score | Weakness / drag | Improvement |
-| --- | --- | ---: | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.2 | DS-001–004 are traceable end to end. | Live AGY payload/tool exposure unverified downstream. | Preserve evidence gates in API/E2E. |
-| 2 | Ownership Clarity and Boundary Encapsulation | **8.8** | Provider/skill owners otherwise clear. | C-002 lets an AGY-specific predicate run in shared projection without explicit runtime origin. | F-001 guard. |
-| 3 | API / Interface / Query / Command Clarity | 9.1 | Typed skill outcomes and provider events are clear. | Projection's provenance inference is implicit (C-002). | F-001 guard/regression. |
-| 4 | Separation of Concerns and File Placement | **8.8** | Files are coherently placed. | Shared owner currently applies AGY policy by event shape (C-002), not explicit scope. | F-001 guard. |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.3 | Narrow native profile, image result and skill outcomes. | Version profile needs real-provider confirmation. | API/E2E profile proof. |
-| 6 | Naming Quality and Local Readability | 9.2 | Provider-native, source safety and skip reasons are readable. | Dense resolver safety logic merits ongoing tests. | Maintain focused cases. |
-| 7 | API/E2E Readiness | 9.0 | Focused units and honest downstream gates exist. | F-001 must be corrected first; no live validation yet. | Fix then execute AC-001–006. |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.1 | Static native image, skill skip and redaction paths follow approved behavior. | Actual AGY result/profile and first turn unproven. | Real native provenance/bytes and Codex checks. |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Eight-tool fallback and broken package link removed. | Historic snapshots still deliberately retained. | No change. |
-| 10 | Cleanup Completeness | 9.2 | Scoped obsolete code removed; diffs clean. | F-001 regression remains. | Close F-001. |
+| Priority | Category | Score | Why / concrete drag / expected improvement |
+| --- | --- | ---: | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.3 | Grant, skill and result spines follow the SR-023 map; full-app provider observation remains for API/E2E. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.4 | AGY owns storage, converter owns provider facts, AgentRun owns canonical lifecycle; verify integration live. |
+| 3 | API / Interface / Query / Command Clarity | 9.3 | Exact profile and fixed canonical error shapes are explicit; downstream must confirm actual exposed profile. |
+| 4 | Separation of Concerns and File Placement | 9.4 | Obsolete copy/finalization removed, diagnostics isolated; no source action. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.3 | Diagnostic union and no artifact model are tight; no source action. |
+| 6 | Naming Quality and Local Readability | 9.3 | Provider-step DONE versus app artifact is clear; no source action. |
+| 7 | API/E2E Readiness | 9.0 | Focused tests/types pass and cases are handoff-ready; actual app/native/MCP/skill/redaction gates remain open for API/E2E. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.2 | Exact success-only fallback and terminal failure path match approval; full real AGY app execution remains unproven. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.4 | No 49-name fallback, path parser or migration; no source action. |
+| 10 | Cleanup Completeness | 9.4 | IR-004 transcript/copy/finalizing and AGY file-stat branch removed; delivery docs sync remains. |
 
-## Findings
+## Findings, Classification, Residual Risks
 
-### F-001 — Scope AGY-native file verification by run provenance
-
-- Classification: **Local Fix**, implementation-owned; candidate C-002; affects approved BEH-003/SCN-001 and SR-015's explicit shared-projection ownership/interface contract.
-- Evidence: `file-change-event-processor.ts:315-321` checks `toolName === "generate_image"` plus `result.provider_state === "DONE"` but never `input.runContext.config.runtimeKind`. The reviewed design explicitly says the file-change owner scopes AGY-native image verification using runtime kind **and** provider tool name. `agy-stream-event-converter.ts:106-118` emits the normalized native result; the shared processor then applies the policy. No current other-provider failure is asserted or needed for this structural contract finding.
-- Consequence: The generic projection owns an AGY-specific rule without proving AGY origin, weakening a high-risk provider/native-versus-MCP boundary and leaving non-AGY generated output vulnerable to that rule if it carries the same generic result fields. The correction is bounded: require `RuntimeKind.ANTIGRAVITY_CLI` in this branch and test AGY-native verification alongside unchanged non-AGY projection. Do not add a new projection subsystem or fallback.
-
-## Classification, Recipient And Residual Risks
-
-- Review decision: **Fail — Local Fix**. Recipient: `/implementation_engineer`; do not advance to API/E2E yet. After the bounded source/test correction, require another source review and then API/E2E.
-- Residual validation gates (not source findings): exact AGY 1.2.11 model-exposed native non-collaboration list and configured MCP coexistence; provider `tool_name: generate_image` rather than `call_mcp_tool`; real image bytes/path through Files/content; denial/error public and private separation across UI/history/ACK; bundled Codex skill and first AGY response; AGY-origin rejection of otherwise validated skill content. If provider contract contradicts SR-015, route Design Impact, not an MCP fallback.
+- **Current source findings: none.** Prior F-001 stays resolved; CRR-004 F-API-001 design premise is addressed by E-048 exact eight but real full-app verification is still required; F-API-002 app-path obligation is superseded by E-055, not “fixed” by invented bytes/path handling.
+- Review decision: **Pass**; failure classification: N/A. Recommended primary recipient under handoff rules: `/api_e2e_engineer`; informational implementation receipt only after primary succeeds.
+- Residual API/E2E gates: genuine AutoByteus-launched AGY 1.2.11 `tool_name=generate_image` ACTIVE→DONE and ordinary tool card/assistant reply; exact model-exposed grants, separate MCP/Team/Org and native collaboration exclusion; safe failed/unknown result and tool-error public/private flow; bundled Codex first turn, absent/invalid warning and safety faults. No image bytes/path/Files/preview gate under E-055.
+- Review evidence: source paths above; IR-005 local source TypeScript and focused tests (39 passed; 40 passed/1 skipped); reviewer `git diff --check 117abcf44..4fe185502` clean and no obsolete AGY image source references. No live provider claim.
 
 ## Latest Authoritative Result
 
-- Review Decision: Fail.
-- Review Entry Point: Implementation Review, round 2.
-- Supported Product Scenario Gate: Pass.
-- Material-Premise Gate: Pass; C-002 grounded in reviewed contract.
-- Score Summary: 9.12/10; 91.2/100, with ownership and SoC <9.0.
-- Failure Origin: N/A.
-- Recommended Recipient: `/implementation_engineer`.
-- Notes: F-001 is the sole promoted source finding; CRR-001 authority hold is resolved, not a prior source defect.
+- Review Decision: **Pass — CRR-005 Full Implementation Review**.
+- Supported Product Scenario Gate: Pass. Material-Premise Gate: Pass for current source; live provider premises await API/E2E.
+- Score Summary: 9.30/10; 93.0/100; no category below 9.0.
+- Failure Origin: N/A for this source-review round.
+- Recommended Recipient: `/api_e2e_engineer` primary.
