@@ -53,7 +53,7 @@ describe('recognized upload basename labels', () => {
     '/rest/drafts/team-runs/draft/members/lead/context-files/',
     '/rest/drafts/agent-org-runs/root/agent-runs/task/context-files/',
     '/rest/runs/agent/context-files/',
-    '/rest/team-runs/team/members/lead/context-files/',
+    '/rest/team-runs/team/agent-runs/lead/context-files/',
     '/rest/agent-org-runs/root/agent-runs/task/context-files/',
   ])('formats an encoded or decoded recorded basename only on %s', route => {
     const storedFilename = 'ctx_token__notes 100%.txt';

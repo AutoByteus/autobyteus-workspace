@@ -1,3 +1,4 @@
+import { TeamContextFileExecutionLocatorsV1AppDataMigration } from "./migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import path from "node:path";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import type { AppDataMigrationDefinition } from "./domain/app-data-migration-types.js";
@@ -53,6 +54,10 @@ export class AppDataMigrationRegistry {
       // Native snapshot conversion resolves provenance through the current raw-trace layout.
       new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
       new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
+      new TeamContextFileExecutionLocatorsV1AppDataMigration(
+        appConfigProvider.config.getMemoryDir(), appConfigProvider.config.getAppDataDir(),
+        () => appConfigProvider.config.getBaseUrl(),
+      ),
       new MigrateNativeWorkingContextSnapshotsV5Migration(
         appConfigProvider.config.getMemoryDir(),
       ),

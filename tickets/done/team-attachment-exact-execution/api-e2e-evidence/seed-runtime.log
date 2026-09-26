@@ -1,0 +1,14 @@
+LMStudio choices [
+  {
+    modelIdentifier: 'attachment-fixture:lmstudio@127.0.0.1:3422',
+    activeContextTokens: 32768
+  }
+]
+{
+  createAgentTeamRun: {
+    success: true,
+    message: 'Agent team run created successfully.',
+    teamRunId: 'api_e2e_attachment_team_f0d0403b43844bd1b037498782436317'
+  }
+}
+Seed saved. No messages sent.

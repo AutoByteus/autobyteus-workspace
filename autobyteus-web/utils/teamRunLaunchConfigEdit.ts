@@ -7,7 +7,7 @@ import type { TeamDefinitionMemberNode } from '~/utils/teamDefinitionMembers'
 import { hasExplicitLlmConfigOverride, hasMeaningfulLaunchOverride, normalizeRuntimeKind } from '~/utils/teamRunConfigUtils'
 import { indexTeamLaunchTopology, resolveTeamRunConfiguration } from '~/utils/teamRunLaunchHierarchy'
 
-const assertEditTarget = (memberTree: readonly TeamDefinitionMemberNode[], address: string, expected: 'team' | 'agent'): AgentTeamAddress => {
+export const assertTeamLaunchEditTarget = (memberTree: readonly TeamDefinitionMemberNode[], address: string, expected: 'team' | 'agent'): AgentTeamAddress => {
   const canonical = parseAgentTeamAddress(address)
   if (canonical !== address || canonical === '/') throw new Error(`Team launch edit requires a canonical non-root ${expected} address '${address}'.`)
   const index = indexTeamLaunchTopology(memberTree)
@@ -61,17 +61,17 @@ export const applyTeamLaunchConfigEdit = (
     case 'set_root_llm_config': next.rootConfig.llmConfig = edit.llmConfig; return next
     case 'set_root_auto_execute_tools': next.rootConfig.autoExecuteTools = edit.autoExecuteTools; return next
     case 'set_team_override': {
-      const address = assertEditTarget(memberTree, edit.teamAddress, 'team')
+      const address = assertTeamLaunchEditTarget(memberTree, edit.teamAddress, 'team')
       if (edit.override && hasMeaningfulLaunchOverride(edit.override)) next.teamOverrides[address] = withNewRuntimeOverridePolicy(config.teamOverrides[address], edit.override)!
       else delete next.teamOverrides[address]
       return pruneInvalidatedLlmConfigs(config, next, memberTree)
     }
     case 'reset_team_override': {
-      delete next.teamOverrides[assertEditTarget(memberTree, edit.teamAddress, 'team')]
+      delete next.teamOverrides[assertTeamLaunchEditTarget(memberTree, edit.teamAddress, 'team')]
       return pruneInvalidatedLlmConfigs(config, next, memberTree)
     }
     case 'set_agent_override': {
-      const address = assertEditTarget(memberTree, edit.agentAddress, 'agent')
+      const address = assertTeamLaunchEditTarget(memberTree, edit.agentAddress, 'agent')
       if (edit.override && hasMeaningfulLaunchOverride(edit.override)) next.agentOverrides[address] = withNewRuntimeOverridePolicy(config.agentOverrides[address], edit.override)!
       else delete next.agentOverrides[address]
       return pruneInvalidatedLlmConfigs(config, next, memberTree)

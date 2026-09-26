@@ -5,7 +5,7 @@ export type DraftContextFileOwnerDescriptor =
 
 export type FinalContextFileOwnerDescriptor =
   | { kind: 'agent_final'; runId: string }
-  | { kind: 'team_member_final'; teamRunId: string; memberAddress: string }
+  | { kind: 'team_member_final'; teamRunId: string; agentRunId: string }
   | { kind: 'org_member_final'; orgRunId: string; agentRunId: string };
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
@@ -37,11 +37,11 @@ export const buildAgentFinalContextFileOwner = (runId: string): FinalContextFile
 
 export const buildTeamMemberFinalContextFileOwner = (
   containingTeamRunId: string,
-  memberAddress: string,
+  agentRunId: string,
 ): FinalContextFileOwnerDescriptor => ({
   kind: 'team_member_final',
   teamRunId: normalizeRequiredString(containingTeamRunId, 'teamRunId'),
-  memberAddress: normalizeRequiredString(memberAddress, 'memberAddress'),
+  agentRunId: normalizeRequiredString(agentRunId, 'agentRunId'),
 });
 
 export const buildOrgMemberDraftContextFileOwner = (

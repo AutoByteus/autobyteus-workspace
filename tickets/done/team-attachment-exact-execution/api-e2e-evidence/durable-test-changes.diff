@@ -1,0 +1,1457 @@
+diff --git a/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts b/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts
+index 25f0d5ca8..d09e8a1a4 100644
+--- a/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts
+@@ -1,785 +1,256 @@
+-import "reflect-metadata";
+-import fsSync from "node:fs";
++import fs from "node:fs/promises";
+ import path from "node:path";
+-import os from "node:os";
+-import { createRequire } from "node:module";
+-import { mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
+-import { randomUUID } from "node:crypto";
+-import fastify, { type FastifyInstance } from "fastify";
+-import multipart from "@fastify/multipart";
+-import websocket from "@fastify/websocket";
+-import WebSocket from "ws";
+-import { afterAll, beforeAll, describe, expect, it } from "vitest";
+-import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+-import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+-import { registerContextFileRoutes } from "../../../src/api/rest/context-files.js";
+-import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
+-import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+-import { ContextFileLocalPathResolver } from "../../../src/context-files/services/context-file-local-path-resolver.js";
+-import { ContextFileLayout } from "../../../src/context-files/store/context-file-layout.js";
+-import { ContextFileOwnerResolver } from "../../../src/context-files/services/context-file-owner-resolver.js";
+-import { createStoredTeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
+-import { loadAgentCustomizations } from "../../../src/startup/agent-customization-loader.js";
+-import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+-
+-const DEFAULT_LMSTUDIO_TEXT_MODEL = "qwen3.6-35b-a3b";
+-const RED_PNG_BASE64 =
+-  "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAS0lEQVR42u3PQQkAAAgAsetfWiP4FgYrsKZeS0BAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEDgsqnc8OJg6Ln3AAAAAElFTkSuQmCC";
+-const BLUE_PNG_BASE64 =
+-  "iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAS0lEQVR42u3PQQkAAAgAsetfWiP4FgYrsGqeExAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBAQEBA4LMf88OL0EKXAAAAAAElFTkSuQmCC";
+-const runLiveContextFileRuntimeE2e =
+-  process.env.RUN_LMSTUDIO_E2E === "1" ? describe : describe.skip;
+-
+-const wait = (ms: number): Promise<void> =>
+-  new Promise((resolve) => {
+-    setTimeout(resolve, ms);
+-  });
+-
+-const waitForSocketOpen = (socket: WebSocket, timeoutMs = 10_000): Promise<void> =>
+-  new Promise((resolve, reject) => {
+-    const timer = setTimeout(
+-      () => reject(new Error("Timed out waiting for websocket open")),
+-      timeoutMs,
+-    );
+-    socket.once("open", () => {
+-      clearTimeout(timer);
+-      resolve();
+-    });
+-    socket.once("error", (error) => {
+-      clearTimeout(timer);
+-      reject(error);
+-    });
+-  });
+-
+-type WsMessage = {
+-  type: string;
+-  payload: Record<string, unknown>;
+-};
+-
+-type DiscoveredModel = {
+-  modelIdentifier: string;
+-  activeContextTokens?: number | null;
+-};
+-
+-type UploadedAttachment = {
+-  storedFilename: string;
+-  displayName: string;
+-  locator: string;
+-  phase: "draft";
+-};
+-
+-type FinalizedAttachment = {
+-  storedFilename: string;
+-  displayName: string;
+-  locator: string;
+-  phase: "final";
+-};
+-
+-const parseWsMessage = (raw: WebSocket.RawData): WsMessage | null => {
+-  try {
+-    const parsed = JSON.parse(raw.toString()) as {
+-      type?: unknown;
+-      payload?: unknown;
+-    };
+-    if (typeof parsed.type !== "string") {
+-      return null;
++import { createHash } from "node:crypto";
++import { PrismaClient } from "@prisma/client";
++import { afterEach, beforeEach, describe, expect, it } from "vitest";
++import { ContextFileProcessFixture, PNG, type Attachment } from "../helpers/context-file-process-fixture.js";
++
++// Run after `pnpm -C autobyteus-server-ts build` with RUN_CONTEXT_FILE_PROCESS_E2E=1.
++// External inference is deterministic; HTTP, WS, provider normalization, traces,
++// strict package admission, Prisma migration ledger and server restart are real.
++const run = process.env.RUN_CONTEXT_FILE_PROCESS_E2E === "1" ? describe : describe.skip;
++const migrationId = "20260926_team_context_file_execution_locators_v1";
++const hash = (bytes: Buffer | string) => createHash("sha256").update(bytes).digest("hex");
++const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
++const writeJson = (file: string, value: unknown) => fs.writeFile(file, JSON.stringify(value));
++
++run("Context-file built-process runtime and upgrade", () => {
++  let f: ContextFileProcessFixture;
++  const copies: string[] = [];
++  beforeEach(async () => { f = new ContextFileProcessFixture(); await f.setup(); }, 90_000);
++  afterEach(async ({ task }) => {
++    const evidence = process.env.CONTEXT_FILE_E2E_EVIDENCE_DIR;
++    const failed = task.result?.state === "fail";
++    if (evidence) {
++      await fs.mkdir(evidence, { recursive: true });
++      await fs.writeFile(path.join(evidence, task.name.replace(/[^a-z0-9]+/gi, "-") + ".log"), `Fixture root: ${f.root}\n${f.logs}`);
+     }
+-    const payload =
+-      parsed.payload && typeof parsed.payload === "object" && !Array.isArray(parsed.payload)
+-        ? (parsed.payload as Record<string, unknown>)
+-        : {};
+-    return {
+-      type: parsed.type,
+-      payload,
+-    };
+-  } catch {
+-    return null;
+-  }
+-};
+-
+-const waitForMessage = async (
+-  messages: WsMessage[],
+-  predicate: (message: WsMessage) => boolean,
+-  label: string,
+-  timeoutMs = 150_000,
+-): Promise<WsMessage> => {
+-  const deadline = Date.now() + timeoutMs;
+-  while (Date.now() < deadline) {
+-    const match = messages.find(predicate);
+-    if (match) {
+-      return match;
++    await f?.cleanup(Boolean(evidence && failed));
++    await Promise.all(copies.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
++  }, 30_000);
++
++  async function launch(kind: "agent" | "team") {
++    const models = await f.gql(`query {providerModelCatalogSnapshots(runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`);
++    const model = models.providerModelCatalogSnapshots.flatMap((x: any) => x.llmModels)
++      .find((x: any) => x.modelIdentifier.startsWith("attachment-fixture:"))?.modelIdentifier;
++    expect(model).toBeTruthy();
++    const result = await f.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`, {
++      input: { name: "Attachment Fixture Worker", role: "assistant", description: "Disposable validation agent",
++        instructions: "Respond briefly. Do not use tools.", toolNames: [] },
++    });
++    const agentDefinitionId = result.createAgentDefinition.id;
++    const config = { llmModelIdentifier: model, llmConfig: null, autoExecuteTools: false,
++      skillAccessMode: "NONE", runtimeKind: "autobyteus", workspaceRootPath: f.root };
++    if (kind === "agent") {
++      const result = await f.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
++        { input: { agentDefinitionId, ...config } });
++      expect(result.createAgentRun.success, result.createAgentRun.message).toBe(true);
++      return { runId: result.createAgentRun.runId as string, teamRunId: null, directory: path.join(f.root, "memory", "agents", result.createAgentRun.runId) };
+     }
+-    await wait(250);
+-  }
+-
+-  const preview = messages
+-    .slice(-25)
+-    .map((message) => `${message.type}:${JSON.stringify(message.payload).slice(0, 180)}`)
+-    .join(" | ");
+-  throw new Error(`Timed out waiting for websocket message '${label}'. preview='${preview}'`);
+-};
+-
+-const waitForMessageAfter = async (
+-  messages: WsMessage[],
+-  startIndex: number,
+-  predicate: (message: WsMessage) => boolean,
+-  label: string,
+-  timeoutMs = 150_000,
+-): Promise<WsMessage> =>
+-  waitForMessage(
+-    messages,
+-    (message) => messages.indexOf(message) >= startIndex && predicate(message),
+-    label,
+-    timeoutMs,
+-  );
+-
+-const assistantCompletedWithText = (message: WsMessage, agentName?: string): boolean => {
+-  if (agentName && message.payload.agent_name !== agentName) {
+-    return false;
+-  }
+-
+-  if (message.type !== "ASSISTANT_COMPLETE") {
+-    return false;
++    const definition = await f.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`, {
++      input: { name: "Attachment Fixture Team", description: "Disposable Team", instructions: "Validate attachment transport.", coordinatorMemberName: "worker",
++        nodes: [{ memberName: "worker", ref: agentDefinitionId, refScope: "SHARED" }] },
++    });
++    const created = await f.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`, {
++      input: { teamDefinitionId: definition.createAgentTeamDefinition.id, teamConfigs: [{ teamAddress: "/", ...config }],
++        memberConfigs: [{ memberAddress: "/worker", agentDefinitionId, ...config }] },
++    });
++    expect(created.createAgentTeamRun.success, created.createAgentTeamRun.message).toBe(true);
++    const teamRunId = created.createAgentTeamRun.teamRunId as string;
++    const resume = await f.gql(`query($teamRunId:String!){getTeamRunResumeConfig(teamRunId:$teamRunId){executionTree}}`, { teamRunId });
++    const runId = resume.getTeamRunResumeConfig.executionTree.root_team.members[0].agent_run_id as string;
++    return { runId, teamRunId, directory: path.join(f.root, "memory", "agent_teams", teamRunId, runId) };
+   }
+-
+-  const text =
+-    typeof message.payload.text === "string"
+-      ? message.payload.text
+-      : typeof message.payload.content === "string"
+-        ? message.payload.content
+-        : typeof message.payload.result === "string"
+-          ? message.payload.result
+-          : null;
+-  return typeof text === "string" && text.trim().length > 0;
+-};
+-
+-const idleStatusMatches = (message: WsMessage, agentName?: string): boolean =>
+-  message.type === "AGENT_STATUS" &&
+-  message.payload.status === "idle" &&
+-  (!agentName || message.payload.agent_name === agentName);
+-
+-const waitForWorkingContextImagePath = async (
+-  snapshotPath: string,
+-  expectedImagePath: string,
+-): Promise<void> => {
+-  const deadline = Date.now() + 30_000;
+-  while (Date.now() < deadline) {
+-    if (fsSync.existsSync(snapshotPath)) {
++  async function attachments(owner: { runId: string; teamRunId: string | null; directory: string }, failFinalizationOnce = false) {
++    const draft = owner.teamRunId ? { kind: "team_member_draft", teamDraftId: "draft", memberAddress: "/worker" }
++      : { kind: "agent_draft", draftRunId: "draft" };
++    const final = owner.teamRunId ? { kind: "team_member_final", teamRunId: owner.teamRunId, agentRunId: owner.runId }
++      : { kind: "agent_final", runId: owner.runId };
++    const uploaded = [await f.upload(draft, "image.png", PNG, "image/png"),
++      await f.upload(draft, "notes.txt", Buffer.from("original file bytes"), "text/plain")];
++    for (const a of uploaded) expect((await fetch(f.origin + a.locator)).status).toBe(200);
++    if (failFinalizationOnce) {
++      // Real filesystem failure, not a mocked transport response. Draft bytes must survive retry.
++      await fs.mkdir(owner.directory, { recursive: true });
++      const blocker = path.join(owner.directory, "context_files");
++      await fs.writeFile(blocker, "owned finalization blocker", { flag: "wx" });
+       try {
+-        const payload = JSON.parse(await readFile(snapshotPath, "utf-8")) as {
+-          messages?: Array<{
+-            role?: string;
+-            image_urls?: string[];
+-          }>;
+-        };
+-        const userMessage = [...(payload.messages ?? [])]
+-          .reverse()
+-          .find((message) => message.role === "user");
+-        const imageUrls = Array.isArray(userMessage?.image_urls) ? userMessage.image_urls : [];
+-        if (imageUrls.includes(expectedImagePath) && !imageUrls.some((url) => url.startsWith("/rest/"))) {
+-          return;
+-        }
+-      } catch {
+-        // retry until the snapshot is fully written
+-      }
++        const failed = await fetch(`${f.origin}/rest/context-files/finalize`, {
++          method: "POST", headers: { "content-type": "application/json" },
++          body: JSON.stringify({ draftOwner: draft, finalOwner: final, attachments: uploaded }),
++        });
++        expect(failed.status).toBe(400);
++        await verifyBytes(uploaded);
++        expect(f.requests).toHaveLength(0);
++      } finally { await fs.unlink(blocker); }
+     }
+-    await wait(250);
++    return f.finalize(draft, final, uploaded);
+   }
+-
+-  throw new Error(
+-    `Timed out waiting for working context snapshot '${snapshotPath}' to contain image path '${expectedImagePath}'.`,
+-  );
+-};
+-
+-const chooseLmStudioModelIdentifier = (models: DiscoveredModel[]): string => {
+-  const exactOverride = process.env.LMSTUDIO_MODEL_ID?.trim();
+-  if (exactOverride && models.some((model) => model.modelIdentifier === exactOverride)) {
+-    return exactOverride;
++  async function verifyBytes(files: Attachment[]) {
++    for (const [index, file] of files.entries()) {
++      const response = await fetch(f.origin + file.locator);
++      expect(response.status).toBe(200);
++      expect(Buffer.from(await response.arrayBuffer())).toEqual(index === 0 ? PNG : Buffer.from("original file bytes"));
++    }
+   }
+ 
+-  const preferredFragment = process.env.LMSTUDIO_TARGET_TEXT_MODEL ?? DEFAULT_LMSTUDIO_TEXT_MODEL;
+-  const selected =
+-    models.find(
+-      (model) =>
+-        model.activeContextTokens !== null &&
+-        model.activeContextTokens !== undefined &&
+-        model.modelIdentifier.includes(preferredFragment),
+-    ) ??
+-    models.find(
+-      (model) =>
+-        model.activeContextTokens !== null &&
+-        model.activeContextTokens !== undefined &&
+-        !model.modelIdentifier.toLowerCase().includes("vl"),
+-    ) ??
+-    models.find((model) => model.modelIdentifier.includes(preferredFragment)) ??
+-    models.find((model) => !model.modelIdentifier.toLowerCase().includes("vl")) ??
+-    models[0];
+-
+-  return selected?.modelIdentifier ?? preferredFragment;
+-};
+-
+-const uploadDraftAttachment = async (
+-  httpOrigin: string,
+-  owner: Record<string, unknown>,
+-  input: {
+-    filename: string;
+-    mimeType: string;
+-    bytes: Uint8Array;
+-  },
+-): Promise<UploadedAttachment> => {
+-  const form = new FormData();
+-  form.set("owner", JSON.stringify(owner));
+-  form.set("file", new Blob([input.bytes], { type: input.mimeType }), input.filename);
+-
+-  const response = await fetch(`${httpOrigin}/rest/context-files/upload`, {
+-    method: "POST",
+-    body: form,
+-  });
+-  const payload = await response.text();
+-  expect(response.status).toBe(200);
+-  return JSON.parse(payload) as UploadedAttachment;
+-};
+-
+-const finalizeAttachment = async (
+-  httpOrigin: string,
+-  input: {
+-    draftOwner: Record<string, unknown>;
+-    finalOwner: Record<string, unknown>;
+-    attachment: UploadedAttachment;
+-  },
+-): Promise<FinalizedAttachment> => {
+-  const response = await fetch(`${httpOrigin}/rest/context-files/finalize`, {
+-    method: "POST",
+-    headers: {
+-      "content-type": "application/json",
+-    },
+-    body: JSON.stringify({
+-      draftOwner: input.draftOwner,
+-      finalOwner: input.finalOwner,
+-      attachments: [
+-        {
+-          storedFilename: input.attachment.storedFilename,
+-          displayName: input.attachment.displayName,
+-        },
+-      ],
+-    }),
+-  });
+-  const payload = await response.text();
+-  expect(response.status).toBe(200);
+-  const parsed = JSON.parse(payload) as { attachments: FinalizedAttachment[] };
+-  expect(parsed.attachments).toHaveLength(1);
+-  return parsed.attachments[0]!;
+-};
+-
+-const fetchAttachment = async (
+-  attachmentUrl: string,
+-  expectedMimeType: string,
+-): Promise<Response> => {
+-  const response = await fetch(attachmentUrl);
+-  expect(response.status).toBe(200);
+-  expect(response.headers.get("content-type")).toContain(expectedMimeType);
+-  return response;
+-};
+-
+-const createApiApp = async (): Promise<{
+-  app: FastifyInstance;
+-  httpOrigin: string;
+-  wsOrigin: string;
+-}> => {
+-  const app = fastify();
+-  await app.register(multipart, {
+-    limits: {
+-      fileSize: 25 * 1024 * 1024,
+-    },
+-    throwFileSizeLimit: false,
+-  });
+-  await app.register(websocket);
+-  await app.register(registerContextFileRoutes, { prefix: "/rest" });
+-  await registerAgentWebsocket(app);
+-
+-  const address = await app.listen({ port: 0, host: "127.0.0.1" });
+-  const url = new URL(address);
+-  return {
+-    app,
+-    httpOrigin: url.origin,
+-    wsOrigin: `ws://${url.host}`,
+-  };
+-};
+-
+-runLiveContextFileRuntimeE2e(
+-  "Context-file storage backend-only runtime e2e (AutoByteus + LM Studio)",
+-  () => {
+-    let schema: GraphQLSchema;
+-    let graphql: typeof graphqlFn;
+-    let testDataDir: string | null = null;
+-    const createdWorkspaceRoots = new Set<string>();
+-
+-    beforeAll(async () => {
+-      testDataDir = await mkdtemp(path.join(os.tmpdir(), "context-file-storage-runtime-e2e-"));
+-      await writeFile(
+-        path.join(testDataDir, ".env"),
+-        "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n",
+-        "utf-8",
+-      );
+-      appConfigProvider.config.setCustomAppDataDir(testDataDir);
+-      loadAgentCustomizations();
+-      schema = await buildGraphqlSchema();
+-      const require = createRequire(import.meta.url);
+-      const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
+-      const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
+-      const graphqlModule = await import(graphqlPath);
+-      graphql = graphqlModule.graphql as typeof graphqlFn;
+-    });
+-
+-    afterAll(async () => {
+-      for (const workspaceRoot of createdWorkspaceRoots) {
+-        await rm(workspaceRoot, { recursive: true, force: true });
+-      }
+-      createdWorkspaceRoots.clear();
+-
+-      if (testDataDir) {
+-        await rm(testDataDir, { recursive: true, force: true });
+-        testDataDir = null;
+-      }
+-
+-    });
+-
+-    const execGraphql = async <T>(
+-      query: string,
+-      variables?: Record<string, unknown>,
+-    ): Promise<T> => {
+-      const result = await graphql({
+-        schema,
+-        source: query,
+-        variableValues: variables,
+-      });
+-      if (result.errors?.length) {
+-        throw result.errors[0];
+-      }
+-      return result.data as T;
+-    };
+-
+-    const fetchModelIdentifier = async (): Promise<string> => {
+-      const query = `
+-        query Models($runtimeKind: String) {
+-          providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+-            llmModels {
+-              modelIdentifier
+-              activeContextTokens
+-            }
+-          }
+-        }
+-      `;
+-
+-      const result = await execGraphql<{
+-        providerModelCatalogSnapshots: Array<{
+-          llmModels: DiscoveredModel[];
+-        }>;
+-      }>(query, {
+-        runtimeKind: "autobyteus",
+-      });
+-
+-      const models = result.providerModelCatalogSnapshots.flatMap((provider) => provider.llmModels);
+-      if (models.length === 0) {
+-        throw new Error("No AutoByteus LM Studio model identifier was returned for context-file E2E.");
+-      }
+-
+-      return chooseLmStudioModelIdentifier(models);
+-    };
+-
+-    const createAgentDefinition = async (nameSuffix: string): Promise<string> => {
+-      const mutation = `
+-        mutation CreateAgentDefinition($input: CreateAgentDefinitionInput!) {
+-          createAgentDefinition(input: $input) {
+-            id
+-          }
+-        }
+-      `;
+-
+-      const result = await execGraphql<{
+-        createAgentDefinition: { id: string };
+-      }>(mutation, {
+-        input: {
+-          name: `context-file-runtime-${nameSuffix}-${randomUUID()}`,
+-          role: "assistant",
+-          description: "Context-file runtime backend-only e2e agent",
+-          instructions:
+-            "Follow the user's request exactly. " +
+-            "When the user asks about an attached image, answer with exactly one lowercase word naming the dominant color in the image. " +
+-            "If the dominant color is red, reply red. If the dominant color is blue, reply blue. Otherwise reply other. " +
+-            "Do not use tools and do not add extra words.",
+-          category: "runtime-e2e",
+-          toolNames: [],
+-        },
+-      });
+-
+-      return result.createAgentDefinition.id;
+-    };
+-
+-    const createAgentRun = async (input: {
+-      agentDefinitionId: string;
+-      llmModelIdentifier: string;
+-      workspaceRootPath: string;
+-      llmConfig?: Record<string, unknown> | null;
+-    }): Promise<string> => {
+-      const mutation = `
+-        mutation CreateAgentRun($input: CreateAgentRunInput!) {
+-          createAgentRun(input: $input) {
+-            success
+-            message
+-            runId
+-          }
+-        }
+-      `;
+-
+-      const result = await execGraphql<{
+-        createAgentRun: { success: boolean; message: string; runId: string | null };
+-      }>(mutation, {
+-        input: {
+-          agentDefinitionId: input.agentDefinitionId,
+-          workspaceRootPath: input.workspaceRootPath,
+-          llmModelIdentifier: input.llmModelIdentifier,
+-          autoExecuteTools: false,
+-          llmConfig: input.llmConfig ?? null,
+-          skillAccessMode: "NONE",
+-          runtimeKind: "autobyteus",
+-        },
+-      });
+-
+-      expect(result.createAgentRun.success).toBe(true);
+-      expect(result.createAgentRun.runId).toBeTruthy();
+-      return result.createAgentRun.runId as string;
+-    };
+-
+-    const terminateAgentRun = async (runId: string): Promise<void> => {
+-      const mutation = `
+-        mutation TerminateAgentRun($agentRunId: String!) {
+-          terminateAgentRun(agentRunId: $agentRunId) {
+-            success
+-            message
+-          }
+-        }
+-      `;
+-
+-      const result = await execGraphql<{
+-        terminateAgentRun: { success: boolean; message: string };
+-      }>(mutation, { agentRunId: runId });
+-
+-      expect(result.terminateAgentRun.success).toBe(true);
+-    };
+-
+-    const createTeamDefinition = async (workerAgentDefinitionId: string): Promise<string> => {
+-      const mutation = `
+-        mutation CreateAgentTeamDefinition($input: CreateAgentTeamDefinitionInput!) {
+-          createAgentTeamDefinition(input: $input) {
+-            id
+-          }
+-        }
+-      `;
+-
+-      const result = await execGraphql<{
+-        createAgentTeamDefinition: { id: string };
+-      }>(mutation, {
+-        input: {
+-          name: `context-file-runtime-team-${randomUUID()}`,
+-          description: "Context-file runtime backend-only e2e team",
+-          instructions: "Route the user's request to the worker.",
+-          coordinatorMemberName: "worker",
+-          nodes: [
+-            {
+-              memberName: "worker",
+-              ref: workerAgentDefinitionId,
+-              refType: "AGENT",
+-              refScope: "SHARED",
+-            },
+-          ],
+-        },
++  it.each(["agent", "team"] as const)("delivers %s image/file bytes through HTTP, WS and synchronous provider reads, then survives restart", async kind => {
++    const owner = await launch(kind);
++    const files = await attachments(owner, kind === "team");
++    const events = await f.send(owner.teamRunId ? `/ws/agent-team/${owner.teamRunId}` : `/ws/agent/${owner.runId}`,
++      owner.teamRunId ? owner.runId : null, "Validate these disposable attachments.", files);
++    await verifyBytes(files);
++    const request = JSON.stringify(f.requests.at(-1));
++    expect(request).toContain(PNG.toString("base64"));
++    expect(request).not.toContain("/rest/team-runs/");
++    if (owner.teamRunId) {
++      expect(events.find(e => e.type === "MEMBER_INPUT_MESSAGE")?.payload).toMatchObject({
++        recipient_agent_run_id: owner.runId,
++        context_file_paths: files.map(file => ({ path: file.locator, type: file.displayName.endsWith(".png") ? "image" : "text" })),
+       });
+-
+-      return result.createAgentTeamDefinition.id;
+-    };
+-
+-    const createTeamRun = async (input: {
+-      teamDefinitionId: string;
+-      workerAgentDefinitionId: string;
+-      llmModelIdentifier: string;
+-      workspaceRootPath: string;
+-    }): Promise<string> => {
+-      const mutation = `
+-        mutation CreateAgentTeamRun($input: CreateAgentTeamRunInput!) {
+-          createAgentTeamRun(input: $input) {
+-            success
+-            message
+-            teamRunId
+-          }
+-        }
+-      `;
+-
+-      const result = await execGraphql<{
+-        createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null };
+-      }>(mutation, {
+-        input: {
+-          teamDefinitionId: input.teamDefinitionId,
+-          memberConfigs: [
+-            {
+-              memberName: "worker",
+-              agentDefinitionId: input.workerAgentDefinitionId,
+-              llmModelIdentifier: input.llmModelIdentifier,
+-              autoExecuteTools: false,
+-              llmConfig: null,
+-              skillAccessMode: "NONE",
+-              runtimeKind: "autobyteus",
+-              workspaceRootPath: input.workspaceRootPath,
+-            },
+-          ],
+-        },
+-      });
+-
+-      expect(result.createAgentTeamRun.success).toBe(true);
+-      expect(result.createAgentTeamRun.teamRunId).toBeTruthy();
+-      return result.createAgentTeamRun.teamRunId as string;
+-    };
+-
+-    const terminateTeamRun = async (teamRunId: string): Promise<void> => {
+-      const mutation = `
+-        mutation TerminateAgentTeamRun($teamRunId: String!) {
+-          terminateAgentTeamRun(teamRunId: $teamRunId) {
+-            success
+-            message
+-          }
+-        }
+-      `;
+-
+-      const result = await execGraphql<{
+-        terminateAgentTeamRun: { success: boolean; message: string };
+-      }>(mutation, { teamRunId });
+-
+-      expect(result.terminateAgentTeamRun.success).toBe(true);
+-    };
+-
+-    it(
+-      "uploads, finalizes, serves, and delivers an agent-scoped stored image context file through the live runtime",
+-      async () => {
+-        const llmModelIdentifier = await fetchModelIdentifier();
+-        const workspaceRootPath = testDataDir as string;
+-
+-        const agentDefinitionId = await createAgentDefinition("agent");
+-        const runId = await createAgentRun({
+-          agentDefinitionId,
+-          llmModelIdentifier,
+-          workspaceRootPath,
+-        });
+-
+-        const apiApp = await createApiApp();
+-        const memoryDir = appConfigProvider.config.getMemoryDir();
+-        const layout = new ContextFileLayout({
+-          appDataDir: appConfigProvider.config.getAppDataDir(),
+-          memoryDir,
+-        });
+-        const resolver = new ContextFileLocalPathResolver({
+-          layout,
+-          ownerResolver: new ContextFileOwnerResolver({
+-            locations: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+-          }),
+-          baseUrl: apiApp.httpOrigin,
+-        });
+-        const attachmentBytes = Buffer.from(RED_PNG_BASE64, "base64");
+-        const draftOwner = {
+-          kind: "agent_draft",
+-          draftRunId: runId,
+-        } as const;
+-        const finalOwner = {
+-          kind: "agent_final",
+-          runId,
+-        } as const;
+-        let socket: WebSocket | null = null;
+-
+-        try {
+-          const uploaded = await uploadDraftAttachment(
+-            apiApp.httpOrigin,
+-            draftOwner,
+-            {
+-              filename: `agent-context-${randomUUID()}.png`,
+-              mimeType: "image/png",
+-              bytes: attachmentBytes,
+-            },
+-          );
+-          const finalized = await finalizeAttachment(apiApp.httpOrigin, {
+-            draftOwner,
+-            finalOwner,
+-            attachment: uploaded,
+-          });
+-
+-          const finalAttachmentUrl = `${apiApp.httpOrigin}${finalized.locator}`;
+-          const finalAttachmentResponse = await fetchAttachment(finalAttachmentUrl, "image/png");
+-          const fetchedAttachmentBytes = Buffer.from(await finalAttachmentResponse.arrayBuffer());
+-          expect(fetchedAttachmentBytes.equals(attachmentBytes)).toBe(true);
+-
+-          const finalFilePath = layout.getFinalFilePath(finalOwner, finalized.storedFilename);
+-          const workingContextSnapshotPath = path.join(
+-            path.dirname(path.dirname(finalFilePath)),
+-            "working_context_snapshot.json",
+-          );
+-          expect((await readFile(finalFilePath)).equals(attachmentBytes)).toBe(true);
+-          expect(fsSync.existsSync(layout.getDraftFilePath(draftOwner, finalized.storedFilename))).toBe(
+-            false,
+-          );
+-          expect(resolver.resolve(finalized.locator)).toBe(finalFilePath);
+-
+-          socket = new WebSocket(`${apiApp.wsOrigin}/ws/agent/${runId}`);
+-          const messages: WsMessage[] = [];
+-          socket.on("message", (raw) => {
+-            const parsed = parseWsMessage(raw);
+-            if (parsed) {
+-              messages.push(parsed);
+-            }
+-          });
+-
+-          await waitForSocketOpen(socket);
+-          await waitForMessage(messages, (message) => message.type === "CONNECTED", "CONNECTED", 15_000);
+-
+-          const startIndex = messages.length;
+-          sendE2eSendMessageCommand(socket, {
+-                content:
+-                  "What is the dominant color in the attached image? Reply with exactly one lowercase word.",
+-                context_file_paths: [finalized.locator],
+-              });
+-
+-          await waitForMessageAfter(
+-            messages,
+-            startIndex,
+-            (message) => assistantCompletedWithText(message),
+-            "assistant complete response with text",
+-          );
+-          await waitForMessageAfter(
+-            messages,
+-            startIndex,
+-            (message) => idleStatusMatches(message),
+-            "agent idle after image-context reply",
+-          );
+-          await waitForWorkingContextImagePath(workingContextSnapshotPath, finalFilePath);
+-        } finally {
+-          socket?.close();
+-          await apiApp.app.close();
+-          await terminateAgentRun(runId).catch(() => undefined);
+-        }
+-      },
+-      240_000,
+-    );
+-
+-    it(
+-      "uploads, finalizes, serves, and delivers a team-member stored image context file through the live team runtime",
+-      async () => {
+-        const llmModelIdentifier = await fetchModelIdentifier();
+-        const workspaceRootPath = testDataDir as string;
+-
+-        const workerAgentDefinitionId = await createAgentDefinition("team-worker");
+-        const teamDefinitionId = await createTeamDefinition(workerAgentDefinitionId);
+-        const teamRunId = await createTeamRun({
+-          teamDefinitionId,
+-          workerAgentDefinitionId,
+-          llmModelIdentifier,
+-          workspaceRootPath,
+-        });
+-
+-        const apiApp = await createApiApp();
+-        const memoryDir = appConfigProvider.config.getMemoryDir();
+-        const layout = new ContextFileLayout({
+-          appDataDir: appConfigProvider.config.getAppDataDir(),
+-          memoryDir,
+-        });
+-        const resolver = new ContextFileLocalPathResolver({
+-          layout,
+-          ownerResolver: new ContextFileOwnerResolver({
+-            locations: createStoredTeamRunExecutionTreeLocationService(memoryDir),
+-          }),
+-          baseUrl: apiApp.httpOrigin,
+-        });
+-        const attachmentBytes = Buffer.from(BLUE_PNG_BASE64, "base64");
+-        const draftOwner = {
+-          kind: "team_member_draft",
+-          draftTeamRunId: teamRunId,
+-          memberRouteKey: "worker",
+-        } as const;
+-        const finalOwner = {
+-          kind: "team_member_final",
+-          teamRunId,
+-          memberRouteKey: "worker",
+-        } as const;
+-        let socket: WebSocket | null = null;
+-
+-        try {
+-          const uploaded = await uploadDraftAttachment(
+-            apiApp.httpOrigin,
+-            draftOwner,
+-            {
+-              filename: `team-context-${randomUUID()}.png`,
+-              mimeType: "image/png",
+-              bytes: attachmentBytes,
+-            },
+-          );
+-          const finalized = await finalizeAttachment(apiApp.httpOrigin, {
+-            draftOwner,
+-            finalOwner,
+-            attachment: uploaded,
+-          });
+-
+-          const finalAttachmentUrl = `${apiApp.httpOrigin}${finalized.locator}`;
+-          const finalAttachmentResponse = await fetchAttachment(finalAttachmentUrl, "image/png");
+-          const fetchedAttachmentBytes = Buffer.from(await finalAttachmentResponse.arrayBuffer());
+-          expect(fetchedAttachmentBytes.equals(attachmentBytes)).toBe(true);
+-
+-          const finalFilePath = layout.getFinalFilePath(finalOwner, finalized.storedFilename);
+-          const workingContextSnapshotPath = path.join(
+-            path.dirname(path.dirname(finalFilePath)),
+-            "working_context_snapshot.json",
+-          );
+-          expect((await readFile(finalFilePath)).equals(attachmentBytes)).toBe(true);
+-          expect(fsSync.existsSync(layout.getDraftFilePath(draftOwner, finalized.storedFilename))).toBe(
+-            false,
+-          );
+-          expect(resolver.resolve(finalized.locator)).toBe(finalFilePath);
+-
+-          socket = new WebSocket(`${apiApp.wsOrigin}/ws/agent-team/${teamRunId}`);
+-          const messages: WsMessage[] = [];
+-          socket.on("message", (raw) => {
+-            const parsed = parseWsMessage(raw);
+-            if (parsed) {
+-              messages.push(parsed);
+-            }
+-          });
+-
+-          await waitForSocketOpen(socket);
+-          await waitForMessage(messages, (message) => message.type === "CONNECTED", "CONNECTED", 15_000);
+-
+-          const startIndex = messages.length;
+-          sendE2eSendMessageCommand(socket, {
+-                target_member_route_key: "worker",
+-                content:
+-                  "What is the dominant color in the attached image? Reply with exactly one lowercase word.",
+-                context_file_paths: [finalized.locator],
+-              });
+-
+-          await waitForMessageAfter(
+-            messages,
+-            startIndex,
+-            (message) => assistantCompletedWithText(message, "worker"),
+-            "team assistant complete response with text",
+-          );
+-          await waitForMessageAfter(
+-            messages,
+-            startIndex,
+-            (message) => idleStatusMatches(message, "worker"),
+-            "team worker idle after image-context reply",
+-          );
+-          await waitForWorkingContextImagePath(workingContextSnapshotPath, finalFilePath);
+-        } finally {
+-          socket?.close();
+-          await apiApp.app.close();
+-          await terminateTeamRun(teamRunId).catch(() => undefined);
+-        }
+-      },
+-      240_000,
+-    );
+-  },
+-);
++    }
++    const tracePath = path.join(owner.directory, "raw_traces_active.jsonl");
++    const traceBefore = await fs.readFile(tracePath);
++    expect(traceBefore.toString()).toContain(files[1]!.locator); // recording keeps file locator while provider gets local path
++    await f.stop(); await f.start();
++    await verifyBytes(files);
++    expect(hash(await fs.readFile(tracePath))).toBe(hash(traceBefore));
++  }, 120_000);
++
++  it("uploads, previews and removes Team drafts before launch, then binds remaining bytes to the returned exact execution", async () => {
++    const draft = { kind: "team_member_draft", teamDraftId: "before-launch", memberAddress: "/worker" };
++    const removed = await f.upload(draft, "remove.png", PNG, "image/png");
++    expect(Buffer.from(await (await fetch(f.origin + removed.locator)).arrayBuffer())).toEqual(PNG);
++    expect((await fetch(f.origin + removed.locator, { method: "DELETE" })).status).toBe(204);
++    expect((await fetch(f.origin + removed.locator)).status).toBe(404);
++    const uploaded = [await f.upload(draft, "image.png", PNG, "image/png"),
++      await f.upload(draft, "notes.txt", Buffer.from("original file bytes"), "text/plain")];
++    await verifyBytes(uploaded);
++    const owner = await launch("team");
++    const files = await f.finalize(draft,
++      { kind: "team_member_final", teamRunId: owner.teamRunId, agentRunId: owner.runId }, uploaded);
++    expect(files.every(file => file.locator.includes(`/agent-runs/${owner.runId}/`))).toBe(true);
++    await verifyBytes(files);
++    const events = await f.send(`/ws/agent-team/${owner.teamRunId}`, owner.runId, "Prelaunch attachment delivery.", files);
++    expect(events.find(event => event.type === "MEMBER_INPUT_MESSAGE")?.payload.recipient_agent_run_id).toBe(owner.runId);
++    expect(await fs.readdir(path.join(owner.directory, "context_files"))).not.toContain(removed.storedFilename);
++  }, 120_000);
++
++  it("converts a copied retained duplicate-address package before admission and preserves bytes, history and original backups across restart", async () => {
++    const owner = await launch("team");
++    const files = await attachments(owner);
++    await f.send(`/ws/agent-team/${owner.teamRunId}`, owner.runId, "Retained image and file history.", files);
++    await f.stop();
++    const originalRoot = f.root;
++    const copyRoot = `${originalRoot}-upgrade`; copies.push(originalRoot);
++    await fs.cp(originalRoot, copyRoot, { recursive: true }); f.root = copyRoot;
++    const teamDir = path.join(copyRoot, "memory", "agent_teams", owner.teamRunId!);
++    const agentDir = path.join(teamDir, owner.runId);
++    const treePath = path.join(teamDir, "team_run_execution_tree.json");
++    const tree = await readJson(treePath);
++    const timestamp = "2026-09-01T00:00:00.000Z";
++    tree.rootTeam.taskExecutions.push({ address: "/worker", agentRunId: "retained-task", platformAgentRunId: null, startedAt: timestamp, settledAt: timestamp });
++    await writeJson(treePath, tree);
++    const taskPath = path.join(teamDir, "task_delegation_records.json");
++    const tasks = await readJson(taskPath);
++    tasks.records.push({ taskId: "retained-task-record", delegatorAgentRunId: owner.runId, recipientAddress: "/worker",
++      taskExecution: { agentRunId: "retained-task" }, description: "Retained task fixture", referenceFiles: [], status: "interrupted",
++      updates: [{ interruptionId: "interrupted", reason: "Completed fixture lifecycle", createdAt: timestamp }], createdAt: timestamp });
++    await writeJson(taskPath, tasks);
++    const otherDir = path.join(teamDir, "retained-task", "context_files"); await fs.mkdir(otherDir, { recursive: true });
++    for (const file of files) await fs.writeFile(path.join(otherDir, file.storedFilename), `other execution ${file.displayName}`);
++    const tracePath = path.join(agentDir, "raw_traces_active.jsonl");
++    const rows = (await fs.readFile(tracePath, "utf8")).trim().split("\n").map(line => JSON.parse(line));
++    const user = rows.find(row => row.trace_type === "user");
++    user.media.images = [`/rest/team-runs/${owner.teamRunId}/members/worker/context-files/${files[0]!.storedFilename}`];
++    user.file_attachments[0].uri = `/rest/team-runs/${owner.teamRunId}/members/%2Fworker/context-files/${files[1]!.storedFilename}`;
++    const original = rows.map(row => JSON.stringify(row)).join("\n") + "\n";
++    await fs.writeFile(tracePath, original);
++    // Simulate an upgrade from the previous installed version in the stopped copy only.
++    const db = new PrismaClient({ datasources: { db: { url: `file:${path.join(copyRoot, "db", "production.db")}` } } });
++    try { await db.$executeRaw`DELETE FROM app_data_migration_records WHERE migration_id = ${migrationId}`; }
++    finally { await db.$disconnect(); }
++    await fs.rm(path.join(copyRoot, "app-data-migration-backups", migrationId), { recursive: true, force: true });
++    await f.start();
++    await verifyBytes(files);
++    const converted = (await fs.readFile(tracePath, "utf8")).trim().split("\n").map(line => JSON.parse(line));
++    const expected = structuredClone(rows); const expectedUser = expected.find(row => row.trace_type === "user");
++    expectedUser.media.images = [files[0]!.locator]; expectedUser.file_attachments[0].uri = files[1]!.locator;
++    expect(converted).toEqual(expected); // all non-locator values preserved
++    for (const file of files) {
++      expect(await (await fetch(f.origin + file.locator.replace(`/${owner.runId}/`, "/retained-task/"))).text()).toBe(`other execution ${file.displayName}`);
++    }
++    const backup = path.join(copyRoot, "app-data-migration-backups", migrationId);
++    const manifest = await readJson(path.join(backup, "manifest.json")); expect(manifest.complete).toBe(true);
++    expect(manifest.files).toHaveLength(1);
++    const originals = (await fs.readdir(backup)).filter(name => name.endsWith(".original"));
++    expect(await fs.readFile(path.join(backup, originals[0]!), "utf8")).toBe(original);
++    const after = await fs.readFile(tracePath);
++    await f.stop(); await f.start(); await verifyBytes(files);
++    expect(hash(await fs.readFile(tracePath))).toBe(hash(after));
++    expect(await fs.readFile(path.join(backup, originals[0]!), "utf8")).toBe(original);
++    await f.gql(`mutation {reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`);
++    const restored = await f.gql(`mutation($teamRunId:String!){restoreAgentTeamRun(teamRunId:$teamRunId){success message}}`, { teamRunId: owner.teamRunId });
++    expect(restored.restoreAgentTeamRun.success, restored.restoreAgentTeamRun.message).toBe(true);
++    const fresh = await attachments(owner);
++    const delivered = await f.send(`/ws/agent-team/${owner.teamRunId}`, owner.runId, "New exact-target message after duplicate-address restore.", fresh);
++    expect(delivered.find(event => event.type === "MEMBER_INPUT_MESSAGE")?.payload.recipient_agent_run_id).toBe(owner.runId);
++    expect(delivered.some(event => event.payload.agent_run_id === "retained-task")).toBe(false);
++    expect((await fs.readdir(otherDir)).sort()).toEqual(files.map(file => file.storedFilename).sort());
++    await verifyBytes(files); await verifyBytes(fresh);
++  }, 120_000);
++  it("blocks both real startup entrypoints on unresolved attachment proof and admits standalone after the fixture is repaired", async () => {
++    const owner = await launch("team");
++    const files = await attachments(owner);
++    await f.stop();
++    const tracePath = path.join(owner.directory, "raw_traces_active.jsonl");
++    const missing = `/rest/team-runs/${owner.teamRunId}/members/worker/context-files/ctx_missing__image.png`;
++    const original = JSON.stringify({ id: "retained", trace_type: "user", content: "Retained history", media: { images: [missing] } }) + "\n";
++    await fs.writeFile(tracePath, original);
++    const db = new PrismaClient({ datasources: { db: { url: `file:${path.join(f.root, "db", "production.db")}` } } });
++    try { await db.$executeRaw`DELETE FROM app_data_migration_records WHERE migration_id = ${migrationId}`; }
++    finally { await db.$disconnect(); }
++    await fs.rm(path.join(f.root, "app-data-migration-backups", migrationId), { recursive: true, force: true });
++    await expect(f.start()).rejects.toThrow("Team attachment locator migration requires clean success");
++    expect(f.logs).not.toContain("Server listening at");
++    expect(await fs.readFile(tracePath, "utf8")).toBe(original);
++    await expect(f.standalone()).rejects.toThrow("Team attachment locator migration requires clean success");
++    expect(await fs.readFile(tracePath, "utf8")).toBe(original);
++    // Repair only our missing copied-fixture blob, never guess another owner or delete a record.
++    await fs.writeFile(path.join(owner.directory, "context_files", "ctx_missing__image.png"), PNG);
++    expect(await f.standalone()).toContain("STANDALONE_ADMITTED");
++    expect((await readJson(path.join(f.root, "app-data-migration-backups", migrationId, "manifest.json"))).complete).toBe(true);
++    expect(JSON.parse(await fs.readFile(tracePath, "utf8")).media.images).toEqual([
++      missing.replace("/members/worker/", `/agent-runs/${owner.runId}/`),
++    ]);
++    await f.start(); await verifyBytes(files);
++  }, 150_000);
++
++  it("resumes a real process kill after record commit without replacing the original backup", async () => {
++    const owner = await launch("team"); const files = await attachments(owner); await f.stop();
++    const tracePath = path.join(owner.directory, "raw_traces_active.jsonl");
++    const old = files[0]!.locator.replace(`/agent-runs/${owner.runId}/`, "/members/%2Fworker/");
++    const original = JSON.stringify({ id: "retained", trace_type: "user", content: "Preserved", media: { images: [old] } }) + "\n";
++    await fs.writeFile(tracePath, original);
++    const databaseUrl = `file:${path.join(f.root, "db", "production.db")}`;
++    const db = new PrismaClient({ datasources: { db: { url: databaseUrl } } });
++    try { await db.$executeRaw`DELETE FROM app_data_migration_records WHERE migration_id = ${migrationId}`; }
++    finally { await db.$disconnect(); }
++    const backup = path.join(f.root, "app-data-migration-backups", migrationId);
++    await fs.rm(backup, { recursive: true, force: true });
++    await expect(f.start({ interruptAfterTraceCommit: true })).rejects.toThrow("SIGKILL");
++    expect(JSON.parse(await fs.readFile(tracePath, "utf8")).media.images).toEqual([files[0]!.locator]);
++    expect((await readJson(path.join(backup, "manifest.json"))).complete).toBe(false);
++    const originalName = (await fs.readdir(backup)).find(name => name.endsWith(".original"))!;
++    expect(await fs.readFile(path.join(backup, originalName), "utf8")).toBe(original);
++    await expect(f.start()).rejects.toThrow("Team attachment locator migration requires clean success");
++    // Model elapsed stale-lock time without waiting 15 minutes; writer/kill/recovery are real.
++    const clockDb = new PrismaClient({ datasources: { db: { url: databaseUrl } } });
++    try { await clockDb.$executeRaw`UPDATE app_data_migration_records SET started_at = ${new Date(0)} WHERE migration_id = ${migrationId}`; }
++    finally { await clockDb.$disconnect(); }
++    await f.start(); await verifyBytes(files);
++    expect((await readJson(path.join(backup, "manifest.json"))).complete).toBe(true);
++    expect(await fs.readFile(path.join(backup, originalName), "utf8")).toBe(original);
++  }, 120_000);
++
++});
+diff --git a/autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts b/autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts
+index bec71b737..86597db9a 100644
+--- a/autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts
++++ b/autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts
+@@ -26,7 +26,7 @@ vi.mock("../../../../src/agent-team-execution/services/agent-team-run-manager.js
+     AgentTeamRunManager: new Proxy(actual.AgentTeamRunManager, {
+       get(target, property, receiver) {
+         if (property === "getInstance") {
+-          return () => ({ getTeamRun: () => null, listActiveRuns: () => [] });
++          return () => ({ getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] });
+         }
+         return Reflect.get(target, property, receiver);
+       },
+@@ -39,7 +39,6 @@ import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memo
+ import { ContextFileReadService } from "../../../../src/context-files/services/context-file-read-service.js";
+ import {
+   testAgentNode,
+-  testAgentTeamNode,
+   testExecutionTree,
+ } from "../../../fixtures/current-team-run-fixtures.js";
+ 
+@@ -54,7 +53,7 @@ type UploadedAttachment = {
+   phase: "draft";
+ };
+ 
+-type FinalizedAttachment = UploadedAttachment & { phase: "final" };
++type FinalizedAttachment = Omit<UploadedAttachment, "phase"> & { phase: "final" };
+ 
+ const buildMultipartPayload = (parts: MultipartPart[]): { boundary: string; payload: Buffer } => {
+   const boundary = "----autobyteus-context-files-boundary";
+@@ -85,11 +84,12 @@ const uploadDraftAttachment = async (
+   app: FastifyInstance,
+   owner: unknown,
+   filename: string,
+-  content: string,
++  content: string | Buffer,
++  contentType = "text/markdown",
+ ): Promise<UploadedAttachment> => {
+   const upload = buildMultipartPayload([
+     { name: "owner", value: JSON.stringify(owner) },
+-    { name: "file", filename, contentType: "text/markdown", content },
++    { name: "file", filename, contentType, content },
+   ]);
+   const response = await app.inject({
+     method: "POST",
+@@ -128,29 +128,31 @@ const writeExecutionTree = (input: {
+   rootTeamRunId: string;
+   rootAgentRunId?: string;
+   rootAgents?: Array<{ address: string; agentRunId: string }>;
++  tasks?: Array<{ address: string; agentRunId: string }>;
+   nested?: Array<{ address: string; teamRunId: string; agentAddress: string; agentRunId: string }>;
+ }): void => {
+   const rootAgents = input.rootAgents?.map((entry) => testAgentNode(entry.address, { agentRunId: entry.agentRunId }))
+     ?? [testAgentNode("/A", { agentRunId: input.rootAgentRunId ?? `coordinator-${input.rootTeamRunId}` })];
+-  const nested = (input.nested ?? []).map((entry) => testAgentTeamNode({
+-    address: entry.address,
+-    teamRunId: entry.teamRunId,
+-    coordinatorAddress: entry.agentAddress,
+-    children: [testAgentNode(entry.agentAddress, { agentRunId: entry.agentRunId })],
+-  }));
+   const tree = testExecutionTree({
+     rootTeamRunId: input.rootTeamRunId,
+     rootTeamDefinitionId: "context-file-team",
+     teamDefinitionName: "Context File Team",
+     coordinatorAddress: "/A",
+-    children: [...rootAgents, ...nested],
++    children: rootAgents,
+   });
++  const taskExecutions = [
++    ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunId: null,
++      startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00:00:00.000Z" })),
++    ...(input.nested ?? []).map(entry => ({ address: entry.address, teamRunId: entry.teamRunId,
++      members: [{ address: entry.agentAddress, agentRunId: entry.agentRunId, platformAgentRunId: null }],
++      taskExecutions: [], startedAt: "2026-09-01T00:00:00.000Z", settledAt: null })),
++  ] as typeof tree.rootTeam.taskExecutions;
+   const teamDir = new AgentMemoryLayout(input.memoryDir).getTeamDirPath({
+     rootTeamRunId: input.rootTeamRunId,
+     ancestorTeamRunIds: [],
+   });
+   fs.mkdirSync(teamDir, { recursive: true });
+-  fs.writeFileSync(path.join(teamDir, "team_run_execution_tree.json"), JSON.stringify(tree), "utf8");
++  fs.writeFileSync(path.join(teamDir, "team_run_execution_tree.json"), JSON.stringify({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions } }), "utf8");
+ };
+ 
+ describe("REST context-files routes", () => {
+@@ -213,11 +215,11 @@ describe("REST context-files routes", () => {
+     const finalized = await finalizeAttachment(
+       app,
+       draftOwner,
+-      { kind: "team_member_final", teamRunId: rootTeamRunId, memberAddress: "/A" },
++      { kind: "team_member_final", teamRunId: rootTeamRunId, agentRunId: "agent-run-A" },
+       uploaded,
+     );
+     expect(finalized.locator).toBe(
+-      `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/${encodeURIComponent(uploaded.storedFilename)}`,
++      `/rest/team-runs/${rootTeamRunId}/agent-runs/agent-run-A/context-files/${encodeURIComponent(uploaded.storedFilename)}`,
+     );
+     expect((await app.inject({ method: "GET", url: finalized.locator })).body).toBe("team member notes");
+     const finalDir = new AgentMemoryLayout(memoryDir).getTeamAgentRunDirPath(
+@@ -244,33 +246,33 @@ describe("REST context-files routes", () => {
+     const finalized = await finalizeAttachment(
+       app,
+       draftOwner,
+-      { kind: "team_member_final", teamRunId: rootTeamRunId, memberAddress: "/A" },
++      { kind: "team_member_final", teamRunId: rootTeamRunId, agentRunId: "agent-run-A" },
+       uploaded,
+     );
+ 
+     expect((await app.inject({
+       method: "GET",
+-      url: `/rest/team-runs/${rootTeamRunId}/members/not-rooted/context-files/${uploaded.storedFilename}`,
++      url: `/rest/team-runs/${rootTeamRunId}/agent-runs/${encodeURIComponent("../unsafe")}/context-files/${uploaded.storedFilename}`,
+     })).statusCode).toBe(400);
+     expect((await app.inject({
+       method: "GET",
+-      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/${encodeURIComponent("../secret.txt")}`,
++      url: `/rest/team-runs/${rootTeamRunId}/agent-runs/agent-run-A/context-files/${encodeURIComponent("../secret.txt")}`,
+     })).statusCode).toBe(400);
+     expect((await app.inject({
+       method: "GET",
+-      url: `/rest/team-runs/missing-containing-team/members/${encodeURIComponent("/A")}/context-files/${uploaded.storedFilename}`,
++      url: `/rest/team-runs/missing-containing-team/agent-runs/agent-run-A/context-files/${uploaded.storedFilename}`,
+     })).statusCode).toBe(404);
+     expect((await app.inject({
+       method: "GET",
+-      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/missing")}/context-files/${uploaded.storedFilename}`,
++      url: `/rest/team-runs/${rootTeamRunId}/agent-runs/missing/context-files/${uploaded.storedFilename}`,
+     })).statusCode).toBe(404);
+     expect((await app.inject({
+       method: "GET",
+-      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/B")}/context-files/${uploaded.storedFilename}`,
++      url: `/rest/team-runs/${rootTeamRunId}/agent-runs/agent-run-B/context-files/${uploaded.storedFilename}`,
+     })).statusCode).toBe(404);
+     expect((await app.inject({
+       method: "GET",
+-      url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/ctx_missing__exact.md`,
++      url: `/rest/team-runs/${rootTeamRunId}/agent-runs/agent-run-A/context-files/ctx_missing__exact.md`,
+     })).statusCode).toBe(404);
+ 
+     const exact = await app.inject({ method: "GET", url: finalized.locator });
+@@ -287,7 +289,7 @@ describe("REST context-files routes", () => {
+     try {
+       const response = await app.inject({
+         method: "GET",
+-        url: `/rest/team-runs/${rootTeamRunId}/members/${encodeURIComponent("/A")}/context-files/ctx_fault__exact.md`,
++        url: `/rest/team-runs/${rootTeamRunId}/agent-runs/agent-run-A/context-files/ctx_fault__exact.md`,
+       });
+ 
+       expect(response.statusCode).toBe(500);
+@@ -297,7 +299,7 @@ describe("REST context-files routes", () => {
+     }
+   });
+ 
+-  it("finalizes a nested member through its exact containing TeamRun and canonical address", async () => {
++  it("finalizes a nested member through its exact containing TeamRun and canonical execution ID", async () => {
+     const rootTeamRunId = "root-team-nested";
+     const childTeamRunId = "child-team-C";
+     const agentRunId = "agent-run-C-D";
+@@ -311,7 +313,7 @@ describe("REST context-files routes", () => {
+     const finalized = await finalizeAttachment(
+       app,
+       draftOwner,
+-      { kind: "team_member_final", teamRunId: childTeamRunId, memberAddress: "/C/D" },
++      { kind: "team_member_final", teamRunId: childTeamRunId, agentRunId },
+       uploaded,
+     );
+ 
+@@ -324,7 +326,7 @@ describe("REST context-files routes", () => {
+       .toBe("nested notes");
+   });
+ 
+-  it("rejects basename and sibling addresses instead of guessing a nested owner", async () => {
++  it("rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft", async () => {
+     const rootTeamRunId = "root-team-exact";
+     writeExecutionTree({
+       memoryDir,
+@@ -336,11 +338,11 @@ describe("REST context-files routes", () => {
+     });
+ 
+     for (const finalOwner of [
+-      { kind: "team_member_final", teamRunId: "child-C", memberAddress: "/D" },
+-      { kind: "team_member_final", teamRunId: "child-C", memberAddress: "/E/D" },
+-      { kind: "team_member_final", teamRunId: rootTeamRunId, memberAddress: "/C/D" },
++      { kind: "team_member_final", teamRunId: "child-C", agentRunId: "missing" },
++      { kind: "team_member_final", teamRunId: "child-C", agentRunId: "agent-E-D" },
++      { kind: "team_member_final", teamRunId: rootTeamRunId, agentRunId: "agent-C-D" },
+     ]) {
+-      const draftOwner = { kind: "team_member_draft", teamDraftId: `draft-${finalOwner.memberAddress}`, memberAddress: "/C/D" };
++      const draftOwner = { kind: "team_member_draft", teamDraftId: `draft-${finalOwner.agentRunId}`, memberAddress: "/C/D" };
+       const uploaded = await uploadDraftAttachment(app, draftOwner, "exact.md", "exact only");
+       const response = await app.inject({
+         method: "POST",
+@@ -353,6 +355,53 @@ describe("REST context-files routes", () => {
+       });
+       expect(response.statusCode).toBe(400);
+       expect(response.json()).toMatchObject({ detail: expect.stringContaining("Unable to resolve context-file owner") });
++      expect((await app.inject({ method: "GET", url: uploaded.locator })).body).toBe("exact only");
++      const retried = await finalizeAttachment(app, draftOwner,
++        { kind: "team_member_final", teamRunId: "child-C", agentRunId: "agent-C-D" }, uploaded);
++      expect((await app.inject({ method: "GET", url: retried.locator })).body).toBe("exact only");
++    }
++  });
++
++  it("rejects old, mixed, missing and malformed final identities before moving draft bytes", async () => {
++    writeExecutionTree({ memoryDir, rootTeamRunId: "team", rootAgentRunId: "configured" });
++    const draftOwner = { kind: "team_member_draft", teamDraftId: "retry", memberAddress: "/A" };
++    const uploaded = await uploadDraftAttachment(app, draftOwner, "retry.md", "retained retry bytes");
++    for (const identity of [{}, { memberAddress: "/A" }, { agentRunId: "configured", memberAddress: "/A" },
++      { agentRunId: "" }, { agentRunId: "../configured" }, { agentRunId: null }]) {
++      const response = await app.inject({ method: "POST", url: "/rest/context-files/finalize", payload: {
++        draftOwner, finalOwner: { kind: "team_member_final", teamRunId: "team", ...identity },
++        attachments: [uploaded],
++      } });
++      expect(response.statusCode).toBe(400);
++      expect((await app.inject({ method: "GET", url: uploaded.locator })).body).toBe("retained retry bytes");
++    }
++    expect((await app.inject({ method: "GET",
++      url: `/rest/team-runs/team/members/%2FA/context-files/${uploaded.storedFilename}` })).statusCode).toBe(404);
++    const final = await finalizeAttachment(app, draftOwner,
++      { kind: "team_member_final", teamRunId: "team", agentRunId: "configured" }, uploaded);
++    expect((await app.inject({ method: "GET", url: final.locator })).body).toBe("retained retry bytes");
++  });
++
++  it("isolates image and file bytes for duplicate-address executions even with repeated stored filenames", async () => {
++    writeExecutionTree({ memoryDir, rootTeamRunId: "team", rootAgentRunId: "configured",
++      tasks: [{ address: "/A", agentRunId: "task" }] });
++    const draftOwner = { kind: "team_member_draft", teamDraftId: "duplicate", memberAddress: "/A" };
++    for (const input of [
++      { name: "image.png", type: "image/png", bytes: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aS1sAAAAASUVORK5CYII=", "base64") },
++      { name: "notes.txt", type: "text/plain", bytes: Buffer.from("configured file bytes") },
++    ]) {
++      const uploaded = await uploadDraftAttachment(app, draftOwner, input.name, input.bytes, input.type);
++      const otherDir = path.join(memoryDir, "agent_teams", "team", "task", "context_files");
++      fs.mkdirSync(otherDir, { recursive: true });
++      fs.writeFileSync(path.join(otherDir, uploaded.storedFilename), "retained task bytes");
++      const final = await finalizeAttachment(app, draftOwner,
++        { kind: "team_member_final", teamRunId: "team", agentRunId: "configured" }, uploaded);
++      const read = await app.inject({ method: "GET", url: final.locator });
++      expect(read.statusCode).toBe(200);
++      expect(read.headers["content-type"]).toContain(input.type);
++      expect(read.rawPayload).toEqual(input.bytes);
++      const taskRead = await app.inject({ method: "GET", url: final.locator.replace("/configured/", "/task/") });
++      expect(taskRead.body).toBe("retained task bytes");
+     }
+   });
+ 
+diff --git a/autobyteus-server-ts/tests/e2e/helpers/context-file-process-fixture.ts b/autobyteus-server-ts/tests/e2e/helpers/context-file-process-fixture.ts
+new file mode 100644
+index 000000000..c4c7bb615
+--- /dev/null
++++ b/autobyteus-server-ts/tests/e2e/helpers/context-file-process-fixture.ts
+@@ -0,0 +1,169 @@
++import fs from "node:fs/promises";
++import path from "node:path";
++import os from "node:os";
++import http from "node:http";
++import { execFile, spawn, type ChildProcess } from "node:child_process";
++import { promisify } from "node:util";
++import { pathToFileURL } from "node:url";
++import { once } from "node:events";
++import { randomUUID } from "node:crypto";
++import WebSocket from "ws";
++import { expect } from "vitest";
++import { sendE2eSendMessageCommand } from "./websocket-command-helpers.js";
++
++export type Attachment = { storedFilename: string; displayName: string; locator: string; phase: string };
++export type Event = { type: string; payload: Record<string, any> };
++export const PNG = Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aS1sAAAAASUVORK5CYII=", "base64");
++export const until = async (check: () => boolean | Promise<boolean>, label: string, timeout = 30_000) => {
++  const end = Date.now() + timeout;
++  while (Date.now() < end) {
++    if (await check()) return;
++    await new Promise(resolve => setTimeout(resolve, 50));
++  }
++  throw new Error(`Timed out: ${label}`);
++};
++
++/** Real Studio child and filesystem; only the external inference service is emulated. */
++export class ContextFileProcessFixture {
++  root = "";
++  origin = "";
++  providerOrigin = "";
++  logs = "";
++  requests: any[] = [];
++  private child: ChildProcess | null = null;
++  private provider: http.Server | null = null;
++
++  async setup() {
++    this.root = await fs.mkdtemp(path.join(os.tmpdir(), "context-file-process-e2e-"));
++    this.provider = http.createServer(async (req, res) => {
++      if (req.url === "/api/v1/models") {
++        res.setHeader("content-type", "application/json");
++        res.end(JSON.stringify({ models: [{ key: "attachment-fixture", max_context_length: 32768,
++          loaded_instances: [{ config: { context_length: 32768 } }] }] })); return;
++      }
++      let body = "";
++      for await (const chunk of req) body += chunk;
++      if (req.url !== "/v1/chat/completions") { res.writeHead(404); res.end(); return; }
++      this.requests.push(JSON.parse(body));
++      res.writeHead(200, { "content-type": "text/event-stream" });
++      const base = { id: randomUUID(), object: "chat.completion.chunk", created: 1, model: "attachment-fixture" };
++      for (const choice of [
++        { index: 0, delta: { role: "assistant", content: "Attachment received." }, finish_reason: null },
++        { index: 0, delta: {}, finish_reason: "stop" },
++      ]) res.write(`data: ${JSON.stringify({ ...base, choices: [choice] })}\n\n`);
++      res.end("data: [DONE]\n\n");
++    });
++    this.provider.listen(0, "127.0.0.1"); await once(this.provider, "listening");
++    this.providerOrigin = `http://127.0.0.1:${(this.provider.address() as { port: number }).port}`;
++    await fs.writeFile(path.join(this.root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
++    await this.start();
++    await this.gql(`mutation($value:String!){updateServerSetting(key:"LMSTUDIO_HOSTS",value:$value)}`, { value: this.providerOrigin });
++    await this.gql(`mutation {reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`);
++  }
++  async start(options: { interruptAfterTraceCommit?: boolean } = {}) {
++    await fs.access(path.resolve("dist/app.js")); // Caller must build current sources first.
++    const env = { ...process.env };
++    env.DATABASE_URL = `file:${path.join(this.root, "db", "production.db")}`;
++    delete env.DATABASE_URL_TEST; delete env.AUTOBYTEUS_MEMORY_DIR;
++    env.LMSTUDIO_HOSTS = this.providerOrigin;
++    env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = ""; // Never discover unrelated user packages in durable fixtures.
++    this.logs = "";
++    let entry = "dist/app.js";
++    if (options.interruptAfterTraceCommit) {
++      entry = path.join(this.root, "interrupt-after-rename.mjs");
++      await fs.writeFile(entry, `import {AtomicRunPackageFileCommitWriter as Writer} from ${JSON.stringify(pathToFileURL(path.resolve("dist/run-history/store/atomic-run-package-file-commit-writer.js")).href)};
++        import {startServer} from ${JSON.stringify(pathToFileURL(path.resolve("dist/app.js")).href)};
++        const write = Writer.prototype.writeSerializedText;
++        Writer.prototype.writeSerializedText = async function(input) {
++          const result = await write.call(this, input);
++          if(input.file === 'team_context_file_locators' && input.filePath.endsWith('raw_traces_active.jsonl') && result.outcome === 'committed') process.kill(process.pid, 'SIGKILL');
++          return result;
++        };
++        await startServer();`);
++    }
++    this.child = spawn(process.execPath, [entry, "--data-dir", this.root, "--host", "127.0.0.1", "--port", "0"],
++      { cwd: process.cwd(), env, stdio: ["ignore", "pipe", "pipe"] });
++    const capture = (data: Buffer) => { this.logs += data.toString(); };
++    this.child.stdout!.on("data", capture); this.child.stderr!.on("data", capture);
++    await until(() => {
++      if (this.child?.exitCode !== null || this.child?.signalCode !== null) throw new Error(`Studio startup exited (${this.child?.signalCode ?? this.child?.exitCode}): ${this.logs}`);
++      // The private MCP listener appears first; Studio readiness appears after the second listener.
++      if (!this.logs.includes("Server listening on 127.0.0.1:0")) return false;
++      const listeners = [...this.logs.matchAll(/Server listening at (http:\/\/127\.0\.0\.1:\d+)/g)];
++      this.origin = listeners.at(-1)![1]!; return true;
++    }, "Studio startup", 60_000);
++    expect((await fetch(`${this.origin}/rest/health`)).status).toBe(200);
++  }
++  async standalone(): Promise<string> {
++    const packageRoot = path.join(this.root, "host-fixture-package");
++    const app = path.join(packageRoot, "applications", "fixture");
++    await fs.mkdir(path.join(app, "ui"), { recursive: true });
++    await fs.mkdir(path.join(app, "backend"), { recursive: true });
++    await fs.writeFile(path.join(app, "ui", "index.html"), "<!doctype html><html><body>validation host</body></html>");
++    await fs.writeFile(path.join(app, "application.json"), JSON.stringify({ manifestVersion: "5", id: "fixture", name: "Fixture",
++      ui: { entryHtml: "ui/index.html", frontendSdkContractVersion: "6" }, backend: { bundleManifest: "backend/bundle.json" }, executionResourceSlots: [], agentTools: [] }));
++    await fs.writeFile(path.join(app, "backend", "bundle.json"), JSON.stringify({ contractVersion: "1", entryModule: "backend/entry.mjs",
++      moduleFormat: "esm", distribution: "self-contained", targetRuntime: { engine: "node", semver: ">=22 <23" },
++      sdkCompatibility: { backendDefinitionContractVersion: "7", frontendSdkContractVersion: "6" },
++      supportedExposures: { queries: false, commands: false, routes: false, graphql: false, notifications: false, eventHandlers: false, webSockets: false } }));
++    await fs.writeFile(path.join(app, "backend", "entry.mjs"), "export default { definitionContractVersion: '7' };\n");
++    const entry = path.join(this.root, "standalone-probe.mjs");
++    await fs.writeFile(entry, `import {startStandaloneApplicationHost} from ${JSON.stringify(pathToFileURL(path.resolve("dist/index.js")).href)};
++      try { const host = await startStandaloneApplicationHost(${JSON.stringify({ packageRoot, localApplicationId: "fixture", appDataDir: this.root, host: "127.0.0.1", port: 0 })});
++        const response = await fetch(host.url + '/_autobyteus/health');
++        if (response.status !== 200) throw Error('Health failed: ' + response.status);
++        console.log('STANDALONE_ADMITTED'); await host.close(); process.exit(0);
++      } catch(error) { console.error(String(error)); process.exit(91); }`);
++    const env: NodeJS.ProcessEnv = { ...process.env, DATABASE_URL: `file:${path.join(this.root, "db", "production.db")}` };
++    delete env.AUTOBYTEUS_MEMORY_DIR; delete env.DATABASE_URL_TEST;
++    env.LMSTUDIO_HOSTS = this.providerOrigin;
++    env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = ""; // Never discover unrelated user packages in durable fixtures.
++    try { const result = await promisify(execFile)(process.execPath, [entry], { env, timeout: 45_000, maxBuffer: 4 * 1024 * 1024 }); return result.stdout + result.stderr; }
++    catch (error) { const result = error as Error & { stdout?: string; stderr?: string }; throw new Error(`${result.message}\n${result.stdout}\n${result.stderr}`); }
++  }
++  async stop() {
++    const child = this.child;
++    if (!child || child.exitCode !== null || child.signalCode !== null) return;
++    const exited = once(child, "exit"); child.kill("SIGTERM");
++    const force = setTimeout(() => child.kill("SIGKILL"), 8_000);
++    await exited; clearTimeout(force); this.child = null;
++  }
++  async cleanup(retainData = false) {
++    await this.stop();
++    if (this.provider) { const closed = once(this.provider, "close"); this.provider.close(); this.provider.closeAllConnections(); await closed; }
++    if (this.root && !retainData) await fs.rm(this.root, { recursive: true, force: true });
++  }
++  async gql(query: string, variables: Record<string, unknown> = {}): Promise<any> {
++    const response = await fetch(`${this.origin}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
++    const result = await response.json() as any;
++    if (result.errors) throw new Error(JSON.stringify(result.errors));
++    return result.data;
++  }
++  async upload(owner: unknown, filename: string, bytes: Buffer, type: string): Promise<Attachment> {
++    const form = new FormData(); form.set("owner", JSON.stringify(owner));
++    form.set("file", new Blob([new Uint8Array(bytes)], { type }), filename);
++    const response = await fetch(`${this.origin}/rest/context-files/upload`, { method: "POST", body: form });
++    expect(response.status).toBe(200); return response.json() as Promise<Attachment>;
++  }
++  async finalize(draftOwner: unknown, finalOwner: unknown, attachments: Attachment[]): Promise<Attachment[]> {
++    const response = await fetch(`${this.origin}/rest/context-files/finalize`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ draftOwner, finalOwner, attachments }) });
++    expect(response.status, await response.clone().text()).toBe(200);
++    return (await response.json() as { attachments: Attachment[] }).attachments;
++  }
++  async send(socketPath: string, agentRunId: string | null, content: string, attachments: Attachment[]): Promise<Event[]> {
++    const ws = new WebSocket(this.origin.replace("http:", "ws:") + socketPath);
++    const events: Event[] = [];
++    ws.on("message", raw => events.push(JSON.parse(String(raw))));
++    try {
++      await until(() => events.some(e => e.type === "CONNECTED"), "socket connected");
++      sendE2eSendMessageCommand(ws, { ...(agentRunId ? { agent_run_id: agentRunId } : {}), content, context_file_paths: attachments.map(a => a.locator) });
++      await until(() => {
++        const error = events.find(e => e.type === "ERROR");
++        if (error) throw new Error(JSON.stringify(error));
++        return events.some(e => e.type === "ASSISTANT_COMPLETE");
++      }, "provider response");
++      await until(() => events.some(e => e.type === "AGENT_STATUS" && e.payload.status === "idle"), "idle after response");
++      return events;
++    } finally { const closed = once(ws, "close"); ws.close(); await closed; }
++  }
++}

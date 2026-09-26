@@ -213,14 +213,14 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
   });
 
   app.get<{
-    Params: { teamRunId: string; memberAddress: string; storedFilename: string };
-  }>("/team-runs/:teamRunId/members/:memberAddress/context-files/:storedFilename", async (request, reply) => {
+    Params: { teamRunId: string; agentRunId: string; storedFilename: string };
+  }>("/team-runs/:teamRunId/agent-runs/:agentRunId/context-files/:storedFilename", async (request, reply) => {
     let owner;
     try {
       owner = parseFinalContextFileOwnerDescriptor({
         kind: "team_member_final",
         teamRunId: request.params.teamRunId,
-        memberAddress: request.params.memberAddress,
+        agentRunId: request.params.agentRunId,
       });
     } catch (error) {
       if (error instanceof ContextFileDescriptorError || error instanceof CollaborationContractError) {

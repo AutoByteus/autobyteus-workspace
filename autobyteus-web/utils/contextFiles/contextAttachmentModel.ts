@@ -13,7 +13,7 @@ const UPLOADED_DRAFT_ORG_ROUTE = /^\/rest\/drafts\/agent-org-runs\/([^/]+)\/agen
 const UPLOADED_FINAL_ORG_ROUTE = /^\/rest\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_FINAL_AGENT_ROUTE = /^\/rest\/runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_FINAL_TEAM_ROUTE =
-  /^\/rest\/team-runs\/([^/]+)\/members\/([^/]+)\/context-files\/([^/?#]+)$/;
+  /^\/rest\/team-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 
 const hasScheme = (value: string): boolean => /^[a-zA-Z][a-zA-Z\d+.-]*:/.test(value);
 

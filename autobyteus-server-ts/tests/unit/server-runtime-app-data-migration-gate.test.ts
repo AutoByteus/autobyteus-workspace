@@ -1,3 +1,4 @@
+const ATTACHMENT_MIGRATION_ID = "20260926_team_context_file_execution_locators_v1";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const READABLE_MIGRATION_ID = "20260803_custom_provider_readable_identity";
@@ -63,6 +64,9 @@ vi.mock("../../src/startup/background-runner.js", () => ({
 }));
 vi.mock("../../src/compositions/build-studio-server.js", () => ({
   buildStudioServer: mocks.buildStudioServer,
+}));
+vi.mock("../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js", () => ({
+  TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID: "20260926_team_context_file_execution_locators_v1",
 }));
 vi.mock("../../src/app-data-migrations/app-data-migration-runner.js", () => ({
   getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),
@@ -139,7 +143,7 @@ describe("Studio readable-provider migration startup gate", () => {
     vi.spyOn(process, "exit").mockImplementation(((code: number) => {
       throw new Error(`process.exit:${code}`);
     }) as never);
-    mocks.runPending.mockResolvedValue([terminalReadableStatus("SUCCEEDED")]);
+    mocks.runPending.mockResolvedValue([{ migrationId: ATTACHMENT_MIGRATION_ID, status: "SUCCEEDED" }, terminalReadableStatus("SUCCEEDED")]);
   });
 
   afterEach(() => {
@@ -149,7 +153,7 @@ describe("Studio readable-provider migration startup gate", () => {
   it.each(["SUCCEEDED", "SUCCEEDED_WITH_WARNINGS"] as const)(
     "builds and listens only after readable identity status %s",
     async (status) => {
-      mocks.runPending.mockResolvedValueOnce([terminalReadableStatus(status)]);
+      mocks.runPending.mockResolvedValueOnce([{ migrationId: ATTACHMENT_MIGRATION_ID, status: "SUCCEEDED" }, terminalReadableStatus(status)]);
 
       await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
         .resolves.toBeUndefined();
@@ -187,6 +191,7 @@ describe("Studio readable-provider migration startup gate", () => {
 
   it("retains the warning-only policy for an unrelated ordinary migration failure", async () => {
     mocks.runPending.mockResolvedValueOnce([
+      { migrationId: ATTACHMENT_MIGRATION_ID, status: "SUCCEEDED" },
       {
         migrationId: "ordinary_optional_migration",
         status: "FAILED",
@@ -212,7 +217,7 @@ describe("Studio readable-provider migration startup gate", () => {
   ] as const)(
     "blocks %s readable identity state before composition construction and unwinds process resources",
     async (_label, statuses, expectedStatus, expectedLogPath) => {
-      mocks.runPending.mockResolvedValueOnce(statuses);
+      mocks.runPending.mockResolvedValueOnce([{ migrationId: ATTACHMENT_MIGRATION_ID, status: "SUCCEEDED" }, ...statuses]);
 
       await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
         .rejects.toThrow("process.exit:1");
@@ -243,4 +248,12 @@ describe("Studio readable-provider migration startup gate", () => {
       runnerFailure.message,
     ));
   });
+  it.each(["MISSING", "NOT_RUN", "RUNNING", "FAILED", "SUCCEEDED_WITH_WARNINGS"])("blocks attachment transition %s before runtime admission", async (status) => {
+    mocks.runPending.mockResolvedValueOnce([terminalReadableStatus("SUCCEEDED"), ...(status === "MISSING" ? [] : [{ migrationId: ATTACHMENT_MIGRATION_ID, status }])]);
+    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).rejects.toThrow("process.exit:1");
+    expect(mocks.buildStudioServer).not.toHaveBeenCalled();
+    expect(mocks.app.listen).not.toHaveBeenCalled();
+    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining("Team attachment locator migration requires clean success"));
+  });
+
 });

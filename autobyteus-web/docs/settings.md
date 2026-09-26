@@ -1635,3 +1635,26 @@ turn.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.
+
+### Exact Team attachment execution ownership
+
+Team final owners are `{ kind: 'team_member_final', teamRunId, agentRunId }`, where
+`teamRunId` is the containing TeamRun, not necessarily the root. Final locators use
+`/rest/team-runs/:teamRunId/agent-runs/:agentRunId/context-files/:storedFilename`.
+Drafts retain their separate temporary scope and member address. Send captures the
+selected AgentRun before awaits; hydration focus changes cannot retarget it.
+
+The startup-only `20260926_team_context_file_execution_locators_v1` migration rewrites
+only typed stored attachment references using indexed ownership and physical-file
+proof. It leaves attachment blobs and unrelated history untouched. Original record
+backups and the hash/progress manifest live under
+`app-data-migration-backups/20260926_team_context_file_execution_locators_v1`.
+Both Studio and standalone startup require clean success before runtime admission.
+Ambiguous or missing proof blocks startup rather than choosing another execution.
+
+Upgrade server and web/Electron together with writers stopped. Do not restore old
+record backups over newer live history; rollback must restore the matching binary,
+changed records and migration ledger as one stopped-writer operation. Deployment
+and rollback remain operator/Delivery-owned.
+
+Operational procedure: [Team attachment cutover and recovery](../../autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md#exact-team-attachment-cutover-and-operations). Migration success on disposable test data is not installed-data rollout evidence.
