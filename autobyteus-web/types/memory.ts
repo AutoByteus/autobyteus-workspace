@@ -61,11 +61,27 @@ export interface AgentTeamWithMemorySummary {
   memory: MemoryAvailabilitySummary;
 }
 
-export interface TeamMemberMemoryTargetSummary {
+export type CollaborationMemberExecutionKind = 'CONFIGURED' | 'TASK_AGENT' | 'TASK_TEAM_MEMBER';
+
+/** A configured or task team on a member's path; `teamRunId` identifies it (a task team may share an address). */
+export interface CollaborationMemoryGroup {
+  teamRunId: string;
+  address: string;
+  displayName: string;
+  kind: 'CONFIGURED_TEAM' | 'TASK_TEAM';
+  startedAt?: string | null;
+}
+
+export interface CollaborationMemberMemoryTargetSummary {
   memberAddress: string;
-  memberName: string;
+  displayName: string;
   agentRunId: string;
   agentDefinitionId?: string | null;
+  executionKind: CollaborationMemberExecutionKind;
+  /** Task agents only. */
+  startedAt?: string | null;
+  /** Outermost first; the root team or org is never a group. */
+  groupPath: CollaborationMemoryGroup[];
   lastUpdatedAt?: string | null;
   memory: MemoryAvailabilitySummary;
 }
@@ -79,7 +95,38 @@ export interface AgentTeamRunMemorySummary {
   createdAt?: string | null;
   lastUpdatedAt?: string | null;
   memory: MemoryAvailabilitySummary;
-  memberTargets: TeamMemberMemoryTargetSummary[];
+  memberTargets: CollaborationMemberMemoryTargetSummary[];
+}
+
+export interface AgentOrgWithMemorySummary {
+  orgDefinitionId: string;
+  orgDefinitionName: string;
+  orgRunCount: number;
+  memberMemoryCount: number;
+  latestMemoryAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+}
+
+export interface AgentOrgRunMemorySummary {
+  orgRunId: string;
+  orgDefinitionId: string;
+  orgDefinitionName: string;
+  summary?: string | null;
+  workspaceRootPath?: string | null;
+  createdAt?: string | null;
+  lastUpdatedAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+  memberTargets: CollaborationMemberMemoryTargetSummary[];
+}
+
+/** One team or org run as rendered by the shared collaboration detail view. */
+export interface CollaborationRunMemoryRow {
+  runId: string;
+  summary?: string | null;
+  workspaceRootPath?: string | null;
+  lastUpdatedAt?: string | null;
+  memory: MemoryAvailabilitySummary;
+  memberTargets: CollaborationMemberMemoryTargetSummary[];
 }
 
 export interface MemoryExplorerPage<T> {
@@ -154,6 +201,17 @@ export type MemoryInspectTarget =
       teamDefinitionId?: string | null;
       teamDefinitionName?: string | null;
       teamRunId: string;
+      agentRunId: string;
+      memberAddress?: string | null;
+      memberName?: string | null;
+      lastUpdatedAt?: string | null;
+      source?: MemoryExplorerSourceInput;
+    }
+  | {
+      kind: 'org_member_run';
+      orgDefinitionId?: string | null;
+      orgDefinitionName?: string | null;
+      orgRunId: string;
       agentRunId: string;
       memberAddress?: string | null;
       memberName?: string | null;

@@ -98,6 +98,12 @@ Assigned task execution retains its separate durable preparation/release journey
 The effective standalone configuration is resolved for each direct Agent from
 the Team root plus any exact Agent override. Definition defaults seed the new
 draft but are not persisted merely because a schema default is displayed.
+For a root or member seeded with an exact saved model ID absent from the
+backend's offered choices, launch controls request an exact-current descriptor
+and retain the ID/schema as a current-only value. In particular, a stored
+Claude `default` is not silently changed to its recommended offered sibling.
+Each configured scope still needs valid catalog/schema evidence before launch;
+the descriptor lookup does not make an arbitrary new ID selectable.
 
 ## Execution Identity And Commands
 
@@ -142,6 +148,30 @@ transient execution row while the Tasks surface retains the durable record,
 submissions, reviews, and reference files. Task activation becomes durable
 before its Agent frames are released, allowing an early-selected task monitor
 to advance without reload or refocus.
+
+## Workspace History Sidebar Task Peers
+
+In an expanded Team run, available task Agents appear immediately after their
+corresponding recipient Agent at the same indentation level. They do not require
+opening that Agent, and an Agent has no disclosure solely for delegated task
+Agents. Task rows retain their distinct dashed treatment, description, lifecycle
+and runtime status, and exact-execution selection by mouse, Enter or Space.
+Repeated tasks at the same address remain separate conversations. Loading,
+failed inspection and retry retain the existing focus-commit behavior.
+
+This is a sidebar projection, not runtime reparenting.
+`stores/runHistoryTeamExecutionRows.ts` derives effective parent/depth for
+`task_agent` leaves whose source parent is `configured_agent` or
+`task_team_agent`, then recomputes child membership. The history navigation
+index and renderer consume that same topology, so peer selection does not need
+to expand the recipient Agent. Shared Team navigation stays unchanged.
+
+Actual Team/task-Team containers still contain their descendants; collapsing
+the outer Team run hides its contents. Source-owned live/retained availability
+is unchanged: peer placement neither resurrects settled tasks in live navigation
+nor fabricates unavailable history. No-context history still shows configured
+members only. This does not add nested configured-Team authoring or change
+Agent Orgs, the Tasks detail, delegation, identity, or persisted data.
 
 ## History, Restore, Stop, And Delete
 
@@ -222,8 +252,14 @@ The existing-run form permits a stopped standalone Team root or exact direct
 Agent to edit its model/settings pair while runtime, workspace, approval policy,
 addresses, and execution/provider identities remain locked. Model options are
 advisory: Save revalidates every affected scope against its original saved model
-and requires verified target context capacity at least that baseline. Same-model
-settings still require a current model/schema, but no replacement-capacity check.
+and validates current catalog membership and target schema. External runtime
+models are not capacity-gated; AutoByteus still requires verified positive
+non-decreasing context capacity. Same-model settings require a current
+model/schema, but no replacement-capacity check.
+Stopped options carry backend current/replacement descriptors. A proven
+redundant Claude `default` is omitted from new offers, while an exact saved
+`default` remains a current-only descriptor for same-model settings and is not
+rewritten during an unrelated Team edit.
 
 Root pair changes propagate only to Agents linked by draft-start
 runtime/model/settings equality. Divergent or directly edited Agents remain

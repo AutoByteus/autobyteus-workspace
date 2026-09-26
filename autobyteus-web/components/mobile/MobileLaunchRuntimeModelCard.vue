@@ -7,6 +7,7 @@
     <RuntimeModelConfigFields
       :runtime-kind="runtimeKind"
       :llm-model-identifier="llmModelIdentifier"
+      :seed-model-identifier="seedModelIdentifier"
       :llm-config="llmConfig"
       :disabled="disabled"
       :read-only="disabled"
@@ -28,6 +29,7 @@ const props = defineProps<{
   variant: 'agent' | 'team'
   runtimeKind: string
   llmModelIdentifier: string
+  seedModelIdentifier?: string | null
   llmConfig?: Record<string, unknown> | null
   disabled?: boolean
 }>()

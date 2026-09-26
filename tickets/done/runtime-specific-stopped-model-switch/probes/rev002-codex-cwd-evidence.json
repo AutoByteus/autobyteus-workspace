@@ -1,0 +1,104 @@
+{
+  "directServer": [
+    "gpt-5.5",
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-6-astra",
+    "gpt-6-luna",
+    "gpt-6-sol"
+  ],
+  "directWorkspace": [
+    "gpt-5.5",
+    "gpt-5.6-luna",
+    "gpt-5.6-sol",
+    "gpt-5.6-terra",
+    "gpt-6-astra",
+    "gpt-6-luna",
+    "gpt-6-sol"
+  ],
+  "snapshot": {
+    "data": {
+      "providerModelCatalogSnapshots": [
+        {
+          "llmModels": [
+            {
+              "modelIdentifier": "gpt-5.5"
+            },
+            {
+              "modelIdentifier": "gpt-5.6-luna"
+            },
+            {
+              "modelIdentifier": "gpt-5.6-sol"
+            },
+            {
+              "modelIdentifier": "gpt-5.6-terra"
+            },
+            {
+              "modelIdentifier": "gpt-6-astra"
+            },
+            {
+              "modelIdentifier": "gpt-6-luna"
+            },
+            {
+              "modelIdentifier": "gpt-6-sol"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "exact": {
+    "data": {
+      "runtimeCurrentModelDescriptors": [
+        {
+          "identifier": "gpt-6-astra",
+          "model": {
+            "modelIdentifier": "gpt-6-astra"
+          }
+        },
+        {
+          "identifier": "gpt-6-luna",
+          "model": {
+            "modelIdentifier": "gpt-6-luna"
+          }
+        },
+        {
+          "identifier": "unknown",
+          "model": null
+        }
+      ]
+    }
+  },
+  "options": {
+    "data": {
+      "agentRunModelOptions": {
+        "currentModelIdentifier": "gpt-6-astra",
+        "currentModel": {
+          "llmModelIdentifier": "gpt-6-astra"
+        },
+        "replacements": [
+          {
+            "llmModelIdentifier": "gpt-6-sol"
+          },
+          {
+            "llmModelIdentifier": "gpt-6-luna"
+          },
+          {
+            "llmModelIdentifier": "gpt-5.6-sol"
+          },
+          {
+            "llmModelIdentifier": "gpt-5.6-terra"
+          },
+          {
+            "llmModelIdentifier": "gpt-5.6-luna"
+          },
+          {
+            "llmModelIdentifier": "gpt-5.5"
+          }
+        ]
+      }
+    }
+  },
+  "match": true
+}

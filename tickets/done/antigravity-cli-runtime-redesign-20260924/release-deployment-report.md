@@ -1,19 +1,18 @@
 # Delivery / Release / Deployment Report — AGY CLI Runtime
 
-> **DR-008 verification accepted / finalization in progress:** The user
-> explicitly reported, “i have verified, the task is done. lets finalize and
-> release a new version.” The accepted handoff is the DR-007 direct-worktree
-> package, SHA-256 `18ac473f2414400d5fcecd85fc828310a50b84aa6ae60dff01427dc789f54928`.
-> A post-acceptance fetch found no new `origin/personal` commit beyond
-> `af51ffa485e1f0d6a6f312cc9dfe9cdbc2f55d48`; no re-integration or
-> renewed user approval is required on that basis. The next sequential
-> stable version is `1.4.81` (`v1.4.80` is current and `v1.4.81` is absent).
-> The ticket archive to
-> `tickets/done/antigravity-cli-runtime-redesign-20260924/` is complete before
-> the final ticket-branch commit. Branch/target finalization and release
-> workflow verification are **not yet complete**; the historical
-> pre-verification sections below are superseded by this accepted gate, not
-> release-completion claims.
+> **DR-009 authoritative terminal result — Delivery Completed (2026-09-25):**
+> The user's explicit DR-008 acceptance authorized this versioned release. The
+> archived ticket branch was committed/pushed as `b72d012d5`, merged into and
+> pushed to `personal` as `5fe6c2f16`, then the documented release helper made
+> commit `6f7b5e371` and annotated tag `v1.4.81`. The tag resolves
+> to that release commit; `personal` includes it and receives only this
+> final report-only commit afterward. All four tag-triggered desktop, Android,
+> iOS-upload and Docker workflows completed **successfully**; the public
+> GitHub Release has 17 assets and Docker Hub's `1.4.81`/`latest` multi-arch
+> tags have the same digest. The dedicated ticket worktree and local/remote
+> ticket branch were safely removed after ancestor and process checks. The
+> final report commit and separate release-worktree cleanup are recorded below;
+> older gate statements in this file are historical, not current blockers.
 
 > **Current DR-007 artifact-clean/rebuild result:** The user authorized cleanup of
 > generated worktree Electron build outputs while their official app runs
@@ -180,3 +179,13 @@ Before finalization: keep the ticket in progress and revise/reroute the branch i
 - **Packaged checks:** Rebuilt AGY materializer directly snapshot-tested the actual read-only Team-local Solution Designer skill: two Team-shared linked files became ordinary exact-byte capsule files, disposable workspace unchanged (`/tmp/agy-electron-packaged-skill-dr007-direct.log`). `test:e2e:electron --skip-build` direct and Playwright-adapter isolated launch/health checks both **exit 0**, owned ports 50970/51029, `/tmp/agy-electron-test-{smoke,playwright}-dr007-direct.log`. They did not use the official app's port/data root and do not establish a full user Org turn inside the package.
 - **Docs sync:** `docs-sync-report.md` records **No new long-lived docs impact**. IR-009 source/runtime contract is unchanged, and the README already documents direct output and packaged E2E. Updated only delivery-local `handoff-summary.md`, build report, release/deployment report and revision record for the current path/checksum and removed historical paths. Release-note draft remains unchanged and unpublished. `git diff --check` passed.
 - **Gate:** Explicit user test/acceptance still **missing**. The official app being open is not verification of the new worktree build. Ticket remains `tickets/in-progress`; no ticket push/final commit, refreshed target merge/push, tag, release/deployment/rollout or ticket-worktree/local-branch cleanup. Finalization target remains `origin/personal` and must be refetched after acceptance. The unclassified backend-A SIGTERM exit-1 and other DR-006 evidence bounds remain; no new implementation/requirements defect is assigned by this round. No `Delivery Completed` return to `/solution_designer` is eligible.
+
+## DR-009 — v1.4.81 release, rollout verification, and safe cleanup
+
+- **Classification:** **Delivery Completed**, approved **Large / High**, independent architecture/source/test-review route. The user explicitly verified the DR-007 direct-worktree package and requested finalization/release in the DR-008 message. The accepted local test DMG was inherited-version 1.4.80, SHA-256 `18ac473f2414400d5fcecd85fc828310a50b84aa6ae60dff01427dc789f54928`; the published v1.4.81 DMG is a separately built, signed/notarized CI artifact with its own digest. Automated evidence is API-REV-009 Pass/96%, source CRR-016 Pass, changed-test CRR-018 Pass, DR-006 40/40 affected units, and DR-007 package checks. No arbitrary mid-turn stop or crash-recovery guarantee was added.
+- **Repository finalization:** Latest `origin/personal@af51ffa485e1f0d6a6f312cc9dfe9cdbc2f55d48` had not advanced beyond the user-verified ticket integration, so no renewed approval was needed. The ticket was moved to `tickets/done/` before the final ticket commit `b72d012d5edac6d066471fd2241852a4bcb7bfa8` and pushed to `origin/codex/antigravity-cli-runtime-redesign-20260924`. A clean separate worktree merged it without content delta as `5fe6c2f16472b031c858d8e038a36f5e02b2e094`, pushed to `origin/personal`. Repository artifact hygiene, Windows checkout-path scan, secret-pattern scan and staged diff check passed before final commit. The user's dirty primary checkout was not modified.
+- **Release method:** `bash scripts/desktop-release.sh release 1.4.81 --release-notes tickets/done/antigravity-cli-runtime-redesign-20260924/release-notes.md --branch delivery/antigravity-cli-runtime-redesign-release --no-push` succeeded. Release commit `6f7b5e37121187eea72305afbdbd1755c6a97ee2` changed package version to 1.4.81 and synced curated notes. `git push origin HEAD:personal` and `git push origin v1.4.81` succeeded; remote tag dereference and `personal` both equal `6f7b5e371`. No manual release dispatch or extra version bump was used. An optional earlier build-only desktop CI run `36134410166` was cancelled after the release tag was pushed; it is not a tag-rollout failure or substituted pass.
+- **GitHub Release:** [v1.4.81](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.81) is non-draft, non-prerelease, published 2026-09-25T12:34:51Z with 17 assets: macOS arm64/x64 DMG+ZIP/update metadata, Windows EXE/update metadata, Linux x64/arm64 AppImage/update metadata, and signed Android APK+SHA-256. The [macOS ARM64 DMG](https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.81/AutoByteus_personal_macos-arm64-1.4.81.dmg) is 512,214,664 bytes, GitHub asset digest `sha256:20e7993640d971a2ce9f33375a6f56e8c7e1424beddd41a178747bb7c32374db`. CI macOS ARM64 and Intel logs report successful notarization; the direct-worktree unsigned test DMG is not the published asset.
+- **Rollout:** [Desktop Release run 36135332384](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36135332384), [Android APK run 36135332536](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36135332536), [iOS App Store Connect run 36135332457](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36135332457), and [Server Docker run 36135332378](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36135332378) each completed **success** on release commit `6f7b5e371`. iOS log says `UPLOAD SUCCEEDED with no errors` for `AutoByteus_personal_ios-1.4.81.ipa`; this proves upload to App Store Connect/TestFlight, **not** public App Store review, processing completion or live availability. Docker Hub `autobyteus/autobyteus-server:1.4.81` and `:latest` both expose linux/amd64 and linux/arm64 and match digest `sha256:e53c7cec20d7d842f5600be02c770b04865253020caef234ceb2dd5a292cfad2`; this verifies registry publication, not an external customer's deployment.
+- **Safe cleanup:** Verified the ticket commit was an ancestor of `origin/personal`, ticket worktree had only generated SDK `dist/` outputs, and no process used that worktree path. Removed only `/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-cli-runtime-redesign-20260924` and its local/remote `codex/antigravity-cli-runtime-redesign-20260924` branch. The accepted 1.4.80 local DMG was generated within that removed worktree; the official `/Applications/AutoByteus.app` and normal profile were untouched. The separate clean release worktree/local branch is removed after this final report commit/push. No cleanup of other worktrees or user's primary checkout is authorized.
+- **Rollback visibility / residuals:** If release recovery is needed, `v1.4.81` and commit `6f7b5e371` are immutable reference points; use the documented same-version recovery controls rather than silently bumping. No rollback was needed. Historical API/E2E limitations remain: backend A had an unclassified SIGTERM exit-1 in an earlier browser journey though B-side continuation passed; no current live Codex/Claude provider rerun, arbitrary mid-turn Team termination, or crash/SIGKILL recovery claim. No persisted-data migration. Final completion report is this archived file plus `delivery-revision-record.md`; terminal routing uses `get_handoff_rules` to return to Solution Designer only after final report push and cleanup.

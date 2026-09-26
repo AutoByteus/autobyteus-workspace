@@ -222,8 +222,10 @@ conversation identity, tool policy, and local run ID fixed. It requires a
 current, cataloged, unarchived, manager-inactive run; validates the submitted
 `llmModelIdentifier` + `llmConfig` against the selected model's current schema
 within that fixed runtime; and writes/rereads the pair together. Replacement
-requires verified target context capacity at least the fresh saved-model
-capacity. Same-model settings updates bypass that replacement comparison, not
+requires fresh runtime-catalog membership and target-schema validity. Only
+AutoByteus additionally requires verified positive target context capacity at
+least the fresh saved-model capacity. Same-model settings updates bypass that
+replacement comparison, not
 ordinary availability/schema checks. No-op and canonical confirmation compare
 both fields. See [LLM Management](./llm_management.md#persisted-run-model-selection-validation).
 

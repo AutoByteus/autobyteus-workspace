@@ -71,6 +71,11 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     return mode.value === 'team' && config?.teamDefinitionId === selectedTeamId.value ? config : null
   })
 
+  const agentSeedModelIdentifier = computed(() =>
+    agentDefinitionStore.getAgentDefinitionById(selectedAgentId.value)?.defaultLaunchConfig?.llmModelIdentifier ?? null)
+  const teamSeedModelIdentifier = computed(() =>
+    teamDefinitionStore.getCatalogAgentTeamDefinitionById(selectedTeamId.value)?.defaultLaunchConfig?.llmModelIdentifier ?? null)
+
   const activeConfig = computed<AgentRunConfig | TeamRunConfig | null>(() => (
     mode.value === 'agent' ? agentConfigForSelectedTarget.value : teamConfigForSelectedTarget.value
   ))
@@ -401,7 +406,9 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     workspaceRefreshing: launchWorkspaces.isRefreshing,
     workspacePathLoading: launchWorkspaces.isLoadingPath,
     agentConfigForSelectedTarget,
+    agentSeedModelIdentifier,
     teamConfigForSelectedTarget,
+    teamSeedModelIdentifier,
     activeConfig,
     canLaunch,
     blockingIssue,

@@ -153,6 +153,17 @@ or each selected team member's definition. The frontend draft helpers in
 `applicationLaunchProfile.ts` and `applicationSetupGate.ts` keep the route gate
 aligned with the kind-aware configuration contract.
 
+Model choices in Agent and Team Launch Setup come from the backend's normalized
+offered catalog. An inherited or saved exact Claude `default` is instead a
+current-only value: the editors request its exact descriptor/schema from the
+backend and do not add it to new choices or rewrite it to the recommended
+sibling. Server readiness resolves that exact effective ID separately from
+offered membership, so an existing valid saved override remains `VALID` and
+`RUNNABLE` when `default` is filtered from new offers. `applicationLaunchProfile.ts`
+unwraps reactive `llmConfig` before cloning sparse saved Agent, Team-default,
+and member overrides into drafts; reopening a saved setup in a new page must
+not pass a Vue Proxy to `structuredClone` or lose the saved selection/config.
+
 ## Immersive Control Panel
 
 After entry, the default visible state is immersive and app-first. The outer host shell is suppressed through the existing `appLayoutStore -> layouts/default.vue` boundary, while a light top-right in-app host trigger remains available.

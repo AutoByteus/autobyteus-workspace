@@ -1,0 +1,12 @@
+{
+  "failureId": "F-API-002",
+  "status": "Fail",
+  "trigger": "Real Chromium Agents card REV002 Saved Default Agent -> own Run button; test-owned public GraphQL definition seed model claude_agent_sdk/default",
+  "expected": "Run configuration displays exact saved default current-only with schema and does not re-offer alias",
+  "observed": "/workspace HTTP 500; RunConfigPanel template attempted undefined agentRunConfigStore.seedModelIdentifier",
+  "errorExcerpt": "Error 500\n\nCannot read properties of undefined (reading 'seedModelIdentifier')\n\nTypeError: Cannot read properties of undefined (reading 'seedModelIdentifier')\n    at Proxy._sfc_render (http://127.0.0.1:51010/_nuxt/components/workspace/config/RunConfigPanel.vue:408:59)\n    at renderComponentRoot (http://127.0.0.1:51010/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=db2c38df:4532:16)\n    at ReactiveEffect.componentUpdateFn [as fn] (http://127.0.0.1:51010/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=db2c38df:6086:46)\n    at ReactiveEffect.run (http://127.0.0.1:51010/_nuxt/@fs/",
+  "source": "autobyteus-web/components/workspace/config/RunConfigPanel.vue:35",
+  "repositoryReproduction": "api-e2e-rev002-run-panel.log: 18 failed / 12 passed",
+  "screenshot": "rev002-definition-run.png",
+  "environment": "isolated backend + Nuxt; user indexed saved-default records untouched"
+}

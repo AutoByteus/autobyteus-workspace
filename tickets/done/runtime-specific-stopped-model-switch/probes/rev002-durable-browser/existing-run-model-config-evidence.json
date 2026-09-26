@@ -1,0 +1,446 @@
+{
+  "startedAt": "2026-09-25T18:35:18.950Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "webDir": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web/tests/e2e/fixtures/existing-run-model-config.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web/pages/api-e2e-existing-run-model-config.vue",
+  "routePath": "/api-e2e-existing-run-model-config",
+  "graphqlOperations": [
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "operationName": "UpdateStoppedAgentRunModelConfig",
+      "variables": {
+        "input": {
+          "agentRunId": "agent-run-browser-1",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "high",
+            "reasoning_summary": "auto"
+          }
+        }
+      }
+    },
+    {
+      "operationName": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "UpdateStoppedTeamRunModelConfigs",
+      "variables": {
+        "input": {
+          "teamRunId": "team-run-browser-1",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/reviewer",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": {
+                "reasoning_effort": "high",
+                "reasoning_summary": "auto"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "UpdateStoppedAgentRunModelConfig",
+      "variables": {
+        "input": {
+          "agentRunId": "agent-run-browser-1",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "reasoning_effort": "low",
+            "reasoning_summary": "auto"
+          }
+        }
+      }
+    },
+    {
+      "operationName": "GetAgentRunResumeConfig",
+      "variables": {
+        "runId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetRuntimeAvailabilities",
+      "variables": {}
+    },
+    {
+      "operationName": "UpdateStoppedAgentRunModelConfig",
+      "variables": {
+        "input": {
+          "agentRunId": "agent-run-browser-1",
+          "llmModelIdentifier": "browser-larger-model",
+          "llmConfig": null
+        }
+      }
+    },
+    {
+      "operationName": "AgentRunModelOptions",
+      "variables": {
+        "agentRunId": "agent-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetProviderModelCatalogSnapshots",
+      "variables": {
+        "runtimeKind": "autobyteus"
+      }
+    },
+    {
+      "operationName": "UpdateStoppedTeamRunModelConfigs",
+      "variables": {
+        "input": {
+          "teamRunId": "team-run-browser-1",
+          "patches": [
+            {
+              "scopeKind": "CONFIGURED_TEAM",
+              "scopeAddress": "/",
+              "llmModelIdentifier": "browser-larger-model",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/coordinator",
+              "llmModelIdentifier": "browser-larger-model",
+              "llmConfig": null
+            },
+            {
+              "scopeKind": "CONFIGURED_AGENT",
+              "scopeAddress": "/lead",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": {
+                "reasoning_effort": "high",
+                "reasoning_summary": "auto"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "GetTeamRunResumeConfig",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    },
+    {
+      "operationName": "TeamRunModelOptions",
+      "variables": {
+        "teamRunId": "team-run-browser-1"
+      }
+    }
+  ],
+  "scenarios": {
+    "API-E2E-004-A": {
+      "id": "API-E2E-004-A",
+      "description": "Agent Settings loads network-fresh, locks runtime identity, and saves a same-model selection",
+      "status": "Pass",
+      "startedAt": "2026-09-25T18:35:25.247Z",
+      "finishedAt": "2026-09-25T18:35:27.376Z",
+      "details": {
+        "mutation": {
+          "input": {
+            "agentRunId": "agent-run-browser-1",
+            "llmModelIdentifier": "gpt-5.6-luna",
+            "llmConfig": {
+              "reasoning_effort": "high",
+              "reasoning_summary": "auto"
+            }
+          }
+        },
+        "resumeReads": 1
+      }
+    },
+    "API-E2E-004-B": {
+      "id": "API-E2E-004-B",
+      "description": "Flat Team Settings renders root plus direct Agents and saves one exact configured-Agent patch",
+      "status": "Pass",
+      "startedAt": "2026-09-25T18:35:27.377Z",
+      "finishedAt": "2026-09-25T18:35:27.930Z",
+      "details": {
+        "mutation": {
+          "input": {
+            "teamRunId": "team-run-browser-1",
+            "patches": [
+              {
+                "scopeKind": "CONFIGURED_AGENT",
+                "scopeAddress": "/reviewer",
+                "llmModelIdentifier": "gpt-5.6-luna",
+                "llmConfig": {
+                  "reasoning_effort": "high",
+                  "reasoning_summary": "auto"
+                }
+              }
+            ]
+          }
+        },
+        "renderedMembers": 3,
+        "resumeReads": 1
+      }
+    },
+    "API-E2E-004-C": {
+      "id": "API-E2E-004-C",
+      "description": "Narrow browser viewport keeps the existing Team Settings editor usable without page overflow",
+      "status": "Pass",
+      "startedAt": "2026-09-25T18:35:27.930Z",
+      "finishedAt": "2026-09-25T18:35:27.996Z",
+      "details": {
+        "viewportWidth": 390,
+        "documentScrollWidth": 390,
+        "saveRect": {
+          "left": 33,
+          "right": 357,
+          "width": 324,
+          "top": 776.890625,
+          "bottom": 814.890625
+        }
+      }
+    },
+    "API-E2E-004-D": {
+      "id": "API-E2E-004-D",
+      "description": "A supported external activation makes an already-open Agent Save return RUN_ACTIVE and relock",
+      "status": "Pass",
+      "startedAt": "2026-09-25T18:35:27.997Z",
+      "finishedAt": "2026-09-25T18:35:28.476Z",
+      "details": {
+        "mutation": {
+          "input": {
+            "agentRunId": "agent-run-browser-1",
+            "llmModelIdentifier": "gpt-5.6-luna",
+            "llmConfig": {
+              "reasoning_effort": "low",
+              "reasoning_summary": "auto"
+            }
+          }
+        },
+        "resumeReadsBeforeSave": 2,
+        "resumeReadsAfterSave": 2
+      }
+    },
+    "API-E2E-004-E": {
+      "id": "API-E2E-004-E",
+      "description": "Compatible Agent replacement uses keyboard selection, target defaults and the complete canonical pair",
+      "status": "Pass",
+      "startedAt": "2026-09-25T18:35:28.476Z",
+      "finishedAt": "2026-09-25T18:35:29.434Z",
+      "details": {
+        "mutation": {
+          "input": {
+            "agentRunId": "agent-run-browser-1",
+            "llmModelIdentifier": "browser-larger-model",
+            "llmConfig": null
+          }
+        },
+        "canonicalModel": "browser-larger-model",
+        "canonicalConfig": null
+      }
+    },
+    "API-E2E-004-F": {
+      "id": "API-E2E-004-F",
+      "description": "Flat Team replacement preserves divergent and directly edited Agents and verifies one all-scope save with Retry",
+      "status": "Pass",
+      "startedAt": "2026-09-25T18:35:29.435Z",
+      "finishedAt": "2026-09-25T18:35:30.111Z",
+      "details": {
+        "mutation": {
+          "input": {
+            "teamRunId": "team-run-browser-1",
+            "patches": [
+              {
+                "scopeKind": "CONFIGURED_TEAM",
+                "scopeAddress": "/",
+                "llmModelIdentifier": "browser-larger-model",
+                "llmConfig": null
+              },
+              {
+                "scopeKind": "CONFIGURED_AGENT",
+                "scopeAddress": "/coordinator",
+                "llmModelIdentifier": "browser-larger-model",
+                "llmConfig": null
+              },
+              {
+                "scopeKind": "CONFIGURED_AGENT",
+                "scopeAddress": "/lead",
+                "llmModelIdentifier": "gpt-5.6-luna",
+                "llmConfig": {
+                  "reasoning_effort": "high",
+                  "reasoning_summary": "auto"
+                }
+              }
+            ]
+          }
+        },
+        "verificationReads": 2
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22selectionPresentation%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22ModelDetail%5C%22%2C%5Cn%20%20%5C%22modelIdentifier%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22GPT-5.6%20Luna%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Deterministic%20browser%20fixture%20model.%5C%22%2C%5Cn%20%20%5C%22value%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22canonicalName%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22providerId%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22providerName%5C%22%3A%20%5C%22OpenAI%5C%22%2C%5Cn%20%20%5C%22providerType%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22runtime%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%5C%22hostUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22configSchema%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22type%5C%22%3A%20%5C%22object%5C%22%2C%5Cn%20%20%20%20%5C%22properties%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22reasoning_effort%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Effort%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22low%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22high%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22low%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22reasoning_summary%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Summary%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22none%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%7D%5Cn%20%20%20%20%7D%5Cn%20%20%7D%2C%5Cn%20%20%5C%22maxContextTokens%5C%22%3A%20128000%2C%5Cn%20%20%5C%22activeContextTokens%5C%22%3A%20128000%2C%5Cn%20%20%5C%22maxInputTokens%5C%22%3A%20120000%2C%5Cn%20%20%5C%22maxOutputTokens%5C%22%3A%208000%2C%5Cn%20%20%5C%22metadataProvenance%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22selectionPresentation%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22ModelDetail%5C%22%2C%5Cn%20%20%5C%22modelIdentifier%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22Browser%20Larger%20Model%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Deterministic%20browser%20fixture%20model.%5C%22%2C%5Cn%20%20%5C%22value%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22canonicalName%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22providerId%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22providerName%5C%22%3A%20%5C%22OpenAI%5C%22%2C%5Cn%20%20%5C%22providerType%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22runtime%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%5C%22hostUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22configSchema%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22type%5C%22%3A%20%5C%22object%5C%22%2C%5Cn%20%20%20%20%5C%22properties%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22reasoning_effort%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Effort%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22low%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22high%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22low%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22reasoning_summary%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Summary%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22none%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%7D%5Cn%20%20%20%20%7D%5Cn%20%20%7D%2C%5Cn%20%20%5C%22maxContextTokens%5C%22%3A%20272000%2C%5Cn%20%20%5C%22activeContextTokens%5C%22%3A%20272000%2C%5Cn%20%20%5C%22maxInputTokens%5C%22%3A%20120000%2C%5Cn%20%20%5C%22maxOutputTokens%5C%22%3A%208000%2C%5Cn%20%20%5C%22metadataProvenance%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22selectionPresentation%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22ModelDetail%5C%22%2C%5Cn%20%20%5C%22modelIdentifier%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22GPT-5.6%20Luna%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Deterministic%20browser%20fixture%20model.%5C%22%2C%5Cn%20%20%5C%22value%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22canonicalName%5C%22%3A%20%5C%22gpt-5.6-luna%5C%22%2C%5Cn%20%20%5C%22providerId%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22providerName%5C%22%3A%20%5C%22OpenAI%5C%22%2C%5Cn%20%20%5C%22providerType%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22runtime%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%5C%22hostUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22configSchema%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22type%5C%22%3A%20%5C%22object%5C%22%2C%5Cn%20%20%20%20%5C%22properties%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22reasoning_effort%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Effort%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22low%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22high%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22low%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22reasoning_summary%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Summary%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22none%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%7D%5Cn%20%20%20%20%7D%5Cn%20%20%7D%2C%5Cn%20%20%5C%22maxContextTokens%5C%22%3A%20128000%2C%5Cn%20%20%5C%22activeContextTokens%5C%22%3A%20128000%2C%5Cn%20%20%5C%22maxInputTokens%5C%22%3A%20120000%2C%5Cn%20%20%5C%22maxOutputTokens%5C%22%3A%208000%2C%5Cn%20%20%5C%22metadataProvenance%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22selectionPresentation%22%2C%22%7B%5Cn%20%20%5C%22__typename%5C%22%3A%20%5C%22ModelDetail%5C%22%2C%5Cn%20%20%5C%22modelIdentifier%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22name%5C%22%3A%20%5C%22Browser%20Larger%20Model%5C%22%2C%5Cn%20%20%5C%22description%5C%22%3A%20%5C%22Deterministic%20browser%20fixture%20model.%5C%22%2C%5Cn%20%20%5C%22value%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22canonicalName%5C%22%3A%20%5C%22browser-larger-model%5C%22%2C%5Cn%20%20%5C%22providerId%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22providerName%5C%22%3A%20%5C%22OpenAI%5C%22%2C%5Cn%20%20%5C%22providerType%5C%22%3A%20%5C%22OPENAI%5C%22%2C%5Cn%20%20%5C%22runtime%5C%22%3A%20%5C%22autobyteus%5C%22%2C%5Cn%20%20%5C%22hostUrl%5C%22%3A%20null%2C%5Cn%20%20%5C%22configSchema%5C%22%3A%20%7B%5Cn%20%20%20%20%5C%22type%5C%22%3A%20%5C%22object%5C%22%2C%5Cn%20%20%20%20%5C%22properties%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%5C%22reasoning_effort%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Effort%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22low%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22high%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22low%5C%22%5Cn%20%20%20%20%20%20%7D%2C%5Cn%20%20%20%20%20%20%5C%22reasoning_summary%5C%22%3A%20%7B%5Cn%20%20%20%20%20%20%20%20%5C%22type%5C%22%3A%20%5C%22string%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22title%5C%22%3A%20%5C%22Reasoning%20Summary%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%5C%22enum%5C%22%3A%20%5B%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22none%5C%22%2C%5Cn%20%20%20%20%20%20%20%20%20%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%20%20%5D%2C%5Cn%20%20%20%20%20%20%20%20%5C%22default%5C%22%3A%20%5C%22auto%5C%22%5Cn%20%20%20%20%20%20%7D%5Cn%20%20%20%20%7D%5Cn%20%20%7D%2C%5Cn%20%20%5C%22maxContextTokens%5C%22%3A%20272000%2C%5Cn%20%20%5C%22activeContextTokens%5C%22%3A%20272000%2C%5Cn%20%20%5C%22maxInputTokens%5C%22%3A%20120000%2C%5Cn%20%20%5C%22maxOutputTokens%5C%22%3A%208000%2C%5Cn%20%20%5C%22metadataProvenance%5C%22%3A%20null%5Cn%7D%22%5D%7D"
+    }
+  ],
+  "failures": [],
+  "cleanup": {
+    "context": "closed",
+    "browser": "closed",
+    "devServer": {
+      "status": "terminated",
+      "pid": 45601,
+      "initialExitCode": null,
+      "initialSignalCode": null,
+      "sigtermTarget": "process-group",
+      "exitedAfterSigterm": true,
+      "finalExitCode": 0,
+      "finalSignalCode": null,
+      "processGroupExited": true
+    },
+    "devLog": "closed",
+    "temporaryPage": "removed"
+  },
+  "port": 50969,
+  "baseUrl": "http://127.0.0.1:50969",
+  "finishedAt": "2026-09-25T18:35:30.262Z",
+  "result": "Pass"
+}

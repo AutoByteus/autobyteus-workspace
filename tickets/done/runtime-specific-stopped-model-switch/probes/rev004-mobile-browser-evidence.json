@@ -1,0 +1,56 @@
+{
+  "startedAt": "2026-09-25T19:33:36.821Z",
+  "mode": "Chromium host-resolver maps test-only .local alias to owned 127.0.0.1 backend; no LAN binding",
+  "steps": [
+    {
+      "name": "paired-home",
+      "body": "AUTOBYTEUS REMOTE ACCESS\n\nAutoByteus\nRefresh\n\nAutoByteus Desktop\n\nhttp://rev004-mobile.local:54039\n\nConnected\nRecent work\nSwitch work\nClassroom Simulation Team\nclassroom_simulation_team_33c9fe957dd543a98cb62ccacf82271d\nInactive · team-claude-default\nDaily Assistant\ndaily_assistant_84a67da84259405d93034dff7f547e07\nOffline · agent-native\nDaily Assistant\ndaily_assistant_2b40375fa1f94e11b00db74aed46870c\nOffline · agent-codex\nDaily Assistant\ndaily_assistant_cabb60248df0416894a7b5f42b103d76\nOffline · agent-claude-default\n\nChoose work\n\nRecent, Agents, Teams, Workspaces\n\nFiles\n\nBrowse current workspace\n\nTroubleshoot\n\nConnection diagnostics\n\nUnpair\n\nRemove this phone"
+    },
+    {
+      "name": "work-picker",
+      "body": "AUTOBYTEUS REMOTE ACCESS\n\nAutoByteus\nRefresh\n\nAutoByteus Desktop\n\nhttp://rev004-mobile.local:54039\n\nConnected\nRecent work\nSwitch work\nClassroom Simulation Team\nclassroom_simulation_team_33c9fe957dd543a98cb62ccacf82271d\nInactive · team-claude-default\nDaily Assistant\ndaily_assistant_84a67da84259405d93034dff7f547e07\nOffline · agent-native\nDaily Assistant\ndaily_assistant_2b40375fa1f94e11b00db74aed46870c\nOffline · agent-codex\nDaily Assistant\ndaily_assistant_cabb60248df0416894a7b5f42b103d76\nOffline · agent-claude-default\n\nChoose work\n\nRecent, Agents, Teams, Workspaces\n\nFiles\n\nBrowse current workspace\n\nTroubleshoot\n\nConnection diagnostics\n\nUnpair\n\nRemove this phone\n\nSWITCH WORK\n\nChoose work\nClose\nRecent\nAgents\nTeams\nWorkspaces\nClassroom Simulation Team\nclassroom_simulation_team_33c9fe957dd543a98cb62ccacf82271d\nInactive · team-claude-default\nDaily Assistant\ndaily_assistant_84a67da84259405d93034dff7f547e07\nOffline · agent-native\nDaily Assistant\ndaily_assistant_2b40375fa1f94e11b00db74aed46870c\nOffline · agent-codex\nDaily Assistant\ndaily_assistant_cabb60248df0416894a7b5f42b103d76\nOffline · agent-claude-default"
+    },
+    {
+      "name": "agent-run-setup",
+      "body": "Hide\nAgent\nTeam\n\nAgent\n\nREV004 Saved Default Agent\n\nChange\n\nWorkspace\n\nChoose a workspace intentionally\n\nChoose\nLoad workspace by server path\n\nEnter an absolute path on the paired AutoByteus node, not this phone.\n\nLoad\n\nRuntime and model\n\nRuntime\nAutoByteus\nClaude Agent SDK\n\nRuntime is not available in current capabilities.\n\nModel\nAnthropic / claude-opus-5-5\nThinking\nUse setting\nAdvanced\n\nAuto approve tools\n\nHigh-trust mode: automatically allows tool calls and Codex access/permission requests for this run. Off by default.\n\nChoose a workspace before creating the run.\n\nCreate run"
+    },
+    {
+      "name": "team-run-setup",
+      "body": "Hide\nAgent\nTeam\n\nTeam\n\nREV004 Saved Default Team\n\nChange\n\nWorkspace\n\nChoose a workspace intentionally\n\nChoose\nLoad workspace by server path\n\nEnter an absolute path on the paired AutoByteus node, not this phone.\n\nLoad\n\nRuntime and model\n\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nAntigravity CLI\nDefault team model\nAnthropic / claude-opus-5-5\nThinking\nUse setting\nAdvanced\n\nAuto approve tools\n\nHigh-trust mode: automatically allows tool calls and Codex access/permission requests for this run. Off by default.\n\nChoose a workspace before creating the run.\n\nCreate run"
+    }
+  ],
+  "pageErrors": [],
+  "networkFailures": [],
+  "descriptorRequests": [
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk",
+        "identifiers": [
+          "default"
+        ]
+      }
+    },
+    {
+      "operationName": "RuntimeCurrentModelDescriptors",
+      "variables": {
+        "runtimeKind": "claude_agent_sdk",
+        "identifiers": [
+          "default"
+        ]
+      }
+    }
+  ],
+  "settingsStatus": 200,
+  "pairingStatus": 201,
+  "modelCard": "Runtime and model\n\nRuntime\nAutoByteus\nClaude Agent SDK\n\nRuntime is not available in current capabilities.\n\nModel\nAnthropic / claude-opus-5-5\nThinking\nUse setting\nAdvanced",
+  "agentStore": {
+    "model": "default",
+    "seed": "default"
+  },
+  "teamModelCard": "Runtime and model\n\nRuntime\nAutoByteus\nCodex App Server\nClaude Agent SDK\nAntigravity CLI\nDefault team model\nAnthropic / claude-opus-5-5\nThinking\nUse setting\nAdvanced",
+  "teamStore": {
+    "model": "default"
+  },
+  "status": "Pass"
+}

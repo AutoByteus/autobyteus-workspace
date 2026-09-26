@@ -155,7 +155,7 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
     });
     expect(first.memberAncestorExecutionKeysByIdentity[
       runHistoryMemberIndexKey('team-a', taskAgentRunId('team-a'))
-    ]).toEqual([`agent:${stableAgentRunId('team-a')}`]);
+    ]).toEqual([]);
 
     const second = buildProjection(AgentStatus.Running, first);
     expect(second.workspaceNodes).toBe(first.workspaceNodes);
@@ -177,7 +177,7 @@ describe('runHistoryNavigationProjection current exact execution identity', () =
       });
     expect(projection.memberIndexByIdentity[identity]).toBe(1);
     expect(projection.memberAncestorExecutionKeysByIdentity[identity])
-      .toEqual([`agent:${stableAgentRunId('historical-team')}`]);
+      .toEqual([]);
   });
 
   it('reuses an unrelated workspace Team bucket when one Team topology changes', () => {

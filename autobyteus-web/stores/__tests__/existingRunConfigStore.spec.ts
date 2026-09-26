@@ -5,6 +5,8 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useExistingRunConfigStore } from '../existingRunConfigStore'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 
+const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'Provider', displayName: id, canonicalName: id, description: null, configSchema: null, recommended: false })
+
 const mocks = vi.hoisted(() => ({
   updateAgent: vi.fn(),
   updateTeam: vi.fn(),
@@ -160,7 +162,7 @@ describe('existingRunConfigStore', () => {
       store.modelOptionsByAddress[address] = { status: 'ready', options: {
         currentModelIdentifier: store.draft!.kind === 'agent_org'
           ? store.draft.planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier : '',
-        currentContextTokens: 100, replacements: [], unavailableReason: null,
+        currentModel: choice(store.draft!.kind === 'agent_org' ? store.draft.planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier : ''), replacements: [], unavailableReason: null,
       } }
       store.setSchemaState(address, { status: 'ready', message: null })
     }
@@ -393,8 +395,7 @@ describe('existingRunConfigStore', () => {
     store.syncTeamCanonical(original as never)
     await Promise.resolve()
     store.modelOptionsByAddress['/'] = { status: 'ready', options: {
-      currentModelIdentifier: 'root-model', currentContextTokens: 128000,
-      replacements: [{ llmModelIdentifier: 'larger', contextTokens: 272000 }], unavailableReason: null,
+      currentModelIdentifier: 'root-model', currentModel: choice('root-model'), replacements: [choice('larger')], unavailableReason: null,
     } }
     store.setSchemaState('/', { status: 'ready', message: null })
     store.setSchemaState('/member', { status: 'ready', message: null })
@@ -569,7 +570,7 @@ it('saves a model-only change and installs the canonical pair, not the submitted
   const store = useExistingRunConfigStore()
   store.syncAgentCanonical(agentPayload({ llmConfig: null }))
   await Promise.resolve()
-  store.modelOptionsByAddress['/'] = { status: 'ready', options: { currentModelIdentifier: 'model-1', currentContextTokens: 128000, replacements: [{ llmModelIdentifier: 'larger', contextTokens: 272000 }], unavailableReason: null } }
+  store.modelOptionsByAddress['/'] = { status: 'ready', options: { currentModelIdentifier: 'model-1', currentModel: choice('model-1'), replacements: [choice('larger')], unavailableReason: null } }
   store.updateAgentModelConfig({ llmModelIdentifier: 'larger', llmConfig: null })
   store.setSchemaState('/', { status: 'ready', message: null })
   expect(store.dirty).toBe(true)
@@ -606,7 +607,7 @@ it('saves workspace-only and mixed Org intentions independently; invalid destina
     for (const [address, scope] of Object.entries(store.draft.planner.scopesByAddress)) {
       store.setSchemaState(address, { status: 'ready', message: null })
       store.modelOptionsByAddress[address] = { status: 'ready', options: { currentModelIdentifier: scope.originalSelection.llmModelIdentifier,
-        currentContextTokens: 100, replacements: [], unavailableReason: null } }
+        currentModel: choice(scope.originalSelection.llmModelIdentifier), replacements: [], unavailableReason: null } }
     }
   }
   const modelBaseline = JSON.stringify(store.draft!.kind === 'agent_org' && store.draft.planner)

@@ -10,6 +10,7 @@
     <RuntimeModelConfigFields
       :runtime-kind="config.runtimeKind"
       :llm-model-identifier="config.llmModelIdentifier"
+      :seed-model-identifier="existingRun ? null : seedModelIdentifier"
       :llm-config="config.llmConfig"
       :disabled="!existingRun && isFormReadOnly"
       :read-only="!existingRun && isFormReadOnly"
@@ -19,9 +20,9 @@
       :model-options="modelOptions"
       :model-config-disabled="modelConfigReadOnly"
       :model-config-read-only="modelConfigReadOnly"
-      :runtime-help-text="existingRun ? $t('workspace.runModelConfig.fixedIdentity') : $t('workspace.components.workspace.config.AgentRunConfigForm.selects_the_runtime_backend_used_for')"
+      :runtime-help-text="existingRun ? $t('workspace.runModelConfig.fixedRuntime') : $t('workspace.components.workspace.config.AgentRunConfigForm.selects_the_runtime_backend_used_for')"
       :model-label="$t('workspace.components.workspace.config.AgentRunConfigForm.llm_model')"
-      :model-help-text="existingRun ? $t('workspace.runModelConfig.fixedIdentity') : $t('workspace.components.workspace.config.AgentRunConfigForm.select_a_model')"
+      :model-help-text="existingRun ? $t(existingRunModelHelpKey(config.runtimeKind)) : $t('workspace.components.workspace.config.AgentRunConfigForm.select_a_model')"
       :advanced-initially-expanded="existingRun"
       :historical-model-config="existingRun && config.llmModelIdentifier === originalModelIdentifier"
       :missing-historical-config="missingHistoricalConfig"
@@ -97,6 +98,7 @@
 </template>
 
 <script setup lang="ts">
+import { existingRunModelHelpKey } from '~/utils/existingRunModelHelp'
 import { autoExecuteForNewRuntimeSelection } from '~/utils/agentRunRuntimeDraftPolicy'
 import { computed } from 'vue'
 import type { ExistingRunModelSelection, ExistingRunModelOptionsState } from '~/types/agent/ExistingRunModelConfigDraft'
@@ -115,6 +117,7 @@ interface WorkspaceLoadingState {
 
 const props = defineProps<{
   config: AgentRunConfig | any;
+  seedModelIdentifier?: string | null;
   agentDefinition: Pick<AgentDefinition, 'name'>;
   workspaceLoadingState: WorkspaceLoadingState;
   workspaceSelection: WorkspaceSelectionState;

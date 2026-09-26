@@ -22,48 +22,41 @@ const group = (models: ModelInfo[], name = 'Anthropic'): ProviderWithModels => (
   models,
 })
 
-// Rows as reported by the Claude SDK on 2026-09-24, after server mapping (GraphQL sorts by name).
+// Backend-normalized offered rows; redundant default is absent from new choices.
 const claudeCatalog = group([
-  model('default', {
-    name: 'Default (recommended)',
-    description: 'Opus 5.5 with 1M context · Best for everyday, complex tasks',
-    canonicalName: 'claude-opus-5-5[1m]',
-    selectionPresentation: { recommended: false, aliasOfModelIdentifier: 'opus[1m]' },
-  }),
   model('claude-fable-5[1m]', {
     name: 'Fable',
     description: 'Fable 5 · Most capable for your hardest and longest-running tasks',
     canonicalName: 'claude-fable-5',
-    selectionPresentation: { recommended: false, aliasOfModelIdentifier: null },
+    selectionPresentation: { recommended: false },
   }),
   model('haiku', {
     name: 'Haiku',
     description: 'Haiku 4.5 · Fastest for quick answers',
     canonicalName: 'claude-haiku-4-5-20251001',
-    selectionPresentation: { recommended: false, aliasOfModelIdentifier: null },
+    selectionPresentation: { recommended: false },
   }),
   model('opus[1m]', {
     name: 'Opus (1M context)',
     description: 'Opus 5.5 with 1M context · Best for everyday, complex tasks',
     canonicalName: 'claude-opus-5-5[1m]',
-    selectionPresentation: { recommended: true, aliasOfModelIdentifier: null },
+    selectionPresentation: { recommended: true },
   }),
   model('sonnet', {
     name: 'Sonnet',
     description: 'Sonnet 5 · Efficient for routine tasks',
     canonicalName: 'claude-sonnet-5',
-    selectionPresentation: { recommended: false, aliasOfModelIdentifier: null },
+    selectionPresentation: { recommended: false },
   }),
 ])
 
 describe('buildModelSelectionGroups', () => {
-  it('folds the Claude default alias, labels by canonical ID and orders recommended first', () => {
+  it('formats backend-offered Claude rows and orders recommended first', () => {
     expect(buildModelSelectionGroups([claudeCatalog], 'claude_agent_sdk')).toEqual([{
       label: 'Anthropic',
       items: [
         {
           id: 'opus[1m]',
-          aliasIds: ['default'],
           recommended: true,
           name: 'claude-opus-5-5[1m]',
           description: 'Opus (1M context) · Opus 5.5 with 1M context · Best for everyday, complex tasks',
@@ -103,19 +96,19 @@ describe('buildModelSelectionGroups', () => {
     ])
   })
 
-  it('lists an alias row whose target is missing from the group instead of hiding it', () => {
+  it('does not infer alias filtering from display labels', () => {
     const [options] = buildModelSelectionGroups([group([
       model('default', {
         name: 'Default (recommended)',
         canonicalName: 'claude-opus-5-5[1m]',
-        selectionPresentation: { recommended: false, aliasOfModelIdentifier: 'opus[1m]' },
+        selectionPresentation: { recommended: false },
       }),
       model('sonnet', { canonicalName: 'claude-sonnet-5' }),
     ])], 'claude_agent_sdk')
 
-    expect(options?.items.map((item) => [item.id, item.aliasIds ?? []])).toEqual([
-      ['default', []],
-      ['sonnet', []],
+    expect(options?.items.map((item) => item.id)).toEqual([
+      'default',
+      'sonnet',
     ])
   })
 

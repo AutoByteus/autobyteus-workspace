@@ -1,0 +1,97 @@
+# v1.4.82 release verification — 2026-09-26 UTC
+2026-09-26T03:28:58Z
+
+## Remote branch and annotated tag
+046279298f53fb98d7688ee9dc2b2ba0fa827685	refs/heads/personal
+2b97dc061dba3b3927f55671e04f85e8f6f866eb	refs/tags/v1.4.82
+21fea8c778f3f962d6f32fec9555ebe994793867	refs/tags/v1.4.82^{}
+
+## Tag commit and package version
+21fea8c778f3f962d6f32fec9555ebe994793867
+1.4.82
+
+## Tag-triggered release workflows
+[
+    {
+        "conclusion": "success",
+        "databaseId": 36213105877,
+        "event": "push",
+        "headSha": "21fea8c778f3f962d6f32fec9555ebe994793867",
+        "status": "completed",
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36213105877",
+        "workflowName": "Android APK Release"
+    },
+    {
+        "conclusion": "success",
+        "databaseId": 36213105876,
+        "event": "push",
+        "headSha": "21fea8c778f3f962d6f32fec9555ebe994793867",
+        "status": "completed",
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36213105876",
+        "workflowName": "iOS App Store Connect Release"
+    },
+    {
+        "conclusion": "success",
+        "databaseId": 36213105952,
+        "event": "push",
+        "headSha": "21fea8c778f3f962d6f32fec9555ebe994793867",
+        "status": "completed",
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36213105952",
+        "workflowName": "Desktop Release"
+    },
+    {
+        "conclusion": "success",
+        "databaseId": 36213105919,
+        "event": "push",
+        "headSha": "21fea8c778f3f962d6f32fec9555ebe994793867",
+        "status": "completed",
+        "url": "https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36213105919",
+        "workflowName": "Server Docker Release"
+    }
+]
+
+## iOS publish job states
+[{"conclusion":"success","name":"Resolve iOS Release Metadata","status":"completed"},{"conclusion":"success","name":"Build And Test iOS App","status":"completed"},{"conclusion":"success","name":"Validate iOS Publish Secrets","status":"completed"},{"conclusion":"success","name":"Archive And Upload To App Store Connect","status":"completed"}]
+
+## GitHub release and assets
+{"assets":[{"name":"AutoByteus_personal_android-1.4.82-release.apk","size":1846691,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_android-1.4.82-release.apk"},{"name":"AutoByteus_personal_android-1.4.82-release.apk.sha256","size":113,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_android-1.4.82-release.apk.sha256"},{"name":"AutoByteus_personal_linux-arm64-1.4.82.AppImage","size":444346746,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_linux-arm64-1.4.82.AppImage"},{"name":"AutoByteus_personal_linux-x64-1.4.82.AppImage","size":456299389,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_linux-x64-1.4.82.AppImage"},{"name":"AutoByteus_personal_macos-arm64-1.4.82.dmg","size":512194419,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_macos-arm64-1.4.82.dmg"},{"name":"AutoByteus_personal_macos-arm64-1.4.82.dmg.blockmap","size":533785,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_macos-arm64-1.4.82.dmg.blockmap"},{"name":"AutoByteus_personal_macos-arm64-1.4.82.zip","size":507369525,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_macos-arm64-1.4.82.zip"},{"name":"AutoByteus_personal_macos-arm64-1.4.82.zip.blockmap","size":521833,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_macos-arm64-1.4.82.zip.blockmap"},{"name":"AutoByteus_personal_macos-x64-1.4.82.dmg","size":534634707,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_macos-x64-1.4.82.dmg"},{"name":"AutoByteus_personal_macos-x64-1.4.82.dmg.blockmap","size":557680,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_macos-x64-1.4.82.dmg.blockmap"},{"name":"AutoByteus_personal_macos-x64-1.4.82.zip","size":529009076,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_macos-x64-1.4.82.zip"},{"name":"AutoByteus_personal_macos-x64-1.4.82.zip.blockmap","size":541722,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_macos-x64-1.4.82.zip.blockmap"},{"name":"AutoByteus_personal_windows-1.4.82.exe","size":339177671,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/AutoByteus_personal_windows-1.4.82.exe"},{"name":"latest-linux-arm64.yml","size":417,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/latest-linux-arm64.yml"},{"name":"latest-linux.yml","size":413,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/latest-linux.yml"},{"name":"latest-mac.yml","size":897,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/latest-mac.yml"},{"name":"latest.yml","size":354,"url":"https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.82/latest.yml"}],"isDraft":false,"isPrerelease":false,"name":"v1.4.82","tagName":"v1.4.82","targetCommitish":"21fea8c778f3f962d6f32fec9555ebe994793867","url":"https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.82"}
+
+## Docker image version tag
+Name:      docker.io/autobyteus/autobyteus-server:1.4.82
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:9aa00e5873729bd07beb159090297114380e5cee7b572d6b5ea4ccbce1973f6c
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.82@sha256:d1ab284dfec50411c8118a7c7754e10a863a6367d18c0f3ed9559435d1f1e190
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:1.4.82@sha256:1c86accc0aaeb4f0ed2f6beb107804664319216bfe5e11d7e2347adb558b55bb
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+
+## Docker image latest tag
+Name:      docker.io/autobyteus/autobyteus-server:latest
+MediaType: application/vnd.oci.image.index.v1+json
+Digest:    sha256:9aa00e5873729bd07beb159090297114380e5cee7b572d6b5ea4ccbce1973f6c
+
+Manifests:
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:d1ab284dfec50411c8118a7c7754e10a863a6367d18c0f3ed9559435d1f1e190
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/amd64
+
+  Name:      docker.io/autobyteus/autobyteus-server:latest@sha256:1c86accc0aaeb4f0ed2f6beb107804664319216bfe5e11d7e2347adb558b55bb
+  MediaType: application/vnd.oci.image.manifest.v1+json
+  Platform:  linux/arm64
+
+## Concurrent target advancement and cleanup verification
+2026-09-26T03:31:34Z
+origin/personal: 046279298f53fb98d7688ee9dc2b2ba0fa827685
+v1.4.83 tag deref: v1.4.83^{}
+v1.4.83 tag deref: 046279298f53fb98d7688ee9dc2b2ba0fa827685
+v1.4.82 release commit is ancestor of current target: yes
+ticket final commit is ancestor of current target: yes
+remote ticket branch deleted: yes
+Local ticket worktree/user test artifacts intentionally retained:
+-rw-r--r--@ 2 normy  staff   457M Sep 25 21:43 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web/electron-dist/AutoByteus_runtime-specific-stopped-model-switch_DR003_macos-arm64-1.4.81-test.dmg
+-rw-r--r--@ 2 normy  staff   452M Sep 25 21:45 /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-specific-stopped-model-switch/autobyteus-web/electron-dist/AutoByteus_runtime-specific-stopped-model-switch_DR003_macos-arm64-1.4.81-test.zip

@@ -18,6 +18,7 @@ interface WorkspaceLoadingState {
 interface AgentRunConfigState {
   /** Current configuration buffer (primarily for new runs) */
   config: AgentRunConfig | null;
+  seedModelIdentifier: string | null;
   
   /** Whether the Run Config panel is expanded */
   isPanelExpanded: boolean;
@@ -36,6 +37,7 @@ interface AgentRunConfigState {
 export const useAgentRunConfigStore = defineStore('agentRunConfig', {
   state: (): AgentRunConfigState => ({
     config: null,
+    seedModelIdentifier: null,
     isPanelExpanded: true,
     hasFirstMessageSent: false,
     workspaceLoadingState: {
@@ -74,6 +76,7 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
      */
     setTemplate(agentDefinition: AgentDefinition) {
       this.config = buildAgentRunTemplate(agentDefinition);
+      this.seedModelIdentifier = this.config.llmModelIdentifier;
       this.isPanelExpanded = true;
       this.hasFirstMessageSent = false;
       this.clearWorkspaceState();
@@ -83,6 +86,7 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
      * Load config from an existing run (Edit Mode).
      */
     setAgentConfig(config: AgentRunConfig) {
+        this.seedModelIdentifier = config.llmModelIdentifier;
         this.config = {
           ...config,
           runtimeKind: config.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
@@ -200,6 +204,7 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
      */
     clearConfig() {
       this.config = null;
+      this.seedModelIdentifier = null;
       this.isPanelExpanded = true;
       this.hasFirstMessageSent = false;
       this.clearWorkspaceState();

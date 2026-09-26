@@ -1,18 +1,19 @@
 # User Verification Handoff — AGY CLI Runtime
 
-> **DR-008 user verification accepted (2026-09-25):** After receiving the
-> direct-worktree DR-007 package, the user wrote, “i have verified, the task
-> is done. lets finalize and release a new version.” This is explicit
-> acceptance and release authorization for the tested state. A fresh fetch
-> still found `origin/personal@af51ffa485e1f0d6a6f312cc9dfe9cdbc2f55d48`,
-> already integrated, so no renewed user verification is needed for a base
-> change. Repository finalization and the new versioned release remain in
-> progress; do not read the historical Gate section below as the current
-> acceptance state. The checked DR-007 DMG SHA-256 is
-> `18ac473f2414400d5fcecd85fc828310a50b84aa6ae60dff01427dc789f54928`.
-> The ticket folder has now been moved to `tickets/done/` before the final
-> ticket-branch commit, as required by the delivery workflow. Target merge,
-> tag publication and rollout checks are still pending.
+> **DR-009 terminal delivery result (2026-09-25):** The user explicitly
+> verified the DR-007 local package and requested release. The ticket is
+> archived in `tickets/done/`; annotated tag `v1.4.81` points to release
+> commit `6f7b5e371`, which `personal` includes before a report-only
+> follow-up commit. The public
+> [v1.4.81 Release](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.81)
+> contains 17 assets, including the
+> [macOS ARM64 DMG](https://github.com/AutoByteus/autobyteus-workspace/releases/download/v1.4.81/AutoByteus_personal_macos-arm64-1.4.81.dmg).
+> Desktop, Android, iOS App Store Connect upload and Docker release workflows
+> all succeeded. Docker Hub `1.4.81` and `latest` multi-arch digests match.
+> Dedicated ticket worktree and branch were safely removed; the official
+> installed app/profile were untouched. This current status supersedes the
+> historical DR-007 testing instructions and pending gates below. Full
+> release evidence/bounds are in `release-deployment-report.md` DR-009.
 
 ## Current DR-007 state
 
