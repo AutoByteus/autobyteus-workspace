@@ -24,6 +24,12 @@ export type Scalars = {
   SafeInt: { input: number; output: number; }
 };
 
+export type AddProjectWorkspaceInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  projectId: Scalars['String']['input'];
+  workspaceId: Scalars['String']['input'];
+};
+
 export type AgentDefinition = {
   __typename?: 'AgentDefinition';
   avatarUrl?: Maybe<Scalars['String']['output']>;
@@ -748,6 +754,11 @@ export type CreateMemoryHubCredentialInput = {
   label?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type CreateProjectInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+};
+
 export type CreateSkillInput = {
   content: Scalars['String']['input'];
   description: Scalars['String']['input'];
@@ -1399,6 +1410,7 @@ export type ModelSourceStatusObject = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  addProjectWorkspace: Project;
   addSkillSource: Array<SkillSource>;
   approveToolInvocation: ApproveToolInvocationResult;
   archiveStoredAgentOrgRun: AgentOrgStoredRunMutationResult;
@@ -1416,6 +1428,7 @@ export type Mutation = {
   createCustomProvider: ProviderCredentialSettingObject;
   createFileOrFolder: Scalars['String']['output'];
   createMemoryHubSourceCredential: MemoryHubCredentialMutationResultGql;
+  createProject: Project;
   createSkill: Skill;
   createWorkspace: WorkspaceMetadata;
   deleteAgentDefinition: DeleteAgentDefinitionResult;
@@ -1424,6 +1437,7 @@ export type Mutation = {
   deleteCustomProvider: DeleteCustomProviderResult;
   deleteFileOrFolder: Scalars['String']['output'];
   deleteMcpServer: DeleteMcpServerResult;
+  deleteProject: Scalars['Boolean']['output'];
   deleteServerSetting: Scalars['String']['output'];
   deleteSkill: DeleteSkillResult;
   deleteSkillFile: Scalars['Boolean']['output'];
@@ -1450,6 +1464,7 @@ export type Mutation = {
   reloadToolSchema: ReloadToolSchemaResult;
   removeAgentPackage: Array<AgentPackage>;
   removeApplicationPackage: Array<ApplicationPackage>;
+  removeProjectWorkspace: Project;
   removeSkillSource: Array<SkillSource>;
   removeWorkspace: RemoveWorkspaceResultInfo;
   renameFileOrFolder: Scalars['String']['output'];
@@ -1464,6 +1479,7 @@ export type Mutation = {
   saveProviderApiKey: ProviderCredentialSettingObject;
   saveQwenConfiguration: QwenConfigurationCommandResult;
   setApplicationsEnabled: ApplicationsCapability;
+  setProjectsEnabled: ProjectsCapability;
   setSearchConfig: Scalars['String']['output'];
   setSkillImprovementEnabled: SkillImprovementCapability;
   startAgentRunSkillImprovement: GraphqlSkillImprovementStartResult;
@@ -1479,6 +1495,8 @@ export type Mutation = {
   updateAgentTeamDefinition: AgentTeamDefinition;
   updateMemoryHubConfig: MemorySyncStatusGql;
   updateMemorySyncSourceConfig: MemorySyncStatusGql;
+  updateProject: Project;
+  updateProjectWorkspace: Project;
   updateServerSetting: Scalars['String']['output'];
   updateSkill: Skill;
   updateStoppedAgentOrgRunConfig: AgentOrgRunConfigUpdateResult;
@@ -1487,6 +1505,11 @@ export type Mutation = {
   uploadSkillFile: Scalars['Boolean']['output'];
   useGeminiMode: GeminiConfigurationCommandResult;
   writeFileContent: Scalars['String']['output'];
+};
+
+
+export type MutationAddProjectWorkspaceArgs = {
+  input: AddProjectWorkspaceInput;
 };
 
 
@@ -1577,6 +1600,11 @@ export type MutationCreateMemoryHubSourceCredentialArgs = {
 };
 
 
+export type MutationCreateProjectArgs = {
+  input: CreateProjectInput;
+};
+
+
 export type MutationCreateSkillArgs = {
   input: CreateSkillInput;
 };
@@ -1615,6 +1643,11 @@ export type MutationDeleteFileOrFolderArgs = {
 
 export type MutationDeleteMcpServerArgs = {
   serverId: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteProjectArgs = {
+  projectId: Scalars['String']['input'];
 };
 
 
@@ -1738,6 +1771,11 @@ export type MutationRemoveApplicationPackageArgs = {
 };
 
 
+export type MutationRemoveProjectWorkspaceArgs = {
+  input: RemoveProjectWorkspaceInput;
+};
+
+
 export type MutationRemoveSkillSourceArgs = {
   path: Scalars['String']['input'];
 };
@@ -1811,6 +1849,11 @@ export type MutationSaveQwenConfigurationArgs = {
 
 
 export type MutationSetApplicationsEnabledArgs = {
+  enabled: Scalars['Boolean']['input'];
+};
+
+
+export type MutationSetProjectsEnabledArgs = {
   enabled: Scalars['Boolean']['input'];
 };
 
@@ -1889,6 +1932,16 @@ export type MutationUpdateMemorySyncSourceConfigArgs = {
 };
 
 
+export type MutationUpdateProjectArgs = {
+  input: UpdateProjectInput;
+};
+
+
+export type MutationUpdateProjectWorkspaceArgs = {
+  input: UpdateProjectWorkspaceInput;
+};
+
+
 export type MutationUpdateServerSettingArgs = {
   key: Scalars['String']['input'];
   value: Scalars['String']['input'];
@@ -1941,6 +1994,43 @@ export type PrepareAgentRunResult = {
   runId?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
 };
+
+export type Project = {
+  __typename?: 'Project';
+  createdAt: Scalars['String']['output'];
+  description: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  projectId: Scalars['String']['output'];
+  updatedAt: Scalars['String']['output'];
+  workspaces: Array<ProjectWorkspace>;
+};
+
+export type ProjectWorkspace = {
+  __typename?: 'ProjectWorkspace';
+  addedAt: Scalars['String']['output'];
+  availability: ProjectWorkspaceAvailability;
+  description: Scalars['String']['output'];
+  displayName: Scalars['String']['output'];
+  workspaceId: Scalars['String']['output'];
+  workspaceRootPath: Scalars['String']['output'];
+};
+
+export enum ProjectWorkspaceAvailability {
+  Available = 'AVAILABLE',
+  Unregistered = 'UNREGISTERED'
+}
+
+export type ProjectsCapability = {
+  __typename?: 'ProjectsCapability';
+  enabled: Scalars['Boolean']['output'];
+  settingKey: Scalars['String']['output'];
+  source: ProjectsCapabilitySource;
+};
+
+export enum ProjectsCapabilitySource {
+  InitializedDisabled = 'INITIALIZED_DISABLED',
+  ServerSetting = 'SERVER_SETTING'
+}
 
 export type ProviderCredentialSettingObject = {
   __typename?: 'ProviderCredentialSettingObject';
@@ -2037,6 +2127,9 @@ export type Query = {
   listWorkspaceRunHistory: Array<WorkspaceRunHistoryGroupObject>;
   mcpServers: Array<McpServerConfigUnion>;
   previewMcpServerTools: Array<ToolDefinitionDetail>;
+  project?: Maybe<Project>;
+  projects: Array<Project>;
+  projectsCapability: ProjectsCapability;
   providerCredentialSettings: Array<ProviderCredentialSettingObject>;
   providerModelCatalogSnapshots: Array<ProviderModelCatalogSnapshotObject>;
   qwenSetupStatus: QwenSetupStatus;
@@ -2355,6 +2448,11 @@ export type QueryPreviewMcpServerToolsArgs = {
 };
 
 
+export type QueryProjectArgs = {
+  projectId: Scalars['String']['input'];
+};
+
+
 export type QueryProviderCredentialSettingsArgs = {
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 };
@@ -2479,6 +2577,11 @@ export type ReloadToolSchemaResult = {
   message: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
   tool?: Maybe<ToolDefinitionDetail>;
+};
+
+export type RemoveProjectWorkspaceInput = {
+  projectId: Scalars['String']['input'];
+  workspaceId: Scalars['String']['input'];
 };
 
 export type RemoveWorkspaceInput = {
@@ -3245,6 +3348,18 @@ export type UpdateMemorySyncSourceConfigInput = {
   sourceNodeId?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateProjectInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  projectId: Scalars['String']['input'];
+};
+
+export type UpdateProjectWorkspaceInput = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  projectId: Scalars['String']['input'];
+  workspaceId: Scalars['String']['input'];
+};
+
 export type UpdateSkillInput = {
   content?: InputMaybe<Scalars['String']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
@@ -3862,6 +3977,55 @@ export type StartMemorySyncMutationVariables = Exact<{ [key: string]: never; }>;
 
 export type StartMemorySyncMutation = { __typename?: 'Mutation', startMemorySync: { __typename?: 'MemorySyncRunResultGql', startedAt: string, finishedAt: string, scannedFiles: number, changedFiles: number, unchangedFiles: number, deferredFiles: number, committedBatches: number, duplicateBatches: number } };
 
+export type CreateProjectMutationVariables = Exact<{
+  input: CreateProjectInput;
+}>;
+
+
+export type CreateProjectMutation = { __typename?: 'Mutation', createProject: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } };
+
+export type UpdateProjectMutationVariables = Exact<{
+  input: UpdateProjectInput;
+}>;
+
+
+export type UpdateProjectMutation = { __typename?: 'Mutation', updateProject: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } };
+
+export type DeleteProjectMutationVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+
+export type DeleteProjectMutation = { __typename?: 'Mutation', deleteProject: boolean };
+
+export type AddProjectWorkspaceMutationVariables = Exact<{
+  input: AddProjectWorkspaceInput;
+}>;
+
+
+export type AddProjectWorkspaceMutation = { __typename?: 'Mutation', addProjectWorkspace: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } };
+
+export type UpdateProjectWorkspaceMutationVariables = Exact<{
+  input: UpdateProjectWorkspaceInput;
+}>;
+
+
+export type UpdateProjectWorkspaceMutation = { __typename?: 'Mutation', updateProjectWorkspace: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } };
+
+export type RemoveProjectWorkspaceMutationVariables = Exact<{
+  input: RemoveProjectWorkspaceInput;
+}>;
+
+
+export type RemoveProjectWorkspaceMutation = { __typename?: 'Mutation', removeProjectWorkspace: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } };
+
+export type SetProjectsEnabledMutationVariables = Exact<{
+  enabled: Scalars['Boolean']['input'];
+}>;
+
+
+export type SetProjectsEnabledMutation = { __typename?: 'Mutation', setProjectsEnabled: { __typename?: 'ProjectsCapability', enabled: boolean, settingKey: string, source: ProjectsCapabilitySource } };
+
 export type DeleteStoredRunMutationVariables = Exact<{
   runId: Scalars['String']['input'];
 }>;
@@ -4238,6 +4402,27 @@ export type GetAgentOrgMemberRunMemoryViewQueryVariables = Exact<{
 
 
 export type GetAgentOrgMemberRunMemoryViewQuery = { __typename?: 'Query', getAgentOrgMemberRunMemoryView: { __typename?: 'AgentMemoryView', runId: string, episodic?: Array<any> | null, semantic?: Array<any> | null, selectedRawTraceFileName?: string | null, workingContext?: Array<{ __typename?: 'MemoryMessage', role: string, content?: string | null, reasoning?: string | null, toolPayload?: any | null, ts?: number | null }> | null, rawTraceFiles?: Array<{ __typename?: 'RawTraceFileSummary', fileName: string, kind: string, recordCount: number, segmentIndex?: number | null, firstTimestamp?: number | null, lastTimestamp?: number | null }> | null, rawTraces?: Array<{ __typename?: 'MemoryTraceEvent', scope: string, id?: string | null, traceType: string, sourceEvent?: string | null, content?: string | null, toolName?: string | null, toolCallId?: string | null, toolArgs?: any | null, toolResult?: any | null, toolError?: string | null, media?: any | null, turnId?: string | null, seq?: number | null, ts: number, fileAttachments?: Array<{ __typename?: 'MemoryFileAttachment', uri: string, fileType: string, fileName?: string | null }> | null }> | null } };
+
+export type ProjectFieldsFragment = { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> };
+
+export type GetProjectsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProjectsQuery = { __typename?: 'Query', projects: Array<{ __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> }> };
+
+export type GetProjectQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+}>;
+
+
+export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceId: string, workspaceRootPath: string, displayName: string, description: string, addedAt: string, availability: ProjectWorkspaceAvailability }> } | null };
+
+export type ProjectsCapabilityFieldsFragment = { __typename?: 'ProjectsCapability', enabled: boolean, settingKey: string, source: ProjectsCapabilitySource };
+
+export type GetProjectsCapabilityQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetProjectsCapabilityQuery = { __typename?: 'Query', projectsCapability: { __typename?: 'ProjectsCapability', enabled: boolean, settingKey: string, source: ProjectsCapabilitySource } };
 
 export type ListWorkspaceRunHistoryQueryVariables = Exact<{
   limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
@@ -4995,6 +5180,30 @@ export const ProviderModelCatalogSnapshotFieldsFragmentDoc = gql`
     runtime
     hostUrl
   }
+}
+    `;
+export const ProjectFieldsFragmentDoc = gql`
+    fragment ProjectFields on Project {
+  projectId
+  name
+  description
+  createdAt
+  updatedAt
+  workspaces {
+    workspaceId
+    workspaceRootPath
+    displayName
+    description
+    addedAt
+    availability
+  }
+}
+    `;
+export const ProjectsCapabilityFieldsFragmentDoc = gql`
+    fragment ProjectsCapabilityFields on ProjectsCapability {
+  enabled
+  settingKey
+  source
 }
     `;
 export const EventMonitorActiveTracePageFieldsFragmentDoc = gql`
@@ -7387,6 +7596,207 @@ export function useStartMemorySyncMutation(options: VueApolloComposable.UseMutat
   return VueApolloComposable.useMutation<StartMemorySyncMutation, StartMemorySyncMutationVariables>(StartMemorySyncDocument, options);
 }
 export type StartMemorySyncMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<StartMemorySyncMutation, StartMemorySyncMutationVariables>;
+export const CreateProjectDocument = gql`
+    mutation CreateProject($input: CreateProjectInput!) {
+  createProject(input: $input) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useCreateProjectMutation__
+ *
+ * To run a mutation, you first call `useCreateProjectMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useCreateProjectMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useCreateProjectMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateProjectMutation(options: VueApolloComposable.UseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<CreateProjectMutation, CreateProjectMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<CreateProjectMutation, CreateProjectMutationVariables>(CreateProjectDocument, options);
+}
+export type CreateProjectMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateProjectMutation, CreateProjectMutationVariables>;
+export const UpdateProjectDocument = gql`
+    mutation UpdateProject($input: UpdateProjectInput!) {
+  updateProject(input: $input) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useUpdateProjectMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateProjectMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProjectMutation(options: VueApolloComposable.UseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateProjectMutation, UpdateProjectMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateProjectMutation, UpdateProjectMutationVariables>(UpdateProjectDocument, options);
+}
+export type UpdateProjectMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateProjectMutation, UpdateProjectMutationVariables>;
+export const DeleteProjectDocument = gql`
+    mutation DeleteProject($projectId: String!) {
+  deleteProject(projectId: $projectId)
+}
+    `;
+
+/**
+ * __useDeleteProjectMutation__
+ *
+ * To run a mutation, you first call `useDeleteProjectMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteProjectMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useDeleteProjectMutation({
+ *   variables: {
+ *     projectId: // value for 'projectId'
+ *   },
+ * });
+ */
+export function useDeleteProjectMutation(options: VueApolloComposable.UseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DeleteProjectMutation, DeleteProjectMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DeleteProjectMutation, DeleteProjectMutationVariables>(DeleteProjectDocument, options);
+}
+export type DeleteProjectMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DeleteProjectMutation, DeleteProjectMutationVariables>;
+export const AddProjectWorkspaceDocument = gql`
+    mutation AddProjectWorkspace($input: AddProjectWorkspaceInput!) {
+  addProjectWorkspace(input: $input) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useAddProjectWorkspaceMutation__
+ *
+ * To run a mutation, you first call `useAddProjectWorkspaceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useAddProjectWorkspaceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useAddProjectWorkspaceMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useAddProjectWorkspaceMutation(options: VueApolloComposable.UseMutationOptions<AddProjectWorkspaceMutation, AddProjectWorkspaceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<AddProjectWorkspaceMutation, AddProjectWorkspaceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<AddProjectWorkspaceMutation, AddProjectWorkspaceMutationVariables>(AddProjectWorkspaceDocument, options);
+}
+export type AddProjectWorkspaceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<AddProjectWorkspaceMutation, AddProjectWorkspaceMutationVariables>;
+export const UpdateProjectWorkspaceDocument = gql`
+    mutation UpdateProjectWorkspace($input: UpdateProjectWorkspaceInput!) {
+  updateProjectWorkspace(input: $input) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useUpdateProjectWorkspaceMutation__
+ *
+ * To run a mutation, you first call `useUpdateProjectWorkspaceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateProjectWorkspaceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateProjectWorkspaceMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateProjectWorkspaceMutation(options: VueApolloComposable.UseMutationOptions<UpdateProjectWorkspaceMutation, UpdateProjectWorkspaceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateProjectWorkspaceMutation, UpdateProjectWorkspaceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateProjectWorkspaceMutation, UpdateProjectWorkspaceMutationVariables>(UpdateProjectWorkspaceDocument, options);
+}
+export type UpdateProjectWorkspaceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateProjectWorkspaceMutation, UpdateProjectWorkspaceMutationVariables>;
+export const RemoveProjectWorkspaceDocument = gql`
+    mutation RemoveProjectWorkspace($input: RemoveProjectWorkspaceInput!) {
+  removeProjectWorkspace(input: $input) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useRemoveProjectWorkspaceMutation__
+ *
+ * To run a mutation, you first call `useRemoveProjectWorkspaceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveProjectWorkspaceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRemoveProjectWorkspaceMutation({
+ *   variables: {
+ *     input: // value for 'input'
+ *   },
+ * });
+ */
+export function useRemoveProjectWorkspaceMutation(options: VueApolloComposable.UseMutationOptions<RemoveProjectWorkspaceMutation, RemoveProjectWorkspaceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveProjectWorkspaceMutation, RemoveProjectWorkspaceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RemoveProjectWorkspaceMutation, RemoveProjectWorkspaceMutationVariables>(RemoveProjectWorkspaceDocument, options);
+}
+export type RemoveProjectWorkspaceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveProjectWorkspaceMutation, RemoveProjectWorkspaceMutationVariables>;
+export const SetProjectsEnabledDocument = gql`
+    mutation SetProjectsEnabled($enabled: Boolean!) {
+  setProjectsEnabled(enabled: $enabled) {
+    ...ProjectsCapabilityFields
+  }
+}
+    ${ProjectsCapabilityFieldsFragmentDoc}`;
+
+/**
+ * __useSetProjectsEnabledMutation__
+ *
+ * To run a mutation, you first call `useSetProjectsEnabledMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSetProjectsEnabledMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useSetProjectsEnabledMutation({
+ *   variables: {
+ *     enabled: // value for 'enabled'
+ *   },
+ * });
+ */
+export function useSetProjectsEnabledMutation(options: VueApolloComposable.UseMutationOptions<SetProjectsEnabledMutation, SetProjectsEnabledMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SetProjectsEnabledMutation, SetProjectsEnabledMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SetProjectsEnabledMutation, SetProjectsEnabledMutationVariables>(SetProjectsEnabledDocument, options);
+}
+export type SetProjectsEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetProjectsEnabledMutation, SetProjectsEnabledMutationVariables>;
 export const DeleteStoredRunDocument = gql`
     mutation DeleteStoredRun($runId: String!) {
   deleteStoredRun(runId: $runId) {
@@ -9504,6 +9914,90 @@ export function useGetAgentOrgMemberRunMemoryViewLazyQuery(variables?: GetAgentO
   return VueApolloComposable.useLazyQuery<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables>(GetAgentOrgMemberRunMemoryViewDocument, variables, options);
 }
 export type GetAgentOrgMemberRunMemoryViewQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetAgentOrgMemberRunMemoryViewQuery, GetAgentOrgMemberRunMemoryViewQueryVariables>;
+export const GetProjectsDocument = gql`
+    query GetProjects {
+  projects {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useGetProjectsQuery__
+ *
+ * To run a query within a Vue component, call `useGetProjectsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectsQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetProjectsQuery();
+ */
+export function useGetProjectsQuery(options: VueApolloComposable.UseQueryOptions<GetProjectsQuery, GetProjectsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProjectsQuery, GetProjectsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProjectsQuery, GetProjectsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, {}, options);
+}
+export function useGetProjectsLazyQuery(options: VueApolloComposable.UseQueryOptions<GetProjectsQuery, GetProjectsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProjectsQuery, GetProjectsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProjectsQuery, GetProjectsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProjectsQuery, GetProjectsQueryVariables>(GetProjectsDocument, {}, options);
+}
+export type GetProjectsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProjectsQuery, GetProjectsQueryVariables>;
+export const GetProjectDocument = gql`
+    query GetProject($projectId: String!) {
+  project(projectId: $projectId) {
+    ...ProjectFields
+  }
+}
+    ${ProjectFieldsFragmentDoc}`;
+
+/**
+ * __useGetProjectQuery__
+ *
+ * To run a query within a Vue component, call `useGetProjectQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetProjectQuery({
+ *   projectId: // value for 'projectId'
+ * });
+ */
+export function useGetProjectQuery(variables: GetProjectQueryVariables | VueCompositionApi.Ref<GetProjectQueryVariables> | ReactiveFunction<GetProjectQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetProjectQuery, GetProjectQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProjectQuery, GetProjectQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProjectQuery, GetProjectQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, variables, options);
+}
+export function useGetProjectLazyQuery(variables?: GetProjectQueryVariables | VueCompositionApi.Ref<GetProjectQueryVariables> | ReactiveFunction<GetProjectQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetProjectQuery, GetProjectQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProjectQuery, GetProjectQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProjectQuery, GetProjectQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, variables, options);
+}
+export type GetProjectQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProjectQuery, GetProjectQueryVariables>;
+export const GetProjectsCapabilityDocument = gql`
+    query GetProjectsCapability {
+  projectsCapability {
+    ...ProjectsCapabilityFields
+  }
+}
+    ${ProjectsCapabilityFieldsFragmentDoc}`;
+
+/**
+ * __useGetProjectsCapabilityQuery__
+ *
+ * To run a query within a Vue component, call `useGetProjectsCapabilityQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectsCapabilityQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetProjectsCapabilityQuery();
+ */
+export function useGetProjectsCapabilityQuery(options: VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>(GetProjectsCapabilityDocument, {}, options);
+}
+export function useGetProjectsCapabilityLazyQuery(options: VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>(GetProjectsCapabilityDocument, {}, options);
+}
+export type GetProjectsCapabilityQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProjectsCapabilityQuery, GetProjectsCapabilityQueryVariables>;
 export const ListWorkspaceRunHistoryDocument = gql`
     query ListWorkspaceRunHistory($limitPerAgent: Int = 6) {
   listWorkspaceRunHistory(limitPerAgent: $limitPerAgent) {

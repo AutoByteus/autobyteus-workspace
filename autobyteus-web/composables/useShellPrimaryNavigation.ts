@@ -1,6 +1,7 @@
 import { computed, type ComputedRef } from 'vue';
 import { useRoute, type RouteLocationRaw } from 'vue-router';
 import { useApplicationsCapabilityStore } from '~/stores/applicationsCapabilityStore';
+import { useProjectsCapabilityStore } from '~/stores/projectsCapabilityStore';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 
 export type ShellPrimaryNavKey =
@@ -10,7 +11,8 @@ export type ShellPrimaryNavKey =
   | 'applications'
   | 'skills'
   | 'memory'
-  | 'nodes';
+  | 'nodes'
+  | 'projects';
 
 export interface ShellPrimaryNavItem {
   key: ShellPrimaryNavKey;
@@ -28,6 +30,7 @@ const allShellPrimaryNavItems: readonly ShellPrimaryNavItem[] = [
   { key: 'skills', labelKey: 'shell.navigation.skills', icon: 'heroicons:sparkles' },
   { key: 'memory', labelKey: 'shell.navigation.memory', icon: 'ph:brain' },
   { key: 'nodes', labelKey: 'shell.navigation.nodes', icon: SHELL_NODES_NETWORK_ICON },
+  { key: 'projects', labelKey: 'shell.navigation.projects', icon: 'heroicons:folder' },
 ];
 
 export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocationRaw {
@@ -46,6 +49,8 @@ export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocation
       return '/memory';
     case 'nodes':
       return '/nodes';
+    case 'projects':
+      return '/projects';
   }
 }
 
@@ -65,6 +70,8 @@ export function isShellPrimaryRouteActive(key: ShellPrimaryNavKey, path: string)
       return path.startsWith('/memory');
     case 'nodes':
       return path.startsWith('/nodes');
+    case 'projects':
+      return path.startsWith('/projects');
   }
 }
 
@@ -76,6 +83,7 @@ export function useShellPrimaryNavigation(): {
 } {
   const route = useRoute();
   const applicationsCapabilityStore = useApplicationsCapabilityStore();
+  const projectsCapabilityStore = useProjectsCapabilityStore();
 
   const primaryNavItems = computed(() => {
     return allShellPrimaryNavItems.filter((item) => {
@@ -85,6 +93,9 @@ export function useShellPrimaryNavigation(): {
       if (item.key === 'nodes') {
         return isFeatureAvailableInRuntime('desktopSettings');
       }
+      if (item.key === 'projects') {
+        return projectsCapabilityStore.isEnabled && isFeatureAvailableInRuntime('projects');
+      }
       return true;
     });
   });
@@ -93,6 +104,9 @@ export function useShellPrimaryNavigation(): {
     primaryNavItems,
     resolvePrimaryRoute: resolveShellPrimaryRoute,
     isPrimaryNavActive: (key: ShellPrimaryNavKey) => isShellPrimaryRouteActive(key, route.path),
-    ensurePrimaryNavigationReady: () => applicationsCapabilityStore.ensureResolved(),
+    ensurePrimaryNavigationReady: () => Promise.allSettled([
+      applicationsCapabilityStore.ensureResolved(),
+      projectsCapabilityStore.ensureResolved(),
+    ]),
   };
 }

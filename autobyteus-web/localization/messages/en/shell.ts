@@ -8,6 +8,7 @@ const shellMessages = {
   'shell.navigation.skills': 'Skills',
   'shell.navigation.memory': 'Memory',
   'shell.navigation.nodes': 'Nodes',
+  'shell.navigation.projects': 'Projects',
   'shell.navigation.settings': 'Settings',
   'shell.rightTabs.files': 'Files',
   'shell.rightTabs.team': 'Team',
