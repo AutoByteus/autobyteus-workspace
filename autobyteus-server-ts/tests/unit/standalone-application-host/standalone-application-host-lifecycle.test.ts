@@ -476,13 +476,13 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
     expect(mocks.shutdownPrisma).toHaveBeenCalledTimes(1);
   });
-  it.each(["MISSING", "NOT_RUN", "RUNNING", "FAILED", "SUCCEEDED_WITH_WARNINGS"])("blocks attachment transition %s before runtime admission", async (value) => {
+  it.each(["MISSING", "NOT_RUN", "RUNNING", "FAILED", "SUCCEEDED_WITH_WARNINGS", "SUCCEEDED"])("uses independent package admission for attachment status %s", async (value) => {
     mocks.runPending.mockResolvedValueOnce([...successfulStatuses().filter((entry) => entry.migrationId !== ATTACHMENT_MIGRATION_ID),
       ...(value === "MISSING" ? [] : [{ migrationId: ATTACHMENT_MIGRATION_ID, status: value }])]);
-    await expect(startStandaloneApplicationHost(input)).rejects.toThrow("Team attachment locator migration requires clean success");
-    expect(mocks.buildApplicationPlatformRuntime).not.toHaveBeenCalled();
-    expect(mocks.app.listen).not.toHaveBeenCalled();
-    expect(mocks.rebuildTeamRunCatalog).not.toHaveBeenCalled();
+    const host = await startStandaloneApplicationHost(input);
+    expect(mocks.rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
+    expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]).toBeLessThan(mocks.buildApplicationPlatformRuntime.mock.invocationCallOrder[0]!);
+    expect(mocks.app.listen).toHaveBeenCalledTimes(1);
+    await host.close();
   });
-
 });

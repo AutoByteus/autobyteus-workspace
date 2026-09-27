@@ -1,0 +1,24 @@
+370 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+396 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+190 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.ts
+416 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts
+450 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+247 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/api/rest/context-files.ts
+ 86 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts
+ 74 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts
+132 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts
+327 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+ 89 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/context-files/services/context-file-current-reference-validator.ts
+ 92 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts
+115 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/context-files/services/context-file-record-locators.ts
+ 33 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/agent-org-run-package-catalog.ts
+482 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts
+152 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts
+260 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/root-run-package-current-validator.ts
+112 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts
+238 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+ 33 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/team-run-package-catalog.ts
+259 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/server-runtime.ts
+368 non-empty lines: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts
+
+Largest changed source <=500. The >220-line readiness-index delta is an intentional extraction into current structural validator plus bounded reference validator (D2); no additional subsystem.

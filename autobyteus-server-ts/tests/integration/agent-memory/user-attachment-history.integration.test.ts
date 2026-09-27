@@ -1,3 +1,4 @@
+import { writeAttachmentSidecars, writeAttachmentAgentMetadata } from "../../fixtures/current-attachment-package-fixtures.js";
 import "reflect-metadata";
 import fs from "node:fs/promises";
 import os from "node:os";
@@ -10,7 +11,7 @@ import { buildSchema, Query, Resolver } from "type-graphql";
 const { graphql } = createRequire(import.meta.url)("graphql") as typeof import("graphql");
 const config = vi.hoisted(() => ({ root: "" }));
 vi.mock("../../../src/config/app-config-provider.js", () => ({ appConfigProvider: { config: {
-  getAppDataDir: () => config.root, getMemoryDir: () => path.join(config.root, "memory"),
+  getBaseUrl: () => "http://app.test", getAppDataDir: () => config.root, getMemoryDir: () => path.join(config.root, "memory"),
 } } }));
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
@@ -58,9 +59,13 @@ beforeEach(async () => {
   await new AgentOrgRunExecutionTreeStore().write(layout.getOrgDirPath("org"), tree);
   await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "standalone-team", ancestorTeamRunIds: [] }),
     testExecutionTree({ rootTeamRunId: "standalone-team", coordinatorAddress: "/lead", children: [testAgentNode("/lead", { agentRunId: "standalone-lead" })] }));
+  writeAttachmentSidecars(layout.getOrgDirPath("org"), "org", "org", "direct", tree.rootOrg.taskExecutions);
+  writeAttachmentSidecars(layout.getTeamDirPath({rootTeamRunId: "standalone-team", ancestorTeamRunIds: []}), "team", "standalone-team", "standalone-lead");
+  writeAttachmentAgentMetadata(memoryDir, "standalone");
+  writeAttachmentAgentMetadata(memoryDir, "isolated");
   normalizer = new AgentRunProviderInputNormalizer(new ContextFileLocalPathResolver({
     layout: new ContextFileLayout({ appDataDir: config.root, memoryDir }),
-    ownerResolver: new ContextFileOwnerResolver({ locations: createStoredCollaborationExecutionLocationService(memoryDir) }),
+    ownerResolver: new ContextFileOwnerResolver({ memoryDir, locations: createStoredCollaborationExecutionLocationService(memoryDir) }),
     baseUrl: "http://app.test",
   }));
   app = fastify(); await app.register(multipart); await app.register(registerContextFileRoutes, { prefix: "/rest" });
@@ -71,7 +76,7 @@ const targets = [
   { id: "direct", draftOwner: { kind: "org_member_draft", orgRunId: "org", agentRunId: "direct" }, finalOwner: { kind: "org_member_final", orgRunId: "org", agentRunId: "direct" } },
   ...["repeat", "lead", "task-lead"].map(id => ({ id, draftOwner: { kind: "org_member_draft", orgRunId: "org", agentRunId: id }, finalOwner: { kind: "org_member_final", orgRunId: "org", agentRunId: id } })),
   { id: "standalone", draftOwner: { kind: "agent_draft", draftRunId: "draft" }, finalOwner: { kind: "agent_final", runId: "standalone" } },
-  { id: "standalone-lead", draftOwner: { kind: "team_member_draft", teamDraftId: "draft-team", memberAddress: "/lead" }, finalOwner: { kind: "team_member_final", teamRunId: "standalone-team", memberAddress: "/lead" } },
+  { id: "standalone-lead", draftOwner: { kind: "team_member_draft", teamDraftId: "draft-team", memberAddress: "/lead" }, finalOwner: { kind: "team_member_final", teamRunId: "standalone-team", agentRunId: "standalone-lead" } },
 ];
 
 describe("accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open", () => {

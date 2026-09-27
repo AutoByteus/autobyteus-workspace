@@ -1,175 +1,168 @@
-# Code Review Report
-
-## Review Round Meta
-- Package: `docker-image-http400-20260926`; review date 2026-09-26.
-- Review Entry Point: **Implementation Review**, round 1; latest authoritative round 1.
-- Trigger: Implementation Engineer's Implementation Complete, IR-001.
-- Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-exact-execution`.
-- Branch/base: `codex/team-attachment-exact-execution` / `e06080b0027636cecf20b5e437c496d423c7f26b`; uncommitted source inspected.
-- Canonical ticket: `tickets/team-attachment-exact-execution` within that workspace. Artifact names below resolve there; source paths resolve from the workspace.
-- Reviewed requirements/investigation/solution history: `requirements-doc.md` (approved R1), `investigation-notes.md`, `solution-revision-record.md` (SR-001..003, current SR-003).
-- Reviewed design/review chain: `design-spec.md` (D1), `design-review-report.md`, `architecture-review-revision-record.md` (ARCH-REV-001 Pass).
-- Reviewed implementation chain: `implementation-handoff.md`, `implementation-revision-record.md` (IR-001), implementation-evidence changed-file inventory, checks/logs, source-size check, launch-validator baseline and rendered-result report.
-- Supplements: `matching-errors.log`, `solution-handoff.md`; original screenshot inventory as diagnostic context, not independently reinspected pixels or a normative visual specification.
-- Review record: `code-review-revision-record.md`, **CRR-001**. Prior review/result: N/A; no prior Pass inferred.
-- Coverage investigation, API/E2E execution report/API-REV, delivery record/DR, failure-origin commands/scenarios: N/A — not applicable to this entry point.
-- Technical authority: code-reviewer skill, design-principles.md, report template and scenario-gate Example 9; applicable server/web AGENTS.md read.
-
-## Routing Classification Review
-- Task size: **Medium**. Architectural risk: **High**. Classification confirmed.
-- Selected route: Implementation Review; independent source review required: Yes.
-- Changed final transport identity, persisted-reference conversion and startup admission justify High risk; no classification correction.
-
-## Review Scope
-Reviewed all 15 changed implementation-source files, associated changed/new unit tests, docs and neighboring production owners needed for the four design spines. This includes three untracked migration source files; generated SDK dist is excluded as build output, not authored source.
-
-Explicit exclusions: API/E2E sign-off, complete application browser journey, full frontend build/typecheck, actual copied production upgrade, Docker/live data, deployment, release, user verification. No implementation/test fixes, commits or runtime messages were made by this review. Only review artifacts/logs were written.
-
-### Evidence execution
-Independent command (worktree root):
-`pnpm -C autobyteus-server-ts exec vitest run tests/unit/context-files tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts --no-watch`
-
-Result: **9 files / 71 tests passed**. Evidence: `implementation-evidence/code-review-server-check.log`. Existing implementation evidence reports 97 server and 78 frontend tests plus server source typecheck passing; those broader commands were not independently repeated. Component-level keyboard Open is upstream evidence only, not full browser validation.
-
-## Upstream Behavior And Production-Path Basis Confirmation
-Approved intent and architecture basis **Confirmed**. Preserve attachment bytes/history, exact selected ownership, separate draft lifecycle and unrelated modes; no fallback, revival of completed tasks, or mixed-version contract. No new behavior IDs or material ambiguity.
-
-| Behavior | Status | Current implementation path and lifecycle evidence | Contradiction/new behavior |
-| --- | --- | --- | --- |
-| BEH-001 | Confirmed | Composer → Team send store captures target → optional restore/launch → upload-store finalize → REST/service → exact owner resolver/tree → execution context_files; dispatch uses the same captured ID after finalize | None |
-| BEH-002 | Confirmed | Retained raw trace → hydration/model → exact GET → read service/resolver/layout → bytes; startup transition converts typed historical references before runtime admission | None |
-| BEH-003 | Confirmed | Prelaunch draft upload keeps draft ID/address; launchDraft returns canonical target; finalization binds it; existing failure path retains input | None |
-| BEH-004 | Confirmed | REST parser rejects absent/unsafe/mixed final shape; sync/async resolver checks exact ID, containing team and family before file access | None |
-
-Spines independently traced: DS-001 composer/send/restore/launch through finalization to runtime dispatch and returned final attachment model; DS-002 history hydration through GET to bytes; DS-003 executable locator through local-path resolver/provider normalization while retaining recorded references; DS-004 startup registry/runner → discovery/proof → journal/atomic writer → strict validation/ledger → Studio or standalone runtime/listener. The bounded journal loop is subordinate to migration, not a second runtime authority.
-
-## Supported Product Scenario And Reachability Gate
-| Scenario | Behavior/contract | Kind/initiator | Goal and independent entry | Shape/validity | Forward production path/lifecycle | Expected outcome | Independent evidence | Review use |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SC-001 | BEH-001; AC-002/007 | User | Select sendable Team execution, attach and send after supported delegation left another execution at its address | Normal / Supported Normal Scenario | Composer → captured Team store target → finalization → exact index → dispatch | Files and message belong to selected execution | Approved R1; incident log/tree evidence E3-A; composer/upload/store source | Use |
-| SC-002 | BEH-002; AC-003/006 | User/system/operator | Reopen retained conversation after delegation, restart or coordinated upgrade | Normal / Supported Normal Scenario | Startup conversion of retained typed records → history projection/hydration → exact URL/read → original file | Original owner, bytes and non-locator history preserved | R1; E3-B stored references; D1 transition contract; current record/read owners | Use |
-| SC-003 | BEH-003; AC-005/007 | User | Compose attachments before launching a Team | Normal / Supported Normal Scenario | Draft upload/preview/remove → launch → returned exact target → finalize/send or retry input | Draft stage remains separate; binds only after execution exists | R1; Team draft store and launch/send source | Use |
-| SC-004 | BEH-004; AC-004 | Contract | Supplied final identity does not belong to supplied Team | Explicit Edge / Supported Explicit Edge Scenario | Parser/resolver at finalize/GET/provider read → reject; finalize failure prevents dispatch | No alternative owner lookup or cross-team file | Explicit approved ownership validation requirement | Use |
-| SC-002 interruption | BEH-002; AC-006 | Operational contract | Upgrade conversion is interrupted and startup retries with writers stopped | Explicit Edge / Supported Explicit Edge Scenario | Runner → journal originals/hash/progress → atomic commit/reread → ledger → startup gate | No silent loss/misattribution; original backups retained, uncertain rename not claimed complete | Explicit AC-006 and D1 steps 4–6, not a test-invented failure model | Use |
-
-### Candidate Finding And Mechanism Gate
-No promoted defect candidate. The following material mechanisms were checked against independent authority, rather than treated as self-justifying code.
-
-| Candidate | Observation/mechanism | Scenario/contract | Independent trigger | Forward path/lifecycle/consequence | Evidence | Disposition | Reason/response |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| CG-001 | Mandatory exact identity and family/team check | SC-001/004 | Approved send and ownership rejection contract | Finalize/read resolver → exact indexed memoryDir, no address replacement | owner-types/resolver; Team location service; exact-execution tests | Promote (mechanism only; satisfied) | Proportionate identity boundary; no finding |
-| CG-002 | Source-trace provenance or unique physical owner for historical conversion | SC-002 | Upgrade of observed retained typed locators | Strict index/discovery → candidate team/address/file → trace provenance only among matching owners; sidecars require independent uniqueness | transition.ts; generic record enumerator; migration tests | Promote (mechanism only; satisfied) | No newest/configured preference; ambiguous proof blocks |
-| CG-003 | Original backup/hash/progress/retry and clean startup success | SC-002 interruption | AC-006 explicitly supports interrupted conversion | Journal preflights all sources → backup → durable manifest → commit → reread/progress → complete → ledger; both gates precede runtime construction/listeners | journal.ts; atomic writer; runner; startup source; injected-interruption and gate tests | Promote (mechanism only; satisfied) | No runtime legacy fallback or silent indeterminate-rename success |
-| CG-004 | Export/import existing draft-target validator | SC-003; AC-005 | Ordinary draft focus/pending-input during launch | teamRunConfigStore → existing target validator → unchanged topology rules | baseline ReferenceError evidence; source diff; draft/store tests | Promote (bounded prerequisite correction; satisfied) | Narrow correction, not new launch policy |
-| CG-005 | Retain address-based runtime redirect for old external bookmarks | R1 explicit exclusions | No supported initiating contract for arbitrary copied bookmarks/old clients | Mechanically callable old URL is not a supported post-cutover path | R1 non-goals; D1 legacy removal policy | Reject | Unsupported/contrived for this scope; no machinery or deduction |
-
-No held candidate, new lifecycle premise, generic corruption requirement or invented concurrent workflow affects the result. Captured target is the explicit D1 send invariant; no additional coordination was required.
-
-## Structural / Design Checks
-| Check | Result | Evidence | Required action |
-| --- | --- | --- | --- |
-| Task design health present, evidence-backed and preserved | Pass | Ownership-boundary bug fixed across write/read, not first-match workaround | None |
-| Approved behavior-defining supplements | Pass | Diagnostic evidence only; no normative UI supplement | None |
-| Data-flow spine inventory clarity/preservation | Pass | DS-001..004 traced above | None |
-| Ownership boundary preservation/clarity | Pass | REST delegates; resolver owns exact scope; migration owns historical schema | None |
-| Off-spine concerns serve clear owners | Pass | Layout/index serve resolver; journal/walker/writer serve migration | None |
-| Existing capability/subsystem reuse | Pass | Existing record walker, atomic writer, indexes, registry and store reused | None |
-| Reusable owned structures | Pass | Existing owner types/locators; migration FilePlan/Manifest remain local | None |
-| Shared-structure/data-model tightness | Pass | Final Team descriptor kind/teamRunId/agentRunId; drafts separate | None |
-| Repeated coordination ownership | Pass | Shared resolver handles sync/async scope; journal owns restart protocol | None |
-| Empty indirection | Pass | New migration entry declares policy/result; transition proves ownership; journal commits | None |
-| Separation of concerns/file responsibility | Pass | Three migration files have distinct discovery/proof, durability and lifecycle responsibilities | None |
-| Ownership-driven dependencies | Pass | Transport → services → resolver/index/layout; migration does not bootstrap runtime | None |
-| Authoritative Boundary Rule | Pass | Callers do not independently select an attachment owner behind resolver; journal calls transition's public proof API | None |
-| File placement | Pass | Historical code only under app-data-migrations; current DTO/store/adapters stay in established owners | None |
-| Flat versus over-split layout | Pass | One bounded migration directory; no new generic package or pass-through layer | None |
-| Interface/API/query/command clarity | Pass | Explicit containing Team and canonical AgentRun IDs; old/mixed Team DTO rejected | None |
-| Naming-to-responsibility alignment | Pass | LocatorTransition, TransitionJournal and migration entry names describe concrete duties | None |
-| No unjustified duplication | Pass | Reuses existing schema/record/commit infrastructure rather than cloning it | None |
-| Patch-on-patch complexity | Pass | Clean final-contract replacement; no optional-ID workaround | None |
-| Dead/obsolete cleanup in changed scope | Pass | Old runtime final route/parser/model matcher replaced, not retained | None |
-| Relevant tests/assertions requirement-aligned | Pass | Exact owner/bytes, wrong scope, preservation, restart and startup assertions | None |
-| Test fixtures/helpers coherent | Pass | Shared current-tree fixture builders; bounded migration fixture; no source-size rules applied to tests | None |
-| No stale/compatibility-only tests retained in changed scope | Pass | Changed unit fixtures reflect current final contract; historical fixtures test required conversion | API/E2E must adapt separately owned old REST/E2E suites, not treat them as passing evidence |
-| API/E2E readiness | Pass | Source chain ready and limitations explicit; real service/file test plus focused checks pass | Execute downstream coverage before delivery |
-
-## Source File Size And Structure Audit
-Independently counted non-empty lines from all changed authored source paths. Delta is added+removed tracked lines, or non-empty count for new source. No >500 file or >220 delta trigger. Comments/blank compression was not used as a substitute for ownership review; the migration's compact code was read in full.
-
-| Source file | Effective non-empty lines | >500 hard limit | Delta / >220 check | SoC/ownership | Placement | Preliminary classification | Required action |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/src/api/rest/context-files.ts` | 240 | Pass | 6; Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts` | 122 | Pass | 5; Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/context-files/domain/context-file-owner-types.ts` | 99 | Pass | 35; Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts` | 170 | Pass | 11; Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts` | 81 | Pass | 7; Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/server-runtime.ts` | 264 | Pass | 5; Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts` | 373 | Pass | 5; Pass | Pass | Pass | None | None |
-| `autobyteus-web/stores/agentTeamRunStore.ts` | 435 | Pass | 4; Pass | Pass | Pass | None | None |
-| `autobyteus-web/stores/teamRunConfigStore.ts` | 430 | Pass | 6; Pass | Pass | Pass | None | None |
-| `autobyteus-web/utils/contextFiles/contextAttachmentModel.ts` | 292 | Pass | 2; Pass | Pass | Pass | None | None |
-| `autobyteus-web/utils/contextFiles/contextFileOwner.ts` | 68 | Pass | 6; Pass | Pass | Pass | None | None |
-| `autobyteus-web/utils/teamRunLaunchConfigEdit.ts` | 79 | Pass | 8; Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts` | 38 | Pass | 38; Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts` | 110 | Pass | 110; Pass | Pass | Pass | None | None |
-| `autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts` | 87 | Pass | 87; Pass | Pass | Pass | None | None |
-
-## Legacy / Backward-Compatibility Verdict
-| Check | Result | Notes |
-| --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | Historical decoding confined to approved startup migration |
-| No legacy old-behavior retention | Pass | Old final Team DTO/GET/local/model path removed; drafts remain a distinct current stage |
-| Dead/obsolete cleanup complete in changed scope | Pass | No redundant runtime selector path introduced or left by this change |
-| Approved transition decision followed | Pass | Locator Migration Required; blobs/layout directly usable; drafts unaffected |
-| No version-specific dual reads/writes/request-time fallback | Pass | Current readers accept exact final ownership only |
-| Transition mechanics match reviewed design | Pass | CG-002/003 proof, originals, hashes, atomic progress, retry and admission checks |
-
-## Dead / Obsolete / Legacy Items Requiring Removal
-None in reviewed changed implementation scope. The explicitly deferred REST/E2E fixtures are coverage-owner adaptation work, not retained runtime compatibility or claimed successful evidence.
-
-## Docs-Impact Verdict
-Yes. Exact final DTO/URL, draft distinction and coordinated upgrade/rollback affect `autobyteus-web/docs/agent_execution_architecture.md`, `autobyteus-web/docs/settings.md`, and `autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md`. Changed documentation matches the source; final integrated documentation sync remains Delivery-owned.
-
-## Additional Material Premise Validation
-Upstream architecture review reported no additional premise IDs beyond SC-001..004/AC-006. Those decisions remain Confirmed. New or reclassified material premises: None. CG-001..004 record the applicable established contracts; CG-005 is excluded and cannot lower scores.
-
-## Review Scorecard
-Overall **10.0/10 (100/100)**, simple average. Scores mean no substantiated gap in this bounded source review; they are not production validation, a guarantee of defect absence, or a substitute for API/E2E. No unsupported possibility or merely pending downstream phase was used as a deduction.
-
-| Priority | Category | Score | Why this score | Concrete weakness | Improvement required |
-| --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 10.0 | All four approved spines and journal loop trace coherently | None identified | None |
-| 2 | Ownership Clarity and Boundary Encapsulation | 10.0 | Scope authority remains in resolver; no caller bypass | None identified | None |
-| 3 | API / Interface / Query / Command Clarity | 10.0 | Exact final identity is mandatory and singular | None identified | None |
-| 4 | Separation of Concerns and File Placement | 10.0 | Current runtime and historical transition remain separate; journal split is purposeful | None identified | None |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 10.0 | Tight final DTO, unchanged drafts, existing walker/writer reused | None identified | None |
-| 6 | Naming Quality and Local Readability | 10.0 | Explicit subject identities and concretely named transition responsibilities | None identified | None |
-| 7 | API/E2E Readiness | 10.0 | Local evidence and remaining coverage obligations accurately separated; next phase can proceed | None identified at source-readiness boundary | Perform normal API/E2E stage |
-| 8 | Runtime Correctness And Behavioral Fidelity | 10.0 | CG-001..004 verified against code; focused 71 tests pass | None identified in reviewed scope | Validate assembled workflows downstream |
-| 9 | No Backward-Compatibility / No Legacy Retention | 10.0 | Current-only readers, historical decoder only in required migration | None identified | None |
-| 10 | Cleanup Completeness | 10.0 | Replaced runtime selectors and updated authored unit fixtures/docs; no redundant authored source | None identified | Exclude generated dist during finalization |
-
-## Findings
-None. No source correction or upstream behavior/design revision required by this review.
-
-## Classification
-N/A — Pass is an outcome, not a failure classification. Medium / High preserved.
-
-## Recommended Recipient
-`/api_e2e_engineer` under implementation-review pass rule. Apply the current single-most-specific-rule communication contract; no duplicate forwarding.
-
-## Residual Risks / Downstream Obligations
-- Adapt and execute existing REST/E2E tests: `tests/integration/api/rest/context-files.integration.test.ts` still has the old final DTO/URL and earlier nested fixture drift; `tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts` has prior draft/final field drift. They were not executed or accepted as passing evidence here. Preserve meaningful invalid-shape rejection rather than reintroducing compatibility.
-- Verify assembled duplicate-address/nested execution upload/finalize/GET/provider paths, real retained image/file history after restart, launch and restore, retry input, text-only, Org and standalone preservation under AC-002..007.
-- Exercise realistic disposable copied-data conversion, whole startup ordering and both entrypoints. Unit injection tests are not an actual interrupted-process/production upgrade.
-- Stop all writers during cutover, coordinate web/server versions, preserve original backups and never restore them over newer history. Stale RUNNING retry policy remains the existing runner's; installation-specific proof failures require evidence, not guessed ownership or deletion.
-- E3-B production counts are upstream evidence, not an independently repeated production scan. Browser evidence is component-level only. No deployment or user verification performed.
+# Code Review Report — CRR-003 startup recovery
 
 ## Latest Authoritative Result
-- Review Decision: **Pass**.
-- Review Entry Point: Implementation Review, round 1 / CRR-001.
-- Supported Product Scenario Gate: Pass. Material-Premise Gate: Pass.
-- Score Summary: 10.0/10; 100/100, bounded source-review interpretation above.
-- Failure Origin: N/A.
-- Next recipient: `/api_e2e_engineer`.
-- This permits API/E2E work only; it is not API/E2E or delivery sign-off.
+**Pass — implementation-source readiness for fresh API/E2E, not incident closure or release approval.**
+
+Review date 2026-09-27. Medium / High / Reviewed preserved. No unresolved source finding against approved R2/D2/SR-005. Both software and companion workflow candidates reviewed. **API-REV-002 remains FAIL and the v1.4.87 startup incident remains OPEN.** Historical CRR-001/002 and API-REV-001 cannot substitute for corrected installed-data/desktop evidence.
+
+## Review Round Meta
+- Entry point: Implementation Review, source round 2, cumulative completed result 3; CRR-003.
+- Trigger: IR-002 completion following production startup incident and approved recovery R2/D2; resumed after user's migration question.
+- Software: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery; branch codex/team-attachment-startup-recovery; base a35060c58d923311de496e75aa3ea0209708d8b3; integration target personal.
+- Companion: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-migration-workflow; branch codex/team-attachment-migration-workflow; base 1b1a75ee57271745424030e9289a699523ff34a6; integration target main.
+- Canonical package: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution.
+- Requirements/investigation/design/history: requirements-doc.md (R2 with retained R1), investigation-notes.md, design-spec.md (D2), solution-revision-record.md SR-001..005, solution-handoff.md. R1 exact-identity behavior is not reopened.
+- Architecture: design-review-report.md, architecture-review-revision-record.md ARCH-REV-002; prior ARCH-REV-001 superseded on startup policy.
+- Implementation: implementation-handoff.md, implementation-revision-record.md IR-002 and recovery evidence/changed-source inventory. Earlier IR-001 remains history.
+- Previous reviews: CRR-001 source baseline and CRR-002 separate successful test review in code-review-revision-record.md. Previous canonical source result inspected before replacement; historical baseline also retained in base Git tree under tickets/done/team-attachment-exact-execution/code-review-report.md. Test-review report is not altered by this source result.
+- Triggering execution evidence: api-e2e-execution-coverage-report.md and api-e2e-revision-record.md API-REV-002; startup-incident/incident-report.md, retained reproductions/inventory; SC-005/AC-008/010 failure. INC-01/02 reproduce released converter failure, INC-03 is diagnostic narrowed-copy conversion only, not startup proof.
+- Delivery history: delivery-revision-record.md DR-001..004 inspected as historical publication evidence, not recovery completion. New Delivery revision N/A.
+- Supplements: recovery-evidence/availability-policy-clarification.md, workflow-prevention.md and historical R1/D1 artifacts; canonical Data Migration Guideline. Product/visual supplement N/A.
+- Independent checks: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/implementation-evidence/recovery/code-review-checks.md and linked logs/audit/fingerprint. 157 tests / 19 files, source TypeScript, both diff checks and companion skill validator pass. No live data mutation or production/test edits by reviewer.
+
+## Routing Classification Review
+Medium / High remains correct: startup, persisted references and cross-package admission require independent source review. Selected route Implementation Review, then fresh API/E2E. No downgrade, direct route, or failure-origin-only shortcut. API failure remains open even though the revised source is ready to validate.
+
+## Review Scope
+All 22 changed authored production TypeScript files, relevant preserved consumers and predecessor contracts; the unit-test delta as source-readiness evidence; server/web operational documentation; single canonical guideline and two companion skill edits. Exact inventory and SHA-256 snapshot: implementation-evidence/recovery/code-review-scope-sha256.txt. Generated shared SDK dist is excluded. Ticket done→in-progress move is intentional, not cleanup failure.
+
+No new UI source, API/E2E authorship, installed-data execution, Electron launch, publication, integration or deployment reviewed as completed here. The separate CRR-002 test report remains historical, not a review of future API changes.
+
+## Upstream Behavior And Production-Path Basis Confirmation
+Approved intent and D2 ownership map confirmed. No new intended behavior, contradictory requirement or unresolved material ambiguity introduced.
+
+| Behavior | Status | Implementation path / lifecycle evidence |
+|---|---|---|
+| BEH-001/003/004 | Confirmed | Captured exact Team execution → final DTO/owner resolver → admitted Team/Org location → physical file; separate draft/launch contract remains. Current async/sync readers reject unavailable packages; no address fallback. Unchanged frontend evidence retained proportionately. |
+| BEH-002 | Confirmed | Startup runner → grouped discovery/preflight → exact historical proof → original/hash journal → atomic typed-record conversion → independent current admission. Current locators and non-locator fields preserved; no blob relocation. |
+| BEH-005 | Confirmed | Both real source entrypoints run migrations, retain existing core gates, rebuild readiness before runtime/listening. Classifier excludes incomplete roots before private trace traversal. Catalogs/direct loaders/restore/file readers use admission; fresh persisted metadata/tree must validate before publication. Zero admitted old roots is permitted. |
+| BEH-006 | Confirmed | Unfiltered strict structural owner map → typed current-reference validation → dependency fixed point → coherent admitted snapshot. Migration derives reference edges before writes; excluded sources retain original bytes. List filtering is not sole protection. |
+| BEH-007 | Confirmed | One server Data Migration Guideline with predecessor examples, critical .87 anti-pattern and required evidence; companion Solution Designer entrypoint requires it before migration/gate decisions. Still unintegrated candidate, not deployed prevention. |
+
+### Prior review failure and correction
+**This was also a source-review miss.** CRR-001 accepted unconditional reading of each enumerated Team tree plus both SUCCEEDED-only startup guards. Released Team V2 `migrateRoot` explicitly records SKIPPED_MISSING on ENOENT; Org candidate planning separately retains missing-tree warnings. These postconditions and the existing narrow capability-gate policy were source-inspectable. They should have prevented acceptance of directory-exists ⇒ valid-package and historical-run-invalid ⇒ application-unavailable. It was not merely a runtime-only surprise or an API fixture issue. CRR-002's bounded test review did not repair this earlier premise. IR-002 removes the guards and shares strict scoped validation; fresh executable recovery remains required.
+
+## Supported Product Scenario And Reachability Gate
+| Scenario | Kind / actor and coherent goal | Supported entry / forward lifecycle | Expected consequence and independent evidence | Validity / use |
+|---|---|---|---|---|
+| SC-001..004 | User sends/reopens image/file at selected execution, including prelaunch draft | Composer → captured exact identity → finalize/send → persisted trace → history/Open/provider file read | Preserve exact execution bytes, no address substitution; approved R1 AC-002..007 and preserved production callers | Supported Normal Scenario / Use |
+| SC-005, MP-REC-001 | System/user upgrade and start with retained historical residue | Studio/standalone startup → predecessors' explicit retained dispositions → converter → readiness → usable history/new work | Preserve incomplete empty/nonempty roots; exclude unusable history without blocking new work. R2 AC-008/010, predecessor source and actual installed incident | Supported Normal Scenario / Use |
+| SC-006 | Operational upgrade with cross-root typed reference A→B | Source classification → ownership proof → per-group preflight/dependency closure → current admission/direct consumers | Unavailable B excludes dependent A, not independent C; valid cycles remain valid. R2 AC-009/D2 explicit contract; not inferred solely from a synthetic graph | Supported Explicit Edge Scenario / Use |
+| AC-006 | User/system ordinary interruption and relaunch of required conversion | Existing runner retry → released V1 manifest/original hashes → bounded atomic commit/revalidation | Preserve original evidence and newer validated writes; no forced terminal rerun or second journal | Supported Explicit Edge Scenario / Use |
+| SC-007 | Designer plans future persisted-data change | Solution Designer skill → target repository guideline/predecessors → documented source inventory/admission design | Prevent prior global-gate assumption; R2 AC-011 and explicit user prevention request | Supported Normal Scenario / Use |
+
+### Candidate Finding And Mechanism Gate
+| Candidate | Observation / scenario | Trigger and forward path / consequence | Evidence | Disposition / response |
+|---|---|---|---|---|
+| CG-REC-001 | Prior global startup rule was unsound; SC-005 / MP-REC-001 | Ordinary released upgrade retains no-tree roots; unconditional read and old guards blocked whole app | Team V2 lines 258–264, Org missingExecutionTreeWarnings; incident INC-01/02; current entrypoint diffs | Promote historical defect attribution; corrected in source, not an unresolved new finding. Own earlier review omission and require fresh execution. |
+| CG-REC-002 | Scoped warnings must not hide actual failed attempts; SC-005/006 | Startup preflight classifies missing/invalid packages, closes dependencies before writes; actual journal/read/commit errors remain FAILED; readiness separately gates affected data | Migration outcome aggregation, typed validation error classes, classifier and journal; independent unit rerun | Promote supported mechanism; implemented without blanket catch-to-success. No current finding. |
+| CG-REC-003 | Released journal reuse must not overwrite originals/newer history; AC-006 | Relaunch accepts original/target hash, validates original backup, skips committed valid current writes; completed evidence not cosmetically rewritten | Journal load/preflight/plan/execute/completeDispositions and interruption/newer-write tests | Promote required existing recovery contract; no new format or recovery category needed. No current finding. |
+| CG-REC-004 | Current admission cannot rely on ledger or filtered catalogs; SC-006 | Startup/publication scans strict facts, validates current typed references, closes dependencies, publishes snapshot; direct/sync/restore consumers check authority | Shared validator, readiness, location services, standalone catalog/projection/lifecycle and owner resolver | Promote supported mechanism; no circular filtered lookup or blind admit. No current finding. |
+| CG-REC-005 | Artificial post-startup mutation/racing deletion would demand extra refresh/fencing | A manually inserted new cross-root URI or deliberately timed external file mutation is not the approved historical-upgrade trigger | Example 9/10; D2 startup/refresh/current-write contract; no independent in-scope initiating workflow established by such injection | Reject that constructed premise; no score deduction or additional runtime journal/fencing required. It is not evidence that arbitrary mutations are supported. |
+
+Actual per-group commit failure can occur after successful preflight: the aggregate stays FAILED, no completion claim is manufactured, and readiness validates the actual current graph independently. A converted reference's target blob/exact identity is not changed by another group's trace-write failure; dependent usability is determined separately. This does not justify restoring originals or globally blocking startup.
+
+## Structural / Design Checks
+| Check | Result | Evidence / required action |
+|---|---|---|
+| Task design health is evidence-backed and preserved | Pass | D2 scoped ownership correction replaces false global invariant; no broader platform redesign. No source correction required. |
+| Approved behavior-defining supplements | Pass | SR-005 explicitly permits all historical runs excluded; guideline prevention in both repos. No visual supplement. No source correction required. |
+| Data-flow spine inventory clarity/preservation | Pass | D2 primary upload/read, upgrade/admission and workflow-prevention paths traced through consumers, not converter alone. No source correction required. |
+| Ownership boundary preservation | Pass | Runner owns scheduling/status; migration owns historical mapping/journal; readiness owns usable current package set. No source correction required. |
+| Off-spine concern clarity | Pass | Structural classifier and typed reference validator supply facts to admission/transition; journal owns commits. No source correction required. |
+| Existing capability/subsystem reuse | Pass | Existing strict Team/Org validators, metadata store, record walker, atomic writer and catalogs reused. No source correction required. |
+| Reusable owned structures | Pass | CurrentRunPackage/owner facts shared across migration and current admission instead of duplicate discovery. No source correction required. |
+| Shared-structure/data-model tightness | Pass | Explicit family/key/descriptor and Team-only address specialization; no guessed ID union or second persisted status. No source correction required. |
+| Repeated coordination ownership | Pass | Dependency closure shared as a bounded pure operation; no repeated caller-specific admission policy. No source correction required. |
+| Empty indirection | Pass | New files perform validation/state/commit work; catalogs remain existing family-specific boundaries. No source correction required. |
+| Separation of concerns/file responsibility | Pass | Discovery/structure, current references, snapshot publication, old conversion and journal have distinct responsibilities. No source correction required. |
+| Ownership-driven dependencies | Pass | Current validation uses unfiltered structural facts; no migration decoder in current runtime and no catalog recursion. No source correction required. |
+| Authoritative Boundary Rule | Pass | Entry consumers use catalog/readiness/location authority; raw stores inside classifier are its validation mechanisms, not a bypass from its callers. No source correction required. |
+| File placement | Pass | Current package facts in run-history; current reference validation in context-files; old selector proof under timestamped migration. No source correction required. |
+| Flat-versus-over-split layout | Pass | Two extracted reusable validators are proportionate; no new service graph/framework. No source correction required. |
+| Interface/API/query/command clarity | Pass | Explicit family and exact run IDs; admit is awaited validation, final resolver receives memory scope. No source correction required. |
+| Naming/readability alignment | Pass | Classifier, current reference validator, readiness and transition journal names match concrete ownership. No source correction required. |
+| No unjustified duplication | Pass | Shared structural/current-reference contracts and dependency fixed point; no second admission store. No source correction required. |
+| Patch-on-patch control | Pass | Replaced old blanket gate, removed raw location fallthrough, kept same registered migration and existing journal. No source correction required. |
+| Dead/obsolete cleanup | Pass | Old source discovery and guards replaced; old guideline path renamed, maintained links adjusted; historical evidence retained intentionally. No source correction required. |
+| Requirement-aligned tests | Pass | Coexistence, all-excluded publication, old/exact dependencies, errors vs warnings and retry assertions are traceable to R2/AC-006. No source correction required. |
+| Reusable/coherent fixtures | Pass | Strict current sidecars/metadata fixtures reused; separate migration, consumers and host-unit suites remain navigable. No source correction required. |
+| No stale/compatibility-only tests in changed scope | Pass | Changed unit assertions align with scoped admission. Known old REST/process assertions explicitly assigned downstream, not misrepresented as passing. No source correction required. |
+| API/E2E readiness | Pass | Runnable build inputs, 157 independent unit passes, source TS pass and exact mandatory execution matrix; next owner must adapt existing executable suites. No source correction required. |
+
+## Source File Size And Structure Audit
+Independent complete per-file counts/deltas: implementation-evidence/recovery/code-review-source-audit.tsv. Thresholds apply only to changed authored production source, not tests/docs/generated output.
+
+| Source | Effective nonempty | >500 check | >220 delta | SoC / placement / classification | Action |
+|---|---:|---|---|---|---|
+| agent-execution/runtime/general-process-run-supervisor.ts | 370 | Pass | 1; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| agent-execution/services/standalone-agent-run-lifecycle-service.ts | 396 | Pass | 5; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| agent-org-execution/services/agent-org-execution-tree-location-service.ts | 190 | Pass | 29; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| agent-org-execution/services/agent-org-run-manager.ts | 416 | Pass | 8; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| agent-team-execution/services/agent-team-run-manager.ts | 450 | Pass | 15; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| api/rest/context-files.ts | 247 | Pass | 23; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts | 86 | Pass | 68; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts | 74 | Pass | 107; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts | 132 | Pass | 98; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| application-platform/execution/application-execution-scope-kernel-builder.ts | 327 | Pass | 1; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| context-files/services/context-file-current-reference-validator.ts | 89 | Pass | 96; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| context-files/services/context-file-owner-resolver.ts | 92 | Pass | 18; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| context-files/services/context-file-record-locators.ts | 115 | Pass | 20; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| run-history/services/agent-org-run-package-catalog.ts | 33 | Pass | 2; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| run-history/services/agent-run-history-catalog-service.ts | 482 | Pass | 12; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| run-history/services/agent-run-view-projection-service.ts | 152 | Pass | 5; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| run-history/services/root-run-package-current-validator.ts | 260 | Pass | 274; triggered, reviewed | D2 extraction: strict current structural classification shared by admission and transition; Pass | None |
+| run-history/services/root-run-package-readiness-index.ts | 112 | Pass | 376; triggered, reviewed | D2 extraction: admission snapshot state and bounded rebuild, classifier moved out; Pass | None |
+| run-history/services/team-run-execution-tree-location-service.ts | 238 | Pass | 40; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| run-history/services/team-run-package-catalog.ts | 33 | Pass | 4; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| server-runtime.ts | 259 | Pass | 5; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+| standalone-application-host/start-standalone-application-host.ts | 368 | Pass | 5; below trigger | Reviewed within existing named owner; placement appropriate; Pass | None |
+
+The new structural classifier is 274 physical / 260 nonempty lines, so its >220 introduction was explicitly audited as well as the readiness replacement (376 added+deleted). All changed production files stay under 500; maximum 482. No test splitting requirement inferred.
+
+## Legacy / Backward-Compatibility Verdict
+| Check | Result | Evidence |
+|---|---|---|
+| No runtime compatibility mechanisms | Pass | Current validator recognizes exact current locators only. |
+| No old runtime behavior retention | Pass | No address-based final URL fallback, identity guessing or completed-task revival. |
+| Cleanup complete in changed scope | Pass | Both blanket guards and unfiltered location fallthrough removed; generated outputs not authored. |
+| Transition decision proportionate | Pass | Physical blobs/trees already current remain directly usable; only proven historical typed references transformed under same migration ID. |
+| No version-specific dual reads/writes | Pass | Historical selector interpretation confined to migration; runtime never calls it. |
+| Reviewed transition safety | Pass | Same originals/hash manifest/atomic writer; group preflight and preservation; original evidence not restored over newer writes. |
+
+Dead/obsolete items requiring removal: **None** in reviewed authored scope. API owner must replace obsolete executable gate assertions as already enumerated in implementation-evidence/recovery/checks.md; do not repair them with runtime compatibility.
+
+## Docs-Impact Verdict
+Yes. Reviewed /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/docs/design/data_migration_guideline.md, maintained server links, FILE_RENDERING_AND_MEDIA_PIPELINE.md and web operational docs. Guideline includes source-backed predecessor/cross-root examples, exact .87 failure chain, review/test misses, prohibited fixes, all-excluded behavior and real startup/release evidence. Reviewed /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-migration-workflow/agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/SKILL.md and /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-migration-workflow/agent-teams/software-engineering-team/agents/solution-designer/skills/solution-designer/references/architecture-design.md. One policy source, not a competing skill copy. Delivery must integrate both repositories and sync final execution claims; neither candidate is deployed by this review.
+
+## Additional Material Premise Validation
+MP-REC-001 **Confirmed** against independently inspected predecessor source/current correction and incident evidence. No new supported behavior or additional recovery premise. Rejected artificial mutation premise is recorded above; no speculative mechanism added. Source-scope correction does not imply installed-data success.
+
+## Review Scorecard
+Bounded source-readiness score 10.0/10 (100/100), simple average. This means no evidenced unresolved gap in the reviewed scope, **not probability, confidence, perfection, production safety certification or release readiness**. No invented deductions for unexecuted downstream gates; they remain hard release conditions irrespective of score.
+
+| Priority | Category | Score | Reason | Weakness / required improvement |
+|---|---|---:|---|---|
+| 1 | Data-Flow Spine Inventory and Clarity | 10 | D2 migration/admission and user read/write paths remain explicit through meaningful outcomes. | No source gap identified; preserve paths in executable evidence. |
+| 2 | Ownership Clarity and Boundary Encapsulation | 10 | Ledger, conversion and current admission have separate concrete owners. | None identified; independently prove direct-entry gates downstream. |
+| 3 | API / Interface / Query / Command Clarity | 10 | Exact IDs retained, async validated publication awaited by all production callers. | None identified. |
+| 4 | Separation of Concerns and File Placement | 10 | Structural/current-reference extraction resolves large readiness responsibility without framework growth. | None identified. |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 10 | Shared owner facts/fixed-point operation, no competing persistent state. | None identified. |
+| 6 | Naming Quality and Local Readability | 10 | Concrete validator/admission/journal names, bounded methods and typed outcomes. | None material identified. |
+| 7 | API/E2E Readiness | 10 | Source TS, focused tests and precise remaining executable boundaries ready for coverage owner. | Execution pending, not treated as performed. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 10 | Source paths preserve R1 and implement R2 scoped availability, including empty admitted history. | Installed/process/desktop proof remains mandatory; no inferred recovery. |
+| 9 | No Backward-Compatibility / No Legacy Retention | 10 | Old decoding migration-only; runtime current-only and no new migration identity. | None identified. |
+| 10 | Cleanup Completeness | 10 | Replaced guards/discovery, maintained links and retained audit data intentionally. | Companion integration and final delivery cleanup pending their owner. |
+
+## Findings / Prior Resolution
+No unresolved current finding. Historical blanket-gate defect is confirmed and source correction verified above; record CRR-003 explicitly supersedes CRR-001's startup-policy acceptance. No retroactive rewriting of CRR-001/002. No API test-code pass or failure-origin classification is invented for this source round.
+
+## Classification, Routing And Residual Risks
+- Decision: **Pass**; supported scenario/material-premise gates Pass. Failure classification N/A for corrected source; prior incident origin includes inadequate D1 and earlier source-review gap.
+- Primary next recipient: API/E2E Engineer, existing thread 01a0def0-27cd-7b23-bc09-6749275134d9. No duplicate informational forwarding.
+- AgentTeam get_handoff_rules/send_message_to tools absent after discovery; no successful lookup claimed. Use the explicit original-specialist-thread fallback documented in approved solution-handoff. Current code-reviewer route contract selects source-pass → API/E2E. Handoff only after artifacts saved; no new task execution.
+- Cumulative package is the entire canonical ticket above, including upstream authorities, incident/API failure, historical delivery, current review/revision/checks, and both repository candidates. Do not forward only this report.
+
+**Required before recovery/release:** both real startup entrypoints and repeat; same-ID FAILED retry and terminal-success/warning skip with independent admission; all-excluded history with actual new work; real stopped-writer installed-data copy retaining all eight missing-tree roots and hashes; usable history/direct rejection/exact attachment regressions; actual desktop startup with candidate build; explicit user verification and both-repository integration. Real read/commit failure must remain truthful FAILED, without global attachment-status gating. No manual ledger reset, deleting troublesome history, original overwrite or migration-only startup claim.
+
+Admission rebuild scans typed history at startup/refresh/publication, not every GET. No installed-corpus timing or performance SLA established here. Process fixtures are not installed fidelity. A later terminal historical migration needing different conversion is an upstream design question, not authorization to reset the ledger. Reviewer changed review artifacts only, with disposable/worktree tests; no live migration, commit, push, release or deployment.

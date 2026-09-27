@@ -1,0 +1,12 @@
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { TeamContextFileExecutionLocatorsV1AppDataMigration as Migration } from '/Applications/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js';
+import { TeamRunExecutionTreeV2AppDataMigration as Previous } from '/Applications/AutoByteus.app/Contents/Resources/server/dist/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js';
+const root=process.argv[2];
+if (!root?.includes('/autobyteus-upgrade-incident-')) throw new Error('Requires owned disposable root');
+const mode=process.argv[3]||'minimal';
+const dir=mode==='minimal'?path.join(root,'minimal'):root;
+const memory=path.join(dir,'memory');
+if(mode==='minimal') await fs.mkdir(path.join(memory,'agent_teams','empty-historical-team','empty-agent'),{recursive:true});
+if(mode==='minimal') console.log('predecessor',JSON.stringify(await new Previous(memory).execute()));
+console.log('released',JSON.stringify(await new Migration(memory,dir,()=> 'http://localhost:29695').execute()));

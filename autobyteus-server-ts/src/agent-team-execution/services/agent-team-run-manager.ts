@@ -154,8 +154,13 @@ export class AgentTeamRunManager {
         ...this.materializationDependencies(),
         onTerminated: (terminated) => { this.unregister(rootTeamRunId, terminated); },
       });
-      this.packageCatalog.admit(rootTeamRunId);
-      this.register(root);
+      try {
+        await this.packageCatalog.admit(rootTeamRunId);
+        this.register(root);
+      } catch (error) {
+        await root.terminate().catch(() => undefined);
+        throw error;
+      }
       return root;
     });
   }
@@ -165,7 +170,8 @@ export class AgentTeamRunManager {
     const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
     return this.withRootTransition(rootTeamRunId, async () => {
       if (this.hasManagedTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already managed.`);
-      if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(rootTeamRunId)) {
+      await this.packageCatalog.awaitReady();
+      if (!this.packageCatalog.isAdmitted(rootTeamRunId)) {
         throw new Error(`TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun '${rootTeamRunId}' is not an admitted current package.`);
       }
       const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
@@ -239,7 +245,8 @@ export class AgentTeamRunManager {
     return this.withRootTransition(teamRunId, async () => {
       const tree = await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId);
       if (!tree) return this.modelConfigUpdateResult("NOT_FOUND", "Team run was not found.", null, false);
-      if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(teamRunId)) {
+      await this.packageCatalog.awaitReady();
+      if (!this.packageCatalog.isAdmitted(teamRunId)) {
         return this.modelConfigUpdateResult("NOT_FOUND", "Team run is not an admitted current package.", tree, false);
       }
       if (this.hasManagedTeamRun(teamRunId)) {

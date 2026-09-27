@@ -133,6 +133,7 @@ export class GeneralProcessRunSupervisor {
         memoryDir,
       });
       const contextFileOwnerResolver = new ContextFileOwnerResolver({
+      memoryDir: memoryDir,
         locations: collaborationLocations,
       });
       const providerInputNormalizer = new AgentRunProviderInputNormalizer(

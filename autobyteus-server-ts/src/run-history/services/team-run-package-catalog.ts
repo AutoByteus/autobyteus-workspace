@@ -23,8 +23,8 @@ export class TeamRunPackageCatalog {
     return new Map(this.readiness.listDiagnostics("agent_team")
       .map((item) => [item.rootRunId, `${item.code}: ${item.reason}`]));
   }
-  admit(rootTeamRunId: string): void {
-    this.readiness.admitCurrent("agent_team", rootTeamRunId);
+  admit(rootTeamRunId: string): Promise<void> {
+    return this.readiness.admitCurrent("agent_team", rootTeamRunId);
   }
   exclude(rootTeamRunId: string, reason: string): void {
     this.readiness.excludeCurrent("agent_team", rootTeamRunId, reason);

@@ -1,0 +1,42 @@
+{
+  "reads": [
+    {
+      "locator": "/rest/team-runs/article_writing_team_22573bf71de54bedb1542efe7623270d/agent-runs/article_writer_b51136de07d14cd8be82bd1147222a70/context-files/ctx_12db2e03b132__image.png",
+      "status": 200,
+      "sha256": "3ac520a4f57e452e1c1c500c13a0abe5284b9ceb3d146e43931877c06d373ff4",
+      "expectedHash": "3ac520a4f57e452e1c1c500c13a0abe5284b9ceb3d146e43931877c06d373ff4"
+    },
+    {
+      "locator": "/rest/team-runs/article_writing_team_85f2bf39747e40a59b36a579f0309d6d/agent-runs/article_writer_cffa8c1fe0664951a95f8c6b99136bde/context-files/ctx_47e47abe975d__image.png",
+      "status": 200,
+      "sha256": "f3f76a2f23099e4ea3132662d4e33c9a4fc45acf2847d4af947d839b8373cd71",
+      "expectedHash": "f3f76a2f23099e4ea3132662d4e33c9a4fc45acf2847d4af947d839b8373cd71"
+    },
+    {
+      "locator": "/rest/team-runs/classroom_simulation_team_5b7d242f7d004c82847982b3addbffce/agent-runs/professor_1fcb461c998d4c9683e89a6e8f3e40c1/context-files/ctx_421e5d3c2aa8__image.png",
+      "status": 200,
+      "sha256": "793a7a6fbcb29a58e45313de56630b1771e230b249ccea7333e9747d677b0433",
+      "expectedHash": "793a7a6fbcb29a58e45313de56630b1771e230b249ccea7333e9747d677b0433"
+    },
+    {
+      "locator": "/rest/team-runs/software_engineering_team_0397686411484a6dabaca60256424ed3/agent-runs/solution_designer_34d529c16541413ea55cbb8503df8aca/context-files/ctx_78205807661d__image.png",
+      "status": 200,
+      "sha256": "8931a600416fcdb1812f0c5c78209c5323355242ca314ec55c891fad2afc0bce",
+      "expectedHash": "8931a600416fcdb1812f0c5c78209c5323355242ca314ec55c891fad2afc0bce"
+    },
+    {
+      "locator": "/rest/team-runs/software_engineering_team_057fd30efa5f4bd3843c744698ee7699/agent-runs/implementation_engineer_2006eaab4b7640b798ff1d1f9b52f1d8/context-files/ctx_51ed2ce100d8__image.png",
+      "status": 200,
+      "sha256": "e24650195150bfb639fd88365ee0454cce9cead46bc538c4798bc1e5762613e9",
+      "expectedHash": "e24650195150bfb639fd88365ee0454cce9cead46bc538c4798bc1e5762613e9"
+    },
+    {
+      "locator": "/rest/team-runs/software_engineering_team_057fd30efa5f4bd3843c744698ee7699/agent-runs/solution_designer_0d3d48022c9348029d5f8aa27d03926f/context-files/ctx_0ae174e1654b__image.png",
+      "status": 200,
+      "sha256": "fcdc4d8c35dfb5ec5f61a7833de40ba18632be3ebe3ef28069da085d3ba38955",
+      "expectedHash": "fcdc4d8c35dfb5ec5f61a7833de40ba18632be3ebe3ef28069da085d3ba38955"
+    }
+  ],
+  "allMatch": true,
+  "newRunRetained": true
+}

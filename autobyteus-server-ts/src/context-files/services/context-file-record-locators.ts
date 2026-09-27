@@ -3,14 +3,22 @@ import { parseRawTraceFileAttachments } from "autobyteus-ts/memory/models/raw-tr
 import fs from "node:fs/promises";
 import path from "node:path";
 
+export class ContextFileRecordValidationError extends Error {}
+const parseRecordJson = (text: string): unknown => {
+  try { return JSON.parse(text); }
+  catch (error) {
+    if (error instanceof SyntaxError) throw new ContextFileRecordValidationError("Typed context record contains invalid JSON.");
+    throw error;
+  }
+};
 export type ContextFileRecordSource = Readonly<{ filePath: string; kind: "trace" | "tasks" | "messages" }>;
 export type LocatorTransform = (locator: string, field: string) => Promise<string>;
 const object = (value: unknown, field: string): Record<string, unknown> => {
-  if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${field} must be an object.`);
+  if (!value || typeof value !== "object" || Array.isArray(value)) throw new ContextFileRecordValidationError(`${field} must be an object.`);
   return value as Record<string, unknown>;
 };
 const array = (value: unknown, field: string): unknown[] => {
-  if (!Array.isArray(value)) throw new Error(`${field} must be an array.`);
+  if (!Array.isArray(value)) throw new ContextFileRecordValidationError(`${field} must be an array.`);
   return value;
 };
 const entries = async (directory: string) => fs.readdir(directory, { withFileTypes: true }).catch((error: NodeJS.ErrnoException) => {
@@ -58,7 +66,7 @@ export async function transformContextFileRecordLocators(
     const values = array(parent[key], field);
     for (let i = 0; i < values.length; i += 1) {
       const value = values[i];
-      if (typeof value !== "string" || !value.trim()) throw new Error(`${field}[${i}] must be a locator string.`);
+      if (typeof value !== "string" || !value.trim()) throw new ContextFileRecordValidationError(`${field}[${i}] must be a locator string.`);
       const next = await transform(value, `${field}[${i}]`);
       if (value !== next) { values[i] = next; changed = true; }
     }
@@ -68,7 +76,7 @@ export async function transformContextFileRecordLocators(
     for (let i = 0; i < lines.length; i += 2) {
       const line = lines[i]!;
       if (!line.trim()) continue;
-      const row = object(JSON.parse(line), `line ${i / 2 + 1}`);
+      const row = object(parseRecordJson(line), `line ${i / 2 + 1}`);
       const field = `${source.filePath}:line ${i / 2 + 1}`;
       changed = false;
       if (row["media"] !== undefined && row["media"] !== null) {
@@ -81,7 +89,7 @@ export async function transformContextFileRecordLocators(
       try {
         files = parseRawTraceFileAttachments(row["file_attachments"], String(row["trace_type"]));
       } catch (error) {
-        throw new Error(`${field}.file_attachments: ${(error as Error).message}`);
+        throw new ContextFileRecordValidationError(`${field}.file_attachments: ${(error as Error).message}`);
       }
       for (const [ordinal, file] of files.entries()) {
         const next = await transform(file.uri, `${field}.file_attachments[${ordinal}].uri`);
@@ -94,7 +102,7 @@ export async function transformContextFileRecordLocators(
     }
     return lines.join("");
   }
-  const root = object(JSON.parse(text), source.filePath);
+  const root = object(parseRecordJson(text), source.filePath);
   const key = source.kind === "tasks" ? "records" : "messages";
   for (const [i, value] of array(root[key], key).entries()) {
     const row = object(value, `${key}[${i}]`);

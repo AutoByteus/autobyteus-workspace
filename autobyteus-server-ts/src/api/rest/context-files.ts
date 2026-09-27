@@ -15,6 +15,7 @@ import { ContextFileLayout } from "../../context-files/store/context-file-layout
 import {
   ContextFileOwnerResolver,
   OrgContextFileOwnerNotFoundError,
+  StandaloneContextFileOwnerNotFoundError,
   TeamContextFileOwnerNotFoundError,
 } from "../../context-files/services/context-file-owner-resolver.js";
 import { createStoredTeamRunExecutionTreeLocationService } from "../../run-history/services/team-run-execution-tree-location-service.js";
@@ -34,6 +35,7 @@ const buildServices = () => {
     memoryDir,
   });
   const ownerResolver = new ContextFileOwnerResolver({
+      memoryDir: memoryDir,
     locations: new CollaborationExecutionLocationService({
       teams: createStoredTeamRunExecutionTreeLocationService(memoryDir),
       orgs: new AgentOrgExecutionTreeLocationService({ memoryDir }),
@@ -201,15 +203,20 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
   app.get<{
     Params: { runId: string; storedFilename: string };
   }>("/runs/:runId/context-files/:storedFilename", async (request, reply) => {
-    const owner = parseFinalContextFileOwnerDescriptor({
-      kind: "agent_final",
-      runId: request.params.runId,
-    });
-    const filePath = await readService.getFinalFilePath(owner, request.params.storedFilename);
-    if (!filePath) {
-      return reply.code(404).send({ detail: "File not found." });
+    try {
+      const owner = parseFinalContextFileOwnerDescriptor({
+        kind: "agent_final",
+        runId: request.params.runId,
+      });
+      const filePath = await readService.getFinalFilePath(owner, request.params.storedFilename);
+      if (!filePath) {
+        return reply.code(404).send({ detail: "File not found." });
+      }
+      return sendFile(filePath, reply);
+    } catch (error) {
+      if (error instanceof StandaloneContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
+      throw error;
     }
-    return sendFile(filePath, reply);
   });
 
   app.get<{

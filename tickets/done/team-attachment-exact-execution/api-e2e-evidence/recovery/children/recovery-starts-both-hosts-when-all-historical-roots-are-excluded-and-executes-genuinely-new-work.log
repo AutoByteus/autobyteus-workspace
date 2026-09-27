@@ -1,0 +1,174 @@
+Root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/db/production.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:51536) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-27T04:41:11.123Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-09-27T04:41:11.242Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-27T04:41:11.242Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1790484071248,"pid":51536,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:65264"}
+{"level":30,"time":1790484071275,"pid":51536,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:65265"}
+[2026-09-27T04:41:11.276Z] [INFO] [server.runtime] Server listening on 127.0.0.1:0
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Discovering LM Studio models from host: http://127.0.0.1:65215
+In-memory cache: Added new agent definition with ID attachment-fixture-worker.
+Agent Definition created successfully with ID: attachment-fixture-worker
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk.
+Created and registered workspace ID: agent_ws_5dcb1fb9534757a1fe4fe341505d90f0e7682703a1892b2c978c65d9bae8b1e6
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk.
+Reusing registered workspace ID: agent_ws_5dcb1fb9534757a1fe4fe341505d90f0e7682703a1892b2c978c65d9bae8b1e6
+MediaStorageService initialized. Media root: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-e7POyk/media
+AgentRuntimeState initialized for agent_id 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': LLM instance 'LMStudioLLM' and 4 tools prepared and stored in state.
+AgentContext composed for agent_id 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e' with config: 'Attachment Fixture Worker'.
+AgentWorker initialized for agent_id 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e'.
+Registered AgentContext for agent_id 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e'. Context registered.
+Agent facade initialized for agent_id 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e'.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e' created and stored successfully.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e' requesting runtime to start.
+AgentRuntime for 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Starting worker.
+AgentWorker 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Starting...
+AgentWorker 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e' asyncRun(): Starting.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Runtime init completed (event store initialized).
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Runtime init completed (status deriver initialized).
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Runtime init completed (AgentEventInbox initialized).
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e' to become idle (timeout: 30s)...
+AgentEventStream (ID: 55803dc2-400f-4d4e-868f-e0e69a32ea2e) initialized for agent_id 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e'. Subscribed to notifier.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Starting direct runtime bootstrap lifecycle.
+AgentExternalEventNotifier (NotifierID: c981a675-2c3f-473c-bacc-abe94925fb61, AgentID: attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Bootstrapper starting direct lifecycle execution.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Executing McpServerPrewarmingStep.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Executing SystemPromptProcessingStep.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Skill access mode is NONE. Skipping skill catalog.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Final processed system prompt configured and captured. Trace ID: rt_1790484071405_513154ab-88fc-4aa0-8674-e5048e5627bc. Final length: 2611.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+AgentExternalEventNotifier (NotifierID: c981a675-2c3f-473c-bacc-abe94925fb61, AgentID: attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e' initialized successfully. Entering main event scheduler loop.
+Agent 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e' has become idle.
+AgentEventStream (ID: 55803dc2-400f-4d4e-868f-e0e69a32ea2e) for 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': close() called. Unsubscribing all listeners and signaling.
+AgentEventStream (ID: 4ae5e9f8-c184-40f5-892c-a6c5cb25ab01) initialized for agent_id 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e'. Subscribed to notifier.
+Published autobyteus agent run 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e'.
+Agent websocket attached for run attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e
+Created agent session 58b84d18-f675-403f-a825-9b70f4b7e031 for run attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e
+Agent WebSocket connected: session=58b84d18-f675-403f-a825-9b70f4b7e031, run=attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e
+AgentExternalEventNotifier (NotifierID: c981a675-2c3f-473c-bacc-abe94925fb61, AgentID: attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c981a675-2c3f-473c-bacc-abe94925fb61, AgentID: attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': UserInputContextBuildingProcessor completed. Final content length: 37
+AgentExternalEventNotifier (NotifierID: c981a675-2c3f-473c-bacc-abe94925fb61, AgentID: attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c981a675-2c3f-473c-bacc-abe94925fb61, AgentID: attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Agent run 'attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+AgentExternalEventNotifier (NotifierID: c981a675-2c3f-473c-bacc-abe94925fb61, AgentID: attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c981a675-2c3f-473c-bacc-abe94925fb61, AgentID: attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: c981a675-2c3f-473c-bacc-abe94925fb61, AgentID: attachment_fixture_worker_1fd76b3d0eea4264b3bb48dcc7b2f47e) emitted agent_status. Kwarg keys for emit: agent_id,payload
+Closed agent session 58b84d18-f675-403f-a825-9b70f4b7e031
+Agent WebSocket disconnected: 58b84d18-f675-403f-a825-9b70f4b7e031

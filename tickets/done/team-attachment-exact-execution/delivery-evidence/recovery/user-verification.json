@@ -1,0 +1,183 @@
+{
+  "checkedAt": "2026-09-27T05:07:42.265881+00:00",
+  "userAcceptance": "Anyways, it's finished. Let's immediately do... yeah, it's finished. Let's finalize and release. And for performance issue, we'll fix this in the future.",
+  "versionApproval": "Yeah, please. Thanks a lot. We need to release it immediately",
+  "approvedVersion": "1.4.88",
+  "health": {
+    "status": "ok",
+    "message": "Server is running"
+  },
+  "migration": [
+    "20260926_team_context_file_execution_locators_v1",
+    "SUCCEEDED_WITH_WARNINGS",
+    3,
+    1790485286025,
+    1790485440870
+  ],
+  "sourceAndTestFingerprints": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "sha256": "ab3575e71b83fff01ea3a4b1c139b83ced3dc21102ee8b62fa210b0e5e9463e0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+      "sha256": "63903836345fd3a3d85fdc069c2265b75886d933a557f5429246d363bd0732cf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.ts",
+      "sha256": "48f61f13f1ff08e53a11c699610edc84994bb65008e48edf426f89447833a498"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+      "sha256": "72a3d522d45e8f98597b4806808324da29ed824a8f7e61090d92b7f8c671f059"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
+      "sha256": "a382040c4469b43bbadbd31cb928c6dd7f2c3c493e720869440d09a99df2635b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/api/rest/context-files.ts",
+      "sha256": "3d0f1ede39a985d16a428386f1b9af4162b411bed71a917fb149741932e2e4a1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts",
+      "sha256": "64727c2979c7728dd5a40a8a0798b0ac3a82888370515e8cad3b072aed06224d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts",
+      "sha256": "36c83b2e01f5ffa055322f4adf5436e05bc0d94a778d1fa181e9ff51d79e6451"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts",
+      "sha256": "73f034752a07d4c36b8c071cccdd9450bf19799a0e4a8f9c8fdfda1eb66c926a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+      "sha256": "342942f9949be72b2091dde92fed3a984eaffaab4c85060c32f0c48d74dd113f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/context-files/services/context-file-current-reference-validator.ts",
+      "sha256": "8597adeaf5168e79b7037aeb9197cec5e9fd4145079f530ce841c467c82af4c8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts",
+      "sha256": "f7fcae8bb7c7ab34619506cb77c510579736f767900beee1d4d03684df5bdab2"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/context-files/services/context-file-record-locators.ts",
+      "sha256": "6413f38cac4048a374fe899d454b6f66d8f1aeeba9ef8719c2a7978daad3498e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/agent-org-run-package-catalog.ts",
+      "sha256": "3cc9dc00f94e8ab7a559d727a7573c6d642cc17f7ce269f7c6e3e1d386f922dd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
+      "sha256": "1f2e2462a62ca73cbcd40e74175ad110af105bcbdaffa289b10788a04faf07fd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts",
+      "sha256": "a5ef2b0d91389876cbb269c934543d01cc473179a46e2a383e6aec0cab875daa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/root-run-package-current-validator.ts",
+      "sha256": "2f79b260ea2e2094db2740275513046d18fd79ca1588d27091185dcb70941a12"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+      "sha256": "c5ffd67561b73d03cd4cdeffae4fe40fa40d439844212901b2bee374c271d9b9"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts",
+      "sha256": "798bc33bfd86db1745a37ff3b23aa3b66c78d337b29de5b944aec7b20c0173c4"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/team-run-package-catalog.ts",
+      "sha256": "09299f879a8eb4823464c5648d627c85b4016c45d83b1170a8353567dc79fbf3"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/server-runtime.ts",
+      "sha256": "bab191c750640b51b6e36f0512c0c3a667638d2238ee5de618b6d5bababd382b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts",
+      "sha256": "84a153ec53adda284506e377a37f99900ee1130aed7c19cfd24b04926b58649f"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/agent-execution/input/agent-run-provider-input-normalizer.test.ts",
+      "sha256": "233daecad6acd62fc2a4e62cedc2ac55a43f8022f1d03c3204c110356b4ccd2d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts",
+      "sha256": "d2450b3b49fcf0d4315c882898f20d58cfb6676553bd6115ef5f536b516a6657"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-execution-tree-location-service.test.ts",
+      "sha256": "ca9c351996b28aaa7779eca5027b5e12a80581d15e1cd7f35aade13cf9e683be"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/agent-org-execution/agent-org-run-manager-lifecycle.test.ts",
+      "sha256": "786e967545ee1ecbd8116311a68d9cb9d218542f984542e7a897a3b48384dc3e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+      "sha256": "b9fce4a8bbdcda475a274f46a80b188243378d87f56983fac75e4fccdccbb159"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts",
+      "sha256": "5bdab75fa63b3fb58108327d98efa05476184136b2aef92a7ec48a15ab14feb6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/context-files/context-file-exact-execution.test.ts",
+      "sha256": "e362cf904b32651f832014f1c525b3bce55d671bf52cc12c9ff416f7de74bb5e"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/context-files/context-file-owner-resolver.test.ts",
+      "sha256": "3f854122b5bb2ef6a17a3622b319a4f24b18fc9ffd3e84855ae7f1236c52dac6"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/run-history/services/agent-run-history-catalog-service.test.ts",
+      "sha256": "6f83938d95e9316fc80c2d6d8838436fbc01124efdd16eaf5a0e613777fd53cd"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts",
+      "sha256": "8aaa67a150c0584de8a79f1821715e4e91b62e5e37cb543a25962faed6715ac1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts",
+      "sha256": "76b093d5409dfd4cb161739d5adb8eeafae5afd4d793e6d79d5b444ea19ef292"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts",
+      "sha256": "5fe0c2ff09da4ef825b60c4a8b5a7967deea63f8a94d1e6fcfab2beeac2bb3b8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/fixtures/current-attachment-package-fixtures.ts",
+      "sha256": "ac89eb7a7027486899719a81ef75cb61603e5336e0235d0098ab6f222e16453b"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts",
+      "sha256": "c8b7eba9b0f48b26e7bb9d92c52e2aa8447c324a49c614c74329260483ad10c8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/api/rest/agent-org-context-files.integration.test.ts",
+      "sha256": "1b5f34341438637f23d85b098d0c80a65412b6dbc8df6deef86bf73543ddc868"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/agent-memory/user-attachment-history.integration.test.ts",
+      "sha256": "7f69059f1f5c5956dd2defb80fd2d838cebabe450a71b2fda2529f5ef3a593e1"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/helpers/context-file-process-fixture.ts",
+      "sha256": "f5041e4235ab875bf949a9f1bb2248d2d702ada0b78277d2bc02733686183ddf"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts",
+      "sha256": "6f9fb54953d8331edae66d698ae29140eef9ebccaceb7cb1af2c3a6e67ea2197"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts",
+      "sha256": "9c7d03cd384e6fcc0f0814f92c0d58544313b517cda9e674659eb5af00250ee6"
+    }
+  ]
+}

@@ -1,0 +1,90 @@
+[
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+    "sha256": "ab3575e71b83fff01ea3a4b1c139b83ced3dc21102ee8b62fa210b0e5e9463e0"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts",
+    "sha256": "63903836345fd3a3d85fdc069c2265b75886d933a557f5429246d363bd0732cf"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.ts",
+    "sha256": "48f61f13f1ff08e53a11c699610edc84994bb65008e48edf426f89447833a498"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts",
+    "sha256": "72a3d522d45e8f98597b4806808324da29ed824a8f7e61090d92b7f8c671f059"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts",
+    "sha256": "a382040c4469b43bbadbd31cb928c6dd7f2c3c493e720869440d09a99df2635b"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/api/rest/context-files.ts",
+    "sha256": "3d0f1ede39a985d16a428386f1b9af4162b411bed71a917fb149741932e2e4a1"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts",
+    "sha256": "64727c2979c7728dd5a40a8a0798b0ac3a82888370515e8cad3b072aed06224d"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts",
+    "sha256": "36c83b2e01f5ffa055322f4adf5436e05bc0d94a778d1fa181e9ff51d79e6451"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts",
+    "sha256": "73f034752a07d4c36b8c071cccdd9450bf19799a0e4a8f9c8fdfda1eb66c926a"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts",
+    "sha256": "342942f9949be72b2091dde92fed3a984eaffaab4c85060c32f0c48d74dd113f"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/context-files/services/context-file-current-reference-validator.ts",
+    "sha256": "8597adeaf5168e79b7037aeb9197cec5e9fd4145079f530ce841c467c82af4c8"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts",
+    "sha256": "f7fcae8bb7c7ab34619506cb77c510579736f767900beee1d4d03684df5bdab2"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/context-files/services/context-file-record-locators.ts",
+    "sha256": "6413f38cac4048a374fe899d454b6f66d8f1aeeba9ef8719c2a7978daad3498e"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/agent-org-run-package-catalog.ts",
+    "sha256": "3cc9dc00f94e8ab7a559d727a7573c6d642cc17f7ce269f7c6e3e1d386f922dd"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
+    "sha256": "1f2e2462a62ca73cbcd40e74175ad110af105bcbdaffa289b10788a04faf07fd"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts",
+    "sha256": "a5ef2b0d91389876cbb269c934543d01cc473179a46e2a383e6aec0cab875daa"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/root-run-package-current-validator.ts",
+    "sha256": "2f79b260ea2e2094db2740275513046d18fd79ca1588d27091185dcb70941a12"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+    "sha256": "c5ffd67561b73d03cd4cdeffae4fe40fa40d439844212901b2bee374c271d9b9"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts",
+    "sha256": "798bc33bfd86db1745a37ff3b23aa3b66c78d337b29de5b944aec7b20c0173c4"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/run-history/services/team-run-package-catalog.ts",
+    "sha256": "09299f879a8eb4823464c5648d627c85b4016c45d83b1170a8353567dc79fbf3"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/server-runtime.ts",
+    "sha256": "bab191c750640b51b6e36f0512c0c3a667638d2238ee5de618b6d5bababd382b"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts",
+    "sha256": "84a153ec53adda284506e377a37f99900ee1130aed7c19cfd24b04926b58649f"
+  }
+]

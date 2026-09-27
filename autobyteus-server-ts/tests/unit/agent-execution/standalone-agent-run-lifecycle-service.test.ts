@@ -10,6 +10,9 @@ import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/a
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
 import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
 
+vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
+  RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
+}));
 const RUN_ID = "standalone-run-1";
 const CLAUDE_SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
