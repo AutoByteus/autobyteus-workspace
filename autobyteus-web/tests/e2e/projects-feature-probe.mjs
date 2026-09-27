@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Isolated browser/API regression for the feature-flagged Projects module: the Projects slice
-// (PROJ-CONCEPT-20260926-001, E2E-001..013) and Project Tasks on the two-pane page
-// (PROJ-TASKS-20260926-001, E2E-014..026). Starts throwaway backend nodes (A, B; C for the released-data
+// (PROJ-CONCEPT-20260926-001, E2E-001..013) and Project Tasks on the full-width Project page board
+// (PROJ-TASKS-20260926-001, E2E-014..029). Starts throwaway backend nodes (A, B; C for the released-data
 // fixture) and a Nuxt dev frontend bound to A, then drives the approved journeys in headless
 // Chromium. Every case records Pass/Fail independently
 // in <output-dir>/result.json; owned processes and the temp root are always cleaned up.
@@ -1644,6 +1644,101 @@ try {
     assert(acceptable(obs.smallWindowColumns), `1000 px window: columns squeezed below 240 px: ${JSON.stringify(obs.smallWindowColumns)}`);
     await small.context.close();
     await api.deleteProject(nodeA, guardProject.projectId);
+  });
+
+  await runCase('E2E-028', 'Width sweep 760–1600 px with the default and the 520 px side panel: columns are always ≥ 240 px side by side or stacked, never squeezed; no horizontal overflow', async obs => {
+    await ensureProjectsEnabled();
+    const sweepProject = await api.createProject(nodeA, 'Width sweep');
+    await api.createTask(nodeA, sweepProject.projectId, 'Sweep task one\nWith a second line');
+    await api.createTask(nodeA, sweepProject.projectId, 'Sweep task two');
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'en-US', timezoneId: 'UTC' });
+    await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+    const target = await context.newPage();
+    await target.goto(`${frontendUrl}/projects/${sweepProject.projectId}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await target.getByTestId('project-task-columns').waitFor({ state: 'visible', timeout: timeoutMs });
+    const measureAt = async width => {
+      await target.setViewportSize({ width, height: 900 });
+      await sleep(150);
+      const columns = await boardColumnBoxes(target);
+      const extra = await target.evaluate(() => ({
+        board: Math.round(document.querySelector('[data-testid="project-task-board"]').getBoundingClientRect().width),
+        panel: Math.round(document.querySelector('[data-test="app-left-panel-shell"]')?.getBoundingClientRect().width ?? 0),
+        docOverflowX: document.documentElement.scrollWidth - document.documentElement.clientWidth,
+      }));
+      return { width, ...extra, sideBySide: columns.sideBySide, stacked: columns.stacked, columnWidths: columns.widths };
+    };
+    const sweep = async () => {
+      const results = [];
+      for (let width = 760; width <= 1600; width += 40) results.push(await measureAt(width));
+      return results;
+    };
+    const violations = results => results.filter(item => item.docOverflowX > 0
+      || !((item.sideBySide && item.columnWidths.every(value => value >= 240)) || item.stacked));
+    const summary = results => results.map(item => `${item.width}:${item.panel}:${item.board}:${item.sideBySide ? `3x${Math.min(...item.columnWidths)}` : 'stacked'}`);
+
+    const defaultResults = await sweep();
+    obs.defaultPanel = summary(defaultResults);
+    const defaultViolations = violations(defaultResults);
+    await target.setViewportSize({ width: 1440, height: 900 });
+    const handle = target.locator('.left-panel-drag-handle');
+    const handleBox = await handle.boundingBox();
+    await target.mouse.move(handleBox.x + handleBox.width / 2, handleBox.y + 200);
+    await target.mouse.down();
+    await target.mouse.move(handleBox.x + 400, handleBox.y + 200, { steps: 8 });
+    await target.mouse.up();
+    await waitFor('panel at its maximum', async () => (await target.evaluate(() => Math.round(document.querySelector('[data-test="app-left-panel-shell"]')?.getBoundingClientRect().width ?? 0))) >= 515);
+    const wideResults = await sweep();
+    obs.widePanel = summary(wideResults);
+    const wideViolations = violations(wideResults);
+    obs.thresholdEvidence = [...defaultResults, ...wideResults].filter(item => item.board >= 700 && item.board <= 800).map(item => `${item.board}px→${item.sideBySide ? 'side-by-side' : 'stacked'}`);
+    await context.close();
+    await api.deleteProject(nodeA, sweepProject.projectId);
+    obs.violations = [...defaultViolations, ...wideViolations];
+    assert(obs.violations.length === 0, `Squeezed or overflowing layouts: ${JSON.stringify(obs.violations)}`);
+    const all = [...obs.defaultPanel, ...obs.widePanel];
+    assert(all.some(item => item.includes('stacked')) && all.some(item => item.includes(':3x')), 'Sweep did not exercise both layouts');
+  });
+
+  await runCase('E2E-029', '"← Projects" works in the error state; the Project description is clamped to 2 lines', async obs => {
+    await ensureProjectsEnabled();
+    const longProject = await api.createProject(nodeA, 'Long description', 'Line one of the description\nLine two of the description\nLine three must be clamped\nLine four must be clamped');
+    const context = await browser.newContext({ viewport: { width: 1440, height: 900 }, locale: 'en-US', timezoneId: 'UTC' });
+    await context.addInitScript(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+    const target = await context.newPage();
+    let failedProjectQueries = 0;
+    await target.route('**/graphql', async route => {
+      let payload = null;
+      try { payload = route.request().postDataJSON(); } catch { /* not JSON */ }
+      if (payload?.operationName === 'GetProject') {
+        failedProjectQueries += 1;
+        await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: null, errors: [{ message: 'Synthetic project load failure' }] }) });
+        return;
+      }
+      await route.continue();
+    });
+    await target.goto(`${frontendUrl}/projects/${longProject.projectId}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await target.getByTestId('project-detail-error').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.errorState = {
+      failedProjectQueries,
+      backVisible: await target.getByTestId('project-back-link').isVisible(),
+      backBox: await target.getByTestId('project-back-link').evaluate(element => { const rect = element.getBoundingClientRect(); const detail = element.closest('[data-testid="project-detail"]').getBoundingClientRect(); return { leftOffset: Math.round(rect.left - detail.left), topOffset: Math.round(rect.top - detail.top) }; }),
+    };
+    assert(obs.errorState.failedProjectQueries > 0 && obs.errorState.backVisible, `Error state without Back: ${JSON.stringify(obs.errorState)}`);
+    assert(obs.errorState.backBox.leftOffset <= 40 && obs.errorState.backBox.topOffset <= 40, `Back is not at the top-left: ${JSON.stringify(obs.errorState.backBox)}`);
+    await target.getByTestId('project-back-link').click();
+    await waitFor('back to the grid from error', async () => new URL(target.url()).pathname === '/projects');
+    await target.getByTestId('projects-grid').waitFor({ state: 'visible', timeout: timeoutMs });
+    await target.unroute('**/graphql');
+    await target.goto(`${frontendUrl}/projects/${longProject.projectId}`, { waitUntil: 'domcontentloaded', timeout: 60000 });
+    await target.getByTestId('project-detail-description').waitFor({ state: 'visible', timeout: timeoutMs });
+    obs.description = await target.getByTestId('project-detail-description').evaluate(element => {
+      const style = getComputedStyle(element);
+      const height = element.getBoundingClientRect().height;
+      return { lines: Math.round(height / parseFloat(style.lineHeight)), clamp: style.webkitLineClamp, fullTextInDom: element.textContent.includes('Line four must be clamped') };
+    });
+    assert(obs.description.lines === 2 && obs.description.fullTextInDom, `Description clamp: ${JSON.stringify(obs.description)}`);
+    await context.close();
+    await api.deleteProject(nodeA, longProject.projectId);
   });
 
   await runCase('E2E-024', 'Released v1.4.86 projects.json on a live node: intact, no open tasks, no rewrite while browsing; first Task write keeps released fields', async obs => {

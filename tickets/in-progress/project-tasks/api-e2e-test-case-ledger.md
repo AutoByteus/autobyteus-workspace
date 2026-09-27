@@ -9,7 +9,7 @@ Package `PROJ-TASKS-20260926-001` — `project-tasks`.
 - Execution coverage report: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/api-e2e-execution-coverage-report.md`
 - API/E2E revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/api-e2e-revision-record.md`
 - Ledger scope and reason it is required: about 35 cases across un-mocked GraphQL e2e and a long-running multi-process browser probe
-- Last updated: 2026-09-26 (round 1 complete)
+- Last updated: 2026-09-27 (round 2 complete)
 
 ## Planned Cases
 
@@ -33,6 +33,9 @@ Package `PROJ-TASKS-20260926-001` — `project-tasks`.
 | E2E-024 | Released file on live node C | AC-010 | Browser + node C | same | 16 | — |
 | E2E-025 | Tasks survive restart | AC-001, REQ-013 | Lifecycle | same | 17 | — |
 | E2E-026 | Mixed-status file: labels, filter, open count | AC-002, AC-007, QR-003 | Browser + node C | same | 18 | Delete count is only observed |
+| R2: E2E-014…027 | Board journeys rewritten by `IR-002` (they replace the round-1 two-pane cases) | AC-001–008, 010–012 (SR-008) | Browser | `pnpm test:e2e:projects` | R2-3 | Reviewed against SR-008 |
+| R2: E2E-028 | Width sweep 760–1600 px, default and 520 px panel | REQ-006, AC-002 | Browser | same | R2-4 | Added in round 2 |
+| R2: E2E-029 | Back in the error state; description 2-line clamp | REQ-016 | Browser | same | R2-5 | Added in round 2 |
 
 ## Execution Events
 
@@ -58,13 +61,20 @@ Package `PROJ-TASKS-20260926-001` — `project-tasks`.
 | 18 | E2E-026 | 2026-09-26 19:50 | Completed | same (node C) | Status as text for all 3 states; per-status filter; "2 open" excludes Done | As expected. Observed (not asserted): the delete message says "2 tasks" for 3 Tasks, the known `openTaskCount` note, unreachable in this ticket. | Pass | same | Note for admission |
 | 19 | E2E-025 | 2026-09-26 19:50 | Completed | same | Real restart: all Projects and Tasks identical; UI list and "2 open" | As expected | Pass | same | — |
 | 20 | E2E-001…026 | 2026-09-26 20:00 | Completed | `corepack pnpm test:e2e:projects --skip-server-build --output-dir=/tmp/ptasks-logs/probe-run{2,3}` | Determinism | 26/26 twice; max update 4.3 / 4.1 ms; painted 24.2 / 17 ms; cleanup complete | Pass | `/tmp/ptasks-logs/probe-run{2,3}/result.json` | — |
+| 21 | R2 repository | 2026-09-27 07:05 | Completed | Server `tests/unit/projects`, graphql, architecture, `tests/e2e/projects`, delegated-task suites (shell `ENABLE_*` set); web Projects, adjacent, delegated-task suites; guards | Unchanged server passes; web passes except the pre-existing failure | Server 45 files / 275 tests pass. Web 1184/1185 (`org-definition-navigation`, pre-existing). Guards pass. | Pass | `/tmp/ptasks-logs/r2/{server,web}.log` | — |
+| 22 | E2E-001…029 | 2026-09-27 07:16 | Completed | `node tests/e2e/projects-feature-probe.mjs --skip-server-build --output-dir=/tmp/ptasks-logs/r2/probe-run1` (server rebuilt after merge `a0fd103af`) | All pass on SR-008 UI | 29/29. Board: To Do 1/In Progress 0/Done 0; no drag, select or status control; "No tasks" ×3; newest first. Card lines none/singular/plural. Full width 1117 = main. "← Projects" plus deep link and not-found Back. Search max 3.2 ms update / 30.8 ms painted, with filtered counts and focus back to search. zh-CN "4 项未完成任务 · 没有工作区". 700 px stacked. 1200/320 panel = 3×260 and a 3-line clamp; 520 panel and 1000 px = stacked. | Pass | `/tmp/ptasks-logs/r2/probe-run1/result.json` | — |
+| 23 | E2E-028 | 2026-09-27 07:16 | Completed | same | Never squeezed at any width | 44 widths (22 per panel setting). Side by side only when board ≥ 773 px (min column 247 px); board 733 px → stacked; 0 violations; no overflow. | Pass | same | — |
+| 24 | E2E-029 | 2026-09-27 07:16 | Completed | same | Back visible, top-left and working in the error state; description 2 lines | Back at (32, 20) px offset, returns to the grid; description 2 lines with the full text in the DOM | Pass | same | — |
+| 25 | E2E-001…029 | 2026-09-27 07:25 | Completed | `corepack pnpm test:e2e:projects --skip-server-build --output-dir=/tmp/ptasks-logs/r2/probe-run{2,3}` | Determinism | 29/29 ×2; search 5.6/16.5 and 3.3/28.1 ms; sweep 0 violations; cleanup complete | Pass | `/tmp/ptasks-logs/r2/probe-run{2,3}/result.json` | — |
 
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: sequence 20 (determinism reruns, Pass)
-- Last completed case and result: all 35 cases pass (API-001…009, E2E-001…026)
+- Last durably recorded event: sequence 25 (round-2 determinism reruns, Pass)
+- Last completed case and result: round 2 complete. API-001…009 and E2E-001…029 all pass.
 - Cases still running, interrupted, or not started: none
-- Next case or recovery action: none; route to `/code_reviewer` for the proportional test-code review
-- Interruption, context-compression, or rerun note: the probe passed on its first full run (run 1), and runs 2 and 3 were identical
-- Reconciled into execution coverage report: `Yes`
+- Next case or recovery action: none; route to `/code_reviewer` for a fresh proportional test-code review
+- Interruption, context-compression, or rerun note:
+  - Round 1 (sequences 1–20) validated the two-pane UI that the user rejected (`DR-001`).
+  - Round 2 (sequences 21–25) validates the `SR-008` UI (`IR-002`).
+- Reconciled into execution coverage report: `Yes` (round 2)
 - Reconciliation note for any case missing a terminal result: none

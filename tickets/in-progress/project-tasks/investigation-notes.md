@@ -171,3 +171,65 @@ Storage decision: embed Tasks in each Project row of `projects.json` (atomic cas
 - Reuse the Projects subsystem, its locked JSON persistence and error conventions.
 - Keep all Project Task API and type names distinct from `TaskDelegation*`.
 - Released `projects.json` must stay readable without a migration unless the design proves one is needed.
+
+
+## UX Analysis For SR-005/SR-006 (2026-09-27)
+
+Trigger: the user rejected the delivered two-pane UI as "super squeezed" and asked the Solution Designer to think deeply about the best UX, validate it, and continue.
+
+### Root cause of "squeezed" (measured)
+
+| Evidence | Value |
+| --- | --- |
+| `autobyteus-web/electron/…` `new BrowserWindow` | default window 1200×800 |
+| `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts:19-20` | app left panel default 320 px (min 260) |
+| delivered `components/projects/ProjectListPane.vue` | project list pane `w-80` = 320 px |
+| delivered `components/projects/ProjectDetail.vue` | right-pane content capped at `max-w-[1100px]` |
+| delivered `components/projects/ProjectTaskRow.vue` | summary `truncate` (single line) |
+
+At the default window, 1200 − 320 − 320 = **~560 px** was left for Tasks, and every row was cut to one line. Two nested navigation columns consumed more than half of the window.
+
+### Validation of the chosen layout
+
+- Full-width Project page: 1200 − 320 = 880 px content; minus ~48 px padding = ~830 px.
+- Three columns with 16 px gaps give ≈ **266 px each**. That is comparable to the Trello standard column width (272 px) and holds about 35 characters per line, so three clamped lines show ~100 characters of a description.
+- With the app menu collapsed to its 50 px strip (`LeftSidebarStrip.vue` `w-[50px]`), columns are ≈ 360 px.
+- Height budget at 800 px: title bar and header (Back, name, 2-line description) plus one combined toolbar row ≈ 200 px, leaving about 550 px for the board. Stacking tabs and toolbar on separate rows would cost about 50 px more; this is why they share one row.
+- Independent column scrolling keeps the header and toolbar visible with 100+ To Do cards (`REQ-014`).
+- Below ~720 px of content width, three columns would drop below ~220 px. At that point columns stack vertically. *(Superseded by the ARCH-REV-002 reconciliation below: minimum column 240 px; three columns need ≥ 752 px of board width.)*
+- Existing conventions reused:
+  - `line-clamp-*` is already used in `ToolCard.vue` and `AgentTeamCard.vue`;
+  - the released grid (`ProjectsList.vue`, `ProjectCard.vue` at `origin/personal@e06080b00`) is restored;
+  - dialogs follow `ProjectDialogFrame`.
+
+### Choices and rationale
+
+1. **Released grid restored** (user direction). It is familiar, and the card count gives progress at a glance.
+2. **Separate full-width Project page with "← Projects"** (user direction). Naming the destination makes Back unambiguous.
+3. **Tabs Tasks | Workspaces (n)**: Tasks are the daily view and workspaces are setup. The count shows workspaces exist without taking space.
+4. **Cards without a status label**: the column already conveys status, so a label would be redundant noise on narrow cards.
+5. **Three-line description clamp**: without titles, the description is the identity, and one truncated line was unreadable.
+6. **Explanatory empty-column copy**: humans cannot move cards (`REQ-003`), so empty In Progress and Done columns must read as intentional, not broken.
+7. **The Task dialog is kept** (built and reviewed). A side drawer was considered for future agent activity, but it is a new pattern in this app (no existing slide-over component). Deferred to the admission ticket.
+8. **An inline quick-add in the To Do column was considered.** Rejected for now: one discoverable "+ New task" in the toolbar plus the empty-state action cover capture without two parallel creation paths.
+
+### Simplification (2026-09-27, user: "Don't make the UI complicated. The UI should stay clean enough.")
+
+Dropped from the SR-006 UX proposal:
+- per-column scrolling (the page scrolls instead);
+- relative updated time on cards;
+- explanatory empty-column copy (now a muted "No tasks");
+- counts on tab labels;
+- combining tabs and toolbar on one row (the board owns its own search + New task row).
+
+The project card merges the open-task count into its released bottom line. The width analysis above still holds: the full-width page gives ≈ 266 px columns at the 1200×800 default.
+
+### ARCH-REV-002 evidence (2026-09-27, SR-008)
+
+| Source | Observation | Implication |
+| --- | --- | --- |
+| `autobyteus-web/utils/layout/responsiveLayoutPolicy.ts:21` `LEFT_PANEL_MAX_WIDTH_PX = 520`; `composables/useLeftPanel.ts:31` clamp | The user can widen the app left panel to 520 px | At 1200 px the board gets ~580 px, so viewport breakpoints would keep three columns at ~190 px |
+| Electron `new BrowserWindow` has no `minWidth` | The window can be made small while the viewport stays at or above `md` | Same squeeze |
+| `components/settings/providerApiKey/GeminiConfigurationOptionCard.vue:224` `@container (min-width: 400px)` | Plain-CSS container queries are already used; no Tailwind container plugin in `tailwind.config.js`/`package.json` | The board switches on its own width via a scoped `@container` |
+
+Reconciliation: the earlier estimate of "~720 px content / ~220 px columns" is replaced by a single rule. The minimum column is **240 px**, so three columns need ≥ 752 px of board width (3 × 240 + 2 × 16); below that the columns stack.

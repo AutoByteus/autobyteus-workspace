@@ -1,65 +1,85 @@
 # Implementation Handoff
 
-Package `PROJ-TASKS-20260926-001` — `project-tasks` (description-only Project Tasks, two-pane Projects page).
-Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks`, branch `codex/project-tasks`, base `origin/personal@e06080b00`, finalization target `origin/personal`.
-Commits: `8d3de39a6` (server), `e8fca7771` (web). Review diff: `git diff e06080b00..e8fca7771`.
+Package `PROJ-TASKS-20260926-001` — `project-tasks` (description-only Project Tasks; released Projects grid, full-width Project page, three-column Task board).
+Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks`, branch `codex/project-tasks`, base `origin/personal@e06080b00`. The current head includes delivery's merge `a0fd103af` of `origin/personal@fa5919da1`. Finalization target: `origin/personal`.
+
+Commits:
+- `8d3de39a6`: server (SR-004), unchanged.
+- `e8fca7771`: IR-001 two-pane web UI, rejected and superseded.
+- `ae0cd4755`: IR-002 web UI (SR-008).
+
+Review diffs:
+- The IR-002 delta alone: `git show ae0cd4755`.
+- The cumulative package against base: `git diff e06080b00..ae0cd4755 -- autobyteus-server-ts/src autobyteus-server-ts/tests autobyteus-web`. This also contains unrelated `origin/personal` changes from delivery's merge.
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: independent architecture review selected (Medium/High); `ARCH-REV-001` Pass → `/implementation_engineer`.
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/requirements-doc.md` (Approved, `SR-003`, `APPROVAL-PROJ-TASKS-20260926-001`)
-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/investigation-notes.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/solution-revision-record.md`
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/design-spec.md` (`SR-004`)
-- Supplemental task artifacts: none that define behavior; released predecessor `tickets/done/projects-concept-introduction/` is context only.
-- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/design-review-report.md` (`ARCH-REV-001`, Pass)
+- Upstream review applicability and handoff-rule result: independent architecture review selected (Medium/High); `ARCH-REV-003` Pass → `/implementation_engineer`.
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/requirements-doc.md` (SR-008 basis, `APPROVAL-PROJ-TASKS-20260927-002`)
+- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/investigation-notes.md` (UX analysis and the width evidence from L227)
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/solution-revision-record.md` (SR-001 to SR-008)
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/design-spec.md` (SR-008)
+- Supplemental task artifacts: none that define behavior.
+- Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/design-review-report.md` (`ARCH-REV-003`, Pass)
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/architecture-review-revision-record.md`
-- Architecture-review handoff context: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/handoff-to-architecture-review-sr-004.md`
-- Triggering rework report: N/A (initial).
+- Architecture-review handoff context: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/handoff-to-architecture-review-sr-008.md`
+- Prior downstream artifacts, for context on the superseded IR-001 web UI:
+  - `code-review-report.md` (CRR-001 and CRR-002);
+  - `api-e2e-*.md` (API-REV-001);
+  - `delivery-revision-record.md` (DR-001, rejected by the user; must not be finalized).
+- Triggering rework evidence: user verification rejection of DR-001 ("super squeezed") → SR-005 to SR-008 → `ARCH-REV-003` Pass.
 
 ## Current Implementation Summary
 
-Server:
-- Tasks are embedded in each Project row (`tasks: ProjectTask[]`).
-- `ProjectStore` projects a row without `tasks` to `[]` and filters invalid Tasks. There is no migration, and a read never rewrites the file.
-- New `ProjectTaskService` (list, create, edit description, delete) writes only `Project.tasks` through its own locked updater. It never touches the Project's fields or `updatedAt`, and has no status mutation.
-- `ProjectService.toView` omits `tasks` explicitly and computes `openTaskCount`. `deleteProject` is unchanged; Tasks go with the record atomically.
-- Additive GraphQL: `ProjectTask`, `ProjectTaskStatus`, `projectTasks`, `createProjectTask`, `updateProjectTask`, `deleteProjectTask`, and `Project.openTaskCount`.
+Server (SR-004, unchanged since `8d3de39a6`):
+- Tasks are embedded in each Project row; a row without `tasks` reads as `[]`, with no migration.
+- `ProjectTaskService` handles list, create, edit-description and delete, and never touches the Project's fields or `updatedAt`. There is no status mutation.
+- `Project.openTaskCount` is exposed, and deleting a Project removes its Tasks atomically.
+- Additive GraphQL: `ProjectTask`, `ProjectTaskStatus`, `projectTasks`, and the create/update/delete mutations.
 
-Web:
-- `pages/projects.vue` is the parent route: `ProjectListPane` plus `<NuxtPage>`. Its children are the select prompt (`index.vue`) and `ProjectDetail` (`[id].vue`).
-- `ProjectDetail` has a header (name, description, small Edit/Delete) and accessible tabs: Tasks by default, Workspaces via `?tab=workspaces`.
-- The Workspaces section moved unchanged into `ProjectWorkspacesPanel`, keeping its test ids.
-- New components:
-  - `ProjectTasksPanel`: search, status filter (All/To Do/In Progress/Done), New task, and loading/error/empty/no-match states.
-  - `ProjectTaskRow`: status text, first-line summary, localized relative time.
-  - `ProjectTaskDialog`: create, view, edit and confirm-delete modes in one `ProjectDialogFrame`.
-- New `projectTaskStore`; `projectStore` gains `setOpenTaskCount`.
-- The delete confirmation states the Task count.
-- `ProjectsList`, `ProjectCard` and their spec and catalogue keys are removed.
-- en and zh-CN strings added.
+Web (IR-002, SR-008):
+- **Grid (`/projects`):** the released v1.4.86 grid (`ProjectsList`, `ProjectCard`) is restored from `e06080b00`. Each card's bottom line reads "N open tasks · N workspaces", for example "4 open tasks · 2 workspaces", "1 open task · No workspaces" or "No open tasks · 1 workspace".
+- **Project page (`/projects/<id>`):**
+  - full width, with padding only and no `max-w`;
+  - "← Projects" at the top-left, with accessible name "Back to projects";
+  - an `h1` name, a `line-clamp-2` description, and Edit and Delete (the delete confirmation still states the Task count from `openTaskCount`);
+  - Tasks (default) and Workspaces tabs via `?tab=workspaces`;
+  - not-found and error states keep "← Projects".
+- **`ProjectTaskBoard`:**
+  - a search + "New task" row;
+  - three columns in order, To Do, In Progress and Done, each headed "Label count" with the count after search, cards newest-updated first;
+  - an empty column shows a muted "No tasks";
+  - when search matches nothing, one no-match message with "Clear search" replaces the columns;
+  - the page scrolls; there is no per-column scroll;
+  - the board owns the dialog state.
+- **Layout rule:**
+  - The board root is the CSS container (`container-type: inline-size; container-name: project-task-board`), and the column grid is its child.
+  - The grid defaults to one column. A scoped `@container project-task-board (min-width: 752px)` rule switches it to `repeat(3, minmax(0, 1fr))`.
+  - There is no viewport breakpoint for this switch.
+- **`ProjectTaskCard`:** a `<button>` showing only the description (`line-clamp-3 whitespace-pre-line break-words`), with its accessible name from `taskSummary`. It has no status label, timestamp, icon or drag.
+- **Unchanged:** `ProjectTaskDialog`, `ProjectWorkspacesPanel`, `projectTaskStore`, `projectStore`.
 
 Cycle and revision references:
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (upstream redesign after user rejection)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-003`, `SR-004`
-- Related architecture-review revision IDs: `ARCH-REV-001`
-- Related code-review revision IDs: `CRR-001` — Pass (round 1, `code-review-report.md`, no findings; informational, no action; optional polish noted: unused `deleted` emit in `ProjectTaskDialog`, browser-locale Task dates)
-- Related API/E2E and delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Current implementation revision ID: `IR-002` (baseline `IR-001`)
+- Related solution revision IDs: `SR-004` (server), `SR-005`–`SR-008` (web)
+- Related architecture-review revision IDs: `ARCH-REV-002`, `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001`, `CRR-002` (on the superseded web UI)
+- Related API/E2E revision IDs: `API-REV-001` (on the superseded web UI)
+- Related delivery revision IDs: `DR-001` (rejected; must not be finalized)
+- Triggering finding IDs: N/A (user verification rejection)
 
 ## Routing Classification (Mandatory)
 
 - Task size: `Medium`
 - Architecture risk: `High`
-- Design classification section / evidence reference: design-spec › Task Size And Architectural Risk
+- Design classification section / evidence reference: design-spec › Task Size And Architectural Risk (SR-008)
 - Classification confirmed or changed: `Confirmed`
-- Evidence: the work stays inside the Projects subsystem: 54 files in `git diff --stat e06080b00..HEAD`, about half of them specs. It changes the released persisted shape additively (`tasks`), the GraphQL contract additively, and the released Projects UI. No escalation trigger was hit:
-  - no migration or rewrite of existing rows;
-  - no delegated-task code touched;
-  - no status mutation;
-  - 150-Task client filtering stays well under the limit.
+- Evidence: the IR-002 delta is web-only (24 paths in `ae0cd4755`: restore, remove, rework, specs and probe). The package as a whole still changes the persisted shape and the GraphQL contract additively, and changes the released UI. No escalation trigger was hit:
+  - no server, storage or GraphQL change;
+  - no per-column scroll or drag;
+  - no new shared layout component.
 - Selected route: `Code Review`
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
 - New design impact or escalation trigger: `None`
@@ -68,179 +88,145 @@ Cycle and revision references:
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-006 / BEH-001 (DS-001) | Create, edit description, delete Tasks | `ProjectTaskDialog` → `projectTaskStore.createTask/updateTaskDescription/deleteTask` → `project-tasks.ts` resolver → `ProjectTaskService` (trim/required description, `project_task_<uuid>`, `TODO`, timestamps, inside the locked updater) → `ProjectStore.updateRecords` | Empty description → `TASK_DESCRIPTION_REQUIRED` (client check + server), missing Task → `TASK_NOT_FOUND`. After each write the store applies the change to the loaded list (fetching it first if needed) and pushes `openTaskCount` via `projectStore.setOpenTaskCount`. |
-| BEH-001 (DS-002, DS-005) | List with status text, summary, relative time; newest first; search; status filter | `ProjectTasksPanel` → `projectTaskStore.fetchTasks` → `projectTasks` → `ProjectTaskService.listTasks` (sorted `updatedAt` desc, `taskId`) | Client-side search (full description, case-insensitive) and filter; no-match with "Clear search and filter"; 150-Task filter spec. There is no status control anywhere; specs assert rows have a single button and no select or input. |
-| BEH-002 (DS-003) | Project delete removes its Tasks; the confirmation states the count | `ProjectDetail.confirmDelete` → `projectStore.deleteProject` → `ProjectService.deleteProject` (record filter; Tasks embedded) → `projectTaskStore.forget` → `/projects` | The count comes from `openTaskCount`, with a code comment that it equals the total only while no status mutation exists (review note 1). This is correct when landing directly on `?tab=workspaces` (verified live). Server cascade test: other Projects' Tasks are untouched. |
-| BEH-003 | Same flag hides Tasks | Existing `/projects*` route gate and nav filter | Unchanged; probe E2E-001, -002 and -009 pass on the new layout. |
-| BEH-004 (DS-004) | Two-pane page; one-click switching; open counts; deep links | `pages/projects.vue` (`ProjectListPane` + `<NuxtPage>`), `ProjectListItem` (`NuxtLink`, `aria-current`, "N open" text) | Live checks: the pane is the same DOM node across a Project switch and a `?tab=` change; a tab change triggers no Project reload; a cached Project shows without a loading flash. `/projects` shows the select prompt; an unknown id shows the not-found state in the right pane. |
-| BEH-005 | Delegated tasks unchanged and separate | No delegated-task files changed; `ProjectTask*` names only | The architecture test forbids imports between `projects/**` and `agent-collaboration`/`agent-team-execution`/`agent-execution`/`agent-org-execution`. The schema test asserts no bare `Task`/`TaskStatus` types. |
-| AC-010 (REQ-013) | Released rows directly usable | `ProjectStore.normalizeRecords` | Released-row fixture: Project and links intact, `openTaskCount` 0, file not rewritten by reads. |
+| BEH-004 / REQ-016, AC-011 (DS-004) | Released grid; card opens a full-width Project page; "← Projects" returns; deep link works | `pages/projects/index.vue` → `ProjectsList` → `ProjectCard` (NuxtLink) → `pages/projects/[id].vue` → `ProjectDetail` → "← Projects" NuxtLink | Restored from `e06080b00`, with no nested route. Probe E2E-020: grid → page → Back without a reload, and the page width equals the main content width (1117 px at 1440). Deep link opens Tasks; unknown id → not-found with Back. |
+| BEH-004 / REQ-009, AC-007 | Card shows open Tasks as text | `ProjectCard` (`openTaskCount`, `workspaces.length`, `ProjectCard.counts` key) | Spec covers the plural, singular and none forms. Probe E2E-018 shows "4 open tasks · No workspaces", "1 open task · 1 workspace" and "No open tasks · No workspaces". |
+| BEH-001 / REQ-006, AC-002 (DS-002) | Three-column board, description-only cards, counts, newest first, no drag or move | `ProjectDetail` (Tasks tab) → `ProjectTaskBoard` → `projectTaskStore.fetchTasks` → grouped `{ TODO, IN_PROGRESS, DONE }` → `ProjectTaskCard` | Spec plus probe E2E-014 and E2E-026 (one card per column from a mixed-status file). No select, draggable element or inner control on the board. |
+| BEH-001 / REQ-006 layout (AR-001) | Columns side by side only when each can be at least 240 px; otherwise stacked | `ProjectTaskBoard` scoped CSS: container on the board root; `@container project-task-board (min-width: 752px)` | Probe E2E-027 in the real shell: at 1200×800 with the default 320 px panel, the columns are 260/260/260 px side by side, and a 4-line card shows 3 lines. With the 520 px panel dragged, and in a 1000×800 window, the columns stack. E2E-023 at 700 px: stacked. |
+| BEH-001 / REQ-007, AC-005 (DS-005) | Search across all columns; filtered counts; one no-match state with Clear | `ProjectTaskBoard` computed `matchingTasks` → `columns` | Probe E2E-016 with 120 Tasks: max painted 32.6 ms; counts "To Do 12 / In Progress 0 / Done 0"; Clear search restores 120 and focuses search. |
+| BEH-001 / REQ-005, AC-001, AC-003, AC-004 (DS-001) | Create, view, edit and delete through the dialog | `ProjectTaskCard` click → `ProjectTaskDialog` (unchanged) | Probe E2E-014, E2E-015 and E2E-021 (keyboard: create with Ctrl/⌘+Enter, card focus return, delete confirmation, tabs, Back by keyboard). |
+| BEH-002 / REQ-008, AC-006 | Delete count from `openTaskCount` | Unchanged (`ProjectDetail`) | Probe E2E-017: "5 tasks" on both tabs; cascade; workspaces untouched. |
+| BEH-003, BEH-005, BEH-006, AC-008–AC-010 | Unchanged | Server + gate unchanged | Probe E2E-019, E2E-024 (v1.4.86 row now reads "No open tasks · 1 workspace"; the first write keeps released fields) and E2E-025. |
+| REQ-015, AC-012 | en + zh-CN; keyboard | `localization/messages/{en,zh-CN}/projects.ts` | Guards pass; probe E2E-022 checks the zh-CN board, columns, card line "4 项未完成任务 · 没有工作区" and the Back label, with no raw keys or English strings. |
 
 ## Key Files Or Areas
 
-- Server:
-  - `src/projects/services/project-task-service.ts` (new)
-  - `src/projects/stores/project-store.ts`
-  - `src/projects/services/project-service.ts`
-  - `src/projects/domain/{models,project-errors}.ts`
-  - `src/api/graphql/types/{project-tasks,projects}.ts`
-  - `src/api/graphql/schema.ts`
-- Web routing:
-  - `pages/projects.vue`
-  - `pages/projects/{index,[id]}.vue`
-- Web components (all in `components/projects/`):
-  - `ProjectListPane.vue`, `ProjectListItem.vue`
-  - `ProjectDetail.vue`
-  - `ProjectTasksPanel.vue`, `ProjectTaskRow.vue`, `ProjectTaskDialog.vue`
-  - `ProjectWorkspacesPanel.vue`
-- Web stores:
-  - `stores/projectTaskStore.ts` (new)
-  - `stores/projectStore.ts` (`setOpenTaskCount`; `fetchProject` no longer sets the list's `loading`/`error`)
-- Web utils (all in `utils/projects/`):
-  - `taskSummary.ts`, `relativeTime.ts`, `taskStatusLabelKey.ts`
-  - `projectRequestError.ts` (moved out of `projectStore`)
-- Web types, catalogues and generated code:
-  - `types/project.ts`
+- New:
+  - `components/projects/ProjectTaskBoard.vue` (with the scoped container-query CSS)
+  - `components/projects/ProjectTaskCard.vue`
+  - `__tests__/ProjectTaskBoard.spec.ts`
+  - `__tests__/ProjectTaskCard.spec.ts`
+- Restored from `e06080b00`:
+  - `pages/projects/index.vue`, `pages/projects/[id].vue`
+  - `components/projects/ProjectsList.vue`
+  - `components/projects/ProjectCard.vue` (bottom line changed)
+  - `__tests__/ProjectsList.spec.ts` (count-line assertions added)
+- Reworked:
+  - `components/projects/ProjectDetail.vue` and its spec
   - `localization/messages/{en,zh-CN}/projects.ts`
-  - `generated/graphql.ts` (Projects-Tasks delta only: +221/−8, where the 8 removed lines are the Project fragment types that now include `openTaskCount`)
-- Web tests: `tests/e2e/projects-feature-probe.mjs`
+  - `localization/messages/__tests__/projectsCatalog.spec.ts`
+  - `tests/e2e/projects-feature-probe.mjs`
+- Removed:
+  - `pages/projects.vue`
+  - `ProjectListPane.vue`, `ProjectListItem.vue`, `ProjectTasksPanel.vue`, `ProjectTaskRow.vue`, and their specs
+  - `utils/projects/relativeTime.ts` and its spec
+  - the stale strings
 
 ## Important Assumptions
 
-- Review notes and how they are handled:
-  1. **Delete count.** The count uses `openTaskCount`, with a comment that the Task-admission work must revisit it.
-  2. **Shared list state.** `fetchProject` now leaves the list's `loading`/`error` alone; `ProjectDetail` owns its load state. The list pane also keeps the "only while no Projects are listed" rule. Specs cover both.
-  3. **Orphaned copy.** The `ProjectsList`/`ProjectCard`/`backToProjects` catalogue keys and the `docs/projects.md` references are removed. A catalog spec asserts they are gone, and both guards pass.
-  4. **Nested route.** Nav active-state, the mobile gate and the route gate were verified: probe E2E-001, -002, -009 and -013, plus a live check. The parent key is stable. `?tab=` doesn't re-run `load`.
-  5. **`toView` and `updatedAt`.** `toView` omits `tasks` explicitly. Task writes use their own updater, and a test asserts the Project's fields and `updatedAt` are unchanged.
-  6. **E2E probe.** The released cases are adapted, not deleted:
-     - card clicks became list-item clicks;
-     - the Back link became one-click list switching;
-     - workspace operations open `?tab=workspaces`;
-     - the keyboard journey switches tabs with the arrow keys.
-     E2E-008's "no Task wording" assertion is replaced by a "no raw translation keys" check, because `REQ-011` supersedes released `REQ-014`/`AC-012`.
-- Implementation choices within the design:
-  - **Task delete dialog.** Task delete confirmation is a mode inside `ProjectDialogFrame`, not `ConfirmationModal`. That modal lacks a focus trap, which `AC-012`/`QR-003` require; the same frame was accepted in the released package.
-  - **Localized time.** Relative time uses a new localized util (`projects.time.*`), because the existing formatters are English-only.
-  - **Status labels.** Status labels come from a static key map, which the strict literal audit requires.
-  - **Create Project.** Creating a Project now selects it (`/projects/<new id>`), which is natural in the two-pane layout.
-  - **Cached Project.** A cached Project renders immediately while it refreshes in the background.
-  - **Save shortcut.** Ctrl/⌘+Enter saves in the Task dialog.
-  - **Error helper.** `ProjectRequestError` and the GraphQL error mapping moved from `projectStore` to `utils/projects/projectRequestError.ts` so both stores share them. Importers were updated; there is no re-export.
+- The Back control's visible text is "Projects" with an arrow icon (the design's "← Projects"), and its accessible name is "Back to projects" / "返回项目列表".
+- The "N open tasks · N workspaces" line is one translation key (`ProjectCard.counts`), so the `·` separator is not a raw template literal (the strict audit requires this).
+- The released `ProjectsList` description strings ("Group related workspaces…") are restored verbatim, as the design says to change only what it specifies.
+- `ProjectDetail` gets the Back link in every state and makes the name an `h1` again, since the page is standalone.
+- The cached Project still renders at once from the grid's store while it refreshes (carried from IR-001).
+- `relativeTime.ts` is removed, because cards show no timestamp and nothing else used it.
+- In the zh-CN probe, the English-string list includes "workspace" and "No tasks".
 
 ## Known Risks
 
-- Single-file write amplification and lock contention will matter once agents update status often. This is deferred to Task admission with the design's trigger.
-- There is no description length limit, as approved.
-- Binding-revision request sequencing is now duplicated in two stores (review note 5); extract it if a third copy appears.
-- The narrow stacked layout (below `md`) was not visually inspected, because the browser tool can't resize the viewport. It uses the same `flex-col md:flex-row` pattern as Settings. The probe's 1024px case passes.
-- The full `docs/projects.md` and server `docs/modules/projects.md` sync is delivery's step 10. The web doc's scope paragraph still says "no Task concept".
+- **Stale docs:** delivery's uncommitted docs-sync edits in the worktree still describe the rejected two-pane UI: `autobyteus-web/docs/projects.md`, `autobyteus-web/AGENTS.md` and `autobyteus-server-ts/docs/modules/projects.md`. They are not part of `ae0cd4755` and must be redone in delivery's docs sync (design step 7).
+- **Long boards:** page scroll with many To Do cards scrolls the toolbar away (accepted by the user).
+- **Delete count:** it relies on `openTaskCount`, which equals the total Task count only while no Task can be Done. The Task-admission work must revisit it.
+- **Headless icons:** icons render from the iconify CDN. In the headless probe, some screenshots show missing icons (environmental; the rendered dev app shows them).
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Feature` + `Behavior Change` (released Projects UI)
-- Reviewed root-cause classification: `No Design Issue Found`
-- Reviewed refactor decision: `No Refactor Needed` (server ownership); the web page structure was replaced as approved behavior.
+- Reviewed change posture: `Behavior Change` (approved UI revised after user verification)
+- Reviewed root-cause classification: `No Design Issue Found` in ownership (the problem was a layout decision)
+- Reviewed refactor decision: `No Refactor Needed`
 - Implementation matched the reviewed assessment: `Yes`
 - If challenged, routed as `Design Impact`: `N/A`
-- Evidence / notes: one locked store path serves both services; `ProjectTaskService` owns only Task invariants.
+- Evidence / notes: store, service and dialog ownership are unchanged. The board replaces the panel as a consumer of `projectTaskStore`.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: `None`. There is no redirect and no compatibility re-export.
+- Backward-compatibility mechanisms introduced: `None`. There is no two-pane toggle, no list-view alternative and no redirect.
 - Legacy old-behavior retained in scope: `No`
-- Dead or obsolete code removed in scope: `Yes`:
-  - `ProjectsList.vue`, `ProjectCard.vue` and `ProjectsList.spec.ts`;
-  - the Back link;
-  - the released "no task text" assertions;
-  - orphaned catalogue keys.
-- Shared structures remain tight: `Yes`. The stored Task has no `projectId`, summary or title. `ProjectView` excludes `tasks`.
-- Canonical shared design guidance reapplied: `Yes`
-- Changed source files within size guardrails: `Yes`. The largest is `ProjectDetail.vue` at 245 effective lines.
+- Dead or obsolete code removed in scope: `Yes`. The two-pane route and components, the panel, row, status filter, relative-time util and their strings and specs are gone.
+- Shared structures remain tight: `Yes`. There are no model changes; the board's grouping is local computed state.
+- Changed source files within size guardrails: `Yes` (`ProjectDetail.vue` 278 lines, `ProjectTaskBoard.vue` 188 lines).
 
 ## Persisted Data Transition Check
 
-- Approved decision: `Directly Usable — No Migration`
-- Design-spec decision reference: design-spec › Persisted Data / State Transition Decision
-- Implementation follows the decision without migration or version-specific fallback: `Yes`. Absence of `tasks` normalizes to `[]` in the generic reader.
-- Direct-use evidence: the released-row fixture test. The v1.4.86 row reads correctly, and reads don't rewrite the file. The first write persists `tasks`.
+- Approved decision: `Directly Usable — No Migration` (unchanged from SR-004; IR-002 makes no persistence change)
+- Implementation follows it: `Yes`
+- Evidence: probe E2E-024 on the v1.4.86 file.
 - Deviation: `None`
 
 ## Environment Or Dependency Notes
 
-- The fresh worktree needed several setup steps before tests ran:
-  - `pnpm install`;
-  - builds of `autobyteus-ts` and the three application SDK packages (untracked `dist/`, not committed);
-  - `prisma generate` and `nuxt prepare`.
-- The shell environment sets `ENABLE_PROJECTS=true` and other `ENABLE_*` variables. The released server e2e test (`tests/e2e/projects`) fails API-001 unless they are unset, on base as well. It passes with `env -u ENABLE_PROJECTS -u ENABLE_APPLICATIONS -u ENABLE_SKILL_IMPROVEMENT -u ENABLE_SELF_EVOLUTION`.
-- The probe output directory `autobyteus-web/test-results/` is untracked and not committed.
+- The worktree needed `npx nuxt prepare` after delivery's merge. `vue-tsc` now reports about 6850 errors globally, none of them in Projects files. It needs `NODE_OPTIONS=--max-old-space-size=8192` to finish.
+- The shell environment sets the `ENABLE_*` flags. The probe scrubs them for its child processes.
+- `autobyteus-web/test-results/` (probe output) and the SDK `dist/` folders are untracked and not committed.
 
 ## Local Implementation Checks Run
 
-Server:
-- `tests/unit/projects/**`, `tests/unit/api/graphql/{types/projects,projects-schema,project-tasks-schema}.test.ts`, `tests/architecture/projects-boundaries.test.ts` and `tests/unit/services/server-settings-service.test.ts` pass (8 files).
-- The released `tests/e2e/projects` passes, with the `ENABLE_*` variables scrubbed.
-- `tsc -p tsconfig.build.json` shows no errors in the Projects files.
-
-Web:
-- `components/projects` (7 files, 52 tests), `stores/__tests__/{projectStore,projectTaskStore}.spec.ts` and `utils/projects` all pass.
-- Adjacent suites pass: middleware, composables, utils, localization, layout, settings, stores and pages. The only failures are the pre-existing files below.
-- Full suite: 3208 passed, 13 failed in 6 files. The same 6 files and 13 tests fail on base `e06080b00`:
-  - `agentTeamRunStore`
+- Web Projects specs pass:
+  - `ProjectDetail` (13), `ProjectsList` (6), `ProjectTaskBoard` (8) and `ProjectTaskCard` (2);
+  - `ProjectTaskDialog`, `ProjectFormDialog` and the two `ProjectWorkspaceLinkDialog` specs;
+  - the store specs, `utils/projects` and the catalog specs.
+- Full web suite: 3213 passed, 5 failed in 5 files. The same 5 fail at `a0fd103af` with these changes stashed:
   - `WorkspaceAgentRunsTreePanel.regressions`
-  - `org-definition-navigation`
-  - `workspace-history-draft-send`
-  - the font-size audit
   - `StartupDelayLifecycle`
+  - `org-definition-navigation`
+  - the font-size audit
+  - `workspace-history-draft-send`
 - `guard:localization-boundary` and `audit:localization-literals` pass.
-- `vue-tsc` shows no errors in changed files (393 total on base).
+- `vue-tsc` shows no errors in `components/projects`, `pages/projects`, `utils/projects` or the Projects catalogues.
+- The server is unchanged, so server tests were not re-run in this round (they passed at IR-001 and in API-REV-001).
 
 ## Frontend Rendered-Result Check
 
-- Affected surfaces and journeys:
-  - the Projects page, list pane and select prompt;
-  - Project detail with tabs;
-  - the Tasks list, search, filter and no-match;
-  - the Task dialog in create, view, edit and validation;
-  - the Project delete count;
-  - the Workspaces tab;
+- Affected surfaces:
+  - Projects grid;
+  - Project page (Back, header, tabs);
+  - Task board (columns, cards, empty, no-match);
+  - Task dialog opened from cards;
+  - narrow and widened-panel layouts;
   - zh-CN.
-- References: requirements UI section, `REQ-016`, design `DS-001`–`DS-005`, Concrete Examples.
-- Existing surfaces reviewed: `pages/settings.vue` two-pane pattern, the released Projects components, `ProjectDialogFrame`.
-- Surface used: `pnpm dev` in the worktree (isolated `.autobyteus/development`, ports 8000/3000), driven through the browser tool, then stopped. Additionally, the adapted Playwright probe ran with its own isolated nodes and frontend: 13/13 Pass.
+- References: SR-008 design (Ownership Map, Concrete Examples, Layout rule), requirements `REQ-006` and `REQ-016`, AC-002 width guards.
+- Surface used: the adapted Playwright probe against real isolated nodes and the real app shell (`pnpm dev` frontend), 26/26 Pass. I viewed the screenshots directly:
+  - `E2E-027-1200-default-panel.png`: three even columns, 3-line clamp;
+  - `E2E-027-1200-panel-520.png`: stacked, no squeeze;
+  - `E2E-018-pass.png`: grid with the count lines;
+  - `E2E-023-narrow-stacked.png`.
 - States inspected:
-  - no-selection prompt;
-  - list with counts ("4 open", "0 open") and selection highlight;
-  - Tasks list with status labels, summaries and relative times;
-  - empty Project;
-  - search by description and by a later line;
-  - status filter no-match and clear;
-  - view dialog with the full multi-line description (initial focus on Edit);
-  - edit (focus in the textarea), Cancel back to view;
-  - New task empty validation, then create; the count went to "5 open" live;
-  - direct landing on `?tab=workspaces` with delete message "…and its 5 tasks?";
-  - zh-CN list, tabs, status labels and times.
-- Issues found: none requiring changes.
+  - empty board ("No tasks" ×3);
+  - populated To Do with filtered counts;
+  - search no-match and Clear;
+  - cards clamped to 3 lines;
+  - Back navigation;
+  - not-found with Back;
+  - zh-CN board;
+  - keyboard journey (probe E2E-021).
+- Issues found and fixed: none remaining. During spec work, the translation key for the separator line was added so the strict audit passes.
 - Limitations:
-  - The narrow stacked layout wasn't rendered live.
-  - Interactions were driven by script rather than a real keyboard; the probe's keyboard journey E2E-007 covers the released flows on the new layout, but not Task-dialog keyboard flows beyond the specs.
+  - Visual checks came from probe screenshots rather than a hand-driven session this round.
+  - Icons were missing in some headless screenshots (CDN), which doesn't affect layout.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- AC-001: create a Task from a multi-line description; it shows To Do with the first-line summary; it survives reload and restart; an empty description is rejected.
-- AC-002: status text, newest first, no status control; empty-Project state.
-- AC-003 and AC-004: edit (Cancel discards) and delete with confirmation.
-- AC-005: 100+ Tasks, search "release", clear; no-match.
-- AC-006: delete a Project with 5 Tasks; the confirmation says 5, including after landing on `?tab=workspaces`; `workspaces.json` is unchanged.
-- AC-007: the list pane shows "4 open"; a Project without Tasks shows "0 open".
-- AC-008: flag off, then on; the same Tasks come back.
-- AC-009: run a team with delegated tasks; no crossover.
-- AC-010: released v1.4.86 `projects.json` fixture (no `tasks`) is intact.
-- AC-011: one-click switching keeps the pane; deep link; unknown id shows not-found.
-- AC-012: zh-CN and a keyboard-only Task journey (dialog modes, tabs with arrow keys).
+- These have executable coverage in the updated probe (E2E-001 to E2E-027), and API/E2E should re-run it:
+  - grid → page → Back;
+  - card count line variants;
+  - board columns, counts and search;
+  - width guards at 1200 px (default and 520 px panel), 1000 px and 700 px;
+  - zh-CN;
+  - keyboard;
+  - released-data fixture;
+  - mixed-status columns.
+- Suggested extra: a visual comparison of `/projects` against v1.4.86 (AC-011 "visual comparison").
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-- New Task browser cases in `tests/e2e/projects-feature-probe.mjs` (design step 9) are owned by `api_e2e_engineer`: create, view, edit, delete, search, filter, the delete count, the 100-Task timing and the released-data fixture. The released cases are already adapted and pass 13/13.
-- Server API e2e for the Task operations and the cascade.
-- Docs sync (design step 10) is owned by delivery.
+- API/E2E re-validation of the IR-002 web UI and the updated probe. The server API e2e from API-REV-001 still applies unchanged.
+- Delivery: redo the docs sync for the SR-008 UI (design step 7), replacing the uncommitted two-pane doc edits. DR-001 must not be finalized.

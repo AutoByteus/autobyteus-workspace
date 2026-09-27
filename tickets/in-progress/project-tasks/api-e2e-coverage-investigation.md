@@ -17,12 +17,100 @@ Package `PROJ-TASKS-20260926-001` — `project-tasks` (description-only Project 
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/api-e2e-revision-record.md` (created after the first completed result)
-- Current API/E2E Revision ID: `API-REV-001`
+- Current API/E2E Revision ID: `API-REV-002` (round 2; `API-REV-001` validated the superseded two-pane UI)
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/api-e2e-test-case-ledger.md`
-- Current Investigation Round: `1`
-- Trigger: `/code_reviewer` implementation-review Pass (`CRR-001`) of `IR-001` (commits `8d3de39a6` server, `e8fca7771` web on base `e06080b00`)
+- Current Investigation Round: `2`
+- Trigger: round 2 — `/code_reviewer` Pass `CRR-003` of `IR-002` (`ae0cd4755`, web-only rework after the user rejected the two-pane UI in `DR-001`). Basis: `SR-008` requirements (`APPROVAL-PROJ-TASKS-20260927-002`), `ARCH-REV-003`. Round 1: `CRR-001` of `IR-001` (`8d3de39a6`, `e8fca7771` on `e06080b00`).
 - Prior Investigation Reviewed: N/A for this package. The released predecessor's investigation is context for the durable coverage being extended.
-- Latest Authoritative Investigation: this document, round 1
+- Latest Authoritative Investigation: this document, round 2 (see "Round 2 — SR-008 Rework Basis And Plan"; round-1 sections below are kept where still valid and marked where superseded)
+
+## Round 2 — SR-008 Rework Basis And Plan (authoritative for round 2)
+
+### Changed basis
+
+`SR-008` supersedes `REQ-006`, `REQ-007`, `REQ-009` and `REQ-016`, and `AC-002`, `AC-005`, `AC-007` and `AC-011`. The approval of record is `APPROVAL-PROJ-TASKS-20260927-002`. All other requirements are unchanged.
+
+**Projects grid (`REQ-016`, `AC-011`)**
+- The Projects page is the released v1.4.86 grid.
+- Each card's bottom line reads "N open tasks · N workspaces" (`REQ-009`, `DEC-015`).
+- A card opens a separate, full-width `/projects/<id>` page, which has "← Projects" at the top-left in every state.
+- The page header shows name, description (clamped to 2 lines), Edit and Delete.
+- It has plain Tasks (default) and Workspaces tabs (`DEC-014`).
+
+**Task board (`REQ-006`)**
+- Three columns: To Do / In Progress / Done, each headed "name count".
+- Cards show the description only, up to 3 lines; the summary is the accessible name.
+- Newest updated first; muted "No tasks" in empty columns; no drag or move.
+- The columns stack whenever the board cannot fit three columns of at least 240 px. This depends on the board's own width (a container query at 752 px), not on the viewport.
+
+**Search (`REQ-007`)**
+- Search runs across the columns; the counts reflect the search.
+- One no-match state with Clear search.
+- There is no status filter.
+
+The server, `projectTaskStore`, `projectStore`, `ProjectTaskDialog` and `ProjectWorkspacesPanel` are unchanged since `IR-001`. The merge `a0fd103af` brought no Projects changes, so the API cases from round 1 still apply.
+
+### Surface and boundary delta
+
+- The web renderer only: pages, `ProjectsList`/`ProjectCard` restored from `e06080b00` plus the count line, `ProjectDetail`, `ProjectTaskBoard`/`ProjectTaskCard`, the catalogues, and the probe.
+- Source identity was checked with `git diff e06080b00 HEAD`:
+  - `pages/projects/index.vue`, `pages/projects/[id].vue` and `ProjectsList.vue` are **byte-identical** to v1.4.86;
+  - `ProjectCard.vue` differs only in the bottom-line count label.
+- New risk surface: container-query layout inside the real app shell. The left side panel is resizable up to 520 px; the window size varies.
+
+### Existing durable coverage decisions (round 2)
+
+| Path / Scenario | Round-2 Validity | Evidence / Action |
+| --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts` (API-001…009) | Still Valid (server unchanged) | Rerun with the shell `ENABLE_*` flags set: pass |
+| `autobyteus-web/tests/e2e/projects-feature-probe.mjs` E2E-001…013 | Still Valid. These are restored to the v1.4.86 journeys (grid, card, Back), with `?tab=workspaces` for workspace operations and a keyboard tab switch in E2E-007. | Diffed against the v1.4.86 probe: only helper renames and the tab handling differ. Rerun. |
+| Same probe, E2E-014…027 | Rewritten by `IR-002` for the board. This replaces my round-1 two-pane assertions (E2E-014…026), which are **Stale / Replaced** because `REQ-016` superseded the two-pane layout. | Each case reviewed against `SR-008`. They assert: columns, counts and "No tasks"; no drag, select or status control; newest first; card counts (none, singular, plural); search with filtered column counts and focus return; full width; Back; deep link; not-found with Back; keyboard; zh-CN; the 700 px stack; width guards at 1200 px (default and 520 px panel) and 1000 px; the released file; mixed statuses; restart. Rerun. |
+| Removed specs (`ProjectListPane`, `ProjectTasksPanel`, `relativeTime`) | Stale / Remove, done by `IR-002` | They assert the rejected two-pane/list UI; replaced by the `ProjectTaskBoard`/`ProjectTaskCard`/`ProjectsList` specs (accepted in `CRR-003`) |
+| Web component and store specs; delegated-task suites | Still Valid | 1184/1185 pass (1 pre-existing `org-definition-navigation`) |
+
+### Durable coverage to add (round 2)
+
+| Scenario ID | Behavior | Requirement / AC | Artifact | Why |
+| --- | --- | --- | --- | --- |
+| E2E-028 | Width **sweep**: with the default panel and with the 520 px panel, from 760 to 1600 px in 40 px steps. At every step, columns are either all ≥ 240 px side by side or stacked, and there is no horizontal overflow. | `REQ-006`, `AC-002` | `projects-feature-probe.mjs` | The existing guards sample only 3–4 widths. The invariant "stack instead of squeeze" must hold at every width, including just above and below the 752 px container threshold. |
+| E2E-029 | "← Projects" is present and working in the **error** state (the GetProject query fails); the Project description is clamped to 2 lines | `REQ-016` (Back at top-left), design Concrete Examples | same | E2E-020 covers only the not-found state |
+
+### Round-2 execution plan
+
+1. Rerun the server suites and API e2e (done: 45 files / 275 tests pass, with the shell flags set).
+2. Rerun the web suites and guards (done: as above).
+3. Rebuild the server, because the merge `a0fd103af` touched non-Projects server code.
+4. Run the full probe: E2E-001…029.
+5. Rerun twice via `pnpm test:e2e:projects`.
+
+### Round-2 repository results and post-repository scorecard
+
+- Server (unchanged since `IR-001`): 45 files / 275 tests pass, including `tests/e2e/projects` API-001…009 with the shell `ENABLE_*` set, and the delegated-task suites (`/tmp/ptasks-logs/r2/server.log`).
+- Web: 1184/1185. The one failure is the pre-existing `org-definition-navigation`. Both localization guards pass (`/tmp/ptasks-logs/r2/web.log`).
+- Post-repository scores, before the browser rerun:
+
+| Category | Score | Remaining Uncertainty |
+| --- | --- | --- |
+| Requirement/AC proof | 80% | The SR-008 UI ACs (002, 005, 007, 011, 012) are proven only by specs |
+| Changed-boundary directness | 80% | The rewritten pages and board have not been rendered in a real shell |
+| Integration realism | 80% | The server is proven; the web layer uses mocked Apollo |
+| Environment fidelity | 90% | The hermetic harness still passes |
+| Failure/edge/lifecycle | 90% | Carried server evidence |
+| User-surface | 60% | Container-query layout in the real shell, and panel resize |
+| Durable regression quality | 85% | Probe not yet rerun; the sweep and error-state cases are not yet added |
+
+- Overall: 81%. Broader validation: `Required` (Browser).
+
+### Round-2 decision
+
+- Proceed: `Yes` (completed). Durable coverage was updated: E2E-028 and E2E-029 were added to the probe, and the header comment was corrected.
+- Results: E2E-001…029 pass 29/29, three times. The final confidence is in the execution report.
+- Reroute: `No`.
+
+### Round-2 not tested / deferred
+
+- A pixel comparison of `/projects` against a running v1.4.86 build. It is replaced by source identity (the three grid files are byte-identical; `ProjectCard` differs only in the approved count line), plus a screenshot review of the current grid. A pixel diff would only re-prove identical markup.
+- AC-009: unchanged (existing suites; no live LLM team run).
 
 ## Routing Classification
 

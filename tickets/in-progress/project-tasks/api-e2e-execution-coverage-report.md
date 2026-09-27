@@ -1,29 +1,29 @@
 # API/E2E Execution Coverage Report
 
-Package `PROJ-TASKS-20260926-001` — `project-tasks` (description-only Project Tasks on a two-pane Projects page).
+Package `PROJ-TASKS-20260926-001` — `project-tasks`: description-only Project Tasks shown on the released Projects grid, a full-width Project page, and a three-column Task board (SR-008).
 
 ## Execution Round Meta
 
-- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/requirements-doc.md` (Approved, `SR-003`)
+- Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/requirements-doc.md` (Approved, `SR-008`, `APPROVAL-PROJ-TASKS-20260927-002`)
 - Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/investigation-notes.md`
 - Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/solution-revision-record.md`
-- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/design-spec.md` (`SR-004`)
-- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/handoff-to-architecture-review-sr-004.md`
-- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/design-review-report.md` (`ARCH-REV-001`)
+- Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/design-spec.md` (`SR-008`)
+- Supplemental Task Artifacts: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/handoff-to-architecture-review-sr-008.md`
+- Design Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/design-review-report.md` (`ARCH-REV-003`, Pass)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/architecture-review-revision-record.md`
-- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/implementation-handoff.md`
-- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/implementation-revision-record.md` (`IR-001`)
-- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/code-review-report.md` (`CRR-001`)
+- Implementation Handoff: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/implementation-handoff.md` (`IR-002`)
+- Implementation Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/implementation-revision-record.md`
+- Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/code-review-report.md` (`CRR-003`, Pass 9.3/10)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/code-review-revision-record.md`
-- Delivery Revision Record: N/A
-- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/api-e2e-coverage-investigation.md`
+- Delivery Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/delivery-revision-record.md` (`DR-001`, rejected by the user; must not be finalized)
+- Coverage Investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/api-e2e-coverage-investigation.md` (round 2)
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/tickets/in-progress/project-tasks/api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: `1`
-- Trigger: `/code_reviewer` implementation-review Pass `CRR-001` of `IR-001` (`8d3de39a6`, `e8fca7771` on `e06080b00`)
-- Prior Round Reviewed: N/A
-- Latest Authoritative Round: `1`
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: `2`
+- Trigger: `/code_reviewer` Pass `CRR-003` of `IR-002` (`ae0cd4755`, a web-only rework after `DR-001` was rejected)
+- Prior Round Reviewed: round 1 (`API-REV-001`, Pass 95%). It validated the two-pane UI that SR-008 has since superseded.
+- Latest Authoritative Round: `2`
 
 ## Routing Classification
 
@@ -31,197 +31,175 @@ Package `PROJ-TASKS-20260926-001` — `project-tasks` (description-only Project 
 - Architectural risk: `High`
 - Input route: `Reviewed`
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Required`
+- Proportional test-code review decision: `Required` (fresh review of the probe rewritten in `IR-002`, plus my round-2 additions)
 
 ## Investigation And Execution Basis
 
-- Coverage investigation artifact: `api-e2e-coverage-investigation.md` (round 1)
-- Investigation completed before durable coverage changes or final execution: `Yes`
-- Investigation plan followed: `Yes`. E2E-026 (a mixed-status fixture) was added during planning to prove status-as-text and the not-done count with Done Tasks present.
-- Existing coverage decisions revised during execution: none
+- Coverage investigation: round 2 section "Round 2 — SR-008 Rework Basis And Plan"
+- Investigation completed before durable changes or final execution: `Yes`
+- Plan followed: `Yes`
+- Coverage decisions revised:
+  - My round-1 two-pane Task cases are now **Stale / Replaced**. `IR-002` replaced them with board cases, which I reviewed against SR-008 and retained.
+  - Added E2E-028 (width sweep) and E2E-029 (error-state Back and description clamp).
 - Reroute required: `No`
 
 ## Test-Case Ledger Reconciliation
 
-- Ledger path: `api-e2e-test-case-ledger.md`
-- Ledger initialized before execution: `Yes`
-- Every completed case recorded: `Yes` (sequences 1–20)
-- Long-running checkpoints: `Yes` (sequence 1 baseline)
-- Ledger reconciled into this report: `Yes`
-- Last durably recorded event: sequence 20
+- Ledger initialized: `Yes`. Round 2 is recorded in sequences 21–25.
+- Every completed case recorded: `Yes`
+- Reconciled: `Yes`
+- Last durably recorded event: sequence 25
 - Cases still running, interrupted, or not started: none
-- Interruption or rerun note: probe runs 1, 2 and 3 were identical
 
-| Case ID | Final Result | Last Event | Evidence / Artifact Path | Reconciled Result / Follow-Up |
+| Case ID | Final Result | Last Event | Evidence | Reconciled Result |
 | --- | --- | --- | --- | --- |
-| API-001 … API-009 | Pass | seq 2–5 | `/tmp/ptasks-logs/server-e2e-run{1,2,3}.log` | Pass |
-| E2E-001 … E2E-013 | Pass | seq 6, 20 | `/tmp/ptasks-logs/probe-run{1,2,3}/result.json` | Pass (released journeys on two panes) |
-| E2E-014 … E2E-026 | Pass | seq 7–20 | same | Pass. Two non-blocking notes (E2E-021 focus after delete; E2E-026 count note). |
+| API-001…009 | Pass | seq 21 | `/tmp/ptasks-logs/r2/server.log` | Pass (server unchanged) |
+| E2E-001…013 | Pass | seq 22, 25 | `/tmp/ptasks-logs/r2/probe-run{1,2,3}/result.json` | Pass (restored v1.4.86 journeys) |
+| E2E-014…027 | Pass | seq 22, 25 | same | Pass (SR-008 board journeys) |
+| E2E-028, E2E-029 | Pass | seq 23–25 | same | Pass (added in round 2) |
 
 ## Compatibility / Legacy Scope Check
 
-- Backward compatibility introduced, tolerated or ambiguous in requirements or design: `No`
-- Compatibility-only or legacy-retention behavior observed in implementation: `No`. There is no redirect from the old card grid and no re-export.
-- Approved persisted-data transition followed: `Yes` (`Directly Usable — No Migration`)
-  - A released v1.4.86 row reads through the normal reader, and reads do not rewrite the file (API-009, E2E-024).
-  - The first write adds `tasks` while keeping all released fields.
-- Durable coverage retained only for compatibility behavior: `No`
-- Reroute: N/A
+- Backward compatibility introduced or tolerated: `No`. The two-pane UI was removed outright: no redirects and no dual layouts. E2E-020 asserts that no list pane is rendered.
+- Legacy retention: `No`
+- Persisted-data transition: `Directly Usable — No Migration`. Unchanged, and re-proven by API-009 and E2E-024.
+- Compatibility-only durable coverage: `No`
 
 ## Changed Boundary And Evidence Matrix
 
-| Scenario ID | Behavior / Requirement / AC IDs | Changed Boundary | Execution Surface / Mode | Evidence Type | Result | Evidence / Artifact |
+| Scenario ID | Requirement / AC | Changed Boundary | Surface | Evidence Type | Result | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| API-001…006 | Released AC-001–009; AC-001 (Task survives restart), REQ-013 | Capability, CRUD, links, restart | Full schema, isolated config, shell env not scrubbed | Durable | Pass | `projects-graphql.e2e.test.ts` |
-| API-007 | AC-001–004, 007; REQ-001–003 | `ProjectTaskService` + resolver + real store | same | Durable | Pass | same |
-| API-008 | AC-006; QR-001 | Cascade | same | Durable | Pass | same |
-| API-009 | AC-010; REQ-013 | Released-row reader | same | Durable | Pass | same |
-| E2E-001…013 | Released ACs; AC-008 (flag), AC-011 (list switching) | Two-pane route shell | Browser, live nodes A/B | Durable / Browser | Pass | `result.json` |
-| E2E-014 | AC-001, AC-002, AC-007; REQ-003 | Task panel, row, dialog; store; count push | Browser | Durable / Browser | Pass | same |
-| E2E-015 | AC-003, AC-004 | Dialog edit and delete modes | Browser | Durable / Browser | Pass | same |
-| E2E-016 | AC-005, QR-002, REQ-006 | Client-side search and filter, 120 Tasks | Browser timing | Durable / Browser | Pass | same |
-| E2E-017 | AC-006, REQ-008 | Project delete count and cascade | Browser + files | Durable / Browser | Pass | same |
-| E2E-018 | AC-007, REQ-009 | `openTaskCount` in the list pane | Browser | Durable / Browser | Pass | same |
-| E2E-019 | AC-008, REQ-010 | Route gate with Tasks | Browser | Durable / Browser | Pass | same |
-| E2E-020 | AC-011, REQ-016 | Nested routes, pane persistence, deep link, prompt, not-found | Browser DOM identity | Durable / Browser | Pass | same |
-| E2E-021 | AC-012, QR-003 | Keyboard and focus across Task dialog modes, tabs, Project delete | Browser keyboard-only | Durable / Browser | Pass | same |
-| E2E-022 | AC-012, REQ-015 | zh-CN Task catalogue | Browser zh-CN | Durable / Browser | Pass | same |
-| E2E-023 | REQ-016 (stacking) | `md` breakpoint layout | Browser 700×900 | Durable / Browser | Pass | `E2E-023-narrow-*.png` |
-| E2E-024 | AC-010, REQ-013 | Released file on a live node | Browser + node C + file bytes | Durable / Browser | Pass | same |
-| E2E-025 | AC-001, REQ-013 | Real restart | Lifecycle + browser | Durable / Browser | Pass | same |
-| E2E-026 | AC-002, AC-007, REQ-006, QR-003 | Status rendering and counts beyond To Do | Browser + node C fixture | Durable / Browser | Pass | same |
-| AC-009 | REQ-012 | Delegated tasks (unchanged) | Existing suites + unchanged files + architecture/schema tests | Durable (existing) | Pass | `/tmp/ptasks-logs/{web,server}-delegated.log` |
+| API-001…009 | AC-001–004, 006, 007, 010; REQ-003, 013 | Server Projects/Tasks (unchanged) | Full schema, isolated config, shell flags set | Durable | Pass | `projects-graphql.e2e.test.ts` |
+| E2E-001…013 | Released ACs; AC-008 (flag) | Restored grid, card and Back; Workspaces tab | Browser, live nodes A/B | Durable/Browser | Pass | `result.json` |
+| E2E-014 | AC-001, AC-002, AC-007 | Board, card, dialog create; grid count | Browser | Durable/Browser | Pass | same |
+| E2E-015 | AC-003, AC-004 | Dialog edit and delete from a card | Browser | Durable/Browser | Pass | same |
+| E2E-016 | AC-005, REQ-007, REQ-014 | Search across columns, 120 Tasks | Browser timing | Durable/Browser | Pass | same |
+| E2E-017 | AC-006 | Project delete count and cascade | Browser + files | Durable/Browser | Pass | same |
+| E2E-018 | AC-007, REQ-009 | Card count line variants | Browser | Durable/Browser | Pass | same |
+| E2E-019 | AC-008 | Flag with Tasks | Browser | Durable/Browser | Pass | same |
+| E2E-020 | AC-011, REQ-016 | Grid → full-width page → Back; deep link; not-found with Back | Browser | Durable/Browser | Pass | same |
+| E2E-021 | AC-012, QR-003 | Keyboard: card buttons, dialog modes, tabs, Back, Project delete | Browser keyboard | Durable/Browser | Pass | same |
+| E2E-022 | AC-012, REQ-015 | zh-CN board and grid | Browser zh-CN | Durable/Browser | Pass | same |
+| E2E-023 | REQ-006 (narrow) | 700 px stack | Browser | Durable/Browser | Pass | `E2E-023-narrow-stacked.png` |
+| E2E-027 | AC-002 width guards | 1200 px with the default/520 px panel; 1000 px window; 3-line clamp | Real shell + panel drag | Durable/Browser | Pass | `E2E-027-*.png` |
+| E2E-028 | REQ-006, AC-002 | Container query across 760–1600 px × 2 panel widths | Real shell sweep | Durable/Browser | Pass | `result.json` › `E2E-028` |
+| E2E-029 | REQ-016 | Back in the error state; 2-line description | Browser + intercepted GetProject | Durable/Browser | Pass | same |
+| E2E-024 | AC-010 | Released file on live node C | Browser + file bytes | Durable/Browser | Pass | same |
+| E2E-026 | AC-002, AC-005, AC-007 | Mixed statuses in three columns; filtered counts; open count excludes Done | Browser + node C | Durable/Browser | Pass | same |
+| E2E-025 | AC-001, REQ-013 | Real restart | Lifecycle | Durable/Browser | Pass | same |
+| AC-009 | REQ-012 | Delegated tasks (unchanged) | Existing suites | Durable | Pass | `/tmp/ptasks-logs/r2/{server,web}.log` |
 
 ## Additional Repository Coverage Execution
 
-| Order | Command | Working Directory / Configuration | Boundary Or Scenario Proven | Result | Evidence / Output Path |
+| Order | Command | Working Directory | Boundary | Result | Evidence |
 | --- | --- | --- | --- | --- | --- |
-| 8 | `corepack pnpm -C autobyteus-server-ts build` | worktree | Live nodes run the reviewed server | Pass | `/tmp/ptasks-logs/server-build.log` |
-| 9 | `node tests/e2e/projects-feature-probe.mjs --skip-server-build --output-dir=/tmp/ptasks-logs/probe-run1` | `autobyteus-web` | E2E-001…026 | 26/26 | `/tmp/ptasks-logs/probe-run1/` |
-| 10 | `corepack pnpm test:e2e:projects --skip-server-build --output-dir=/tmp/ptasks-logs/probe-run{2,3}` | `autobyteus-web` | Determinism, script entry | 26/26 ×2 | `/tmp/ptasks-logs/probe-run{2,3}/` |
+| R2-1 | `corepack pnpm -C autobyteus-server-ts build` | worktree | Server rebuilt after the merge | Pass | `/tmp/ptasks-logs/r2/server-build.log` |
+| R2-2 | `node tests/e2e/projects-feature-probe.mjs --skip-server-build --output-dir=/tmp/ptasks-logs/r2/probe-run1` | `autobyteus-web` | E2E-001…029 | 29/29 | `/tmp/ptasks-logs/r2/probe-run1/` |
+| R2-3 | `corepack pnpm test:e2e:projects --skip-server-build --output-dir=/tmp/ptasks-logs/r2/probe-run{2,3}` | `autobyteus-web` | Determinism, script entry | 29/29 ×2 | `/tmp/ptasks-logs/r2/probe-run{2,3}/` |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | Change | New / Final Supporting Evidence | Residual Uncertainty |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 80% | 95% | +15 | Every AC is directly proven. AC-001–008 and 010–012 run through live UI and API. AC-009 (preservation) is covered by unchanged delegated-task code and passing delegated-task suites (web 112, server 200). | AC-009 was not exercised in a live team run, which needs an LLM runtime; the preserved code is unchanged |
-| Changed-boundary execution directness | 80% | 95% | +15 | Real browser → Nuxt → server → `projects.json`, including nested routes and the Task dialog modes | — |
-| Cross-boundary integration realism and mock gap | 75% | 95% | +20 | Three live nodes, a real restart, a released-file node, cross-origin rebinding; no mocks on the probe path | Rebinding uses `bindNodeContext`, the same method the shell calls |
-| Environment, configuration, identity, and fixture fidelity | 90% | 95% | +5 | Scrubbed/hermetic flags on both surfaces. The released fixture is written in the store's own format and read by a restarted node. The diff has no build or runtime config change, so the dev-server bundle is representative. | macOS only |
-| Failure, edge-case, lifecycle, and recovery evidence | 85% | 95% | +10 | Empty and whitespace validation (create and edit); Cancel paths (edit, Task delete, Project delete); no-match and clear; not-found recovery; flag off/on; restart; cascade | — |
-| User-surface, browser, and desktop-shell confidence | 60% | 95% | +35 | 1440×900, 1024×700 (released E2E-013) and 700×900 stacked; keyboard-only journey; zh-CN; status as text for all 3 states | Focus after a Task delete lands on `BODY` (non-blocking; the ACs are met) |
-| Durable regression coverage quality and relevance | 85% | 95% | +10 | 9 API cases + 26 browser cases with per-case evidence and cleanup; hermetic harness | — |
+| Requirement and acceptance-criteria proof | 80% | 95% | +15 | Every SR-008 AC is directly proven through the live UI and API. AC-011's "visual comparison": the three grid files are byte-identical to v1.4.86 (`git diff e06080b00 HEAD`), `ProjectCard` differs only in the approved count line, and the grid screenshot was reviewed. | AC-009 is proven by unchanged code and existing suites, with no live LLM team run |
+| Changed-boundary execution directness | 80% | 95% | +15 | The restored pages, `ProjectDetail`, board and cards all rendered in the real app shell | — |
+| Cross-boundary integration realism and mock gap | 80% | 95% | +15 | Three live nodes, a real restart, the released-file node, and the real resizable side panel dragged to 520 px | Rebinding goes through `bindNodeContext` |
+| Environment, configuration, identity, and fixture fidelity | 90% | 95% | +5 | Hermetic flags on both surfaces; the server was rebuilt after the merge; no config change in the diff | macOS only |
+| Failure, edge-case, lifecycle, and recovery evidence | 90% | 95% | +5 | Empty/whitespace rejection, Cancel paths, no-match with focus return, not-found and error states with Back, flag off/on, restart, cascade | — |
+| User-surface, browser, and desktop-shell confidence | 60% | 95% | +35 | 44-width sweep × 2 panel widths with 0 violations; 1200/1000/1024/700 px; 3-line and 2-line clamps; keyboard-only; zh-CN; screenshots reviewed | After a Task delete, focus falls to `BODY` (non-blocking; ACs met) |
+| Durable regression coverage quality and relevance | 85% | 95% | +10 | 9 API cases + 29 browser cases with per-case evidence and cleanup; the layout invariant is guarded continuously by the sweep | — |
 
-- Overall post-repository confidence: 79%
-- Overall final confidence: 95% (665 / 7)
-- Calculation method: simple average
-- Confidence change produced by broader validation: +16
-- Every critical acceptance criterion directly proven: `Yes`
-- Any final applicable category below `90%`: `No`
-- Default final confidence target of `95%` met: `Yes`
-- Confidence-limiting residual risks: none material (see Evidence / Notes)
+- Overall post-repository confidence: 81%
+- Overall final confidence: 95%
+- Calculation: simple average
+- Every critical AC directly proven: `Yes`
+- Any category below 90%: `No`
+- 95% target met: `Yes`
 
 ## Broader Validation Decision And Execution
 
-- Decision and mode: `Required` — Browser with isolated live nodes (A, B, and C for released and mixed-status fixtures), a real restart, three viewports, keyboard-only, and zh-CN
-- Material deviation: none
-- Gaps addressed: Task journeys; two-pane routing and DOM persistence; the narrow layout (not rendered by implementation); 100+ Task timing; released-file upgrade on a live node; status labels beyond To Do
-- Startup:
-  1. Server build.
-  2. Probe-owned `prisma migrate deploy` + `node dist/app.js --data-dir <tmp>/node-{a,b}` (node C created in E2E-024), readiness via `/rest/health`.
-  3. `pnpm dev` with `BACKEND_NODE_BASE_URL=A`.
-  4. Headless Chromium.
-- Environment choices: every `ENABLE_*` variable is scrubbed in spawned processes (the shell exports `ENABLE_PROJECTS=true`); `en` preset, with zh-CN in its own context; UTC.
-- Seed data: Projects and Tasks through the UI when under test, otherwise through real GraphQL mutations. Five temp workspace roots plus `e2e-released-ws`. Node C gets the released-shape and mixed-status `projects.json` written between restarts.
+- Decision: `Required`. Executed in the browser with live nodes A, B and C, the real app shell (including a panel drag), restart, keyboard-only and zh-CN.
+- Deviation: none. E2E-028 and E2E-029 were added.
+- Environment: `ENABLE_*` scrubbed from spawned processes; `en` preset, with zh-CN in its own context; UTC.
+- Seed data: UI-created when under test, otherwise GraphQL. Node C holds the released and mixed-status files written between restarts.
 
-| Scenario / Journey Step | Expected Observable Result | Actual Observable Result | Evidence | Result |
+| Scenario / Journey Step | Expected | Actual | Evidence | Result |
 | --- | --- | --- | --- | --- |
-| E2E-014 create | To Do, first-line summary, empty rejected, live count, no status control | Row "To Do / Write release notes for 1.4.87 / just now". The error is `role=alert` with `aria-invalid` and `aria-describedby`. Count went 0 → 1 → 3 open with no reload. Row, view, edit and create have 0 status controls. Order: Plan / Fix / Write | `result.json` › `E2E-014` | Pass |
-| E2E-015 edit/delete | Cancel discards; save shows the full text; delete confirmation | Prefill is the full text; Cancel restored it; the empty edit was rejected; the saved text shows in full and moves to the top. The delete message names the summary with initial focus on Cancel; Cancel kept it; confirm removed it; 2 open | `E2E-015` | Pass |
-| E2E-016 scale | Search < 100 ms; filter; no-match | 14 matches (including later lines); max update 4.3 ms; max to painted frame 17–24 ms; DONE and IN_PROGRESS → no-match; Clear → ALL and 120 rows with focus to search; Tasks unchanged | `E2E-016` | Pass |
-| E2E-017 Project delete | "5 tasks"; Cancel keeps; cascade; registry unchanged | "…and its 5 tasks?" on both tabs; file clean; `workspaces.json` and memory dir unchanged | `E2E-017` | Pass |
-| E2E-018 counts | N open | 4 / 0 / 2 / 120 open | `E2E-018` | Pass |
-| E2E-019 flag | Hidden, then the same Tasks | Route and deep link redirect home; Tasks identical | `E2E-019` | Pass |
-| E2E-020 two panes | One click, same pane; deep link; prompt; not-found | Same pane node across switches and tab changes, no reload, `aria-current=page`; deep link opens Tasks; prompt with no highlight; not-found inside `projects-page-content` and the pane is usable | `E2E-020` | Pass |
-| E2E-021 keyboard | Every action by keyboard | All steps pass (`softFailures: []`). Focus after a Task delete = `BODY` (observation) | `E2E-021` | Pass |
-| E2E-022 zh-CN | Localised | "4 项未完成", 任务 / 新建任务 / 待办 / 全部状态, dialogs, validation, empty state; no raw keys or English Task strings | `E2E-022` | Pass |
-| E2E-023 narrow | Stacked | Column; pane 342 px above content; no overflow; dialog within 700×900 | `E2E-023-narrow-*.png` | Pass |
-| E2E-024 released file | Intact, no rewrite | "Released project", 0 open, link AVAILABLE; bytes identical after browsing; the first UI write kept every released field | `E2E-024` | Pass |
-| E2E-026 status beyond To Do | Text labels; filter; not-done count | Done / In Progress / To Do labels; each filter shows 1; "2 open" | `E2E-026` | Pass |
-| E2E-025 restart | Identical | All Projects and Tasks identical; UI 2 open | `E2E-025` | Pass |
+| E2E-014 board create | To Do count; description card; no controls | Headings "To Do 1 / In Progress 0 / Done 0"; card text has both lines and its accessible name is the summary; 0 inner controls, selects or draggables; "No tasks" ×3 on the empty board; order newest first; grid "3 open tasks" | `E2E-014` | Pass |
+| E2E-016 search | Across columns, < 100 ms, counts, no-match | 14 matches, "To Do 14 / 0 / 0"; update ≤ 5.6 ms and painted ≤ 30.8 ms over 3 runs; no-match; Clear returns focus to search; Tasks unchanged | `E2E-016` | Pass |
+| E2E-018 card counts | Variants | "4 open tasks · No workspaces", "No open tasks · No workspaces", "1 open task · 1 workspace", "120 open tasks · …" | `E2E-018-pass.png` | Pass |
+| E2E-020 navigation | Grid → full-width page → Back; deep link; not-found | No list pane; detail 1117 px = main 1117 px; Back "Projects" (accessible name "Back to projects"); no reload; deep link opens Tasks; not-found Back returns to the grid | `E2E-020` | Pass |
+| E2E-021 keyboard | Every action | `softFailures: []` (card open, dialog modes, tabs Home/End/arrows, Back, Project delete "1 task"). Focus after a Task delete = `BODY` (observation) | `E2E-021` | Pass |
+| E2E-022 zh-CN | Localised | "4 项未完成任务 · 没有工作区"; 待办 / 进行中 / 已完成; 暂无任务; Back "返回项目列表"; no raw keys or English | `E2E-022` | Pass |
+| E2E-027 guards | ≥ 240 px or stacked | 1200 px with the 320 px panel: 3×260 and a 3-line card. 520 px panel: stacked. 1000 px: stacked | `E2E-027-*.png` | Pass |
+| E2E-028 sweep | Never squeezed | Side by side only when the board is ≥ 773 px (min column 247 px); a 733 px board is stacked; 0 violations or overflow at all 44 measurements | `E2E-028` | Pass |
+| E2E-029 error Back and clamp | Back present and working; 2 lines | Back at (32, 20) px, returns to the grid; description 2 lines with the full text in the DOM | `E2E-029` | Pass |
+| E2E-024 / 026 / 025 | Released file, mixed statuses, restart | Released file unchanged by browsing, and released fields kept on the first write. Mixed statuses: "To Do 1 / In Progress 1 / Done 1"; a "progress" search gives "0 / 1 / 0"; "2 open tasks". Restart identical | `E2E-024`, `E2E-026`, `E2E-025` | Pass |
 
 ## Desktop Application Validation
 
-- Approach: browser against `pnpm dev`; renderer-only change
-- Shell-specific behavior: none changed
-- Effect on the running desktop application: `None`
+- Renderer-only change, validated in the browser against `pnpm dev` with the real app shell (including the resizable left panel). No shell change. Effect on the running desktop app: `None`.
 
 ## Platform / Runtime Targets
 
-- macOS (darwin-arm64); Node v22.23.1; playwright-core 1.58.2 bundled Chromium (headless)
-- Viewports 1440×900, 1024×700 and 700×900; `en` and `zh-CN`; UTC; keyboard-only journey in E2E-007 and E2E-021
+- macOS (darwin-arm64); Node v22.23.1; playwright-core 1.58.2 Chromium (headless)
+- Viewports: 1440×900; 1200×800 (default and 520 px panel); 1024×700; 1000×800; 700×900; the sweep covers 760–1600 px wide at 900 high
+- Locales: `en` and `zh-CN`; UTC; keyboard-only journeys
 
 ## Lifecycle / Upgrade / Restart / Persisted-Data Checks
 
-- Approved decision: `Directly Usable — No Migration`
-- Representative existing data: a v1.4.86 row with a workspace link and no `tasks`, both in the API e2e and on live node C
-- Result: intact reads, no rewrite on read (bytes and mtime), and the first write persists `tasks` while keeping the released fields (API-009, E2E-024). A real restart preserves all Projects and Tasks (E2E-025, API-006).
-- Version-specific branch or fallback: `No`
-- Residual risk: none material
+- `Directly Usable — No Migration`, unchanged. The released v1.4.86 file is intact and not rewritten by reads, and the first write keeps the released fields (API-009, E2E-024). The real restart is identical (E2E-025). No version branch.
 
 ## Tests Implemented Or Updated
 
-| Path / Scenario | Change | Requirement / Boundary | Execution Result | Notes |
+| Path / Scenario | Change | Requirement | Result | Notes |
 | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts` | Updated: a hermetic `ENABLE_*` stash/restore; `openTaskCount` in the fields; the Task service singleton reset; API-006 + Task. Added: API-007, API-008, API-009 | AC-001–004, 006, 007, 010; REQ-003, 013; QR-001 | 9/9 ×3 with the shell flags set | The released API-001 failure under shell flags was a test-environment defect, now fixed |
-| `autobyteus-web/tests/e2e/projects-feature-probe.mjs` | Updated: header, Task and binding helpers, node C lifecycle, `e2e-released-ws` root. Added: E2E-014…026. (`IR-001`'s adaptations of E2E-001…013 were reviewed and retained.) | AC-001–008, 010–012; QR-002, QR-003; REQ-016 | 26/26 ×3 | Evidence per case; cleanup covers node C |
+| `autobyteus-web/tests/e2e/projects-feature-probe.mjs` | `IR-002` rewrote E2E-014…027 for the board and restored E2E-001…013 (reviewed and retained). Round-2 API/E2E changes: added E2E-028 and E2E-029, corrected the header comment. | AC-001–008, 010–012; REQ-006, REQ-016 | 29/29 ×3 | Uncommitted |
+| `autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts` | Unchanged since round 1 (committed in `768c155f6`) | AC-001–004, 006, 007, 010 | 9/9 | — |
 
 ## Tests Removed As Stale Or Obsolete
 
-None by API/E2E. `IR-001` removed `ProjectsList.spec.ts` (the released card grid, superseded by `REQ-016`) and replaced the released "no Task wording" assertion in E2E-008 with a raw-key check (`REQ-011`). Both were accepted in `CRR-001` and verified valid here.
+| Path / Scenario | Obsolete Assertion | Upstream Evidence | Replacement |
+| --- | --- | --- | --- |
+| Round-1 probe cases E2E-014…026 (two-pane list pane, list rows, status filter, one-click list switching) | Two-pane layout and list presentation | SR-008 supersedes REQ-006/007/009/016 and the related ACs; the user rejected the build (`DR-001`) | `IR-002` board cases E2E-014…027, plus E2E-028/029 |
+| `ProjectListPane.spec.ts`, `ProjectTasksPanel.spec.ts`, `relativeTime.spec.ts` (removed by `IR-002`) | Same | Same | `ProjectTaskBoard.spec.ts`, `ProjectTaskCard.spec.ts`, `ProjectsList.spec.ts` |
 
 ## Durable Coverage Changed In The Codebase
 
-- Durable coverage added or updated this round: `Yes` (uncommitted in the worktree)
-- Paths:
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/autobyteus-server-ts/tests/e2e/projects/projects-graphql.e2e.test.ts`
-  - `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/autobyteus-web/tests/e2e/projects-feature-probe.mjs`
-- Paths removed: none
-- Attached for the proportional test-code review: `Yes`
+- Changed this round: `Yes` (uncommitted)
+- Path: `/Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/autobyteus-web/tests/e2e/projects-feature-probe.mjs`. It includes `IR-002`'s rewrite, committed in `ae0cd4755`, plus my uncommitted E2E-028/029 and header change.
+- Removed: see the table above (removed by `IR-002` in `ae0cd4755`)
+- Attached for review: `Yes`
 
 ## Other Execution Artifacts
 
-| Artifact Path | Type / Purpose | Retained Or Temporary | Notes |
-| --- | --- | --- | --- |
-| `/tmp/ptasks-logs/` | Logs, probe results and screenshots | Retained (outside the repo) | `probe-run1/result.json` holds the observations; runs 2 and 3 confirm them |
-
-## Temporary Execution Methods / Scaffolding
-
-None beyond the durable probe.
+| Artifact | Purpose | Retention |
+| --- | --- | --- |
+| `/tmp/ptasks-logs/r2/` | Logs, results and screenshots for round 2 | Retained, outside the repo |
 
 ## Dependencies Mocked Or Emulated
 
-| Dependency | Method | Why Real Dependency Was Not Used | Confidence Limitation |
-| --- | --- | --- | --- |
-| Run managers (API e2e only) | `getInstance` returns "no active runs" | Process singletons | None for Tasks |
-| Future agent-written statuses (E2E-026) | Current-shape `projects.json` with IN_PROGRESS/DONE written between restarts | No status mutation exists (`REQ-003`) | Represents the model's valid states; not a user path |
-| Electron window bootstrap | In-page `bindNodeContext` (E2E-011, E2E-024, E2E-026) | Browser surface | Window creation is unchanged code |
+| Dependency | Method | Limitation |
+| --- | --- | --- |
+| Run managers (API e2e) | "No active runs" | None for Tasks |
+| Future agent-written statuses (E2E-026) | A current-shape file on node C | Model-valid states; not a user path |
+| GetProject failure (E2E-029) | Playwright route intercept | Needed to reach the error state |
+| Electron window bootstrap | In-page `bindNodeContext` | Unchanged code |
 
 ## Result Summary
 
-| Result | Scenario IDs | Summary / Reason |
+| Result | Scenario IDs | Summary |
 | --- | --- | --- |
-| Pass | API-001…009, E2E-001…026, AC-009 suites | All approved ACs proven |
-| Out Of Scope | Pre-existing failures | `org-definition-navigation` (web) and the `workspaces-graphql` removal test (server), both on the released package's base-failing list |
+| Pass | API-001…009, E2E-001…029, AC-009 suites | All SR-008 ACs proven |
+| Out Of Scope | `org-definition-navigation` (web) | Pre-existing |
 
 ## Cleanup Performed
 
-| Resource / Process / Data | Ownership | Cleanup Action | Result |
-| --- | --- | --- | --- |
-| Probe nodes A/B/C, frontend, browser (runs 1–3) | Probe-owned | Process-group SIGTERM/SIGKILL; `browser.close()` | `terminated:*` for all in every `result.json` |
-| Probe temp roots | Probe-owned | `fs.rm` | `tempRoot: removed`; no `$TMPDIR/autobyteus-projects-e2e-*` left |
-| API e2e temp app data dirs, `process.env` flags | Test-owned | `afterEach` removes dirs and restores the stashed `ENABLE_*` | Restored |
-| `autobyteus-web/test-results/` | Implementation-owned (pre-existing, untracked) | Not touched; my output went to `/tmp/ptasks-logs` | Unchanged |
+| Resource | Action | Result |
+| --- | --- | --- |
+| Probe nodes A/B/C, frontend, browser (runs 1–3) | Process-group stop; `browser.close()` | `terminated:*` in every result |
+| Probe temp roots | `fs.rm` | Removed; none left in `$TMPDIR` |
+| Delivery's uncommitted docs, `autobyteus-web/test-results/` | Not mine | Untouched |
 
 ## Preliminary Classification
 
@@ -229,28 +207,24 @@ N/A — Pass.
 
 ## Recommended Recipient
 
-`/code_reviewer` — proportional test-code review (`api-e2e-test-review-report.md`)
+`/code_reviewer` — a fresh proportional test-code review of the current probe (`api-e2e-test-review-report.md`)
 
 ## Evidence / Notes
 
-These notes are non-blocking; no approved AC is violated.
+These are non-blocking.
 
-1. **Focus after a Task delete.** Deleting a Task from its dialog removes the row that opened it, so `ProjectDialogFrame` has no focus-return target and focus falls to `BODY` (E2E-021). A keyboard user then needs about 35 Tabs to reach New task again. AC-012 and QR-003 are met, because every action stays reachable. Suggested polish, at the owner's discretion: return focus to the next row or to New task.
-2. **Delete count.** With a Done Task present, the Project delete message counts open Tasks: "2 tasks" for 3 (E2E-026 observation). This is unreachable in this ticket and is the known review note 1. Carry it to the Task-admission ticket.
-3. **Environment.** The developer shell exports `ENABLE_PROJECTS=true` and other flags. Both durable surfaces are now hermetic against them.
-4. **Icon loading in narrow captures.** Decorative Iconify icons can be missing in a fresh-context screenshot taken immediately after load. They are `aria-hidden`, and layout does not depend on them.
-5. **Carried from review.** Relative dates follow the browser locale (repo convention).
+1. **Focus after a Task delete.** Focus still falls to `BODY` after deleting a Task from its dialog, because the card that opened it is gone. AC-012 and QR-003 are met. The suggested polish is to move focus to New task or the next card.
+2. **Delete count.** The Project delete count uses `openTaskCount`: with a Done Task, "2 tasks" for 3. This is unreachable in this ticket; carry it to Task admission.
+3. **Board stacking on common windows.** With the default 320 px panel, the board stacks below a window width of about 1140 px, and with the 520 px panel below about 1340 px. This is the approved "stack instead of squeeze" behavior, recorded so delivery and the user know where the switch happens.
+4. **Stale docs.** Delivery's uncommitted docs (`autobyteus-web/docs/projects.md`, `autobyteus-web/AGENTS.md`, `autobyteus-server-ts/docs/modules/projects.md`) describe the rejected UI. Delivery will redo them, and `DR-001` must not be finalized.
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
 - Final validation confidence: 95%
-- Default `95%` target met: `Yes`
-- Any final applicable category below `90%`: `No`
+- Default target met: `Yes`
+- Any final applicable category below 90%: `No`
 - Broader validation decision: `Required` — executed
-- Critical acceptance criteria lacking direct proof: none
+- Critical ACs lacking direct proof: none
 - Required next recipient: `/code_reviewer` (proportional test-code review)
-- Notes:
-  - `task_size=Medium` and `architectural_risk=High` are preserved.
-  - Durable test changes are uncommitted in the worktree.
-  - Delivery owns integration, commit and docs sync (design step 10).
+- Notes: `task_size=Medium` and `architectural_risk=High` are preserved.

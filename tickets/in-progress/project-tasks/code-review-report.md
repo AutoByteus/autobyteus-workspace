@@ -4,6 +4,25 @@ Package `PROJ-TASKS-20260926-001` — `project-tasks`: description-only Project 
 
 ## Review Round Meta
 
+Latest round: **round 2 (`CRR-003`), `Implementation Review`** of `IR-002` (Rework after the user rejected `DR-001`; basis `SR-008` / `ARCH-REV-003`).
+
+- The round 2 section below is authoritative for the web UI.
+- The round 1 content remains valid for everything `IR-002` did not touch: the server subsystem, storage, GraphQL, `projectTaskStore`, `projectStore`, `ProjectTaskDialog`, `ProjectWorkspacesPanel` and `ProjectDialogFrame`, all confirmed unchanged since `e8fca7771`.
+- Round 1 statements about the two-pane UI (`pages/projects.vue`, `ProjectListPane`/`ProjectListItem`, `ProjectTasksPanel`/`ProjectTaskRow`, the status filter, the relative-time util) are superseded.
+
+Round 2 meta:
+
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: `2`
+- Trigger: `/implementation_engineer` handoff of `IR-002`, commit `ae0cd4755`. Its parent `a0fd103af` is delivery's merge of `origin/personal`, which brought no Projects changes.
+- Requirements: `requirements-doc.md`, Approved `SR-008` basis (`APPROVAL-PROJ-TASKS-20260927-002`). The changed IDs are `REQ-006`, `REQ-007`, `REQ-009`, `REQ-016`, `AC-002`, `AC-005`, `AC-007`, `AC-011`, `SCN-007`, `DEC-012`–`DEC-016`, and the UI normative rules.
+- Design: `design-spec.md` (`SR-008`). Architecture review: `design-review-report.md` (`ARCH-REV-003`, Pass, with its residual risks).
+- Implementation: `implementation-handoff.md` and `implementation-revision-record.md` (`IR-002`).
+- Prior round reviewed: `CRR-001` (Pass) and `CRR-002` (test review, Pass), both for the now-rejected two-pane UI.
+- Delta reviewed: `git show ae0cd4755`, 24 web paths. I also checked the cumulative Projects scope.
+
+Round 1 meta:
+
 - Review Entry Point: `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved, `SR-003`, `APPROVAL-PROJ-TASKS-20260926-001`)
 - Investigation Notes Reviewed As Context: `investigation-notes.md`
@@ -35,6 +54,58 @@ Package `PROJ-TASKS-20260926-001` — `project-tasks`: description-only Project 
   - The change touches 54 files, about half of them specs, all within the Projects subsystem.
   - It changes the released persisted shape additively, the GraphQL contract additively, and the released UI structure.
   - No escalation trigger was hit: there is no migration or row rewrite, no delegated-task code changed, and there is no status mutation.
+
+## Round 2 — `IR-002` Review (Released Grid, Full-Width Project Page, Three-Column Board)
+
+### Behavior basis (round 2)
+
+| Behavior / Requirement | Status | Implementation Path And Evidence |
+| --- | --- | --- |
+| REQ-016, AC-011, SCN-007 (released grid, then a separate Project page with Back) | Confirmed | `pages/projects/index.vue`, `[id].vue` and `ProjectsList.vue` are byte-identical to `e06080b00` (`git diff e06080b00 ae0cd4755` shows no difference). `ProjectDetail` is full width (no `max-w`). A "← Projects" `NuxtLink` to `/projects` sits at the top-left in every state, including loading, error and not-found. Its accessible name, "Back to projects", contains the visible label. The Project name is now an `h1`, and the description is clamped to 2 lines. Edit and Delete are unchanged. The Tasks tab is the default, and `?tab=workspaces` selects Workspaces, as before. `pages/projects.vue` (the nested route) is removed, so the released route structure is back. |
+| REQ-009, AC-007, DEC-015 (not-done count on the card) | Confirmed | The `ProjectCard` bottom line uses `ProjectCard.counts` = "{{tasks}} · {{workspaces}}", with none, singular and plural variants from `openTaskCount` and `workspaces.length`. Zero reads "No open tasks", which follows the released "No …" wording pattern. |
+| REQ-006, AC-002, DEC-016 (three-column board) | Confirmed | `ProjectTaskBoard` has three columns, in the order of `PROJECT_TASK_STATUSES`: To Do, In Progress, Done. Each is a `section` labelled by an `h2` showing the column name and count as text. Cards come from the store, which is already sorted newest-updated first. An empty column shows a muted "No tasks". The page scrolls normally, with no per-column scroll. **Layout rule (the `ARCH-REV-002` finding `AR-001`, checked against `ARCH-REV-003`'s residual note):** `container-type: inline-size; container-name: project-task-board` sits on the board root. That root is a block child of the tabpanel, so its width comes from its parent. The grid is its child: one column by default, switching to `repeat(3, minmax(0, 1fr))` via `@container project-task-board (min-width: 752px)` (3 × 240 px + 2 × 16 px gaps). There is no viewport breakpoint. `ProjectTaskCard` is a button showing the description only (`line-clamp-3 whitespace-pre-line break-words`), with no status, time, icon or drag. Its accessible name is the summary, and the status is conveyed by the column heading (QR-003). |
+| REQ-007, AC-005 (search across columns, no status filter) | Confirmed | One case-insensitive substring search over the description, applied before grouping, so the column counts reflect the result. A single no-match state appears only when Tasks exist; its Clear search button refocuses the search input. There is no status filter. An empty Project shows the three "No tasks" columns and New task. |
+| REQ-003 (no human status change) | Confirmed | There is no status control on the card, board or dialog; the dialog is unchanged. |
+| Server, storage, GraphQL, cascade, AC-010, REQ-012 | Confirmed (unchanged) | No changes under `autobyteus-server-ts/src` since `8d3de39a6`. `projectTaskStore`, `projectStore`, `ProjectTaskDialog`, `ProjectWorkspacesPanel` and `ProjectDialogFrame` are unchanged since `e8fca7771`. |
+
+Behavior-basis status: `Confirmed`. No new or contradicted behavior.
+
+### Removal verification (design Removal / Decommission Plan)
+
+- `pages/projects.vue`, `ProjectListPane`, `ProjectListItem`, `ProjectTasksPanel`, `ProjectTaskRow`, `utils/projects/relativeTime.ts` and their specs are all removed.
+- The stale en/zh-CN keys (`ProjectListPane.*`, `ProjectListItem.*`, `ProjectTasksPanel.*`, `ProjectTaskRow.*`, `projects.time.*`, `pages.projects.index.*`) are removed. The catalogue spec asserts they are absent, and grep finds no stale source references.
+- `ProjectsList.spec.ts` is restored and updated.
+
+### Round 2 candidates
+
+| Candidate ID | Observation | Scenario / Contract | Evidence | Disposition | Reason |
+| --- | --- | --- | --- | --- | --- |
+| C-11 | The uncommitted delivery docs edits (`autobyteus-web/docs/projects.md`, `autobyteus-web/AGENTS.md`, `autobyteus-server-ts/docs/modules/projects.md`) still describe the rejected two-pane UI. | Design step 7 (docs sync, owned by delivery) | `git status` shows them modified and uncommitted; they are not part of `ae0cd4755` | Reject (not an implementation defect) | Delivery must redo them in docs sync. Routed as a residual note to delivery through the chain. |
+| C-12 | The card's accessible name is the first line only, while the visible card shows up to 3 lines. | QR-003, REQ-002 | `ProjectTaskCard` | Reject | This is designed. The summary is the approved scanning unit, and the full description is in the dialog. |
+| C-13 | The zero count reads "No open tasks" rather than "0 open tasks". | AC-007 ("shows 0 without error") | en/zh-CN keys | Reject | It communicates zero without error, and it follows the released card wording pattern for none, singular and plural. |
+| C-14 | Column layout cannot be exercised in jsdom unit tests. | AC-002 width guards | The specs are layout-agnostic | Reject (as a defect) | The design assigns the width guards to e2e. The handoff reports E2E-027 plus measurements at 1200×800 (260/260/260), with the 520 px panel, and at 1000 and 700 px (stacked). API/E2E will confirm. |
+| C-15 | Delete-count source (`openTaskCount`). | REQ-008, `P-001` | Unchanged | Reject | Carried from round 1 (C-01). The admission ticket must revisit it. |
+
+### Round 2 structural notes (the round 1 table otherwise carries forward)
+
+- **Ownership and SoC:** `ProjectTaskBoard` takes over from `ProjectTasksPanel` as the only board-level consumer of `projectTaskStore` and the owner of the dialog. The grouping is a pure computed. `ProjectTaskCard` is purely presentational. `ProjectDetail` holds only the header, Back link, tabs and delete. Pass.
+- **Reuse:** it follows the existing plain-CSS `@container` pattern from `GeminiConfigurationOptionCard.vue`, with no new plugin. It reuses `TASK_STATUS_LABEL_KEYS`, `taskSummary`, `ProjectTaskDialog` and `ProjectWorkspacesPanel`. Pass.
+- **Legacy and cleanup:** the rejected UI is removed, not hidden, and no toggle or redirect is kept. Pass.
+- **Size (effective lines):**
+  - `ProjectTaskBoard.vue`: 164, a new file.
+  - `ProjectTaskCard.vue`: 20, a new file.
+  - `ProjectDetail.vue`: about 255 (+23/−10).
+  - `ProjectsList.vue` and `ProjectCard.vue`: restored, and small.
+  - No file exceeds 500, and no delta exceeds 220 except the new files, which each have a single concern. Pass.
+
+### Verification run by the reviewer (round 2)
+
+- Web: 62 files / 403 tests pass. The run covered:
+  - Projects components, stores, utils and catalogues (including the new `ProjectTaskBoard` and `ProjectTaskCard` specs and the restored `ProjectsList` spec);
+  - the middleware, composables and mobile gates;
+  - `components/common` and `components/workspace/config`.
+- Server: the Projects unit tests, the Task schema test, the architecture test and `tests/e2e/projects` pass (6 files / 65 tests), with the developer shell's `ENABLE_*` variables set.
+- `guard:localization-boundary` and `audit:localization-literals` both exit 0.
 
 ## Review Scope
 
@@ -206,11 +277,11 @@ No new or reclassified premises.
 | 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Every spine is traceable end to end, including the URL-driven master-detail. | — | — |
 | 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | One owner per subject over one lock. Task writes cannot touch Project fields. Both boundary directions are enforced by a test. | — | — |
 | 3 | API / Interface / Query / Command Clarity | 9.5 | Additive, explicitly identified operations with no status mutation and collision-free names. | — | — |
-| 4 | Separation of Concerns and File Placement | 9.0 | The detail pane was cleanly decomposed into panels, a row and a dialog. | `ProjectTaskDialog` combines four modes in about 200 lines. It is coherent for now. | Split it if the admission ticket adds more modes. |
+| 4 | Separation of Concerns and File Placement | 9.0 (round 2: unchanged) | Round 2: the board, the card and the restored grid are single-concern files, the grouping is a pure computed, and `ProjectDetail` holds only the header and tabs. | `ProjectTaskDialog` still combines four modes in about 200 lines. It is coherent for now. | Split it if the admission ticket adds more modes. |
 | 5 | Shared-Structure / Data-Model Tightness | 9.5 | Tight stored model; views are separate from storage. | — | — |
 | 6 | Naming Quality and Local Readability | 9.0 | Clear, commented intent, such as the delete-count comment. | The `deleted` event is emitted but unused (C-07). | — |
-| 7 | API/E2E Readiness | 9.0 | Stable test ids and the released probe adapted to 13/13. | The new Task browser cases and the narrow layout remain for API/E2E. | Covered downstream. |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.0 | Every AC path traced and matched. The residual notes from the architecture review are resolved. | Dates follow the browser locale (C-06). The stacked layout was not rendered live. | Optional: format dates with the app locale. |
+| 7 | API/E2E Readiness | 9.0 (round 2) | Stable test ids (`project-task-board`, `project-task-column-*`, `project-task-card-*`, `project-back-link`, `project-card-counts`). The implementation updated the probe to 26/26, including the E2E-027 width guard. | The board width guards still need independent API/E2E confirmation. The probe edits are implementation-authored and await the test-code review. | Covered downstream. |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.0 (round 2) | Every changed AC path (AC-002, AC-005, AC-007, AC-011) was traced and matches the SR-008 rules. The board-width container query follows the `ARCH-REV-003` residual note (container on the block-level wrapper, not on the grid). Server behavior is unchanged. | Layout can only be verified in a browser (C-14). The delete count still depends on no status mutation existing (C-15). | Covered downstream; revisit at admission. |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean replacement of the grid and page; no migration. | — | — |
 | 10 | Cleanup Completeness | 9.5 | Components, spec, catalogue keys and docs references removed. | — | — |
 
@@ -241,11 +312,15 @@ N/A — the review passes.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
+- Review Decision: `Pass` (round 2, `CRR-003`, for `IR-002` / `ae0cd4755`)
 - Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass`
+- Supported Product Scenario Gate: `Pass` (SR-008 scenarios; SCN-007 revised)
+- Material-Premise Gate: `Pass` (`P-001` from `ARCH-REV-002`/`ARCH-REV-003` is resolved by the board-width container query)
 - Score Summary: 9.3/10 (93/100). Every category is at least 9.0.
 - Failure Origin: N/A
 - Recommended Recipient: `/api_e2e_engineer`
-- Notes: Task size `Medium` and architectural risk `High` are preserved.
+- Notes:
+  - Task size `Medium` and architectural risk `High` are preserved.
+  - `DR-001` must not be finalized.
+  - The uncommitted delivery docs edits describe the rejected two-pane UI and must be redone in delivery's docs sync (C-11).
+  - API/E2E should re-verify the board journeys and width guards and the restored grid/page journeys. The rewritten probe (`tests/e2e/projects-feature-probe.mjs`) is implementation-authored in `ae0cd4755` and gets the proportional test-code review after a passing run.
