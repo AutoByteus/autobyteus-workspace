@@ -18,5 +18,8 @@ Post-integration check: `python3 tickets/in-progress/antigravity-runtime-missing
 ## Durable knowledge / removed components
 Single `listAntigravityModels` help/models path replaces `probeAntigravityCli` / `discoverAntigravityRuntime` wrappers and version probing. `AGY_NATIVE_TOOL_NAMES` replaces version-profile DTO/resolver/parameter plumbing. Existing factory availability assertion serves new/restore. Manifest schema 1, eight tools and exact stored identity/conversation are retained. Sources: SR-003 design, integrated four production files, IR-001 and API restore evidence. Target: runtime module document above. Historical tickets/evidence are not rewritten. Future upstream compatibility is not guaranteed.
 
-## Result / continuation
+## DR-001 result / historical continuation
 Docs sync **Pass / Updated** against integrated checked source. Delivery overall **Blocked — awaiting explicit user verification**, not technical uncertainty re-acceptance. API-ENV-001 accepted residual remains: historic SQL/key/app-data effects unknown; API clean-confidence gate unmet, 92.1% overall / environment 75%. No new impact proof or confidence uplift. Next: user verification, then target refresh and finalization; no release/install authorized.
+
+## DR-002 final disposition
+User explicitly verified completion and requested finalization, no release. Archived ticket and docs are finalized on origin/personal; safe task cleanup complete. Runtime docs unchanged since verified DR-001. Latest handoff-summary.md and release-deployment-report.md are authoritative; earlier verification hold above is historical. API-ENV-001 accepted residual/confidence limitations unchanged.
