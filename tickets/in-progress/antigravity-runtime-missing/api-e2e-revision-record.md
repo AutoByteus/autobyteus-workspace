@@ -5,6 +5,7 @@ The canonical coverage investigation and execution report remain authoritative; 
 | ID | Trigger / upstream | Prior result / confidence | Current result / confidence |
 | --- | --- | --- | --- |
 | API-REV-001 | Implementation Complete / IR-001 / approved SR-003 | N/A / N/A | Fail (API-ENV-001) / 92.1% |
+| API-REV-002 | CRR-001 confirmed Local Fix / cc001b07c | Fail / 92.1% | Fail, unresolved impact/disposition / 92.1% |
 
 ## API-REV-001 — Initial Version-Independent AGY Validation
 - Round 1, 2026-09-27; triggering implementation-handoff.md / IR-001, source f590519ec and handoff 95637e21d. Related SR-003; ARCH-REV/CRR/DR N/A — not applicable. Triggering finding IDs N/A (initial baseline).
@@ -21,3 +22,13 @@ The canonical coverage investigation and execution report remain authoritative; 
 
 ## Applied Handoff Rule
 get_handoff_rules returned the failure-origin condition for completed failed validation. Selected sole recipient `/code_reviewer`; Medium/Low successful Delivery rule does not apply. Complete package and API-ENV-001 evidence attached for focused failure-origin review, not successful-test review. Validation/test/evidence commit 1499c590d; no push/release.
+
+## API-REV-002 — Confirmed Origin Reconciliation / Informed Disposition Needed
+- Trigger: Code Reviewer code-review-report.md and code-review-revision-record.md, CRR-001 / cc001b07c, finding API-ENV-001. Related SR-003, IR-001; architecture review/DR N/A. Medium/Low unchanged.
+- Prior Fail / 92.1%; current **Fail / 92.1%**, environment 75%. Seven final scores unchanged: 95,95,95,75,95,95,95. No uplift for documentation or possible future acceptance.
+- Prior-failure resolution: origin confirmed Local Fix/API-owned; containment and corrected isolation evidence reused; incident/report corrected for conditional coverage upsert, DB-associated vault/key bootstrap and application-data migrations. Actual conditional writes, non-impact and loss remain unproven. No technical closure.
+- API-007 retained-source/log reconciliation complete. API-001–006 existing functional Pass evidence reused without full rerun; no source/test edits, production access, secret inspection/copy, backend start or recovery. Added future prelaunch checklist and retained-evidence hashes; checklist not claimed as executed retroactively.
+- Canonical investigation, ledger, execution report and incident updated; incident-disposition-request.md created. Original logs retained unchanged. Missing historical pre-state cannot be reconstructed by another safe rerun or current timestamps.
+- Current new issue: **Unclear upstream informed disposition**, not an unreviewed execution origin. Route bounded incident to Solution Designer for explicit informed user decision before progression. No inferred acceptance and no automatic preservation-constraint waiver.
+- After successful resolution, CRR-001-requested separate proportional durable-test review remains pending; no successful-test/Delivery result here. Preserve this gate and reconcile future returned rules rather than silently using baseline direct-route exemption.
+- Remaining risk API-ENV-001: unknown prior production SQL/key/app-data effects. No unauthorized forensic inspection or speculative rollback. No new resources requiring cleanup.

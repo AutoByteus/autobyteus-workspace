@@ -29,3 +29,10 @@ Round 1 initialized before execution. Source f590519ec / IR-001; no prior round.
 
 - Cleanup checkpoint: all owned browser/backend/Nuxt and live process resources stopped; no listeners on 3017/30697; exact owned temp roots removed, cleanup.json retained. No production DB rollback attempted.
 - Round completed API-REV-001: six functional cases Pass (API-002 repaired), API-ENV-001 Fail unresolved. Final report 92.1%, environment 75%; no cases running/interrupted/unstarted. Required focused failure-origin review, not Delivery.
+
+## Round 2 — API-REV-002
+- Trigger CRR-001 confirmed API-owned Local Fix. API-ENV-001 recheck planned first; API-001–006 existing Pass evidence retained without rerun.
+- API-007 planned: source/retained-log impact reconciliation and prelaunch checklist, AC-004 / OPS-CR-001. No production access, launch, secret read/copy, recovery or source/test edit.
+
+- API-007 reconciliation completed: retained original/corrected logs, unchanged source and built startup reviewed. Coverage upsert, vault/key initialization and app-data runPending are reached/write-capable; actual conditional effects not established. No existing retained evidence closes prior-impact uncertainty. Original evidence hashes saved; prelaunch checklist adopted, no service/test execution or production access.
+- API-ENV-001 remains Fail/open; confirmed Local Fix origin, current upstream disposition unresolved. API-001–006 results reused, not rerun. API-REV-002 final 92.1%, environment 75%; no new artifacts/targets to clean beyond owned report files. Next: Solution Designer informed disposition; no release. CRR-001 proportional-test-review return gate pending after successful resolution.
