@@ -190,7 +190,7 @@ const activeSummary = computed(() => {
   ].filter(Boolean);
   return labels.length ? labels.join(' · ') : t('settings.components.settings.TokenUsageAnalytics.allUsage');
 });
-const runtimeLabels: Record<string, string> = { autobyteus: 'Autobyteus', codex_app_server: 'Codex', claude_agent_sdk: 'Claude SDK' };
+const runtimeLabels: Record<string, string> = { autobyteus: 'Autobyteus', codex_app_server: 'Codex', claude_agent_sdk: 'Claude SDK', grok_build: 'Grok Build' };
 const formatRuntime = (value: string) => runtimeLabels[value] ?? value;
 const apply = () => { if (!validationError.value) void store.fetch().catch(() => undefined); };
 const selectPreset = (preset: TokenUsageAnalyticsRangePreset) => {

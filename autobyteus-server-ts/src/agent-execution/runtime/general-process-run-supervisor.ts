@@ -163,6 +163,7 @@ export class GeneralProcessRunSupervisor {
         codexBackendFactory: providerFactories.codex,
         claudeBackendFactory: providerFactories.claude,
         agyBackendFactory: providerFactories.antigravity,
+        grokBackendFactory: providerFactories.grok,
         activationRegistry,
         memoryRecorder,
         providerInputNormalizer,

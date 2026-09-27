@@ -77,7 +77,7 @@ export class AgentRunResumeConfigService {
         metadata: null,
       };
     }
-    if (metadata.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) {
+    if (metadata.runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK || metadata.runtimeKind === RuntimeKind.GROK_BUILD) {
       return {
         runtimeKind: metadata.runtimeKind,
         sessionId: metadata.platformAgentRunId,

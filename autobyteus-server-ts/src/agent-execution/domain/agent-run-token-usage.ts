@@ -9,11 +9,12 @@ import type { TokenUsageUnitPrices } from "../../token-usage/domain/token-usage-
 import { isClaudeSdkResultIdentity, isClaudeSdkModelUsageArray, type ClaudeSdkModelUsage, type ClaudeSdkMainLoopUsage, type ClaudeSdkSelectedMatchState, type ClaudeSdkQueryKind } from "./claude-sdk-usage.js";
 
 export type TokenUsageScope = "per_call" | "per_turn" | "cumulative_snapshot";
-export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | string;
+export type TokenUsageRuntimeKind = "autobyteus" | "codex_app_server" | "claude_agent_sdk" | "grok_build" | string;
 export type TokenUsageIngestionKind =
   | "autobyteus_llm_phase"
   | "codex_thread_token_usage"
   | "claude_sdk_result"
+  | "grok_acp_call"
   | string;
 export type TokenUsagePricingStatus = "trusted" | "missing" | "placeholder" | "local_no_api_bill";
 export type TokenUsageApiCostStatus =

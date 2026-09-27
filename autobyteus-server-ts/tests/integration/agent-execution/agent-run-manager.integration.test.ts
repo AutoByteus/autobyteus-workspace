@@ -89,6 +89,7 @@ const createManager = (input: {
     codexBackendFactory: input.codexBackendFactory,
     claudeBackendFactory: input.claudeBackendFactory,
     agyBackendFactory: input.claudeBackendFactory,
+    grokBackendFactory: input.claudeBackendFactory,
     activationRegistry: infrastructure.activationRegistry,
     memoryRecorder: infrastructure.memoryRecorder,
     providerInputNormalizer: infrastructure.providerInputNormalizer,

@@ -1,0 +1,3 @@
+new(yolo=true) {"id":"01a0de9d-7641-7d32-b33e-331c498d92c1","sessionsChanged":[]}
+load(no meta) {"id":"01a0de9d-7641-7d32-b33e-331c498d92c1","sessionsChanged":[]}
+load(_meta.yoloMode=false) {"id":"01a0de9d-7641-7d32-b33e-331c498d92c1","sessionsChanged":[]}

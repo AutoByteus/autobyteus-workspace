@@ -10,7 +10,7 @@ const timestamp = nonEmptyStringSchema;
 const nullableText = nonEmptyStringSchema.nullable();
 
 export const agentOrgLaunchConfigurationDtoSchema = z.object({
-  runtimeKind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli"]),
+  runtimeKind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build"]),
   llmModelIdentifier: nonEmptyStringSchema,
   llmConfig: z.record(z.string(), jsonValueSchema).nullable(),
   autoExecuteTools: z.boolean(),

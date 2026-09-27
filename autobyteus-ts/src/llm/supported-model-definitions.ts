@@ -141,7 +141,7 @@ const grokReasoningSchema = new ParameterSchema([
   new ParameterDefinition({
     name: 'reasoning_effort',
     type: ParameterType.ENUM,
-    description: 'Controls Grok 4.6 reasoning effort. Reasoning is always enabled.',
+    description: 'Controls Grok reasoning effort. Reasoning is always enabled.',
     required: false,
     defaultValue: 'high',
     enumValues: ['low', 'medium', 'high', 'xhigh']
@@ -226,15 +226,15 @@ export const supportedModelDefinitions: SupportedModelDefinition[] = [
     defaultConfig: new LLMConfig({ pricingConfig: pricing(0.4, 2.0) })
   },
   {
-    name: 'grok-4.6',
-    value: 'grok-4.6',
+    name: 'grok-4.7',
+    value: 'grok-4.7',
     provider: LLMProvider.GROK,
     llmClass: GrokLLM,
-    canonicalName: 'grok-4.6', staticMetadata: createStaticModelMetadata(500000, null, null, 'https://docs.x.ai/developers/models/grok-4.6', '2026-08-22'),
+    canonicalName: 'grok-4.7', staticMetadata: createStaticModelMetadata(500000, null, null, 'https://docs.x.ai/developers/models/grok-4.7', '2026-09-26'),
     defaultConfig: new LLMConfig({
       extraParams: { reasoning_effort: 'high' },
       pricingConfig: pricing(2.0, 6.0, {
-        pricingEffectiveDate: '2026-08-22',
+        pricingEffectiveDate: '2026-09-26',
         cachedInputReadTokenPricing: 0.5,
         inputTokenPricingTiers: [
           { tierId: 'standard_le_200k', maxInputTokens: 200_000, inputTokenPricing: 2.0, outputTokenPricing: 6.0, cachedInputReadTokenPricing: 0.5 },
