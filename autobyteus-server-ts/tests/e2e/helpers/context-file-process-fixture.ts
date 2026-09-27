@@ -109,7 +109,7 @@ export class ContextFileProcessFixture {
         const write = Writer.prototype.writeSerializedText;
         Writer.prototype.writeSerializedText = async function(input) {
           const result = await write.call(this, input);
-          if(input.file === 'team_context_file_locators' && input.filePath.endsWith('raw_traces_active.jsonl') && result.outcome === 'committed') process.kill(process.pid, 'SIGKILL');
+          if(input.file === 'context-record' && input.filePath.endsWith('raw_traces_active.jsonl') && result.outcome === 'committed') process.kill(process.pid, 'SIGKILL');
           return result;
         };
         await startServer();`);

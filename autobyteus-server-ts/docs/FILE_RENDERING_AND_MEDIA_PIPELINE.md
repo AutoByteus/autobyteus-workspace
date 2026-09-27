@@ -82,92 +82,77 @@ exists. Draft owners retain their separate temporary scope and member address.
 Org and standalone contracts and the existing physical execution directories are
 unchanged. Both HTTP GET and provider local-path resolution use exact ownership.
 
-### Startup migration
+### Same-ID migration and startup admission
 
-`20260926_team_context_file_execution_locators_v1` is startup-only, after Team V2,
-Org-family and trace-layout prerequisites. It enumerates typed attachment record
-sources across Team, Org and standalone memory, proves historical Team references
-against the execution index and contained files, and changes only typed locators.
-Source-trace provenance disambiguates only a matching physical candidate; otherwise
-one unique physical owner is required. Unresolved ownership excludes the source package and its dependants, never guesses.
-Prose, provider histories, attachment blobs, and unrelated record values are not
-rewritten. Serialization of changed JSON/JSONL records may differ.
+`20260926_team_context_file_execution_locators_v1` remains the **same existing
+startup-only migration**, after Team V2, Org-family and trace-layout prerequisites.
+No new migration or successful-ledger replay is added. The ordinary runner skips
+`SUCCEEDED` and `SUCCEEDED_WITH_WARNINGS` installations; normal eligible pending or
+failed attempts use the corrected converter.
 
-Original changed-record backups and `manifest.json` are under
-`<app-data-dir>/app-data-migration-backups/20260926_team_context_file_execution_locators_v1/`,
-outside live memory discovery. The manifest records original/target hashes,
-locator mappings and commit progress. Preflight precedes record writes; atomic
-commits and strict rereads precede completion. Retry accepts only original or
-target hashes, retains original backups, and re-finalizes uncertain commits.
-Both Studio and standalone hosts independently rebuild current package admission
-on every startup; the migration ledger is not a startup or admission gate.
-Missing-tree/incomplete roots remain untouched and excluded with explicit
-`SUCCEEDED_WITH_WARNINGS` dispositions. An actual attempt failure stays `FAILED`,
-while independently valid packages and new work remain available. Even zero
-admitted historical runs must not prevent opening/new work. Current-reference
-checks include dependency closure across Team, Org and standalone packages;
-current runtime never decodes historical address locators.
+The converter discovers structural owners, then reads and semantically transforms
+each typed record source once. It replaces only changed files using the existing
+atomic writer. Historical Team references require indexed execution ownership and
+physical-file proof; source-trace provenance may disambiguate a matching physical
+candidate, otherwise one unique owner is required. It never guesses by member name.
+An unavailable reference preserves that entire source and produces a warning;
+independent sources continue. True IO/commit failures remain FAILED. Retry reads
+the current live old/current records, so previously converted files and newer
+current content are not overwritten from old copies. Per-file atomic replacement
+is not a multi-file transaction. Prose, attachment blobs and unrelated values stay
+unchanged; unchanged JSONL lines/terminators retain their bytes.
+
+The former bespoke journal, hashes, retained whole-file backup creation, preflight
+and repeated transforms are removed. A temporary file for atomic replacement is
+not a retained backup. Any originals/manifests already under
+`<app-data-dir>/app-data-migration-backups/20260926_team_context_file_execution_locators_v1/`
+remain inert and untouched: the corrected migration does not read, reconcile,
+restore, update or delete them. Runner attempt records/logs remain authoritative.
+
+Studio and standalone retain structural current-package validation at startup and
+new-run admission, but do not read all historical traces to audit attachments.
+There is no reference dependency closure, persistent audit cache or background
+replacement scan. Missing-tree/invalid structural packages remain preserved and
+excluded; a broken historical attachment no longer excludes an otherwise valid
+conversation or its dependants. Exact ownership and contained regular-file checks
+happen on the requested attachment read/provider path; only that operation fails
+when unavailable. Runtime never decodes historical address locators.
 
 ### Coordinated upgrade checklist
 
-This is an operational procedure, not evidence that an installation was upgraded.
+This is an operational procedure, not proof of an installed upgrade.
 
-1. Obtain deployment authorization and identify the exact node, app-data/memory
-   roots, database/ledger, package roots, configured origin and all writers. Record
-   current server/client versions and rollback binaries. Do not assume a test root
-   or earlier scan represents the installed corpus.
-2. Stop all writers, including standalone hosts, and prevent old clients from
-   reconnecting. Take a consistent recoverable snapshot of app data, memory,
-   database/ledger and configuration before starting new binaries. Migration's
-   changed-record backups alone are not a complete installation backup.
-3. Rehearse against an isolated consistent copy of that installation with the
-   matching candidate server and client. Preserve the configured-origin semantics
-   for historical absolute URLs; do not accidentally rebind external-host URLs.
-   Isolate credentials, package side effects and network access. There is no
-   separate dry-run CLI promised here: startup on the copy performs migration.
-4. Check truthful group dispositions and independent current admission; compare
-   original backup hashes, attachment hashes, preserved excluded roots, unaffected
-   records and non-locator values. Verify usable historical image/file Open and
-   duplicate-address send. Include an all-excluded-history case that still opens
-   and creates new work. Unexpected hash/backup or unfinished-attempt failures
-   require investigation, not deletion or fabricated ledger success. Retry through
-   normal startup policy. A completed excluded group is a warning, not a global
-   startup failure. Completed released manifests/originals remain evidence and
-   must not be rewritten merely for formatting or restored over newer history.
-5. With writers still stopped and a fresh consistent snapshot, deploy matching
-   web/Electron renderer and server versions together. Capture production migration
-   status/manifest, byte and history checks, and a controlled send/read/restart smoke
-   result before admitting users. Do not claim Electron shell validation from a
-   browser test. Retain backups and the operation log.
+1. Identify the authorized node, versions, configured origin, data/ledger roots
+   and all writers. Stop writers before a pending migration and preserve a
+   consistent recoverable installation snapshot through the normal operator
+   procedure; this converter no longer creates backup copies for you.
+2. Rehearse pending and eligible partial retry against an isolated faithful copy,
+   preserving configured-origin semantics and isolating credentials/side effects.
+   Do not reset the real ledger to construct a test. Already-terminal installations
+   need no replay: verify normal reopen and unchanged terminal record/attempt count.
+3. Verify typed-reference-only changes, unchanged attachment bytes, unavailable
+   whole-source preservation, existing inert residue and new-work availability.
+   Comparison hashes are external test evidence, not migration-runtime work.
+   Report true failed attempts honestly; do not delete roots or fabricate success.
+4. Deploy matching server/web or Electron together. Verify startup, history and
+   exact attachment access; missing requested attachments must fail locally.
+   Keep the first-upgrade/backend-process timing distinct from actual Electron
+   terminal-startup timing. A browser health result is not shell-startup proof.
 
-### Recovery from the released 1.4.87 startup failure
+### Existing released history and rollback
 
-Retained roots without execution trees were valid predecessor residue; their
-presence is not proof that all current data is unusable. The recovery keeps the
-same migration ID and existing originals/manifest. Let the normal runner retry
-failed attempts; do not reset a completed ledger, move troublesome roots out of
-live discovery, fabricate success, or delete history to make startup pass.
+Retained roots without execution trees are not evidence that all current data is
+unusable. Preserve them and existing originals/manifests. Do not move roots out of
+discovery, reset completed ledger records, force replay or delete history to make
+startup look successful. See the [Data Migration Guideline](design/data_migration_guideline.md)
+for predecessor dispositions and the recurring full-history-audit anti-pattern.
 
-Assess current package admission separately from attempt status. Verify application
-opening and new work even when no historical package can be admitted, plus reads
-from independently usable history, preservation of excluded roots, and a second
-startup without redoing a terminal migration. Rehearse on an **unfiltered**, consistent
-copy of actual installed data including the failed ledger, not only a current-runtime
-fixture with old URL fields. See the [Data Migration Guideline](design/data_migration_guideline.md)
-for the governing classification and incident anti-pattern. A test artifact with the
-same 1.4.87 label must be identified by candidate/build ID and checksum; the version
-label alone does not distinguish it from the affected published binary.
-
-### Recovery and rollback
-
-Keep writers stopped on failure. Preserve the failed manifest, diagnostics and
-original backups; source/target hash-safe startup retry is preferable to editing
-history. A pre-admission rollback must restore a coherent pre-upgrade snapshot
-(records, database/ledger, configuration and matching old binaries), not just the
-old server. **Never restore migration backups over newer writes.** If new writes
-have occurred, stop and preserve both states for a separately approved recovery or
-forward fix; a blind old snapshot restore would lose history. Unknown ownership
-requires evidence and escalation, not reassignment by member address.
+Do not blindly restore released backup records over newer live writes. If recovery
+is required, stop writers, preserve the current state and use an explicitly approved
+coherent snapshot/forward-fix procedure with matching binaries and ledger. Unknown
+ownership needs investigation, not address-based reassignment. Candidate test apps
+may share the published version label until finalization: use build identity and
+checksum, not that label alone, to distinguish them.
 
 ## Request Flows
 

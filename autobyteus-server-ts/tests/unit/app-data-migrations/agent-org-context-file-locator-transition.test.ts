@@ -133,9 +133,9 @@ describe('initial family locator transition: actual files, no user data', () => 
     expect(await fs.readFile(targetFile, 'utf8')).toBe(bytes);
     const readiness = new RootRunPackageReadinessIndex(e.memory); await readiness.rebuild();
     expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
-    // Current-reference admission is rebuilt independently of prior migration success.
+    // Structural admission remains independent of attachment availability and ledger status.
     await fs.unlink(path.join(e.target, 'task', 'context_files', filename));
-    await readiness.rebuild(); expect(readiness.listDiagnostics()).toMatchObject([{code: 'REFERENCE_UNAVAILABLE'}]); expect(readiness.listAdmitted('agent_org')).toEqual([]);
+    await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
   });
 
   it.each(['image', 'retired'])('rejects invalid present file-only %s facts before writing/moving the initial package', async type => {
@@ -207,8 +207,8 @@ describe('initial family locator transition: actual files, no user data', () => 
     expect(rows[0].media.images).toEqual([current('lead')]); expect(rows[0].content).toBe(uri); expect(rows[1].media.images).toEqual(['https://foreign.test' + uri]);
     await expect(fs.stat(path.join(e.target, treeName))).rejects.toMatchObject({ code: 'ENOENT' });
     const readiness = new RootRunPackageReadinessIndex(e.memory);
-    // A current structural tree cannot bypass a missing exact reference owner.
-    await put(file, trace(current('missing'))); await readiness.rebuild(); expect(readiness.listDiagnostics()).toMatchObject([{code: 'REFERENCE_UNAVAILABLE'}]); expect(readiness.listAdmitted('agent_org')).toEqual([]);
+    // Missing attachments are checked on use, not by auditing history during admission.
+    await put(file, trace(current('missing'))); await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
     await put(file, trace(current('lead'))); await readiness.rebuild(); expect(readiness.listDiagnostics()).toEqual([]); expect(readiness.listAdmitted('agent_org')).toEqual(['org']);
   });
 });

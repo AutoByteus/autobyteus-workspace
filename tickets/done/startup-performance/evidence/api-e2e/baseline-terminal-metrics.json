@@ -1,0 +1,31 @@
+{
+  "at": "2026-09-27T07:26:54.385Z",
+  "node": "v24.16.0",
+  "durations": {
+    "readinessMs": 66774.987041
+  },
+  "stats": {
+    "bootstrap": {
+      "readCalls": 610,
+      "readBytes": 3462381,
+      "traceReadCalls": 0,
+      "traceReadBytes": 0,
+      "backupReadCalls": 0,
+      "transforms": 0,
+      "migrationHashCalls": 0,
+      "recordWrites": 0,
+      "backupWrites": 0
+    },
+    "readiness": {
+      "readCalls": 18669,
+      "readBytes": 12889884124,
+      "traceReadCalls": 12046,
+      "traceReadBytes": 12692607164,
+      "backupReadCalls": 0,
+      "transforms": 0,
+      "migrationHashCalls": 0,
+      "recordWrites": 0,
+      "backupWrites": 0
+    }
+  }
+}

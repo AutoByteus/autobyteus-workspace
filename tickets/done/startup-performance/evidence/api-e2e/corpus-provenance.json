@@ -1,0 +1,15 @@
+{
+  "source": "/Users/normy/.autobyteus/server-data",
+  "target": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/snapshot",
+  "copySeconds": 6.902299583,
+  "fileCount": 14412,
+  "bytes": 8052688333,
+  "sourceWriterPresent": true,
+  "stoppedWritersDuringOwnedMigration": true,
+  "sourceMetadataStableDuringCopy": false,
+  "changedSourcePaths": [
+    "agent_teams/software_engineering_team_2e127b81083243db9a866f8c3c7cdf54/api_e2e_engineer_6480c8112196429caf1cbe57a51dac60/raw_traces_active.jsonl"
+  ],
+  "method": "APFS file clones plus read-only SQLite backup; key privately copied without exposing values. Representative owned snapshot, not a claimed globally atomic live snapshot.",
+  "approvedUseInValidation": "Frozen representative comparative fixture, not globally atomic installed recovery certification; every copied file retained, including concurrently active agent trace. Owned variants migrated with no external writers."
+}

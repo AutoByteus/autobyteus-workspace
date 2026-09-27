@@ -1,0 +1,13 @@
+{
+  "processTreeCompletion": {
+    "status": "complete",
+    "identity": "posix-process-group:39095",
+    "forced": false,
+    "gracefulError": null
+  },
+  "portObservation": {
+    "status": "available",
+    "port": 3443,
+    "detail": null
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "ownedCorpusRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn",
+  "ownedCorpusIncludingPrivateKeyRemoved": true,
+  "ownedModelProcessStopped": true,
+  "ports": {
+    "3441": "available",
+    "3442": "available",
+    "3443": "available"
+  },
+  "productionAppPid": 81934,
+  "productionBackendPid": 82843,
+  "productionProcessesStillRunning": true,
+  "installedProfileResetOrReplay": false,
+  "candidateInstalledOrPublished": false
+}

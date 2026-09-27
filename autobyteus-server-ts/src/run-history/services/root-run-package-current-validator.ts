@@ -24,11 +24,11 @@ export type RootRunPackageReadinessDiagnostic = Readonly<{
   rootSubjectKind: RootRunPackageFamily; rootRunId: string; packagePath: string;
   code: "ROOT_RUN_FAMILY_CONFLICT" | "ROOT_RUN_PACKAGE_NOT_DIRECTORY" | "ROOT_RUN_PACKAGE_MANIFEST_INVALID"
     | "ROOT_RUN_PACKAGE_MISSING_TREE" | "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED"
-    | "REFERENCE_UNAVAILABLE" | "DEPENDENCY_UNAVAILABLE" | "FAILED_ATTEMPT";
+    | "FAILED_ATTEMPT";
   reason: string;
 }>;
 export type CurrentContextFileOwner = Readonly<{
-  descriptor: ContextFileFinalOwnerDescriptor; directory: string; groupKey: string;
+  descriptor: ContextFileFinalOwnerDescriptor; directory: string;
 }> & ({ descriptor: Extract<ContextFileFinalOwnerDescriptor, {kind: "team_member_final"}>; address: string }
   | { descriptor: Exclude<ContextFileFinalOwnerDescriptor, {kind: "team_member_final"}> });
 export type CurrentRunPackage = Readonly<{
@@ -137,7 +137,7 @@ export class RootRunPackageCurrentValidator {
       const key = packageKey("agent", id);
       candidate.groups.push({ key, family: "agent", id, directory: entry.packagePath,
         rootDirectories: [], agentDirectories: [entry.packagePath],
-        owners: [{ descriptor: {kind: "agent_final", runId: id}, directory: entry.packagePath, groupKey: key }] });
+        owners: [{ descriptor: {kind: "agent_final", runId: id}, directory: entry.packagePath }] });
     }
     return candidate;
   }
@@ -174,7 +174,7 @@ export class RootRunPackageCurrentValidator {
       const key = packageKey("agent_team", rootRunId);
       const owners: CurrentContextFileOwner[] = index.listAgentExecutions().map((agent) => ({
         descriptor: { kind: "team_member_final", teamRunId: agent.containingTeamRunId, agentRunId: agent.agentRunId },
-        address: agent.address, groupKey: key,
+        address: agent.address,
         directory: this.layout.getRootedAgentRunDirPath(index.getTeamRunPhysicalScope(agent.containingTeamRunId), agent.agentRunId),
       }));
       target.groups.push({ key, family: "agent_team", id: rootRunId, directory: entry.packagePath, owners,
@@ -216,7 +216,7 @@ export class RootRunPackageCurrentValidator {
       const index = new AgentOrgExecutionIndex(executionTree);
       const key = packageKey("agent_org", rootRunId);
       const owners: CurrentContextFileOwner[] = index.listAgents().map((agent) => ({
-        descriptor: { kind: "org_member_final", orgRunId: rootRunId, agentRunId: agent.agentRunId }, groupKey: key,
+        descriptor: { kind: "org_member_final", orgRunId: rootRunId, agentRunId: agent.agentRunId },
         directory: this.layout.getRootedAgentRunDirPath(index.getPhysicalScopeForAgent(agent.agentRunId), agent.agentRunId),
       }));
       target.groups.push({ key, family: "agent_org", id: rootRunId, directory: entry.packagePath, owners,

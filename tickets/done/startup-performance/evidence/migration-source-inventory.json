@@ -1,0 +1,416 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.ts",
+    "lines": 215,
+    "sha256": "f7d171b674ce97151cd00714312ffe91566e7973475f7a34796c74a39fe48e42",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.ts",
+    "lines": 249,
+    "sha256": "73b6786817c53f3ae4ae201ddd7d75e960cfd8e979d89834798df47fcbfaf0ac",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts",
+    "lines": 115,
+    "sha256": "7117297e25eb8795fe7e2a010213752c7d3827f6c221049cb841fc0beff71be1",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-index-transition.ts",
+    "lines": 45,
+    "sha256": "08c1940cb01cf5c4aebe3689d1757e50032b2f28effb604e0c9fca8daf3d2913",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-runtime-tree-target.ts",
+    "lines": 13,
+    "sha256": "26f2535e87245e787251a8f71b3d79d29c699e66c1e3e88085af98c54596cf62",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-repository.ts",
+    "lines": 95,
+    "sha256": "b65955f41caeece5d0621cf79dc60633746178f60cff77e79625126875589820",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-token-attribution-transition.ts",
+    "lines": 48,
+    "sha256": "e41bcf43dfd75c103d2ee262ab1f641ba98ad012925b916c13bd3dab00ba06f4",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/released-team-run-v2-schema.ts",
+    "lines": 93,
+    "sha256": "06bc127d23f9eeec2ab9771c1de616971ae26d1f90e37e8c7945964fade59da9",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-classifier.ts",
+    "lines": 50,
+    "sha256": "a00643c7a1c3d44b53e332cabf22d0c7b99207353f8bbd25a897dea378563809",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts",
+    "lines": 173,
+    "sha256": "65fbb7442d0ec253f950c8d0062a7d78e9aa977f319cddfefcc0592521711976",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-v1-app-data-migration.ts",
+    "lines": 216,
+    "sha256": "8707fa28c140e1890a448c4fbde322a5806afe2fbddc294762f78a1a19d86505",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-migration-name-snapshot.ts",
+    "lines": 84,
+    "sha256": "e1577531555baa93b3b2fdf57c8209039c92c1092ed3bb5f62083045ad11cab1",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.ts",
+    "lines": 350,
+    "sha256": "0660278f686b8b95373d90c831ab1211659a2f5c263134d1d2f0180bfbe1e32f",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-readable-id-application-selector-migrator.ts",
+    "lines": 208,
+    "sha256": "144463f17d682894cbeec28e740fe187515f398c072e4e52912034260b60c6f7",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-readable-id-json-selector-migrator.ts",
+    "lines": 274,
+    "sha256": "d09f4df736380d83b46e84798759dbf93ac656e074453783cf23c6b2de74fb5e",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-v1-app-data-migration.ts",
+    "lines": 214,
+    "sha256": "297ff2b22265278d9d5ddb79ea2b4e33452276079b56ea965f8a505d70369531",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/custom-provider-v1-migration-file.ts",
+    "lines": 166,
+    "sha256": "6c30ef676d54933655d7cc19371a35f69e052f4d0e1a7372448b206d2bf2b043",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts",
+    "lines": 266,
+    "sha256": "46a79f87d7e5075ef1b18cc030aee2bada7ba020e6737df31bad2c29ff7128ed",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/raw-trace-active-file-name-migration-files.ts",
+    "lines": 210,
+    "sha256": "2cde4a35dfe1c4c8933e42d1ae5d88eff0dee6d86bae331591aa63b3a56f58d7",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/raw-trace-active-file-name-migration.ts",
+    "lines": 43,
+    "sha256": "91761abcf6d217fdafd9575762a186463c4a019902fe0eb6a745a7eebad326f1",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/raw-trace-rotation-layout-migration-files.ts",
+    "lines": 198,
+    "sha256": "b7b952e7ce8f5fe16124a82a9b2577d6bf322d5655bbd31557a0fb08ea09649b",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/raw-trace-rotation-layout-migration-run.ts",
+    "lines": 191,
+    "sha256": "7a599e42ae7c876c0ea218276b6bf1efb6c5063ec5cec6c224ad46b023c1994b",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/raw-trace-rotation-layout-migration.ts",
+    "lines": 43,
+    "sha256": "bb740962827ca078fc948150937bd7198fce8c78864f95324d0ab07ad0cd6985",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/remove-external-messaging-data-migration.ts",
+    "lines": 89,
+    "sha256": "d19faacecd483e87f86fe2bca4abdc06945b5b3f23697e0a685f6333284a6cd8",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots-migration.ts",
+    "lines": 187,
+    "sha256": "2fe596116b99fd3840a54426df1776d54d4f529c9339bc2ebee7cb0c9ccf66fe",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/remove-global-skill-discovery-mode-migration.ts",
+    "lines": 200,
+    "sha256": "0f824e9e78f28b294a1d2eccd34142f6ec91cade61273f2e789377b106aa81df",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/remove-self-evolution-run-metadata-migration.ts",
+    "lines": 169,
+    "sha256": "7e4f1f1a4433925f9e871a662fb96c95dd95845f2d4562ac326a572eefba1042",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/run-history-index-v2-migration.ts",
+    "lines": 385,
+    "sha256": "7c0b171914d056c2769592e6291d6e5d22d183eae9975791fb5e3e452885daff",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-agent-memory-layout-app-data-migration.ts",
+    "lines": 216,
+    "sha256": "16cb728ecc946a0b68e370d102303381ce94e8448119aa7f6355bc60f2488031",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-communication-projection-address-migration.ts",
+    "lines": 143,
+    "sha256": "0e477621244a31d17e1b215b1e1f26a88faf0224f6141c115c406ab6f57cbdab",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts",
+    "lines": 88,
+    "sha256": "64727c2979c7728dd5a40a8a0798b0ac3a82888370515e8cad3b072aed06224d",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts",
+    "lines": 81,
+    "sha256": "36c83b2e01f5ffa055322f4adf5436e05bc0d94a778d1fa181e9ff51d79e6451",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts",
+    "lines": 138,
+    "sha256": "73f034752a07d4c36b8c071cccdd9450bf19799a0e4a8f9c8fdfda1eb66c926a",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-physical-run-index.ts",
+    "lines": 44,
+    "sha256": "f2933e6b90f9fb03542543c18a21e31f5222de5825dbc3ba8eaf01558ff59411",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-task-delegation-converter.ts",
+    "lines": 91,
+    "sha256": "613e6780974d00ef7246404091325d87f772ed71d55a91bb5ac39f4450ee3e41",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-task-package-converter.ts",
+    "lines": 299,
+    "sha256": "a043dfc122132521da7850083af629c036829fcc38b625e821cbaf608426ddb4",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-communication-converter.ts",
+    "lines": 198,
+    "sha256": "27abe2935136bed0e276797fb1d91cc5f708aad26f81985aa47a5298aab6245a",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-execution-address-normalizer.ts",
+    "lines": 142,
+    "sha256": "671b1b23c53bea98515c901915b4fafe6635a14a10230dc535be1587a0b9353d",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-metadata-converter.ts",
+    "lines": 192,
+    "sha256": "4bf0e8623219447e2c2ce7fdbd7a9287c7d7a40c16892a67bae662d1b1e99976",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-run-evidence.ts",
+    "lines": 75,
+    "sha256": "63e19cfd8aa24f57774fd47cdb10f5e72b3e0d730919fc727714cfd316dcfb46",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-run-planner.ts",
+    "lines": 145,
+    "sha256": "ad1c84de53b90d75dabdb44b579af2c7ad2c88adfbf42e4548b4ece5e6faa110",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-execution-v1-index.ts",
+    "lines": 302,
+    "sha256": "b5135ded6559313be721865ae5d6e230dbc61486331f1c1f0c00964e7051475c",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-app-data-migration.ts",
+    "lines": 423,
+    "sha256": "7768493fcd1f5002abd4c14e40d858f1825d30db9b29bc08148c38b5c435242f",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-builder.ts",
+    "lines": 61,
+    "sha256": "a81fb4fe94f4baa5f60f02a91b9eb53c51c8f967a5c9642c1a876a52dd6c678a",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-constants.ts",
+    "lines": 2,
+    "sha256": "6ad7f589645e2a3ebecd155b307e092b18539a39ac43cb5468ae7d363c892c9b",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-mutator.ts",
+    "lines": 215,
+    "sha256": "251233573d7db6b77d86413929ee31ae9dbcf96e031d344f390470af020f59a5",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.ts",
+    "lines": 318,
+    "sha256": "cdf5d4fbda1f665a4fa30dd02a528a897edae7cf12ef9de5836f27b4219b967f",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-store.ts",
+    "lines": 49,
+    "sha256": "61bb561f3c5d7d2b2021ba213de25e6247e275afbf72945677fb6b45d129b0ba",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-execution-tree-v1-types.ts",
+    "lines": 156,
+    "sha256": "41a6819700ecd867235445ba4d91cb3d775147eab08d8da1b93fbdabae4f5e7c",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts",
+    "lines": 157,
+    "sha256": "e80480d1eae5c84a6259200ad367c8b7dec9c0d921189060b489b7c1d4897237",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-v1-row-projector.ts",
+    "lines": 57,
+    "sha256": "d85e4ebf7273f104ca02d7ff0e7cd9a86d11c57ee622282005bedf52daecd802",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-predecessor-source-resolver.ts",
+    "lines": 105,
+    "sha256": "bbade571994e637e9860d3eb65399994703f1e9eceac24e153a185a7981e7dfe",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-state-package-v1-validator.ts",
+    "lines": 86,
+    "sha256": "78a06844d40fe43853cbaf5953f9384dcafe52284ab55b5789da621047e18518",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-v1-package-promoter.ts",
+    "lines": 167,
+    "sha256": "80aaf6c150e0b6dc1e9dcfa6c721beeab0fdb19fd449b0d8285e3699e967cdc9",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-migration-repository.ts",
+    "lines": 289,
+    "sha256": "4eab6a58d32eb219c32da08ed190948528794015dc9eb8f9991072615282cfb4",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v1/token-usage-team-run-v1-row-planner.ts",
+    "lines": 413,
+    "sha256": "9d3cceb0e06341045d4e8897617c58b7d43fd5ee814fb28ff7d789be2ff45547",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.ts",
+    "lines": 344,
+    "sha256": "c08cd82ff1da8c45fef21fd26c156c8324e5cf02fc466455c161921a16b7bc40",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-history-index-v2-migration.ts",
+    "lines": 526,
+    "sha256": "8565da434a8a3e97b1b0d623768a598f7e4410c7e661235ead0cd30bb453dc3b",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-member-tree-prerequisite-converter.ts",
+    "lines": 173,
+    "sha256": "5648b7470019d304223b3936bf60d9f6a9fdcecc0a89b93a4fd83da0753bab74",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.ts",
+    "lines": 91,
+    "sha256": "4928a958fe1aa7c27fceb72333ba29a63f314237dd460e83bbd67bcf8188b994",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-run-migration-state-classifier.ts",
+    "lines": 271,
+    "sha256": "a9ffce0a079c36c525ef48da0abb1d534a1cb706cca9a9ecf58fb4fdcdc13efb",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts",
+    "lines": 188,
+    "sha256": "736db953977defeb66d7c34e805c8f53e05bb7b3bd7f9209cdc8848ee5a83c5e",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts",
+    "lines": 186,
+    "sha256": "45b1f09381a9d65f81a1e8200b7674e9702a2cee8b717515d57efae7fafb7af3",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts",
+    "lines": 227,
+    "sha256": "ccdc5c6cb5f12f4140bab78dd60b9de2c6c1c873a608b86485abe53c5a465bcc",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-row.ts",
+    "lines": 295,
+    "sha256": "e877a9e513e3f2ea5449029c8f7e9e79d854a2c0d5300b64339c3cf58f9a834c",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-run-fold.ts",
+    "lines": 117,
+    "sha256": "44c3f6bc4839eb63df9e38ced36414e3b6944f80d7b210f3bfa3b47d63a81845",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.ts",
+    "lines": 139,
+    "sha256": "e268a79688857325f6b935dd236c0dfce87cff6068601ef1fbd35d3a7b58c2b3",
+    "registeredEntrypoint": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-source-shaping-constants.ts",
+    "lines": 3,
+    "sha256": "b43c06a20746589d72ec8915a5e62694850ee8d05d005fa6f4ce555505c1aa7a",
+    "registeredEntrypoint": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-task-team-run-index.ts",
+    "lines": 279,
+    "sha256": "f1f8f0d7545dad6970040c11f0feae449486847cbf6cb08bcc852d81f1e83211",
+    "registeredEntrypoint": false
+  }
+]

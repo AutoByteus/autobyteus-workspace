@@ -1,0 +1,43 @@
+{
+  "at": "2026-09-27T07:23:31.151Z",
+  "node": "v24.16.0",
+  "durations": {
+    "migrationMs": 159378.595209,
+    "readinessMs": 29043.922541999986
+  },
+  "stats": {
+    "bootstrap": {
+      "readCalls": 33,
+      "readBytes": 24534,
+      "traceReadCalls": 0,
+      "traceReadBytes": 0,
+      "backupReadCalls": 0,
+      "transforms": 0,
+      "migrationHashCalls": 0,
+      "recordWrites": 0,
+      "backupWrites": 0
+    },
+    "migration": {
+      "readCalls": 30661,
+      "readBytes": 27880378321,
+      "traceReadCalls": 23184,
+      "traceReadBytes": 26314833070,
+      "backupReadCalls": 1394,
+      "transforms": 26733,
+      "migrationHashCalls": 3993,
+      "recordWrites": 363,
+      "backupWrites": 1218
+    },
+    "readiness": {
+      "readCalls": 9334,
+      "readBytes": 6442982005,
+      "traceReadCalls": 6023,
+      "traceReadBytes": 6344343917,
+      "backupReadCalls": 0,
+      "transforms": 0,
+      "migrationHashCalls": 0,
+      "recordWrites": 0,
+      "backupWrites": 0
+    }
+  }
+}

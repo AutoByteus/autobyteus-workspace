@@ -86,6 +86,23 @@ run("Context-file built-process runtime and upgrade", () => {
     expect(hash(await fs.readFile(tracePath))).toBe(hash(traceBefore));
   }, 120_000);
 
+  it("rejects uncontained and cross-owner final-file symlinks at HTTP access without blocking valid attachments", async () => {
+    const owner = await launch("team"); const files = await attachments(owner);
+    const file = path.join(owner.directory, "context_files", files[0]!.storedFilename);
+    const outside = path.join(f.root, "outside-memory.txt");
+    await fs.writeFile(outside, "must not be returned");
+    const other = await launch("agent");
+    await fs.mkdir(path.join(other.directory, "context_files"), {recursive:true});
+    const otherFile = path.join(other.directory, "context_files", files[0]!.storedFilename);
+    await fs.writeFile(otherFile, "other owner bytes");
+    for (const target of [outside, otherFile]) {
+      await fs.unlink(file); await fs.symlink(target, file);
+      expect((await fetch(f.origin + files[0]!.locator)).status).toBe(404);
+      expect(await (await fetch(f.origin + files[1]!.locator)).text()).toBe("original file bytes");
+    }
+    await fs.unlink(file); await fs.writeFile(file, PNG); await verifyBytes(files);
+  }, 120_000);
+
   it("uploads, previews and removes Team drafts before launch, then binds remaining bytes to the returned exact execution", async () => {
     const draft = { kind: "team_member_draft", teamDraftId: "before-launch", memberAddress: "/worker" };
     const removed = await f.upload(draft, "remove.png", PNG, "image/png");
@@ -105,7 +122,7 @@ run("Context-file built-process runtime and upgrade", () => {
     expect(await fs.readdir(path.join(owner.directory, "context_files"))).not.toContain(removed.storedFilename);
   }, 120_000);
 
-  it("converts a copied retained duplicate-address package before admission and preserves bytes, history and original backups across restart", async () => {
+  it("converts a copied retained duplicate-address package before admission and preserves bytes, history and inert released residue across restart", async () => {
     const owner = await launch("team");
     const files = await attachments(owner);
     await f.send(`/ws/agent-team/${owner.teamRunId}`, owner.runId, "Retained image and file history.", files);
@@ -139,7 +156,10 @@ run("Context-file built-process runtime and upgrade", () => {
     const db = new PrismaClient({ datasources: { db: { url: `file:${path.join(copyRoot, "db", "production.db")}` } } });
     try { await db.$executeRaw`DELETE FROM app_data_migration_records WHERE migration_id = ${migrationId}`; }
     finally { await db.$disconnect(); }
-    await fs.rm(path.join(copyRoot, "app-data-migration-backups", migrationId), { recursive: true, force: true });
+    const residueDir = path.join(copyRoot, "app-data-migration-backups", migrationId);
+    await fs.mkdir(residueDir, {recursive:true});
+    await fs.writeFile(path.join(residueDir, "manifest.json"), "malformed released manifest; not authority");
+    await fs.writeFile(path.join(residueDir, "released.original"), original);
     await f.start();
     await verifyBytes(files);
     const converted = (await fs.readFile(tracePath, "utf8")).trim().split("\n").map(line => JSON.parse(line));
@@ -150,14 +170,13 @@ run("Context-file built-process runtime and upgrade", () => {
       expect(await (await fetch(f.origin + file.locator.replace(`/${owner.runId}/`, "/retained-task/"))).text()).toBe(`other execution ${file.displayName}`);
     }
     const backup = path.join(copyRoot, "app-data-migration-backups", migrationId);
-    const manifest = await readJson(path.join(backup, "manifest.json")); expect(manifest.complete).toBe(true);
-    expect(manifest.files).toHaveLength(1);
-    const originals = (await fs.readdir(backup)).filter(name => name.endsWith(".original"));
-    expect(await fs.readFile(path.join(backup, originals[0]!), "utf8")).toBe(original);
+    expect((await fs.readdir(backup)).sort()).toEqual(["manifest.json", "released.original"]);
+    expect(await fs.readFile(path.join(backup, "manifest.json"), "utf8")).toBe("malformed released manifest; not authority");
+    expect(await fs.readFile(path.join(backup, "released.original"), "utf8")).toBe(original);
     const after = await fs.readFile(tracePath);
     await f.stop(); await f.start(); await verifyBytes(files);
     expect(hash(await fs.readFile(tracePath))).toBe(hash(after));
-    expect(await fs.readFile(path.join(backup, originals[0]!), "utf8")).toBe(original);
+    expect(await fs.readFile(path.join(backup, "released.original"), "utf8")).toBe(original);
     await f.gql(`mutation {reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`);
     const restored = await f.gql(`mutation($teamRunId:String!){restoreAgentTeamRun(teamRunId:$teamRunId){success message}}`, { teamRunId: owner.teamRunId });
     expect(restored.restoreAgentTeamRun.success, restored.restoreAgentTeamRun.message).toBe(true);
@@ -168,7 +187,7 @@ run("Context-file built-process runtime and upgrade", () => {
     expect((await fs.readdir(otherDir)).sort()).toEqual(files.map(file => file.storedFilename).sort());
     await verifyBytes(files); await verifyBytes(fresh);
   }, 120_000);
-  it("resumes a real process kill after record commit without replacing the original backup", async () => {
+  it("resumes an eligible interrupted old/current corpus without a journal or overwriting later current writes", async () => {
     const owner = await launch("team"); const files = await attachments(owner); await f.stop();
     const tracePath = path.join(owner.directory, "raw_traces_active.jsonl");
     const old = files[0]!.locator.replace(`/agent-runs/${owner.runId}/`, "/members/%2Fworker/");
@@ -182,9 +201,11 @@ run("Context-file built-process runtime and upgrade", () => {
     await fs.rm(backup, { recursive: true, force: true });
     await expect(f.start({ interruptAfterTraceCommit: true })).rejects.toThrow("SIGKILL");
     expect(JSON.parse(await fs.readFile(tracePath, "utf8")).media.images).toEqual([files[0]!.locator]);
-    expect((await readJson(path.join(backup, "manifest.json"))).complete).toBe(false);
-    const originalName = (await fs.readdir(backup)).find(name => name.endsWith(".original"))!;
-    expect(await fs.readFile(path.join(backup, originalName), "utf8")).toBe(original);
+    await expect(fs.access(backup)).rejects.toMatchObject({code:"ENOENT"});
+    const later = JSON.stringify({id:"later-current",trace_type:"user",content:"Preserve newer current write"}) + "\n";
+    await fs.appendFile(tracePath, later);
+    const remaining = path.join(owner.directory, "raw_traces_000001.jsonl");
+    await fs.writeFile(remaining, original); // Still-old source in the stopped disposable partial corpus.
     await f.start(); // Active migration lease no longer globally blocks valid current data.
     await verifyBytes(files);
     await f.stop();
@@ -193,8 +214,9 @@ run("Context-file built-process runtime and upgrade", () => {
     try { await clockDb.$executeRaw`UPDATE app_data_migration_records SET started_at = ${new Date(0)} WHERE migration_id = ${migrationId}`; }
     finally { await clockDb.$disconnect(); }
     await f.start(); await verifyBytes(files);
-    expect((await readJson(path.join(backup, "manifest.json"))).complete).toBe(true);
-    expect(await fs.readFile(path.join(backup, originalName), "utf8")).toBe(original);
+    expect(JSON.parse((await fs.readFile(remaining, "utf8")).trim()).media.images).toEqual([files[0]!.locator]);
+    expect(await fs.readFile(tracePath,"utf8")).toContain(later);
+    await expect(fs.access(backup)).rejects.toMatchObject({code:"ENOENT"});
   }, 120_000);
 
 });

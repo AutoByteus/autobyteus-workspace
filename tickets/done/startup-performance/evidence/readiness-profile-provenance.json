@@ -1,0 +1,32 @@
+{
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/tickets/in-progress/startup-performance/evidence/readiness-profile.mjs",
+      "sha256": "4824793ad796db7a5fa16c5134cf58d5efeff4acc32a5e1a3e0afd3e71bbbba8"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/tickets/in-progress/startup-performance/evidence/readiness-profile.json",
+      "sha256": "6f9e8c48da546d5ab711849eb2725ecac90c27b6a0e1a771c359cf14ff9c5d79"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/tickets/in-progress/startup-performance/evidence/recovery-readiness-delta.diff",
+      "sha256": "3e8a3ca36567c9146a4c8d8b486de5ba5385b4b8579ca91963187329d893e760"
+    },
+    {
+      "path": "/Applications/AutoByteus.app/Contents/Resources/server/dist/run-history/services/root-run-package-readiness-index.js",
+      "sha256": "d11e81901dc09f5571db46f4ca749661064c4c2c3b398397714f85f8e5615823"
+    },
+    {
+      "path": "/Applications/AutoByteus.app/Contents/Resources/server/dist/run-history/services/root-run-package-current-validator.js",
+      "sha256": "01ec83fb9dce460c05b51c64e3d85b5a1e6148b0587156b9c2e451a439c79929"
+    },
+    {
+      "path": "/Applications/AutoByteus.app/Contents/Resources/server/dist/context-files/services/context-file-current-reference-validator.js",
+      "sha256": "3868a40425f7211f7915fc2dcf9d9e0359e2b46308e1281a44bf6139c07a0938"
+    },
+    {
+      "path": "/Applications/AutoByteus.app/Contents/Resources/server/dist/context-files/services/context-file-record-locators.js",
+      "sha256": "dfe254da44dbbf8c8bdd6ac8c336cdc8edc642afcc54a3ed1410afddac484650"
+    }
+  ]
+}
