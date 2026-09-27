@@ -539,9 +539,14 @@ pnpm android:server:stop
   - iOS simulator build/test workflow artifacts, plus signed `.ipa` upload to App Store Connect/TestFlight when iOS publish secrets are configured
   - Docker Hub server image for `linux/amd64,linux/arm64`
 - Release notes:
-  - GitHub Releases use curated user-facing notes from `.github/release-notes/release-notes.md` when that file exists in the tagged revision.
+  - Stable GitHub Releases use curated user-facing notes from `.github/release-notes/release-notes.md` when that file exists in the tagged revision.
   - The release helper prepares that file from the ticket `release-notes.md`.
   - Historical tags that predate the curated file fall back to GitHub generated notes during manual republish.
+  - Pre-release tags (any tag containing `-`, such as `vX.Y.Z-beta.N`) always use GitHub generated notes in both the desktop and Android jobs.
+- Release channels (stable and beta):
+  - Any tag containing `-` is published as a GitHub **pre-release**, including a manual dispatch of such a tag. GitHub "Latest" therefore stays on the newest stable release.
+  - Desktop installs are offered pre-releases only when **Settings > Updates > Receive beta updates** is on (off by default). Turning it off never downgrades; the install waits for the next newer stable.
+  - See `autobyteus-web/docs/github-actions-tag-build.md` (Release Channels) and `autobyteus-web/docs/electron_packaging.md` (Update Channel).
 - Version/tag sync is mandatory:
   - `autobyteus-web/package.json` version must match the release tag version (`vX.Y.Z`).
   - The release helper synchronizes that package version before tagging.
@@ -575,7 +580,9 @@ pnpm android:server:stop
   - the workflow uploads to App Store Connect/TestFlight only; final public App Store review, listing, privacy, and release approval remain external
 - Server Docker tags:
   - stable release tags publish `autobyteus/autobyteus-server:X.Y.Z` and `autobyteus/autobyteus-server:latest`
-  - prerelease tags such as `v1.2.7-rc1` publish only `autobyteus/autobyteus-server:1.2.7-rc1`
+  - prerelease tags such as `v1.2.7-beta.1` publish `autobyteus/autobyteus-server:1.2.7-beta.1` and never move `:latest`
+  - `autobyteus/autobyteus-server:beta` (default variant only) moves forward only: after the version image is pushed, it points at that image when the tag is the newest recognized release tag, stable or beta (`scripts/release_versions.py is-newest`); re-publishing an older tag leaves it unchanged
+  - public launcher users follow the beta track with `autobyteus-docker upgrade --all --tag beta` and return with `--tag latest` only once a stable release at least as new as their beta exists (see `autobyteus-server-ts/docker/README.md`)
 - Required GitHub repository secrets for Android APK publish:
   - `ANDROID_KEYSTORE_B64`
   - `ANDROID_KEYSTORE_PASSWORD`
@@ -615,6 +622,12 @@ Use the release helper script from repo root:
 # 2) Prepare the release (bump desktop package version, sync curated notes, commit, create tag, push branch+tag)
 #    This starts the desktop, Android APK, iOS, and server Docker release workflows because the pushed tag matches v*.
 pnpm release 1.2.7 -- --release-notes tickets/done/<ticket-name>/release-notes.md
+
+# Beta release (no curated notes; published as a GitHub pre-release with generated notes):
+# computes the next unused vX.Y.Z-beta.N (default base = next patch after the highest stable tag,
+# N capped at 98), bumps the package version, commits, tags and pushes. Starts the same tag-push workflows.
+bash scripts/desktop-release.sh beta
+bash scripts/desktop-release.sh beta --base 1.5.0
 
 # Optional manual build-only validation (no GitHub release publish)
 pnpm release:test --ref personal

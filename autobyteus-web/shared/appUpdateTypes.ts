@@ -52,8 +52,9 @@ export interface AppUpdateState {
 
 /**
  * Result of the `app-update:set-channel` command.
- * - `accepted: false`: the value was invalid or an update is checking, downloading,
- *   downloaded or installing; the channel is unchanged.
+ * - `accepted: false`: the value was invalid or `isAppUpdateChannelLocked(state)` is
+ *   true (checking, downloading, installing, or an update is staged); the channel is
+ *   unchanged.
  * - `accepted: true, persisted: false`: the channel applies for this session only
  *   because saving the preference failed.
  */
