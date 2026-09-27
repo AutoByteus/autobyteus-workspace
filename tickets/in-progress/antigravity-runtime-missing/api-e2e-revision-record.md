@@ -18,3 +18,6 @@ The canonical coverage investigation and execution report remain authoritative; 
 - Prior failure resolution: None (no prior completed round). Within-round Codex assertion resolved, initial browser harness retries resolved, API-ENV-001 unresolved.
 - Canonical files: api-e2e-coverage-investigation.md; api-e2e-test-case-ledger.md; api-e2e-execution-coverage-report.md. Evidence: evidence/api-e2e/environment-incident.md and referenced logs/JSON/screenshot.
 - Recommended recipient: Code Reviewer for focused failure-origin review; exact route subject to get_handoff_rules.
+
+## Applied Handoff Rule
+get_handoff_rules returned the failure-origin condition for completed failed validation. Selected sole recipient `/code_reviewer`; Medium/Low successful Delivery rule does not apply. Complete package and API-ENV-001 evidence attached for focused failure-origin review, not successful-test review. Validation/test/evidence commit 1499c590d; no push/release.

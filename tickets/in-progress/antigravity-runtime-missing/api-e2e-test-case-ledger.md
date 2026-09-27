@@ -3,12 +3,12 @@ Round 1 initialized before execution. Source f590519ec / IR-001; no prior round.
 
 | Case | AC | Plan | Status |
 | --- | --- | --- | --- |
-| API-001 | 001/003/004/005 | Narrow server suite + source audit | Planned |
-| API-002 | 002/004 | Broader runtime/non-AGY + frontend units | Planned |
-| API-003 | 003/004 | Controlled GraphQL/WebSocket/history failure | Planned |
-| API-004 | 002/004 | Installed production factory new/restore | Planned |
-| API-005 | 002/004 | Installed generic tools + configured skill | Planned |
-| API-006 | 002/004 | Isolated built backend availability/models + rendered team selector | Planned |
+| API-001 | 001/003/004/005 | Narrow server suite + source audit | Pass (see events) |
+| API-002 | 002/004 | Broader runtime/non-AGY + frontend units | Pass (see events) |
+| API-003 | 003/004 | Controlled GraphQL/WebSocket/history failure | Pass (see events) |
+| API-004 | 002/004 | Installed production factory new/restore | Pass (see events) |
+| API-005 | 002/004 | Installed generic tools + configured skill | Pass (see events) |
+| API-006 | 002/004 | Isolated built backend availability/models + rendered team selector | Pass (see events) |
 
 ## Events
 - Initial checkpoint: upstream package and test/environment inventory read; no validation execution yet.
