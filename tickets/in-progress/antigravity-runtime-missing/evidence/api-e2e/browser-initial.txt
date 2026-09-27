@@ -1,0 +1,49 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Team Definition
+API Validation Team
+Loading models for /…
+Runtime
+AutoByteus
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Select a model
+
+This model will be used by all members unless overridden.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.
+
+Auto approve tools
+Team Members Override (1)
+Run Team
+
+Team / needs a model before launch.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+No file selected
+
+Select a file from the explorer to view or edit its content.

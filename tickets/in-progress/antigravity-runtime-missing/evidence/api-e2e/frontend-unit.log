@@ -1,0 +1,42 @@
+
+> autobyteus@1.4.89 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/autobyteus-web
+> cross-env NUXT_TEST=true vitest composables/__tests__/useRuntimeScopedModelSelection.spec.ts composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/autobyteus-web
+
+stderr | composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useRuntimeScopedModelSelection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useRuntimeScopedModelSelection.spec.ts (4 tests) 6ms
+ ✓ components/launch-config/__tests__/RuntimeModelConfigFields.spec.ts (13 tests) 102ms
+ ✓ composables/__tests__/useTeamRunRuntimeCatalogSync.spec.ts (2 tests) 159ms
+
+ Test Files  3 passed (3)
+      Tests  19 passed (19)
+   Start at  11:07:29
+   Duration  6.24s (transform 2.88s, setup 16.08s, collect 221ms, tests 266ms, environment 705ms, prepare 461ms)
+

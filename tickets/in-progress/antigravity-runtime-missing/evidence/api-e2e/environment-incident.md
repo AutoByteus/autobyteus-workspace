@@ -1,0 +1,12 @@
+# API-ENV-001 — Inherited SQL target during initial browser setup
+
+Owner/preliminary origin: API/E2E execution setup (Local Fix), NOT Antigravity implementation. Detected independently during startup log review in round 1.
+
+Expected: owned data root and database only, backend port 30697; production app/backend and data untouched.
+Observed: `--data-dir /tmp/agy-api-e2e.agNVix/data` isolated filesystem repositories, but ambient `DATABASE_URL=file:/Users/normy/.autobyteus/server-data/db/production.db`, `APP_ENV=production`, and `AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:29695` won over its `.env`. Initial owned PID 12928 connected to production SQL. `backend-inherited-env.log` records the resolved target and `No pending migrations to apply.` A startup app may read/write SQL beyond migrations; no pre-start DB snapshot was taken, so absence of changes cannot be established. Do not infer data loss or no impact. The logged settings initialization registers in-memory predefined settings (server-settings-service.ts), not itself proof of SQL writes.
+
+Operations before stop: normal server startup/cache preload; read-only availability/model/health queries; create one synthetic Agent and Team using public GraphQL (these definition stores are filesystem-backed under the temporary data root); browser read surfaces and team launch draft (no Run Team submission or AGY run launched by this backend). User CLI live tests independently use disposable memory/workspaces. No production database copied, reset or deliberately mutated; no installed app/backend process restarted or binary patched.
+
+Containment: stopped only PID 12928 immediately on discovery, preserved log and informed user. No rollback/repair against production DB attempted because unrelated active writes cannot be distinguished. Restart PID 28810 explicitly supplied APP_ENV=test, DB_TYPE=sqlite, AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:30697 and DATABASE_URL=file:/tmp/agy-api-e2e.agNVix/data/db/validation.db. Verified actual startup log target and creation of validation.db before subsequent API/browser execution. `backend.log` is the corrected run; earlier API responses superseded.
+
+Residual: safety/no-production-data-impact proof is unresolved even if AGY behavior passes. Request focused failure-origin review of this API-owned environment incident and the appropriate recovery/acceptance gate; do not attribute it to the product patch. A safe rerun proves behavior, not that the earlier accidental connection had zero effect. No automatic release/delivery sign-off.

@@ -1,0 +1,222 @@
+AGY visible [
+  { text: 'AutoByteus', value: 'autobyteus', disabled: false },
+  {
+    text: 'Codex App Server',
+    value: 'codex_app_server',
+    disabled: false
+  },
+  {
+    text: 'Claude Agent SDK',
+    value: 'claude_agent_sdk',
+    disabled: false
+  },
+  {
+    text: 'Antigravity CLI',
+    value: 'antigravity_cli',
+    disabled: false
+  }
+]
+AGY selected
+MODEL button ready Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Team Definition
+API Validation Team
+Loading models for /…
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+Antigravity CLI
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Select a model
+
+This model will be used by all members unless overridden.
+
+Loading model options…
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Antigravity CLI members: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.
+
+Auto approve tools
+Team Members Override (1)
+Run Team
+
+Team / needs a model before launch.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+No file selected
+
+Select a file from the explorer to view or edit its content.
+DROPDOWN Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Team Definition
+API Validation Team
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+Antigravity CLI
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Select a model
+
+This model will be used by all members unless overridden.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Antigravity CLI members: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.
+
+Auto approve tools
+Team Members Override (1)
+Run Team
+
+Team / needs a model before launch.
+
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+No file selected
+
+Select a file from the explorer to view or edit its content.
+
+ANTIGRAVITY CLI (ANTHROPIC)
+Claude Opus 4.6 (Thinking)
+Claude Sonnet 4.6 (Thinking)
+ANTIGRAVITY CLI (GEMINI)
+Gemini 3.1 Pro (High)
+Gemini 3.1 Pro (Low)
+Gemini 3.6 Flash (High)
+Gemini 3.6 Flash (Low)
+Gemini 3.6 Flash (Medium)
+Gemini 3.7 Flash (High)
+Gemini 3.7 Flash (Low)
+Gemini 3.7 Flash (Medium)
+Gemini 3.8 Flash (High)
+Gemini 3.8 Flash (Low)
+Gemini 3.8 Flash (Medium)
+ANTIGRAVITY CLI (OPENAI)
+GPT-OSS 120B (Medium)
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Team Definition
+API Validation Team
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+Antigravity CLI
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Antigravity CLI (GEMINI) / Gemini 3.8 Flash (Low)
+
+This model will be used by all members unless overridden.
+
+This model has no adjustable settings.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Antigravity CLI members: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.
+
+Auto approve tools
+Team Members Override (1)
+Run Team
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+No file selected
+
+Select a file from the explorer to view or edit its content.
+SELECTS [
+  {
+    id: 'team-scope-root-runtime-kind',
+    value: 'antigravity_cli',
+    options: [ [Object], [Object], [Object], [Object] ]
+  },
+  {
+    id: 'override-runtime--coordinator',
+    value: '',
+    options: [ [Object], [Object], [Object], [Object], [Object] ]
+  }
+]
+BUTTONS [
+  'Agents',
+  '',
+  'Agent Teams',
+  'Agent Orgs',
+  'Skills',
+  'Memory',
+  'Nodes',
+  '',
+  'Temp Workspace',
+  'Settings',
+  'Antigravity CLI (GEMINI) / Gemini 3.8 Flash (Low)',
+  '📁 Temp Workspace (Default)Default temporary workspace',
+  'Team Members Override (1)',
+  'Run Team',
+  '',
+  ''
+]
