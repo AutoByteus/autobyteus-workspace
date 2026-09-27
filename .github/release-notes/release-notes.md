@@ -1,10 +1,10 @@
-# AutoByteus v1.4.88 — Startup recovery
+# AutoByteus v1.4.89 — Faster startup and new conversations
 
-- Fix startup failures after upgrading when incomplete historical Team runs coexist with valid data.
-- Preserve unavailable history without preventing independent valid runs and new work from opening.
-- Resume interrupted attachment-reference migration safely, retaining original history backups and exact attachment ownership.
-- Strengthen current-package validation and regression coverage for production-data upgrades.
+- Remove repeated full-history attachment scans from startup and unrelated run creation while retaining structural package validation.
+- Validate exact attachment ownership and physical containment when a file is accessed; an unavailable historical attachment fails locally instead of hiding an otherwise valid conversation.
+- Simplify the existing attachment-reference migration under the same ID: one transform per source and atomic replacement only when changed, without new hashing, backup copies or a custom journal.
+- Keep completed migrations skipped and existing originals/manifests untouched. Eligible partial retries preserve already-current records and newer content.
 
-The first startup can take several minutes on large histories while migration and validation finish. Startup-performance optimization is deferred; this release fixes availability, not startup speed. Do not delete historical roots or reset migration records to bypass startup.
+Representative packaged terminal startup improved from30.9s to8.6s in a controlled ordered trial. Actual user testing confirmed faster startup. Results vary with installation size and host load; first upgrades can still take longer than subsequent launches.
 
-Self-hosted installations should stop all writers and take a consistent backup before upgrading; deploy matching web/server versions together. Never restore old originals over newer writes.
+No migration reset or replay is needed. Self-hosted pending upgrades should use the usual stopped-writer, consistent-backup procedure and matching server/client versions. Do not restore old record backups over newer history.
