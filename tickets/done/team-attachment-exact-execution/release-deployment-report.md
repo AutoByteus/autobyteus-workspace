@@ -1,98 +1,30 @@
-# Delivery / Release / Deployment Report — DR-004 (same-version recovery in progress)
+# Delivery / Release / Deployment Report — DR-009
 
-Package docker-image-http400-20260926. Medium / High / Reviewed.
-Authoritative archived package: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-attachment-exact-execution`.
+## Completed user-verified scope
+Package docker-image-http400-20260926; Medium / High / Reviewed; R2/D2 / SR-005 / ARCH-REV-002 / IR-002 / CRR-003/004 / API-REV-003. Product supplements N/A. User explicitly verified recovery on production data, approved v1.4.88 and requested download/install of the GitHub DMG.
 
-## User verification and scope
-Explicit acceptance: User message, 2026-09-26: “i tested. its done. lets finalize and release a new version”.
-Release v1.4.87 selected as next patch after v1.4.86; no tag collision observed.
-Repository finalization and standard tag-triggered publication authorized. Actual
-installed-node deployment/migration is outside this request: Not required for this
-publication, not executed. This is not proof of production migration or Electron shell.
+## Repository finalization — Completed
+- Software ticket6beda63e6e809fadafd76ed24c8beb9279b0a083 pushed; personal mergefd0bce3ddf6705b83a19b2814c4ecf691f215ebd pushed.
+- Companion ticketac0478a pushed; main merge22c24a5ed895d83d59fdf9e4f40f4a0878a8161d pushed.
+- Post-acceptance bases unchanged from reviewed state; no reintegration runtime change. Source/test fingerprints match.
+- Release helper commit98d83c12ff57deb9eeed2847c43e186a4b71542a pushed personal. v1.4.88 tag5bf4ddd28c2c02a03d503739472681e3a6129016 pushed once. v1.4.87 tag unchanged.
+- Seven archived log paths shortened byte-preservingly before CI; hygiene passes. Raw captured-log whitespace retained, runtime diff-check passes.
 
-## Integration and docs
-Initial and post-acceptance fetches both find origin/personal at
-`e06080b0027636cecf20b5e437c496d423c7f26b`, equal to candidate HEAD, 0/0 divergence.
-Already current; no checkpoint, reintegration, executable rerun or renewed acceptance
-needed. Docs sync Pass per docs-sync-report.md; delivery documentation/archival only
-since user-verified code. API-REV-001 Pass: 202 tests, build and real browser journeys;
-CRR-001/002 Pass. `git diff --check` Pass.
+## Publication / installation — Completed for desktop
+Desktop36296346408, Android36296346406 and iOS36296346421 workflows passed. iOS is upload to App Store Connect/TestFlight, not public App Store approval. GitHub v1.4.88 published, latest, non-draft/non-prerelease,17assets. All desktop updater metadata references published1.4.88 artifacts; Linux metadata validators pass; ARM64 DMG matches GitHub SHA256 and updater SHA512.
 
-## Archive and finalization
-Ticket moved to tickets/done/team-attachment-exact-execution before final commit.
-Ticket branch codex/team-attachment-exact-execution; target origin/personal.
-Ticket commit `d88dd4382d276707a0287e2201bc07956c3cc459` pushed to
-origin/codex/team-attachment-exact-execution. Personal fast-forwarded to unchanged
-verified remote base, then merged ticket with --no-ff into
-`712d790a974850d330b3f0a86b85f9c59253150b`; personal push completed.
-Repository implementation finalization Completed; release/cleanup still pending.
-Source/test/docs and full ticket evidence will be staged by explicit path only;
-generated SDK dist excluded. Narrow credential-pattern scan of ticket evidence found
-no matches (not a comprehensive secret audit).
+Downloaded public ARM64 DMG SHA256ad2fdc99270954989982775cc7214925cbd173edb0442c9844e73dfae3cd3968; hdiutil integrity, codesign deep/strict and Gatekeeper Notarized Developer ID checks pass. Installed /Applications/AutoByteus.app version1.4.88 and launched normally. Health HTTP200; production data directory unchanged; migration still SUCCEEDED_WITH_WARNINGS attempt3, no repeat attempt. User-requested former-app backup removed. Downloaded installer/metadata removed after evidence preservation during full cleanup. No production-data rollback/deletion performed.
 
-## Release publication
-Method: documented scripts/desktop-release.sh via pnpm release 1.4.87, archived
-release-notes.md supplied. Main personal worktree has unrelated untracked files;
-prepare in clean auxiliary delivery branch/worktree using --no-push, then fast-forward
-personal and push personal before the helper-created tag. No hand-created tag and no
-duplicate manual dispatch. All standard tag-triggered Desktop/Android/iOS/Docker
-workflows are applicable publication checks. Status: In progress.
+## Docker pipeline — explicitly user-owned follow-through
+Docker36296346407 was still running at last observation. User explicitly instructed not to wait and said they will check the pipeline. No cancellation, restart or success claim; automatic GitHub workflow continues independently. Delivery monitoring/registry verification no longer required in the user-scoped completion. Production Docker deployment not requested/not performed.
 
-## Deployment and recovery
-Installed data untouched. Migration Required when an installation is upgraded;
-publication alone does not run it. Required operational steps are in server
-FILE_RENDERING_AND_MEDIA_PIPELINE.md: stopped writers, consistent recoverable original
-snapshot, isolated installed-copy success, matching client/server, clean migration
-ledger/manifest and history/byte smoke checks. Representative API data is not the
-installed corpus. Never guess ownership, delete history, force success, or restore
-old backups over newer writes. Preserve any failing state for forward recovery.
-Release rollback: do not rewrite a published tag; prefer a corrective version.
+## Cleanup / deferred work
+Full cleanup explicitly requested. Recovery and companion worktrees/local branches removed after confirming all authored changes reachable from pushed target refs. Ignored build outputs task-owned and obsolete after installed release were removed with those worktrees. Remote ticket branches retained as history. Temporary release checkout removed after durable receipt archival; cleanup.json is final authority. Worktree management tools unavailable in current context; Git worktree commands used, never deleted shared checkouts. Shared personal/main dirty work unchanged. Installed app and original migration backups/data retained.
 
-## Cleanup and terminal gates
-Ticket/auxiliary worktree and local branches: Pending safe finalization/publication.
-Remote ticket branch retention: intended retained for audit, deletion Not required.
-Unrelated main-worktree output retained. API fixture cleanup already evidenced;
-provider-managed inactive test conversations retained.
-Successful terminal receipt: Not yet eligible while release/finalization pending.
-No upstream code/design finding; normal in-progress work, not a reroute.
+User separately requests NEW startup-performance ticket through Solution Designer. This is not a performance fix or a new acceptance waiver. startup-performance-followup.md records observed33.846s repeat startup, suspect full-history admission scan and measurement gaps.
 
-## Archival whitespace check qualification
-The initial unstaged source/doc `git diff --check` passed. Once previously untracked
-evidence was staged, the all-file cached check reported trailing spaces/blank EOFs
-in raw logs and the stored historical diff. Those evidence bytes were deliberately
-preserved; this was not a source failure. A base-to-merged-tree check restricted to
-autobyteus-server-ts and autobyteus-web passed. No full archived-evidence whitespace
-Pass is claimed.
+## Validation / rollback
+API-REV-003 owns296passed tests,95.4%confidence and full installed-copy first/repeat packaged tests. DR005 normal local package/embedded checks and DR009 installed release health supplement that evidence. Canonical migration guideline retained. Never restore originals over newer writes; any later data rollback requires stopped writers and a consistent state.
 
-## v1.4.87 outcome and corrective release
-Helper-created release commit 5e53d026d114475f5254ce29a6c3dadd05bad3d0 was pushed
-to personal before tag v1.4.87. Desktop 36266706007 failed repository artifact hygiene
-on two archived log paths, not source or tests. Three sibling runs cancellation
-requested successfully; release not found at recovery check. Tag not rewritten.
-Delivery corrected only archived filenames, preserving SHA-256 and full mapping
-(delivery-evidence/evidence-renames.json). No new product verification needed.
-Current publication target **v1.4.88**, same helper/no-push/personal-then-tag method.
-No manual duplicate dispatch. Result pending all corrective workflows and cleanup.
-
-## Latest authority — user-directed same-version recovery
-User: “you can actually fix those and re-trigger the build for the same version.
-It's not good like we increased two versions.” This supersedes the v1.4.88 plan.
-All v1.4.88 runs cancellation requested. At initial check its GitHub release was
-a draft with zero assets and no publishedAt; v1.4.87 release absent. Docker default
-push was cancelled, zh and publish-summary skipped. Do not infer removal of registry
-artifacts solely from cancellation; publication-state checks are recorded separately.
-Package/curated notes restored to **1.4.87**; source/test code unchanged. Explicit
-user direction permits retargeting the failed, unpublished v1.4.87 tag. Guard the
-remote update with the observed old annotated-tag object
-d65f86674c037656b4455ea2fdfe83a9923a7a26. Remove only the unintended unpublished
-v1.4.88 draft/tag after runs stop; retain audit commits and run evidence. Push
-corrected personal first, then the corrected v1.4.87 tag (one normal workflow set;
-no simultaneous manual dispatch). Status In progress; no terminal completion yet.
-
-### v1.4.88 withdrawal outcome
-All four runs reached Cancelled. A race during cancellation published Android APK
-and checksum at 2026-09-26T19:43:56Z; both reported zero downloads at inspection.
-Release 397371396 was returned to **draft** (withdrawn, retained privately for audit),
-not falsely treated as never published. Remote/local v1.4.88 tags removed with exact
-old-object lease. Audit commits remain. No claim that cancellation alone prevents
-publication. Corrective v1.4.87 will be the public release.
+## Handoff
+Final delivery scope complete, Docker follow-through transferred explicitly to user. AgentTeam tools available again; terminal receipt/new-ticket request will be routed using get_handoff_rules after artifact persistence. No handoff claimed until tool confirmation.

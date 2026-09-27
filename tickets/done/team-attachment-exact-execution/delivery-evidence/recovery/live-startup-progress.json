@@ -1,0 +1,13 @@
+{
+  "observedUtc": "2026-09-27T05:03:08.267836+00:00",
+  "ledger": {
+    "migration_id": "20260926_team_context_file_execution_locators_v1",
+    "status": "RUNNING",
+    "attempts": 3,
+    "started_at": 1790485286025,
+    "completed_at": null
+  },
+  "manifestFiles": 170,
+  "committed": 170,
+  "manifestComplete": false
+}

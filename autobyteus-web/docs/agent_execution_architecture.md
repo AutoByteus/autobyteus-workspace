@@ -1769,8 +1769,13 @@ only typed stored attachment references using indexed ownership and physical-fil
 proof. It leaves attachment blobs and unrelated history untouched. Original record
 backups and the hash/progress manifest live under
 `app-data-migration-backups/20260926_team_context_file_execution_locators_v1`.
-Both Studio and standalone startup require clean success before runtime admission.
-Ambiguous or missing proof blocks startup rather than choosing another execution.
+Both Studio and standalone independently validate current package admission on
+startup, regardless of migration ledger status. Incomplete history is preserved
+and excluded with warnings; missing/ambiguous attachment proof gates the affected
+package and its dependants, not the application. Even with no usable historical
+runs, opening and new work remain available when current new-work prerequisites
+validate. Genuine attempt failures remain FAILED audit outcomes; no old-format
+runtime fallback, deleted history, or fabricated success is permitted.
 
 Upgrade server and web/Electron together with writers stopped. Do not restore old
 record backups over newer live history; rollback must restore the matching binary,

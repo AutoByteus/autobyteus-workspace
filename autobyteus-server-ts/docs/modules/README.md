@@ -69,4 +69,4 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 - [Project Overview](../PROJECT_OVERVIEW.md)
 - [URL Strategy](../URL_GENERATION_AND_ENV_STRATEGY.md)
 - [Startup/Lazy Initialization](../design/startup_initialization_and_lazy_services.md)
-- [Production Data-Migration Conventions](../design/production_data_migration_conventions.md)
+- [Production Data-Migration Conventions](../design/data_migration_guideline.md)

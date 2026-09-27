@@ -1,0 +1,543 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ ❯ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts (5 tests | 5 failed) 6857ms
+     × delivers agent image/file bytes through HTTP, WS and synchronous provider reads, then survives restart 2111ms
+     × delivers team image/file bytes through HTTP, WS and synchronous provider reads, then survives restart 1223ms
+     × uploads, previews and removes Team drafts before launch, then binds remaining bytes to the returned exact execution 1175ms
+     × converts a copied retained duplicate-address package before admission and preserves bytes, history and original backups across restart 1172ms
+     × resumes a real process kill after record commit without replacing the original backup 1175ms
+ ❯ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts (4 tests | 4 failed) 4918ms
+     × preserves empty/nonempty roots, isolates old and exact cross-root references, and admits independent history in both hosts 1290ms
+     × starts both hosts when all historical roots are excluded and executes genuinely new work 1230ms
+     × does not trust terminal SUCCEEDED when preserved historical packages cannot be admitted 1170ms
+     × keeps a real journal filesystem failure FAILED while allowing unrelated work, then retries the same ID normally 1227ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 9 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts > Scoped historical attachment recovery through actual startup entrypoints > preserves empty/nonempty roots, isolates old and exact cross-root references, and admits independent history in both hosts
+Error: Studio startup exited (1): Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs/db/production.db"
+
+Error: Schema engine error:
+
+Error running database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+[2026-09-27T04:36:35.544Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma","logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs/logs/server.log"}
+
+ ❯ tests/e2e/helpers/context-file-process-fixture.ts:122:83
+    120|     this.child.stdout!.on("data", capture); this.child.stderr!.on("dat…
+    121|     await until(() => {
+    122|       if (this.child?.exitCode !== null || this.child?.signalCode !== …
+       |                                                                                   ^
+    123|       // The private MCP listener appears first; Studio readiness appe…
+    124|       if (!this.logs.includes("Server listening on 127.0.0.1:0")) retu…
+ ❯ until tests/e2e/helpers/context-file-process-fixture.ts:20:15
+ ❯ ContextFileProcessFixture.start tests/e2e/helpers/context-file-process-fixture.ts:121:5
+ ❯ ContextFileProcessFixture.setup tests/e2e/helpers/context-file-process-fixture.ts:60:5
+ ❯ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts:64:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/9]⎯
+
+ FAIL  tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts > Scoped historical attachment recovery through actual startup entrypoints > starts both hosts when all historical roots are excluded and executes genuinely new work
+Error: Studio startup exited (1): Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC/db/production.db"
+
+Error: Schema engine error:
+
+Error running database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+[2026-09-27T04:36:36.786Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma","logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC/logs/server.log"}
+
+ ❯ tests/e2e/helpers/context-file-process-fixture.ts:122:83
+    120|     this.child.stdout!.on("data", capture); this.child.stderr!.on("dat…
+    121|     await until(() => {
+    122|       if (this.child?.exitCode !== null || this.child?.signalCode !== …
+       |                                                                                   ^
+    123|       // The private MCP listener appears first; Studio readiness appe…
+    124|       if (!this.logs.includes("Server listening on 127.0.0.1:0")) retu…
+ ❯ until tests/e2e/helpers/context-file-process-fixture.ts:20:15
+ ❯ ContextFileProcessFixture.start tests/e2e/helpers/context-file-process-fixture.ts:121:5
+ ❯ ContextFileProcessFixture.setup tests/e2e/helpers/context-file-process-fixture.ts:60:5
+ ❯ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts:86:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/9]⎯
+
+ FAIL  tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts > Scoped historical attachment recovery through actual startup entrypoints > does not trust terminal SUCCEEDED when preserved historical packages cannot be admitted
+Error: Studio startup exited (1): Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B/db/production.db"
+
+Error: Schema engine error:
+
+Error running database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+[2026-09-27T04:36:37.932Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma","logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B/logs/server.log"}
+
+ ❯ tests/e2e/helpers/context-file-process-fixture.ts:122:83
+    120|     this.child.stdout!.on("data", capture); this.child.stderr!.on("dat…
+    121|     await until(() => {
+    122|       if (this.child?.exitCode !== null || this.child?.signalCode !== …
+       |                                                                                   ^
+    123|       // The private MCP listener appears first; Studio readiness appe…
+    124|       if (!this.logs.includes("Server listening on 127.0.0.1:0")) retu…
+ ❯ until tests/e2e/helpers/context-file-process-fixture.ts:20:15
+ ❯ ContextFileProcessFixture.start tests/e2e/helpers/context-file-process-fixture.ts:121:5
+ ❯ ContextFileProcessFixture.setup tests/e2e/helpers/context-file-process-fixture.ts:60:5
+ ❯ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts:97:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/9]⎯
+
+ FAIL  tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts > Scoped historical attachment recovery through actual startup entrypoints > keeps a real journal filesystem failure FAILED while allowing unrelated work, then retries the same ID normally
+Error: Studio startup exited (1): Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG/db/production.db"
+
+Error: Schema engine error:
+
+Error running database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+[2026-09-27T04:36:39.155Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma","logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG/logs/server.log"}
+
+ ❯ tests/e2e/helpers/context-file-process-fixture.ts:122:83
+    120|     this.child.stdout!.on("data", capture); this.child.stderr!.on("dat…
+    121|     await until(() => {
+    122|       if (this.child?.exitCode !== null || this.child?.signalCode !== …
+       |                                                                                   ^
+    123|       // The private MCP listener appears first; Studio readiness appe…
+    124|       if (!this.logs.includes("Server listening on 127.0.0.1:0")) retu…
+ ❯ until tests/e2e/helpers/context-file-process-fixture.ts:20:15
+ ❯ ContextFileProcessFixture.start tests/e2e/helpers/context-file-process-fixture.ts:121:5
+ ❯ ContextFileProcessFixture.setup tests/e2e/helpers/context-file-process-fixture.ts:60:5
+ ❯ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts:107:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/9]⎯
+
+ FAIL  tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts > Context-file built-process runtime and upgrade > delivers agent image/file bytes through HTTP, WS and synchronous provider reads, then survives restart
+Error: Studio startup exited (1): Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv/db/production.db"
+
+Error: Schema engine error:
+
+Error running database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+[2026-09-27T04:36:29.301Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma","logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv/logs/server.log"}
+
+ ❯ tests/e2e/helpers/context-file-process-fixture.ts:122:83
+    120|     this.child.stdout!.on("data", capture); this.child.stderr!.on("dat…
+    121|     await until(() => {
+    122|       if (this.child?.exitCode !== null || this.child?.signalCode !== …
+       |                                                                                   ^
+    123|       // The private MCP listener appears first; Studio readiness appe…
+    124|       if (!this.logs.includes("Server listening on 127.0.0.1:0")) retu…
+ ❯ until tests/e2e/helpers/context-file-process-fixture.ts:20:15
+ ❯ ContextFileProcessFixture.start tests/e2e/helpers/context-file-process-fixture.ts:121:5
+ ❯ ContextFileProcessFixture.setup tests/e2e/helpers/context-file-process-fixture.ts:60:5
+ ❯ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts:20:65
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/9]⎯
+
+ FAIL  tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts > Context-file built-process runtime and upgrade > delivers team image/file bytes through HTTP, WS and synchronous provider reads, then survives restart
+Error: Studio startup exited (1): Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH/db/production.db"
+
+Error: Schema engine error:
+
+Error running database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+[2026-09-27T04:36:30.540Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma","logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH/logs/server.log"}
+
+ ❯ tests/e2e/helpers/context-file-process-fixture.ts:122:83
+    120|     this.child.stdout!.on("data", capture); this.child.stderr!.on("dat…
+    121|     await until(() => {
+    122|       if (this.child?.exitCode !== null || this.child?.signalCode !== …
+       |                                                                                   ^
+    123|       // The private MCP listener appears first; Studio readiness appe…
+    124|       if (!this.logs.includes("Server listening on 127.0.0.1:0")) retu…
+ ❯ until tests/e2e/helpers/context-file-process-fixture.ts:20:15
+ ❯ ContextFileProcessFixture.start tests/e2e/helpers/context-file-process-fixture.ts:121:5
+ ❯ ContextFileProcessFixture.setup tests/e2e/helpers/context-file-process-fixture.ts:60:5
+ ❯ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts:20:65
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/9]⎯
+
+ FAIL  tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts > Context-file built-process runtime and upgrade > uploads, previews and removes Team drafts before launch, then binds remaining bytes to the returned exact execution
+Error: Studio startup exited (1): Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH/db/production.db"
+
+Error: Schema engine error:
+
+Error running database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+[2026-09-27T04:36:31.738Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma","logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH/logs/server.log"}
+
+ ❯ tests/e2e/helpers/context-file-process-fixture.ts:122:83
+    120|     this.child.stdout!.on("data", capture); this.child.stderr!.on("dat…
+    121|     await until(() => {
+    122|       if (this.child?.exitCode !== null || this.child?.signalCode !== …
+       |                                                                                   ^
+    123|       // The private MCP listener appears first; Studio readiness appe…
+    124|       if (!this.logs.includes("Server listening on 127.0.0.1:0")) retu…
+ ❯ until tests/e2e/helpers/context-file-process-fixture.ts:20:15
+ ❯ ContextFileProcessFixture.start tests/e2e/helpers/context-file-process-fixture.ts:121:5
+ ❯ ContextFileProcessFixture.setup tests/e2e/helpers/context-file-process-fixture.ts:60:5
+ ❯ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts:20:65
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/9]⎯
+
+ FAIL  tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts > Context-file built-process runtime and upgrade > converts a copied retained duplicate-address package before admission and preserves bytes, history and original backups across restart
+Error: Studio startup exited (1): Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y/db/production.db"
+
+Error: Schema engine error:
+
+Error running database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+[2026-09-27T04:36:32.891Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma","logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y/logs/server.log"}
+
+ ❯ tests/e2e/helpers/context-file-process-fixture.ts:122:83
+    120|     this.child.stdout!.on("data", capture); this.child.stderr!.on("dat…
+    121|     await until(() => {
+    122|       if (this.child?.exitCode !== null || this.child?.signalCode !== …
+       |                                                                                   ^
+    123|       // The private MCP listener appears first; Studio readiness appe…
+    124|       if (!this.logs.includes("Server listening on 127.0.0.1:0")) retu…
+ ❯ until tests/e2e/helpers/context-file-process-fixture.ts:20:15
+ ❯ ContextFileProcessFixture.start tests/e2e/helpers/context-file-process-fixture.ts:121:5
+ ❯ ContextFileProcessFixture.setup tests/e2e/helpers/context-file-process-fixture.ts:60:5
+ ❯ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts:20:65
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/9]⎯
+
+ FAIL  tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts > Context-file built-process runtime and upgrade > resumes a real process kill after record commit without replacing the original backup
+Error: Studio startup exited (1): Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "production.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO/db/production.db"
+
+Error: Schema engine error:
+
+Error running database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+[2026-09-27T04:36:34.060Z] [ERROR] [server.runtime] Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"DATABASE_MIGRATION_FAILED","summary":"Failed to run database migrations: Error: Command failed: /Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/node_modules/prisma/build/index.js migrate deploy --schema /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/prisma/schema.prisma","logPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO/logs/server.log"}
+
+ ❯ tests/e2e/helpers/context-file-process-fixture.ts:122:83
+    120|     this.child.stdout!.on("data", capture); this.child.stderr!.on("dat…
+    121|     await until(() => {
+    122|       if (this.child?.exitCode !== null || this.child?.signalCode !== …
+       |                                                                                   ^
+    123|       // The private MCP listener appears first; Studio readiness appe…
+    124|       if (!this.logs.includes("Server listening on 127.0.0.1:0")) retu…
+ ❯ until tests/e2e/helpers/context-file-process-fixture.ts:20:15
+ ❯ ContextFileProcessFixture.start tests/e2e/helpers/context-file-process-fixture.ts:121:5
+ ❯ ContextFileProcessFixture.setup tests/e2e/helpers/context-file-process-fixture.ts:60:5
+ ❯ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts:20:65
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/9]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  9 failed (9)
+   Start at  06:36:26
+   Duration  12.58s (transform 99ms, setup 19ms, import 189ms, tests 11.77s, environment 0ms)
+

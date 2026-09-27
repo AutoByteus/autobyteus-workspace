@@ -1,6 +1,73 @@
+# Latest authoritative result — API-REV-003
+
+**PASS — 95.4% validation confidence — recovery candidate, not installed repair or release approval.**
+2026-09-27. Medium / High / Reviewed; R2/D2/SR-005 / ARCH-REV-002 / IR-002 / CRR-003. Prior completed result API-REV-002 Fail59.3%. The reported missing-tree migration startup regression is resolved in the executed candidate. The installed v1.4.87 remains unchanged; user verification and Delivery remain outstanding.
+
+## Evidence and case reconciliation
+Broader validation **Required and completed for recovery scope**. 296 independently passing repository tests: 186 server unit/integration (22 files), nine real-process cases (two files), 68 frontend tests (eight files), 33 Electron tests (seven files). Server build and actual packaged macOS build pass. No skipped case counted. Exact evidence below is in `api-e2e-evidence/recovery/` beside this report.
+
+| Case | Result | Direct evidence / limits |
+|---|---|---|
+| REC-01 / AC002..007,008..009 | Pass | server-final.log: 157 focused unit +29 REST/history integration tests. Real multipart/disk/identity plus preserved Org/standalone history. Strict current sidecar/metadata fixtures, no compatibility restored. |
+| REC-02 / AC002..009 | Pass | process-final.log: nine tests. Built Studio/real HTTP/WS/local provider/image bytes; Team and standalone, prelaunch drafts, exact duplicate ownership, copied historical conversion/read/restore, SIGKILL commit/retry; both real Studio and standalone host start with historical residue, independent valid history, all old runs unavailable plus new work, terminal ledger skip/current admission, actual journal ENOTDIR remains FAILED without blocking new work, ordinary same-ID retry. |
+| REC-03 / AC006,010 | Pass | Full unfiltered stopped-writer copy: 14,404 files /8,047,159,882bytes, actual FAILED attempt2 ledger, all eight missing-tree roots retained. Candidate retries normally to SUCCEEDED_WITH_WARNINGS attempt3. No manual ledger edits or moved-out roots. installed-copy-metadata.json, desktop-migration-ledger.json/log. |
+| REC-03 preservation | Pass | installed-diff.json / installed-preservation.json: zero original files removed;363 trace files changed, exactly763 mapped locator string values, other parsed content unchanged. All363 original backup+target hashes match. All1,204 attachment blobs unchanged. Eight missing-tree roots retained, their30files/1,556,688bytes unchanged. live-unchanged-check.json: all14,404 original live hashes still match, live ledger stillFAILED attempt2. |
+| REC-04 / AC010 | Pass | Fresh actual packaged candidate using documented isolated Electron E2E profile, port3431. First startup195,140ms; repeat36,491ms. Native CUA verifies packaged app renderer, copied retained history, creates tool-less Recovery Validation and sends fresh RECOVERY_NEW_WORK_20260927. UI shows Idle and Attachment received.; actual server/runtime/provider completion corroborated. Local deterministic provider3432 proves dispatch, not model inference quality. |
+| REC-04 repeat/read | Pass | desktop-repeat-ready.json, desktop-repeat-ledger.json (terminal ledger unchanged), desktop-repeat-read.json: six migrated historical attachment HTTP200/hash matches; newly created conversation retained after repeat startup. Desktop first/repeat process trees close gracefully and port released. |
+| REC-05 / AC011 + regressions | Pass | web-final.log68; electron-unit.log33; companion-skill.log valid; software diff-check.log. Canonical guideline and mandatory companion skill references inspected. Both repositories still require downstream integration. |
+
+## Test validity, fixture corrections and discarded candidate
+Earlier failing logs remain evidence, not additional current failures or passes. Old integration sidecar/metadata/DTO fixtures were adapted to the current contract. Removing inherited RUST_LOG in owned process children fixed an independently reproduced opaque Prisma schema-engine setup failure; no schema safeguard bypassed. Seeding current fixtures only after ordinary predecessor migrations avoids an older sidecar migration rewriting fresh current fixtures. Reload local provider catalog after restart before new launch. None required product changes by API/E2E.
+
+One newly authored tentative test demanded that getTeamRunResumeConfig throw for a structurally valid but unavailable stored package. It returned its tree with editable=false/reason=NOT_FOUND, while file reads, conversation projection and restore already rejected it. No unsafe re-admission was demonstrated. That assertion unnecessarily conflated read-only configuration metadata with usable history. User explicitly kept scope on migration startup, not an application-loading redesign. Investigation recorded Stale/Remove before removing ONLY this tentative case; the final remaining four recovery cases were rerun and pass. No source fix or new exclusion policy requested. This was an API/E2E test-validity correction, not a defect waived because the user wanted a pass.
+
+## Durable coverage changes owned by this round
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/fixtures/current-attachment-package-fixtures.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/api/rest/agent-org-context-files.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/agent-memory/user-attachment-history.integration.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/helpers/context-file-process-fixture.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts`
+
+New shared strict fixture helper and four-case startup-recovery suite; adapt three integration fixtures and process helper; replace obsolete universal-fatal process expectation with scoped startup cases and update RUNNING immediate-start expectation. Existing five attachment process cases retained. No production source edits by API/E2E; upstream unit/source modifications belong to IR-002 and already received source review. No whole durable test file deleted.
+
+## Confidence gate
+Simple average of seven applicable categories: **95.4%**. After repository execution alone the assessment was75/90/80/75/85/60/90 =79.3%, so actual installed-copy/desktop validation was required; repository success was not treated as upgrade proof.
+
+| Category | Final | Basis / bounded residual |
+|---|---:|---|
+| Requirements / acceptance proof |95%|All recovery critical criteria directly executed; unchanged exact-ID contract independently regressed. User installed verification remains downstream.|
+| Changed-boundary execution directness |98%|Real built hosts, actual packaged Electron, installed failed ledger normal retry and repeat; not just mocked startup.|
+| Cross-boundary realism / mock gap |95%|Real filesystem/SQLite/migrations/Electron/HTTP/WS/runtime; external inference deterministic. Prior live nested browser journey is historical evidence, not a new rerun.|
+| Environment / identity / fixture fidelity |97%|Full actual corpus/DB/key copied with stopped writer, no filtered roots; original live hashes unchanged; fixed owned fixture env. Unsigned local candidate, not distribution/notarization proof.|
+| Failure / lifecycle / recovery |95%|Real journal failure + retry, all-excluded/new work, terminal ledger skip, kill-after-commit, original preservation, repeated packaged startup. No all-platform distribution claim.|
+| User surface / browser / desktop |92%|Actual packaged UI opens, retained history and new conversation work, repeat startup and byte reads. Complete nested live-model browser journey was API-REV-001 and not repeated this recovery; recovery did not change renderer flow, frontend and process regressions pass.|
+| Durable coverage |96%|Strict fixtures and nine current actual-process cases, realistic warnings/all-unavailable/retry regressions; full private corpus remains temporary probe rather than checked-in fixture.|
+
+No unresolved implementation failure or critical recovery evidence gap remains. No new application-loading redesign inferred from absent files. Existing API-REV-001 live nested browser/task evidence remains relevant within its original boundary only; the missed actual installed-upgrade gap is now directly exercised, not assumed.
+
+## Commands / environment / reproducibility
+All commands use the explicit software worktree named above. Server build: `pnpm -C autobyteus-server-ts build` (build.log). Focused Vitest combines the19 implementation selection files listed in implementation-evidence/recovery/checks.md with the three API-owned integration paths above, `--no-watch` (server-final.log). Process command: `RUN_CONTEXT_FILE_PROCESS_E2E=1 CONTEXT_FILE_E2E_EVIDENCE_DIR=<ticket>/api-e2e-evidence/recovery/final-child-processes pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts --no-watch`.
+Frontend command and paths are in web-final.log header; Electron command/paths in electron-unit.log header. Candidate build: `env -u APPLE_ID -u APPLE_APP_SPECIFIC_PASSWORD -u APPLE_TEAM_ID -u APPLE_SIGNING_IDENTITY CSC_IDENTITY_AUTO_DISCOVERY=false pnpm -C autobyteus-web build:electron:mac` (desktop-build.log), documented build publishes never. Lifecycle probes desktop-copy-probe.mjs and desktop-repeat-probe.mjs use project's prepareElectronE2ELaunch/launchPreparedElectronDirect. Data root/pids recorded in evidence, updater-isolated E2E profile; no installed profile used. Native CUA observed exact candidate app.asar path, not /Applications. Native screenshot/AX evidence lives in this chat; no standalone screenshot file claimed. Temporary comparison scripts retained for reproducibility; private corpus/key deleted after validation.
+
+## Cleanup and downstream request
+cleanup.json confirms11 owned data roots removed, including actual copied corpus/private key and failed fixture roots. Successful durable cases cleaned their own roots. Both packaged process groups stopped gracefully; local provider45898 stopped;3431/3432 free. No production app/data/Docker changes, no commit/staging/push/publication. Ignored build output remains in assigned worktree; candidate retains existing version1.4.87 label and is NOT a newly released binary.
+
+**Route: Code Reviewer for proportional review of the seven API-owned durable test files**, not renewed implementation review. After pass, forward to original Delivery chat to build a fresh Electron test artifact for the user, as expressly requested. Do not treat that request as authorization to publish a release or mark user verification complete. Preserve companion workflow integration and availability guideline. Prior incident stays open for installed/user verification, despite this candidate validation pass.
+AgentTeam routing tools were searched and remain unavailable. Explicit user-authorized original-thread route and reviewed Medium/High contract select Code Review01a0deea-7dc5-7752-a767-312bf71c6af4. Send once, no duplicate direct Delivery handoff and no recipient polling. Full cumulative reference manifest: recovery-handoff.md beside this report.
+
+---
+# Historical completed reports (not current authority)
+# Latest authoritative result — API-REV-002
+
+**Fail — installed v1.4.87 startup regression; confidence 59.3%.** This supersedes API-REV-001 release-readiness conclusions, not its historical executed tests. See api-e2e-evidence/startup-incident/incident-report.md for authoritative current scope, evidence, policy violation, scorecard and repair gates. Design Impact / user-requested Solution Designer reopening. Broader validation Required; no fixed-build result.
+
+---
+
 # API/E2E Execution Coverage Report
 
-## Latest authoritative result
+## Historical API-REV-001 result (superseded)
 **Pass — API-REV-001 — 95.9% validation confidence.** Broader validation **Required and completed**. Every critical AC-002..007 has direct boundary evidence. No unresolved implementation failure, blocker or running case. Medium / High / Reviewed route retained; **proportional durable-test review Required** by Code Reviewer. This is validation, not deployment or installed-data rollout approval.
 
 ## Round metadata and authority

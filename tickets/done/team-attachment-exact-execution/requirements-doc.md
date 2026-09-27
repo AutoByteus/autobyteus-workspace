@@ -1,7 +1,18 @@
 # Requirements — Team attachment exact execution ownership
 
 ## Document Status
-Package `docker-image-http400-20260926`; current revision SR-003; owner Solution Designer; 2026-09-26. **Approved**. Approval reference: user message “Yeah, approve.” directly responding to the proposed focused refactor: carry selected agentRunId through finalization/URLs/reads, validate team membership, keep drafts separate, preserve existing attachments/history, test multiple executions sharing an address. This document formalizes that exact scope (baseline R1); not approval for adjacent error-UI redesign, deployment, or deletion. Behavior-defining supplements: none. Diagnostic REQ-001/AC-001 retained from SR-001/002.
+Package `docker-image-http400-20260926`; current revision SR-004; owner Solution Designer; 2026-09-26. **Approved**. Approval reference: user message “Yeah, approve.” directly responding to the proposed focused refactor: carry selected agentRunId through finalization/URLs/reads, validate team membership, keep drafts separate, preserve existing attachments/history, test multiple executions sharing an address. This document formalizes that exact scope (baseline R1, superseded in startup policy by R2 below); not approval for adjacent error-UI redesign, deployment, or deletion. Behavior-defining supplements: none. Diagnostic REQ-001/AC-001 retained from SR-001/002.
+
+## Recovery Approval — R2 / SR-004 (2026-09-27)
+**Approved intended-behavior clarification.** Original user messages independently
+read in existing API chat `01a0def0-27cd-7b23-bc09-6749275134d9`, turn
+`01a0e0ef-aee1-75a0-8424-212cf12d8613`: explicitly reopen with Solution Designer,
+learn existing migrations; missing data means do not load/show that run, NOT
+prevent use of the application; update canonical practices and require future
+Solution Designer migration work to follow them. Preserve exact-ID runtime and
+all retained data. This approval supersedes D1 global clean-success policy.
+No release/deployment/live-install modification is authorized by this step.
+API-REV-002 Fail supersedes former release-readiness claims; v1.4.87 remains broken.
 
 ## Problem And Desired Outcome
 Team image/file finalization loses exact execution identity, causing HTTP 400 when a configured member and retained delegated task share an address. A user sending attachments must target exactly the same execution as the message; subsequent reads and restored history must preserve ownership and file contents.
@@ -65,10 +76,71 @@ Team final REST DTO and file URLs change; web and server must ship matching cont
 investigation-notes.md and matching-errors.log (evidence, no separate behavior approval). Original three screenshots linked there; no independent normative supplement.
 
 ## Assumptions / Open Decisions
-No open intended-behavior decisions. Old-reference transition is technical design work, not permission to drop data; irrecoverable ownership requires explicit report rather than guessing. Deployment/release authorization stays delivery-owned.
+No open intended-behavior decisions within R1 plus explicitly clarified R2. Old-reference transition is technical design work, not permission to drop data; irrecoverable ownership requires explicit report rather than guessing. Deployment/release authorization stays delivery-owned.
 
 ## Traceability
 REQ-001→UC-001/BEH-001/AC-001/SC-001. REQ-002→UC-001,002/BEH-001,002/AC-002,003/SC-001,002. REQ-003→UC-004/BEH-004/AC-004/SC-004. REQ-004→UC-003/BEH-003/AC-005/SC-003. REQ-005→UC-002/BEH-002/AC-003,006/SC-002. REQ-006→all UC/BEH/SC, AC-002..007.
 
 ## Architecture Phase Input / Readiness
 Approved scenarios SC-001..004, preserve data and unchanged draft/Org/standalone behavior. Verify writers/readers, exact-ID index support and stored locator transition. Current evidence, scope, testability, traceability and approval reference complete. Content ready: Yes; explicit approval: Yes; basis ready for design: Yes. Remaining requirement blocker: none.
+
+
+## R2 Additional Behavior, Scope And Traceability
+- BEH-005 / UC-005 / SC-005 (Supported Normal Scenario): user upgrades/restarts
+  a released installation that retains empty or nonempty incomplete Team roots
+  beside valid roots. Preserve incomplete roots, omit them from usable run
+  lists and reject direct load/restore; application starts, valid runs and
+  unrelated capabilities remain usable. Evidence: API-REV-002 real installation,
+  predecessor SKIPPED_MISSING and warning dispositions, canonical conventions.
+- BEH-006 / UC-006 / SC-006 (Supported Explicit Edge Scenario): a current
+  package contains an attachment reference whose owning package cannot be
+  established/admitted. Keep source evidence, do not invent identity; only the
+  dependent operation/package is unavailable. Unrelated valid packages remain
+  available. Authority: user-required narrow failure isolation and typed
+  cross-root reference readers; fixtures verify this contract, not new user UI.
+- BEH-007 / UC-007 / SC-007 (Operational): designer authors a migration;
+  canonical convention must be mandatory input, predecessor residue and actual
+  admission boundary evidenced. User explicitly requested recurrence prevention.
+
+| Requirement | Intended outcome | Behavior / Scenario | Acceptance |
+|---|---|---|---|
+| REQ-007 | Historical incomplete packages cannot globally block startup; preserve and exclude them as unusable | BEH-005 / SC-005 | AC-008: real Studio and standalone startup both succeed with valid plus empty/nonempty missing-tree roots; valid run loads and new run works, invalid roots not listed or directly usable, retained hashes unchanged; repeat startup succeeds |
+| REQ-008 | Migration outcome and admission truthful at narrowest actual boundary, including dependencies | BEH-005,006 / SC-005,006 | AC-009: explicit preserved-excluded dispositions produce warning success only with independently validated admitted targets; unknown/failed commits remain failures; referring packages cannot expose unresolved attachment ownership; unrelated packages remain usable; old and exact cross-root refs both tested |
+| REQ-009 | Upgrade recovery proves installed-data fidelity, not just fixture success | BEH-005 / SC-005 | AC-010: corrected build starts against disposable actual installed-data copy with predecessor warning/failed .87 ledger shapes; validates unaffected history/new-run/read/restart; original live data unchanged; desktop-shell startup evidence required for this reported startup blocker |
+| REQ-010 | Canonical conventions and designer workflow prevent blanket gating recurrence | BEH-007 / SC-007 | AC-011: canonical doc includes concrete missing-tree/coexistence and dependency check; authoritative Solution Designer skill requires it before migration design; link and skill validation checked; published workflow integration tracked |
+
+Preserved R1 REQ-002..006 / AC-002..007 remain mandatory, except old D1 tests
+expecting global fatal admission from one unresolved reference are obsolete
+technical expectations, not user requirements. AC-006 retains originals and
+normal retry, not an arbitrary-failure recovery framework. No majority-success
+semantics, catch-all skip, manual ledger success, deleted directories, old-URL
+runtime fallback, unrequested history repair, forced release retag or installed
+patch. Incomplete historic sources may remain preserved and excluded; user
+explicitly accepts that bounded unusability instead of whole-app outage.
+Data continuity: zero source/attachment loss. R2 must not restore an original
+backup over newer writes. Review blockers cite AC-008..011 plus preserved R1;
+new product behavior or inability to isolate safely returns for clarification.
+Architecture owns technical gate granularity/retry mechanism under these
+constraints. All supplemental incident artifacts are evidence, not new policy.
+Readiness: explicit user instruction verified; requirements ready for revised
+design; no remaining approval blocker. Historical R1 kept in recovery-evidence.
+
+R2 direct user supplement: rename the existing canonical policy as **Data Migration Guideline** and include production examples; one document, not two competing guides. User expressly authorizes original-thread-ID routing and urgent recovery. This is included in REQ-010/AC-011; no additional approval hold.
+
+
+## User Clarification — 2026-09-27 / SR-005
+Verified direct user messages in existing Implementation chat
+01a0ded4-7f09-7242-97b4-fa75a85c856f:
+- 01a0e107-5271-7172-a1f8-37136f92eb6f: incomplete data means success with
+  warnings, not migration failure.
+- 01a0e10c-417f-74d1-95a3-f9a0f5cfbd1b: prioritize application startup and new
+  work even if none of the existing data can be shown; distinguishes this
+  missing-history incident from a genuinely unavailable required schema.
+This confirms R2 REQ-007/008: explicitly preserved historical exclusions are
+SUCCEEDED_WITH_WARNINGS, including zero admitted historical runs. AC-008/009
+must include an all-excluded-history case with successful startup and new work,
+while retaining originals. No majority or nonempty admitted-set prerequisite.
+Real failed writes remain truthful failures without automatically blocking the
+application. No approved change to unrelated actual platform/schema/vault gates
+or new database/reset/fallback mechanism is inferred. R2 remains approved;
+this clarifies the existing availability boundary, not a new architecture.

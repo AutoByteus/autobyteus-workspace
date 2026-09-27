@@ -1,0 +1,13 @@
+{
+  "ticketWorktreeRemoved": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-exact-execution",
+  "auxiliaryWorktreeRemoved": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-release-v1.4.87",
+  "localBranchesDeleted": [
+    "codex/team-attachment-exact-execution",
+    "delivery/team-attachment-v1.4.87"
+  ],
+  "prune": "completed",
+  "remoteTicketBranch": "retained for audit; removal not required",
+  "unrelatedMainWorktreeFiles": "preserved",
+  "ticketRemovalRecovery": "git worktree remove deregistered but directory deletion failed; verified clean state and merged ancestry, removed exact remainder with shutil.rmtree",
+  "productionInstallationMutated": false
+}

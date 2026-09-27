@@ -1,3 +1,4 @@
+import { RootRunPackageReadinessIndex } from "../../run-history/services/root-run-package-readiness-index.js";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
@@ -32,6 +33,7 @@ const requiredRunId = (runId: string): string => {
 };
 
 export class StandaloneAgentRunLifecycleService {
+  private readonly readiness: RootRunPackageReadinessIndex;
   private readonly transitionLanes = new Map<string, Promise<void>>();
   private readonly quarantines = new Map<string, Error>();
   private readonly agentRunManager: AgentRunManager;
@@ -54,6 +56,7 @@ export class StandaloneAgentRunLifecycleService {
       modelSelectionValidator: RunModelSelectionValidator;
     },
   ) {
+    this.readiness = new RootRunPackageReadinessIndex(memoryDir);
     this.agentRunManager = deps.agentRunManager ?? AgentRunManager.getInstance();
     this.metadataService = deps.metadataService ?? new AgentRunMetadataService(memoryDir);
     this.historyCatalogService = deps.historyCatalogService ?? new AgentRunHistoryCatalogService(memoryDir);
@@ -68,6 +71,7 @@ export class StandaloneAgentRunLifecycleService {
 
   async resolveCommandReadyAgentRun(runId: string): Promise<AgentRun> {
     const normalized = requiredRunId(runId);
+    await this.readiness.assertAdmitted("agent", normalized);
     const active = this.agentRunManager.getActiveRun(normalized);
     if (active) return active;
     return (await this.resolve(normalized)).run;
@@ -231,6 +235,7 @@ export class StandaloneAgentRunLifecycleService {
   }
 
   private async activateOnce(runId: string): Promise<StandaloneAgentRunActivationResult> {
+    await this.readiness.assertAdmitted("agent", runId);
     const state = await this.metadataService.readMetadataState(runId);
     if (state.kind === "missing") throw new Error(`Run '${runId}' was not found.`);
     if (state.kind === "unreadable") throw new Error(`Run '${runId}' metadata is unreadable.`);

@@ -1,0 +1,10 @@
+{
+  "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+  "port": 3431,
+  "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-recovery-installed-pli4ilol/desktop",
+  "ownsDataRoot": false,
+  "clientBaseUrl": "http://127.0.0.1:3431",
+  "healthUrl": "http://127.0.0.1:3431/rest/health",
+  "startupMs": 195140,
+  "ready": true
+}

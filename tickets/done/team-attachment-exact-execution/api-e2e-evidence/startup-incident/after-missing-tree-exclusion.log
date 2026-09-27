@@ -1,0 +1,2 @@
+AgentFactory (Singleton) initialized.
+released {"status":"SUCCEEDED","summary":{"scannedCount":7335,"migratedCount":363,"skippedCount":6972,"failedCount":0,"details":[{"itemId":"20260926_team_context_file_execution_locators_v1","status":"MIGRATED","message":"All typed references validated; manifest complete.","backupPath":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-upgrade-incident-ylze90j1/app-data-migration-backups/20260926_team_context_file_execution_locators_v1"}]}}

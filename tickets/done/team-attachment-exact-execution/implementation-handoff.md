@@ -1,75 +1,67 @@
-# Implementation Handoff — IR-001
+# Implementation Handoff — IR-002 startup recovery
 
-## Result and workspace
-**Implementation Complete — ready for independent source review**, not API/E2E or delivery sign-off. Package docker-image-http400-20260926; 2026-09-26.
+## Result and authority
+**Implementation Complete — ready for fresh independent source review.** Not a recovered-installation or release claim. Production v1.4.87 incident remains **OPEN**, and **API-REV-002 FAIL** remains current until fresh executable evidence supersedes it.
 
-- Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-exact-execution
-- Branch: codex/team-attachment-exact-execution
-- Base: e06080b0027636cecf20b5e437c496d423c7f26b
-- Source, tests and package documents uncommitted. No commit/push/release, Docker mutation, live data migration or runtime message occurred.
+Package docker-image-http400-20260926 / team-attachment-exact-execution; rework date 2026-09-27. Current code and this handoff supersede IR-001's blanket-startup-gate policy. The old handoff is retained at /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/recovery-evidence/implementation-handoff-IR001-historical.md.
 
-## Upstream artifact package
-Canonical directory: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-exact-execution/tickets/team-attachment-exact-execution
+## Workspaces / finalization constraints
+- Software: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery; branch codex/team-attachment-startup-recovery; base a35060c58d923311de496e75aa3ea0209708d8b3; integration target personal.
+- Companion authoritative workflows: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-migration-workflow; branch codex/team-attachment-migration-workflow; base 1b1a75ee57271745424030e9289a699523ff34a6; target main.
+- Both repositories must be reviewed and delivered. All changes uncommitted. No live data repair, installed-copy mutation, Docker changes, commit, push, tag, release or deployment by implementation. Upstream ticket reopening from done to in-progress is intentional evidence preservation; do not revert it. Generated SDK dist folders are build products, not authored source.
 
-- requirements-doc.md: approved R1; investigation-notes.md and matching-errors.log: evidence.
-- design-spec.md: D1; solution-revision-record.md: SR-001..003, current SR-003.
-- solution-handoff.md: workspace/finalization constraints.
-- design-review-report.md and architecture-review-revision-record.md: ARCH-REV-001 Pass.
-- implementation-revision-record.md: IR-001 initial baseline.
-- Product/UI supplements: N/A — not applicable. CRR/API-REV/DR: N/A — not yet performed.
-- Trigger: Architecture Reviewer initial pass, triggering findings N/A.
+## Cumulative upstream package
+Canonical package: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution
 
-## Current implementation summary
-Initial cycle. Final Team DTO and locator use containing teamRunId plus exact canonical agentRunId. Normal resolver, GET and synchronous provider-path reader no longer accept address-based final ownership. Drafts keep temporary scope/address; Org and standalone contracts unchanged. Team store preserves captured target through restore/finalization and uses launch-returned identity.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/requirements-doc.md — R2 approved, including SR-005 availability clarification.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/design-spec.md — D2; /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/investigation-notes.md; /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/solution-revision-record.md — SR-001..005.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/solution-handoff.md — isolation, both repositories and finalization constraints.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/design-review-report.md and /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/architecture-review-revision-record.md — ARCH-REV-002 Pass, superseding ARCH-REV-001 blanket-gate acceptance.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/api-e2e-execution-coverage-report.md and /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/api-e2e-revision-record.md — API-REV-002 FAIL; INC-01/INC-02 reproduction, INC-03 diagnosis only.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/api-e2e-evidence/startup-incident/incident-report.md — retained installed evidence.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/recovery-evidence/availability-policy-clarification.md — SR-005; zero usable historical runs is not a startup failure.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/recovery-evidence/workflow-prevention.md — mandatory companion scope.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/implementation-revision-record.md — IR-001 retained; current IR-002.
+- Historical CRR-001/002, API-REV-001 and DR-001..004 remain evidence, not recovery passes. Fresh CRR/API/DR for recovery: not yet performed. Product/UI supplement: N/A — no visual design change.
 
-Startup-only migration 20260926_team_context_file_execution_locators_v1 enumerates strict Team/Org execution scopes and standalone records. It proves old typed references against the Team index and contained physical files, uses matching source-trace provenance only where applicable, and rejects unresolved/ambiguous proof. Existing record walker and atomic writer are reused. Original changed-record backups, hashes, mapping/proof and durable progress are outside memory discovery. Retry accepts only source/target hashes and re-finalizes uncertain commits. Validation/manifest completion precede ledger success. Both Studio and standalone admission require SUCCEEDED; warning/missing/running/failed status blocks.
+## Current implementation summary / boundaries
+The R1 exact containing TeamRun + canonical AgentRun final contract, separate drafts, captured frontend identity and physical execution layout remain. IR-002 corrects startup/disposition/admission; it adds no old runtime reader.
 
-Local prerequisite correction: at the base, teamRunConfigStore called undefined assertEditTarget on required draft-focus/pending-input paths (eight focused test ReferenceErrors). The existing validator is now exported as assertTeamLaunchEditTarget and imported by the store. No topology rule or supported draft behavior changed. Evidence: implementation-evidence/launch-validator-baseline.txt.
+1. Extracted strict current Team/Org structural validation into RootRunPackageCurrentValidator, including required sidecars and family conflicts. Standalone candidates require current metadata identity. Missing trees/incomplete packages are preserved and excluded, not guessed or deleted.
+2. The same registered migration ID performs source-group typed-reference preflight and dependency closure before commits. Safe incomplete/unavailable dispositions yield SUCCEEDED_WITH_WARNINGS, even if no historical group is usable. Real read/commit/journal attempt failures yield FAILED, with independent groups continuing where provable. Diagnostics are counts plus <=5 examples per disposition.
+3. Existing V1 manifest/hash/original files are reused. Source groups reconcile to released entries; excluded entries and original bytes are retained. Original/target commit retry remains atomic and hash-checked. Completed evidence is not rewritten for formatting; newer validated current writes are not restored over. An incomplete journal can mark complete only when every plan is committed or has an explicit preserved exclusion; this does not grant admission.
+4. Runtime readiness separately rebuilds structural facts + current typed-reference/dependency validation at startup regardless of ledger label. It does not call filtered location services while constructing its snapshot. admitCurrent now validates before publishing, not blind-add. Runtime knows only current final locators; ordinary external URLs/local paths remain unchanged.
+5. Lists, stored direct loads, exact async/sync file ownership and standalone projection/restore consume admission. New valid standalone metadata is published through the same authority. Deletion invalidates affected reference dependencies. Both entrypoints drop only the attachment-SUCCEEDED blanket guard; actual unrelated core schema/vault gates are unchanged.
+6. Single Data Migration Guideline renamed/promoted by designer, then refined per the user's direct request with a detailed **critical anti-pattern** incident example: failure chain, source assumption, review/validation misses, user impact, forbidden remedies, all-excluded behavior and mandatory release evidence. Web/server operational docs no longer prescribe clean ledger success as startup admission. Companion skill mandates guideline/predecessor investigation.
 
-## Routing classification
-- task_size: **Medium**; architectural_risk: **High**, confirmed from D1.
-- Contract/persistence/startup cutover retain high risk; no execution-index/model redesign.
-- Selected route: **Code Review**, using current get_handoff_rules.
-- Lightweight direct-route self-review: Not Applicable; independent review required. Implementation inspection and local tests are not review substitutes.
-- New Design Impact: None. Existing validator linkage defect required a narrow implementation correction, not intended-behavior change.
+## Classification and design health
+**Medium / High / Reviewed retained.** Persistence, startup and cross-package admission risk remain High. Selected downstream route: independent **Code Review**, not direct API/E2E. Direct-route lightweight review: N/A. Implementation self-inspection does not replace independent review.
+D2 ownership/policy root cause and focused refactor confirmed. Required >220-line readiness delta was split into structural classifier and bounded current reference validator; all changed production files <=500 effective non-empty lines (maximum 482). No new framework, migration version, DB, persisted denylist, parallel journal, address fallback, identity guessing, deletion/reset, completed-task revival or unrelated gate change.
+SR-005 clarifies availability without changing D2 structure. No unresolved new design gap claimed; broad platform changes were explicitly not inferred.
 
-## Reviewed behavior implementation trace
-| Behavior | Actual production files/path | Local outcome |
+## Behavior trace
+| Behavior | Actual implementation path | Local result |
 |---|---|---|
-| BEH-001 | web agentTeamRunStore/contextFileOwner; server owner-types/resolver/finalization/exact GET | Focus, restore, nested scope, launch target and finalize-failure store tests; real stored-tree service test separates configured/task bytes at duplicate address |
-| BEH-002 | contextAttachmentModel/history hydration; read/local-path resolver; startup transition/journal | Typed archives/sidecars/cross-family referrers, non-locator/byte preservation, backup/hash/commit/ledger restart tested; exact async/sync reads checked |
-| BEH-003 | distinct draft contract, launch-returned identity, existing validator linkage | Draft/launch/pending input/retry checks pass |
-| BEH-004 | strict final DTO; shared exact-ID scoped owner resolver | Missing/unsafe/old/mixed descriptors and wrong team/ID/family rejected; wrong-scope finalize rejects before moving draft |
+| BEH-001/003/004 preserved | final owner resolver, Team/Org stored locations, finalization, provider normalization; frontend source unchanged | exact IDs, separate drafts, async/sync owner rejection and duplicate-address byte selection pass |
+| BEH-002 preserved/revised | typed record walker, grouped transition and released V1 journal | archives/sidecars/non-locator bytes, backup/hash/retry checks pass |
+| BEH-005 | strict classifier + scoped readiness; both startup entrypoints; Team/Org catalogs/loaders and standalone catalog/projection/lifecycle | incomplete roots preserved/excluded; valid subset and new metadata publication pass locally |
+| BEH-006 | current reference validator + dependency closure in transition/readiness | old/current unavailable refs, standalone dependants, valid cycles, failed-attempt isolation, republish exclusion pass |
+| BEH-007 | server Data Migration Guideline, README/modules and operational docs; companion Solution Designer skill/reference | single authoritative guide + detailed historic critical failure; companion validator pass |
 
-## Key files and owner boundaries
-Absolute inventory: implementation-evidence/changed-files.txt under canonical ticket directory.
+## Implementation evidence and environment
+- **157 server unit checks / 19 files PASS**; production source TypeScript check PASS; shared builds/Prisma generation PASS; both repository diff checks and companion skill validation PASS.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/implementation-evidence/recovery/checks.md — commands, scope, fixture corrections and limits.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/implementation-evidence/recovery/server-unit.log; /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/implementation-evidence/recovery/source-typecheck.log; /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/implementation-evidence/recovery/dependency-build.log.
+- /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/implementation-evidence/recovery/source-size-check.txt; /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/implementation-evidence/recovery/changed-files.txt; /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/implementation-evidence/recovery/companion-skill-validation.log.
+- The summary counts are source-group dispositions now, not the older file counts; upstream 192/88 or installed 7,335/363 counts are historical point-in-time evidence, not this implementation's scan.
+- Frontend feedback loop: **N/A for IR-002** — backend admission and documentation only; no rendered component/style/interaction source changed. Historical browser evidence does not prove corrected Electron startup.
 
-- Existing context-files types, resolver, REST transport and local adapter own current contract/read access.
-- New app-data-migrations/migrations/team-context-file-execution-locators-v1: transition owns discovery/proof; journal owns preflight/backups/atomic progress/restart; entry owns policy/dependencies/result.
-- Registry and both startup entrypoints enforce ordering/admission. Historical decoding never enters normal readers.
-- Docs updated: web docs/agent_execution_architecture.md, docs/settings.md; server docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md.
+## Required downstream gates / known limits
+1. Fresh source review of warning versus actual attempt failure, current dependency closure, direct/sync/restore bypasses, publication, and released manifest reconciliation; include both repos and expanded guideline.
+2. API/E2E owns real executable coverage and necessary REST/process fixture updates. Exact remaining callsites/obsolete assertions are listed in /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution/implementation-evidence/recovery/checks.md. Do not restore permissive readers or mocks as a substitute for real startup.
+3. **Mandatory before recovery/release claims:** both real entrypoints and repeat startup; same-ID FAILED retry plus terminal success/warning ledger independence; predecessor warning residue; all-excluded history with actual new work; stopped-writer actual installed-data copy retaining all eight missing-tree roots/hashes; usable history and exact attachment regression; actual reported desktop startup boundary.
+4. Full archive/reference scanning is confined to startup/rebuild/publication, not each HTTP GET. No performance SLA/installed-corpus timing was established here. Terminal migration outcomes remain skipped by the generic runner; later unresolved historical upgrade requirements must be designed, never ledger-reset.
+5. Preserve all historical evidence, originals and current newer writes. No production mutation is authorized by this handoff. Fresh user verification and Delivery publication/install gates remain mandatory.
 
-## Design health / legacy removal / size
-Bug Fix + focused Refactor, boundary/ownership root cause and Refactor Needed Now confirmed. No fallback, old-route redirect, configured/newest preference, mixed final DTO, completed-task revival or physical attachment relocation added. Current-source old Team final parser/route/model paths replaced. Historical decoding stays migration-only; address drafts remain current separate lifecycle. Structures remain narrow; changed source maximum 435 effective non-empty lines, each source delta under 220. See source-size-check.txt.
-
-## Persisted transition
-Approved D1 decision followed: physical layout directly usable; typed references Migration Required; drafts Not Affected. No data deletion/reset. Proof failures block rather than guess. Original record backup/progress retained under app-data-migration-backups/20260926_team_context_file_execution_locators_v1. Production 192-reference/88-trace counts remain upstream point-in-time evidence; implementation did not scan production data.
-
-## Local implementation checks / environment
-**97 server tests across 12 files; 78 frontend tests across 10 files pass.** Server source typecheck exit 0; shared builds, Prisma generation, Nuxt prepare and diff check pass. Commands, setup iterations and logs: implementation-evidence/checks.md. Dependencies installed offline from cache. Generated untracked SDK dist outputs are build products, not authored source; do not include in a commit. No full frontend typecheck/build or API/E2E pass claimed.
-
-## Frontend rendered-result check
-Actual UserMessage component/current hydration inspected and interacted with in disposable Nuxt preview: draft→final chip retains label, established layout/focus styling, keyboard Open reaches exact execution URL and disposable text bytes. Detailed evidence: implementation-evidence/rendered-result-check.md. Preview page removed; processes and tabs stopped. No new UI/UX design or visual changes.
-
-Limitations: component fixture, not full application send/reopen; images/responsive states and actual launch/restore not visually exercised. Store/component tests cover changed bindings. Broader browser journey remains downstream.
-
-## Risks and downstream coverage
-1. Independent source review should scrutinize historical proof, source enumeration, backup/hash/progress/restart safety and current-only cutover.
-2. API/E2E owns new API coverage and adaptation of existing REST/E2E fixtures; these suites were not authored/executed here. Existing tests/integration/api/rest/context-files.integration.test.ts still contains old final address contracts and stale configured-nested setup. tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts has earlier draft/final field drift. They are not passing current-contract evidence. Coverage owner must update them to exact identity and preserve meaningful invalid-shape checks, not restore compatibility.
-3. Validate assembled upload/finalize/GET/provider sync paths, two same-address executions and repeated filenames, nested task Team, wrong family/team, pre-launch attachments, focus/restore races, failure retry, retained/reloaded image/file history, and Org/standalone/text-only regressions.
-4. Validate realistic disposable copied-data upgrade and both entrypoints; stop all writers during conversion and ship matching web/server. Tests inject pre/post-rename, progress/completion-save and ledger completion interruptions. Operational coordinated rollout/rollback remains Delivery-owned.
-5. Existing runner stale RUNNING lock policy remains unchanged (15-minute default); new migration recovery is restart-only. Do not mutate live data to bypass proof errors. Escalate installation-specific ambiguity or new authorities instead of guessing.
-6. No deployment or user verification; finalization target remains personal under Delivery gates. Never restore record backups over newer live history.
-
-## Handoff authority
-Current code and this handoff are authoritative. IR-001 indexes the initial baseline, not independent proof. Route only to the single matching /code_reviewer after persisting artifacts.
+## Handoff protocol
+AgentTeam get_handoff_rules/send_message_to tools unavailable after discovery; no successful lookup is claimed. Use the explicitly authorized existing original specialist thread fallback, single primary recipient Code Reviewer 01a0deea-7dc5-7752-a767-312bf71c6af4. No new task or duplicate execution. Stop this implementation stage after confirmed handoff.

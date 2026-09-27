@@ -1,3 +1,4 @@
+import { RootRunPackageReadinessIndex } from "../../../../src/run-history/services/root-run-package-readiness-index.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -72,10 +73,14 @@ const createNormalizer = async () => {
     storedFilename,
   ));
 
+  await fs.writeFile(path.join(rootTeamDir, "task_delegation_records.json"), JSON.stringify({schemaVersion: 1, rootTeamRunId, records: []}));
+  await fs.writeFile(path.join(rootTeamDir, "team_communication_messages.json"), JSON.stringify({schemaVersion: 1, rootTeamRunId, messages: []}));
+  await fs.writeFile(path.join(memoryDir, "agents", "standalone-run", "run_metadata.json"), JSON.stringify({runId: "standalone-run", agentDefinitionId: "def", workspaceRootPath: "/workspace", memoryDir, llmModelIdentifier: "model", runtimeKind: "autobyteus"}));
+  await new RootRunPackageReadinessIndex(memoryDir).rebuild();
   const normalizer = new AgentRunProviderInputNormalizer(
     new ContextFileLocalPathResolver({
       layout,
-      ownerResolver: new ContextFileOwnerResolver({
+      ownerResolver: new ContextFileOwnerResolver({ memoryDir,
         locations: createStoredTeamRunExecutionTreeLocationService(memoryDir),
       }),
       baseUrl: "http://studio.example.test:8000",

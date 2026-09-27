@@ -1,0 +1,11 @@
+{
+  "startedAt": "2026-09-27T04:54:42.561342+00:00",
+  "version": "1.4.87",
+  "type": "fresh unsigned local Electron macOS arm64 user test, not release",
+  "softwareBase": "a35060c58d923311de496e75aa3ea0209708d8b3",
+  "sourceState": "reviewed uncommitted R2/D2 IR002 CRR003 APIREV003 CRR004",
+  "companionBase": "1b1a75ee57271745424030e9289a699523ff34a6",
+  "integration": "both refreshed bases unchanged; no checkpoint or merge needed",
+  "userAuthorization": "API thread 01a0def0-27cd-7b23-bc09-6749275134d9 message 01a0e131-0f7e-74d0-b2cb-902f2ed7c062 verified",
+  "liveDataMutation": false
+}

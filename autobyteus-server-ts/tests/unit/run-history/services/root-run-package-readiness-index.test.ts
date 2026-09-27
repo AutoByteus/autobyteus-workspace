@@ -54,7 +54,7 @@ const writeOrg = async (memoryDir: string, id: string): Promise<string> => {
 };
 
 describe('RootRunPackageReadinessIndex', () => {
-  it('admits structurally valid Team and Org roots without reading historical raw-trace payloads', async () => {
+  it('excludes structurally valid roots whose typed trace records cannot be validated', async () => {
     const memoryDir = await temporaryMemory();
     const teamPackage = await writeTeam(memoryDir, 'team-payload-independent');
     const orgPackage = await writeOrg(memoryDir, 'org-payload-independent');
@@ -68,10 +68,10 @@ describe('RootRunPackageReadinessIndex', () => {
     const index = new RootRunPackageReadinessIndex(memoryDir);
     await index.rebuild();
 
-    expect(index.listAdmitted('agent_team')).toEqual(['team-payload-independent']);
-    expect(index.listAdmitted('agent_org')).toEqual(['org-payload-independent']);
-    expect(index.listDiagnostics()).toEqual([]);
-    expect(readFile.mock.calls.filter(([file]) => /raw_traces_(?:active|\d+)\.jsonl$/.test(String(file)))).toEqual([]);
+    expect(index.listAdmitted('agent_team')).toEqual([]);
+    expect(index.listAdmitted('agent_org')).toEqual([]);
+    expect(index.listDiagnostics().map((item) => item.code)).toEqual(["REFERENCE_UNAVAILABLE", "REFERENCE_UNAVAILABLE"]);
+    expect(readFile.mock.calls.filter(([file]) => /raw_traces_(?:active|\d+)\.jsonl$/.test(String(file)))).toHaveLength(2);
   });
 
   it('lazily shares one strict awaitReady generation across Team and Org facades', async () => {

@@ -1,63 +1,65 @@
-# API/E2E Test Review Report
+# API/E2E Test Review Report — CRR-004
+
+## Latest Authoritative Result
+**Pass — proportional review of seven API-owned durable test files.** No actionable test-code finding. Ready for Delivery to prepare the user's requested fresh Electron test artifact. **Not publication authorization, installed repair, user verification completion or incident closure.**
 
 ## Review Meta
-- Package: `docker-image-http400-20260926`; 2026-09-26.
-- Review round: 1 proportional test review; cumulative code-review revision **CRR-002**.
-- Trigger: API/E2E Engineer's successful API-REV-001 handoff with three durable test changes.
-- Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-exact-execution`; branch `codex/team-attachment-exact-execution`; base `e06080b0027636cecf20b5e437c496d423c7f26b`.
-- Canonical ticket: `tickets/team-attachment-exact-execution` in that workspace; artifact names below resolve there, test paths from workspace root.
-- Requirements/investigation/solution context: `requirements-doc.md` (approved R1), `investigation-notes.md`, `solution-revision-record.md` (SR-003), `design-spec.md` (D1).
-- Supplements: `solution-handoff.md`, `matching-errors.log`, implementation evidence. Product/visual supplements: N/A — not applicable.
-- Architecture/implementation history: `architecture-review-revision-record.md` (ARCH-REV-001), `design-review-report.md`, `implementation-revision-record.md` (IR-001), `implementation-handoff.md`.
-- Original source report: `code-review-report.md` (CRR-001 Pass), unchanged by this test-only review.
-- Cumulative review record: `code-review-revision-record.md`, current CRR-002.
-- Coverage context: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-test-case-ledger.md`, `api-e2e-revision-record.md` (API-REV-001).
-- Execution evidence inspected: `api-e2e-evidence/checks.md`, `durable-test-changes.diff`, final REST/process logs; execution report and ledger for broader/server/frontend/browser evidence.
-- Delivery revision record: N/A — not applicable.
-- API/E2E result: **Pass**, reported final validation confidence **95.9%**. Confidence is the validation owner's assessment, not recalculated here.
-- Prior unresolved test-review findings: None; first proportional review.
-- Supported Product Scenario Basis Confirmed: **Yes**. Medium / High / Reviewed route preserved.
+- Date: 2026-09-27. Test-review round 2, cumulative code-review result CRR-004.
+- Trigger: API-REV-003 Pass / 95.4% reported validation confidence. Confidence belongs to the execution owner; no new score or duplicate source review here.
+- Classification: Medium / High / Reviewed preserved.
+- Canonical package: /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/tickets/in-progress/team-attachment-exact-execution.
+- Context: approved requirements-doc.md R2 with preserved R1; investigation-notes.md; design-spec.md D2; solution-revision-record.md SR-004/005; ARCH-REV-002 architecture-review-revision-record.md and design-review-report.md; IR-002 implementation-revision-record.md/handoff; CRR-003 code-review-report.md and cumulative code-review-revision-record.md.
+- Supplements: recovery-evidence/availability-policy-clarification.md, workflow-prevention.md and retained startup incident evidence. Product/visual supplements N/A.
+- Execution authorities: api-e2e-coverage-investigation.md, api-e2e-execution-coverage-report.md, api-e2e-test-case-ledger.md, api-e2e-revision-record.md API-REV-003 and recovery-handoff.md (full cumulative absolute reference manifest).
+- Delivery re-entry: earlier DR-001..004 are historical publication context; recovery Delivery revision N/A.
+- Prior proportional result CRR-002 Pass; no unresolved test-review finding. CRR-003 source Pass remains unchanged; its then-pending API failure is now superseded by API-REV-003 in the API authority, not retroactively rewritten.
+- User request verified directly in API thread 01a0def0-27cd-7b23-bc09-6749275134d9, message 01a0e131-0f7e-74d0-b2cb-902f2ed7c062: testing → Code Review → Delivery fresh Electron build for personal testing. No public release permission inferred.
+- Supported Product Scenario Basis Confirmed: **Yes**. R1 exact attachment/draft preservation and R2 ordinary upgrade with retained incomplete roots, independent current admission, original preservation and normal retry. Fixtures reproduce those contracts; they do not create new loading policy.
 
 ## Changed Durable Test Scope
-| Durable test path | Change | Related scenario/requirement | Coherent responsibility | Notes |
-| --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts` | Updated | SC-001..004; AC-002/004/005/007 | Multipart upload, finalization, exact-owner HTTP reads, error/retry and unchanged draft/standalone behavior | 10 cases; immutable current trees, supported nested task-Team fixture, repeated-address/file separation |
-| `autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts` | Updated (replaced in place) | SC-001..003; AC-002..007, particularly AC-003/006 | Built-process attachment transport and persisted upgrade/startup lifecycle | 6 cases; explicit opt-in/build prerequisite; replaces obsolete bare-server/live-model harness |
-| `autobyteus-server-ts/tests/e2e/helpers/context-file-process-fixture.ts` | Added | Same process scenarios | Owned temporary process/provider/data setup, HTTP/WS operations, standalone probe and interruption seam | External inference emulator is explicit; real internal runtime/storage/migrations exercised |
+No durable file deleted; two added and five updated. No implementation-source thresholds or forced test splitting applied. Paths are absolute.
 
-No durable test path deleted. No durable test file changed: **No**. Temporary browser probes, copied packages, logs, screenshots and generated outputs are evidence, not maintained test code under review. Production source was not changed by API/E2E per handoff; this entry point does not reopen the source scorecard.
+| Durable Test Path | Change | Scenario / requirement | Coherent responsibility |
+|---|---|---|---|
+| /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/fixtures/current-attachment-package-fixtures.ts | Added | SC-001..006 / AC-002..009 | Shared strict Team/Org sidecars and standalone metadata; valid task identities without mocked admission. |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/api/rest/context-files.integration.test.ts | Updated | SC-001..004 / AC-002..007 | Multipart/finalization/exact file reads; complete strict nested/task fixtures and standalone identity. |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/api/rest/agent-org-context-files.integration.test.ts | Updated | SC-001..004 / AC-007 | Preserved Org exact execution, draft/file/provider-path isolation; strict sidecars and explicit memory root. |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/integration/agent-memory/user-attachment-history.integration.test.ts | Updated | SC-001..004 / AC-003/007 | Accepted attachment recording, cold/page projection and exact Open across existing runtime kinds; current Team DTO and metadata. |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/helpers/context-file-process-fixture.ts | Updated | SC-001..006 / AC-002..010 | Owned process/provider/HTTP/WS fixture, reusable public launch, pre-start seed, isolated environment and both host launch boundaries. |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts | Updated | SC-001..005 / AC-002..008 | Five retained real attachment/prelaunch/copied-reference/interruption cases; replaces old global-fatal assertion and adjusts RUNNING restart behavior. |
+| /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts | Added | SC-005/006 / AC-008..010 | Four actual startup cases: coexistence/dependencies, all-excluded/new work, terminal ledger independence, real failed attempt and normal retry. |
 
-## Supported Scenario Alignment
-- SC-001: the independently established duplicate-address incident and approved exact-target send requirement justify two owners with distinct bytes; fixtures reproduce that condition, not invent it. REST asserts exact URLs, HTTP status/MIME/bytes and sibling isolation; process cases additionally assert actual MEMBER_INPUT_MESSAGE recipient and provider image payload.
-- SC-002: approved retained-history reopening/upgrade requires byte and owner continuity. A stopped copy of a runtime-created package supplies representative historical typed fields; parsed record equality checks all non-locator values, original backup equality and repeat-restart hashes. The retained-task tree/record is explicitly a fixture; the separate browser evidence establishes a real delegation lifecycle.
-- SC-003: a dedicated case uploads/previews/deletes before public Team launch, then finalizes to the returned exact AgentRun and sends. Existing frontend/browser evidence, rather than the server-only failure fixture by itself, establishes no dispatch and retained composer input after finalization failure.
-- SC-004: absent/malformed/mixed/nonexistent/wrong-containing-team rejection is an explicit approved contract, not an inferred broad security policy. The unchanged unexpected-access-error test preserves ordinary transport error classification.
-- AC-006/D1 explicitly govern interrupted migration and unresolved ownership blocking. The SIGKILL seam invokes the real writer and kills after commit before progress; stale-lock elapsed time is deliberately emulated only in the owned database. This does not claim arbitrary corruption support or authorize production data repair.
-- Real filesystem EEXIST is an intentional test failure injection for approved retry behavior; no new runtime recovery mechanism is requested from that synthetic setup.
+Temporary installed-copy probes, comparison scripts, screenshots/AX observations, logs and generated package output are execution evidence, not durable tests reviewed as source. New test file is opt-in through the established RUN_CONTEXT_FILE_PROCESS_E2E flag; final log confirms execution, not skipped-count inflation.
 
 ## Proportional Test-Code Checks
 | Check | Result | Evidence / notes |
-| --- | --- | --- |
-| Scenario grouping and names make intent clear | Pass | REST cases separate successful ownership, invalid shape/scope, bytes and unchanged behavior; six process cases separate transport, prelaunch, conversion, admission and interruption |
-| Assertions prove approved requirements instead of incidental implementation details | Pass | Exact recipient/locator, GET bytes, preserved draft bytes, non-locator record equality, unchanged originals and restart hashes. Manifest/ledger checks target the explicit migration durability contract |
-| Fixtures/setup/helpers reuse meaningful repetition | Pass | Shared immutable tree builders, multipart/finalize helpers, launch/attachment/byte helpers and one reusable process fixture; no generalized unrelated framework |
-| Isolation and determinism appropriate to boundary | Pass | Unique temp root per case, ephemeral loopback ports, pinned provider, isolated database/memory/package roots, bounded readiness/event waits, process stop and teardown; no credential dependency for durable tests |
-| Large files coherent and navigable | Pass | REST owner surface and process attachment lifecycle are coherent; no source-size limits or forced splitting applied |
-| No stale, duplicated, disabled-without-reason or compatibility-only tests remain | Pass | Old final selector success paths replaced; old/mixed requests now rejection assertions. Historical locators only migration inputs. Process suite's opt-in gate and build prerequisite are documented, final log proves six executed rather than skipped |
-| Coverage changes agree with investigation/execution evidence | Pass | Investigation explains replacement of obsolete harness; final logs show 10 REST and 6 process passes with matching current case names; useful standalone/Team transport retained and lifecycle coverage added |
-| Tests exercise independently established supported scenarios | Pass | SC-001..004/AC-006 basis above; no fixture used as sole justification for new product behavior |
+|---|---|---|
+| Scenario grouping and names make intent clear | Pass | Four startup-recovery cases separated from five attachment runtime cases; integration suites retain one surface each. |
+| Assertions prove approved requirements | Pass | Warning/FAILED/terminal attempt states, usable independent bytes, denied file/projection/restore access, actual new conversation completion, repeat and backup preservation. No universal-fatal assumption retained. |
+| Meaningful fixture/helper reuse | Pass | Strict sidecar/metadata builder replaces incomplete package fixtures; launch helper moved without behavior loss into existing process fixture. |
+| Isolation and determinism appropriate | Pass | Per-test temp data/DB, ephemeral loopback ports, owned child/provider cleanup and scoped failure retention; inherited RUST_LOG removed only in children. Real host/migrations/SQLite/runtime; external inference emulated explicitly. |
+| Large files coherent and navigable | Pass | Named cases and bounded helpers; no unrelated feature scenarios or artificial splitting. |
+| No stale/disabled-without-reason/compatibility-only tests | Pass | Obsolete global-fatal case removed and replaced by explicit R2 cases. Exact DTOs, not old runtime fallback. Opt-in process mode documented and executed. |
+| Coverage changes agree with investigation/evidence | Pass | Final server log 186, process log 9, frontend 68, Electron 33 = 296. Two new files and five updates match file manifest/diff. Earlier fixture failures retained and final rerun is clean. |
+| Independent scenario basis rather than fixture invention | Pass | Missing-tree upgrade grounded in released predecessor/incident and approved AC-008/010; cross-root edges AC-009; interrupted retry AC-006. Actual ENOTDIR is a bounded fault seam for truthful failed-attempt handling, not an invented platform recovery matrix. |
+
+### Removed tentative assertion
+The newly introduced assertion that every unavailable-package resume-config metadata request must throw was stronger than the approved prevention of unsafe history use. Its observed result was read-only tree metadata with editable=false/NOT_FOUND; actual file/projection/restore rejection assertions remain. The investigation recorded its invalid premise before removal and the final nine-case suite reran successfully. This does not waive a demonstrated unsafe re-admission or authorize changing application loading. No new source finding is derived from that discarded test-only expectation.
+
+### Evidence boundaries checked
+- Inspected all seven files and tracked diffs, requirements/recovery context, final execution summaries, revision/ledger reconciliation, and selected installed-copy/desktop preservation evidence. `git diff --check` passes.
+- Verified SHA-256 of all 22 production files in the CRR-003 source fingerprint: unchanged. No duplicate implementation review or source scorecard performed.
+- API evidence independently records full unfiltered installed-copy first/repeat packaged startup, all eight retained missing-tree roots, 363 original/target hash checks and unchanged live originals; reviewer inspected evidence, did not repeat execution. Native UI observations are API-owned, not independently reproduced by this review.
+- First/repeat startup times 195,140ms/36,491ms remain visible for Delivery/user expectations; no timing SLA or improvement claim added.
+- Explicitly retained emulation: external provider inference and elapsed stale-lock time in the existing kill test. DB setup edits in the old manufactured fixture remain isolated test setup; actual installed-copy retry uses its existing FAILED ledger, no fabricated success.
+- No full API/E2E rerun needed: changed assertions can be judged from code and final evidence. No production or test code modified by reviewer. Current test snapshot: api-e2e-evidence/recovery/code-review-test-scope-sha256.txt.
 
 ## Findings
-None. No actionable test-code quality or correctness defect identified. No failure classification or source failure-origin review needed.
+None. No unresolved finding IDs, failure classification, new mechanism or requirement revision. Existing CRR-003 source report remains authoritative for source scope; this is only the successful-test review.
 
-## Review Execution And Limits
-Read all three current durable files, their diff/replacement scope, coverage investigation and final evidence. `git diff --check` passed. No test assertions required an additional execution probe; the successful API/E2E workflow was **not rerun**, consistent with proportional review. No test/source fixes or production operations performed.
+## Routing And Remaining Gates
+**Pass → Delivery Engineer**, original thread 01a0df32-0983-7c12-8457-1547bb4075ff, for the expressly requested fresh Electron test artifact and personal user verification. Single primary recipient. AgentTeam get_handoff_rules/send_message_to remain unavailable after tool discovery; no successful rule lookup claimed. Applicable team-config successful proportional-review rule and verified explicit user thread-routing request supply the fallback route.
 
-The emulator proves transport/normalization, not model quality. HTTP-only finalize failure does not alone prove UI no-send; the package appropriately supplies frontend and actual browser evidence separately. Copied historical fields are representative rather than an exhaustive installed corpus. The browser journey is validation-owner evidence, not independently repeated in this review. Delivery retains installed-data clean migration proof, stopped-writer/coordinated rollout, backup/rollback, user verification and release gates. No Electron shell coverage is inferred.
+Send the entire recovery-handoff.md cumulative package plus this report, updated code-review-revision-record.md and seven durable paths. Both software recovery and companion migration-workflow worktrees still need coordinated integration at the appropriate Delivery stage. Do not discard uncommitted source/evidence or report prevention deployed before companion integration.
 
-## Latest Authoritative Result
-- Result: **Pass** — CRR-002, proportional test-code review.
-- Changed durable paths reviewed: all three listed above.
-- Unresolved finding IDs: None.
-- Recommended recipient: `/delivery_engineer` under successful post-API/E2E durable test review rule.
-- Notes: preserve source CRR-001 and validation API-REV-001 as their separate authorities; this result permits Delivery work, not deployment/release approval or a claim of user verification.
+API-REV-003 is candidate validation Pass; installed v1.4.87 remains untouched/failed. Reported incident stays open for Delivery/user verification. Candidate version label1.4.87 and unsigned local package are not a newly published release. Deliver a clearly identified fresh test artifact, retain preservation/rollback precautions, and obtain explicit user outcome before closure/finalization. No commit, push, public release, installed mutation or automatic backup restoration authorized by this review.

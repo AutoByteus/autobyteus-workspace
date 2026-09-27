@@ -22,7 +22,7 @@ export class AgentOrgRunPackageCatalog {
   listDiagnostics(): readonly AgentOrgRunPackageDiagnostic[] {
     return this.readiness.listDiagnostics("agent_org").map(projectDiagnostic);
   }
-  admit(id: string): void { this.readiness.admitCurrent("agent_org", id); }
+  admit(id: string): Promise<void> { return this.readiness.admitCurrent("agent_org", id); }
   exclude(id: string, reason: string): void {
     this.readiness.excludeCurrent("agent_org", id, reason);
   }

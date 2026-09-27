@@ -29,38 +29,7 @@ run("Context-file built-process runtime and upgrade", () => {
     await Promise.all(copies.splice(0).map(dir => fs.rm(dir, { recursive: true, force: true })));
   }, 30_000);
 
-  async function launch(kind: "agent" | "team") {
-    const models = await f.gql(`query {providerModelCatalogSnapshots(runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`);
-    const model = models.providerModelCatalogSnapshots.flatMap((x: any) => x.llmModels)
-      .find((x: any) => x.modelIdentifier.startsWith("attachment-fixture:"))?.modelIdentifier;
-    expect(model).toBeTruthy();
-    const result = await f.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`, {
-      input: { name: "Attachment Fixture Worker", role: "assistant", description: "Disposable validation agent",
-        instructions: "Respond briefly. Do not use tools.", toolNames: [] },
-    });
-    const agentDefinitionId = result.createAgentDefinition.id;
-    const config = { llmModelIdentifier: model, llmConfig: null, autoExecuteTools: false,
-      skillAccessMode: "NONE", runtimeKind: "autobyteus", workspaceRootPath: f.root };
-    if (kind === "agent") {
-      const result = await f.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
-        { input: { agentDefinitionId, ...config } });
-      expect(result.createAgentRun.success, result.createAgentRun.message).toBe(true);
-      return { runId: result.createAgentRun.runId as string, teamRunId: null, directory: path.join(f.root, "memory", "agents", result.createAgentRun.runId) };
-    }
-    const definition = await f.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`, {
-      input: { name: "Attachment Fixture Team", description: "Disposable Team", instructions: "Validate attachment transport.", coordinatorMemberName: "worker",
-        nodes: [{ memberName: "worker", ref: agentDefinitionId, refScope: "SHARED" }] },
-    });
-    const created = await f.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`, {
-      input: { teamDefinitionId: definition.createAgentTeamDefinition.id, teamConfigs: [{ teamAddress: "/", ...config }],
-        memberConfigs: [{ memberAddress: "/worker", agentDefinitionId, ...config }] },
-    });
-    expect(created.createAgentTeamRun.success, created.createAgentTeamRun.message).toBe(true);
-    const teamRunId = created.createAgentTeamRun.teamRunId as string;
-    const resume = await f.gql(`query($teamRunId:String!){getTeamRunResumeConfig(teamRunId:$teamRunId){executionTree}}`, { teamRunId });
-    const runId = resume.getTeamRunResumeConfig.executionTree.root_team.members[0].agent_run_id as string;
-    return { runId, teamRunId, directory: path.join(f.root, "memory", "agent_teams", teamRunId, runId) };
-  }
+  const launch = (kind: "agent" | "team") => f.launch(kind);
   async function attachments(owner: { runId: string; teamRunId: string | null; directory: string }, failFinalizationOnce = false) {
     const draft = owner.teamRunId ? { kind: "team_member_draft", teamDraftId: "draft", memberAddress: "/worker" }
       : { kind: "agent_draft", draftRunId: "draft" };
@@ -199,33 +168,6 @@ run("Context-file built-process runtime and upgrade", () => {
     expect((await fs.readdir(otherDir)).sort()).toEqual(files.map(file => file.storedFilename).sort());
     await verifyBytes(files); await verifyBytes(fresh);
   }, 120_000);
-  it("blocks both real startup entrypoints on unresolved attachment proof and admits standalone after the fixture is repaired", async () => {
-    const owner = await launch("team");
-    const files = await attachments(owner);
-    await f.stop();
-    const tracePath = path.join(owner.directory, "raw_traces_active.jsonl");
-    const missing = `/rest/team-runs/${owner.teamRunId}/members/worker/context-files/ctx_missing__image.png`;
-    const original = JSON.stringify({ id: "retained", trace_type: "user", content: "Retained history", media: { images: [missing] } }) + "\n";
-    await fs.writeFile(tracePath, original);
-    const db = new PrismaClient({ datasources: { db: { url: `file:${path.join(f.root, "db", "production.db")}` } } });
-    try { await db.$executeRaw`DELETE FROM app_data_migration_records WHERE migration_id = ${migrationId}`; }
-    finally { await db.$disconnect(); }
-    await fs.rm(path.join(f.root, "app-data-migration-backups", migrationId), { recursive: true, force: true });
-    await expect(f.start()).rejects.toThrow("Team attachment locator migration requires clean success");
-    expect(f.logs).not.toContain("Server listening at");
-    expect(await fs.readFile(tracePath, "utf8")).toBe(original);
-    await expect(f.standalone()).rejects.toThrow("Team attachment locator migration requires clean success");
-    expect(await fs.readFile(tracePath, "utf8")).toBe(original);
-    // Repair only our missing copied-fixture blob, never guess another owner or delete a record.
-    await fs.writeFile(path.join(owner.directory, "context_files", "ctx_missing__image.png"), PNG);
-    expect(await f.standalone()).toContain("STANDALONE_ADMITTED");
-    expect((await readJson(path.join(f.root, "app-data-migration-backups", migrationId, "manifest.json"))).complete).toBe(true);
-    expect(JSON.parse(await fs.readFile(tracePath, "utf8")).media.images).toEqual([
-      missing.replace("/members/worker/", `/agent-runs/${owner.runId}/`),
-    ]);
-    await f.start(); await verifyBytes(files);
-  }, 150_000);
-
   it("resumes a real process kill after record commit without replacing the original backup", async () => {
     const owner = await launch("team"); const files = await attachments(owner); await f.stop();
     const tracePath = path.join(owner.directory, "raw_traces_active.jsonl");
@@ -243,7 +185,9 @@ run("Context-file built-process runtime and upgrade", () => {
     expect((await readJson(path.join(backup, "manifest.json"))).complete).toBe(false);
     const originalName = (await fs.readdir(backup)).find(name => name.endsWith(".original"))!;
     expect(await fs.readFile(path.join(backup, originalName), "utf8")).toBe(original);
-    await expect(f.start()).rejects.toThrow("Team attachment locator migration requires clean success");
+    await f.start(); // Active migration lease no longer globally blocks valid current data.
+    await verifyBytes(files);
+    await f.stop();
     // Model elapsed stale-lock time without waiting 15 minutes; writer/kill/recovery are real.
     const clockDb = new PrismaClient({ datasources: { db: { url: databaseUrl } } });
     try { await clockDb.$executeRaw`UPDATE app_data_migration_records SET started_at = ${new Date(0)} WHERE migration_id = ${migrationId}`; }
