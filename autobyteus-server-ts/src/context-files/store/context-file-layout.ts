@@ -18,6 +18,7 @@ const resolveSafeChildPath = (rootDir: string, ...segments: string[]): string =>
 
 export class ContextFileLayout {
   private readonly draftRootDir: string;
+  private readonly memoryRootDir: string;
   private readonly agentMemoryLayout: AgentMemoryLayout;
 
   constructor(input: { appDataDir: string; memoryDir: string }) {
@@ -25,8 +26,13 @@ export class ContextFileLayout {
     const memoryDir = input?.memoryDir?.trim();
     if (!appDataDir) throw new Error("appDataDir is required.");
     if (!memoryDir) throw new Error("memoryDir is required.");
+    this.memoryRootDir = path.resolve(memoryDir);
     this.draftRootDir = path.join(appDataDir, "draft_context_files");
     this.agentMemoryLayout = new AgentMemoryLayout(memoryDir);
+  }
+
+  getMemoryRootDirPath(): string {
+    return this.memoryRootDir;
   }
 
   getDraftRootDirPath(): string {

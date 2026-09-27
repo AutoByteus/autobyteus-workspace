@@ -61,7 +61,15 @@ run("Scoped historical attachment recovery through actual startup entrypoints", 
     expect(result.restoreAgentTeamRun.success).toBe(false);
   }
 
-  it("preserves empty/nonempty roots, isolates old and exact cross-root references, and admits independent history in both hosts", async () => {
+  async function readableHistory(id: string) {
+    expect(await (await fetch(f.origin + locator(id))).text()).toBe(`${id} original bytes`);
+    const projection = await f.gql(`query($id:String!,$agent:String!){getTeamMemberRunProjection(teamRunId:$id,agentRunId:$agent){conversation}}`, { id, agent: `${id}-agent` });
+    expect(JSON.stringify(projection)).toContain("Retained history");
+    expect((await fetch(f.origin + locator("incomplete"))).status).toBe(404);
+    expect((await fetch(f.origin + "/rest/team-runs/incomplete/members/worker/context-files/ctx_file__notes.txt")).status).toBe(404);
+  }
+
+  it("preserves incomplete roots while missing historical references fail only at requested access in both hosts", async () => {
     await f.setup({ seed: residue });
     // Preserve the normally completed predecessor ledger; do not replay old migrations over current fixtures.
     await f.stop();
@@ -73,14 +81,16 @@ run("Scoped historical attachment recovery through actual startup entrypoints", 
     const before = digest(await fs.readFile(retained));
     expect(await record(f.root)).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS" });
     const first = await record(f.root);
-    for (const id of ["empty", "incomplete", "old-dependent", "exact-dependent"]) await unavailable(id);
+    for (const id of ["empty", "incomplete"]) await unavailable(id);
+    for (const id of ["old-dependent", "exact-dependent"]) await readableHistory(id);
     expect(await (await fetch(f.origin + locator("good"))).text()).toBe("good original bytes");
     expect((await f.gql(`query{getTeamRunResumeConfig(teamRunId:"good"){teamRunId}}`)).getTeamRunResumeConfig.teamRunId).toBe("good");
     await newWork(); await f.stop();
     expect(await f.standalone()).toContain("STANDALONE_ADMITTED");
     await f.start();
-    expect(await record(f.root)).toEqual(first); // Terminal warnings skip; current admission must still reject.
-    for (const id of ["incomplete", "old-dependent", "exact-dependent"]) await unavailable(id);
+    expect(await record(f.root)).toEqual(first); // Terminal warnings skip; structural rejection and operation-scoped access remain.
+    await unavailable("incomplete");
+    for (const id of ["old-dependent", "exact-dependent"]) await readableHistory(id);
     expect(await (await fetch(f.origin + locator("good"))).text()).toBe("good original bytes");
     expect(digest(await fs.readFile(retained))).toBe(before);
   }, 150_000);
@@ -96,31 +106,25 @@ run("Scoped historical attachment recovery through actual startup entrypoints", 
       .toContain("Keep this historical data");
   }, 150_000);
 
-  it("does not trust terminal SUCCEEDED when preserved historical packages cannot be admitted", async () => {
+  it("skips terminal SUCCEEDED without auditing historical references or hiding readable conversations", async () => {
     await f.setup(); const first = await record(f.root); expect(first.status).toBe("SUCCEEDED");
     await f.stop(); await residue(f.root);
     await seedTeam(f.root, "unavailable", locator("incomplete"));
-    await f.start(); await unavailable("unavailable"); await unavailable("incomplete");
+    await f.start(); await readableHistory("unavailable"); await unavailable("incomplete");
     expect(await record(f.root)).toEqual(first); // No test ledger mutation and no forced rerun.
     await newWork(); await f.stop();
     expect(await f.standalone()).toContain("STANDALONE_ADMITTED");
   }, 150_000);
 
-  it("keeps a real journal filesystem failure FAILED while allowing unrelated work, then retries the same ID normally", async () => {
+  it("ignores and retains released journal residue without treating it as current startup authority", async () => {
     await f.setup({ seed: async root => {
-      // Test-owned regular file where a journal directory is required: actual ENOTDIR, not a mocked status.
-      await put(path.join(root, "app-data-migration-backups", ID), "injected filesystem obstruction");
+      await put(path.join(root, "app-data-migration-backups", ID), "inert released residue");
     } });
-    const first = await record(f.root); expect(first.status).toBe("FAILED");
-    expect(first.error_message).toContain("attempt");
-    expect(await fs.readFile(first.log_path, "utf8")).toContain("ENOTDIR");
+    const first = await record(f.root); expect(first.status).toBe("SUCCEEDED");
     await newWork(); await f.stop();
-    await seedTeam(f.root, "convertible", "/rest/team-runs/convertible/members/worker/context-files/ctx_file__notes.txt");
     expect(await f.standalone()).toContain("STANDALONE_ADMITTED");
-    expect((await record(f.root)).status).toBe("FAILED");
-    await fs.unlink(path.join(f.root, "app-data-migration-backups", ID)); // Only our injected obstruction.
     await f.start();
-    const retry = await record(f.root); expect(retry.status).toBe("SUCCEEDED"); expect(retry.attempts).toBeGreaterThan(first.attempts);
-    expect(await (await fetch(f.origin + locator("convertible"))).text()).toBe("convertible original bytes");
+    expect(await record(f.root)).toEqual(first);
+    expect(await fs.readFile(path.join(f.root, "app-data-migration-backups", ID), "utf8")).toBe("inert released residue");
   }, 150_000);
 });

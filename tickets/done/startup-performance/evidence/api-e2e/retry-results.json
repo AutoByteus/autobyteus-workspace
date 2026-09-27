@@ -1,0 +1,184 @@
+[
+  {
+    "label": "baseline-retry",
+    "startupMs": 179967.480584,
+    "newRun": null,
+    "startupMetrics": {
+      "at": "2026-09-27T07:32:40.785Z",
+      "node": "v24.16.0",
+      "durations": {
+        "migrationMs": 146970.012333,
+        "readinessMs": 30530.616958
+      },
+      "stats": {
+        "bootstrap": {
+          "readCalls": 33,
+          "readBytes": 24534,
+          "traceReadCalls": 0,
+          "traceReadBytes": 0,
+          "backupReadCalls": 0,
+          "transforms": 0,
+          "migrationHashCalls": 0,
+          "recordWrites": 0,
+          "backupWrites": 0
+        },
+        "migration": {
+          "readCalls": 30845,
+          "readBytes": 26759669007,
+          "traceReadCalls": 20839,
+          "traceReadBytes": 22198075030,
+          "backupReadCalls": 4183,
+          "transforms": 24491,
+          "migrationHashCalls": 3262,
+          "recordWrites": 181,
+          "backupWrites": 413
+        },
+        "readiness": {
+          "readCalls": 9334,
+          "readBytes": 6442982115,
+          "traceReadCalls": 6023,
+          "traceReadBytes": 6344344027,
+          "backupReadCalls": 0,
+          "transforms": 0,
+          "migrationHashCalls": 0,
+          "recordWrites": 0,
+          "backupWrites": 0
+        }
+      }
+    },
+    "finalMetrics": {
+      "at": "2026-09-27T07:32:40.785Z",
+      "node": "v24.16.0",
+      "durations": {
+        "migrationMs": 146970.012333,
+        "readinessMs": 30530.616958
+      },
+      "stats": {
+        "bootstrap": {
+          "readCalls": 33,
+          "readBytes": 24534,
+          "traceReadCalls": 0,
+          "traceReadBytes": 0,
+          "backupReadCalls": 0,
+          "transforms": 0,
+          "migrationHashCalls": 0,
+          "recordWrites": 0,
+          "backupWrites": 0
+        },
+        "migration": {
+          "readCalls": 30845,
+          "readBytes": 26759669007,
+          "traceReadCalls": 20839,
+          "traceReadBytes": 22198075030,
+          "backupReadCalls": 4183,
+          "transforms": 24491,
+          "migrationHashCalls": 3262,
+          "recordWrites": 181,
+          "backupWrites": 413
+        },
+        "readiness": {
+          "readCalls": 9334,
+          "readBytes": 6442982115,
+          "traceReadCalls": 6023,
+          "traceReadBytes": 6344344027,
+          "backupReadCalls": 0,
+          "transforms": 0,
+          "migrationHashCalls": 0,
+          "recordWrites": 0,
+          "backupWrites": 0
+        }
+      }
+    }
+  },
+  {
+    "label": "candidate-retry",
+    "startupMs": 38391.391124999995,
+    "newRun": null,
+    "startupMetrics": {
+      "at": "2026-09-27T07:33:19.297Z",
+      "node": "v24.16.0",
+      "durations": {
+        "migrationMs": 35234.831167,
+        "readinessMs": 502.9383330000055
+      },
+      "stats": {
+        "bootstrap": {
+          "readCalls": 33,
+          "readBytes": 24534,
+          "traceReadCalls": 0,
+          "traceReadBytes": 0,
+          "backupReadCalls": 0,
+          "transforms": 0,
+          "migrationHashCalls": 0,
+          "recordWrites": 0,
+          "backupWrites": 0
+        },
+        "migration": {
+          "readCalls": 9334,
+          "readBytes": 6442969881,
+          "traceReadCalls": 6023,
+          "traceReadBytes": 6344331793,
+          "backupReadCalls": 0,
+          "transforms": 7163,
+          "migrationHashCalls": 0,
+          "recordWrites": 181,
+          "backupWrites": 0
+        },
+        "readiness": {
+          "readCalls": 2171,
+          "readBytes": 51130789,
+          "traceReadCalls": 0,
+          "traceReadBytes": 0,
+          "backupReadCalls": 0,
+          "transforms": 0,
+          "migrationHashCalls": 0,
+          "recordWrites": 0,
+          "backupWrites": 0
+        }
+      }
+    },
+    "finalMetrics": {
+      "at": "2026-09-27T07:33:19.297Z",
+      "node": "v24.16.0",
+      "durations": {
+        "migrationMs": 35234.831167,
+        "readinessMs": 502.9383330000055
+      },
+      "stats": {
+        "bootstrap": {
+          "readCalls": 33,
+          "readBytes": 24534,
+          "traceReadCalls": 0,
+          "traceReadBytes": 0,
+          "backupReadCalls": 0,
+          "transforms": 0,
+          "migrationHashCalls": 0,
+          "recordWrites": 0,
+          "backupWrites": 0
+        },
+        "migration": {
+          "readCalls": 9334,
+          "readBytes": 6442969881,
+          "traceReadCalls": 6023,
+          "traceReadBytes": 6344331793,
+          "backupReadCalls": 0,
+          "transforms": 7163,
+          "migrationHashCalls": 0,
+          "recordWrites": 181,
+          "backupWrites": 0
+        },
+        "readiness": {
+          "readCalls": 2171,
+          "readBytes": 51130789,
+          "traceReadCalls": 0,
+          "traceReadBytes": 0,
+          "backupReadCalls": 0,
+          "transforms": 0,
+          "migrationHashCalls": 0,
+          "recordWrites": 0,
+          "backupWrites": 0
+        }
+      }
+    }
+  }
+]

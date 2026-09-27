@@ -1,0 +1,2 @@
+  { "id": "current", "trace_type": "user", "media": { "images": ["/rest/team-runs/golden-team/agent-runs/exact-worker-run/context-files/image.png"] } }
+{"id":"later-write","trace_type":"user","content":"Do not overwrite newer text-only history."}

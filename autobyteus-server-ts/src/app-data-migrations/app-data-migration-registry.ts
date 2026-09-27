@@ -55,7 +55,7 @@ export class AppDataMigrationRegistry {
       new RawTraceRotationLayoutMigration(appConfigProvider.config.getMemoryDir()),
       new RawTraceActiveFileNameMigration(appConfigProvider.config.getMemoryDir()),
       new TeamContextFileExecutionLocatorsV1AppDataMigration(
-        appConfigProvider.config.getMemoryDir(), appConfigProvider.config.getAppDataDir(),
+        appConfigProvider.config.getMemoryDir(),
         () => appConfigProvider.config.getBaseUrl(),
       ),
       new MigrateNativeWorkingContextSnapshotsV5Migration(

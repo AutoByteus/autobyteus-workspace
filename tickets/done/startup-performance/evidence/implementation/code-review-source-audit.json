@@ -1,0 +1,101 @@
+{
+  "base": "8bffda04575eaa7198fae186856699011ad5c04b",
+  "rows": [
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts",
+      "nonempty": 122,
+      "added": 1,
+      "deleted": 1,
+      "delta": 2,
+      "exists": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/context-file-current-locator-validator.ts",
+      "nonempty": 58,
+      "added": 62,
+      "deleted": 0,
+      "delta": 62,
+      "exists": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts",
+      "nonempty": 75,
+      "added": 40,
+      "deleted": 51,
+      "delta": 91,
+      "exists": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts",
+      "nonempty": 69,
+      "added": 14,
+      "deleted": 19,
+      "delta": 33,
+      "exists": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts",
+      "nonempty": 0,
+      "added": 0,
+      "deleted": 138,
+      "delta": 138,
+      "exists": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-current-reference-validator.ts",
+      "nonempty": 0,
+      "added": 0,
+      "deleted": 96,
+      "delta": 96,
+      "exists": false
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts",
+      "nonempty": 172,
+      "added": 3,
+      "deleted": 1,
+      "delta": 4,
+      "exists": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-path-validation.ts",
+      "nonempty": 16,
+      "added": 20,
+      "deleted": 0,
+      "delta": 20,
+      "exists": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/services/context-file-read-service.ts",
+      "nonempty": 75,
+      "added": 9,
+      "deleted": 1,
+      "delta": 10,
+      "exists": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/context-files/store/context-file-layout.ts",
+      "nonempty": 71,
+      "added": 6,
+      "deleted": 0,
+      "delta": 6,
+      "exists": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-run-package-current-validator.ts",
+      "nonempty": 260,
+      "added": 5,
+      "deleted": 5,
+      "delta": 10,
+      "exists": true
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+      "nonempty": 88,
+      "added": 4,
+      "deleted": 28,
+      "delta": 32,
+      "exists": true
+    }
+  ]
+}

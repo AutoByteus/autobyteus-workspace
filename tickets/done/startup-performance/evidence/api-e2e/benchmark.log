@@ -1,0 +1,6 @@
+{"label":"baseline-first","startupMs":191052.094542,"newRun":null}
+{"label":"candidate-first","startupMs":41154.51699999999,"newRun":null}
+{"label":"baseline-retry","startupMs":28303.507625,"newRun":null}
+{"label":"candidate-retry","startupMs":63706.10195899996,"newRun":null}
+{"label":"baseline-terminal","startupMs":32503.177250000008,"newRun":{"elapsedMs":36938.60483299999,"success":true,"message":"Agent run created successfully.","runId":"performance_probe_fdb0b1db41a14cd0a9aca4edddc2f3ea"}}
+{"label":"candidate-terminal","startupMs":4006.0857079999987,"newRun":{"elapsedMs":1215.461540999997,"success":true,"message":"Agent run created successfully.","runId":"performance_probe_6708d1a0ee35412eacbf5f3cb46b3c1c"}}

@@ -1,0 +1,256 @@
+
+ RUN  v4.0.18 /private/tmp/startup-performance-baseline.hHaQaM/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/tmp/startup-performance-baseline.hHaQaM/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ ❯ tests/unit/agent-memory/agent-memory-location-service.test.ts (7 tests | 5 failed) 162ms
+     × derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs 32ms
+     × resolves only one exact current address/run match while retaining its configured launch placement 18ms
+     × reads only the requested root's tree when the team run ID is a stored root (REQ-005) 39ms
+     × still resolves a nested team run ID by searching every root 15ms
+     ✓ does not resolve members of a stored root that the package readiness index did not admit 14ms
+     × resolves an AgentOrg member's own run inside the requested org root 29ms
+     ✓ keeps standalone and Team memory identity separate 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > derives configured and task Agent memory from exact root, physical Team ancestry, and AgentRun IDs
+AssertionError: expected [] to deeply equal [ { address: '/writer', …(4) }, …(2) ]
+
+- Expected
++ Received
+
+- [
+-   {
+-     "address": "/writer",
+-     "ancestors": [],
+-     "configured": true,
+-     "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-location-current-CxodEh/agent_teams/root-team-run/writer-run",
+-     "run": "writer-run",
+-   },
+-   {
+-     "address": "/writer",
+-     "ancestors": [],
+-     "configured": true,
+-     "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-location-current-CxodEh/agent_teams/root-team-run/task-writer-run",
+-     "run": "task-writer-run",
+-   },
+-   {
+-     "address": "/ReviewSquad/reviewer",
+-     "ancestors": [
+-       "review-team-run",
+-     ],
+-     "configured": false,
+-     "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-location-current-CxodEh/agent_teams/root-team-run/review-team-run/reviewer-run",
+-     "run": "reviewer-run",
+-   },
+- ]
++ []
+
+ ❯ tests/unit/agent-memory/agent-memory-location-service.test.ts:80:10
+     78|       configured: item.configuredPlacement !== null,
+     79|       memoryDir: item.memoryDir,
+     80|     }))).toEqual([
+       |          ^
+     81|       {
+     82|         address: "/writer",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > resolves only one exact current address/run match while retaining its configured launch placement
+AssertionError: expected null to match object { …(3) }
+
+- Expected: 
+{
+  "agentRunId": "reviewer-run",
+  "ancestorTeamRunIds": [
+    "review-team-run",
+  ],
+  "memberAddress": "/ReviewSquad/reviewer",
+}
+
++ Received: 
+null
+
+ ❯ tests/unit/agent-memory/agent-memory-location-service.test.ts:108:5
+    106|     const service = new AgentMemoryLocationService({ memoryDir });
+    107| 
+    108|     await expect(service.resolveTeamMemberLocation({
+       |     ^
+    109|       teamRunId: "root-team-run",
+    110|       memberAddress: "/ReviewSquad/reviewer",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > reads only the requested root's tree when the team run ID is a stored root (REQ-005)
+AssertionError: expected null to match object { kind: 'team_member', …(3) }
+
+- Expected: 
+{
+  "agentRunId": "task-writer-run",
+  "kind": "team_member",
+  "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-location-current-ggqpeF/agent_teams/root-team-run/task-writer-run",
+  "rootTeamRunId": "root-team-run",
+}
+
++ Received: 
+null
+
+ ❯ tests/unit/agent-memory/agent-memory-location-service.test.ts:145:5
+    143|     });
+    144| 
+    145|     await expect(service.resolveTeamMemberLocation({ teamRunId: "root-…
+       |     ^
+    146|       .resolves.toMatchObject({
+    147|         kind: "team_member",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > still resolves a nested team run ID by searching every root
+AssertionError: expected null to match object { Object (rootTeamRunId, ancestorTeamRunIds, ...) }
+
+- Expected: 
+{
+  "agentRunId": "reviewer-run",
+  "ancestorTeamRunIds": [
+    "review-team-run",
+  ],
+  "rootTeamRunId": "root-team-run",
+}
+
++ Received: 
+null
+
+ ❯ tests/unit/agent-memory/agent-memory-location-service.test.ts:157:5
+    155|   it("still resolves a nested team run ID by searching every root", as…
+    156|     const service = new AgentMemoryLocationService({ memoryDir });
+    157|     await expect(service.resolveTeamMemberLocation({ teamRunId: "revie…
+       |     ^
+    158|       .resolves.toMatchObject({
+    159|         rootTeamRunId: "root-team-run",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/agent-memory/agent-memory-location-service.test.ts > AgentMemoryLocationService current V1 tree > resolves an AgentOrg member's own run inside the requested org root
+AssertionError: expected null to deeply equal { kind: 'agent_org_member', …(6) }
+
+- Expected: 
+{
+  "agentRunId": "org-lead-run",
+  "ancestorTeamRunIds": [
+    "org-delivery-team",
+  ],
+  "configuredPlacement": ObjectContaining {
+    "agentRunId": "org-lead-run",
+  },
+  "kind": "agent_org_member",
+  "memberAddress": "/delivery/lead",
+  "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-memory-location-current-H5p7Bs/agent_orgs/org-root/org-delivery-team/org-lead-run",
+  "orgRunId": "org-root",
+}
+
++ Received: 
+null
+
+ ❯ tests/unit/agent-memory/agent-memory-location-service.test.ts:189:5
+    187|     const service = new AgentMemoryLocationService({ memoryDir });
+    188| 
+    189|     await expect(service.resolveAgentOrgMemberLocation({ orgRunId: "or…
+       |     ^
+    190|       .resolves.toEqual({
+    191|         kind: "agent_org_member",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 2 passed (7)
+   Start at  08:57:19
+   Duration  1.30s (transform 492ms, setup 17ms, import 627ms, tests 162ms, environment 0ms)
+

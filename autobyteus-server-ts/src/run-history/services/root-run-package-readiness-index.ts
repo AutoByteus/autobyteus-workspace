@@ -1,20 +1,18 @@
 import path from "node:path";
-import { appConfigProvider } from "../../config/app-config-provider.js";
-import { ContextFileCurrentReferenceValidator, closeUnavailableDependencies, isContextFileReferenceUnavailable } from "../../context-files/services/context-file-current-reference-validator.js";
 import { RootRunPackageCurrentValidator, packageKey,
   type RootRunPackageFamily, type RootRunPackageReadinessDiagnostic } from "./root-run-package-current-validator.js";
 export type { RootRunPackageFamily, RootRunPackageReadinessDiagnostic } from "./root-run-package-current-validator.js";
 
 type ReadinessState = {
   initialized: boolean; admitted: Set<string>; diagnostics: RootRunPackageReadinessDiagnostic[];
-  rebuildPromise: Promise<void> | null; mutationRevision: number; dependencies: Map<string, Set<string>>;
+  rebuildPromise: Promise<void> | null; mutationRevision: number;
 };
 const states = new Map<string, ReadinessState>();
 const stateFor = (memoryDir: string): ReadinessState => {
   const key = path.resolve(memoryDir);
   let state = states.get(key);
   if (!state) {
-    state = { initialized: false, admitted: new Set(), diagnostics: [], rebuildPromise: null, mutationRevision: 0, dependencies: new Map() };
+    state = { initialized: false, admitted: new Set(), diagnostics: [], rebuildPromise: null, mutationRevision: 0 };
     states.set(key, state);
   }
   return state;
@@ -26,7 +24,6 @@ export class RootRunPackageReadinessIndex {
   private readonly validator: RootRunPackageCurrentValidator;
   constructor(private readonly memoryDir: string,
     stores?: ConstructorParameters<typeof RootRunPackageCurrentValidator>[1],
-    private readonly baseUrl: () => string = () => appConfigProvider.config.getBaseUrl(),
   ) {
     this.state = stateFor(memoryDir);
     this.validator = new RootRunPackageCurrentValidator(memoryDir, stores);
@@ -47,7 +44,7 @@ export class RootRunPackageReadinessIndex {
   listDiagnostics(family?: RootRunPackageFamily): readonly RootRunPackageReadinessDiagnostic[] {
     return Object.freeze(this.state.diagnostics.filter((item) => family === undefined || item.rootSubjectKind === family).map((item) => Object.freeze({...item})));
   }
-  /** Publishing a new tree cannot clear a reference exclusion without validating the package and its closure. */
+  /** Publish only structurally valid packages; attachments are checked at requested access. */
   async admitCurrent(family: RootRunPackageFamily, id: string): Promise<void> {
     if (!id.trim()) throw new Error("rootRunId is required.");
     this.state.mutationRevision += 1;
@@ -59,8 +56,6 @@ export class RootRunPackageReadinessIndex {
     this.state.diagnostics = this.state.diagnostics.filter((item) => item.rootSubjectKind !== family || item.rootRunId !== id);
     this.state.diagnostics.push({ rootSubjectKind: family, rootRunId: id, packagePath: this.memoryDir,
       code: "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED", reason });
-    const unavailable = new Set([packageKey(family, id.trim())]);
-    closeUnavailableDependencies(this.state.dependencies, unavailable, (key) => this.state.admitted.delete(key));
     this.state.mutationRevision += 1;
   }
   rebuild(): Promise<void> {
@@ -78,33 +73,14 @@ export class RootRunPackageReadinessIndex {
       catch (error) {
         // Discovery is unavailable, not evidence of valid individual roots or a missing core schema.
         this.state.admitted.clear();
-        this.state.dependencies.clear();
         this.state.diagnostics = [{rootSubjectKind: "agent_team", rootRunId: "*", packagePath: this.memoryDir,
           code: "FAILED_ATTEMPT", reason: `History discovery unavailable: ${error instanceof Error ? error.message : String(error)}`}];
         this.state.initialized = true;
         console.warn(this.state.diagnostics[0]!.reason);
         return;
       }
-      const references = new ContextFileCurrentReferenceValidator(this.memoryDir, this.baseUrl, snapshot.groups);
-      const unavailable = new Set(snapshot.diagnostics.map((d) => packageKey(d.rootSubjectKind, d.rootRunId)));
-      const dependencies = new Map<string, Set<string>>();
-      const record = (key: string, code: RootRunPackageReadinessDiagnostic["code"], reason: string) => {
-        const group = snapshot.groups.find((item) => item.key === key)!;
-        snapshot.diagnostics.push({rootSubjectKind: group.family, rootRunId: group.id, packagePath: group.directory, code, reason});
-      };
-      for (const group of snapshot.groups) {
-        const refs = new Set<string>();
-        dependencies.set(group.key, refs);
-        try { await references.validate(group, refs); }
-        catch (error) {
-          unavailable.add(group.key);
-          record(group.key, isContextFileReferenceUnavailable(error) ? "REFERENCE_UNAVAILABLE" : "FAILED_ATTEMPT", error instanceof Error ? error.message : String(error));
-        }
-      }
-      closeUnavailableDependencies(dependencies, unavailable, (key, ref) => record(key, "DEPENDENCY_UNAVAILABLE", `Referenced package '${ref}' is unavailable.`));
       if (revision !== this.state.mutationRevision) continue;
-      this.state.admitted = new Set(snapshot.groups.filter((group) => !unavailable.has(group.key)).map((group) => group.key));
-      this.state.dependencies = dependencies;
+      this.state.admitted = new Set(snapshot.groups.map((group) => group.key));
       this.state.diagnostics = snapshot.diagnostics;
       this.state.initialized = true;
       return;

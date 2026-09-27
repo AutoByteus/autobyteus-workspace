@@ -1,0 +1,8 @@
+[2026-09-27T05:30:04.615Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-09-27T05:30:06.631Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-09-27T05:30:07.425Z] [INFO] [electron.embedded-server.stdout] No pending migrations to apply.
+[2026-09-27T05:30:07.449Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-09-27T05:30:07.615Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-09-27T05:30:37.708Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 21 predefined settings
+[2026-09-27T05:30:38.314Z] [INFO] [electron.embedded-server.stdout] [2026-09-27T05:30:38.314Z] [INFO] [server.runtime] Server listening on 0.0.0.0:29695
+[2026-09-27T05:30:38.461Z] [INFO] [electron] ServerStatusManager: Server is ready
