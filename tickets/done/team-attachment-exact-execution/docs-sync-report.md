@@ -36,3 +36,6 @@ fingerprints match; no source/test modification by Delivery.
 
 ## Result — DR-008
 Docs sync Pass. Prior DR005/007 hold descriptions are historical. Fresh user acceptance and production recovery recorded in release-deployment-report.md. Both bases refreshed unchanged after acceptance. Ticket archived; finalization and v1.4.88 publication now authorized/in progress. Startup performance deferred, no runtime changes by Delivery.
+
+## DR-009 final disposition
+Software and companion docs integrated/pushed at commits recorded in release-deployment-report.md. User acceptance, published/installed1.4.88 and explicit Docker-monitoring transfer supersede earlier holds. Performance is separate new-ticket intake. No runtime changes by Delivery.

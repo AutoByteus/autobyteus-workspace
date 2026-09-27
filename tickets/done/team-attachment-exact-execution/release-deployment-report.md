@@ -1,24 +1,30 @@
-# Delivery / Release / Deployment Report — DR-008
+# Delivery / Release / Deployment Report — DR-009
 
-## Classification and verified scope
-Package docker-image-http400-20260926; Medium / High / Reviewed. Approved R2/D2 / SR-005 / ARCH-REV-002 / IR-002 / CRR-003/004 / API-REV-003. Product supplements N/A.
+## Completed user-verified scope
+Package docker-image-http400-20260926; Medium / High / Reviewed; R2/D2 / SR-005 / ARCH-REV-002 / IR-002 / CRR-003/004 / API-REV-003. Product supplements N/A. User explicitly verified recovery on production data, approved v1.4.88 and requested download/install of the GitHub DMG.
 
-User explicitly verified the normal worktree Electron against production data on 2026-09-27: “it's finished ... Let's finalize and release.” User explicitly deferred startup performance and approved v1.4.88 when asked. This is fresh recovery acceptance, not inherited DR-004 approval.
+## Repository finalization — Completed
+- Software ticket6beda63e6e809fadafd76ed24c8beb9279b0a083 pushed; personal mergefd0bce3ddf6705b83a19b2814c4ecf691f215ebd pushed.
+- Companion ticketac0478a pushed; main merge22c24a5ed895d83d59fdf9e4f40f4a0878a8161d pushed.
+- Post-acceptance bases unchanged from reviewed state; no reintegration runtime change. Source/test fingerprints match.
+- Release helper commit98d83c12ff57deb9eeed2847c43e186a4b71542a pushed personal. v1.4.88 tag5bf4ddd28c2c02a03d503739472681e3a6129016 pushed once. v1.4.87 tag unchanged.
+- Seven archived log paths shortened byte-preservingly before CI; hygiene passes. Raw captured-log whitespace retained, runtime diff-check passes.
 
-## Integration and checks
-Post-acceptance remote refresh: software origin/personal a35060c58d923311de496e75aa3ea0209708d8b3 and companion origin/main 1b1a75ee57271745424030e9289a699523ff34a6 unchanged from validated bases (0/0). No new integrated source, so no redundant test rerun. Reviewed source/test fingerprints remain exact. API-REV-003 owns 296 passing tests and full installed-copy Electron first/repeat proof. Delivery normal packaged build and embedded-byte checks passed (DR-005).
+## Publication / installation — Completed for desktop
+Desktop36296346408, Android36296346406 and iOS36296346421 workflows passed. iOS is upload to App Store Connect/TestFlight, not public App Store approval. GitHub v1.4.88 published, latest, non-draft/non-prerelease,17assets. All desktop updater metadata references published1.4.88 artifacts; Linux metadata validators pass; ARM64 DMG matches GitHub SHA256 and updater SHA512.
 
-Actual user-requested live recovery: health HTTP200, migration SUCCEEDED_WITH_WARNINGS attempt3, 363 changed history files committed. Approx.722MiB originals retained; attachment blobs not duplicated. No manual production data mutation, deletion or ledger reset. user-verification.json contains final read-only evidence.
+Downloaded public ARM64 DMG SHA256ad2fdc99270954989982775cc7214925cbd173edb0442c9844e73dfae3cd3968; hdiutil integrity, codesign deep/strict and Gatekeeper Notarized Developer ID checks pass. Installed /Applications/AutoByteus.app version1.4.88 and launched normally. Health HTTP200; production data directory unchanged; migration still SUCCEEDED_WITH_WARNINGS attempt3, no repeat attempt. User-requested former-app backup removed. Downloaded installer/metadata removed after evidence preservation during full cleanup. No production-data rollback/deletion performed.
 
-## Repository/release gates
-Ticket archived to done before final commit. Software target personal; companion main. Finalization in progress, exact commits to follow. Release v1.4.88 approved; published v1.4.87 unchanged. Previously withdrawn v1.4.88 draft must be removed before fresh publication so stale artifacts cannot leak into the new release. Standard release helper/tag-push workflows only; no duplicate dispatch.
+## Docker pipeline — explicitly user-owned follow-through
+Docker36296346407 was still running at last observation. User explicitly instructed not to wait and said they will check the pipeline. No cancellation, restart or success claim; automatic GitHub workflow continues independently. Delivery monitoring/registry verification no longer required in the user-scoped completion. Production Docker deployment not requested/not performed.
 
-## Scope and safeguards
-Startup-performance optimization explicitly deferred by user; not an acceptance blocker. Availability recovery accepted. No promise of universally instantaneous startup or exhaustive external-user corpus proof. Production Docker deployment not requested: publish coordinated image/artifacts, do not change running customer services. Originals retained; rollback requires stopped writers and consistent state, never overwrite newer writes with old backups.
+## Cleanup / deferred work
+Full cleanup explicitly requested. Recovery and companion worktrees/local branches removed after confirming all authored changes reachable from pushed target refs. Ignored build outputs task-owned and obsolete after installed release were removed with those worktrees. Remote ticket branches retained as history. Temporary release checkout removed after durable receipt archival; cleanup.json is final authority. Worktree management tools unavailable in current context; Git worktree commands used, never deleted shared checkouts. Shared personal/main dirty work unchanged. Installed app and original migration backups/data retained.
 
-Worktree with running user app must remain. Shared checkouts contain unrelated/uncommitted changes and will not be reset; isolated target integration used instead. Temporary finalization checkout cleanup follows completed release. No successful terminal handoff yet. AgentTeam get_handoff_rules/send_message_to unavailable in tool inventory; do not claim delivery of receipt.
+User separately requests NEW startup-performance ticket through Solution Designer. This is not a performance fix or a new acceptance waiver. startup-performance-followup.md records observed33.846s repeat startup, suspect full-history admission scan and measurement gaps.
 
-## Finalization preparation
-Companion ticket commit ac0478a pushed, isolated main merge 22c24a5ed895d83d59fdf9e4f40f4a0878a8161d pushed successfully. Shared main checkout left untouched. Seven overlong archived process-log filenames shortened without changing bytes; evidence-renames.json preserves identity. Hygiene rerun required before release, no version consumed.
+## Validation / rollback
+API-REV-003 owns296passed tests,95.4%confidence and full installed-copy first/repeat packaged tests. DR005 normal local package/embedded checks and DR009 installed release health supplement that evidence. Canonical migration guideline retained. Never restore originals over newer writes; any later data rollback requires stopped writers and a consistent state.
 
-Source/test/docs diff check passes. Whole-ticket diff check reports whitespace in captured raw logs/probe/review artifacts; preserved as evidence, not runtime changes.
+## Handoff
+Final delivery scope complete, Docker follow-through transferred explicitly to user. AgentTeam tools available again; terminal receipt/new-ticket request will be routed using get_handoff_rules after artifact persistence. No handoff claimed until tool confirmation.

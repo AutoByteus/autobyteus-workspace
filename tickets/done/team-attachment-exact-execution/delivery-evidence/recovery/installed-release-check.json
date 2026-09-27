@@ -1,0 +1,25 @@
+{
+  "installedAtCheck": "2026-09-27T05:30:40.869938+00:00",
+  "userAuthorizedDownloadAndInstall": true,
+  "source": "GitHub published v1.4.88 ARM64 DMG",
+  "app": "/Applications/AutoByteus.app",
+  "version": "1.4.88",
+  "previousBundleBackup": "/Users/normy/Downloads/AutoByteus-v1.4.88/AutoByteus-previous-1.4.87.app",
+  "health": {
+    "status": "ok",
+    "message": "Server is running"
+  },
+  "migrationStatusAttemptsCompletedAt": [
+    "SUCCEEDED_WITH_WARNINGS",
+    3,
+    1790485440870
+  ],
+  "processes": [
+    "22823 21283 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 29695 --data-dir /Users/normy/.autobyteus/server-data"
+  ],
+  "dataDirectory": "/Users/normy/.autobyteus/server-data",
+  "dataRestorationOrManualMutation": false,
+  "secondaryOldHomeApplicationsCopy": "Not modified",
+  "previousBundleBackupDisposition": "Removed at explicit user request; no app rollback bundle retained",
+  "installerDisposition": "Verified installer removed during explicitly requested full cleanup"
+}

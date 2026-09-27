@@ -16,6 +16,8 @@ remain authoritative. No previous delivery result was inferred from absent recor
 | DR-007 | Startup-delay investigation | DR-006 launch | Active migration observed; performance diagnosis only | delivery-evidence/recovery/live-startup-investigation.md |
 | DR-008 | Fresh user acceptance and v1.4.88 authorization | DR-007 verification pending | Accepted; repository/release finalization in progress | release-deployment-report.md; handoff-summary.md; delivery-evidence/recovery/user-verification.json |
 
+| DR-009 | Published release, install, explicit cleanup and performance follow-up | DR-008 finalizing | Delivery completed within user-scoped release; Docker follow-through user-owned | release-deployment-report.md; startup-performance-followup.md; delivery-evidence/recovery/ |
+
 ## DR-001 — Integrated documentation baseline
 - Date: 2026-09-26. Package docker-image-http400-20260926.
 - Medium / High / Reviewed; R1/D1 / SR-003 / ARCH-REV-001 / IR-001 /
@@ -110,3 +112,10 @@ readiness or user verification. Incident remains OPEN; no release/finalization.
 - Live health HTTP200; same-ID migration SUCCEEDED_WITH_WARNINGS attempt3,363 record originals retained.
 - Post-acceptance remote bases unchanged; no source reintegration/rerun required. Fingerprints match.
 - Canonical reports refreshed; old hold reports preserved under recovery-evidence/. Ticket moved to done before commit. Software personal and companion main finalization underway. Release and terminal gates remain pending actual outcome.
+
+## DR-009 — Published recovery, installed release and explicit cleanup
+- User approved v1.4.88; public desktop release and installation completed with checksum, signature/notarization and health checks. Prior app bundle removed at user request.
+- Software personal and companion main finalized/pushed; published1.4.87 unchanged.
+- User explicitly says do not wait for Docker pipeline; user will monitor it. No pipeline cancellation or unverified Docker success claim.
+- User requests full task cleanup and direct Solution Designer handoff to bootstrap NEW startup-performance investigation.
+- Canonical final snapshot delivery-records/team-attachment-exact-execution survives task-worktree cleanup. cleanup.json owns actual cleanup. Handoff confirmation recorded separately after sending.
