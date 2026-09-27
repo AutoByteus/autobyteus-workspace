@@ -14,12 +14,14 @@ subagent orchestration. AutoByteus, Codex, and Claude retain their separate
 provider paths.
 
 Availability depends on the installed `agy` CLI. Model discovery is owned by
-the runtime-aware model catalog rather than a Codex fallback. New run capsules
-use a native-tool profile validated against AGY CLI **1.2.11**; a different CLI
-version fails safely until its exact tool exposure is validated. Existing
-saved capsules are not silently rewritten.
+the runtime-aware model catalog rather than a Codex fallback. Discovery checks
+required CLI features and a usable model catalog, not the CLI release version.
+New run capsules use the fixed native-tool allowlist below. Existing saved
+capsules are not silently rewritten. Actual capability or protocol
+incompatibilities can still fail; version-independent admission does not
+guarantee compatibility with every future CLI release.
 
-AGY version, feature, and model discovery on backend request paths uses one
+AGY feature and model discovery on backend request paths uses one
 bounded asynchronous child-process owner. A slow CLI can still delay the
 request that needs its answer, but it does not synchronously block unrelated
 health requests. Probe timeout, process, authentication/network, unsupported
@@ -114,7 +116,7 @@ loopback MCP authority. Team/Org `send_message_to` therefore uses the same
 exact sender/recipient run identities and addresses as other external members;
 it is not an unscoped provider-global tool endpoint.
 
-For **new** AGY 1.2.11 capsules, the native custom-agent allowlist is exactly
+For **new** AGY capsules, the native custom-agent allowlist is exactly
 `view_file`, `write_to_file`, `replace_file_content`, `grep_search`, `list_dir`,
 `find_by_name`, `run_command`, and `generate_image`. This is an allowlist of
 model-exposed native names, not the CLI's broader `init.tools` registry.

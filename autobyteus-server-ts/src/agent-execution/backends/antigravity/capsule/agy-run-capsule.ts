@@ -5,7 +5,7 @@ import type { DetailedConfiguredSkillResolution } from "../../../../skills/domai
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import { materializeAgyMcpConfig } from "./agy-mcp-config-materializer.js";
 import { materializeAgyConfiguredSkills, type AgySkillSnapshot } from "./agy-configured-skill-materializer.js";
-import type { AgyNativeToolProfile } from "./agy-native-tool-policy.js";
+import { AGY_NATIVE_TOOL_NAMES } from "./agy-native-tool-policy.js";
 
 const sha256 = (value: string): string => createHash("sha256").update(value).digest("hex");
 
@@ -31,7 +31,6 @@ export const createAgyRunCapsule = async (input: {
   identity: string;
   agentDefinitionId: string;
   configuredSkillBindings: readonly DetailedConfiguredSkillResolution[];
-  nativeToolProfile: AgyNativeToolProfile;
   skillAccessMode: "PRELOADED_ONLY" | "NONE";
   mcpDescriptor: AgentToolMcpDescriptor | null;
 }): Promise<AgyRunCapsule> => {
@@ -43,7 +42,7 @@ export const createAgyRunCapsule = async (input: {
   try {
     const agentName = `autobyteus-${sha256(input.runId).slice(0, 16)}`;
     const markdown = [
-      "---", `name: ${agentName}`, "description: Run-specific AutoByteus main agent.", "mainAgent: true", `tools: [${input.nativeToolProfile.permittedNativeToolNames.join(", ")}]`, "---", "",
+      "---", `name: ${agentName}`, "description: Run-specific AutoByteus main agent.", "mainAgent: true", `tools: [${AGY_NATIVE_TOOL_NAMES.join(", ")}]`, "---", "",
       input.identity,
       "", "## Working Environment", `- Agent workspace: \`${workspacePath}\``,
       "- Resolve task and project locations from the agent workspace unless an explicit target says otherwise.", "",

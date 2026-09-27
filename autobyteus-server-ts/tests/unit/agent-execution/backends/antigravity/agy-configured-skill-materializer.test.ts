@@ -44,7 +44,7 @@ const detailed = (binding: ConfiguredAgentSkillBinding): DetailedConfiguredSkill
   })() }
   : { kind: "certified_absent", name: binding.name };
 const create = (root: Awaited<ReturnType<typeof fixture>>, configuredSkillBindings: ConfiguredAgentSkillBinding[],
-  mode: "PRELOADED_ONLY" | "NONE" = "PRELOADED_ONLY", runId = "linked") => createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] },
+  mode: "PRELOADED_ONLY" | "NONE" = "PRELOADED_ONLY", runId = "linked") => createAgyRunCapsule({ agentDefinitionId: "test-agent",
   runId, memoryDir: path.join(root.base, `memory-${runId}`), workspacePath: root.workspace,
   identity: "Identity", configuredSkillBindings: mode === "NONE" ? [] : configuredSkillBindings.map(detailed), skillAccessMode: mode, mcpDescriptor: null,
 });
@@ -186,7 +186,7 @@ it.skipIf(!existsSync(path.join(actualTeam, "agents", "solution-designer", "skil
     const definition = new AgentDefinition({ name: "Solution Designer", description: "Design", instructions: "",
       skillNames: ["solution-designer"], sourceInfo: { agentDirPath: agent, teamDirPath: actualTeam } });
     const bindings = resolver.resolveForAgent(definition);
-    const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "actual", memoryDir: path.join(base, "memory"), workspacePath: workspace,
+    const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "actual", memoryDir: path.join(base, "memory"), workspacePath: workspace,
       identity: "Identity", configuredSkillBindings: bindings.map(detailed), skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
     for (const name of ["design-examples.md", "design-principles.md"]) {
       const target = path.join(capsule.path, ".agents", "skills", "solution-designer", name);
