@@ -1,3 +1,4 @@
+import { writeAttachmentSidecars, writeAttachmentAgentMetadata } from "../../../fixtures/current-attachment-package-fixtures.js";
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -140,6 +141,9 @@ const writeExecutionTree = (input: {
     coordinatorAddress: "/A",
     children: rootAgents,
   });
+  for (const entry of input.nested ?? []) {
+    if (!rootAgents.some(agent => agent.address === entry.address)) rootAgents.push(testAgentNode(entry.address));
+  }
   const taskExecutions = [
     ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunId: null,
       startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00:00:00.000Z" })),
@@ -152,7 +156,8 @@ const writeExecutionTree = (input: {
     ancestorTeamRunIds: [],
   });
   fs.mkdirSync(teamDir, { recursive: true });
-  fs.writeFileSync(path.join(teamDir, "team_run_execution_tree.json"), JSON.stringify({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions } }), "utf8");
+  fs.writeFileSync(path.join(teamDir, "team_run_execution_tree.json"), JSON.stringify({ ...tree, rootTeam: { ...tree.rootTeam, members: testExecutionTree({ rootTeamRunId: input.rootTeamRunId, coordinatorAddress: "/A", children: rootAgents }).rootTeam.members, taskExecutions } }), "utf8");
+  writeAttachmentSidecars(teamDir, "team", input.rootTeamRunId, rootAgents[0]!.agentRunId, taskExecutions);
 };
 
 describe("REST context-files routes", () => {
@@ -164,6 +169,7 @@ describe("REST context-files routes", () => {
     tempDir = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-context-files-"));
     memoryDir = path.join(tempDir, "memory");
     appConfigState.root = tempDir;
+    for (const id of ["run-A", "run-display"]) writeAttachmentAgentMetadata(memoryDir, id);
     app = fastify();
     await app.register(multipart, {
       limits: { fileSize: 25 * 1024 * 1024 },

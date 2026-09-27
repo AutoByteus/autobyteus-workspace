@@ -1,53 +1,38 @@
-# Docs Sync Report — DR-001
+# Docs Sync Report — DR-005 recovery test build
 
-## Scope and integrated state
-Package `docker-image-http400-20260926`, ticket `team-attachment-exact-execution`.
-Trigger: CRR-002 proportional test review Pass after API-REV-001 Pass.
-Classification preserved: **Medium / High / Reviewed**. Approved R1/D1, SR-003,
-ARCH-REV-001, IR-001, CRR-001/002, API-REV-001 remain upstream authorities.
+Package docker-image-http400-20260926; Medium / High / Reviewed.
+R2/D2 / SR-005 / ARCH-REV-002 / IR-002 / CRR-003/004 / API-REV-003.
+DR-004's release-complete state is historical and does not close the startup incident;
+previous report preserved under recovery-evidence/docs-sync-report-DR004-historical.md.
 
-First delivery action after reading instructions/context: `git fetch origin personal`
-completed successfully on 2026-09-26. Bootstrap, HEAD and refreshed origin/personal
-all equal `e06080b0027636cecf20b5e437c496d423c7f26b`;
-`git rev-list --left-right --count HEAD...origin/personal` returned `0 0`.
-Integration method **Already current**; no commits integrated, no checkpoint needed.
-No executable rerun needed because the reviewed/validated candidate and base are
-unchanged; delivery changes documentation only. `git diff --check` passes.
-All delivery edits began after this refresh. No commit or push performed.
+## Integration before delivery edits
+Software `git fetch origin personal` succeeded; HEAD and refreshed base both
+`a35060c58d923311de496e75aa3ea0209708d8b3`, divergence0/0. Companion `git fetch
+origin main` succeeded; HEAD/base both `1b1a75ee57271745424030e9289a699523ff34a6`,
+divergence0/0. Both already current, no checkpoint/merge needed. No post-integration
+rerun required without new commits; fresh packaging and isolated smoke are separate
+Delivery checks. Both target integrations remain pending user verification. No claim
+that companion prevention rules are deployed.
 
-## Long-lived docs reviewed and updated
-| Path | Result | Durable knowledge |
+## Canonical documentation
+| Path | Result | Reason |
 |---|---|---|
-| autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md | Updated | Retained reviewed exact route update; added exact DTO/ID semantics, migration authority, startup gate, installed-data rehearsal, stopped-writer backup, rollout and no-loss rollback procedure |
-| autobyteus-web/docs/agent_execution_architecture.md | Updated | Retained implementation's capture/draft/exact ownership and migration documentation; linked canonical operations guide |
-| autobyteus-web/docs/settings.md | Updated | Retained implementation's startup transition notice; linked canonical operations guide |
+| autobyteus-server-ts/docs/design/data_migration_guideline.md | Reviewed, retained upstream updates | Single renamed authoritative guideline; predecessor dispositions, narrow admission, failed attempts and actual incident anti-pattern |
+| autobyteus-server-ts/README.md; docs/modules/README.md; docs/modules/token_usage.md | Reviewed, retained upstream updates | Links follow guideline rename; obsolete name removed from current docs |
+| autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md | Updated | Retains implemented scoped admission policy; adds same-ID recovery, full installed-copy validation and test-build identity |
+| autobyteus-web/docs/agent_execution_architecture.md; docs/settings.md | Reviewed, retained upstream updates | Remove global clean-success gate; package/dependency admission independent of ledger status |
+| Companion Solution Designer SKILL.md and references/architecture-design.md | Reviewed, retained | Mandatory canonical migration investigation references; still uncommitted/unintegrated |
 
-Source truth: current owner types/resolvers/REST and web send/model code;
-`team-context-file-execution-locators-v1` migration entry, transition and journal;
-Studio and standalone admission checks. Supporting authorities: design-spec.md,
-implementation-handoff.md, code-review-report.md, api-e2e-execution-coverage-report.md.
-No product behavior changed by documentation sync.
+## Removed/replaced understanding
+Global attachment SUCCEEDED startup gate is removed, not merely waived. Unusable
+historical roots remain preserved; independently current packages/new work remain
+available even if a real attempt fails. Runtime stays exact/current-only; no address
+fallback, history deletion or fabricated ledger success. Prior published binary's
+behavior is not recovery evidence. Superseded conventions path renamed, not duplicated.
 
-## Removed/replaced concepts
-Address-based final Team DTO/route/read parsing replaced by containing TeamRun plus
-exact AgentRun; no compatibility fallback. Address-based drafts remain current.
-Historical decoding is migration-only. Blob/tree layout is unchanged. Durable tests
-replace obsolete final-shape fixtures and old runtime harness (no test path deleted).
+Docs truth checked against current migration entry/readiness and reviewed R2/D2/
+implementation/API evidence. 22 reviewed production fingerprints and seven API test
+fingerprints match; no source/test modification by Delivery.
 
-## Result
-**Pass — docs updated**, not a no-impact decision. Delivery remains **Blocked —
-user-verification hold**. No source/packaging/design finding. Installed-data migration,
-release/deployment scope and authorization remain open operational gates; no
-production transition inferred from representative test data.
-
-## DR-002 continuation
-User message, 2026-09-26: “i tested. its done. lets finalize and release a new version”. Post-acceptance base unchanged; docs remain accurate.
-Ticket archived under `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/team-attachment-exact-execution`. Release notes prepared for v1.4.87.
-The DR-001 hold was resolved by this user signal; release progress is owned by release-deployment-report.md.
-
-## DR-004 final continuation
-Delivery Completed: user accepted, requested same-version retry, all release workflows
-passed for v1.4.87; canonical terminal handoff/report finalized. No application behavior
-changed since docs synchronization. Original draft/rollout holds above are DR-001 history,
-not current blockers. Installed rollout is outside publication scope; runbook remains
-mandatory when installing. Archive filenames shortened without changing evidence bytes.
+## Result — DR-008
+Docs sync Pass. Prior DR005/007 hold descriptions are historical. Fresh user acceptance and production recovery recorded in release-deployment-report.md. Both bases refreshed unchanged after acceptance. Ticket archived; finalization and v1.4.88 publication now authorized/in progress. Startup performance deferred, no runtime changes by Delivery.

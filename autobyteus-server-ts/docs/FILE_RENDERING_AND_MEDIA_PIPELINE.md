@@ -89,7 +89,7 @@ Org-family and trace-layout prerequisites. It enumerates typed attachment record
 sources across Team, Org and standalone memory, proves historical Team references
 against the execution index and contained files, and changes only typed locators.
 Source-trace provenance disambiguates only a matching physical candidate; otherwise
-one unique physical owner is required. Unresolved ownership blocks, never guesses.
+one unique physical owner is required. Unresolved ownership excludes the source package and its dependants, never guesses.
 Prose, provider histories, attachment blobs, and unrelated record values are not
 rewritten. Serialization of changed JSON/JSONL records may differ.
 
@@ -99,8 +99,14 @@ outside live memory discovery. The manifest records original/target hashes,
 locator mappings and commit progress. Preflight precedes record writes; atomic
 commits and strict rereads precede completion. Retry accepts only original or
 target hashes, retains original backups, and re-finalizes uncertain commits.
-Both Studio and standalone hosts require ledger status `SUCCEEDED` before runtime
-admission; warnings, failure, missing status or an unfinished run do not suffice.
+Both Studio and standalone hosts independently rebuild current package admission
+on every startup; the migration ledger is not a startup or admission gate.
+Missing-tree/incomplete roots remain untouched and excluded with explicit
+`SUCCEEDED_WITH_WARNINGS` dispositions. An actual attempt failure stays `FAILED`,
+while independently valid packages and new work remain available. Even zero
+admitted historical runs must not prevent opening/new work. Current-reference
+checks include dependency closure across Team, Org and standalone packages;
+current runtime never decodes historical address locators.
 
 ### Coordinated upgrade checklist
 
@@ -119,17 +125,38 @@ This is an operational procedure, not evidence that an installation was upgraded
    for historical absolute URLs; do not accidentally rebind external-host URLs.
    Isolate credentials, package side effects and network access. There is no
    separate dry-run CLI promised here: startup on the copy performs migration.
-4. Require clean ledger success and a complete manifest; compare original backup
-   hashes, attachment hashes, unaffected records and non-locator values. Verify
-   historical image/file Open and duplicate-address send to the selected execution.
-   Any unresolved ownership, unexpected record hash or missing original is a stop
-   condition: preserve evidence and escalate; never delete history or mark success
-   manually. Retry through normal startup/lock policy, not by bypassing it.
+4. Check truthful group dispositions and independent current admission; compare
+   original backup hashes, attachment hashes, preserved excluded roots, unaffected
+   records and non-locator values. Verify usable historical image/file Open and
+   duplicate-address send. Include an all-excluded-history case that still opens
+   and creates new work. Unexpected hash/backup or unfinished-attempt failures
+   require investigation, not deletion or fabricated ledger success. Retry through
+   normal startup policy. A completed excluded group is a warning, not a global
+   startup failure. Completed released manifests/originals remain evidence and
+   must not be rewritten merely for formatting or restored over newer history.
 5. With writers still stopped and a fresh consistent snapshot, deploy matching
    web/Electron renderer and server versions together. Capture production migration
    status/manifest, byte and history checks, and a controlled send/read/restart smoke
    result before admitting users. Do not claim Electron shell validation from a
    browser test. Retain backups and the operation log.
+
+### Recovery from the released 1.4.87 startup failure
+
+Retained roots without execution trees were valid predecessor residue; their
+presence is not proof that all current data is unusable. The recovery keeps the
+same migration ID and existing originals/manifest. Let the normal runner retry
+failed attempts; do not reset a completed ledger, move troublesome roots out of
+live discovery, fabricate success, or delete history to make startup pass.
+
+Assess current package admission separately from attempt status. Verify application
+opening and new work even when no historical package can be admitted, plus reads
+from independently usable history, preservation of excluded roots, and a second
+startup without redoing a terminal migration. Rehearse on an **unfiltered**, consistent
+copy of actual installed data including the failed ledger, not only a current-runtime
+fixture with old URL fields. See the [Data Migration Guideline](design/data_migration_guideline.md)
+for the governing classification and incident anti-pattern. A test artifact with the
+same 1.4.87 label must be identified by candidate/build ID and checksum; the version
+label alone does not distinguish it from the affected published binary.
 
 ### Recovery and rollback
 

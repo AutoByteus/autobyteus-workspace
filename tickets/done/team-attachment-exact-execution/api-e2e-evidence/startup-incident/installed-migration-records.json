@@ -1,0 +1,23 @@
+[
+  {
+    "migration_id": "20260824_team_run_execution_tree_v2",
+    "status": "SUCCEEDED",
+    "attempts": 1,
+    "summary": "Scanned 522; migrated 514; skipped 8; failed 0.",
+    "error_message": null
+  },
+  {
+    "migration_id": "20260901_agent_org_flat_team_families_v1",
+    "status": "SUCCEEDED_WITH_WARNINGS",
+    "attempts": 28,
+    "summary": "Scanned 526; migrated 0; skipped 518; failed 8.",
+    "error_message": "8 legacy Team source item(s) were not migrated because the required execution tree is missing; source directories remain unchanged."
+  },
+  {
+    "migration_id": "20260926_team_context_file_execution_locators_v1",
+    "status": "FAILED",
+    "attempts": 2,
+    "summary": "Scanned 0; migrated 0; skipped 0; failed 1.",
+    "error_message": "ENOENT: no such file or directory, open '/Users/normy/.autobyteus/server-data/memory/agent_teams/team_classroomsimulation_1ad20b5a/team_run_execution_tree.json'"
+  }
+]

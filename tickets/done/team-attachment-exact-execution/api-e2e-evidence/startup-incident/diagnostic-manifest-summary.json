@@ -1,0 +1,9 @@
+{
+  "diagnosticOnly": true,
+  "excludedCopiedRoots": 8,
+  "complete": true,
+  "plannedFiles": 363,
+  "committedFiles": 363,
+  "mappings": 763,
+  "fullApplicationStartupTested": false
+}

@@ -1,3 +1,4 @@
+import { RootRunPackageReadinessIndex } from "./root-run-package-readiness-index.js";
 import fs from "node:fs/promises";
 import path from "node:path";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -96,6 +97,7 @@ export interface CatalogMutationResultMessage {
 }
 
 export class AgentRunHistoryCatalogService {
+  private readonly readiness: RootRunPackageReadinessIndex;
   private readonly indexStore: AgentRunHistoryIndexStore;
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly identityResolver: AgentRunHistoryIdentityResolver;
@@ -139,16 +141,19 @@ export class AgentRunHistoryCatalogService {
         },
       };
     this.state = getState(memoryDir);
+    this.readiness = new RootRunPackageReadinessIndex(memoryDir);
   }
 
   async listCatalogRows(): Promise<RunHistoryIndexRow[]> {
     await this.ensureInitialized();
-    return this.getSortedRows();
+    await this.readiness.awaitReady();
+    return this.getSortedRows().filter((row) => this.readiness.isAdmitted("agent", row.runId));
   }
 
   async getCatalogRow(runId: string): Promise<RunHistoryIndexRow | null> {
     await this.ensureInitialized();
-    return this.state.rows.get(runId.trim()) ?? null;
+    await this.readiness.awaitReady();
+    return this.readiness.isAdmitted("agent", runId) ? this.state.rows.get(runId.trim()) ?? null : null;
   }
 
   async recordPreparedRun(input: {
@@ -190,6 +195,7 @@ export class AgentRunHistoryCatalogService {
         throw error;
       }
     });
+    await this.readiness.admitCurrent("agent", input.runId);
   }
 
   async recordRunStarted(input: {
@@ -335,6 +341,7 @@ export class AgentRunHistoryCatalogService {
       this.state.rows = stagedRows;
       try {
         await fs.rm(identity.runDirPath, { recursive: true, force: true });
+        this.readiness.excludeCurrent("agent", identity.runId, "Prepared run removed.");
       } catch (error) {
         logger.warn(`Run '${identity.runId}' hidden from catalog but filesystem cleanup failed: ${String(error)}`);
         return {
@@ -396,6 +403,7 @@ export class AgentRunHistoryCatalogService {
       this.state.rows = stagedRows;
       try {
         await fs.rm(runDirPath, { recursive: true, force: true });
+        this.readiness.excludeCurrent("agent", runId, "Run removed.");
       } catch (error) {
         logger.warn(`Run '${runId}' hidden from catalog but filesystem cleanup failed: ${String(error)}`);
         return {

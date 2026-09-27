@@ -1,0 +1,176 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ ❯ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts (5 tests | 1 failed) 24430ms
+     ✓ preserves empty/nonempty roots, isolates old and exact cross-root references, and admits independent history in both hosts  6965ms
+     ✓ starts both hosts when all historical roots are excluded and executes genuinely new work  4779ms
+     ✓ does not trust terminal SUCCEEDED when preserved historical packages cannot be admitted  4667ms
+     × rejects direct resume-config loading for a stored package excluded by current attachment admission 3090ms
+     ✓ keeps a real journal filesystem failure FAILED while allowing unrelated work, then retries the same ID normally  4928ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts > Scoped historical attachment recovery through actual startup entrypoints > rejects direct resume-config loading for a stored package excluded by current attachment admission
+AssertionError: promise resolved "{ getTeamRunResumeConfig: { …(3) } }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "getTeamRunResumeConfig": {
++     "executionTree": {
++       "application_binding": null,
++       "archived_at": null,
++       "created_at": "2026-08-15T00:00:00.000Z",
++       "handoffs": [],
++       "root_team": {
++         "address": "/",
++         "coordinator_address": "/worker",
++         "default_launch_configuration": {
++           "auto_execute_tools": true,
++           "llm_config": null,
++           "llm_model_identifier": "test-model",
++           "runtime_kind": "autobyteus",
++           "skill_access_mode": "PRELOADED_ONLY",
++           "workspace_root_path": null,
++         },
++         "members": [
++           {
++             "address": "/worker",
++             "agent_definition_id": "agent-worker",
++             "agent_run_id": "excluded-config-agent",
++             "description": null,
++             "kind": "configured_agent",
++             "launch_configuration": {
++               "auto_execute_tools": true,
++               "llm_config": null,
++               "llm_model_identifier": "test-model",
++               "runtime_kind": "autobyteus",
++               "skill_access_mode": "PRELOADED_ONLY",
++               "workspace_root_path": null,
++             },
++             "platform_agent_run_id": null,
++             "role": null,
++           },
++         ],
++         "task_executions": [],
++         "team_definition_id": "root-team-definition",
++         "team_definition_name": "Test Team",
++         "team_run_id": "excluded-config",
++       },
++       "schema_version": 2,
++     },
++     "modelConfigEditability": {
++       "editable": false,
++       "reason": "NOT_FOUND",
++     },
++     "teamRunId": "excluded-config",
++   },
+  }
+
+ ❯ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts:113:151
+    111|     await seedTeam(f.root, "excluded-config", locator("incomplete")); …
+    112|     await unavailable("excluded-config");
+    113|     await expect(f.gql(`query {getTeamRunResumeConfig(teamRunId:"exclu…
+       |                                                                                                                                                       ^
+    114|   }, 120_000);
+    115| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  06:40:59
+   Duration  25.09s (transform 109ms, setup 22ms, import 145ms, tests 24.43s, environment 0ms)
+

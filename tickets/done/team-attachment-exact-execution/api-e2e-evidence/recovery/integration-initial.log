@@ -1,0 +1,428 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > uploads, serves, and finalizes standalone draft attachments into run-owned storage
+Failed to finalize context files: Error: Standalone context-file owner 'run-A' is unavailable.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > supports direct Team-member draft delete and exact final Team-member read
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'agent-run-A' for collaboration root 'root-team-direct'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > maps known final Team failures exactly and keeps serving the valid same-owner file
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'agent-run-A' for collaboration root 'root-team-owner-boundary'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > finalizes a nested member through its exact containing TeamRun and canonical execution ID
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'agent-run-C-D' for collaboration root 'child-team-C'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'missing' for collaboration root 'child-C'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'agent-C-D' for collaboration root 'child-C'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: Team context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: Team context-file owner has unsupported fields.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'configured' for collaboration root 'team'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > isolates image and file bytes for duplicate-address executions even with repeated stored filenames
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'configured' for collaboration root 'team'.
+
+stderr | tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > preserves the original display name while sanitizing the stored filename
+Failed to finalize context files: Error: Standalone context-file owner 'run-display' is unavailable.
+
+ ❯ tests/integration/api/rest/context-files.integration.test.ts (10 tests | 8 failed) 133ms
+     × uploads, serves, and finalizes standalone draft attachments into run-owned storage 39ms
+     × supports direct Team-member draft delete and exact final Team-member read 16ms
+     × maps known final Team failures exactly and keeps serving the valid same-owner file 10ms
+     ✓ does not convert an unexpected final Team access fault into a client error 5ms
+     × finalizes a nested member through its exact containing TeamRun and canonical execution ID 10ms
+     × rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft 10ms
+     × rejects old, mixed, missing and malformed final identities before moving draft bytes 17ms
+     × isolates image and file bytes for duplicate-address executions even with repeated stored filenames 9ms
+     × preserves the original display name while sanitizing the stored filename 9ms
+     ✓ prunes expired draft attachments before serving them 8ms
+stdout | tests/integration/agent-memory/user-attachment-history.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/integration/agent-memory/user-attachment-history.integration.test.ts (15 tests | 15 failed) 391ms
+     × autobyteus preserves both partitions for exact configured/task and standalone owners 50ms
+     × codex_app_server preserves both partitions for exact configured/task and standalone owners 25ms
+     × claude_agent_sdk preserves both partitions for exact configured/task and standalone owners 26ms
+     × 'autobyteus' 'file-only' preserves optional facts in the same accepted row 23ms
+     × 'autobyteus' 'unknown' preserves optional facts in the same accepted row 25ms
+     × 'autobyteus' 'media-only' preserves optional facts in the same accepted row 23ms
+     × 'autobyteus' 'no-context' preserves optional facts in the same accepted row 28ms
+     × 'codex_app_server' 'file-only' preserves optional facts in the same accepted row 22ms
+     × 'codex_app_server' 'unknown' preserves optional facts in the same accepted row 27ms
+     × 'codex_app_server' 'media-only' preserves optional facts in the same accepted row 22ms
+     × 'codex_app_server' 'no-context' preserves optional facts in the same accepted row 23ms
+     × 'claude_agent_sdk' 'file-only' preserves optional facts in the same accepted row 22ms
+     × 'claude_agent_sdk' 'unknown' preserves optional facts in the same accepted row 24ms
+     × 'claude_agent_sdk' 'media-only' preserves optional facts in the same accepted row 24ms
+     × 'claude_agent_sdk' 'no-context' preserves optional facts in the same accepted row 25ms
+ ❯ tests/integration/api/rest/agent-org-context-files.integration.test.ts (4 tests | 4 failed) 69ms
+     × returns request-scoped errors for missing, unsafe and cross-owner final files 19ms
+     × uploads/opens/removes/finalizes distinct bytes for repeated configured/task addresses; retains saved owner across views/reopen 14ms
+     × rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement 16ms
+     × preserves existing per-file partial-batch continuation without a new retry or journal 19ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 27 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'file-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'unknown' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'media-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'no-context' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'file-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'unknown' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'media-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'no-context' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'file-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'unknown' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'media-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'no-context' preserves optional facts in the same accepted row
+TypeError: The "paths[0]" argument must be of type string. Received undefined
+ ❯ stateFor src/run-history/services/root-run-package-readiness-index.ts:14:20
+     12| const states = new Map<string, ReadinessState>();
+     13| const stateFor = (memoryDir: string): ReadinessState => {
+     14|   const key = path.resolve(memoryDir);
+       |                    ^
+     15|   let state = states.get(key);
+     16|   if (!state) {
+ ❯ new RootRunPackageReadinessIndex src/run-history/services/root-run-package-readiness-index.ts:31:18
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:36:22
+ ❯ tests/integration/agent-memory/user-attachment-history.integration.test.ts:63:20
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/46]⎯
+
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > autobyteus preserves both partitions for exact configured/task and standalone owners
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > codex_app_server preserves both partitions for exact configured/task and standalone owners
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > claude_agent_sdk preserves both partitions for exact configured/task and standalone owners
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'file-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'unknown' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'media-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'autobyteus' 'no-context' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'file-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'unknown' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'media-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'codex_app_server' 'no-context' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'file-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'unknown' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'media-only' preserves optional facts in the same accepted row
+ FAIL  tests/integration/agent-memory/user-attachment-history.integration.test.ts > accepted user attachment filesystem -> record -> cold/page GraphQL -> exact Open > 'claude_agent_sdk' 'no-context' preserves optional facts in the same accepted row
+TypeError: Cannot read properties of undefined (reading 'close')
+ ❯ tests/integration/agent-memory/user-attachment-history.integration.test.ts:68:35
+     66|   app = fastify(); await app.register(multipart); await app.register(r…
+     67| });
+     68| afterEach(async () => { await app.close(); await fs.rm(config.root, { …
+       |                                   ^
+     69| 
+     70| const targets = [
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/46]⎯
+
+ FAIL  tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > returns request-scoped errors for missing, unsafe and cross-owner final files
+ FAIL  tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > uploads/opens/removes/finalizes distinct bytes for repeated configured/task addresses; retains saved owner across views/reopen
+ FAIL  tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+ FAIL  tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > preserves existing per-file partial-batch continuation without a new retry or journal
+TypeError: The "paths[0]" argument must be of type string. Received undefined
+ ❯ stateFor src/run-history/services/root-run-package-readiness-index.ts:14:20
+     12| const states = new Map<string, ReadinessState>();
+     13| const stateFor = (memoryDir: string): ReadinessState => {
+     14|   const key = path.resolve(memoryDir);
+       |                    ^
+     15|   let state = states.get(key);
+     16|   if (!state) {
+ ❯ new RootRunPackageReadinessIndex src/run-history/services/root-run-package-readiness-index.ts:31:18
+ ❯ new ContextFileOwnerResolver src/context-files/services/context-file-owner-resolver.ts:36:22
+ ❯ tests/integration/api/rest/agent-org-context-files.integration.test.ts:56:97
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/46]⎯
+
+ FAIL  tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > returns request-scoped errors for missing, unsafe and cross-owner final files
+ FAIL  tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > uploads/opens/removes/finalizes distinct bytes for repeated configured/task addresses; retains saved owner across views/reopen
+ FAIL  tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > rejects retired/extra/missing/unsafe identities and mismatched owner pairs before movement
+ FAIL  tests/integration/api/rest/agent-org-context-files.integration.test.ts > exact Org attachment REST with actual stored-only identity and filesystem > preserves existing per-file partial-batch continuation without a new retry or journal
+TypeError: Cannot read properties of undefined (reading 'close')
+ ❯ tests/integration/api/rest/agent-org-context-files.integration.test.ts:62:35
+     60| });
+     61| afterEach(async () => {
+     62|   vi.restoreAllMocks(); await app.close(); await fs.rm(config.root, { …
+       |                                   ^
+     63| });
+     64| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/46]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > uploads, serves, and finalizes standalone draft attachments into run-owned storage
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ finalizeAttachment tests/integration/api/rest/context-files.integration.test.ts:122:31
+    120|     },
+    121|   });
+    122|   expect(response.statusCode).toBe(200);
+       |                               ^
+    123|   return (response.json() as { attachments: FinalizedAttachment[] }).a…
+    124| };
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:189:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/46]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > supports direct Team-member draft delete and exact final Team-member read
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ finalizeAttachment tests/integration/api/rest/context-files.integration.test.ts:122:31
+    120|     },
+    121|   });
+    122|   expect(response.statusCode).toBe(200);
+       |                               ^
+    123|   return (response.json() as { attachments: FinalizedAttachment[] }).a…
+    124| };
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:215:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/46]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > maps known final Team failures exactly and keeps serving the valid same-owner file
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ finalizeAttachment tests/integration/api/rest/context-files.integration.test.ts:122:31
+    120|     },
+    121|   });
+    122|   expect(response.statusCode).toBe(200);
+       |                               ^
+    123|   return (response.json() as { attachments: FinalizedAttachment[] }).a…
+    124| };
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:246:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/46]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > finalizes a nested member through its exact containing TeamRun and canonical execution ID
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ finalizeAttachment tests/integration/api/rest/context-files.integration.test.ts:122:31
+    120|     },
+    121|   });
+    122|   expect(response.statusCode).toBe(200);
+       |                               ^
+    123|   return (response.json() as { attachments: FinalizedAttachment[] }).a…
+    124| };
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:313:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/46]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects nonexistent, sibling and wrong-containing-Team IDs without consuming the draft
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ finalizeAttachment tests/integration/api/rest/context-files.integration.test.ts:122:31
+    120|     },
+    121|   });
+    122|   expect(response.statusCode).toBe(200);
+       |                               ^
+    123|   return (response.json() as { attachments: FinalizedAttachment[] }).a…
+    124| };
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:359:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/46]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > rejects old, mixed, missing and malformed final identities before moving draft bytes
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ finalizeAttachment tests/integration/api/rest/context-files.integration.test.ts:122:31
+    120|     },
+    121|   });
+    122|   expect(response.statusCode).toBe(200);
+       |                               ^
+    123|   return (response.json() as { attachments: FinalizedAttachment[] }).a…
+    124| };
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:380:19
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/46]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > isolates image and file bytes for duplicate-address executions even with repeated stored filenames
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ finalizeAttachment tests/integration/api/rest/context-files.integration.test.ts:122:31
+    120|     },
+    121|   });
+    122|   expect(response.statusCode).toBe(200);
+       |                               ^
+    123|   return (response.json() as { attachments: FinalizedAttachment[] }).a…
+    124| };
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:397:21
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/46]⎯
+
+ FAIL  tests/integration/api/rest/context-files.integration.test.ts > REST context-files routes > preserves the original display name while sanitizing the stored filename
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ finalizeAttachment tests/integration/api/rest/context-files.integration.test.ts:122:31
+    120|     },
+    121|   });
+    122|   expect(response.statusCode).toBe(200);
+       |                               ^
+    123|   return (response.json() as { attachments: FinalizedAttachment[] }).a…
+    124| };
+ ❯ tests/integration/api/rest/context-files.integration.test.ts:413:23
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/46]⎯
+
+
+ Test Files  3 failed (3)
+      Tests  27 failed | 2 passed (29)
+   Start at  06:33:59
+   Duration  5.24s (transform 2.42s, setup 23ms, import 3.99s, tests 593ms, environment 0ms)
+

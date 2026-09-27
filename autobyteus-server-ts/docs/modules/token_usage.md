@@ -73,7 +73,7 @@ store.
   - `src/app-data-migrations/migrations/token-usage-run-records-v1/`
 
 Production migration design follows
-[`Production Data-Migration Conventions`](../design/production_data_migration_conventions.md).
+[`Production Data-Migration Conventions`](../design/data_migration_guideline.md).
 
 ## Observation And Persistence Flow
 

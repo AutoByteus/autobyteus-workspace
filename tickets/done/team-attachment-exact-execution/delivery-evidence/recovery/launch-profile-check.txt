@@ -1,0 +1,1 @@
+Packaged launch-profile module equals freshly compiled worktree module; default profile production; no isolated wrapper. No application launched.

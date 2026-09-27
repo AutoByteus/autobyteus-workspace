@@ -1,3 +1,4 @@
+import { RootRunPackageReadinessIndex } from "../../run-history/services/root-run-package-readiness-index.js";
 import type { CollaborationExecutionLocationService, LocatedCollaborationAgentExecution } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
 import type { LocatedTeamAgentExecution } from "../../run-history/services/team-run-execution-tree-location-service.js";
 import {
@@ -16,19 +17,23 @@ type Locations = {
 };
 
 /** A shaped but absent exact Org member is distinct from an invalid request. */
+export class StandaloneContextFileOwnerNotFoundError extends Error {}
+
 export class OrgContextFileOwnerNotFoundError extends Error {}
 
 /** A shaped but absent exact Team member is distinct from an invalid request. */
 export class TeamContextFileOwnerNotFoundError extends Error {}
 
 export class ContextFileOwnerResolver {
+  private readonly readiness: RootRunPackageReadinessIndex;
   private readonly locations: Locations;
-  constructor(input: { locations: Locations }) {
+  constructor(input: { locations: Locations; memoryDir: string }) {
     if (!input?.locations || typeof input.locations.findAgent !== "function"
       || typeof input.locations.findAgentSync !== "function") {
       throw new Error("ContextFileOwnerResolver locations are required.");
     }
     this.locations = input.locations;
+    this.readiness = new RootRunPackageReadinessIndex(input.memoryDir);
   }
 
   async validateDraftOwner(owner: ContextFileDraftOwnerDescriptor): Promise<void> {
@@ -46,13 +51,20 @@ export class ContextFileOwnerResolver {
   }
 
   async resolveFinalOwner(owner: ContextFileFinalOwnerDescriptor): Promise<ContextFileResolvedFinalOwnerDescriptor> {
-    if (owner.kind === "agent_final") return owner;
+    await this.readiness.awaitReady();
+    if (owner.kind === "agent_final") {
+      if (!this.readiness.isAdmitted("agent", owner.runId)) throw new StandaloneContextFileOwnerNotFoundError(`Standalone context-file owner '${owner.runId}' is unavailable.`);
+      return owner;
+    }
     const location = await this.locations.findAgent(this.lookup(owner));
     return this.result(owner, location);
   }
 
   resolveFinalOwnerSync(owner: ContextFileFinalOwnerDescriptor): ContextFileResolvedFinalOwnerDescriptor {
-    if (owner.kind === "agent_final") return owner;
+    if (owner.kind === "agent_final") {
+      if (!this.readiness.isAdmitted("agent", owner.runId)) throw new StandaloneContextFileOwnerNotFoundError(`Standalone context-file owner '${owner.runId}' is unavailable.`);
+      return owner;
+    }
     return this.result(owner, this.locations.findAgentSync(this.lookup(owner)));
   }
 

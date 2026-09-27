@@ -116,7 +116,8 @@ export class AgentOrgRunManager {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     return this.withTransition(orgRunId, async () => {
       this.assertNotActive(orgRunId);
-      if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(orgRunId)) {
+      await this.packageCatalog.awaitReady();
+      if (!this.packageCatalog.isAdmitted(orgRunId)) {
         throw new Error(`AGENT_ORG_STATE_PACKAGE_NOT_CATALOGED: AgentOrg '${orgRunId}' is not an admitted current package.`);
       }
       const loaded = await new AgentOrgStatePackageLoader({
@@ -312,7 +313,8 @@ export class AgentOrgRunManager {
   }
 
   private async readConfigTree(orgRunId: string) {
-    if (this.packageCatalog.isInitialized() && !this.packageCatalog.isAdmitted(orgRunId)) {
+    await this.packageCatalog.awaitReady();
+      if (!this.packageCatalog.isAdmitted(orgRunId)) {
       throw new AgentOrgRunConfigNotFound("AgentOrg package is not admitted.");
     }
     const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
@@ -376,7 +378,7 @@ export class AgentOrgRunManager {
       onTerminated: () => { if (run) this.unregister(orgRunId, run); },
     });
     try {
-      this.packageCatalog.admit(orgRunId);
+      await this.packageCatalog.admit(orgRunId);
       this.register(run);
     } catch (error) {
       await run.terminate().catch(() => undefined);
