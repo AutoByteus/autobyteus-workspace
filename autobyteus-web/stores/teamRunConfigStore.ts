@@ -1,4 +1,4 @@
-import { applyTeamLaunchConfigEdit } from '~/utils/teamRunLaunchConfigEdit'
+import { applyTeamLaunchConfigEdit, assertTeamLaunchEditTarget } from '~/utils/teamRunLaunchConfigEdit'
 import { defineStore } from 'pinia'
 import type { AgentTeamDefinition } from '~/stores/agentTeamDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
@@ -235,13 +235,13 @@ export const useTeamRunConfigStore = defineStore('teamRunConfig', {
     focusMember(address: AgentTeamAddress) {
       const draft = this.selectedDraft; if (!draft) return
       assertDraftMutable(this.workspacePreparationPlans, this.inFlightDrafts, draft.draftId, 'change focus')
-      assertEditTarget(requireMemberTree(draft.config), address, 'agent')
+      assertTeamLaunchEditTarget(requireMemberTree(draft.config), address, 'agent')
       this.replaceSelectedDraft(replaceDraft(draft, { focusedMemberAddress: address }))
     },
     setPendingInput(address: AgentTeamAddress, input: TeamLaunchPendingInput | null) {
       const draft = this.selectedDraft; if (!draft) return
       assertDraftMutable(this.workspacePreparationPlans, this.inFlightDrafts, draft.draftId, 'change pending input')
-      assertEditTarget(requireMemberTree(draft.config), address, 'agent')
+      assertTeamLaunchEditTarget(requireMemberTree(draft.config), address, 'agent')
       const pending = { ...draft.pendingInputsByMemberAddress }
       if (input) pending[address] = freezePendingInput(input); else delete pending[address]
       this.replaceSelectedDraft(replaceDraft(draft, { pendingInputsByMemberAddress: Object.freeze(pending) }))

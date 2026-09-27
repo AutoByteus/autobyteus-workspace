@@ -1,0 +1,48 @@
+{
+  "agentDefinitionId": "api-e2e-attachment-worker",
+  "teamDefinitionId": "api-e2e-attachment-team",
+  "teamRunId": "api_e2e_attachment_team_f0d0403b43844bd1b037498782436317",
+  "model": "attachment-fixture:lmstudio@127.0.0.1:3422",
+  "executionTree": {
+    "schema_version": 2,
+    "created_at": "2026-09-26T18:30:32.259Z",
+    "archived_at": null,
+    "application_binding": null,
+    "handoffs": [],
+    "root_team": {
+      "address": "/",
+      "team_definition_id": "api-e2e-attachment-team",
+      "team_definition_name": "API E2E Attachment Team",
+      "team_run_id": "api_e2e_attachment_team_f0d0403b43844bd1b037498782436317",
+      "coordinator_address": "/worker",
+      "default_launch_configuration": {
+        "runtime_kind": "autobyteus",
+        "llm_model_identifier": "attachment-fixture:lmstudio@127.0.0.1:3422",
+        "llm_config": null,
+        "auto_execute_tools": false,
+        "skill_access_mode": "NONE",
+        "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-e2e-exact-kpgwwj97"
+      },
+      "members": [
+        {
+          "kind": "configured_agent",
+          "address": "/worker",
+          "agent_definition_id": "api-e2e-attachment-worker",
+          "role": null,
+          "description": null,
+          "agent_run_id": "api_e2e_attachment_worker_2a82cafb02bc45be8234eb8b816c4459",
+          "platform_agent_run_id": null,
+          "launch_configuration": {
+            "runtime_kind": "autobyteus",
+            "llm_model_identifier": "attachment-fixture:lmstudio@127.0.0.1:3422",
+            "llm_config": null,
+            "auto_execute_tools": false,
+            "skill_access_mode": "NONE",
+            "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-e2e-exact-kpgwwj97"
+          }
+        }
+      ],
+      "task_executions": []
+    }
+  }
+}

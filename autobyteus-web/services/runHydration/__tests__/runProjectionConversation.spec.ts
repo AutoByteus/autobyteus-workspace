@@ -459,7 +459,7 @@ describe('runProjectionConversation', () => {
   });
 
   it('hydrates user projection media into context file attachments from canonical media keys', () => {
-    const imageLocator = '/rest/team-runs/team-1/members/solution_designer/context-files/ctx_abc__image.png';
+    const imageLocator = '/rest/team-runs/team-1/agent-runs/solution_designer/context-files/ctx_abc__image.png';
     const audioLocator = 'local-file:///Users/Normy/audio%20100%25%231.mp3';
     const videoLocator = 'local-file://opaque-video-context';
 

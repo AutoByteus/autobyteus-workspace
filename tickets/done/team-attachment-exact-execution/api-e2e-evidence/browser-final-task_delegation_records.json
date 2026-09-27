@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "rootTeamRunId": "attachment_study_group_c937c29a406b4120ae7d4895fb1afc8c",
+  "records": [
+    {
+      "taskId": "task_510a45c7e19a42aa886eb7facc0baeeb",
+      "delegatorAgentRunId": "student_one_8b8cd5aad8ce4bba8eeda205ad62145a",
+      "recipientAddress": "/student_two",
+      "taskExecution": {
+        "agentRunId": "student_two_4c9cf1f680a642b4b5b07aa8980042f4"
+      },
+      "description": "Reply READY_FOR_ATTACHMENT, then wait for a user attachment follow-up. Do not submit a task result yet. When the user later sends the generated attachment marker, acknowledge it briefly and remain idle. Do not forward attachments to anyone.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_a4ad67cc22b94174aaa12297d3d7fc45",
+          "reason": "Root TeamRun terminated.",
+          "createdAt": "2026-09-26T19:12:26.368Z"
+        }
+      ],
+      "createdAt": "2026-09-26T19:05:42.506Z"
+    },
+    {
+      "taskId": "task_805c341c119e4b5f83cd859b140d5e46",
+      "delegatorAgentRunId": "student_one_8b8cd5aad8ce4bba8eeda205ad62145a",
+      "recipientAddress": "/student_two",
+      "taskExecution": {
+        "agentRunId": "student_two_0d3fcfccab2d477ba3b7a2ad2dffa743"
+      },
+      "description": "SECOND_EXECUTION_20260926. Reply SECOND_READY in your own conversation only, use no tools, do not inspect files, and remain idle without submitting.",
+      "referenceFiles": [],
+      "status": "interrupted",
+      "updates": [
+        {
+          "interruptionId": "interrupt_5a118a635a3046a1b4591f4cde9ff580",
+          "reason": "Root TeamRun terminated.",
+          "createdAt": "2026-09-26T19:12:26.450Z"
+        }
+      ],
+      "createdAt": "2026-09-26T19:11:19.516Z"
+    }
+  ]
+}

@@ -1,3 +1,4 @@
+import { TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID } from "./app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import type { FastifyInstance } from "fastify";
 import { initializePrisma, shutdownPrisma } from "repository_prisma";
 import { appConfigProvider } from "./config/app-config-provider.js";
@@ -176,6 +177,10 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
 
   try {
     const statuses = await getAppDataMigrationRunner().runPending();
+    const attachmentMigration = statuses.find((status) => status.migrationId === TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID);
+    if (attachmentMigration?.status !== "SUCCEEDED") {
+      throw new Error(`Team attachment locator migration requires clean success before startup: ${attachmentMigration?.status ?? "MISSING"}: ${attachmentMigration?.errorMessage ?? "no detail"}`);
+    }
     for (const migration of statuses) {
       if (migration.status === "FAILED" || migration.status === "RUNNING") {
         logger.warn(

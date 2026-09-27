@@ -10,7 +10,7 @@ Ticket `projects-concept-introduction` (`PROJ-CONCEPT-20260926-001`), slice 1: P
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction/tickets/done/projects-concept-introduction/delivery-revision-record.md`
 - Current delivery revision ID: `DR-002`
-- Notes: user verified. Finalization and the v1.4.86 release are in progress.
+- Notes: user verified. Finalized to `personal` and released as v1.4.86.
 
 ## Initial Delivery Integration Refresh
 
@@ -62,7 +62,7 @@ The user requested a new release at verification. Target version: `1.4.86` (late
 - Bootstrap context source: `investigation-notes.md` (finalization target `origin` / `personal`); `design-spec.md`
 - Ticket branch: `codex/projects-concept-introduction`
 - Ticket branch commit result: `Completed`: `ed2ed5bb1` (docs sync + archive), then the re-integration merge `b5d5a7788`, then this record update
-- Ticket branch push result: see the post-release record
+- Ticket branch push result: `Completed`. `origin/codex/projects-concept-introduction` was pushed at `e6e939267`, then deleted after the merge (see cleanup).
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
 - Target advanced after verification / acceptance: `Yes`: `fc2a60527` → `542d0e621` (27 commits, AGY runtime and skills work)
@@ -74,31 +74,41 @@ The user requested a new release at verification. Target version: `1.4.86` (late
   - browser probe `pnpm test:e2e:projects`: 13/13 Pass
   - Evidence: `delivery-logs/reintegration-2/`
   - Environment note: the first server rerun failed only API-001's precondition `expect(config.get("ENABLE_PROJECTS")).toBeFalsy()`. The delivery shell had inherited `ENABLE_PROJECTS=true` (and other `ENABLE_*` variables) from its parent AutoByteus process after the user's Electron testing, and `AppConfig.get()` reads `process.env` first. With those variables cleared (`env -u ENABLE_PROJECTS -u ENABLE_APPLICATIONS -u ENABLE_SKILL_IMPROVEMENT -u ENABLE_SELF_EVOLUTION`), all 89 tests pass; the browser probe was run the same way. This is not a code regression. It is recorded as a non-blocking test-isolation follow-up: API-001 and the probe assume no ambient `ENABLE_*` variables.
-- Target branch update result: —
-- Merge into target result: —
-- Push target branch result: —
-- Repository finalization status: pending user verification
+- Target branch update result: `Completed`. `origin/personal` was re-fetched immediately before the merge and was unchanged at `542d0e621`.
+- Merge into target result: `Completed`. `git merge --no-ff` produced `4dd37f75b` ("Merge Projects concept introduction (feature-flagged Projects module)") on the local branch `delivery/projects-concept-introduction-release`, cut from `origin/personal` in the temporary worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction-release`. The merged tree is identical to the ticket branch tree (`git diff` shows 0 files). The user's shared checkout was not touched.
+- Push target branch result: `Completed`. `542d0e621..e06080b00` was pushed to `personal`; this includes the merge and the release commit.
+- Repository finalization status: `Completed`
 - Blocker: None
 
 ## Release / Publication / Deployment
 
-- Applicable: to be decided by the user
-- Method: `Release Script` (`pnpm release <x.y.z>`) if requested
-- Release/publication/deployment result: pending
-- Release notes handoff result: pending
+- Applicable: `Yes` (the user requested a new version at verification)
+- Method: `Release Script`
+- Method reference / command: `bash scripts/desktop-release.sh release 1.4.86 --release-notes tickets/done/projects-concept-introduction/release-notes.md --branch delivery/projects-concept-introduction-release --no-push`, then `git push origin HEAD:personal` and `git push origin v1.4.86`
+- Release commit: `e06080b00` "chore(release): bump workspace release version to 1.4.86". Annotated tag `v1.4.86` (tag object `7a36cbd88`) points at it. `.github/release-notes/release-notes.md` is byte-identical to the archived `release-notes.md`.
+- Release/publication/deployment result: `Completed`. All four tag-triggered workflows succeeded:
+  - [Desktop Release 36252948706](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36252948706): macOS ARM64/Intel x64, Windows x64, Linux x64/ARM64, and Publish GitHub Release
+  - [Android APK Release 36252948693](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36252948693)
+  - [iOS App Store Connect Release 36252948761](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36252948761): this verifies the archive and upload automation only, not App Store review or TestFlight availability
+  - [Server Docker Release 36252948636](https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36252948636): Docker Hub `autobyteus/autobyteus-server:1.4.86` returns HTTP 200 with `amd64` and `arm64` images
+- GitHub Release: [v1.4.86](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.86), non-draft and stable, published 2026-09-26T15:48:17Z, with 17 assets (the same count as v1.4.85).
+- Release notes handoff result: `Used`
+- Monitoring note: the user interrupted delivery's foreground wait while only the Docker workflow was still running. The completed conclusions above were read afterwards with one status query, and no further polling was done.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-concept-introduction`
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
+- Worktree cleanup result: `Completed`. It was removed with `git worktree remove --force` after checking that only generated leftovers remained: the untracked SDK `dist/` folders and ignored `electron-dist`/`node_modules`. No process was running from it.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. `codex/projects-concept-introduction` (`e6e939267`) was deleted after confirming it is an ancestor of `origin/personal`.
+- Remote branch cleanup result: `Completed`. `origin/codex/projects-concept-introduction` was deleted.
+- Temporary release worktree and branch `delivery/projects-concept-introduction-release`: removed after this record was pushed.
+- The user's shared checkout (`autobyteus-workspace-superrepo`, local `personal`) was intentionally not modified. It is behind `origin/personal` and can be fast-forwarded by the user.
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification / acceptance: `tickets/done/projects-concept-introduction/release-notes.md`
-- Archived release notes artifact used for release/publication: pending
+- Archived release notes artifact used for release/publication: `tickets/done/projects-concept-introduction/release-notes.md` (synced to `.github/release-notes/release-notes.md` in `e06080b00`)
 - Release notes status: `Updated`
 
 ## Deployment Steps
@@ -127,11 +137,11 @@ A regression in Applications or Skill Improvement toggling or gating, or in run-
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (pending decision)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: `None`. Waiting on user verification.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: —
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes` (`personal@e06080b00`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (v1.4.86, all four workflows succeeded)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent after this record was pushed; see `delivery-revision-record.md` DR-002
+- Terminal message/reference: `send_message_to` `/solution_designer`, "Delivery Completed — PROJ-CONCEPT-20260926-001"

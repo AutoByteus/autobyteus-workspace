@@ -87,7 +87,7 @@ const createNormalizer = async () => {
       `/rest/drafts/agent-runs/agent-draft/context-files/${storedFilename}`,
       `/rest/drafts/team-runs/team-draft/members/%2Freviewer/context-files/${storedFilename}`,
       `/rest/runs/standalone-run/context-files/${storedFilename}`,
-      `/rest/team-runs/${rootTeamRunId}/members/%2Freviewer/context-files/${storedFilename}`,
+      `/rest/team-runs/${rootTeamRunId}/agent-runs/${nestedAgentRunId}/context-files/${storedFilename}`,
       `http://studio.example.test:8000/rest/runs/standalone-run/context-files/${storedFilename}`,
       `http://localhost:9999/rest/runs/standalone-run/context-files/${storedFilename}`,
     ],

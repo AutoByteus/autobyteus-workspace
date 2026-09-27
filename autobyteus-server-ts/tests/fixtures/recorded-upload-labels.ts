@@ -11,7 +11,7 @@ const base = '/rest/agent-org-runs/root/agent-runs/task-repeat/context-files/';
 export const recordedUploadLabelCases = [
   { uri: base + 'ctx_token__notes.txt', label: 'notes.txt' },
   { uri: '/rest/runs/agent/context-files/ctx_token__notes.txt', label: 'notes.txt' },
-  { uri: '/rest/team-runs/team/members/lead/context-files/ctx_token__notes.txt', label: 'notes.txt' },
+  { uri: '/rest/team-runs/team/agent-runs/lead/context-files/ctx_token__notes.txt', label: 'notes.txt' },
   { uri: base + 'ctx_token__notes.txt', name: 'Custom report', label: 'Custom report' },
   { uri: base + 'ctx_token__notes.txt', name: 'ctx_custom__literal.txt', label: 'ctx_custom__literal.txt' },
   { uri: base + 'ctx_token__ctx_original__literal.txt', label: 'ctx_original__literal.txt' },
