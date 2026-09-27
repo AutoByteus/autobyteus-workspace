@@ -1,0 +1,11 @@
+{
+  "result": "Pass",
+  "assistantResponse": "RETEST2-AGY-OK",
+  "body": "C\ncoordinator\nIdle\nYou\nSynthetic validation: reply RETEST2-AGY-OK exactly. Do not use tools or change files.\nC\ncoordinator\n\nRETEST2-AGY-OK\n\nContext Files (0)\n(drag, paste, or upload)",
+  "url": "http://127.0.0.1:54778/workspace",
+  "viewport": {
+    "width": 450,
+    "height": 738
+  },
+  "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) autobyteus/1.4.90 Chrome/148.0.7778.265 Electron/42.4.1 Safari/537.36"
+}

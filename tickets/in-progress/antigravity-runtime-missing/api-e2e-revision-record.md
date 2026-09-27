@@ -7,6 +7,7 @@ The canonical coverage investigation and execution report remain authoritative; 
 | API-REV-001 | Implementation Complete / IR-001 / approved SR-003 | N/A / N/A | Fail (API-ENV-001) / 92.1% |
 | API-REV-002 | CRR-001 confirmed Local Fix / cc001b07c | Fail / 92.1% | Fail, unresolved impact/disposition / 92.1% |
 | API-REV-003 | User browser retest / SR-005 | Fail / 92.1% | API-008 Pass; overall Fail (historic incident hold) / 92.1% |
+| API-REV-004 | SR-007 acceptance + direct additional browser test | Technical Fail / 92.1% | Functional Pass; accepted-risk review-ready; clean technical gate unmet / 92.1% |
 
 ## API-REV-001 — Initial Version-Independent AGY Validation
 - Round 1, 2026-09-27; triggering implementation-handoff.md / IR-001, source f590519ec and handoff 95637e21d. Related SR-003; ARCH-REV/CRR/DR N/A — not applicable. Triggering finding IDs N/A (initial baseline).
@@ -42,3 +43,11 @@ get_handoff_rules returned the failure-origin condition for completed failed val
 - Cleanup: public team termination, tab closure, owned process group stop, port checks, root/db/key/fixtures removal. No production application storage selected, installed backend restart/patch, secret copying or recovery. Provider synthetic metadata may remain.
 - Current: focused functional Pass; **overall Fail/92.1%**, all seven final categories unchanged (95,95,95,75,95,95,95). Fresh execution does not close historical non-impact uncertainty. Reports/investigation/ledger updated; no future Pass inferred.
 - Remaining API-ENV-001 user disposition and CRR-001 separate proportional durable-test review gate remain pending. Return truthful focused result to Solution Designer/caller; no Delivery/release or duplicate origin inquiry.
+
+## API-REV-004 — Accepted Disposition And Second Fresh Browser Retest
+- Trigger: user-continuation-disposition.md / SR-007, then direct user request to start server/frontend/test again and “continue”. SR-003 feature/design/Medium-Low, IR-001 and CRR-001 unchanged.
+- Prior API-REV-003 technical Fail92.1%, functional Pass, user-decision pending. Current **functional Pass / user-accepted residual-risk review-ready**; clean technical gate **Fail92.1%**, environment75%, unchanged scores. No administrative acceptance converted into a score uplift or non-impact proof.
+- API-ENV-001 prior finding: confirmed API-owned origin, containment/prevention implemented, actual prior effects still unknown; SR-007 explicitly accepts that specific uncertainty for progression. Pending user-decision hold resolved; no repeat question or origin inquiry. No production recovery/access/secret copying or release authorized.
+- API-009 Pass under another fresh checked root/env: interruption after backend start safely resumed after PID/root/health/port/env rechecks. Actual browser tool selected AGY/model, clicked Run Team, sent one no-tools prompt, rendered exact RETEST2-AGY-OK and Idle. All14 models present. Separate retest2 artifacts prevent overwriting prior evidence.
+- Cleanup confirmed public team termination/tab closure/owned groups stopped/ports closed/root removed. Screenshots/DOM/API/logs/preflight retained; no durable-test/source edits, no broad rerun. MCP discovery warnings do not establish MCP tool success/failure for unrequested operations.
+- Canonical investigation/report/ledger/incident updated; next gate is explicit CRR-001 proportional durable-test review of existing two test changes. No fabricated standard clean-Pass route; ordinary user-requested continuation if configured rules lack accepted-risk coverage. No direct Delivery/release.
