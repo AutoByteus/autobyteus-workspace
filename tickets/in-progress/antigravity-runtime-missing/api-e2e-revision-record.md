@@ -6,6 +6,7 @@ The canonical coverage investigation and execution report remain authoritative; 
 | --- | --- | --- | --- |
 | API-REV-001 | Implementation Complete / IR-001 / approved SR-003 | N/A / N/A | Fail (API-ENV-001) / 92.1% |
 | API-REV-002 | CRR-001 confirmed Local Fix / cc001b07c | Fail / 92.1% | Fail, unresolved impact/disposition / 92.1% |
+| API-REV-003 | User browser retest / SR-005 | Fail / 92.1% | API-008 Pass; overall Fail (historic incident hold) / 92.1% |
 
 ## API-REV-001 — Initial Version-Independent AGY Validation
 - Round 1, 2026-09-27; triggering implementation-handoff.md / IR-001, source f590519ec and handoff 95637e21d. Related SR-003; ARCH-REV/CRR/DR N/A — not applicable. Triggering finding IDs N/A (initial baseline).
@@ -32,3 +33,12 @@ get_handoff_rules returned the failure-origin condition for completed failed val
 - Current new issue: **Unclear upstream informed disposition**, not an unreviewed execution origin. Route bounded incident to Solution Designer for explicit informed user decision before progression. No inferred acceptance and no automatic preservation-constraint waiver.
 - After successful resolution, CRR-001-requested separate proportional durable-test review remains pending; no successful-test/Delivery result here. Preserve this gate and reconcile future returned rules rather than silently using baseline direct-route exemption.
 - Remaining risk API-ENV-001: unknown prior production SQL/key/app-data effects. No unauthorized forensic inspection or speculative rollback. No new resources requiring cleanup.
+
+## API-REV-003 — Fresh Isolated Browser-Tool Team Run
+- Trigger: exact user instruction relayed by Solution Designer in browser-retest-request.md / SR-005. Requirements SR-003, IR-001, Medium/Low unchanged; CRR-001 and SR-004 hold still apply. Prior API-REV-002 Fail/92.1%.
+- Rechecked prior incident status: API-ENV-001 unknown effects remain unresolved; user authorized new execution, not acceptance/production inspection/recovery/release. No duplicate origin review.
+- New API-008 Pass: checked dedicated child environment and canonical owned SQL/key/data/memory before server/frontend spawn; fresh root, ports 54253/54254. Real mounted browser tool selected AGY, loaded 14 models, selected Gemini 3.8 Flash (Low), clicked Run Team and sent synthetic prompt. Exact assistant RETEST-AGY-OK rendered, status Idle. Screenshot/DOM/backend/API evidence retained under evidence/api-e2e/retest.
+- Source/test delta none; existing branch-built dist/current source reused, no broad suite rerun. Temporary prospective launcher/checklist evidence is not a durable product test. Nonfatal MCP discovery warnings do not invalidate tool-free response but do not prove MCP operations.
+- Cleanup: public team termination, tab closure, owned process group stop, port checks, root/db/key/fixtures removal. No production application storage selected, installed backend restart/patch, secret copying or recovery. Provider synthetic metadata may remain.
+- Current: focused functional Pass; **overall Fail/92.1%**, all seven final categories unchanged (95,95,95,75,95,95,95). Fresh execution does not close historical non-impact uncertainty. Reports/investigation/ledger updated; no future Pass inferred.
+- Remaining API-ENV-001 user disposition and CRR-001 separate proportional durable-test review gate remain pending. Return truthful focused result to Solution Designer/caller; no Delivery/release or duplicate origin inquiry.
