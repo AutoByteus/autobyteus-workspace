@@ -19,3 +19,6 @@ Pass — docs reflect integrated source and approved R1/D1; no requirement or de
 
 ## DR-002 acceptance refresh
 Remote personal unchanged after acceptance; source/test fingerprints match. New release1.4.89 authorized, archived release notes updated; no runtime behavior changes by Delivery. Prior user-verification hold is superseded by release-authorization-handoff.md.
+
+## DR-003 publication / verified upgrade
+Canonical guideline and runtime docs committed with user-accepted source, included in published1.4.89. User confirms upgrade; installed version/health checked. No later behavioral edits. Final report explicitly distinguishes completed desktop/mobile publication from still-running independent Docker job.

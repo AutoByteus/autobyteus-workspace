@@ -221,6 +221,8 @@ const messages = {
     "由 AutoByteus 提供 · Claude SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
     "由 AutoByteus 提供 · Codex baseInstructions",
+  "workspace.components.progress.SystemInstructionActivityItem.source.grok":
+    "由 AutoByteus 提供 · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
     "由 AutoByteus 提供的系统指令",
   "workspace.components.workspace.running.AgentLibraryPanel.agentsHeading":

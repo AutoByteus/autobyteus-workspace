@@ -150,6 +150,7 @@ describe("supported Team Agent Tools MCP lifecycle integration", () => {
         codexBackendFactory: agentBackendFactory,
         claudeBackendFactory: agentBackendFactory,
         agyBackendFactory: agentBackendFactory,
+        grokBackendFactory: agentBackendFactory,
         activationRegistry: infrastructure.activationRegistry,
         memoryRecorder: infrastructure.memoryRecorder,
         providerInputNormalizer: infrastructure.providerInputNormalizer,

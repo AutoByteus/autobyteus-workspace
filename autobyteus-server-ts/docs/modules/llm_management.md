@@ -191,8 +191,8 @@ returns distinct model-unavailable, schema-unavailable, and field-validation
 results; it does not guess a replacement model, silently drop an unsupported
 key, or write a rendered default merely because the UI displayed it.
 
-Replacement for Claude Agent SDK, Codex App Server, and Antigravity CLI
-requires fresh membership in that runtime/workspace **offered** catalog and
+Replacement for Claude Agent SDK, Codex App Server, Antigravity CLI, and
+Grok Build requires fresh membership in that runtime/workspace **offered** catalog and
 target-schema validation, not a platform context-capacity comparison. AutoByteus replacement
 continues to require verified positive saved and target context capacities with
 target >= saved capacity; the focused native evidence resolver accepts only
@@ -321,9 +321,9 @@ remain unchanged.
 
 #### Current curated text catalog boundary
 
-The current curated flagship entries for this release are `grok-4.6`,
+The current curated flagship entries for this release are `grok-4.7`,
 `gemini-3.8-flash`, `kimi-k3`, `glm-5.3`, and `minimax-m3` (the provider value
-for the last entry remains `MiniMax-M3`). Retired Grok 4.5, Gemini 3.7 and
+for the last entry remains `MiniMax-M3`). Retired Grok 4.6 and Grok 4.5, Gemini 3.7 and
 earlier Gemini Flash rows, Kimi K2, GLM 5.2, and older MiniMax text entries are not aliases: a
 persisted selection using one of those IDs is rejected and requires explicit
 user reselection. Provider-specific schemas and request adapters are updated

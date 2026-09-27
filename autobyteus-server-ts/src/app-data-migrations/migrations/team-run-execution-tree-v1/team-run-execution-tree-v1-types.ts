@@ -20,6 +20,8 @@ export const toTeamRunRuntimeKind = (
       return "CODEX";
     case RuntimeKind.ANTIGRAVITY_CLI:
       throw new Error("AGY has no historical TeamRun V1 records to migrate.");
+    case RuntimeKind.GROK_BUILD:
+      throw new Error("Grok Build has no historical TeamRun V1 records to migrate.");
   }
 };
 

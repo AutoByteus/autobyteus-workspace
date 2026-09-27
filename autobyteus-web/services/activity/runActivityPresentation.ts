@@ -4,6 +4,7 @@ export type SystemInstructionSourceKey =
   | 'native'
   | 'claude'
   | 'codex'
+  | 'grok'
   | 'unknown';
 
 export const getSystemInstructionSourceKey = (runtimeKind: string | null | undefined): SystemInstructionSourceKey => {
@@ -11,6 +12,7 @@ export const getSystemInstructionSourceKey = (runtimeKind: string | null | undef
     case 'autobyteus': return 'native';
     case 'claude_agent_sdk': return 'claude';
     case 'codex_app_server': return 'codex';
+    case 'grok_build': return 'grok';
     default: return 'unknown';
   }
 };

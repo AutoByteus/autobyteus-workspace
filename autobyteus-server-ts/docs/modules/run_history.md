@@ -139,8 +139,8 @@ General lifecycle owners:
   not mutation targets.
 
 `RunModelSelectionService` resolves the selected model in the fixed runtime's
-current catalog. Claude Agent SDK, Codex App Server, and Antigravity CLI
-replacements require fresh **offered** catalog membership and valid target settings, without
+current catalog. Claude Agent SDK, Codex App Server, Antigravity CLI, and
+Grok Build replacements require fresh **offered** catalog membership and valid target settings, without
 a platform context-capacity comparison. AutoByteus replacements additionally
 require verified positive saved and target capacities, with the target at least
 as large as the freshly saved baseline for that scope. Smaller or unknown

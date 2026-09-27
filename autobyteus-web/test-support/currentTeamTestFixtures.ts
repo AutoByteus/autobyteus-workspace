@@ -34,7 +34,7 @@ export interface TestAgentNode {
   readonly agentDefinitionId: string;
   readonly agentRunId: string;
   readonly platformAgentRunId: string | null;
-  readonly runtimeKind: 'autobyteus' | 'codex_app_server' | 'claude_agent_sdk';
+  readonly runtimeKind: 'autobyteus' | 'codex_app_server' | 'claude_agent_sdk' | 'grok_build';
   readonly llmModelIdentifier: string;
   readonly autoExecuteTools: boolean;
   readonly skillAccessMode: 'PRELOADED_ONLY' | 'NONE';

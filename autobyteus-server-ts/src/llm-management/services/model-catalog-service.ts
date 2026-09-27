@@ -48,6 +48,7 @@ import {
 import { getClaudeModelCatalog, type ClaudeModelCatalog } from './claude-model-catalog.js';
 import { getCodexModelCatalog, type CodexModelCatalog } from './codex-model-catalog.js';
 import { AntigravityModelCatalog } from './antigravity-model-catalog.js';
+import { GrokBuildModelCatalog } from './grok-build-model-catalog.js';
 import {
   DynamicModelSourceLifecycle,
   type DynamicSourceSpec,
@@ -84,6 +85,7 @@ export class ModelCatalogService {
     private readonly claudeModelCatalog: ClaudeModelCatalog = getClaudeModelCatalog(),
     private readonly codexModelCatalog: CodexModelCatalog = getCodexModelCatalog(),
     private readonly antigravityModelCatalog = new AntigravityModelCatalog(),
+    private readonly grokBuildModelCatalog = new GrokBuildModelCatalog(),
   ) {}
 
   async listProviderModelCatalogSnapshots(
@@ -217,9 +219,11 @@ export class ModelCatalogService {
       ? await this.codexModelCatalog.listModels(workspaceRootPath)
       : runtime === RuntimeKind.ANTIGRAVITY_CLI
         ? await this.antigravityModelCatalog.listModels()
-        : runtime === RuntimeKind.AUTOBYTEUS
-          ? await LLMFactory.listAvailableModels()
-          : (() => { throw new Error(`Unsupported runtime: ${runtime}`); })();
+        : runtime === RuntimeKind.GROK_BUILD
+          ? await this.grokBuildModelCatalog.listModels()
+          : runtime === RuntimeKind.AUTOBYTEUS
+            ? await LLMFactory.listAvailableModels()
+            : (() => { throw new Error(`Unsupported runtime: ${runtime}`); })();
     return { offeredModels: models, findExactCurrent: (id) => models.find((row) => row.model_identifier === id) ?? null };
   }
 

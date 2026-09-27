@@ -1,0 +1,10 @@
+{
+  "ticketCommit": "bb91a881e18ffdd59b960943b16cfacbc82a119c",
+  "mergeCommit": "7baf98f0292f3f27e7c56cb8716148e14d39f7ce",
+  "releaseCommit": "82f3359cb9b98f0a5caa0dad79e24e9a58801a46",
+  "tag": "v1.4.89",
+  "tagObject": "0018621018c7b0e46b76415b4e819e42a5d59749",
+  "target": "origin/personal",
+  "allPushed": true,
+  "checkedAt": "2026-09-27T08:08:05.441742+00:00"
+}
