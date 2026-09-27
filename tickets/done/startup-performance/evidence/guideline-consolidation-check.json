@@ -1,0 +1,28 @@
+{
+  "before": {
+    "lines": 862,
+    "words": 7163
+  },
+  "after": {
+    "lines": 352,
+    "words": 3004
+  },
+  "wordReductionPercent": 58.1,
+  "checks": {
+    "critical_lockout_rule": true,
+    "financial_consequence": true,
+    "updater_lockout": true,
+    "all_history_unavailable": true,
+    "current_only": true,
+    "backup_preservation": true,
+    "same_id_and_sql_distinction": true,
+    "db_adapter": true,
+    "audit_contract": true,
+    "recovery_actions": true,
+    "mirror_exception": true,
+    "actual_incident_and_resolution": true,
+    "one_checklist": true
+  },
+  "exampleSourceReferencesFound": 10,
+  "validationScope": "documentation consistency/source-reference checks; no runtime tests or source edits"
+}

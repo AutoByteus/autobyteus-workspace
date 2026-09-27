@@ -1,0 +1,2 @@
+{"id":"valid-before-missing","trace_type":"user","media":{"images":["/rest/team-runs/golden-team/members/worker/context-files/image.png"]}}
+  { "id": "missing", "trace_type": "user", "media": { "images": ["/rest/team-runs/golden-team/members/worker/context-files/missing.png"] } }
