@@ -1,3 +1,4 @@
+import { RootRunPackageCurrentValidator } from "../../../../src/run-history/services/root-run-package-current-validator.js";
 import fs from 'node:fs/promises';
 import os from 'node:os';
 import path from 'node:path';
@@ -54,7 +55,7 @@ const writeOrg = async (memoryDir: string, id: string): Promise<string> => {
 };
 
 describe('RootRunPackageReadinessIndex', () => {
-  it('admits structurally valid Team and Org roots without reading historical raw-trace payloads', async () => {
+  it('admits structurally valid roots without auditing typed trace records', async () => {
     const memoryDir = await temporaryMemory();
     const teamPackage = await writeTeam(memoryDir, 'team-payload-independent');
     const orgPackage = await writeOrg(memoryDir, 'org-payload-independent');
@@ -71,7 +72,8 @@ describe('RootRunPackageReadinessIndex', () => {
     expect(index.listAdmitted('agent_team')).toEqual(['team-payload-independent']);
     expect(index.listAdmitted('agent_org')).toEqual(['org-payload-independent']);
     expect(index.listDiagnostics()).toEqual([]);
-    expect(readFile.mock.calls.filter(([file]) => /raw_traces_(?:active|\d+)\.jsonl$/.test(String(file)))).toEqual([]);
+    await index.admitCurrent('agent_team', 'team-payload-independent');
+    expect(readFile.mock.calls.filter(([file]) => /raw_traces_(?:active|\d+)\.jsonl$/.test(String(file)))).toHaveLength(0);
   });
 
   it('lazily shares one strict awaitReady generation across Team and Org facades', async () => {
@@ -88,6 +90,28 @@ describe('RootRunPackageReadinessIndex', () => {
     expect(first.listAdmitted('agent_team')).toEqual(['team-lazy']);
     expect(second.listAdmitted('agent_org')).toEqual(['org-lazy']);
     expect(first.listDiagnostics()).toEqual([]);
+  });
+
+  it('repeats a coalesced structural generation when new-run publication races a rebuild', async () => {
+    const memoryDir = await temporaryMemory(); await writeTeam(memoryDir, 'old');
+    const scan = RootRunPackageCurrentValidator.prototype.scan;
+    let release!: () => void;
+    let discovered!: () => void;
+    const captured = new Promise<void>(resolve => { discovered = resolve; });
+    const barrier = new Promise<void>(resolve => { release = resolve; });
+    let calls = 0;
+    const scanner = vi.spyOn(RootRunPackageCurrentValidator.prototype, 'scan').mockImplementation(async function () {
+      const snapshot = await scan.call(this);
+      if (++calls === 1) { discovered(); await barrier; }
+      return snapshot;
+    });
+    const index = new RootRunPackageReadinessIndex(memoryDir);
+    const rebuilding = index.rebuild(); await captured;
+    await writeTeam(memoryDir, 'fresh');
+    const publication = index.admitCurrent('agent_team', 'fresh');
+    release(); await Promise.all([rebuilding, publication]);
+    expect(scanner).toHaveBeenCalledTimes(2);
+    expect(index.listAdmitted('agent_team')).toEqual(['fresh', 'old']);
   });
 
   it('admits exact current Team V2 and Org V1 packages', async () => {

@@ -1,0 +1,1 @@
+PASS: source TypeScript check (tsconfig.build.json --noEmit)

@@ -1,0 +1,23 @@
+Nonempty	Added+deleted (new: total lines)	Source
+370	1	autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts
+396	5	autobyteus-server-ts/src/agent-execution/services/standalone-agent-run-lifecycle-service.ts
+190	29	autobyteus-server-ts/src/agent-org-execution/services/agent-org-execution-tree-location-service.ts
+416	8	autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts
+450	15	autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+247	23	autobyteus-server-ts/src/api/rest/context-files.ts
+86	68	autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts
+74	107	autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts
+132	98	autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts
+327	1	autobyteus-server-ts/src/application-platform/execution/application-execution-scope-kernel-builder.ts
+89	96	autobyteus-server-ts/src/context-files/services/context-file-current-reference-validator.ts
+92	18	autobyteus-server-ts/src/context-files/services/context-file-owner-resolver.ts
+115	20	autobyteus-server-ts/src/context-files/services/context-file-record-locators.ts
+33	2	autobyteus-server-ts/src/run-history/services/agent-org-run-package-catalog.ts
+482	12	autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts
+152	5	autobyteus-server-ts/src/run-history/services/agent-run-view-projection-service.ts
+260	274	autobyteus-server-ts/src/run-history/services/root-run-package-current-validator.ts
+112	376	autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts
+238	40	autobyteus-server-ts/src/run-history/services/team-run-execution-tree-location-service.ts
+33	4	autobyteus-server-ts/src/run-history/services/team-run-package-catalog.ts
+259	5	autobyteus-server-ts/src/server-runtime.ts
+368	5	autobyteus-server-ts/src/standalone-application-host/start-standalone-application-host.ts

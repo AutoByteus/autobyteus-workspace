@@ -1,0 +1,37 @@
+[
+  {
+    "old": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/final-child-processes/recovery-keeps-a-real-journal-filesystem-failure-FAILED-while-allowing-unrelated-work-then-retries-the-same-ID-normally.log",
+    "new": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/final-child-processes/case-d42e215ec381.log",
+    "sha256": "d42e215ec3814458cc706239fe093ccea41ce83bcb2566e89eb4457333aae29a"
+  },
+  {
+    "old": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/final-child-processes/recovery-preserves-empty-nonempty-roots-isolates-old-and-exact-cross-root-references-and-admits-independent-history-in-both-hosts.log",
+    "new": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/final-child-processes/case-26b58410a446.log",
+    "sha256": "26b58410a446055a17bc65fb1c3038a5df1d63e45c136857f12f50c4e5f1ef8c"
+  },
+  {
+    "old": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/final-child-processes/uploads-previews-and-removes-Team-drafts-before-launch-then-binds-remaining-bytes-to-the-returned-exact-execution.log",
+    "new": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/final-child-processes/case-31957bc16ccd.log",
+    "sha256": "31957bc16ccdffe96b4a22ecc3197ac65202743d6a8aa643c513013aec4d6391"
+  },
+  {
+    "old": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/final-child-processes/converts-a-copied-retained-duplicate-address-package-before-admission-and-preserves-bytes-history-and-original-backups-across-restart.log",
+    "new": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/final-child-processes/case-ee324835dc94.log",
+    "sha256": "ee324835dc947fb4f242111c912fc58822e506dcb32f4c574d3f3a358d4116e6"
+  },
+  {
+    "old": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/children/recovery-keeps-a-real-journal-filesystem-failure-FAILED-while-allowing-unrelated-work-then-retries-the-same-ID-normally.log",
+    "new": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/children/case-5cfff5232d60.log",
+    "sha256": "5cfff5232d60710adab8c1b30e4c3e460f88ef51cfd98f586ae7452ba21024b2"
+  },
+  {
+    "old": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/children/recovery-preserves-empty-nonempty-roots-isolates-old-and-exact-cross-root-references-and-admits-independent-history-in-both-hosts.log",
+    "new": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/children/case-b58716215428.log",
+    "sha256": "b58716215428c14770d92c8c6495fbb60963f019db19ecb128dd8ef9cdef7004"
+  },
+  {
+    "old": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/children/converts-a-copied-retained-duplicate-address-package-before-admission-and-preserves-bytes-history-and-original-backups-across-restart.log",
+    "new": "tickets/done/team-attachment-exact-execution/api-e2e-evidence/recovery/children/case-748381513bbc.log",
+    "sha256": "748381513bbc2c4a99aca953cecac93197892bb323a606210f2606c13085f610"
+  }
+]

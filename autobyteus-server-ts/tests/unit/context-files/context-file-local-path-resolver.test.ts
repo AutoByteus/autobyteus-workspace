@@ -7,6 +7,8 @@ import { ContextFileLocalPathResolver } from '../../../src/context-files/service
 class StubLayout {
   constructor(private readonly resolvedFilePath: string) {}
 
+  getMemoryRootDirPath(): string { return path.dirname(this.resolvedFilePath); }
+
   getFinalFilePath(): string {
     return this.resolvedFilePath;
   }

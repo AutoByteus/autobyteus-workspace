@@ -1,3 +1,4 @@
+import { RootRunPackageReadinessIndex } from "./root-run-package-readiness-index.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
 import { RuntimeKind, runtimeKindFromString } from "../../runtime-management/runtime-kind-enum.js";
 import { LocalMemoryRunViewProjectionProvider } from "../projection/providers/local-memory-run-view-projection-provider.js";
@@ -36,6 +37,7 @@ const dedupeProjectionBundle = (projection: RunProjection): RunProjection => {
 };
 
 export class AgentRunViewProjectionService {
+  private readonly readiness: RootRunPackageReadinessIndex;
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly localProjectionProvider: RunProjectionProvider;
 
@@ -46,12 +48,14 @@ export class AgentRunViewProjectionService {
       localProjectionProvider?: RunProjectionProvider;
     } = {},
   ) {
+    this.readiness = new RootRunPackageReadinessIndex(memoryDir);
     this.metadataStore = options.metadataStore ?? new AgentRunMetadataStore(memoryDir);
     this.localProjectionProvider =
       options.localProjectionProvider ?? new LocalMemoryRunViewProjectionProvider(memoryDir);
   }
 
   async getProjection(runId: string): Promise<RunProjection> {
+    await this.readiness.assertAdmitted("agent", runId);
     const metadata = await this.metadataStore.readMetadata(runId);
     return this.getProjectionFromMetadata({
       runId,
@@ -60,6 +64,7 @@ export class AgentRunViewProjectionService {
   }
 
   async getActiveTracePage(runId: string, beforeCursor?: string | null): Promise<EventMonitorActiveTracePage> {
+    await this.readiness.assertAdmitted("agent", runId);
     const metadata = await this.metadataStore.readMetadata(runId);
     return this.getActiveTracePageFromMetadata({
       runId,

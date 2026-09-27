@@ -1,0 +1,87 @@
+file:///Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/autobyteus-web/scripts/electron-e2e/electronE2ESession.mjs:51
+        throw new Error(`Electron E2E process exited before readiness${processController.outputSummary?.() ?? ''}`)
+              ^
+
+Error: Electron E2E process exited before readiness
+Recent output:
+[2026-09-27T07:33:26.999Z] [INFO] [electron] Application started
+[2026-09-27T07:33:27.077Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-09-27T07:33:27.078Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data/logs
+[2026-09-27T07:33:27.078Z] [INFO] [electron.server.app-data] Created missing data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data/download
+[2026-09-27T07:33:27.126Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:64148
+[2026-09-27T07:33:27.136Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-09-27T07:33:27.136Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-09-27T07:33:27.136Z] [INFO] [electron.server.base-server-manager] Server installation directory: /Applications/AutoByteus.app/Contents/Resources/server
+[2026-09-27T07:33:27.136Z] [INFO] [electron.server.base-server-manager] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data
+[2026-09-27T07:33:27.137Z] [INFO] [electron.server.base-server-manager] Port 3443 is free.
+[2026-09-27T07:33:27.137Z] [INFO] [electron] Server entrypoint: /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js
+[2026-09-27T07:33:28.080Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-09-27T07:33:28.080Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.codex/packages/standalone/releases/0.157.1-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0M8uF1y:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-09-27T07:33:28.080Z] [INFO] [electron] Using PATH from login shell
+[2026-09-27T07:33:28.080Z] [INFO] [electron] Starting server with port: 3443
+[2026-09-27T07:33:28.080Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:3443
+[2026-09-27T07:33:28.080Z] [INFO] [electron] Working directory: /Applications/AutoByteus.app/Contents/Resources/server
+[2026-09-27T07:33:28.080Z] [INFO] [electron] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data
+[2026-09-27T07:33:28.080Z] [INFO] [electron] Executing: /Applications/AutoByteus.app/Contents/MacOS/AutoByteus /Applications/AutoByteus.app/Contents/Resources/server/dist/app.js --port 3443 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data
+[2026-09-27T07:33:28.081Z] [INFO] [electron] Server process spawned with PID: 31049
+[2026-09-27T07:33:28.193Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-09-27T07:33:28.194Z] [INFO] [electron.embedded-server.stdout] App root directory: /Applications/AutoByteus.app/Contents/Resources/server
+[2026-09-27T07:33:28.194Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data
+[2026-09-27T07:33:28.194Z] [INFO] [electron.embedded-server.stdout] AppConfig instance created.
+[2026-09-27T07:33:28.194Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data/.env
+[2026-09-27T07:33:28.194Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data/.env
+[2026-09-27T07:33:28.194Z] [INFO] [electron.embedded-server.stdout] [dotenv@17.3.1] injecting env (0) from ../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+[2026-09-27T07:33:28.194Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-09-27T07:33:28.194Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:3443
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /Applications/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:3443
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /Applications/AutoByteus.app/Contents/Resources/server
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data/db
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data/logs
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data/download
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data/memory
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-09-27T07:33:28.195Z] [INFO] [electron.embedded-server.stdout] AppConfig initialization completed successfully
+[2026-09-27T07:33:29.150Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-09-27T07:33:29.390Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-09-27T07:33:29.392Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /Applications/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-09-27T07:33:29.679Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-09-27T07:33:29.682Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-performance-5902hotn/baseline-desktop/server-data/db/production.db"
+[2026-09-27T07:33:30.041Z] [INFO] [electron.embedded-server.stdout] 26 migrations found in prisma/migrations
+[2026-09-27T07:33:30.046Z] [INFO] [electron.embedded-server.stdout] No pending migrations to apply.
+[2026-09-27T07:33:30.064Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-09-27T07:33:30.071Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-09-27T07:33:54.647Z] [INFO] [electron] Creating node-bound window for nodeId=embedded-local; url=file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+Error occurred in handler for 'app-update:get-state': Error: No handler registered for 'app-update:get-state'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+[2026-09-27T07:33:56.948Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-27T07:33:56.967Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-09-27T07:33:57.836Z] [INFO] [electron.server.base-server-manager] Stopping server...
+[2026-09-27T07:33:57.836Z] [INFO] [electron.server.base-server-manager] Sending SIGTERM signal for graceful shutdown
+[2026-09-27T07:33:57.836Z] [ERROR] [electron.server.base-server-manager] Failed to start server: Error: Server startup stopped
+    at Object.cancel (/Applications/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:101:43)
+    at MacOSServerManager.cancelPendingStartup (/Applications/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:121:30)
+    at MacOSServerManager.stopServer (/Applications/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:167:14)
+    at ElectronApplication.stop (/Applications/AutoByteus.app/Contents/Resources/app.asar/dist/electron/application/electronApplication.js:396:38)
+    at EventEmitter.<anonymous> (/Applications/AutoByteus.app/Contents/Resources/app.asar/dist/electron/application/electronApplication.js:346:23)
+    at EventEmitter.emit (node:events:509:28)
+[2026-09-27T07:33:57.836Z] [ERROR] [electron] ServerStatusManager: Server initialization failed: Error: Server startup stopped
+    at Object.cancel (/Applications/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:101:43)
+    at MacOSServerManager.cancelPendingStartup (/Applications/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:121:30)
+    at MacOSServerManager.stopServer (/Applications/AutoByteus.app/Contents/Resources/app.asar/dist/electron/server/baseServerManager.js:167:14)
+    at ElectronApplication.stop (/Applications/AutoByteus.app/Contents/Resources/app.asar/dist/electron/application/electronApplication.js:396:38)
+    at EventEmitter.<anonymous> (/Applications/AutoByteus.app/Contents/Resources/app.asar/dist/electron/application/electronApplication.js:346:23)
+    at EventEmitter.emit (node:events:509:28)
+[electron-bootstrap] Startup failed: Server startup stopped
+[2026-09-27T07:33:57.869Z] [INFO] [electron.server.base-server-manager] Server process exited with code null
+[2026-09-27T07:33:57.869Z] [INFO] [electron.server.base-server-manager] Server process closed
+
+    at Object.waitUntilReady (file:///Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/autobyteus-web/scripts/electron-e2e/electronE2ESession.mjs:51:15)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/startup-performance/tickets/in-progress/startup-performance/evidence/api-e2e/desktop-compare.mjs:10:6
+
+Node.js v22.23.1

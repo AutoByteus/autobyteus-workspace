@@ -1,0 +1,114 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/context-file-current-locator-validator.ts",
+    "sha256": "0eef344bfc0d508f314a5f10122dd241b222913f5ec682cbc1750249856eee1b"
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-path-validation.ts",
+    "sha256": "5eb2bbff4ac6d175ff79bd3d69169f1b22a910276c868582cdb9347bd3441b86"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/fixtures/team-context-file-migration/README.md",
+    "sha256": "1b36bcaef7bb73313eba658afa49cb5e84532c7bf01739c24afa37bf017d2e0f"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/fixtures/team-context-file-migration/converted.expected.jsonl",
+    "sha256": "339971b26c274bd7a6bf51b09d71930a92df22ddd365b87f2aaa4caca60e8362"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/fixtures/team-context-file-migration/converted.source.jsonl",
+    "sha256": "00bbfe8b4e524b205544255b535952475840bca4157bde37955fd17ea7a7240b"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/fixtures/team-context-file-migration/current.expected.jsonl",
+    "sha256": "fa4da3c1e93bfdcb6c997c9e38a2dfbd7a9f912d29f7a5a1d2248e49f6877c22"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/fixtures/team-context-file-migration/current.source.jsonl",
+    "sha256": "fa4da3c1e93bfdcb6c997c9e38a2dfbd7a9f912d29f7a5a1d2248e49f6877c22"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/fixtures/team-context-file-migration/unavailable.expected.jsonl",
+    "sha256": "3feb4d0eef5c63f90ed8f59ba181ec6e584b73f4e02d9ea29b9ddcb89170a148"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/fixtures/team-context-file-migration/unavailable.source.jsonl",
+    "sha256": "3feb4d0eef5c63f90ed8f59ba181ec6e584b73f4e02d9ea29b9ddcb89170a148"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/app-data-migrations/team-context-file-golden-files.integration.test.ts",
+    "sha256": "370633a1a1ef765fb93983e66ae0c02b4ac06e24fc80271bc7f7a19bc52bf7b9"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/context-files/context-file-access-containment.test.ts",
+    "sha256": "3830df7ec9fa5bfc4d101037dcd4c7f7fa1eae94545e2ca6ea13f4e501d146cb"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts",
+    "sha256": "ec0a26bd3f5ef7c158610d0b8844dcfe8b0d68d10a0c0ec1e4351325832f6d59"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts",
+    "sha256": "502ea9292932616ae4dfe075bb0ee1f7a1088636969466fc79d8dbb26dda0727"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts",
+    "sha256": "1b9a0c321da103b033ad24fe86d821184f0b048e821cbf72a9eacfe69e0f97e0"
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts",
+    "sha256": null
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-current-reference-validator.ts",
+    "sha256": null
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts",
+    "sha256": "27f6a704ca11c5d82f86663947246c8b06250605854bb5a7ff4df96245750187"
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/services/context-file-read-service.ts",
+    "sha256": "0aafefe9141302cd97d2e68a2fc6d45d0a260471ea734719776bc467da7aec43"
+  },
+  {
+    "path": "autobyteus-server-ts/src/context-files/store/context-file-layout.ts",
+    "sha256": "a2419446ca92f16b3a32e58adfe3cf9f23d474492814599a710ef1fa50fd73f6"
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/root-run-package-current-validator.ts",
+    "sha256": "7036037626fb495d6658e05e84ffbf46ee09c09f737dcf6f4cbbe34971fdef79"
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+    "sha256": "bba63f11c0001ede3067e8a5da188f2b9d44674a527a08b1eff9c856f118a349"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/e2e/helpers/context-file-process-fixture.ts",
+    "sha256": "16f62b4063166d6fb3c6b29d68151a06d755953d23c96fd824f63f18625ae4e0"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts",
+    "sha256": "329df5c5f71ee45f64484dd563f183fcecd840f1444aa9c6754118c674542a5b"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts",
+    "sha256": "71250dac81627e94590a7381f8d497a52939681e0fcf288d74a89eb0c499c0ec"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+    "sha256": "075aa827c4b6d1c00eb120baf5dec52fd8c6cfe120ae9b97308f3cbb7afa068a"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts",
+    "sha256": "5c6f3059a23c98456897286f06da841fbfd2a9386222a59f0bac77d8145f4156"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/context-files/context-file-local-path-resolver.test.ts",
+    "sha256": "ac397273d655cfc8e4076f665c866b753863087b322001d5bb7081855f66897f"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts",
+    "sha256": "73401c0ce2b9e4045b5c96cddeb605d8f6a0a299d708a5629c9d312f87ba66aa"
+  }
+]

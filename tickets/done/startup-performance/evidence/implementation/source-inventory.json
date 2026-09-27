@@ -1,0 +1,35 @@
+{
+  "base": "8bffda04575eaa7198fae186856699011ad5c04b",
+  "sourceAndTests": [
+    "autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts",
+    "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts",
+    "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts",
+    "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.ts",
+    "autobyteus-server-ts/src/context-files/services/context-file-current-reference-validator.ts",
+    "autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts",
+    "autobyteus-server-ts/src/context-files/services/context-file-read-service.ts",
+    "autobyteus-server-ts/src/context-files/store/context-file-layout.ts",
+    "autobyteus-server-ts/src/run-history/services/root-run-package-current-validator.ts",
+    "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts",
+    "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-context-file-locator-transition.test.ts",
+    "autobyteus-server-ts/tests/unit/app-data-migrations/team-context-file-execution-locators-v1.test.ts",
+    "autobyteus-server-ts/tests/unit/context-files/context-file-local-path-resolver.test.ts",
+    "autobyteus-server-ts/tests/unit/run-history/services/root-run-package-readiness-index.test.ts",
+    "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/context-file-current-locator-validator.ts",
+    "autobyteus-server-ts/src/context-files/services/context-file-path-validation.ts",
+    "autobyteus-server-ts/tests/unit/context-files/context-file-access-containment.test.ts"
+  ],
+  "guideline": "autobyteus-server-ts/docs/design/data_migration_guideline.md",
+  "sourceEffectiveLines": {
+    "autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts": 122,
+    "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.ts": 75,
+    "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.ts": 69,
+    "autobyteus-server-ts/src/context-files/services/context-file-local-path-resolver.ts": 172,
+    "autobyteus-server-ts/src/context-files/services/context-file-read-service.ts": 75,
+    "autobyteus-server-ts/src/context-files/store/context-file-layout.ts": 71,
+    "autobyteus-server-ts/src/run-history/services/root-run-package-current-validator.ts": 260,
+    "autobyteus-server-ts/src/run-history/services/root-run-package-readiness-index.ts": 88,
+    "autobyteus-server-ts/src/app-data-migrations/migrations/team-context-file-execution-locators-v1/context-file-current-locator-validator.ts": 58,
+    "autobyteus-server-ts/src/context-files/services/context-file-path-validation.ts": 16
+  }
+}

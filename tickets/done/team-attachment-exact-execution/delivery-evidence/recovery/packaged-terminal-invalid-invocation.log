@@ -1,0 +1,6 @@
+
+> autobyteus@1.4.87 verify-packaged-terminal-runtime /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-web
+> node ./scripts/verify-packaged-terminal-runtime.mjs --app /Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app
+
+[terminal-runtime] error: Unknown argument: --app
+ ELIFECYCLE  Command failed with exit code 1.

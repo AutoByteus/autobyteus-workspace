@@ -1,3 +1,4 @@
+import { assertContainedContextFileSync } from "./context-file-path-validation.js";
 import fs from "node:fs";
 import path from "node:path";
 import {
@@ -167,7 +168,8 @@ export class ContextFileLocalPathResolver {
       const resolvedOwner = this.ownerResolver.resolveFinalOwnerSync(owner);
       const filePath = this.layout.getFinalFilePath(resolvedOwner, storedFilename);
       const resolvedPath = path.resolve(filePath);
-      return fs.existsSync(resolvedPath) ? resolvedPath : null;
+      assertContainedContextFileSync(this.layout.getMemoryRootDirPath(), resolvedPath);
+      return resolvedPath;
     } catch {
       return null;
     }

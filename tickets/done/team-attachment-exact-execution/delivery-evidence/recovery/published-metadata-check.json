@@ -1,0 +1,49 @@
+{
+  "checkedAt": "2026-09-27T05:30:02.905684+00:00",
+  "metadata": [
+    {
+      "metadata": "latest-mac.yml",
+      "version": "1.4.88",
+      "allReferencedAssetsPresent": true,
+      "references": [
+        "AutoByteus_personal_macos-arm64-1.4.88.zip",
+        "AutoByteus_personal_macos-arm64-1.4.88.dmg",
+        "AutoByteus_personal_macos-x64-1.4.88.zip",
+        "AutoByteus_personal_macos-x64-1.4.88.dmg",
+        "AutoByteus_personal_macos-arm64-1.4.88.zip"
+      ]
+    },
+    {
+      "metadata": "latest-linux-arm64.yml",
+      "version": "1.4.88",
+      "allReferencedAssetsPresent": true,
+      "references": [
+        "AutoByteus_personal_linux-arm64-1.4.88.AppImage",
+        "AutoByteus_personal_linux-arm64-1.4.88.AppImage"
+      ]
+    },
+    {
+      "metadata": "latest.yml",
+      "version": "1.4.88",
+      "allReferencedAssetsPresent": true,
+      "references": [
+        "AutoByteus_personal_windows-1.4.88.exe",
+        "AutoByteus_personal_windows-1.4.88.exe"
+      ]
+    },
+    {
+      "metadata": "latest-linux.yml",
+      "version": "1.4.88",
+      "allReferencedAssetsPresent": true,
+      "references": [
+        "AutoByteus_personal_linux-x64-1.4.88.AppImage",
+        "AutoByteus_personal_linux-x64-1.4.88.AppImage"
+      ]
+    }
+  ],
+  "arm64DmgMatchesUpdaterSha512": true,
+  "arm64DmgSha256": "ad2fdc99270954989982775cc7214925cbd173edb0442c9844e73dfae3cd3968",
+  "assetCount": 17,
+  "signatureVerification": "codesign deep strict: passed; spctl: accepted, Notarized Developer ID",
+  "dmgIntegrity": "hdiutil verify exit0"
+}

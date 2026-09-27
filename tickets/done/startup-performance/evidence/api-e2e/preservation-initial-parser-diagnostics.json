@@ -1,0 +1,65 @@
+[
+  {
+    "label": "candidate-first",
+    "memoryFilesChecked": 14412,
+    "contextFilesByteChecked": 1204,
+    "allowedTypedLocatorOnlyChangedFiles": 363,
+    "releasedResidueFilesUntouched": 0,
+    "missingTreeRootsRetained": 8,
+    "sameIdStatus": [
+      [
+        "SUCCEEDED_WITH_WARNINGS"
+      ]
+    ],
+    "laterCurrentWritePreserved": false,
+    "errors": [
+      {
+        "unexpectedChange": "agent_teams/software_engineering_team_18bb1c0ae811475cad94e95d1db35889/solution_designer_d826169a36b5473eaddaaf86cc8c4555/raw_traces_active.jsonl"
+      },
+      {
+        "unexpectedChange": "agent_teams/software_engineering_team_e2abd02ed7004dff880d0938d23c76c3/solution_designer_40478244fa69411f835837db13ddf323/raw_traces_active.jsonl"
+      },
+      {
+        "unexpectedChange": "agent_teams/team_software-engineering-team_9d74beaa/solution_designer_86e71da9f1210eb6/raw_traces_000001.jsonl"
+      }
+    ]
+  },
+  {
+    "label": "candidate-retry",
+    "memoryFilesChecked": 14412,
+    "contextFilesByteChecked": 1204,
+    "allowedTypedLocatorOnlyChangedFiles": 181,
+    "releasedResidueFilesUntouched": 364,
+    "missingTreeRootsRetained": 8,
+    "sameIdStatus": [
+      [
+        "SUCCEEDED_WITH_WARNINGS"
+      ]
+    ],
+    "laterCurrentWritePreserved": true,
+    "errors": [
+      {
+        "unexpectedChange": "agent_teams/software_engineering_team_18bb1c0ae811475cad94e95d1db35889/solution_designer_d826169a36b5473eaddaaf86cc8c4555/raw_traces_active.jsonl"
+      }
+    ]
+  },
+  {
+    "label": "candidate-terminal",
+    "memoryFilesChecked": 14412,
+    "contextFilesByteChecked": 1204,
+    "allowedTypedLocatorOnlyChangedFiles": 1,
+    "releasedResidueFilesUntouched": 364,
+    "missingTreeRootsRetained": 8,
+    "sameIdStatus": [
+      [
+        "SUCCEEDED_WITH_WARNINGS"
+      ]
+    ],
+    "laterCurrentWritePreserved": false,
+    "errors": [
+      {
+        "unexpectedChange": "run_history_index.json"
+      }
+    ]
+  }
+]

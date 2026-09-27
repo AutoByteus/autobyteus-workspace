@@ -9,6 +9,14 @@ import type { AgentOrgExecutionScopeBuilder } from "../../../src/agent-org-execu
 import { AgentOrgRunManager } from "../../../src/agent-org-execution/services/agent-org-run-manager.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
+// This unit suite replaces the scope builder (including persistence); package admission is tested with real files separately.
+vi.mock("../../../src/run-history/services/agent-org-run-package-catalog.js", () => ({
+  AgentOrgRunPackageCatalog: class {
+    admit = async () => undefined;
+    awaitReady = async () => undefined;
+    isAdmitted = () => true;
+  },
+}));
 const roots: string[] = [];
 afterEach(() => { while (roots.length) rmSync(roots.pop()!, { recursive: true, force: true }); });
 

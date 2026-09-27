@@ -1,0 +1,21 @@
+{
+  "ownedDataRootsRemoved": [
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-recovery-installed-pli4ilol",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-5As7PG",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-AITBBH",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DD1H6Y",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-DxrlKv",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-OjlDsC",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-U4iOWs",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-Vm50AC",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-brpArO",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-d5hdcH",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/context-file-process-e2e-nQ1S8B"
+  ],
+  "count": 11,
+  "candidateDesktopFirstAndRepeatStoppedGracefully": true,
+  "providerPid45898Stopped": true,
+  "ports3431And3432Available": true,
+  "sourceDataUntouched": "14,404 hashes unchanged; live failed attempt2 ledger retained",
+  "candidateBuildRetained": "ignored worktree electron-dist, unsigned test build only; not installed or published"
+}

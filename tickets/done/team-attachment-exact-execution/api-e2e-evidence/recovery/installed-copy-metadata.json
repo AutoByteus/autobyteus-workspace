@@ -1,0 +1,18 @@
+{
+  "source": "/Users/normy/.autobyteus/server-data",
+  "snapshot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-recovery-installed-pli4ilol/snapshot/server-data",
+  "sourceWriters": [],
+  "copyMethod": "APFS clones plus read-only SQLite backup; root key copied privately without reading values",
+  "ledgerBefore": [
+    "20260926_team_context_file_execution_locators_v1",
+    "FAILED",
+    2,
+    "Scanned 0; migrated 0; skipped 0; failed 1.",
+    "ENOENT: no such file or directory, open '/Users/normy/.autobyteus/server-data/memory/agent_teams/team_classroomsimulation_1ad20b5a/team_run_execution_tree.json'"
+  ],
+  "fileCount": 14404,
+  "bytes": 8047159882,
+  "hashSeconds": 11.478376292,
+  "symlinks": [],
+  "allEightRootsRetained": true
+}

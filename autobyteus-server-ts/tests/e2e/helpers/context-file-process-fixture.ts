@@ -33,7 +33,7 @@ export class ContextFileProcessFixture {
   private child: ChildProcess | null = null;
   private provider: http.Server | null = null;
 
-  async setup() {
+  async setup(options: { seed?: (root: string) => Promise<void> } = {}) {
     this.root = await fs.mkdtemp(path.join(os.tmpdir(), "context-file-process-e2e-"));
     this.provider = http.createServer(async (req, res) => {
       if (req.url === "/api/v1/models") {
@@ -56,15 +56,48 @@ export class ContextFileProcessFixture {
     this.provider.listen(0, "127.0.0.1"); await once(this.provider, "listening");
     this.providerOrigin = `http://127.0.0.1:${(this.provider.address() as { port: number }).port}`;
     await fs.writeFile(path.join(this.root, ".env"), "APP_ENV=test\nAUTOBYTEUS_SERVER_HOST=http://127.0.0.1:8000\n");
+    await options.seed?.(this.root);
     await this.start();
     await this.gql(`mutation($value:String!){updateServerSetting(key:"LMSTUDIO_HOSTS",value:$value)}`, { value: this.providerOrigin });
     await this.gql(`mutation {reloadProviderModelCatalog(providerId:"LMSTUDIO",runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`);
+  }
+  async launch(kind: "agent" | "team") {
+    const models = await this.gql(`query {providerModelCatalogSnapshots(runtimeKind:"autobyteus"){llmModels{modelIdentifier}}}`);
+    const model = models.providerModelCatalogSnapshots.flatMap((x: any) => x.llmModels)
+      .find((x: any) => x.modelIdentifier.startsWith("attachment-fixture:"))?.modelIdentifier;
+    expect(model).toBeTruthy();
+    const result = await this.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`, {
+      input: { name: "Attachment Fixture Worker", role: "assistant", description: "Disposable validation agent",
+        instructions: "Respond briefly. Do not use tools.", toolNames: [] },
+    });
+    const agentDefinitionId = result.createAgentDefinition.id;
+    const config = { llmModelIdentifier: model, llmConfig: null, autoExecuteTools: false,
+      skillAccessMode: "NONE", runtimeKind: "autobyteus", workspaceRootPath: this.root };
+    if (kind === "agent") {
+      const result = await this.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
+        { input: { agentDefinitionId, ...config } });
+      expect(result.createAgentRun.success, result.createAgentRun.message).toBe(true);
+      return { runId: result.createAgentRun.runId as string, teamRunId: null, directory: path.join(this.root, "memory", "agents", result.createAgentRun.runId) };
+    }
+    const definition = await this.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`, {
+      input: { name: "Attachment Fixture Team", description: "Disposable Team", instructions: "Validate attachment transport.", coordinatorMemberName: "worker",
+        nodes: [{ memberName: "worker", ref: agentDefinitionId, refScope: "SHARED" }] },
+    });
+    const created = await this.gql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`, {
+      input: { teamDefinitionId: definition.createAgentTeamDefinition.id, teamConfigs: [{ teamAddress: "/", ...config }],
+        memberConfigs: [{ memberAddress: "/worker", agentDefinitionId, ...config }] },
+    });
+    expect(created.createAgentTeamRun.success, created.createAgentTeamRun.message).toBe(true);
+    const teamRunId = created.createAgentTeamRun.teamRunId as string;
+    const resume = await this.gql(`query($teamRunId:String!){getTeamRunResumeConfig(teamRunId:$teamRunId){executionTree}}`, { teamRunId });
+    const runId = resume.getTeamRunResumeConfig.executionTree.root_team.members[0].agent_run_id as string;
+    return { runId, teamRunId, directory: path.join(this.root, "memory", "agent_teams", teamRunId, runId) };
   }
   async start(options: { interruptAfterTraceCommit?: boolean } = {}) {
     await fs.access(path.resolve("dist/app.js")); // Caller must build current sources first.
     const env = { ...process.env };
     env.DATABASE_URL = `file:${path.join(this.root, "db", "production.db")}`;
-    delete env.DATABASE_URL_TEST; delete env.AUTOBYTEUS_MEMORY_DIR;
+    delete env.DATABASE_URL_TEST; delete env.AUTOBYTEUS_MEMORY_DIR; delete env.RUST_LOG; // Host logging override breaks Prisma schema-engine bootstrap.
     env.LMSTUDIO_HOSTS = this.providerOrigin;
     env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = ""; // Never discover unrelated user packages in durable fixtures.
     this.logs = "";
@@ -76,7 +109,7 @@ export class ContextFileProcessFixture {
         const write = Writer.prototype.writeSerializedText;
         Writer.prototype.writeSerializedText = async function(input) {
           const result = await write.call(this, input);
-          if(input.file === 'team_context_file_locators' && input.filePath.endsWith('raw_traces_active.jsonl') && result.outcome === 'committed') process.kill(process.pid, 'SIGKILL');
+          if(input.file === 'context-record' && input.filePath.endsWith('raw_traces_active.jsonl') && result.outcome === 'committed') process.kill(process.pid, 'SIGKILL');
           return result;
         };
         await startServer();`);
@@ -115,7 +148,7 @@ export class ContextFileProcessFixture {
         console.log('STANDALONE_ADMITTED'); await host.close(); process.exit(0);
       } catch(error) { console.error(String(error)); process.exit(91); }`);
     const env: NodeJS.ProcessEnv = { ...process.env, DATABASE_URL: `file:${path.join(this.root, "db", "production.db")}` };
-    delete env.AUTOBYTEUS_MEMORY_DIR; delete env.DATABASE_URL_TEST;
+    delete env.AUTOBYTEUS_MEMORY_DIR; delete env.DATABASE_URL_TEST; delete env.RUST_LOG;
     env.LMSTUDIO_HOSTS = this.providerOrigin;
     env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS = ""; // Never discover unrelated user packages in durable fixtures.
     try { const result = await promisify(execFile)(process.execPath, [entry], { env, timeout: 45_000, maxBuffer: 4 * 1024 * 1024 }); return result.stdout + result.stderr; }

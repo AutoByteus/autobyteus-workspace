@@ -1,0 +1,20 @@
+{
+  "beforeLines": 447,
+  "afterLines": 411,
+  "beforeWords": 4028,
+  "afterWords": 3698,
+  "removedDuplication": [
+    "Repeated hash rationale subsection replaced by reference to comparison",
+    "Startup audit rationale/correction retained once in comparison;separate subsection now evidence only",
+    "Incident policy restatement replaced by section cross-references",
+    "Repeated hash explanation removed from locator example"
+  ],
+  "preserved": [
+    "Five-row before/after/why comparison",
+    "Source/target and mixed-state retry examples",
+    "Measured evidence and limits",
+    "Business/updater consequence",
+    "Approved design vs implemented status",
+    "No default background-audit/cache/journal replacement"
+  ]
+}

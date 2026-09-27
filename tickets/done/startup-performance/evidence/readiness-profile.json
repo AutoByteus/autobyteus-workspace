@@ -1,0 +1,86 @@
+{
+  "mode": "read-only exact installed module probe; no app/server/migration startup",
+  "node": "v24.16.0",
+  "at": "2026-09-27T06:10:24.768Z",
+  "memoryDataIsLiveReadOnly": true,
+  "consistentStoppedWriterSnapshot": false,
+  "blockedWriteAttempts": [],
+  "suppressedLogs": 0,
+  "groups": 1030,
+  "durations": {
+    "importMs": 41.49475000000001,
+    "structuralMs": 455.443,
+    "referenceMs": 24178.606960000037,
+    "rebuildMs": 24639.634375,
+    "awaitReadyReuseMs": 0.01358299999992596
+  },
+  "cpuMs": {
+    "user": 20968.658,
+    "system": 4707.122
+  },
+  "admitted": {
+    "team": 545,
+    "org": 24,
+    "agent": 461
+  },
+  "diagnosticCounts": {
+    "ROOT_RUN_PACKAGE_MISSING_TREE": 8,
+    "ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED": 204
+  },
+  "stats": {
+    "structure": {
+      "ops": {
+        "readdir": {
+          "calls": 3,
+          "ms": 6.508249000000021,
+          "errors": 0
+        },
+        "access": {
+          "calls": 4560,
+          "ms": 143.43105800000004,
+          "errors": 2284
+        },
+        "readFile": {
+          "calls": 2372,
+          "ms": 419.23349500000137,
+          "errors": 204
+        }
+      },
+      "readBytes": 51058907,
+      "readFiles": 2168,
+      "jsonParses": 2168,
+      "jsonCharacters": 50908352,
+      "jsonParseMs": 63.04529599999843
+    },
+    "references": {
+      "ops": {
+        "readdir": {
+          "calls": 4231,
+          "ms": 257.84529899994345,
+          "errors": 778
+        },
+        "realpath": {
+          "calls": 16098,
+          "ms": 927.8033239999504,
+          "errors": 0
+        },
+        "lstat": {
+          "calls": 8049,
+          "ms": 203.4757029999705,
+          "errors": 0
+        },
+        "readFile": {
+          "calls": 7158,
+          "ms": 9110.950048999995,
+          "errors": 0
+        }
+      },
+      "readBytes": 6390427013,
+      "readFiles": 7158,
+      "jsonParses": 1073318,
+      "jsonCharacters": 6427824700,
+      "jsonParseMs": 8985.58291900174
+    }
+  },
+  "limits": "One fresh-process read-only probe; filesystem cache/load and instrumentation affect times. Not an end-to-end cold desktop start; fs operation time sums may overlap; no production write or forced replay."
+}

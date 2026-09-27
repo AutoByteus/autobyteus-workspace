@@ -83,6 +83,11 @@ describe("AgentRunHistoryCatalogService", () => {
     const { AgentRunHistoryCatalogService } = await import(
       "../../../../src/run-history/services/agent-run-history-catalog-service.js"
     );
+    for (const row of initialRows) {
+      const dir = path.join(memoryDir, "agents", row.runId);
+      await fs.mkdir(dir, {recursive: true});
+      await fs.writeFile(path.join(dir, "run_metadata.json"), JSON.stringify(buildMetadata(row.runId, {memoryDir: dir})));
+    }
     let index: AgentRunHistoryIndexFileRecord = initialRows.map((row) => ({ ...row }));
     const writeFailures: Error[] = [];
     const indexStore = {
@@ -183,6 +188,7 @@ describe("AgentRunHistoryCatalogService", () => {
 
     await expect(service.commitRunModelConfig({
       runId: "run-1",
+      llmModelIdentifier: "model-1",
       llmConfig: { effort: "high" },
     })).resolves.toMatchObject({
       kind: "committed",

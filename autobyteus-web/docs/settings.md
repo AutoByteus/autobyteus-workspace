@@ -1644,17 +1644,26 @@ Team final owners are `{ kind: 'team_member_final', teamRunId, agentRunId }`, wh
 Drafts retain their separate temporary scope and member address. Send captures the
 selected AgentRun before awaits; hydration focus changes cannot retarget it.
 
-The startup-only `20260926_team_context_file_execution_locators_v1` migration rewrites
-only typed stored attachment references using indexed ownership and physical-file
-proof. It leaves attachment blobs and unrelated history untouched. Original record
-backups and the hash/progress manifest live under
-`app-data-migration-backups/20260926_team_context_file_execution_locators_v1`.
-Both Studio and standalone startup require clean success before runtime admission.
-Ambiguous or missing proof blocks startup rather than choosing another execution.
+The existing startup-only `20260926_team_context_file_execution_locators_v1`
+migration retains the same ID. Eligible pending/failed attempts transform each
+source once and use the existing atomic writer only for changed files. Terminal
+SUCCEEDED/SUCCEEDED_WITH_WARNINGS installations stay skipped; no new migration or
+forced replay is introduced. Unavailable references preserve their source and
+warn; real IO/commit failures remain FAILED. Attachment blobs and unrelated data
+remain unchanged. The old hash/journal/backup machinery is removed; any already
+created originals/manifests remain inert and untouched, never restored over newer
+writes.
 
-Upgrade server and web/Electron together with writers stopped. Do not restore old
-record backups over newer live history; rollback must restore the matching binary,
-changed records and migration ledger as one stopped-writer operation. Deployment
-and rollback remain operator/Delivery-owned.
+Studio and standalone retain structural current-package admission but no longer
+scan all historical attachment references at startup or unrelated run creation.
+There is no dependency closure or background audit. Exact execution ownership and
+physical containment are enforced when the requested attachment is accessed;
+a missing attachment fails that operation, not the otherwise valid conversation
+or unrelated new work. Structurally invalid roots remain preserved and excluded.
+Runtime provides no old-format address fallback.
+
+Upgrade matching web/Electron and server together. Stop writers and use the normal
+operator snapshot procedure when an eligible migration will run; do not reset the
+live ledger to test it. The converter's temporary atomic-write file is not a backup.
 
 Operational procedure: [Team attachment cutover and recovery](../../autobyteus-server-ts/docs/FILE_RENDERING_AND_MEDIA_PIPELINE.md#exact-team-attachment-cutover-and-operations). Migration success on disposable test data is not installed-data rollout evidence.

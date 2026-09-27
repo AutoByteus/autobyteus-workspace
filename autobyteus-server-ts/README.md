@@ -192,7 +192,7 @@ volume created for gateway memory are outside these roots and are not removed.
 ### Production migration practice
 
 - Follow the canonical
-  [`Production Data-Migration Conventions`](docs/design/production_data_migration_conventions.md)
+  [`Production Data-Migration Conventions`](docs/design/data_migration_guideline.md)
   for reachability, forward-only runtime ownership, final-current-state failure
   classification, cleanup residue, and proportionate recovery decisions.
 - Define each migration as a deterministic transformation from explicitly

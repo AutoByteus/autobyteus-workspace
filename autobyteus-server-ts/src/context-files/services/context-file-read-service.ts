@@ -1,3 +1,4 @@
+import { assertContainedContextFile, ContextFilePathUnavailableError } from "./context-file-path-validation.js";
 import fs from "node:fs/promises";
 import type {
   ContextFileDraftOwnerDescriptor,
@@ -35,7 +36,14 @@ export class ContextFileReadService {
   ): Promise<string | null> {
     await this.cleanupService.cleanupExpiredDrafts();
     const resolvedOwner = await this.ownerResolver.resolveFinalOwner(owner);
-    return this.resolveExistingFilePath(this.layout.getFinalFilePath(resolvedOwner, storedFilename));
+    const filePath = this.layout.getFinalFilePath(resolvedOwner, storedFilename);
+    try {
+      await assertContainedContextFile(this.layout.getMemoryRootDirPath(), filePath);
+      return filePath;
+    } catch (error) {
+      if (error instanceof ContextFilePathUnavailableError || (error as NodeJS.ErrnoException).code === "ENOENT") return null;
+      throw error;
+    }
   }
 
   async deleteDraftFile(

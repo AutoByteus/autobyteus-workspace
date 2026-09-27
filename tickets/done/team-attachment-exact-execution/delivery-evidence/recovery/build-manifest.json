@@ -1,0 +1,121 @@
+{
+  "buildId": "DR-005-normal-macos-arm64-20260927",
+  "completedAtUtc": "2026-09-27T05:00:09.562460+00:00",
+  "appPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+  "version": "1.4.87",
+  "buildExitCode": 0,
+  "release": false,
+  "signedOrNotarized": false,
+  "productionProfileDefault": true,
+  "productionDataRoot": "/Users/normy/.autobyteus/server-data",
+  "appLaunchedByDelivery": false,
+  "userVerification": "pending",
+  "embeddedReviewedModules": [
+    {
+      "relativeModule": "agent-execution/runtime/general-process-run-supervisor.js",
+      "sha256": "9dec03a6d940de22b6883ba8bc6cc88bd9711fa101ae1a2bd5021455a1ebd1f8"
+    },
+    {
+      "relativeModule": "agent-execution/services/standalone-agent-run-lifecycle-service.js",
+      "sha256": "12b40b59eff5b48bc0de92d929dec96d15e8afd730f9467aa37705e3b45a4d59"
+    },
+    {
+      "relativeModule": "agent-org-execution/services/agent-org-execution-tree-location-service.js",
+      "sha256": "a48fdf3f1c4b1498842e08fe42b55875e466f5b525eefbdb1f50ee0ae7433e09"
+    },
+    {
+      "relativeModule": "agent-org-execution/services/agent-org-run-manager.js",
+      "sha256": "7345d237e4acd6d7974726dde0d8555c3076eedbcf28ea12a33a109bcb07b932"
+    },
+    {
+      "relativeModule": "agent-team-execution/services/agent-team-run-manager.js",
+      "sha256": "235d3ed3d9b703941b4d2cf2960690481b3d882ca6817de3ca2e61fa088b0f88"
+    },
+    {
+      "relativeModule": "api/rest/context-files.js",
+      "sha256": "c2bfcdcb7e2285a1c0e449a7d94e242ee7a5744a29dc014e5a2423bc506db819"
+    },
+    {
+      "relativeModule": "app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js",
+      "sha256": "57d2d68e3f387415b0a9f72b5991dd842fcb2d4206aa621223793bd6d17b31b8"
+    },
+    {
+      "relativeModule": "app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-locator-transition.js",
+      "sha256": "75ca2302561a0315c5f52f3a90fcb985ee7b6f6187f56ab5443ad84c69edd0fb"
+    },
+    {
+      "relativeModule": "app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-transition-journal.js",
+      "sha256": "7f6f2a0dd62fccaca1140ec0f1d99f47fba0fe601e9e7b7c7c09d54b457b3805"
+    },
+    {
+      "relativeModule": "application-platform/execution/application-execution-scope-kernel-builder.js",
+      "sha256": "37d5332af859c592366e2c2ca26f4216fec8c8dc6ddb57b1fdc0973b8e88adc8"
+    },
+    {
+      "relativeModule": "context-files/services/context-file-current-reference-validator.js",
+      "sha256": "3868a40425f7211f7915fc2dcf9d9e0359e2b46308e1281a44bf6139c07a0938"
+    },
+    {
+      "relativeModule": "context-files/services/context-file-owner-resolver.js",
+      "sha256": "54bfe24bc5226d73f96b0f5be17e60aab468b1cbfb079b4dff37fbad190c0aae"
+    },
+    {
+      "relativeModule": "context-files/services/context-file-record-locators.js",
+      "sha256": "dfe254da44dbbf8c8bdd6ac8c336cdc8edc642afcc54a3ed1410afddac484650"
+    },
+    {
+      "relativeModule": "run-history/services/agent-org-run-package-catalog.js",
+      "sha256": "d59d56dcbdd3ffbf3f803f154f3ae767f8d428a01616fd93caf0e84fc6c941fa"
+    },
+    {
+      "relativeModule": "run-history/services/agent-run-history-catalog-service.js",
+      "sha256": "7668650e2a3c703db0e7ccaf3672cb81aa1e8c4e2d1e32033c36e76a961da430"
+    },
+    {
+      "relativeModule": "run-history/services/agent-run-view-projection-service.js",
+      "sha256": "9f77d05eeacc74c0efdfca6f97eac2de47a01d222f051d5f2f143db4e9a2d35f"
+    },
+    {
+      "relativeModule": "run-history/services/root-run-package-current-validator.js",
+      "sha256": "01ec83fb9dce460c05b51c64e3d85b5a1e6148b0587156b9c2e451a439c79929"
+    },
+    {
+      "relativeModule": "run-history/services/root-run-package-readiness-index.js",
+      "sha256": "d11e81901dc09f5571db46f4ca749661064c4c2c3b398397714f85f8e5615823"
+    },
+    {
+      "relativeModule": "run-history/services/team-run-execution-tree-location-service.js",
+      "sha256": "4f43a4614ea25f4e30e88ee29608cc7cabdd8563186fe768ce5dda296a70d68e"
+    },
+    {
+      "relativeModule": "run-history/services/team-run-package-catalog.js",
+      "sha256": "8164b50650e2818e854ae1ff7fecbb2bfdcbc13732eeb483850bfd7b207b3bd2"
+    },
+    {
+      "relativeModule": "server-runtime.js",
+      "sha256": "bb160f0e3403dd9a34d651c782348db36838fdd293428e2a3c640323a21f3743"
+    },
+    {
+      "relativeModule": "standalone-application-host/start-standalone-application-host.js",
+      "sha256": "18cf762d5d925a4d79e1f35fbcb06da28739c43425d58ac502fc7f2afa01ce70"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.87.dmg",
+      "bytes": 479103217,
+      "sha256": "2a9f0b831d28730642ea22faaceccb2bf967350e8851163917164bd0113d1cd0",
+      "mtimeUtc": "2026-09-27T04:57:08.008998+00:00"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/team-attachment-startup-recovery/autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.87.zip",
+      "bytes": 474199314,
+      "sha256": "1f39498834cf17a02542d2c2e680755be8b68ec9f60e9063956e38a8048ba730",
+      "mtimeUtc": "2026-09-27T04:59:31.049969+00:00"
+    }
+  ],
+  "terminalCheck": "pass (static check, no --spawn-probe)",
+  "dmgIntegrity": "hdiutil verify passed",
+  "appAsarSha256": "29d623ebf690f8710811a39edba8b7200e105b55ed8ac0fe3190af40de4b643a",
+  "normalLaunchProfileCheck": "packaged module equals worktree compiled module; default production"
+}

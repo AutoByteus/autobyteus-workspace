@@ -71,6 +71,7 @@ export const buildApplicationExecutionScopeKernel = (
     const storedTeamLocations =
       createStoredTeamRunExecutionTreeLocationService(input.memoryDir);
     const contextFileOwnerResolver = new ContextFileOwnerResolver({
+      memoryDir: input.memoryDir,
       locations: storedTeamLocations,
     });
     const providerInputNormalizer = new AgentRunProviderInputNormalizer(

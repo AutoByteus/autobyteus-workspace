@@ -248,12 +248,11 @@ describe("Studio readable-provider migration startup gate", () => {
       runnerFailure.message,
     ));
   });
-  it.each(["MISSING", "NOT_RUN", "RUNNING", "FAILED", "SUCCEEDED_WITH_WARNINGS"])("blocks attachment transition %s before runtime admission", async (status) => {
+  it.each(["MISSING", "NOT_RUN", "RUNNING", "FAILED", "SUCCEEDED_WITH_WARNINGS", "SUCCEEDED"])("uses independent package admission for attachment status %s", async (status) => {
     mocks.runPending.mockResolvedValueOnce([terminalReadableStatus("SUCCEEDED"), ...(status === "MISSING" ? [] : [{ migrationId: ATTACHMENT_MIGRATION_ID, status }])]);
-    await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 })).rejects.toThrow("process.exit:1");
-    expect(mocks.buildStudioServer).not.toHaveBeenCalled();
-    expect(mocks.app.listen).not.toHaveBeenCalled();
-    expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining("Team attachment locator migration requires clean success"));
+    await startConfiguredServer({ host: "127.0.0.1", port: 0 });
+    expect(mocks.rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
+    expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]).toBeLessThan(mocks.buildStudioServer.mock.invocationCallOrder[0]!);
+    expect(mocks.app.listen).toHaveBeenCalledTimes(1);
   });
-
 });
