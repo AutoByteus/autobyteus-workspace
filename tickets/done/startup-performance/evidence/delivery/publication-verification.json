@@ -1,0 +1,48 @@
+{
+  "checkedAt": "2026-09-27T08:24:46.211553+00:00",
+  "latest": true,
+  "releaseSha": "82f3359cb9b98f0a5caa0dad79e24e9a58801a46",
+  "assetCount": 17,
+  "updater": [
+    {
+      "file": "latest-mac.yml",
+      "version": "1.4.89",
+      "referencesPresent": [
+        "AutoByteus_personal_macos-arm64-1.4.89.zip",
+        "AutoByteus_personal_macos-arm64-1.4.89.dmg",
+        "AutoByteus_personal_macos-x64-1.4.89.zip",
+        "AutoByteus_personal_macos-x64-1.4.89.dmg",
+        "AutoByteus_personal_macos-arm64-1.4.89.zip"
+      ],
+      "metadataHashMatchesGitHub": true
+    },
+    {
+      "file": "latest-linux-arm64.yml",
+      "version": "1.4.89",
+      "referencesPresent": [
+        "AutoByteus_personal_linux-arm64-1.4.89.AppImage",
+        "AutoByteus_personal_linux-arm64-1.4.89.AppImage"
+      ],
+      "metadataHashMatchesGitHub": true
+    },
+    {
+      "file": "latest.yml",
+      "version": "1.4.89",
+      "referencesPresent": [
+        "AutoByteus_personal_windows-1.4.89.exe",
+        "AutoByteus_personal_windows-1.4.89.exe"
+      ],
+      "metadataHashMatchesGitHub": true
+    },
+    {
+      "file": "latest-linux.yml",
+      "version": "1.4.89",
+      "referencesPresent": [
+        "AutoByteus_personal_linux-x64-1.4.89.AppImage",
+        "AutoByteus_personal_linux-x64-1.4.89.AppImage"
+      ],
+      "metadataHashMatchesGitHub": true
+    }
+  ],
+  "allDesktopPlatformsPresent": true
+}

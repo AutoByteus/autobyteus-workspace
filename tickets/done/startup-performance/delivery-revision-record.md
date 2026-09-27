@@ -22,3 +22,10 @@ DR-001 completed preparation result: fresh normal personal Electron build Pass, 
 - Remote personal refreshed unchanged at8bffda04575eaa7198fae186856699011ad5c04b; no source integration/rerun required; fingerprints match.
 - Correct next release1.4.89 selected from actual published1.4.88. Ticket moved to done before commit. No published tag rewrite.
 - In-use candidate worktree retained; no app termination, installation or data operations. Terminal return not yet eligible.
+
+## DR-003 — Published and user upgraded; final cleanup
+- Prior DR002: accepted, repository/release finalizing. Current: user-scoped desktop Delivery Completed; independent Docker still running, not claimed passed, no wait per prior explicit user instruction.
+- v1.4.89 latest with17assets; Desktop/Android/iOS jobs passed. Four updater files verified. User reports upgraded; installed /Applications1.4.89 and healthHTTP200 independently confirmed, no Delivery installation.
+- Same-ID migration remains terminal attempt3 with unchanged timestamps; no data mutation.
+- Candidate worktree no longer in use, safe cleanup performed after committed source/receipt preservation. Shared dirty checkout left untouched.
+- Authoritative final snapshot delivery-records/startup-performance, cleanup.json records actual cleanup. Required handoff will be sent after cleanup.
