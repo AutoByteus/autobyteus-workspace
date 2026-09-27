@@ -1,0 +1,10 @@
+2026-09-26T03:43:50.785Z listening 3917
+2026-09-26T03:43:52.652Z http POST /mcp accept=application/json, text/event-stream session=undefined
+2026-09-26T03:43:53.199Z http POST /mcp accept=text/event-stream, application/json session=undefined
+2026-09-26T03:43:53.214Z http POST /mcp accept=text/event-stream, application/json session=undefined
+2026-09-26T03:43:53.230Z http POST /mcp accept=text/event-stream, application/json session=undefined
+2026-09-26T03:43:53.241Z http POST /mcp accept=text/event-stream, application/json session=undefined
+2026-09-26T03:43:58.263Z http POST /mcp accept=text/event-stream, application/json session=undefined
+2026-09-26T03:43:58.270Z echo called: ping
+2026-09-26T03:43:59.519Z http POST /mcp accept=text/event-stream, application/json session=undefined
+2026-09-26T03:43:59.520Z get_handoff_rules called

@@ -2,6 +2,7 @@ import type { AgentRunConfig } from "./agent-run-config.js";
 import type { AgentContext } from "autobyteus-ts/agent/context/agent-context.js";
 import type { ClaudeAgentRunContext } from "../backends/claude/backend/claude-agent-run-context.js";
 import type { AgyAgentRunContext } from "../backends/antigravity/backend/agy-agent-run-context.js";
+import type { AcpAgentRunContext } from "../backends/acp/backend/acp-agent-run-context.js";
 import type { CodexAgentRunContext } from "../backends/codex/backend/codex-agent-run-context.js";
 
 export type RuntimeAgentRunContext =
@@ -9,6 +10,7 @@ export type RuntimeAgentRunContext =
   | ClaudeAgentRunContext
   | CodexAgentRunContext
   | AgyAgentRunContext
+  | AcpAgentRunContext
   | null;
 
 export class AgentRunContext<TRuntimeContext> {

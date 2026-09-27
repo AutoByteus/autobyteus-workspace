@@ -18,6 +18,8 @@ import type { CodexThreadManager } from "../backends/codex/thread/codex-thread-m
 import type { WorkspaceSkillMaterializer } from "../backends/shared/workspace-skill-materializer.js";
 import type { CodexAppServerClientManager } from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
 import { AgyAgentRunBackendFactory } from "../backends/antigravity/backend/agy-agent-run-backend-factory.js";
+import type { AcpAgentRunBackendFactory } from "../backends/acp/backend/acp-agent-run-backend-factory.js";
+import { createGrokBuildAgentRunBackendFactory } from "../backends/grok/grok-build-agent-run-backend-factory.js";
 import { ClaudeWorkspaceResolver } from "../backends/claude/claude-workspace-resolver.js";
 import { ClaudeAgentRunBackendFactory } from "../backends/claude/backend/claude-agent-run-backend-factory.js";
 import { ClaudeSessionBootstrapper } from "../backends/claude/backend/claude-session-bootstrapper.js";
@@ -54,6 +56,7 @@ export type AgentProviderFactorySet = Readonly<{
   codex: CodexAgentRunBackendFactory;
   claude: ClaudeAgentRunBackendFactory;
   antigravity: AgyAgentRunBackendFactory;
+  grok: AcpAgentRunBackendFactory;
 }>;
 
 export interface AgentProviderFactoryBuilder {
@@ -196,6 +199,11 @@ export const createAgentProviderFactoryBuilder = (
           input.agentDefinitionService, process.skillService,
           new ClaudeWorkspaceResolver(process.workspaceManager), input.agentToolMcpRunSessions,
         ),
+        grok: createGrokBuildAgentRunBackendFactory({
+          definitions: input.agentDefinitionService, skills: process.skillService,
+          workspaces: new ClaudeWorkspaceResolver(process.workspaceManager),
+          mcpSessions: input.agentToolMcpRunSessions,
+        }),
         claude: new ClaudeAgentRunBackendFactory(
           claudeSessionManager,
           new ClaudeSessionBootstrapper(

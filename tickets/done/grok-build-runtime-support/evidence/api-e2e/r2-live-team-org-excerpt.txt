@@ -1,0 +1,8 @@
+GROK_LIVE_TEAM_PING_TOOLS ["search_tool","get_handoff_rules","send_message_to"]
+GROK_LIVE_TEAM {"teamRunId":"grok_live_team_171c720b_0522_4d15_811a_e771e2e71_68ee4e27ed644c24b8e04e7bf32bb140","pongRuntime":"claude_agent_sdk","pongModel":"haiku"}
+GROK_LIVE_ORG_DIRECTOR_TOOLS ["search_tool","send_message_to"]
+GROK_LIVE_ORG {"orgRunId":"grok_org_1a4f8a64_0e19_4c39_873c_b458a1c3e8e1_f6c808f750384c94a3c57dbdf0ef5ca4"}
+ ✓ tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts (3 tests | 1 skipped) 33582ms
+     ✓ delivers a Grok member's canonical get_handoff_rules/send_message_to to a Claude member and restores the mixed team (AC-005)  19667ms
+     ✓ launches a Grok Org, relays from a direct member to a nested team member and restores it (AC-005 org)  10951ms
+      Tests  2 passed | 1 skipped (3)

@@ -1295,6 +1295,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       codexBackendFactory: factory,
       claudeBackendFactory: unavailableBackendFactory,
       agyBackendFactory: unavailableBackendFactory,
+      grokBackendFactory: unavailableBackendFactory,
       activationRegistry: infrastructure.activationRegistry,
       memoryRecorder: infrastructure.memoryRecorder,
       providerInputNormalizer: infrastructure.providerInputNormalizer,

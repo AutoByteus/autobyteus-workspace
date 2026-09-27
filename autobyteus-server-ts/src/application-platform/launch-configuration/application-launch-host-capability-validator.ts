@@ -16,6 +16,7 @@ import type {
 import { ApplicationModelAvailabilityError } from "./application-current-model-selection-policy.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { toAgyDiscoveryDiagnostic } from "../../runtime-management/antigravity-cli-capability.js";
+import { toGrokBuildDiagnostic } from "../../runtime-management/grok/grok-build-capability.js";
 
 type RuntimeAvailabilityReader = Pick<
   RuntimeAvailabilityService,
@@ -117,7 +118,8 @@ export class ApplicationLaunchHostCapabilityValidator {
           leaf,
           "RUNTIME_AUTHENTICATION_UNAVAILABLE",
           `Runtime '${runtimeKind}' could not provide its authenticated model catalog: ${runtimeKind === RuntimeKind.ANTIGRAVITY_CLI
-            ? toAgyDiscoveryDiagnostic(error).message : failure.message}`,
+            ? toAgyDiscoveryDiagnostic(error).message
+            : runtimeKind === RuntimeKind.GROK_BUILD ? toGrokBuildDiagnostic(error).message : failure.message}`,
         ));
         continue;
       }

@@ -1,0 +1,22 @@
+{
+  "info": {
+    "id": "01a0dbce-9af3-78d0-a46e-733be54da209",
+    "cwd": "/tmp/grok-acp-exp/ws"
+  },
+  "agent_id": "ag1.f935b68ee5c648d3b7c41dc4fb48836b",
+  "attempt_id": "at1.4b3ebc7e1d5f4efbac3a2525292d06c5",
+  "session_summary": "",
+  "created_at": "2026-09-26T03:42:25.550708Z",
+  "updated_at": "2026-09-26T03:44:09.437218Z",
+  "num_messages": 13,
+  "num_chat_messages": 12,
+  "current_model_id": "grok-4.7",
+  "next_trace_turn": 2,
+  "chat_format_version": 1,
+  "request_id": "1b428a1b-af49-4640-8a63-f5b1c40850c5",
+  "grok_home": "/Users/normy/.grok",
+  "last_active_at": "2026-09-26T03:44:09.437218Z",
+  "agent_name": "grok-build-plan",
+  "sandbox_profile": "off",
+  "reasoning_effort": "low"
+}

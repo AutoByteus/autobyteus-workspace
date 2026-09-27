@@ -30,6 +30,12 @@ conversation binding, headless tool policy, and canonical event mapping, see
 [Antigravity CLI Runtime](./antigravity_cli_runtime.md). It joins the existing
 manager/factory boundary rather than defining a second Agent lifecycle.
 
+For the `grok_build` provider (Grok Build over ACP stdio), including the
+runtime-neutral ACP layer, the Grok profile, exact `session/load` binding,
+per-call approvals, turn-end classification, and per-call usage, see
+[Grok Build Runtime](./grok_build_runtime.md). It also joins the existing
+manager/factory boundary through `AcpAgentRunBackendFactory`.
+
 ## Execution Family Composition
 
 `AgentProviderFactoryBuilder` freezes process-wide provider primitives and

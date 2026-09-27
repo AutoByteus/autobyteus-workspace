@@ -1,6 +1,6 @@
 export type McpEffectiveResultSource = {
   kind: "mcp_tool_result";
-  provider: "codex" | "claude";
+  provider: "codex" | "claude" | "grok_build";
   evidence:
     | "codex_item_family_mcp_tool_call"
     | "provider_mcp_wire_tool_name"

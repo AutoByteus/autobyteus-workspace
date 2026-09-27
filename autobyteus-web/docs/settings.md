@@ -1052,7 +1052,7 @@ change saved paths or the model-only Save payload. Editable new-Team launch
 selection and the stopped AgentOrg mounted-Team selector remain separate flows.
 
 Replacement choices come from server-owned options for the saved run/scope.
-For Claude Agent SDK, Codex App Server, and Antigravity CLI, every **distinct
+For Claude Agent SDK, Codex App Server, Antigravity CLI, and Grok Build, every **distinct
 model offered by the backend selection catalog** is eligible without a platform
 context-capacity gate, including smaller or unknown-capacity models. The Claude
 backend omits `default` from new offers only when it proves another listed ID

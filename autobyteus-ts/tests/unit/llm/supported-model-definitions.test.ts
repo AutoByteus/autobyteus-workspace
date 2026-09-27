@@ -19,7 +19,7 @@ describe('current supported model definitions', () => {
     expect(supportedModelDefinitions.map(({ name }) => name)).toEqual([
       'gpt-6-astra', 'gpt-6-sol', 'gpt-6-luna',
       'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini',
-      'mistral-large-3', 'devstral-2', 'grok-4.6',
+      'mistral-large-3', 'devstral-2', 'grok-4.7',
       'claude-fable-5-1', 'claude-fable-5', 'claude-opus-5', 'claude-opus-5-5',
       'claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-5', 'claude-sonnet-4.6',
       'deepseek-v4-flash', 'deepseek-v4-pro', 'gemini-3.1-pro-preview', 'gemini-3.8-flash',
@@ -69,9 +69,9 @@ describe('current supported model definitions', () => {
   it('contains current named rows and removes the replaced curated identifiers', () => {
     const names = new Set(supportedModelDefinitions.map((definition) => definition.name));
     expect([...names]).toEqual(expect.arrayContaining([
-      'grok-4.6', 'gemini-3.8-flash', 'kimi-k3', 'glm-5.3', 'minimax-m3',
+      'grok-4.7', 'gemini-3.8-flash', 'kimi-k3', 'glm-5.3', 'minimax-m3',
     ]));
-    expect([...names].some((name) => name === 'grok-4.5' || name === 'gemini-3.5-flash'
+    expect([...names].some((name) => name === 'grok-4.5' || name === 'grok-4.6' || name === 'gemini-3.5-flash'
       || name === 'gemini-3.7-flash' || name === 'gemini-3-flash-preview'
       || name.startsWith('kimi-k2') || name === 'glm-5.2')).toBe(false);
   });
@@ -81,7 +81,7 @@ describe('current supported model definitions', () => {
       value: 'MiniMax-M3',
       provider: LLMProvider.MINIMAX,
     });
-    expect(supportedModelDefinitions.find((definition) => definition.name === 'grok-4.6')?.configSchema?.toJsonSchema())
+    expect(supportedModelDefinitions.find((definition) => definition.name === 'grok-4.7')?.configSchema?.toJsonSchema())
       .toMatchObject({ properties: { reasoning_effort: { enum: ['low', 'medium', 'high', 'xhigh'], default: 'high' } } });
     expect(supportedModelDefinitions.find((definition) => definition.name === 'gemini-3.8-flash')?.configSchema?.toJsonSchema())
       .toMatchObject({ properties: {
@@ -116,7 +116,9 @@ describe('current supported model definitions', () => {
   });
 
   it('requires exact current AutoByteus identifiers without aliasing removed rows', async () => {
-    await expect(LLMFactory.requireCurrentModelIdentifier('grok-4.6')).resolves.toBeUndefined();
+    await expect(LLMFactory.requireCurrentModelIdentifier('grok-4.7')).resolves.toBeUndefined();
+    await expect(LLMFactory.requireCurrentModelIdentifier('grok-4.6'))
+      .rejects.toBeInstanceOf(CurrentModelSelectionRequiredError);
     await expect(LLMFactory.requireCurrentModelIdentifier('grok-4.5'))
       .rejects.toBeInstanceOf(CurrentModelSelectionRequiredError);
     await expect(LLMFactory.requireCurrentModelIdentifier('gemini-3.8-flash')).resolves.toBeUndefined();

@@ -2,6 +2,7 @@ import { spawnSync } from "node:child_process";
 import path from "node:path";
 import { RuntimeKind } from "./runtime-kind-enum.js";
 import { listAntigravityModels, toAgyDiscoveryDiagnostic } from "./antigravity-cli-capability.js";
+import { probeGrokBuildCli } from "./grok/grok-build-capability.js";
 import { resolveClaudeCodeExecutablePath } from "./claude/client/claude-sdk-executable-path.js";
 import { resolveLaunchCommand } from "./codex/client/codex-app-server-launch-config.js";
 
@@ -104,6 +105,15 @@ const createAntigravityAvailabilityProvider = (): RuntimeAvailabilityProvider =>
   },
 });
 
+/** Bounded version and agent-mode probe; no ACP session and no inference. */
+const createGrokBuildAvailabilityProvider = (): RuntimeAvailabilityProvider => ({
+  runtimeKind: RuntimeKind.GROK_BUILD,
+  getRuntimeAvailability: async () => {
+    const probe = await probeGrokBuildCli();
+    return createCapability(RuntimeKind.GROK_BUILD, probe.available, probe.diagnostic?.message ?? null);
+  },
+});
+
 export class RuntimeAvailabilityService {
   private readonly providers = new Map<RuntimeKind, RuntimeAvailabilityProvider>();
 
@@ -143,6 +153,7 @@ export const getRuntimeAvailabilityService = (): RuntimeAvailabilityService => {
       createCodexAvailabilityProvider(),
       createClaudeAvailabilityProvider(),
       createAntigravityAvailabilityProvider(),
+      createGrokBuildAvailabilityProvider(),
     ]);
   }
   return cachedRuntimeAvailabilityService;

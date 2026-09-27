@@ -1,0 +1,11 @@
+== 2026-09-26T19-07-49-297Z-32275.jsonl session/load mcpServers: -
+  turn stop=end_turn calls=4 per-call-sum={'input_tokens': 17292, 'cache_read_input_tokens': 54784, 'output_tokens': 378, 'reasoning_tokens': 222} turn_usage={"inputTokens": 72076, "outputTokens": 378, "totalTokens": 72454, "cachedReadTokens": 54784, "cacheCreationTokens": 0, "reasoningTokens": 222, "modelCalls": 4, "apiDurationMs": 7675, "costUsdTicks": 642440000, "modelUsage": {"grok-4.7": {"inputTokens": 72076, 
+== 2026-09-26T19-08-08-918Z-37613.jsonl session/load mcpServers: -
+  turn stop=end_turn calls=3 per-call-sum={'input_tokens': 17220, 'cache_read_input_tokens': 35968, 'output_tokens': 154, 'reasoning_tokens': 59} turn_usage={"inputTokens": 53188, "outputTokens": 154, "totalTokens": 53342, "cachedReadTokens": 35968, "cacheCreationTokens": 0, "reasoningTokens": 59, "modelCalls": 3, "apiDurationMs": 7079, "costUsdTicks": 533480000, "modelUsage": {"grok-4.7": {"inputTokens": 53188, "
+== 2026-09-26T19-08-03-908Z-35023.jsonl session/load mcpServers: [[{"type": "http", "name": "autobyteus_agent_tools", "url": "http://127.0.0.1:64029/mcp/agent-tools/agtrun_0-m2KyuBeCWBZdXd1zNkoMj9QhPAYkRg-AT-W1Vo-t8", "header
+  turn stop=end_turn calls=1 per-call-sum={'input_tokens': 52, 'cache_read_input_tokens': 18560, 'output_tokens': 124, 'reasoning_tokens': 111} turn_usage={"inputTokens": 18612, "outputTokens": 124, "totalTokens": 18736, "cachedReadTokens": 18560, "cacheCreationTokens": 0, "reasoningTokens": 111, "modelCalls": 1, "apiDurationMs": 2056, "costUsdTicks": 101280000, "modelUsage": {"grok-4.7": {"inputTokens": 18612, 
+== 2026-09-26T19-08-13-551Z-39582.jsonl session/load mcpServers: -
+  turn stop=end_turn calls=1 per-call-sum={'input_tokens': 15615, 'cache_read_input_tokens': 1152, 'output_tokens': 241, 'reasoning_tokens': 240} turn_usage={"inputTokens": 16767, "outputTokens": 241, "totalTokens": 17008, "cachedReadTokens": 1152, "cacheCreationTokens": 0, "reasoningTokens": 240, "modelCalls": 1, "apiDurationMs": 2884, "costUsdTicks": 332520000, "modelUsage": {"grok-4.7": {"inputTokens": 16767, "
+== 2026-09-26T19-07-47-422Z-32242.jsonl session/load mcpServers: -
+== 2026-09-26T19-08-08-239Z-37581.jsonl session/load mcpServers: -
+TOTAL provider costUsdTicks 1609720000 ≈ USD 0.160972
