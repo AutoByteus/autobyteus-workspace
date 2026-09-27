@@ -12,6 +12,9 @@ materializers: configured Claude runs consume this endpoint through the SDK
 thread-scoped app-server `config.mcp_servers`.
 AGY runs also receive the run-scoped descriptor in their own durable capsule
 MCP configuration; see [Antigravity CLI Runtime](./antigravity_cli_runtime.md).
+Grok Build runs receive it as an HTTP `mcpServers` entry on ACP
+`session/new`/`session/load`, gated on Grok reporting the server ready; see
+[Grok Build Runtime](./grok_build_runtime.md).
 
 This module is distinct from both [MCP Server Management](./mcp_server_management.md)
 and the [General MCP Gateway](./mcp_gateway.md): MCP Server Management consumes

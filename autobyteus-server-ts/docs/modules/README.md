@@ -31,6 +31,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Codex Integration | [codex_integration.md](./codex_integration.md) |
 | File Explorer | [file_explorer.md](./file_explorer.md) |
 | File Search | [file_search.md](./file_search.md) |
+| Grok Build Runtime | [grok_build_runtime.md](./grok_build_runtime.md) |
 | LLM Management | [llm_management.md](./llm_management.md) |
 | MCP Server Management | [mcp_server_management.md](./mcp_server_management.md) |
 | Multimedia Management | [multimedia_management.md](./multimedia_management.md) |
