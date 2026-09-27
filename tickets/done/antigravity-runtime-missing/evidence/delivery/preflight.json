@@ -1,0 +1,33 @@
+{
+  "head": "24df80ac3f5ae3af1ed550d6429502e8023fa0c6",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing",
+  "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-delivery-2skze65c",
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/runtime-management",
+    "tests/unit/agent-execution/backends/antigravity",
+    "--no-watch"
+  ],
+  "environment": {
+    "PATH": "/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.codex/packages/standalone/releases/0.157.1-aarch64-apple-darwin/codex-path:/Users/normy/.codex/tmp/arg0/codex-arg0gzX5q6:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin",
+    "HOME": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-delivery-2skze65c/home",
+    "TMPDIR": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-delivery-2skze65c/tmp",
+    "XDG_CONFIG_HOME": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-delivery-2skze65c/config",
+    "XDG_CACHE_HOME": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-delivery-2skze65c/cache",
+    "APP_ENV": "test",
+    "NODE_ENV": "test",
+    "DB_TYPE": "sqlite",
+    "DATABASE_URL": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+    "DATABASE_URL_TEST": "file:/Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+    "AUTOBYTEUS_MEMORY_DIR": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-delivery-2skze65c/memory",
+    "AUTOBYTEUS_SERVER_HOST": "http://127.0.0.1:1",
+    "CI": "1",
+    "AGY_LIVE": "0"
+  },
+  "notes": "Unit-only; opt-in live suites disabled. Prisma setup reviewed: hard-coded worktree test database reset. No backend/browser/installed provider launched."
+}

@@ -1,0 +1,48 @@
+[
+  {
+    "resource": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-product-live-VM3QDE",
+    "result": "removed own live-test temp root"
+  },
+  {
+    "resource": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-skill-live-iD0zLD",
+    "result": "removed own live-test temp root"
+  },
+  {
+    "pid": 14223,
+    "command": "/Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --port 3017",
+    "result": "SIGTERM owned process"
+  },
+  {
+    "pid": 14224,
+    "command": "/Users/normy/.hermes/node/bin/node --enable-source-maps /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/node_modules/.pnpm/@nuxt+cli@3.33.1_@nuxt+schema@3.21.1_cac@6.7.14_magicast@0.5.2/node_modules/@nuxt/cli/dist/dev/index.mjs --host 0.0.0.0 --port 3017",
+    "result": "SIGTERM owned process"
+  },
+  {
+    "pid": 14191,
+    "command": "node /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/autobyteus-web/node_modules/.bin/../../../node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/bin/nuxt.mjs dev --host 0.0.0.0 --port 3017",
+    "result": "SIGTERM owned process"
+  },
+  {
+    "pid": 14163,
+    "command": "node /Users/normy/.nvm/versions/node/v22.21.1/bin/pnpm -C autobyteus-web dev --port 3017",
+    "result": "SIGTERM owned process"
+  },
+  {
+    "pid": 13550,
+    "command": "/bin/bash -lc BACKEND_NODE_BASE_URL=http://127.0.0.1:30697 pnpm -C autobyteus-web dev --port 3017 > tickets/in-progress/antigravity-runtime-missing/evidence/api-e2e/frontend.log 2>&1",
+    "result": "SIGTERM owned process"
+  },
+  {
+    "pid": 28810,
+    "command": "node autobyteus-server-ts/dist/app.js --data-dir /tmp/agy-api-e2e.agNVix/data --host 127.0.0.1 --port 30697",
+    "result": "SIGTERM owned process"
+  },
+  {
+    "resource": "/tmp/agy-api-e2e.agNVix",
+    "result": "removed owned backend data/db/fixture/workspace"
+  },
+  {
+    "resource": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-restore-live-QgN36L",
+    "result": "already absent"
+  }
+]

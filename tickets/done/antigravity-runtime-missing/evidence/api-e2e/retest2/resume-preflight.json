@@ -1,0 +1,7 @@
+{
+  "rootOwnerRechecked": true,
+  "backendPIDAndTargetVerified": true,
+  "backendHealth": true,
+  "frontendPortUnused": true,
+  "usesExactPreviouslyCheckedFrontendEnv": true
+}

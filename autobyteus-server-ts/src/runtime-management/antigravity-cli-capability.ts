@@ -18,7 +18,7 @@ export type AgyDiscoveryDiagnostic = Readonly<{ code: AgyDiscoveryDiagnosticCode
 
 const DIAGNOSTICS: Readonly<Record<AgyDiscoveryDiagnosticCode, AgyDiscoveryDiagnostic>> = Object.freeze({
   AGY_CLI_UNAVAILABLE: { code: "AGY_CLI_UNAVAILABLE", message: "Antigravity CLI is unavailable; install or configure it and retry." },
-  AGY_CLI_UNSUPPORTED: { code: "AGY_CLI_UNSUPPORTED", message: "Antigravity CLI version or required features are unsupported; update the CLI and retry." },
+  AGY_CLI_UNSUPPORTED: { code: "AGY_CLI_UNSUPPORTED", message: "Antigravity CLI is missing required features; update the CLI and retry." },
   AGY_MODEL_DISCOVERY_TIMEOUT: { code: "AGY_MODEL_DISCOVERY_TIMEOUT", message: "Antigravity model discovery timed out; check the CLI and retry." },
   AGY_MODEL_DISCOVERY_FAILED: { code: "AGY_MODEL_DISCOVERY_FAILED", message: "Antigravity model discovery failed; check authentication or network and retry." },
   AGY_MODEL_CATALOG_INVALID: { code: "AGY_MODEL_CATALOG_INVALID", message: "Antigravity CLI returned an invalid or empty model catalog; check authentication and network and retry." },
@@ -77,32 +77,7 @@ const runCommand = (args: readonly string[], timeoutMs: number, outputLimit: num
       : undefined, code === 0 ? undefined : new AgyDiscoveryError("AGY_MODEL_DISCOVERY_FAILED")));
   });
 
-export const probeAntigravityCli = async (): Promise<{
-  available: boolean;
-  reason: string | null;
-  diagnostic: AgyDiscoveryDiagnostic | null;
-}> => {
-  try {
-    const version = await runCommand(["--version"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
-    const match = /\b(\d+)\.(\d+)\.(\d+)\b/.exec(version.stdout);
-    if (!match || `${match[1]}.${match[2]}.${match[3]}` !== "1.2.11")
-      throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
-    const help = await runCommand(["--help"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
-    if (REQUIRED_FLAGS.some((flag) => !(help.stdout + help.stderr).includes(flag)))
-      throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
-    return { available: true, reason: null, diagnostic: null };
-  } catch (error) {
-    const diagnostic = toAgyDiscoveryDiagnostic(error);
-    return { available: false, reason: diagnostic.message, diagnostic };
-  }
-};
-
-export const discoverAntigravityRuntime = async (): Promise<{ version: string; models: { id: string; name: string }[] }> => {
-  const versionOutput = await runCommand(["--version"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
-  const match = /\b(\d+\.\d+\.\d+)\b/.exec(versionOutput.stdout);
-  if (!match) throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
-  const version = match[1];
-  if (version !== "1.2.11") throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
+export const listAntigravityModels = async (): Promise<{ id: string; name: string }[]> => {
   const help = await runCommand(["--help"], SHORT_PROBE_TIMEOUT_MS, SHORT_OUTPUT_LIMIT);
   if (REQUIRED_FLAGS.some((flag) => !(help.stdout + help.stderr).includes(flag)))
     throw new AgyDiscoveryError("AGY_CLI_UNSUPPORTED");
@@ -112,8 +87,5 @@ export const discoverAntigravityRuntime = async (): Promise<{ version: string; m
     return id && /^[a-zA-Z0-9][a-zA-Z0-9._-]*$/.test(id) && name ? { id, name } : null;
   }).filter((model): model is { id: string; name: string } => model !== null);
   if (models.length === 0) throw new AgyDiscoveryError("AGY_MODEL_CATALOG_INVALID");
-  return { version, models };
+  return models;
 };
-
-export const listAntigravityModels = async (): Promise<{ id: string; name: string }[]> =>
-  (await discoverAntigravityRuntime()).models;

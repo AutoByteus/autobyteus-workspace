@@ -6,8 +6,7 @@ import { AgyAgentRunContext } from "./agy-agent-run-context.js";
 import { AgyAgentRunBackend } from "./agy-agent-run-backend.js";
 import { AgyStreamProcess } from "../stream/agy-stream-process.js";
 import { createAgyRunCapsule, restoreAgyRunCapsule, type AgyRunCapsule } from "../capsule/agy-run-capsule.js";
-import { discoverAntigravityRuntime, listAntigravityModels } from "../../../../runtime-management/antigravity-cli-capability.js";
-import { resolveAgyNativeToolProfile } from "../capsule/agy-native-tool-policy.js";
+import { listAntigravityModels } from "../../../../runtime-management/antigravity-cli-capability.js";
 import type { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../skills/services/skill-service.js";
 import type { ClaudeWorkspaceResolver } from "../../claude/claude-workspace-resolver.js";
@@ -28,10 +27,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
   ) {}
 
   async createBackend(config: AgentRunConfig, runId: string): Promise<AgyAgentRunBackend> {
-    const runtime = await discoverAntigravityRuntime();
-    if (!runtime.models.some((model) => model.id === config.llmModelIdentifier))
-      throw new Error(`AGY_MODEL_UNAVAILABLE: ${config.llmModelIdentifier}`);
-    const nativeToolProfile = resolveAgyNativeToolProfile(runtime.version);
+    await this.assertAvailable(config);
     const memoryDir = this.requireMemoryDir(config);
     const workspacePath = await this.workspaces.resolveWorkingDirectory(config.workspaceId);
     const definition = await this.definitions.getAgentDefinitionById(config.agentDefinitionId);
@@ -41,7 +37,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext });
     const descriptor = this.activateMcp(runId, config, workspacePath, definition);
     const capsule = await createAgyRunCapsule({ runId, memoryDir, workspacePath, identity,
-      agentDefinitionId: config.agentDefinitionId, configuredSkillBindings: bindings, nativeToolProfile,
+      agentDefinitionId: config.agentDefinitionId, configuredSkillBindings: bindings,
       skillAccessMode, mcpDescriptor: descriptor });
     return this.launch(config, runId, capsule, null);
   }
