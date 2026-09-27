@@ -1,0 +1,13 @@
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 10ms
+ ✓ updater/__tests__/appUpdater.spec.ts (20 tests) 29ms
+
+ Test Files  3 passed (3)
+      Tests  33 passed (33)
+   Start at  11:40:50
+   Duration  356ms (transform 152ms, setup 0ms, collect 213ms, tests 44ms, environment 0ms, prepare 214ms)
+
+exit=0

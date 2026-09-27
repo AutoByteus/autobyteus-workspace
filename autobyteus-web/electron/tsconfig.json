@@ -10,7 +10,7 @@
     "strict": true,
     "skipLibCheck": true
   },
-  "include": ["**/*.ts", "../shared/embeddedServerClientEndpoint.ts", "../shared/localFileUrl.ts", "../types/node.ts", "../types/serverStatus.ts"],
+  "include": ["**/*.ts", "../shared/embeddedServerClientEndpoint.ts", "../shared/localFileUrl.ts", "../shared/appUpdateTypes.ts", "../types/node.ts", "../types/serverStatus.ts"],
   "exclude": [
     "**/__tests__/**",
     "**/*.spec.ts",

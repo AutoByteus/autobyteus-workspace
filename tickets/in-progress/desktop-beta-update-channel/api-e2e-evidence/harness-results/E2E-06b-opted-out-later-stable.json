@@ -1,0 +1,77 @@
+{
+  "scenario": "E2E-06b-opted-out-later-stable",
+  "appVersion": "1.4.91-beta.1",
+  "code": "new",
+  "steps": [
+    {
+      "op": "check",
+      "arg": null,
+      "state": {
+        "status": "available",
+        "currentVersion": "1.4.91-beta.1",
+        "currentVersionIsPrerelease": true,
+        "updateChannel": "stable",
+        "updateStaged": false,
+        "availableVersion": "1.4.91",
+        "message": "Version 1.4.91 is available.",
+        "errorKind": null
+      },
+      "policy": {
+        "allowPrerelease": false,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\n  \"channel\": \"stable\"\n}"
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases.atom",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v3/repos/AutoByteus/autobyteus-workspace/releases/latest",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.91/latest-mac.yml",
+      "status": 200
+    }
+  ],
+  "afterInitialize": {
+    "state": {
+      "status": "idle",
+      "currentVersion": "1.4.91-beta.1",
+      "currentVersionIsPrerelease": true,
+      "updateChannel": "stable",
+      "updateStaged": false,
+      "availableVersion": null,
+      "message": "Update status is idle.",
+      "errorKind": null
+    },
+    "policy": {
+      "allowPrerelease": false,
+      "allowDowngrade": false
+    },
+    "channelFile": "{\n  \"channel\": \"stable\"\n}"
+  },
+  "final": {
+    "state": {
+      "status": "available",
+      "currentVersion": "1.4.91-beta.1",
+      "currentVersionIsPrerelease": true,
+      "updateChannel": "stable",
+      "updateStaged": false,
+      "availableVersion": "1.4.91",
+      "message": "Version 1.4.91 is available.",
+      "errorKind": null
+    },
+    "policy": {
+      "allowPrerelease": false,
+      "allowDowngrade": false
+    },
+    "channelFile": "{\n  \"channel\": \"stable\"\n}"
+  }
+}

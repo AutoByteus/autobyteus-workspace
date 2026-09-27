@@ -1,0 +1,8 @@
+Merged mac metadata written to /Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/tickets/in-progress/desktop-beta-update-channel/api-e2e-evidence/unk001-builder/merged-latest-mac.yml
+merge exit=0
+workflow grep gate exit=0
+Validated /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/abx-e2e-hnYD/builder-app/out-linux-x64/latest-linux.yml: linux-x64 AppImage metadata includes embedded blockMapSize
+linux validator exit=0
+version: 1.4.91-beta.1
+files:
+  - url: AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip

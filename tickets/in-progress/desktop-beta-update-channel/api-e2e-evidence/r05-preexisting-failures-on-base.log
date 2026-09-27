@@ -1,0 +1,5 @@
+ERROR: test_new_containers_prefer_sequential_friendly_ports (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+FAIL: test_bash_install_no_update_path_skips_profile_write (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+FAIL: test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (scripts.tests.test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+Ran 3 tests in 3.126s
+FAILED (failures=2, errors=1)

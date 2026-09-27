@@ -364,6 +364,29 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
                 upgrade_pulls,
             )
 
+    def test_upgrade_all_follows_the_beta_track_after_a_one_time_switch(self) -> None:
+        with fake_docker_environment() as env:
+            run_launcher(env, "new-container")
+            run_launcher(env, "new-container")
+            default_ref = "autobyteus/autobyteus-server:latest"
+            beta_ref = "autobyteus/autobyteus-server:beta"
+            self.assertEqual(default_ref, read_state_image_ref(env, "autobyteus-server-0"))
+
+            def pulls_during(*args: str) -> list[list[str]]:
+                before = len(read_call_records(env))
+                run_launcher(env, *args)
+                return [record for record in read_call_records(env)[before:] if record[:1] == ["pull"]]
+
+            # Nodes on latest stay on the stable track (AC-015).
+            self.assertEqual([["pull", default_ref]] * 2, pulls_during("upgrade", "--all"))
+            # One switch saves :beta; later plain upgrades keep following it (AC-016).
+            self.assertEqual([["pull", beta_ref]] * 2, pulls_during("upgrade", "--all", "--tag", "beta"))
+            self.assertEqual([["pull", beta_ref]] * 2, pulls_during("upgrade", "--all"))
+            self.assertEqual(beta_ref, read_state_image_ref(env, "autobyteus-server-1"))
+            # Returning to stable is the same explicit switch.
+            self.assertEqual([["pull", default_ref]] * 2, pulls_during("upgrade", "--all", "--tag", "latest"))
+            self.assertEqual(default_ref, read_state_image_ref(env, "autobyteus-server-0"))
+
     def test_upgrade_all_with_explicit_image_retargets_all_nodes(self) -> None:
         with fake_docker_environment() as env:
             create_mixed_image_nodes(env)

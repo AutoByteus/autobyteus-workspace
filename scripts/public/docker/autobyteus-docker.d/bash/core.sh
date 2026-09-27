@@ -49,6 +49,14 @@ Options:
   --all              Required for upgrade/destroy; optional for all-node read-only output; applies to stop/workspace apply as documented
   -h, --help         Show this help
 
+Release tracks:
+  latest             Newest stable release (default). Plain upgrade --all keeps nodes on their saved tag.
+  beta               Newest build, beta or stable. Switch once with: upgrade --all --tag beta
+                     Later plain upgrade --all runs then follow each newer build.
+  Back to stable:    upgrade --all --tag latest
+                     Caution: only switch back once a stable release at least as new as your beta
+                     is available. Otherwise an older server runs on data a newer version may have migrated.
+
 State:
   Default install path: \$HOME/.local/bin/autobyteus-docker
   Default state directory: \$HOME/.autobyteus/docker-server

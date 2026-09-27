@@ -1,0 +1,7 @@
+tsc exit=0
+appUpdateTypes.js
+embeddedServerClientEndpoint.js
+localFileUrl.js
+6:const appUpdateTypes_1 = require("../../shared/appUpdateTypes");
+217:        if (!(0, appUpdateChannelStore_1.isAppUpdateChannel)(channel) || appUpdateTypes_1.APP_UPDATE_CHANNEL_LOCKED_STATUSES.has(this.state.status)) {
+locked= checking,downloading,downloaded,installing

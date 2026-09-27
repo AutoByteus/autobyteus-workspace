@@ -1,0 +1,9 @@
+exit=0
+[2026-09-27T10:21:03.731Z] [INFO] [electron] Application started
+[2026-09-27T10:21:03.963Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:03.975Z] [INFO] [electron] [updater] Found version 1.4.91-beta.2 (url: AutoByteus_personal_macos-arm64-1.4.91-beta.2.zip)
+[2026-09-27T10:21:03.976Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:03.979Z] [INFO] [electron] [updater] Update for version 1.4.91-beta.1 is not available (latest version: 1.4.90, downgrade is disallowed).
+[2026-09-27T10:21:03.980Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:03.983Z] [INFO] [electron] [updater] Update for version 1.4.91-beta.1 is not available (latest version: 1.4.90, downgrade is disallowed).
+

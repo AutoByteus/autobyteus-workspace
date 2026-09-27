@@ -1,0 +1,378 @@
+exit=0
+[2026-09-27T09:56:03.790Z] [INFO] [electron] Application started
+
+Error occurred in handler for 'get-app-locale': Error: No handler registered for 'get-app-locale'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'get-log-file-path': Error: No handler registered for 'get-log-file-path'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'get-node-registry-snapshot': Error: No handler registered for 'get-node-registry-snapshot'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'get-server-status': Error: No handler registered for 'get-server-status'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'get-app-locale': Error: No handler registered for 'get-app-locale'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'get-log-file-path': Error: No handler registered for 'get-log-file-path'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'get-node-registry-snapshot': Error: No handler registered for 'get-node-registry-snapshot'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'get-server-status': Error: No handler registered for 'get-server-status'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)
+Error occurred in handler for 'check-server-health': Error: No handler registered for 'check-server-health'
+    at Session.<anonymous> (node:electron/js2c/browser_init:2:114181)
+    at Session.emit (node:events:509:28)

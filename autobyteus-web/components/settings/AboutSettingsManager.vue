@@ -13,7 +13,14 @@
         <dl class="grid gap-3 text-sm sm:grid-cols-3">
           <div>
             <dt class="text-gray-500">{{ $t('settings.components.settings.AboutSettingsManager.current_version') }}</dt>
-            <dd class="font-medium text-gray-900" data-testid="settings-updates-version">{{ currentVersionLabel }}</dd>
+            <dd class="flex flex-wrap items-center gap-2 font-medium text-gray-900">
+              <span data-testid="settings-updates-version">{{ currentVersionLabel }}</span>
+              <span
+                v-if="appUpdateStore.currentVersionIsPrerelease"
+                class="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800"
+                data-testid="settings-updates-beta-badge"
+              >{{ $t('settings.components.settings.AboutSettingsManager.betaBadge') }}</span>
+            </dd>
           </div>
           <div>
             <dt class="text-gray-500">{{ $t('settings.components.settings.AboutSettingsManager.update_status') }}</dt>
@@ -28,6 +35,42 @@
         <p class="mt-4 rounded-md bg-gray-50 px-3 py-2 text-sm text-gray-700" data-testid="settings-updates-message">
           {{ statusMessage }}
         </p>
+
+        <div class="mt-4 flex items-start justify-between gap-4 border-t border-gray-100 pt-4">
+          <div class="min-w-0">
+            <p id="settings-updates-beta-channel-label" class="text-sm font-medium text-gray-900">
+              {{ $t('settings.components.settings.AboutSettingsManager.betaChannel.label') }}
+            </p>
+            <p class="mt-1 text-sm text-gray-600">
+              {{ $t('settings.components.settings.AboutSettingsManager.betaChannel.description') }}
+            </p>
+            <p
+              v-if="appUpdateStore.updateStaged"
+              class="mt-1 text-sm text-amber-700"
+              data-testid="settings-updates-beta-channel-downloaded-hint"
+            >
+              {{ $t('settings.components.settings.AboutSettingsManager.betaChannel.downloadedHint') }}
+            </p>
+          </div>
+
+          <button
+            type="button"
+            role="switch"
+            data-testid="settings-updates-beta-channel-toggle"
+            class="relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-60"
+            :class="isBetaChannel ? 'bg-emerald-500' : 'bg-slate-300'"
+            :aria-checked="isBetaChannel"
+            aria-labelledby="settings-updates-beta-channel-label"
+            :disabled="isChannelToggleDisabled"
+            @click="toggleBetaChannel"
+          >
+            <span
+              aria-hidden="true"
+              class="inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition-transform"
+              :class="isBetaChannel ? 'translate-x-5' : 'translate-x-0.5'"
+            />
+          </button>
+        </div>
 
         <div class="mt-4 flex flex-wrap gap-2">
           <button
@@ -70,7 +113,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref } from 'vue';
+import { isAppUpdateChannelLocked } from '~/shared/appUpdateTypes';
 import { useLocalization } from '~/composables/useLocalization';
 import { useAppUpdateStore } from '~/stores/appUpdateStore';
 import { getSettingsAppUpdateErrorMessageKey } from '~/utils/appUpdateErrorDisplay';
@@ -154,6 +198,26 @@ const lastCheckedLabel = computed(() => {
 const isCheckDisabled = computed(
   () => appUpdateStore.status === 'checking' || appUpdateStore.status === 'downloading' || appUpdateStore.status === 'installing',
 );
+
+const isChangingChannel = ref(false);
+
+const isBetaChannel = computed(() => appUpdateStore.updateChannel === 'beta');
+
+const isChannelToggleDisabled = computed(
+  () => !appUpdateStore.isElectron || isChangingChannel.value || isAppUpdateChannelLocked(appUpdateStore),
+);
+
+const toggleBetaChannel = async (): Promise<void> => {
+  if (isChannelToggleDisabled.value) {
+    return;
+  }
+  isChangingChannel.value = true;
+  try {
+    await appUpdateStore.setUpdateChannel(isBetaChannel.value ? 'stable' : 'beta');
+  } finally {
+    isChangingChannel.value = false;
+  }
+};
 
 const checkForUpdates = async (): Promise<void> => {
   await appUpdateStore.checkForUpdates();

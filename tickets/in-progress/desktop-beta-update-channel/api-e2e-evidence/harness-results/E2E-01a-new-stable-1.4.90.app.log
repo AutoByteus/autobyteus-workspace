@@ -1,0 +1,6 @@
+[2026-09-27T10:21:00.783Z] [INFO] [electron] Application started
+[2026-09-27T10:21:00.895Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:00.898Z] [INFO] [electron] [updater] Generated new staging user ID: 179c8f19-c394-598d-867f-b16d7e082e0d
+[2026-09-27T10:21:00.919Z] [INFO] [electron] [updater] Update for version 1.4.90 is not available (latest version: 1.4.90, downgrade is disallowed).
+[2026-09-27T10:21:00.945Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:00.948Z] [INFO] [electron] [updater] Update for version 1.4.90 is not available (latest version: 1.4.90, downgrade is disallowed).

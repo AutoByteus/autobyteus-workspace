@@ -380,10 +380,21 @@ jobs:
       - name: Resolve release notes mode
         id: release_notes
         shell: bash
+        env:
+          RELEASE_TAG: ${{ needs.prepare-release.outputs.release_tag }}
         run: |
           set -euo pipefail
           CURATED_PATH=".github/release-notes/release-notes.md"
-          if [[ -f "$CURATED_PATH" ]] && grep -Eq '\S' "$CURATED_PATH"; then
+          # Same rule as the desktop workflow, which writes the same GitHub release:
+          # pre-release tags use generated notes, not the previous stable's curated notes.
+          if [[ "$RELEASE_TAG" == *-* ]]; then
+            echo "has_curated_notes=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Release notes mode"
+              echo ""
+              echo "Pre-release tag \`$RELEASE_TAG\`; using generated GitHub notes."
+            } >> "$GITHUB_STEP_SUMMARY"
+          elif [[ -f "$CURATED_PATH" ]] && grep -Eq '\S' "$CURATED_PATH"; then
             echo "has_curated_notes=true" >> "$GITHUB_OUTPUT"
             echo "release_notes_path=$CURATED_PATH" >> "$GITHUB_OUTPUT"
             {

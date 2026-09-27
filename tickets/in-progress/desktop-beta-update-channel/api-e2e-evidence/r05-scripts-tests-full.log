@@ -1,0 +1,116 @@
+test_beta_twice_publishes_consecutive_betas_without_curated_notes (test_desktop_release_beta.DesktopReleaseBetaCommandTest) ... ok
+test_explicit_base_and_no_push (test_desktop_release_beta.DesktopReleaseBetaCommandTest) ... ok
+test_refuses_a_base_whose_stable_release_exists (test_desktop_release_beta.DesktopReleaseBetaCommandTest) ... ok
+test_refuses_a_dirty_worktree_and_the_wrong_branch (test_desktop_release_beta.DesktopReleaseBetaCommandTest) ... ok
+test_direct_copy_sources_exist_in_repository_root_context (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_team_stream_contracts_dependency_is_built_and_materialized_in_all_server_images (test_docker_build_context_sources.DockerBuildContextSourcesTest) ... ok
+test_merge_contains_both_arch_zip_entries (test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_merge_fails_when_x64_zip_missing (test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_write_round_trip_preserves_dual_arch_entries (test_merge_latest_mac_metadata.MergeLatestMacMetadataTest) ... ok
+test_bash_curl_pipe_mode_resolves_modules_from_source_base (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bash_install_no_update_path_skips_profile_write (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... FAIL
+test_bash_install_path_profile_update_is_idempotent (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bash_install_when_path_missing_updates_profile_and_prints_current_shell_guidance (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bash_install_writes_entry_and_modules_for_installed_cli (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... FAIL
+test_destroy_all_remains_explicit_and_volume_safe (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_destroy_selector_preflight_happens_before_state_or_docker_setup (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_label_only_targeted_destroy_allows_one_exact_managed_candidate (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_mutating_commands_do_not_default_to_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_new_container_adds_bind_mounts_without_removing_named_volumes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_new_containers_prefer_sequential_friendly_ports (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ERROR
+test_powershell_launcher_matches_the_shared_workspace_cli_contract (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_powershell_launcher_parses_when_pwsh_is_available (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'pwsh is not installed'
+test_preferred_port_collision_falls_back_for_that_service (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... skipped 'port 8001 is not available for collision test setup'
+test_profile_option_is_rejected_as_unknown (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_public_docker_docs_keep_targeted_destroy_and_buildx_ownership_boundary (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_public_launcher_source_files_stay_within_reviewable_size_guard (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_read_only_discovery_commands_default_to_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_read_only_discovery_commands_keep_explicit_single_node_output (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_read_only_discovery_commands_reject_all_with_name (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_stale_targeted_destroy_forgets_state_and_reuses_lowest_free_slot (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_refuses_duplicate_candidates_and_state_label_disagreement (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_refuses_malformed_and_mismatched_state (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_refuses_unknown_buildx_and_unmanaged_name_collisions (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_removes_only_selected_node_and_keeps_workspaces (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_targeted_destroy_reports_partial_cleanup_when_state_delete_fails (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_follows_the_beta_track_after_a_one_time_switch (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_preserves_each_node_saved_image_ref_by_default (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_with_explicit_image_retargets_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_upgrade_all_with_explicit_tag_retargets_all_nodes (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_workspace_apply_all_recreates_stale_containers_with_current_bind_mounts (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_workspace_paths_and_storage_commands_report_the_launcher_owned_mapping (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest) ... ok
+test_beta_tag_push_publishes_a_prerelease (test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest) ... ok
+test_build_only_dispatch_is_unchanged (test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest) ... ok
+test_manual_dispatch_of_a_beta_tag_is_always_a_prerelease (test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest) ... ok
+test_manual_dispatch_of_a_stable_tag_follows_the_input (test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest) ... ok
+test_stable_tag_push_publishes_a_normal_release (test_release_channel_workflow_steps.DesktopReleaseMetadataStepTest) ... ok
+test_a_later_tag_pushed_during_the_build_wins (test_release_channel_workflow_steps.DockerMoveBetaTagStepTest) ... ok
+test_newest_beta_moves_beta_to_its_version_image (test_release_channel_workflow_steps.DockerMoveBetaTagStepTest) ... ok
+test_newest_stable_moves_beta_too (test_release_channel_workflow_steps.DockerMoveBetaTagStepTest) ... ok
+test_older_republish_leaves_beta_unchanged_even_without_the_helper_in_its_checkout (test_release_channel_workflow_steps.DockerMoveBetaTagStepTest) ... ok
+test_step_runs_only_for_the_default_variant (test_release_channel_workflow_steps.DockerMoveBetaTagStepTest) ... ok
+test_prerelease_tags_use_generated_notes_even_with_curated_notes_present (test_release_channel_workflow_steps.ReleaseNotesModeStepTest) ... ok
+test_stable_tags_keep_curated_notes (test_release_channel_workflow_steps.ReleaseNotesModeStepTest) ... ok
+test_stable_tags_without_curated_notes_fall_back_to_generated (test_release_channel_workflow_steps.ReleaseNotesModeStepTest) ... ok
+test_is_newest_prints_true_or_false_with_exit_zero (test_release_versions.CommandLineTest) ... ok
+test_next_beta_prints_version (test_release_versions.CommandLineTest) ... ok
+test_next_beta_refusal_exits_non_zero_with_message (test_release_versions.CommandLineTest) ... ok
+test_reads_git_tags_when_no_file_given (test_release_versions.CommandLineTest) ... ok
+test_recognizes_only_canonical_grammar (test_release_versions.GrammarTest) ... ok
+test_semver_precedence (test_release_versions.GrammarTest) ... ok
+test_beta_ten_is_newer_than_beta_nine (test_release_versions.IsNewestTest) ... ok
+test_concurrent_later_beta_wins (test_release_versions.IsNewestTest) ... ok
+test_out_of_grammar_candidate_is_false (test_release_versions.IsNewestTest) ... ok
+test_real_inventory_ignores_rc_e2e_and_voice_tags (test_release_versions.IsNewestTest) ... ok
+test_republish_of_older_tag_does_not_move_beta (test_release_versions.IsNewestTest) ... ok
+test_stable_is_newer_than_its_betas (test_release_versions.IsNewestTest) ... ok
+test_default_base_moves_past_new_stable (test_release_versions.NextBetaTest) ... ok
+test_explicit_base (test_release_versions.NextBetaTest) ... ok
+test_increments_existing_betas_for_base (test_release_versions.NextBetaTest) ... ok
+test_rc_tags_do_not_count_as_betas (test_release_versions.NextBetaTest) ... ok
+test_real_inventory_defaults_to_next_patch (test_release_versions.NextBetaTest) ... ok
+test_refuses_invalid_base (test_release_versions.NextBetaTest) ... ok
+test_refuses_past_ninety_eight (test_release_versions.NextBetaTest) ... ok
+test_refuses_when_stable_for_base_exists (test_release_versions.NextBetaTest) ... ok
+test_refuses_without_stable_tag_or_base (test_release_versions.NextBetaTest) ... ok
+test_fixture_matches_recorded_inventory (test_release_versions.RealInventoryFixtureTest) ... ok
+test_already_vncuser_opener_branch_skips_runuser_and_clears_browser (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_dockerfile_installs_bridge_scripts_and_browser_env_for_all_base_variants (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_opener_source_uses_uid_aware_sanitized_system_xdg_open (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_root_and_non_root_wrappers_remain_thin_facades (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_root_opener_branch_switches_once_to_sanitized_vncuser_command (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_unsupported_uid_fails_without_runuser_or_opener_dispatch (test_server_docker_browser_bridge.ServerDockerBrowserBridgeTest) ... ok
+test_dockerfile_defaults_cli_versions_to_npm_latest (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_dockerfile_keeps_explicit_version_override_path (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+test_scripted_and_release_builds_bust_cli_install_cache (test_server_docker_cli_latest_defaults.ServerDockerCliLatestDefaultsTest) ... ok
+
+======================================================================
+ERROR: test_new_containers_prefer_sequential_friendly_ports (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 544, in test_new_containers_prefer_sequential_friendly_ports
+    for record, mappings in zip(records, expected_mappings, strict=True):
+TypeError: zip() takes no keyword arguments
+
+======================================================================
+FAIL: test_bash_install_no_update_path_skips_profile_write (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 524, in test_bash_install_no_update_path_skips_profile_write
+    self.assertIn(export_line, install.stdout)
+AssertionError: 'export PATH=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-vl8eqegn/install bin\'\\\'\'s\':"$PATH"' not found in '[AutoByteus Docker] Installed AutoByteus Docker launcher: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-vl8eqegn/install bin\'s/autobyteus-docker\n[AutoByteus Docker] Install directory is not on this shell\'s PATH: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-vl8eqegn/install bin\'s\n[AutoByteus Docker] Persistent PATH update skipped by request; add the export command below to your shell profile if you want persistence.\nRun now:\n  Direct path: \'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-vl8eqegn/install bin\\\'\\\\\'\\\'s/autobyteus-docker\' new-container\n  Or update this shell first: export PATH=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-vl8eqegn/install bin\\\'\\\\\'\\\'s\':"$PATH"\nCurrent-shell note: this installer process cannot change the PATH of the terminal that launched it.\nPersistent PATH setup (copy/paste for future shells):\n  autobyteus_docker_profile=\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-vl8eqegn/home/.bashrc\'\n  autobyteus_docker_path_line=\'export PATH=\\\'\\\\\'\\\'/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-vl8eqegn/install bin\\\\\'\\\\\'\\\'\\\\\\\'\\\\\'\\\'\\\\\'\\\\\'\\\'s\\\'\\\\\'\\\':"$PATH"\'\n  touch "$autobyteus_docker_profile"\n  grep -qxF "$autobyteus_docker_path_line" "$autobyteus_docker_profile" || printf \'%s\\n\' "$autobyteus_docker_path_line" >> "$autobyteus_docker_profile"\n  source "$autobyteus_docker_profile"\n  unset autobyteus_docker_profile autobyteus_docker_path_line\nAfter applying the export above, or after opening a new terminal if the persistent profile update above succeeded, you can run:\n  autobyteus-docker new-container\n  autobyteus-docker workspace paths\n  autobyteus-docker storage\n  autobyteus-docker urls\n'
+
+======================================================================
+FAIL: test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt (test_public_docker_launcher_shared_workspace.PublicDockerLauncherSharedWorkspaceTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/scripts/tests/test_public_docker_launcher_shared_workspace.py", line 577, in test_bind_failure_retry_uses_random_ports_after_first_friendly_attempt
+    self.assertIn(mapping, records[0])
+AssertionError: '8001:8000' not found in ['run', '-d', '--name', 'autobyteus-server-0', '--restart', 'unless-stopped', '--label', 'com.autobyteus.launcher=server-docker', '--label', 'com.autobyteus.nodeName=autobyteus-server-0', '--label', 'com.autobyteus.configHash=436cb3ea5e7b354a71cf373e773999ec709e573d23a51114510167dbeb9a2aa5', '-e', 'AUTOBYTEUS_WORKSPACE_ROOT=/app', '-e', 'AUTOBYTEUS_DATA_DIR=/home/autobyteus/data', '-e', 'AUTOBYTEUS_BIND_HOST=0.0.0.0', '-e', 'AUTOBYTEUS_SERVER_PORT=8000', '-e', 'AUTOBYTEUS_SERVER_HOST=http://localhost:54437', '-e', 'AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:6080', '-e', 'APP_ENV=production', '-e', 'DB_TYPE=sqlite', '-e', 'LOG_LEVEL=INFO', '-e', 'AUTOBYTEUS_SKIP_SYNC=1', '-e', 'AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace', '-v', 'autobyteus-server-0-workspace:/app/autobyteus-server-ts/workspace', '-v', 'autobyteus-server-0-data:/home/autobyteus/data', '-v', 'autobyteus-server-0-root-home:/root', '-v', 'autobyteus-server-0-chromium-profile:/home/vncuser/.config/chromium', '--cap-add', 'SYS_ADMIN', '--security-opt', 'seccomp=unconfined', '-p', '54437:8000', '-p', '54438:5900', '-p', '6080:6080', '-p', '54439:9223', '--mount', 'type=bind,source=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-c6n6pnsy/shared workspace/nodes/autobyteus-server-0,target=/home/autobyteus/workspace', '--mount', 'type=bind,source=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-launcher-test-c6n6pnsy/shared workspace/shared,target=/home/autobyteus/shared', 'autobyteus/test:v1']
+
+----------------------------------------------------------------------
+Ran 86 tests in 37.230s
+
+FAILED (failures=2, errors=1, skipped=2)
+exit=1

@@ -1,0 +1,4 @@
+lint exit=0
+guard:web-boundary exit=0
+guard:localization-boundary exit=0
+audit:localization-literals exit=0
