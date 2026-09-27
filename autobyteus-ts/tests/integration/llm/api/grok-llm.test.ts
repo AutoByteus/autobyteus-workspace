@@ -10,9 +10,9 @@ const runIntegration = apiKey ? describe : describe.skip;
 
 const buildModel = () =>
   new LLMModel({
-    name: 'grok-4.5',
-    value: 'grok-4.5',
-    canonicalName: 'grok-4.5',
+    name: 'grok-4.7',
+    value: 'grok-4.7',
+    canonicalName: 'grok-4.7',
     provider: LLMProvider.GROK
   });
 

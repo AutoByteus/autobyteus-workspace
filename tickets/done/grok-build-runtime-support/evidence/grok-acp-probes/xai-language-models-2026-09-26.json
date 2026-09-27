@@ -1,0 +1,184 @@
+{
+ "fetched_at": "2026-09-26",
+ "source": "https://api.x.ai/v1/language-models",
+ "price_unit_note": "prices are integer units observed as 1e-4 cents per token (20000 => $2.00 per 1M tokens)",
+ "models": [
+  {
+   "id": "grok-4.20-0309-non-reasoning",
+   "aliases": [
+    "grok-4.20-non-reasoning",
+    "grok-4.20-non-reasoning-latest",
+    "grok-4.20-beta-non-reasoning",
+    "grok-4.20-beta-latest-non-reasoning",
+    "grok-4.20-experimental-beta-0304-non-reasoning",
+    "grok-4.20-experimental-beta-non-reasoning-latest",
+    "grok-4.20-beta-0309-non-reasoning",
+    "grok-4.20-non-reasoning-gv2"
+   ],
+   "created": 1773014400,
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "prompt_text_token_price": 12500,
+   "cached_prompt_text_token_price": 2000,
+   "completion_text_token_price": 25000,
+   "max_prompt_length": null,
+   "context_window": null
+  },
+  {
+   "id": "grok-4.20-0309-reasoning",
+   "aliases": [
+    "grok-4.20-reasoning-latest",
+    "grok-4.20",
+    "grok-4.20-reasoning",
+    "grok-4.20-0309",
+    "grok-4.20-beta-0309-reasoning",
+    "grok-4.20-beta",
+    "grok-4.20-beta-0309",
+    "grok-4.20-beta-latest",
+    "grok-4.20-beta-latest-reasoning",
+    "grok-4.20-beta-reasoning",
+    "grok-4.20-experimental-beta-0304-reasoning",
+    "grok-4.20-experimental-beta-0304",
+    "grok-4.20-experimental-beta-reasoning-latest",
+    "grok-4.20-experimental-beta-latest",
+    "grok-4.20-reasoning-gv2"
+   ],
+   "created": 1773014400,
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "prompt_text_token_price": 12500,
+   "cached_prompt_text_token_price": 2000,
+   "completion_text_token_price": 25000,
+   "max_prompt_length": null,
+   "context_window": null
+  },
+  {
+   "id": "grok-4.20-multi-agent-0309",
+   "aliases": [
+    "grok-4.20-multi-agent",
+    "grok-4.20-multi-agent-latest",
+    "grok-4.20-multi-agent-beta-latest",
+    "grok-4.20-multi-agent-experimental-beta-0304",
+    "grok-4.20-multi-agent-experimental-beta-latest",
+    "grok-4.20-multi-agent-beta-0309"
+   ],
+   "created": 1773014400,
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "prompt_text_token_price": 12500,
+   "cached_prompt_text_token_price": 2000,
+   "completion_text_token_price": 25000,
+   "max_prompt_length": null,
+   "context_window": null
+  },
+  {
+   "id": "grok-4.3",
+   "aliases": [
+    "grok-4.3-latest"
+   ],
+   "created": 1776384000,
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "prompt_text_token_price": 12500,
+   "cached_prompt_text_token_price": 2000,
+   "completion_text_token_price": 25000,
+   "max_prompt_length": null,
+   "context_window": null
+  },
+  {
+   "id": "grok-4.5",
+   "aliases": [
+    "grok-4.5-latest",
+    "grok-build-latest"
+   ],
+   "created": 1782691200,
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "prompt_text_token_price": 20000,
+   "cached_prompt_text_token_price": 3000,
+   "completion_text_token_price": 60000,
+   "max_prompt_length": null,
+   "context_window": null
+  },
+  {
+   "id": "grok-4.6",
+   "aliases": [],
+   "created": 1785974400,
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "prompt_text_token_price": 20000,
+   "cached_prompt_text_token_price": 5000,
+   "completion_text_token_price": 60000,
+   "max_prompt_length": null,
+   "context_window": null
+  },
+  {
+   "id": "grok-4.7",
+   "aliases": [],
+   "created": 1788307200,
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "prompt_text_token_price": 20000,
+   "cached_prompt_text_token_price": 5000,
+   "completion_text_token_price": 60000,
+   "max_prompt_length": null,
+   "context_window": null
+  },
+  {
+   "id": "grok-build-0.1",
+   "aliases": [
+    "grok-code-fast-1",
+    "grok-code-fast",
+    "grok-code-fast-1-0825"
+   ],
+   "created": 1776297600,
+   "input_modalities": [
+    "text",
+    "image"
+   ],
+   "output_modalities": [
+    "text"
+   ],
+   "prompt_text_token_price": 10000,
+   "cached_prompt_text_token_price": 2000,
+   "completion_text_token_price": 20000,
+   "max_prompt_length": null,
+   "context_window": null
+  }
+ ]
+}

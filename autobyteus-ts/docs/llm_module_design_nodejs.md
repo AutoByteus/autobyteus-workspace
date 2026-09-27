@@ -258,8 +258,8 @@ The current latest-model support set is summarized in
 - DeepSeek `deepseek-v4-flash` and `deepseek-v4-pro` (verified 2026-04-25).
 - Gemini `gemini-3.5-flash` with the same provider value for API-key and
   Vertex runtimes (verified 2026-05-20).
-- xAI Grok `grok-4.5` as the sole built-in Grok row (verified 2026-07-09),
-  using the existing Chat Completions path with always-on low/medium/high
+- xAI Grok `grok-4.7` as the sole built-in Grok row (verified 2026-09-26),
+  using the existing Chat Completions path with always-on low/medium/high/xhigh
   reasoning and no legacy alias.
 - Moonshot/Kimi `kimi-k2.6` general-purpose model plus the K2.7 Code
   `kimi-k2.7-code` and `kimi-k2.7-code-highspeed` serving routes. HighSpeed is

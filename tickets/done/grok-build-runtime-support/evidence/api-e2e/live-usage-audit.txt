@@ -1,0 +1,25 @@
+### run4
+== 2026-09-26T18-22-54-210Z-29191.jsonl session/load mcpServers: -
+  turn stop=end_turn calls=2 per-call-sum={'input_tokens': 14772, 'cache_read_input_tokens': 17024, 'output_tokens': 415, 'reasoning_tokens': 243} turn_usage={"inputTokens": 31796, "outputTokens": 415, "totalTokens": 32211, "cachedReadTokens": 17024, "cacheCreationTokens": 0, "reasoningTokens": 243, "modelCalls": 2, "apiDurationMs": 4284, "costUsdTicks": 405460000, "modelUsage": {"grok-4.7": {"inputTokens": 31796, 
+  turn stop=cancelled calls=1 per-call-sum={'input_tokens': 159, 'cache_read_input_tokens': 16128, 'output_tokens': 130, 'reasoning_tokens': 32} turn_usage={"inputTokens": 16287, "outputTokens": 130, "totalTokens": 16417, "cachedReadTokens": 16128, "cacheCreationTokens": 0, "reasoningTokens": 32, "modelCalls": 1, "apiDurationMs": 1500, "costUsdTicks": 91620000, "modelUsage": {"grok-4.7": {"inputTokens": 16287, "o
+  turn stop=cancelled calls=0 per-call-sum={'input_tokens': 0, 'cache_read_input_tokens': 0, 'output_tokens': 0, 'reasoning_tokens': 0} turn_usage=None
+  turn stop=end_turn calls=1 per-call-sum={'input_tokens': 118, 'cache_read_input_tokens': 16384, 'output_tokens': 204, 'reasoning_tokens': 196} turn_usage={"inputTokens": 16502, "outputTokens": 204, "totalTokens": 16706, "cachedReadTokens": 16384, "cacheCreationTokens": 0, "reasoningTokens": 196, "modelCalls": 1, "apiDurationMs": 2263, "costUsdTicks": 96520000, "modelUsage": {"grok-4.7": {"inputTokens": 16502, "
+== 2026-09-26T18-23-07-222Z-31865.jsonl session/load mcpServers: [[{"type": "http", "name": "autobyteus_agent_tools", "url": "http://127.0.0.1:61315/mcp/agent-tools/agtrun_XCh2kEDUD4uF7rXpP08frSXMonMHqDueOdj9qQx88ng", "header
+  turn stop=end_turn calls=1 per-call-sum={'input_tokens': 15592, 'cache_read_input_tokens': 1152, 'output_tokens': 35, 'reasoning_tokens': 27} turn_usage={"inputTokens": 16744, "outputTokens": 35, "totalTokens": 16779, "cachedReadTokens": 1152, "cacheCreationTokens": 0, "reasoningTokens": 27, "modelCalls": 1, "apiDurationMs": 1711, "costUsdTicks": 319700000, "modelUsage": {"grok-4.7": {"inputTokens": 16744, "ou
+== 2026-09-26T18-22-53-581Z-29185.jsonl session/load mcpServers: -
+TOTAL provider costUsdTicks 913300000 ≈ USD 0.09133
+### run5
+== 2026-09-26T18-23-58-596Z-37266.jsonl session/load mcpServers: -
+  turn stop=end_turn calls=4 per-call-sum={'input_tokens': 17458, 'cache_read_input_tokens': 54528, 'output_tokens': 354, 'reasoning_tokens': 198} turn_usage={"inputTokens": 71986, "outputTokens": 354, "totalTokens": 72340, "cachedReadTokens": 54528, "cacheCreationTokens": 0, "reasoningTokens": 198, "modelCalls": 4, "apiDurationMs": 6800, "costUsdTicks": 643040000, "modelUsage": {"grok-4.7": {"inputTokens": 71986, 
+== 2026-09-26T18-24-14-719Z-39872.jsonl session/load mcpServers: [[{"type": "http", "name": "autobyteus_agent_tools", "url": "http://127.0.0.1:61395/mcp/agent-tools/agtrun_OYdh5_OK9Dak-v7V1rW7ZLlYhoM3ahFQ1LmRcG3hKIM", "header
+  turn stop=end_turn calls=1 per-call-sum={'input_tokens': 148, 'cache_read_input_tokens': 18432, 'output_tokens': 58, 'reasoning_tokens': 45} turn_usage={"inputTokens": 18580, "outputTokens": 58, "totalTokens": 18638, "cachedReadTokens": 18432, "cacheCreationTokens": 0, "reasoningTokens": 45, "modelCalls": 1, "apiDurationMs": 1285, "costUsdTicks": 98600000, "modelUsage": {"grok-4.7": {"inputTokens": 18580, "ou
+== 2026-09-26T18-23-56-770Z-37236.jsonl session/load mcpServers: -
+TOTAL provider costUsdTicks 741640000 ≈ USD 0.074164
+### run6
+== 2026-09-26T18-24-36-502Z-42961.jsonl session/load mcpServers: -
+  turn stop=end_turn calls=3 per-call-sum={'input_tokens': 30930, 'cache_read_input_tokens': 22272, 'output_tokens': 163, 'reasoning_tokens': 68} turn_usage={"inputTokens": 53202, "outputTokens": 163, "totalTokens": 53365, "cachedReadTokens": 22272, "cacheCreationTokens": 0, "reasoningTokens": 68, "modelCalls": 3, "apiDurationMs": 4113, "costUsdTicks": 739740000, "modelUsage": {"grok-4.7": {"inputTokens": 53202, "
+== 2026-09-26T18-24-41-041Z-44931.jsonl session/load mcpServers: -
+  turn stop=end_turn calls=1 per-call-sum={'input_tokens': 15624, 'cache_read_input_tokens': 1152, 'output_tokens': 346, 'reasoning_tokens': 345} turn_usage={"inputTokens": 16776, "outputTokens": 346, "totalTokens": 17122, "cachedReadTokens": 1152, "cacheCreationTokens": 0, "reasoningTokens": 345, "modelCalls": 1, "apiDurationMs": 3272, "costUsdTicks": 339000000, "modelUsage": {"grok-4.7": {"inputTokens": 16776, "
+== 2026-09-26T18-24-34-548Z-42735.jsonl session/load mcpServers: -
+== 2026-09-26T18-24-35-686Z-42955.jsonl session/load mcpServers: -
+TOTAL provider costUsdTicks 1078740000 ≈ USD 0.107874

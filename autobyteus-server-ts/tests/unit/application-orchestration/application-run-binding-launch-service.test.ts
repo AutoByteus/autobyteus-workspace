@@ -42,7 +42,7 @@ const buildAgentInput = (): ApplicationStartAgentInput => ({
   launch: {
     kind: "AGENT",
     workspaceRootPath: "/tmp/agent-workspace",
-    llmModelIdentifier: "grok-4.6",
+    llmModelIdentifier: "grok-4.7",
   },
 });
 
@@ -55,7 +55,7 @@ const buildTeamInput = (): ApplicationStartAgentTeamInput => ({
     teamConfigs: [{
       teamAddress: "/",
       workspaceRootPath: "/tmp/team-workspace",
-      llmModelIdentifier: "grok-4.6",
+      llmModelIdentifier: "grok-4.7",
       autoExecuteTools: false,
       skillAccessMode: "PRELOADED_ONLY",
       runtimeKind: "autobyteus",
@@ -65,7 +65,7 @@ const buildTeamInput = (): ApplicationStartAgentTeamInput => ({
       displayName: "Researcher",
       agentDefinitionId: "agent-def-1",
       workspaceRootPath: "/tmp/team-workspace",
-      llmModelIdentifier: "grok-4.6",
+      llmModelIdentifier: "grok-4.7",
       autoExecuteTools: false,
       skillAccessMode: "PRELOADED_ONLY",
       runtimeKind: "autobyteus",
@@ -228,7 +228,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
             agentDefinitionId: "agent-def-1",
             displayName: "Researcher",
             workspaceRootPath: "/tmp/team-workspace",
-            llmModelIdentifier: "grok-4.6",
+            llmModelIdentifier: "grok-4.7",
             autoExecuteTools: false,
             skillAccessMode: "PRELOADED_ONLY" as never,
           },
@@ -293,7 +293,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
         mode: "preset",
         launchPreset: {
           workspaceRootPath: "/tmp/team-workspace",
-          llmModelIdentifier: "grok-4.6",
+          llmModelIdentifier: "grok-4.7",
           runtimeKind: "autobyteus",
           skillAccessMode: "PRELOADED_ONLY",
         },
@@ -304,7 +304,7 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
       teamDefinitionId: "team-def-1",
       rootConfig: expect.objectContaining({
         workspaceRootPath: "/tmp/team-workspace",
-        llmModelIdentifier: "grok-4.6",
+        llmModelIdentifier: "grok-4.7",
       }),
       applicationBinding: {
         applicationId,

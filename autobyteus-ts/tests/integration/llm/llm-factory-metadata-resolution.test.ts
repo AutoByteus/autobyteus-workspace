@@ -253,10 +253,10 @@ describe('LLMFactory metadata resolution', () => {
     expect(qwenModels.find((model) => model.model_identifier === 'qwen3-max')?.max_context_tokens).toBe(262144);
     expect(grokModels).toHaveLength(1);
     expect(grokModels[0]).toMatchObject({
-      model_identifier: 'grok-4.5',
-      display_name: 'grok-4.5',
-      value: 'grok-4.5',
-      canonical_name: 'grok-4.5',
+      model_identifier: 'grok-4.7',
+      display_name: 'grok-4.7',
+      value: 'grok-4.7',
+      canonical_name: 'grok-4.7',
       provider_type: LLMProvider.GROK,
       max_context_tokens: 500000,
     });
@@ -265,7 +265,7 @@ describe('LLMFactory metadata resolution', () => {
       properties: {
         reasoning_effort: {
           default: 'high',
-          enum: ['low', 'medium', 'high'],
+          enum: ['low', 'medium', 'high', 'xhigh'],
         },
       },
     });

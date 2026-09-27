@@ -109,6 +109,24 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
     })]);
   });
 
+  it("reports a safe Grok Build catalog diagnostic through application launch issues (AC-015)", async () => {
+    const validator = new ApplicationLaunchHostCapabilityValidator({
+      currentModelSelectionPolicy: new ApplicationCurrentModelSelectionPolicy({
+        ensureAutoByteusModelAvailable: async () => undefined,
+        requireCurrentAutoByteusModelIdentifier: async () => undefined,
+      }),
+      runtimeAvailabilityService: enabledRuntimeAvailability,
+      modelCatalogService: { resolveExactCurrentLlmModel: async () => { throw new Error("secret /private/credential-path"); } },
+      providerCredentialReadiness: credentialPort(),
+    });
+    const issues = await validator.validate(configuration([{
+      runtimeKind: RuntimeKind.GROK_BUILD, llmModelIdentifier: "grok-4.7",
+    }]));
+    expect(issues).toEqual([expect.objectContaining({ code: "RUNTIME_AUTHENTICATION_UNAVAILABLE",
+      message: "Runtime 'grok_build' could not provide its authenticated model catalog: Grok Build model discovery failed; check Grok authentication or network and retry.",
+    })]);
+  });
+
   it("rejects exact stale Gemini 3.7 through the production current-model registry", async () => {
     const listLlmModels = vi.fn(async () => []);
     const credentials = credentialPort();

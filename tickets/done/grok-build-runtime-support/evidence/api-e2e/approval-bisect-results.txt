@@ -1,0 +1,9 @@
+Grok CLI 1.0.41, ACP stdio, paid 1-call probes, 2026-09-26 ~20:16-20:30 CEST. Probe: /tmp/grok-api-e2e/bisect/probe.mjs (copy: approval-bisect-probe.mjs).
+P0 exact design-probe config (agent --model grok-4.7 --reasoning-effort low stdio; GROK_SUBAGENTS=0; _meta.rules only), "touch p0.txt": NO session/request_permission; file created.
+P1 as P0 + _meta {yoloMode:false, autoMode:false}: NO request; file created.
+P2 grok --permission-mode default agent ... stdio: NO request; file created.
+P3 AutoByteus-equivalent launch (--no-leader, 3 disable switches, yoloMode:false), "rm -rf /tmp/.../nonexistent": request_permission SENT (options allow_always, allow_once, reject_once, reject_always).
+P4 AutoByteus-equivalent launch, "use web search once": model chose web_fetch (function tool) -> request_permission sent; no web_search tool exists in the session tool set (24 tools; also absent in non-AutoByteus design sessions).
+Live AutoByteus run (tap run1/run2): `echo APPROVE-…` and `touch APPROVED-….txt` executed with no request; Grok events.jsonl: permission_requested -> permission_resolved allow (4-6 ms).
+Design probe permission.log.jsonl (03:42 CEST same day, same binary) DID send request_permission for `echo grok-permission-probe`.
+Deny: after reject-once Grok returns session/prompt stopReason "cancelled" (live run3/run4) -> AutoByteus TURN_INTERRUPTED.

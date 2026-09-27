@@ -116,6 +116,7 @@ describe("AgentRunService real memory layout integration", () => {
       codexBackendFactory: unavailableBackendFactory,
       claudeBackendFactory: unavailableBackendFactory,
       agyBackendFactory: unavailableBackendFactory,
+      grokBackendFactory: unavailableBackendFactory,
       activationRegistry: infrastructure.activationRegistry,
       memoryRecorder: infrastructure.memoryRecorder,
       providerInputNormalizer: infrastructure.providerInputNormalizer,

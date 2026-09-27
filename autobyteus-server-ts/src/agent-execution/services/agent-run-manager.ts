@@ -42,6 +42,7 @@ export type AgentRunManagerOptions = Readonly<{
   codexBackendFactory: AgentRunBackendFactory;
   claudeBackendFactory: AgentRunBackendFactory;
   agyBackendFactory: AgentRunBackendFactory;
+  grokBackendFactory: AgentRunBackendFactory;
   activationRegistry: AgentRunActivationRegistry;
   memoryRecorder: AgentRunMemoryRecorder;
   providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
@@ -54,6 +55,7 @@ export class AgentRunManager {
   private readonly codexBackendFactory: AgentRunBackendFactory;
   private readonly claudeBackendFactory: AgentRunBackendFactory;
   private readonly agyBackendFactory: AgentRunBackendFactory;
+  private readonly grokBackendFactory: AgentRunBackendFactory;
   private readonly activationRegistry: AgentRunActivationRegistry;
   private readonly memoryRecorder: AgentRunMemoryRecorder;
   private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
@@ -94,6 +96,7 @@ export class AgentRunManager {
       options?.codexBackendFactory,
       options?.claudeBackendFactory,
       options?.agyBackendFactory,
+      options?.grokBackendFactory,
       options?.activationRegistry,
       options?.memoryRecorder,
       options?.providerInputNormalizer,
@@ -109,6 +112,7 @@ export class AgentRunManager {
     this.codexBackendFactory = options.codexBackendFactory;
     this.claudeBackendFactory = options.claudeBackendFactory;
     this.agyBackendFactory = options.agyBackendFactory;
+    this.grokBackendFactory = options.grokBackendFactory;
     this.memoryRecorder = options.memoryRecorder;
     this.providerInputNormalizer = options.providerInputNormalizer;
     this.agentToolMcpRunSessionDeactivator =
@@ -510,6 +514,7 @@ export class AgentRunManager {
     if (runtimeKind === RuntimeKind.CODEX_APP_SERVER) return this.codexBackendFactory;
     if (runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK) return this.claudeBackendFactory;
     if (runtimeKind === RuntimeKind.ANTIGRAVITY_CLI) return this.agyBackendFactory;
+    if (runtimeKind === RuntimeKind.GROK_BUILD) return this.grokBackendFactory;
     return null;
   }
 

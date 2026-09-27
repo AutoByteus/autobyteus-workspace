@@ -1,0 +1,5 @@
+GROK_LIVE_ORG_DIRECTOR_TOOLS ["search_tool","send_message_to"]
+GROK_LIVE_ORG {"orgRunId":"grok_org_3d8e6e5f_581e_4b95_9427_0751461448ea_0d88b78899fc4ca7849457ccd694a522","providerCostUsd":0}
+ ✓ tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts (3 tests | 2 skipped) 14614ms
+     ✓ launches a Grok Org, relays from a direct member to a nested team member and restores it (AC-005 org)  11297ms
+      Tests  1 passed | 2 skipped (3)
