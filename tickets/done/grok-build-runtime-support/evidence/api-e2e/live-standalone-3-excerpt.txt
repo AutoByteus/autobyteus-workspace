@@ -1,0 +1,4 @@
+     × runs a standalone Grok agent through tools, approvals, interrupt, stop and exact restore (AC-003/004/006/008/009) 187141ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: Step B did not complete
+      Tests  1 failed | 2 skipped (3)

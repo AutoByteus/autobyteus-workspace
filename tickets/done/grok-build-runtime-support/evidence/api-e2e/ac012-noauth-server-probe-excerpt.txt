@@ -1,0 +1,12 @@
+Unexpected failure while preparing agent run 'noauth_1790444326468_e407f4dc97ca4d16abd07e886864f32b' for runtime 'grok_build'. RequestError: Authentication required
+Error in createAgentRun: AgentCreationError: Failed to prepare agent run 'noauth_1790444326468_e407f4dc97ca4d16abd07e886864f32b'.
+Unexpected failure while preparing agent run 'noauth_1790444326468_7bcd4840cb934f62bd899bb785b52c15' for runtime 'grok_build'. RequestError: Authentication required
+Error in createAgentRun: AgentCreationError: Failed to prepare agent run 'noauth_1790444326468_7bcd4840cb934f62bd899bb785b52c15'.
+NOAUTH_RESULT {
+ "availability": {
+    "message": "Cannot query field \"status\" on type \"ModelSourceStatusObject\". Did you mean \"state\"?",
+    "message": "Cannot query field \"message\" on type \"ModelSourceStatusObject\".",
+ "createRun_grok-4.6": {
+    "message": "AgentCreationError: Failed to prepare agent run 'noauth_1790444326468_e407f4dc97ca4d16abd07e886864f32b'.",
+ "createRun_grok-4.7": {
+    "message": "AgentCreationError: Failed to prepare agent run 'noauth_1790444326468_7bcd4840cb934f62bd899bb785b52c15'.",
