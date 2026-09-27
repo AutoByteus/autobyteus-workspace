@@ -21,6 +21,15 @@ capsules are not silently rewritten. Actual capability or protocol
 incompatibilities can still fail; version-independent admission does not
 guarantee compatibility with every future CLI release.
 
+`listAntigravityModels` is the single capability-and-model discovery entry
+point: bounded `--help` validation followed by `models`, with no `--version`
+admission request. New and restored backends both use the factory's existing
+model-availability assertion. The capsule owns `AGY_NATIVE_TOOL_NAMES`
+directly; there is no CLI-version profile, resolver, or injected profile DTO.
+The capsule manifest's schema version remains `1`: it is not a CLI release
+number. Removing version admission does not regenerate saved Markdown,
+manifest hashes, or provider conversation bindings.
+
 AGY feature and model discovery on backend request paths uses one
 bounded asynchronous child-process owner. A slow CLI can still delay the
 request that needs its answer, but it does not synchronously block unrelated
@@ -158,8 +167,8 @@ completion ordering; no image-specific finalization barrier is used.
 ## Persistence and validation boundary
 
 Existing run metadata, provider-binding, execution-tree, and canonical trace
-shapes support newly created AGY runs; no old released AGY population or
-persisted-data migration is required. Capsule deletion follows ordinary
+shapes support AGY runs. The version-independent admission change requires no
+persisted-data migration or reset; existing saved capsules remain authoritative. Capsule deletion follows ordinary
 run-memory retention, while provider-side conversations remain provider-owned.
 The reviewed live transport coverage exercises real AGY Team and direct/nested
 Org members through HTTP GraphQL/WebSocket, scoped MCP delivery, public member

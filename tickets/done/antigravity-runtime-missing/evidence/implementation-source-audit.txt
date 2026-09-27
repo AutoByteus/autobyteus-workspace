@@ -1,0 +1,17 @@
+src obsolete symbol matches: []
+tests obsolete symbol matches: []
+docs obsolete symbol matches: []
+autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts:13:   version: 1;
+autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts:59:       version: 1, runId: input.runId, agentName, workspacePath,
+autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts:78:   if (manifest.version !== 1 || manifest.runId !== input.runId || !/^[a-zA-Z0-9-]+$/.test(manifest.agentName))
+Changed production source effective nonempty line counts:
+101 autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+5 autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.ts
+87 autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts
+81 autobyteus-server-ts/src/runtime-management/antigravity-cli-capability.ts
+Production deltas (added/deleted):
+3	7	autobyteus-server-ts/src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.ts
+2	17	autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.ts
+2	3	autobyteus-server-ts/src/agent-execution/backends/antigravity/capsule/agy-run-capsule.ts
+3	31	autobyteus-server-ts/src/runtime-management/antigravity-cli-capability.ts
+
