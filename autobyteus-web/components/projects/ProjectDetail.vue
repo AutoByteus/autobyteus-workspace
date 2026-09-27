@@ -1,8 +1,18 @@
 <template>
-  <div class="mx-auto w-full max-w-[1100px] px-4 py-5 sm:px-6 lg:px-8" data-testid="project-detail">
+  <div class="w-full px-4 py-5 sm:px-6 lg:px-8" data-testid="project-detail">
+    <NuxtLink
+      to="/projects"
+      class="inline-flex items-center gap-1 rounded text-sm font-medium text-slate-600 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+      :aria-label="t('projects.components.projects.ProjectDetail.backToProjectsLabel')"
+      data-testid="project-back-link"
+    >
+      <Icon icon="heroicons:arrow-left" class="h-4 w-4" aria-hidden="true" />
+      {{ t('projects.components.projects.ProjectDetail.backToProjects') }}
+    </NuxtLink>
+
     <div
       v-if="state === 'loading'"
-      class="rounded-xl border border-slate-200 bg-white py-20 text-center shadow-sm"
+      class="mt-4 rounded-xl border border-slate-200 bg-white py-20 text-center shadow-sm"
       role="status"
       data-testid="project-detail-loading"
     >
@@ -12,7 +22,7 @@
 
     <div
       v-else-if="state === 'error'"
-      class="rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
+      class="mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-700"
       role="alert"
       data-testid="project-detail-error"
     >
@@ -29,19 +39,19 @@
 
     <div
       v-else-if="!project"
-      class="rounded-xl border border-slate-200 bg-white py-16 text-center"
+      class="mt-4 rounded-xl border border-slate-200 bg-white py-16 text-center"
       data-testid="project-not-found"
     >
-      <h2 class="text-lg font-semibold text-slate-900">{{ t('projects.components.projects.ProjectDetail.notFoundTitle') }}</h2>
+      <h1 class="text-lg font-semibold text-slate-900">{{ t('projects.components.projects.ProjectDetail.notFoundTitle') }}</h1>
       <p class="mt-2 text-sm text-slate-500">{{ t('projects.components.projects.ProjectDetail.notFoundHelp') }}</p>
     </div>
 
     <template v-else>
-      <header class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+      <header class="mt-3 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div class="min-w-0">
-          <h2 class="break-words text-2xl font-semibold text-slate-900" data-testid="project-detail-name">{{ project.name }}</h2>
+          <h1 class="break-words text-2xl font-semibold text-slate-900" data-testid="project-detail-name">{{ project.name }}</h1>
           <p
-            class="mt-1 whitespace-pre-line text-sm"
+            class="mt-1 line-clamp-2 whitespace-pre-line break-words text-sm"
             :class="project.description ? 'text-slate-600' : 'italic text-slate-400'"
             data-testid="project-detail-description"
           >
@@ -94,7 +104,7 @@
       </div>
 
       <div :id="panelId(activeTab)" role="tabpanel" :aria-labelledby="tabId(activeTab)" class="mt-5">
-        <ProjectTasksPanel v-if="activeTab === 'tasks'" :project-id="project.projectId" />
+        <ProjectTaskBoard v-if="activeTab === 'tasks'" :project-id="project.projectId" />
         <ProjectWorkspacesPanel v-else :project="project" />
       </div>
     </template>
@@ -146,9 +156,10 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { Icon } from '@iconify/vue'
 import ProjectDialogFrame from '~/components/projects/ProjectDialogFrame.vue'
 import ProjectFormDialog from '~/components/projects/ProjectFormDialog.vue'
-import ProjectTasksPanel from '~/components/projects/ProjectTasksPanel.vue'
+import ProjectTaskBoard from '~/components/projects/ProjectTaskBoard.vue'
 import ProjectWorkspacesPanel from '~/components/projects/ProjectWorkspacesPanel.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectStore } from '~/stores/projectStore'
@@ -190,7 +201,7 @@ const deleteError = ref<string | null>(null)
 
 /**
  * Loads the selected Project. A Project already cached by the list is shown at once and
- * refreshed in the background, so switching Projects does not flash a loading state.
+ * refreshed in the background, so opening it from the grid does not flash a loading state.
  */
 const load = async (): Promise<void> => {
   const cached = Boolean(project.value)

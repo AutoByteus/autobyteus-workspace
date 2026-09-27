@@ -1,5 +1,7 @@
 <template>
-  <ProjectDetail :project-id="projectId" />
+  <div class="h-full flex-1 overflow-auto bg-slate-50">
+    <ProjectDetail :project-id="projectId" />
+  </div>
 </template>
 
 <script setup lang="ts">

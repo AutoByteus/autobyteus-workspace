@@ -58,7 +58,7 @@ const mountDetail = () => mount(ProjectDetail, {
       teleport: true,
       NuxtLink: RouterLinkStub,
       ProjectFormDialog: { template: '<div data-testid="project-form-dialog-stub"></div>' },
-      ProjectTasksPanel: { props: ['projectId'], template: '<div data-testid="project-tasks-panel-stub">{{ projectId }}</div>' },
+      ProjectTaskBoard: { props: ['projectId'], template: '<div data-testid="project-task-board-stub">{{ projectId }}</div>' },
       ProjectWorkspaceLinkDialog: {
         props: ['project', 'link'],
         template: '<div data-testid="project-link-dialog-stub">{{ link ? link.workspaceId : "add" }}</div>',
@@ -85,17 +85,23 @@ describe('ProjectDetail', () => {
     store.removeWorkspace = vi.fn().mockResolvedValue(project) as any
   })
 
-  it('shows the Project header with the Tasks tab selected by default', async () => {
+  it('shows a full-width page with Back, the header and the Tasks board by default', async () => {
     const wrapper = mountDetail()
     await flushPromises()
 
+    expect(wrapper.get('[data-testid="project-detail"]').classes().some((name) => name.startsWith('max-w'))).toBe(false)
+    const back = wrapper.getComponent(RouterLinkStub)
+    expect(back.props('to')).toBe('/projects')
+    expect(back.attributes('aria-label')).toBe('Back to projects')
+    expect(back.text()).toBe('Projects')
+    expect(wrapper.get('[data-testid="project-detail-name"]').element.tagName).toBe('H1')
     expect(wrapper.get('[data-testid="project-detail-name"]').text()).toBe('autobyteus')
-    expect(wrapper.find('[data-testid="project-back-link"]').exists()).toBe(false)
+    expect(wrapper.get('[data-testid="project-detail-description"]').classes()).toContain('line-clamp-2')
     const tasksTab = wrapper.get('[data-testid="project-tab-tasks"]')
     expect(tasksTab.attributes('role')).toBe('tab')
     expect(tasksTab.attributes('aria-selected')).toBe('true')
     expect(wrapper.get('[data-testid="project-tab-workspaces"]').attributes('aria-selected')).toBe('false')
-    expect(wrapper.get('[data-testid="project-tasks-panel-stub"]').text()).toBe('p1')
+    expect(wrapper.get('[data-testid="project-task-board-stub"]').text()).toBe('p1')
     wrapper.unmount()
   })
 
@@ -104,7 +110,8 @@ describe('ProjectDetail', () => {
     const wrapper = mountDetail()
     await flushPromises()
 
-    expect(wrapper.find('[data-testid="project-tasks-panel-stub"]').exists()).toBe(false)
+    expect(wrapper.find('[data-testid="project-task-board-stub"]').exists()).toBe(false)
+    expect(wrapper.get('[role="tabpanel"]').text()).not.toMatch(/\btasks?\b/i)
     const unavailableRow = wrapper.get('[data-testid="project-workspace-row-agent_ws_b2"]')
     expect(unavailableRow.attributes('data-availability')).toBe('UNREGISTERED')
     expect(unavailableRow.text()).toContain('/work/autobyteus-web-prototype')
@@ -127,7 +134,7 @@ describe('ProjectDetail', () => {
     await wrapper.get('[data-testid="project-tab-tasks"]').trigger('click')
     await flushPromises()
     expect(routerMock.replace).toHaveBeenLastCalledWith({ query: {} })
-    expect(wrapper.find('[data-testid="project-tasks-panel-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="project-task-board-stub"]').exists()).toBe(true)
     expect(store.fetchProject).toHaveBeenCalledTimes(1)
     wrapper.unmount()
   })
@@ -172,6 +179,7 @@ describe('ProjectDetail', () => {
     await flushPromises()
 
     expect(wrapper.find('[data-testid="project-not-found"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="project-back-link"]').exists()).toBe(true)
     wrapper.unmount()
   })
 

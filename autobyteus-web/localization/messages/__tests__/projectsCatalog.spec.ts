@@ -31,8 +31,15 @@ describe('Projects catalogs', () => {
     expect(zhCnProjectMessages['projects.task.status.TODO']).toBe('待办')
   });
 
-  it('no longer carries the removed card-grid copy', () => {
-    const keys = Object.keys(enProjectMessages)
-    expect(keys.filter((key) => /ProjectsList\.|ProjectCard\.|backToProjects/.test(key))).toEqual([])
+  it('no longer carries the rejected two-pane, status-filter or row copy', () => {
+    for (const catalog of [enProjectMessages, zhCnProjectMessages]) {
+      const keys = Object.keys(catalog)
+      expect(keys.filter((key) => /ProjectListPane\.|ProjectListItem\.|ProjectTasksPanel\.|ProjectTaskRow\.|projects\.time\./.test(key))).toEqual([])
+    }
+  });
+
+  it('describe each Project card with open tasks and workspaces (REQ-009)', () => {
+    expect(enProjectMessages['projects.components.projects.ProjectCard.oneOpenTask']).toBe('1 open task')
+    expect(zhCnProjectMessages['projects.components.projects.ProjectCard.oneOpenTask']).toBeTruthy()
   });
 });
