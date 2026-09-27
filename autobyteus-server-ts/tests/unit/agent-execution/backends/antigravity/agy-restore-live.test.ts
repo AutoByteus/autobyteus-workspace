@@ -43,25 +43,57 @@ it.skipIf(process.env.AGY_LIVE !== "1")("restores the exact AGY conversation, im
   const config = new AgentRunConfig({ agentDefinitionId: "restore-agent", llmModelIdentifier: "gemini-3.8-flash-low",
     autoExecuteTools: true, workspaceId: "workspace", memoryDir: path.join(base, "memory"),
     skillAccessMode: SkillAccessMode.NONE, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI });
-  const initial = await factory.createBackend(config, "restore-run");
-  const providerId = initial.getPlatformAgentRunId();
-  expect(providerId).toMatch(/^[a-f\d-]{36}$/i);
-  expect(providerId).not.toBe("restore-run");
-  const first = await ask(initial, "What is your exact identity marker? Reply with the marker only.");
-  await initial.terminate();
-  expect(first).toContain("ORIGINAL-AGY-4481");
-  definitionInstructions = "Your exact identity marker is REVISED-AGY-0000.";
-  const context = new AgentRunContext({ runId: "restore-run", config, runtimeContext: new AgyAgentRunContext(providerId) });
-  const restored = await factory.restoreBackend(context);
+  let active: AgyAgentRunBackend | undefined;
+  const evidence: Record<string, unknown> = { base, workspace };
   try {
-    expect(restored.getPlatformAgentRunId()).toBe(providerId);
-    const second = await ask(restored, "What is your exact identity marker? Reply with the marker only.");
-    expect(second).toContain("ORIGINAL-AGY-4481");
-    expect(second).not.toContain("REVISED-AGY-0000");
-  } finally { await restored.terminate(); }
-  selectedWorkspace = changedWorkspace;
-  await expect(factory.restoreBackend(context)).rejects.toThrow("AGY_WORKSPACE_CHANGED");
-  selectedWorkspace = workspace;
-  await expect(factory.restoreBackend(new AgentRunContext({ runId: "restore-run", config,
-    runtimeContext: new AgyAgentRunContext("00000000-0000-4000-8000-000000000000") }))).rejects.toThrow(/AGY_CONVERSATION_ID_CONFLICT|AGY_STARTUP_TIMEOUT/);
+    const initial = await factory.createBackend(config, "restore-run");
+    active = initial;
+    const capsulePath = path.join(base, "memory", "agy-project");
+    const manifestBefore = await fs.readFile(path.join(capsulePath, "manifest.json"), "utf8");
+    const manifest = JSON.parse(manifestBefore) as { agentName: string; agentMarkdownHash: string };
+    const markdownPath = path.join(capsulePath, ".agents", "agents", manifest.agentName, "agent.md");
+    const markdownBefore = await fs.readFile(markdownPath, "utf8");
+    evidence.manifest = manifest;
+    evidence.capsuleMarkdown = markdownBefore;
+    const providerId = initial.getPlatformAgentRunId();
+    evidence.providerId = providerId;
+    expect(providerId).toMatch(/^[a-f\d-]{36}$/i);
+    expect(providerId).not.toBe("restore-run");
+    const first = await ask(initial, "What is your exact identity marker? Reply with the marker only.");
+    await initial.terminate();
+    evidence.first = first;
+    expect(first).toContain("ORIGINAL-AGY-4481");
+    definitionInstructions = "Your exact identity marker is REVISED-AGY-0000.";
+    const context = new AgentRunContext({ runId: "restore-run", config, runtimeContext: new AgyAgentRunContext(providerId) });
+    const restored = await factory.restoreBackend(context);
+    active = restored;
+    try {
+      expect(restored.getPlatformAgentRunId()).toBe(providerId);
+      const second = await ask(restored, "What is your exact identity marker? Reply with the marker only.");
+      evidence.second = second;
+      expect(second).toContain("ORIGINAL-AGY-4481");
+      expect(second).not.toContain("REVISED-AGY-0000");
+    } finally { await restored.terminate(); }
+    expect(await fs.readFile(path.join(capsulePath, "manifest.json"), "utf8")).toBe(manifestBefore);
+    expect(await fs.readFile(markdownPath, "utf8")).toBe(markdownBefore);
+    evidence.capsuleBytesUnchanged = true;
+    selectedWorkspace = changedWorkspace;
+    await expect(factory.restoreBackend(context)).rejects.toThrow("AGY_WORKSPACE_CHANGED");
+    selectedWorkspace = workspace;
+    await expect(factory.restoreBackend(new AgentRunContext({ runId: "restore-run", config,
+      runtimeContext: new AgyAgentRunContext("00000000-0000-4000-8000-000000000000") }))).rejects.toThrow(/AGY_CONVERSATION_ID_CONFLICT|AGY_STARTUP_TIMEOUT/);
+    evidence.result = "Pass";
+  } catch (error) {
+    evidence.result = "Fail";
+    evidence.error = String(error);
+    throw error;
+  } finally {
+    await active?.terminate();
+    const evidenceDir = process.env["AGY_LIVE_EVIDENCE_DIR"];
+    if (evidenceDir) {
+      await fs.mkdir(evidenceDir, { recursive: true });
+      await fs.writeFile(path.join(evidenceDir, "factory-restore-live.json"), JSON.stringify(evidence, null, 2));
+    }
+    await fs.rm(base, { recursive: true, force: true });
+  }
 }, 240_000);

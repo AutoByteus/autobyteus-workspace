@@ -66,7 +66,7 @@ describe("CodexAppServerClient spawn diagnostics", () => {
       env: explicitEnvironment,
     }).start();
 
-    expect(spawnMock.mock.calls[0]?.[2]?.env).toBe(explicitEnvironment);
+    expect(spawnMock.mock.calls[0]?.[2]?.env).toStrictEqual(explicitEnvironment);
   });
 
   it("includes descriptor pressure and runtime context for EBADF failures", () => {

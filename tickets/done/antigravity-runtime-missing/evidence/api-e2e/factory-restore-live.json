@@ -1,0 +1,19 @@
+{
+  "base": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-restore-live-QgN36L",
+  "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-restore-live-QgN36L/workspace",
+  "manifest": {
+    "version": 1,
+    "runId": "restore-run",
+    "agentName": "autobyteus-a02d363227f98a77",
+    "workspacePath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-restore-live-QgN36L/workspace",
+    "agentMarkdownHash": "062bca1205b514408c2c21fca798cadb1f371930138d8106851cbabde686b341",
+    "skillAccessMode": "NONE",
+    "skills": []
+  },
+  "capsuleMarkdown": "---\nname: autobyteus-a02d363227f98a77\ndescription: Run-specific AutoByteus main agent.\nmainAgent: true\ntools: [view_file, write_to_file, replace_file_content, grep_search, list_dir, find_by_name, run_command, generate_image]\n---\n\n## Agent Identity\n\n- Name: Restore agent\n- Description: Exact restore probe.\n\n### Responsibilities and Boundaries\n\nYour exact identity marker is ORIGINAL-AGY-4481.\n\n## Working Environment\n- Agent workspace: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-restore-live-QgN36L/workspace`\n- Resolve task and project locations from the agent workspace unless an explicit target says otherwise.\n",
+  "providerId": "a1d56023-2294-48cd-8645-de883e36d7be",
+  "first": "ORIGINAL-AGY-4481",
+  "second": "ORIGINAL-AGY-4481\n",
+  "capsuleBytesUnchanged": true,
+  "result": "Pass"
+}

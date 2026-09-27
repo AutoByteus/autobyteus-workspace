@@ -1,0 +1,32 @@
+{
+  "checks": [
+    {
+      "pid": 89979,
+      "action": "SIGTERM owned group",
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/bin/nuxt.mjs dev --host 127.0.0.1 --port 54778"
+    },
+    {
+      "pid": 85162,
+      "action": "SIGTERM owned group",
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/autobyteus-server-ts/dist/app.js --data-dir /private/tmp/agy-browser-retest-q7y_a1fb/data --host 127.0.0.1 --port 54777"
+    },
+    {
+      "port": 54777,
+      "listening": false
+    },
+    {
+      "port": 54778,
+      "listening": false
+    },
+    {
+      "root": "/private/tmp/agy-browser-retest-q7y_a1fb",
+      "removed": true
+    },
+    {
+      "revokedCapabilityURLsRedacted": 3
+    }
+  ],
+  "browserTab": "7956f6 closed",
+  "team": "public termination succeeded",
+  "providerSyntheticMetadata": "may remain; unrelated provider state untouched"
+}

@@ -1,0 +1,12 @@
+{
+  "scope": "All ticket text artifacts; PNG files excluded from automated text scan",
+  "checks": [
+    "private key headers",
+    "common provider token formats",
+    "credential URLs",
+    "long authorization/query token values"
+  ],
+  "findings": [],
+  "limitation": "Pattern scan, not proof that arbitrary secrets cannot exist. Prior retained screenshots depict synthetic test content; no production secrets accessed.",
+  "generated_outputs": "Two untracked SDK dist directories excluded from final commit."
+}

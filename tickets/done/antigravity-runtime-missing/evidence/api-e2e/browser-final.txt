@@ -1,0 +1,50 @@
+Agents
+Agent Teams
+Agent Orgs
+Skills
+Memory
+Nodes
+Workspaces
+Temp Workspace
+Settings
+Team Definition
+API Validation Team
+Runtime
+AutoByteus
+Codex App Server
+Claude Agent SDK
+Antigravity CLI
+
+Selects the runtime backend used by this team run.
+
+Default LLM Model (Global)
+Antigravity CLI (GEMINI) / Gemini 3.8 Flash (Low)
+
+This model will be used by all members unless overridden.
+
+This model has no adjustable settings.
+
+Workspace Directory
+Existing
+New
+📁 Temp Workspace (Default)
+Default temporary workspace
+
+Workspace: Temp Workspace
+
+Auto approve tools
+
+High-trust mode for Antigravity CLI members: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.
+
+Auto approve tools
+Team Members Override (1)
+Run Team
+Files
+Terminal
+Activity
+Token
+Artifacts
+VNC Viewer
+No file selected
+
+Select a file from the explorer to view or edit its content.

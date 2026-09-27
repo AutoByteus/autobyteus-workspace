@@ -3,7 +3,7 @@ import path from "node:path";
 import os from "node:os";
 import { expect, it, vi } from "vitest";
 import { createAgyRunCapsule } from "../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
-import { resolveAgyNativeToolProfile } from "../../../src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.js";
+import { AGY_NATIVE_TOOL_NAMES } from "../../../src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.js";
 import { AgyStreamProcess } from "../../../src/agent-execution/backends/antigravity/stream/agy-stream-process.js";
 import { AgyStreamEventConverter } from "../../../src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -51,7 +51,6 @@ async function run(input: { name: string; prompt: string; skillSource?: string;
   const capsule = await createAgyRunCapsule({ runId: input["name"], memoryDir: path.join(base, "memory"),
     workspacePath: workspace, identity: "You are an AutoByteus agent. Follow the user's request using your available tools and configured skills.",
     agentDefinitionId: "codex", configuredSkillBindings: [...bindings, ...(input.extraSkillBindings ?? [])],
-    nativeToolProfile: resolveAgyNativeToolProfile("1.2.11"),
     skillAccessMode: source || input.extraSkillBindings?.length ? "PRELOADED_ONLY" : "NONE",
     mcpDescriptor: null });
   const stream = new AgyStreamProcess();
@@ -68,12 +67,12 @@ async function run(input: { name: string; prompt: string; skillSource?: string;
     const result = observed.find((m) => m.event === "result");
     const terminalTools = observed.filter((m) => m.event === "step_update"
       && m.step_update["step_type"] === "tool" && (m.step_update["state"] === "DONE" || m.step_update["state"] === "ERROR"));
-    const report = { name: input["name"], cliVersion: "1.2.11", model, initAgent: init.init["agent"],
+    const report = { name: input["name"], model, initAgent: init.init["agent"],
       initToolCount: Array.isArray(init.init["tools"]) ? init.init["tools"].length : null,
       initToolNames: Array.isArray(init.init["tools"]) ? init.init["tools"].map((tool: unknown) =>
         tool && typeof tool === "object" ? String((tool as Record<string, unknown>)["name"] ?? "") : String(tool)) : null,
       manifestSkills: capsule.manifest.skills.map((skill) => skill["name"]),
-      configuredNativeToolCount: resolveAgyNativeToolProfile("1.2.11").permittedNativeToolNames.length,
+      configuredNativeToolCount: AGY_NATIVE_TOOL_NAMES.length,
       toolSteps: summarize(observed), resultStatus: result?.event === "result" ? result["result"]["status"] : null,
       response: result?.event === "result" ? String(result["result"]["response"] ?? "").slice(0, 1000) : null,
       unknownToolNames: [...closed.join("\n").matchAll(/unknown component: tool "([^"]+)" not found in registry/g)].map((match) => match[1]),

@@ -1,0 +1,32 @@
+{
+  "cleanup": [
+    {
+      "pid": 43291,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/node_modules/.pnpm/nuxt@3.21.1_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue+compiler-sfc@3.5.28_cac@6.7_05eb989a4903fdbf6aed2be910db586e/node_modules/nuxt/bin/nuxt.mjs dev --host 127.0.0.1 --port 54254",
+      "action": "SIGTERM owned process group"
+    },
+    {
+      "pid": 43277,
+      "command": "/Users/normy/.hermes/node/bin/node /Users/normy/autobyteus_org/autobyteus-worktrees/antigravity-runtime-missing/autobyteus-server-ts/dist/app.js --data-dir /private/tmp/agy-browser-retest-4l8nuzlj/data --host 127.0.0.1 --port 54253",
+      "action": "SIGTERM owned process group"
+    },
+    {
+      "port": 54253,
+      "listening": false
+    },
+    {
+      "port": 54254,
+      "listening": false
+    },
+    {
+      "root": "/private/tmp/agy-browser-retest-4l8nuzlj",
+      "removed": true
+    },
+    {
+      "retainedLogCapabilityRedactions": 3
+    }
+  ],
+  "browserTab": "28a5a7 closed via tool",
+  "teamTermination": "successful via public GraphQL before shutdown",
+  "providerMetadata": "synthetic CLI conversation metadata may remain; no unrelated provider state deleted"
+}

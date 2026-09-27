@@ -1,0 +1,11 @@
+{
+  "teamRunId": "browser_retest_team_e9ca3bca31204bc888a7d43ef66be394",
+  "response": {
+    "data": {
+      "terminateAgentTeamRun": {
+        "success": true,
+        "message": "Agent team run terminated successfully."
+      }
+    }
+  }
+}
