@@ -6,6 +6,7 @@ import { createAgyRunCapsule } from "../../../src/agent-execution/backends/antig
 import { AGY_NATIVE_TOOL_NAMES } from "../../../src/agent-execution/backends/antigravity/capsule/agy-native-tool-policy.js";
 import { AgyStreamProcess } from "../../../src/agent-execution/backends/antigravity/stream/agy-stream-process.js";
 import { AgyStreamEventConverter } from "../../../src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js";
+import { readAgyNativeImagePath } from "../../../src/agent-execution/backends/antigravity/stream/agy-step-output-reader.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { fingerprintConfiguredSkillSource } from "../../../src/skills/services/configured-skill-source-fingerprint.js";
 import { Skill } from "../../../src/skills/domain/models.js";
@@ -86,7 +87,7 @@ async function run(input: { name: string; prompt: string; skillSource?: string;
   }
 }
 
-it.skipIf(!enabled)("direct capsule invokes native AGY image and reports pathless DONE truthfully", async () => {
+it.skipIf(!enabled)("direct capsule invokes native AGY image and reports AGY's saved image path from its step output", async () => {
   const output = await run({ name: "real-native-image",
     prompt: "Use your own native generate_image tool (not an MCP tool) to make a small simple blue dog illustration. Then respond normally." });
   const native = output.terminalTools.find((m) => m.event === "step_update" && m.step_update["tool_name"] === "generate_image");
@@ -94,12 +95,23 @@ it.skipIf(!enabled)("direct capsule invokes native AGY image and reports pathles
   expect(output.terminalTools.some((m) => m.event === "step_update" && m.step_update["tool_name"] === "call_mcp_tool")).toBe(false);
   if (!native || native.event !== "step_update") return;
   expect(native.step_update["state"]).toBe("DONE");
-  const converter = new AgyStreamEventConverter("real-native-image", String(native.step_update["conversation_id"]), model);
+  const conversationId = String(native.step_update["conversation_id"]);
+  const converter = new AgyStreamEventConverter("real-native-image", conversationId, model, undefined,
+    (stepIndex) => readAgyNativeImagePath(conversationId, stepIndex));
   converter.startTurn("turn-native");
   const events = converter.convert(native);
   const success = events.find((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
   expect(success, JSON.stringify(output.report)).toBeDefined();
-  expect(success?.payload["result"]).toEqual({ provider_state: "DONE", output: null });
+  expect(Object.keys(success?.payload["arguments"] as Record<string, unknown>)).toEqual(expect.arrayContaining(["ImageName", "Prompt"]));
+  const result = success?.payload["result"] as Record<string, unknown>;
+  const conversationDir = await fs.realpath(path.join(os.homedir(), ".gemini", "antigravity-cli", "brain", conversationId));
+  expect(result["provider_state"]).toBe("DONE");
+  expect(typeof result["file_path"], JSON.stringify(result)).toBe("string");
+  const filePath = String(result["file_path"]);
+  expect(path.isAbsolute(filePath)).toBe(true);
+  expect(filePath.startsWith(conversationDir + path.sep)).toBe(true);
+  expect((await fs.lstat(filePath)).isFile()).toBe(true);
+  expect(String(result["output"])).toContain(filePath);
   expect(output.report.resultStatus).toBe("SUCCESS");
   expect(output.report["response"]?.length).toBeGreaterThan(0);
 }, 180_000);

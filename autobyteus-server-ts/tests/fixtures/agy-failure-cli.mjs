@@ -18,7 +18,7 @@ if (arg === "--version") {
     if (process.env.AGY_FAKE_CASE === "tool_denied") {
       const base = { conversation_id, step_index: 1, step_type: "tool", tool_name: "generate_image" };
       emit({ event: "step_update", step_update: { ...base, state: "ACTIVE",
-        tool_info: { parameters: { Prompt: "blue dog", token: "PRIVATE_AGY_SECRET" } } } });
+        tool_info: { parameters: { ImageName: "blue_dog", Prompt: "blue dog" } } } });
       emit({ event: "step_update", step_update: { ...base, state: "ERROR",
         tool_info: { error: "permission denied token=PRIVATE_AGY_SECRET", output: "/private/SECRET_IMAGE" } } });
       emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "Image unavailable." } });

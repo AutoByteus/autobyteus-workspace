@@ -1,6 +1,9 @@
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { agyRecord, agyString, type AgyStreamMessage } from "./agy-stream-message.js";
 import type { AgyProviderFailureDiagnostic } from "./agy-provider-diagnostic-sink.js";
+import type { AgyNativeImagePathResolution } from "./agy-step-output-reader.js";
+
+export type AgyNativeImagePathResolver = (stepIndex: number) => AgyNativeImagePathResolution;
 
 const number = (value: unknown): number | null => typeof value === "number" && Number.isFinite(value) ? value : null;
 const denial = (error: string): boolean => /permission|denied|not allowed|approval/i.test(error);
@@ -22,7 +25,8 @@ export class AgyStreamEventConverter {
   private textSeen = false;
 
   constructor(private readonly runId: string, private readonly conversationId: string, private readonly model: string,
-    private readonly onProviderFailure?: (diagnostic: AgyProviderFailureDiagnostic) => void) {}
+    private readonly onProviderFailure?: (diagnostic: AgyProviderFailureDiagnostic) => void,
+    private readonly resolveNativeImagePath?: AgyNativeImagePathResolver) {}
 
   startTurn(turnId: string): AgentRunEvent[] {
     if (this.turnId) throw new Error("AGY_TURN_ALREADY_ACTIVE");
@@ -81,7 +85,7 @@ export class AgyStreamEventConverter {
     const name = agyString(payload.tool_name) ?? agyString(info?.name);
     if (!name) throw new Error("AGY_STREAM_INVALID_TOOL_NAME");
     const nativeImage = name === "generate_image";
-    const args = nativeImage ? {} : agyRecord(info?.parameters) ?? {};
+    const args = agyRecord(info?.parameters) ?? {};
     const invocationId = `agy-tool-${turnId}-${stepIndex}`;
     const common = { turn_id: turnId, invocation_id: invocationId, tool_name: name, arguments: args };
     const events: AgentRunEvent[] = [];
@@ -106,9 +110,8 @@ export class AgyStreamEventConverter {
         { ...common, error: message, reason: message, provider_state: state,
           result: { provider_state: state, output: info?.output ?? null } }, "ERROR"));
     } else if (nativeImage) {
-      // AGY owns the generated file. Its native DONE does not provide a path.
       events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
-        ...common, result: { provider_state: "DONE", output: null }, provider_state: "DONE",
+        ...common, result: this.nativeImageResult(stepIndex), provider_state: "DONE",
       }));
     } else {
       events.push(this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
@@ -116,6 +119,16 @@ export class AgyStreamEventConverter {
       }));
     }
     return events;
+  }
+
+  /** AGY's stream omits the native image path; AGY's own step output for this step reports it. */
+  private nativeImageResult(stepIndex: number): Record<string, unknown> {
+    if (!this.resolveNativeImagePath) return { provider_state: "DONE", output: null };
+    let resolution: AgyNativeImagePathResolution | null = null;
+    try { resolution = this.resolveNativeImagePath(stepIndex); } catch { resolution = null; }
+    if (resolution?.path) return { provider_state: "DONE", output: resolution.outputText, file_path: resolution.path };
+    console.warn(`AGY_NATIVE_IMAGE_PATH_UNRESOLVED run=${this.runId} step=${stepIndex} reason=${resolution?.reason ?? "RESOLVER_FAILED"}`);
+    return { provider_state: "DONE", output: null };
   }
 
   private result(payload: Record<string, unknown>, turnId: string): AgentRunEvent[] {

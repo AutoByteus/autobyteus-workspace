@@ -66,7 +66,7 @@ suite("real AutoByteus AGY standalone native image chat", () => {
     if (appDataDir) await fs.rm(appDataDir, { recursive: true, force: true });
   });
 
-  it("publishes native generate_image ACTIVE/DONE and an ordinary reply via GraphQL/WebSocket", async () => {
+  it("publishes native generate_image ACTIVE/DONE with AGY's image path, an Artifacts entry and an ordinary reply via GraphQL/WebSocket", async () => {
     const unique = randomUUID();
     const created = await graphql<{ createAgentDefinition: { id: string } }>(
       "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
@@ -105,6 +105,9 @@ suite("real AutoByteus AGY standalone native image chat", () => {
     const deadline = Date.now() + 180_000;
     while (Date.now() < deadline && !messages.some((m) => m.type === "TURN_COMPLETED")
       && !messages.some((m) => m.type === "ERROR" && m.payload["error_effect"] === "terminal")) await wait(500);
+    const imageFileChange = () => messages.find((m) => m.type === "FILE_CHANGE"
+      && m.payload["sourceTool"] === "generated_output" && m.payload["status"] === "available");
+    for (let count = 0; count < 20 && !imageFileChange(); count++) await wait(250);
     const simplified = messages.map((m, eventIndex) => ({
       event_index: eventIndex, type: m.type, tool_name: m.payload["tool_name"] ?? null,
       invocation_id: m.payload["invocation_id"] ?? null,
@@ -112,6 +115,9 @@ suite("real AutoByteus AGY standalone native image chat", () => {
       provider_state: (m.payload["result"] as Record<string, unknown> | undefined)?.["provider_state"] ?? m.payload["provider_state"] ?? null,
       delta: m.type === "SEGMENT_CONTENT" ? String(m.payload["delta"] ?? "").slice(0, 500) : null,
       code: m.payload["code"] ?? null,
+      file_path: (m.payload["result"] as Record<string, unknown> | undefined)?.["file_path"] ?? null,
+      path: m.type === "FILE_CHANGE" ? m.payload["path"] ?? null : null,
+      source_tool: m.type === "FILE_CHANGE" ? m.payload["sourceTool"] ?? null : null,
     }));
     await fs.mkdir(evidenceDir, { recursive: true });
     await fs.writeFile(path.join(evidenceDir, "app-native-image-chat.json"), JSON.stringify({
@@ -135,7 +141,22 @@ suite("real AutoByteus AGY standalone native image chat", () => {
     expect(completedEvent?.payload["turn_id"]).toBe(turnId);
     expect(messages.indexOf(startedEvent)).toBeLessThan(messages.indexOf(succeededEvent));
     expect(messages.indexOf(succeededEvent)).toBeLessThan(messages.indexOf(completedEvent!));
-    expect(success[0]?.payload["result"]).toMatchObject({ provider_state: "DONE", output: null });
+    expect(Object.keys(startedEvent.payload["arguments"] as Record<string, unknown>))
+      .toEqual(expect.arrayContaining(["ImageName", "Prompt"]));
+    const result = succeededEvent.payload["result"] as Record<string, unknown>;
+    expect(result["provider_state"]).toBe("DONE");
+    const filePath = String(result["file_path"]);
+    const agyConversationDir = path.dirname(filePath);
+    expect(path.dirname(agyConversationDir)).toBe(await fs.realpath(path.join(os.homedir(), ".gemini", "antigravity-cli", "brain")));
+    expect((await fs.lstat(filePath)).isFile()).toBe(true);
+    expect(String(result["output"])).toContain(filePath);
+    const fileChanges = messages.filter((m) => m.type === "FILE_CHANGE" && m.payload["sourceTool"] === "generated_output");
+    expect(new Set(fileChanges.map((m) => m.payload["path"]))).toEqual(new Set([filePath]));
+    expect(imageFileChange()?.payload["sourceInvocationId"]).toBe(invocationId);
+    const preview = await fetch(new URL(`/rest/runs/${runId}/file-change-content?path=${encodeURIComponent(filePath)}`, url));
+    expect(preview.status).toBe(200);
+    expect(preview.headers.get("content-type")).toMatch(/^image\//);
+    expect(Buffer.from(await preview.arrayBuffer()).equals(await fs.readFile(filePath))).toBe(true);
     expect(messages.some((m) => m.type === "TOOL_EXECUTION_STARTED" && m.payload["tool_name"] === "call_mcp_tool")).toBe(false);
     expect(messages.some((m) => m.type === "SEGMENT_CONTENT" && String(m.payload["delta"] ?? "").trim())).toBe(true);
     expect(messages.some((m) => m.type === "TURN_COMPLETED")).toBe(true);
