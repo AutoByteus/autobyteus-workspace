@@ -1,0 +1,5 @@
+exit=0
+[2026-09-27T10:21:03.472Z] [INFO] [electron] Application started
+[2026-09-27T10:21:03.505Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:03.531Z] [INFO] [electron] [updater] Found version 1.4.91 (url: AutoByteus_personal_macos-arm64-1.4.91.zip)
+

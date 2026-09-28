@@ -1,0 +1,8 @@
+exit=0
+[2026-09-27T10:21:01.993Z] [INFO] [electron] Application started
+[2026-09-27T10:21:02.228Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:02.230Z] [INFO] [electron] [updater] Generated new staging user ID: 500d0e81-a65a-5fdd-9e95-043b4959b9fc
+[2026-09-27T10:21:02.240Z] [INFO] [electron] [updater] Update for version 1.4.90 is not available (latest version: 1.4.90, downgrade is disallowed).
+[2026-09-27T10:21:02.245Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:02.249Z] [INFO] [electron] [updater] Found version 1.4.91-beta.1 (url: AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip)
+

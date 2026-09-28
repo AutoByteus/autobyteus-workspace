@@ -1,0 +1,112 @@
+{
+  "scenario": "E2E-01a-new-stable-1.4.90",
+  "appVersion": "1.4.90",
+  "code": "new",
+  "steps": [
+    {
+      "op": "startup",
+      "arg": null,
+      "timedOut": false,
+      "state": {
+        "status": "no-update",
+        "currentVersion": "1.4.90",
+        "currentVersionIsPrerelease": false,
+        "updateChannel": "stable",
+        "updateStaged": false,
+        "availableVersion": null,
+        "message": "You already have the latest version.",
+        "errorKind": null
+      },
+      "policy": {
+        "allowPrerelease": false,
+        "allowDowngrade": false
+      },
+      "channelFile": null
+    },
+    {
+      "op": "check",
+      "arg": null,
+      "state": {
+        "status": "no-update",
+        "currentVersion": "1.4.90",
+        "currentVersionIsPrerelease": false,
+        "updateChannel": "stable",
+        "updateStaged": false,
+        "availableVersion": null,
+        "message": "You already have the latest version.",
+        "errorKind": null
+      },
+      "policy": {
+        "allowPrerelease": false,
+        "allowDowngrade": false
+      },
+      "channelFile": null
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases.atom",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v3/repos/AutoByteus/autobyteus-workspace/releases/latest",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.90/latest-mac.yml",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases.atom",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/v3/repos/AutoByteus/autobyteus-workspace/releases/latest",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.90/latest-mac.yml",
+      "status": 200
+    }
+  ],
+  "afterInitialize": {
+    "state": {
+      "status": "idle",
+      "currentVersion": "1.4.90",
+      "currentVersionIsPrerelease": false,
+      "updateChannel": "stable",
+      "updateStaged": false,
+      "availableVersion": null,
+      "message": "Update status is idle.",
+      "errorKind": null
+    },
+    "policy": {
+      "allowPrerelease": false,
+      "allowDowngrade": false
+    },
+    "channelFile": null
+  },
+  "final": {
+    "state": {
+      "status": "no-update",
+      "currentVersion": "1.4.90",
+      "currentVersionIsPrerelease": false,
+      "updateChannel": "stable",
+      "updateStaged": false,
+      "availableVersion": null,
+      "message": "You already have the latest version.",
+      "errorKind": null
+    },
+    "policy": {
+      "allowPrerelease": false,
+      "allowDowngrade": false
+    },
+    "channelFile": null
+  }
+}

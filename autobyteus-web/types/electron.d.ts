@@ -1,4 +1,8 @@
-import type { AppUpdateState } from '../shared/appUpdateTypes';
+import type {
+  AppUpdateChannel,
+  AppUpdateChannelChangeResult,
+  AppUpdateState,
+} from '../shared/appUpdateTypes';
 import type { ServerHealthResult, ServerStatusSnapshot } from './serverStatus';
 import type {
   NodeRegistryChange,
@@ -59,6 +63,7 @@ declare global {
       checkForAppUpdates: () => Promise<AppUpdateState>;
       downloadAppUpdate: () => Promise<AppUpdateState>;
       installAppUpdateAndRestart: () => Promise<{ accepted: boolean }>;
+      setAppUpdateChannel: (channel: AppUpdateChannel) => Promise<AppUpdateChannelChangeResult>;
       onAppUpdateState: (callback: (updateState: AppUpdateState) => void) => Cleanup;
 
       getLogFilePath: () => Promise<string>;

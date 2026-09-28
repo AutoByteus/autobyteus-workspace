@@ -1,15 +1,34 @@
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import type { ProgressInfo, UpdateInfo } from 'electron-updater';
-import type { AppUpdateOperation, AppUpdateState } from '../../shared/appUpdateTypes';
+import type {
+  AppUpdateChannelChangeResult,
+  AppUpdateOperation,
+  AppUpdateState,
+  AppUpdateStatus,
+} from '../../shared/appUpdateTypes';
+import { isAppUpdateChannelLocked } from '../../shared/appUpdateTypes';
 import { logger } from '../logger';
 import { classifyAppUpdateError } from './appUpdateErrorClassifier';
+import { isAppUpdateChannel, loadAppUpdateChannel, saveAppUpdateChannel } from './appUpdateChannelStore';
 
 export const APP_UPDATE_STATE_CHANNEL = 'app-update-state';
 const IPC_GET_STATE = 'app-update:get-state';
 const IPC_CHECK = 'app-update:check';
 const IPC_DOWNLOAD = 'app-update:download';
 const IPC_INSTALL = 'app-update:install';
+const IPC_SET_CHANNEL = 'app-update:set-channel';
+
+const CHANNEL_RECHECK_STATUSES: ReadonlySet<AppUpdateStatus> = new Set([
+  'idle',
+  'no-update',
+  'available',
+  'error',
+]);
+
+function isPrereleaseVersion(version: string): boolean {
+  return /^\d+\.\d+\.\d+-/.test(version);
+}
 
 function toIsoNow(): string {
   return new Date().toISOString();
@@ -51,9 +70,13 @@ export class AppUpdater {
   private lastErrorSignature: string | null = null;
 
   constructor(private readonly autoCheckDelayMs: number = 8000) {
+    const currentVersion = app.getVersion();
     this.state = {
       status: 'idle',
-      currentVersion: app.getVersion(),
+      currentVersion,
+      currentVersionIsPrerelease: isPrereleaseVersion(currentVersion),
+      updateChannel: 'stable',
+      updateStaged: false,
       availableVersion: null,
       downloadPercent: null,
       downloadTransferredBytes: null,
@@ -81,6 +104,9 @@ export class AppUpdater {
       error: (message: string) => logger.error(`[updater] ${message}`),
       debug: (message: string) => logger.debug(`[updater] ${message}`),
     } as any;
+
+    this.state = { ...this.state, updateChannel: loadAppUpdateChannel(app.getPath('userData')) };
+    this.applyChannelPolicy();
 
     this.registerAutoUpdaterListeners();
     this.registerIpcHandlers();
@@ -141,6 +167,7 @@ export class AppUpdater {
     });
 
     try {
+      this.applyChannelPolicy();
       await autoUpdater.checkForUpdates();
     } catch (error) {
       this.handleError(error, 'Failed to check for updates.', operation);
@@ -228,6 +255,33 @@ export class AppUpdater {
     return { accepted: true };
   }
 
+  async setUpdateChannel(channel: unknown): Promise<AppUpdateChannelChangeResult> {
+    if (!isAppUpdateChannel(channel) || isAppUpdateChannelLocked(this.state)) {
+      return { accepted: false, persisted: false, state: this.getState() };
+    }
+
+    // A failed save still applies the channel for this session; the caller reports it.
+    const persisted = saveAppUpdateChannel(app.getPath('userData'), channel);
+    this.applyState({ updateChannel: channel });
+    this.applyChannelPolicy();
+
+    // Re-check so an "available" result from the previous channel is replaced.
+    if (app.isPackaged && CHANNEL_RECHECK_STATUSES.has(this.state.status)) {
+      await this.checkForUpdates('manual');
+    }
+
+    return { accepted: true, persisted, state: this.getState() };
+  }
+
+  /**
+   * Applies the channel to electron-updater before every check. Never set
+   * `autoUpdater.channel`: its setter forces `allowDowngrade = true`.
+   */
+  private applyChannelPolicy(): void {
+    autoUpdater.allowPrerelease = this.state.updateChannel === 'beta';
+    autoUpdater.allowDowngrade = false;
+  }
+
   private registerAutoUpdaterListeners(): void {
     autoUpdater.on('checking-for-update', () => {
       this.applyState({
@@ -286,6 +340,9 @@ export class AppUpdater {
     autoUpdater.on('update-downloaded', (updateInfo: UpdateInfo) => {
       this.applyState({
         status: 'downloaded',
+        // Sticky for this process: the staged update installs on quit even if a
+        // later check moves the status on.
+        updateStaged: true,
         availableVersion: updateInfo.version || this.state.availableVersion,
         message: 'Update downloaded. Restart to install.',
         errorKind: null,
@@ -305,11 +362,13 @@ export class AppUpdater {
     ipcMain.removeHandler(IPC_CHECK);
     ipcMain.removeHandler(IPC_DOWNLOAD);
     ipcMain.removeHandler(IPC_INSTALL);
+    ipcMain.removeHandler(IPC_SET_CHANNEL);
 
     ipcMain.handle(IPC_GET_STATE, async () => this.getState());
     ipcMain.handle(IPC_CHECK, async () => await this.checkForUpdates('manual'));
     ipcMain.handle(IPC_DOWNLOAD, async () => await this.downloadUpdate());
     ipcMain.handle(IPC_INSTALL, async () => this.installUpdateAndRestart());
+    ipcMain.handle(IPC_SET_CHANNEL, async (_event, channel: unknown) => await this.setUpdateChannel(channel));
   }
 
   private handleError(

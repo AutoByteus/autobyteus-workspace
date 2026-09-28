@@ -1,0 +1,10 @@
+[
+ {"label":"BR-01 web build","switchChecked":"false","switchDisabled":true,"checkDisabled":true,"badge":false},
+ {"label":"downloaded","status":"downloaded","updateStaged":true,"switchChecked":"true","switchDisabled":true,"hint":"An update is downloaded. Install it or restart AutoByteus before changing the update channel.","checkDisabled":false,"buttons":[" [disabled]","Check for Updates","Install & Restart"],"calls":[]},
+ {"label":"switch-click-in-downloaded","status":"downloaded","updateStaged":true,"switchChecked":"true","switchDisabled":true,"hint":"(same)","checkDisabled":false,"calls":[]},
+ {"label":"after-check-click (available, staged)","status":"available","updateStaged":true,"switchChecked":"true","switchDisabled":true,"hint":"(same)","checkDisabled":false,"buttons":[" [disabled]","Check for Updates","Download Update"],"calls":["check"]},
+ {"label":"switch-click-after-check","status":"available","updateStaged":true,"switchChecked":"true","switchDisabled":true,"calls":["check"]},
+ {"label":"after-failed-check (error, staged)","status":"error","updateStaged":true,"switchChecked":"true","switchDisabled":true,"hint":"(same)","checkDisabled":false,"buttons":[" [disabled]","Check for Updates"],"calls":["check","check"]},
+ {"label":"switch-click-after-failed-check","status":"error","updateStaged":true,"switchChecked":"true","switchDisabled":true,"calls":["check","check"]},
+ {"label":"check IPC rejects (store catch path)","status":"error","updateStaged":true,"updateChannel":"beta","currentVersionIsPrerelease":false,"switchDisabled":true,"hint":true}
+]

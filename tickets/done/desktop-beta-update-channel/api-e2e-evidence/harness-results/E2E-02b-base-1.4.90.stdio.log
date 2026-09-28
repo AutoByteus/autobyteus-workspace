@@ -1,0 +1,6 @@
+exit=0
+[2026-09-27T10:21:01.748Z] [INFO] [electron] Application started
+[2026-09-27T10:21:01.779Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:01.791Z] [INFO] [electron] [updater] Generated new staging user ID: b98ad5d8-29fc-58eb-9e21-44b2839afba4
+[2026-09-27T10:21:01.809Z] [INFO] [electron] [updater] Update for version 1.4.90 is not available (latest version: 1.4.90, downgrade is disallowed).
+
