@@ -2,11 +2,12 @@
 
 ## Status
 
-- Stage: Delivery. User verified on 2026-09-28 ("i tested. its working. finalize and release a beta"). Now finalizing into `personal` and releasing beta `v1.4.91-beta.4`. Outcome is recorded in `release-deployment-report.md`.
+- Stage: Delivery completed. The user verified on 2026-09-28 ("i tested. its working. finalize and release a beta"). The work is finalized into `personal@74fd335d2` and released as beta `v1.4.91-beta.4`, with all four release workflows successful. Details are in `release-deployment-report.md`.
 - Classification (preserved): `task_size=Small`, `architectural_risk=High`, route `Reviewed`
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path`
-- Ticket branch: `codex/agy-native-image-output-path` (local only, not pushed)
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path` (removed after finalization)
+- Ticket branch: `codex/agy-native-image-output-path`. Pushed at `1f7b9e8c8` and fast-forward merged into `personal`; the local branch was deleted and the remote branch is kept.
 - Finalization target: `personal` (remote `origin`)
+- Release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.91-beta.4 (pre-release) and Docker `autobyteus/autobyteus-server:1.4.91-beta.4` / `:beta`. Stable `:latest` is unchanged.
 
 ## Integrated State For Verification
 
@@ -51,6 +52,9 @@
 - Verified 2026-09-28 by the user on a local unsigned macOS ARM64 personal-flavor build of this branch (`delivery-evidence/delivery-electron-build.log`, exit 0). The user asked for finalization and a beta release.
 - `origin/personal` was re-fetched after verification and was unchanged at `fcd3e83a4`, so renewed verification is not needed.
 
-## Finalization Plan
+## Finalization Result
 
-- Archive the ticket to `tickets/done/`, commit, push the ticket branch, fast-forward `personal` in an isolated finalization worktree, run the documented beta helper with `--no-push`, push `personal` and the tag, verify the release workflows, then clean up the worktrees and branches.
+- Ticket archived to `tickets/done/` and committed (`1f7b9e8c8`); the ticket branch was pushed.
+- `personal` was fast-forwarded in an isolated finalization worktree. The documented beta helper created release commit `74fd335d2` and annotated tag `v1.4.91-beta.4`. Both were pushed.
+- Desktop, Android, iOS and Server Docker release workflows all succeeded. The GitHub pre-release has 17 assets. Docker `:beta` now points at beta.4, and `:latest` is unchanged.
+- The ticket worktree and local branch were removed. The finalization worktree and branch are removed after the evidence commit is pushed.
