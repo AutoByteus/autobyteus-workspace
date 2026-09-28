@@ -345,7 +345,9 @@ or upgraded to pick up browser-bridge script changes from a rebuilt image.
 The container runs as `root`, and `/root` is persisted in a Docker-managed named volume per launcher node or source-helper project. That means:
 
 - auth state is isolated per Docker node/instance,
-- auth state survives normal restart and recreate for the same friendly node,
+- file-backed configuration/auth state stored under `/root` survives normal
+  restart and recreate for the same friendly node (provider keyrings or other
+  external credential stores are not covered by this volume guarantee),
 - auth state is removed only if you explicitly remove that node's volumes.
 
 Host credential folders are not mounted into the container by default.
@@ -458,6 +460,28 @@ docker buildx build \
   .
 ```
 
+## CLI Packaging Regression Checks
+
+From the repository root, run the network-free packaging checks:
+
+```bash
+python3 -m unittest discover -s scripts/tests -p 'test_server_docker*.py' -v
+python3 -m unittest discover -s scripts/tests -p test_docker_build_context_sources.py -v
+```
+
+For a locally built **full production image**, run the opt-in offline check:
+
+```bash
+python3 scripts/tests/server_docker_cli_smoke.py --image <local-image> --platform linux/arm64
+```
+
+Repeat for `linux/amd64` and the default/`zh` variants as appropriate. The harness
+neither builds nor pulls images. It checks native command resolution and versions
+for all four CLIs in clean/reused-home default and root login shells, preserving
+synthetic home/data/browser markers. It owns and removes its temporary containers
+and volumes; no user credentials or existing volumes are used. This is not a
+server-startup, full noVNC UI, authentication/keyring, or inference test.
+
 ## Multi-Arch Release Image
 
 For a publishable image that is fully built at image-build time, use the multi-arch script:
@@ -535,7 +559,7 @@ Manual republish:
 Public launcher named volumes (per friendly node):
 - `<node-name>-workspace`: built artifacts
 - `<node-name>-data`: private server app data at `/home/autobyteus/data` (`.env`, SQLite DB, logs, media, memory, agents, skills, workspaces)
-- `<node-name>-root-home`: in-container root home, including Codex/Claude auth state
+- `<node-name>-root-home`: in-container root home, including file-backed CLI configuration/auth state (see CLI Auth Model)
 - `<node-name>-chromium-profile`: private Chromium browser profile state at `/home/vncuser/.config/chromium` (cookies, local storage, preferences)
 
 Public launcher host bind mounts (additional, per friendly node unless noted):
@@ -546,7 +570,7 @@ Public launcher host bind mounts (additional, per friendly node unless noted):
 Source helper named volumes (per Compose project):
 - `<project>_autobyteus-server-workspace`: built artifacts
 - `<project>_autobyteus-server-data`: `.env`, SQLite DB, logs, media, memory
-- `<project>_autobyteus-server-root-home`: in-container root home, including Codex/Claude auth state
+- `<project>_autobyteus-server-root-home`: in-container root home, including file-backed CLI configuration/auth state (see CLI Auth Model)
 - `<project>_autobyteus-server-chromium-profile`: private Chromium browser profile state at `/home/vncuser/.config/chromium`
 
 Server data directory in container: `/home/autobyteus/data`
@@ -560,7 +584,10 @@ Docker bind mounts on an existing container requires recreation, but
 folders. On Linux, files written from the current root-running container may be
 root-owned on the host.
 
-To reset Codex/Claude login for a source-helper instance, remove the project volumes:
+**Destructive reset, not an upgrade step:** removing source-helper project
+volumes also deletes persisted server data, root-home CLI state and browser
+profile state. Back up anything needed first. Do not use this to refresh CLI
+binaries or as a routine provider logout:
 
 ```bash
 ./docker-start.sh down --volumes
