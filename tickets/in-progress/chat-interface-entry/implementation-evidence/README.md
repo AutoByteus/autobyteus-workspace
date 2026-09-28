@@ -1,4 +1,4 @@
-# Implementation evidence — IR-002
+# Implementation evidence — IR-002 and IR-003
 
 All probes run in an owned temp data root on free ports with a sanitized environment; the user's data and desktop app are not touched. Each probe writes an `evidence.json` and the owned backend/frontend logs next to it.
 
@@ -35,6 +35,24 @@ Frames received on P's socket before the close (`d14-stale-diagnose`), times rel
 - +10 ms: close. At that moment `submissionPending=false` and status is `offline`.
 
 Finding: the backend sends an `offline` status snapshot as soon as the socket connects, which is before `SEND_MESSAGE`. `applyLiveAgentStatusEvent` (`services/runStatus/agentRuntimeStatusState.ts`) clears `submissionPending` on any live status. That breaks the D-14 premise that the flag stays true from `beginLocalUserSubmission` through prepare → connect → send (AF-30). The guard therefore covers only the window before the socket connects; the reproduced race happens after it.
+
+## D-14 (SR-010) — the activation-pending marker (IR-003)
+
+Same probe, `d14-reconcile-probe.mjs`, with three changes:
+- It adds a `stale-resume` scenario: chat until a reply arrives, terminate the run, wait until the page shows it Offline, snapshot the history (P inactive), then resend.
+  - The resume reuses P's still-connected socket, so the stale refresh is triggered right after the client sends `SEND_MESSAGE`. The first-send `stale` scenario still triggers at P's socket open.
+- The stale snapshot is now served only to the refresh the page triggers, never to an ordinary poll.
+- Pass requires both a streamed reply and no close of P while the send awaited activation.
+
+"Without marker" means the IR-002 commit `46f28bb9f` (the SR-008 `submissionPending` guard), with this round's web changes stashed. "With marker" means commit `5f11d52f6`.
+
+| Scenario | Without marker | With marker |
+| --- | --- | --- |
+| First send (`stale`) | FAIL: P closed by reconcile, reply lost, run in Error (`ir3-stale-first-send-without-marker/`) | PASS: stale snapshot served 5 ms after P's socket opened, no close, reply streamed (`ir3-stale-first-send-with-marker/`) |
+| Offline resume (`stale-resume`) | FAIL: P closed by `reconcileDiscoveredActiveRuns` 3 ms after the stale snapshot, with P already `initializing` and `submissionPending=false`; reply lost (`ir3-stale-resume-without-marker/`) | PASS: stale snapshot served after `SEND_MESSAGE`, no close, reply streamed (`ir3-stale-resume-with-marker/`) |
+| Resend journey ×14 (`resend`) | — | 14/14 PASS, 0 losses (`ir3-resend-with-marker/`) |
+
+No close of P occurred with the marker in any run, so there was no stack to return as `Unclear`.
 
 ## D-15 — skill request strength
 

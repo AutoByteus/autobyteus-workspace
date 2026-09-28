@@ -8,10 +8,12 @@
 //   stale  Deterministic reproduction of F-02: a quiet run-history refresh whose snapshot predates
 //          activation of the prepared run P is delivered right after P's stream reaches CONNECTED.
 //          Every agent-socket close is recorded with its JS call stack (no product instrumentation).
+//   stale-resume  The same stale-snapshot race for a resume of an Offline run: chat until a reply,
+//          terminate the run, then resend; the snapshot (P inactive) is served when P's new socket opens.
 //   resend The C07 journey (failed first send → temp chat → resend) repeated N times with the
 //          normal 5 s tree poll; a loss is a resend whose reply never streams.
 //
-// Usage: node d14-reconcile-probe.mjs --scenario stale|resend [--repeat 14] [--model gpt-5.5]
+// Usage: node d14-reconcile-probe.mjs --scenario stale|stale-resume|resend [--repeat 14] [--model gpt-5.5]
 //        [--output-dir <dir>]
 import { spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
@@ -73,10 +75,20 @@ const stopOwned = async (child) => {
 // In-page recorder: every agent-stream socket (url ends with /<runId>) records open/close with the
 // JS stack of the close() call. `__d14.onOpen(runId, fn)` runs fn once that run's socket is open.
 const initScript = () => {
-  const d14 = { sockets: [], closes: [], waiters: [] }
+  const d14 = { sockets: [], closes: [], waiters: [], sendWaiters: [] }
   window.__d14 = d14
   const NativeWebSocket = window.WebSocket
   const nativeClose = NativeWebSocket.prototype.close
+  const nativeSend = NativeWebSocket.prototype.send
+  NativeWebSocket.prototype.send = function (data) {
+    const result = nativeSend.call(this, data)
+    if (this.__d14 && String(data).includes('"SEND_MESSAGE"')) {
+      for (const waiter of d14.sendWaiters.splice(0)) {
+        if (this.url.split('?')[0].endsWith(`/${waiter.runId}`)) setTimeout(waiter.fn, 0); else d14.sendWaiters.push(waiter)
+      }
+    }
+    return result
+  }
   NativeWebSocket.prototype.close = function (...args) {
     if (this.__d14) {
       let submissionPending = null, status = null
@@ -118,6 +130,8 @@ const initScript = () => {
     const open = d14.sockets.find((s) => s.url.split('?')[0].endsWith(`/${runId}`) && s.openedAt && !s.closedAt)
     if (open) setTimeout(fn, 0); else d14.waiters.push({ runId, fn })
   }
+  // Runs fn right after the client sends SEND_MESSAGE on runId's socket.
+  d14.onSend = (runId, fn) => { d14.sendWaiters.push({ runId, fn }) }
   d14.refreshTree = () => {
     const pinia = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia
     d14.refreshIssuedAt = Date.now()
@@ -151,13 +165,17 @@ const pickModel = async (page) => {
 const routeRunId = (page) => new URL(page.url()).searchParams.get('id')
 const pageCloses = (page) => page.evaluate(() => ({ closes: window.__d14.closes, sockets: window.__d14.sockets, refreshIssuedAt: window.__d14.refreshIssuedAt ?? null }))
 
+// Only the tree request issued by the refresh the page triggers at P's socket open gets the stale
+// snapshot; ordinary polls before it pass through.
+const triggeredRefreshIssued = (page) => page.evaluate(() => typeof window.__d14?.refreshIssuedAt === 'number').catch(() => false)
+
 // Deterministic F-02 reproduction.
 const runStale = async (page, index) => {
   let treeBody = null, staleBody = null, preparedRunId = null, staleServedAt = null
   await page.route('**/graphql', async (route) => {
     const body = route.request().postData() ?? ''
     if (/ListWorkspaceRunHistory/.test(body)) {
-      if (staleBody && preparedRunId && !staleServedAt) {
+      if (staleBody && preparedRunId && !staleServedAt && await triggeredRefreshIssued(page)) {
         staleServedAt = Date.now()
         return route.fulfill({ status: 200, contentType: 'application/json', body: staleBody })
       }
@@ -191,6 +209,51 @@ const runStale = async (page, index) => {
     const reconcileCloses = recorded.closes.filter((c) => c.url.split('?')[0].endsWith(`/${preparedRunId}`))
     const staleInStale = staleBody ? !JSON.parse(staleBody).data.listWorkspaceRunHistory.some((g) => (g.agentDefinitions ?? []).some((d) => (d.runs ?? []).some((r) => r.runId === preparedRunId && r.isActive))) : null
     return { model, preparedRunId, routeRunId: routeRunId(page), staleServedAt, staleSnapshotHadPInactive: staleInStale, replied, error, preparedSockets: prepared, closesOfP: reconcileCloses, status: await page.locator(sel('chat-run-status')).innerText().catch(() => null) }
+  } finally { await page.unroute('**/graphql') }
+}
+
+// Deterministic race for a resume of an Offline run.
+const runStaleResume = async (page, index) => {
+  let treeBody = null, staleBody = null, armed = false, staleServedAt = null
+  await page.route('**/graphql', async (route) => {
+    const body = route.request().postData() ?? ''
+    if (/ListWorkspaceRunHistory/.test(body)) {
+      if (armed && staleBody && !staleServedAt && await triggeredRefreshIssued(page)) {
+        staleServedAt = Date.now()
+        return route.fulfill({ status: 200, contentType: 'application/json', body: staleBody })
+      }
+      treeBody = body
+    }
+    return route.continue()
+  })
+  try {
+    await newChat(page)
+    const model = await pickModel(page)
+    const seed = `D14-SEED-${index}`
+    await composerInput(page).fill(`Reply with exactly ${seed} and nothing else.`)
+    await page.locator(sel('chat-primary-action')).first().click()
+    await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
+    const runId = routeRunId(page)
+    await waitForReply(page, seed, 180000)
+    await gqlBody(JSON.stringify({ query: 'mutation($id:String!){terminateAgentRun(agentRunId:$id){success}}', variables: { id: runId } }))
+    // The page learns Offline through its own poll/reconcile.
+    await page.waitForFunction(() => /offline/i.test(document.querySelector('[data-test="chat-run-status"]')?.textContent ?? ''), null, { timeout: 60000 })
+    await waitFor('a tree request to replay', async () => treeBody, 30000)
+    staleBody = await gqlBody(treeBody) // P terminated: inactive.
+    armed = true
+    // The resume reuses P's still-connected socket; the refresh is requested right after SEND_MESSAGE.
+    await page.evaluate((id) => window.__d14.onSend(id, () => void window.__d14.refreshTree()), runId)
+    const marker = `D14-RESUME-${index}`
+    await composerInput(page).fill(`Reply with exactly ${marker} and nothing else.`)
+    const resumeStartedAt = Date.now()
+    await page.locator(sel('chat-primary-action')).first().click()
+    let replied = true, error = null
+    try { await waitForReply(page, marker, 180000) } catch (e) { replied = false; error = e.message }
+    const recorded = await pageCloses(page)
+    const closesOfP = recorded.closes.filter((c) => c.at >= resumeStartedAt && c.url.split('?')[0].endsWith(`/${runId}`))
+    return { model, runId, staleServedAt, replied, error, closesOfP,
+      socketsOfP: recorded.sockets.filter((s) => s.url.split('?')[0].endsWith(`/${runId}`) && s.createdAt >= resumeStartedAt),
+      status: await page.locator(sel('chat-run-status')).innerText().catch(() => null) }
   } finally { await page.unroute('**/graphql') }
 }
 
@@ -255,14 +318,16 @@ try {
   for (let i = 1; i <= repeat; i += 1) {
     const started = Date.now()
     let result
-    try { result = scenario === 'stale' ? await runStale(page, i) : await runResend(page, i) } catch (e) { result = { replied: false, error: `probe error: ${e.message}` } }
+    try { result = scenario === 'stale' ? await runStale(page, i) : scenario === 'stale-resume' ? await runStaleResume(page, i) : await runResend(page, i) } catch (e) { result = { replied: false, error: `probe error: ${e.message}` } }
     result.iteration = i; result.ms = Date.now() - started
-    if (!result.replied) exitCode = 1
+    // Stale scenarios also fail when reconcile closed P while the send awaited activation.
+    result.passed = !!result.replied && !(result.closesOfP?.length)
+    if (!result.passed) exitCode = 1
     evidence.iterations.push(result)
-    console.log(`${scenario} #${i}: ${result.replied ? 'reply streamed' : `LOST (${result.error})`}${result.closesOfP ? `; closes of P: ${result.closesOfP.length}` : ''}`)
+    console.log(`${scenario} #${i}: ${result.passed ? 'PASS' : 'FAIL'} — ${result.replied ? 'reply streamed' : `LOST (${result.error})`}${result.closesOfP ? `; closes of P: ${result.closesOfP.length}` : ''}`)
     await fs.writeFile(path.join(outDir, 'evidence.json'), JSON.stringify(evidence, null, 2))
   }
-  evidence.summary = { iterations: repeat, losses: evidence.iterations.filter((r) => !r.replied).length }
+  evidence.summary = { iterations: repeat, losses: evidence.iterations.filter((r) => !r.replied).length, failures: evidence.iterations.filter((r) => !r.passed).length }
 } catch (error) {
   exitCode = 1
   evidence.fatal = String(error?.stack ?? error)

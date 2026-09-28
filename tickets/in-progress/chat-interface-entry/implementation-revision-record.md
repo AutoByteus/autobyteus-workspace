@@ -8,6 +8,7 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-003 pass | N/A | `Initial Baseline` | SR-003, SR-004 (R2 UI supplement), SR-007; ARCH-REV-003; CRR N/A; API-REV N/A; DR N/A | Implemented per design D-01..D-13; ready for code review |
 | IR-002 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-005 pass (after API-REV-001 and CRR-002) | CR-002 (F-01), CR-003 (F-02), CR-004 (F-03), AR-008, IC-1, IC-2 | `Local Fix` (CR-002) + design execution (D-15) + `Design Impact` (D-14) | SR-008, SR-009; ARCH-REV-004, ARCH-REV-005; CRR-001, CRR-002; API-REV-001; DR N/A | CR-002 and D-15 complete and validated; D-14 guard implemented but shown insufficient → Design Impact to solution designer |
+| IR-003 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-006 pass (SR-010) | CR-003 (F-02), IR-002 D-14 Design Impact, R-2 (optional) | Design execution (revised D-14) | SR-010; ARCH-REV-006; CRR-002; API-REV-001; DR N/A | D-14 activation-pending marker implemented; stale first-send and Offline-resume reproductions fail without it and pass with it; resend ×14 with 0 losses; R-2 included |
 
 ## Revision Entries
 
@@ -108,4 +109,48 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
   - The D-14 race remains open (RSK-007). The server sends `AGENT_STATUS offline` on connect, which clears `submissionPending` before `SEND_MESSAGE`.
   - The Codex V cases use a `resume-designer` pair, because `software-tutorial-video-maker` is natively discoverable from the user's `~/.codex/skills`.
   - The live screenshot tool failed; the CR-002 rendered check is from DOM inspection.
+
+### IR-003 — D-14 activation-pending marker (SR-010) and R-2
+
+- Triggering role, report path, and round: architecture_reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-handoff.md`, ARCH-REV-006 (pass on SR-010).
+- Triggering finding IDs: CR-003 / F-02 (RSK-007); the IR-002 D-14 Design Impact (AF-33); R-2 / MP-013 (optional, included).
+- Classification: design execution of the revised D-14.
+- Prior authoritative result: IR-002 (`da1033860`, `46f28bb9f`). D-14's `submissionPending` guard could not close the race.
+- Current authoritative result: commit `5f11d52f6`. D-14 is implemented per SR-010. CR-002 and D-15 are unchanged from IR-002.
+- Related solution revision IDs: SR-010
+- Related architecture-review revision IDs: ARCH-REV-006
+- Related code-review revision IDs: CRR-002
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: implementation of the SR-010 D-14 revision.
+- Approved behavior or requirement IDs affected: BEH-005, REQ-003 and REQ-017 (D-04/D-13 first sends and catalog launches), plus resumes of Offline/Error runs.
+- Implementation delta:
+  - **Marker** (`stores/agentRunStore.ts`).
+    - Module-level `activationPendingRunIds`, with the actions `markActivationPending`, `clearActivationPending` and `isActivationPending`.
+    - `sendUserInputAndSubscribe` marks a resume of an Offline/Error run as the submission starts, and a first send with the permanent id right after `promoteTemporaryId`. Both happen before the stream connects.
+    - Cleared in the `catch` path (including the connect timeout) and in `terminateRun` and `closeAgent`.
+    - The service's `onSendMessageCommandAck` clears the marker when a `SEND_MESSAGE` ack is not accepted.
+  - **Ack callback** (`services/agentStreaming/AgentStreamingService.ts`, `index.ts`).
+    - New `onSendMessageCommandAck` option. It is called for every `SEND_MESSAGE` ack before the ack is projected; projection is unchanged.
+    - `SendMessageCommandAckPayload` is re-exported.
+  - **Reconcile** (`stores/runHistoryLoadActions.ts`).
+    - `reconcileDiscoveredActiveRuns` skips marked runs: no disconnect, no Offline cleanup.
+    - It clears the marker for every run in the snapshot's active set (`isActive || shouldConnectStream`).
+    - The SR-008 `submissionPending` guard is removed. `submissionPending` is unchanged.
+    - Live `AGENT_STATUS` events do not touch the marker.
+  - **R-2** (`runHistoryLoadActions.ts`, `runHistoryStore.ts`): a `workspaceRequestGeneration`, checked before a workspace snapshot is applied, before it is reconciled, and before an error is recorded.
+  - **Docs:** `autobyteus-web/docs/agent_execution_architecture.md`.
+- Changed files or areas:
+  - Tests: the `agentRunStore` spec (8 marker tests), `AgentStreamingService.spec.ts` (ack callback), and the new `runHistoryReconcileActivationPending.spec.ts` (6 tests, replacing `runHistoryReconcilePendingSubmission.spec.ts`).
+  - The `runHistoryStore` and `agentOrgRetainedRecovery` spec mocks gained the new members.
+- Local validation and result:
+  - Web: `pnpm test:nuxt run` shows only the 4 baseline failing files (3337 passed). `pnpm test:electron run`: 177 passed. vue-tsc shows no errors in the changed files. The guards pass.
+  - Five of the six reconcile tests fail against the previous `runHistoryLoadActions.ts`. The sixth (no Offline cleanup) also passes there, because the old guard covered `submissionPending === true`.
+  - Live, in `implementation-evidence/`:
+    - The first-send and Offline-resume stale reproductions FAIL without the marker and PASS with it.
+    - The resend journey passed 14/14, with 0 losses.
+    - No close of P was observed with the marker.
+- Next recipient or routing: code reviewer, via `get_handoff_rules`.
+- Remaining limitations or risks:
+  - The marker has no timeout. It lasts until an active snapshot, a failure, a rejected ack, or terminate/close. If a send is accepted but the server never activates the run, that run is not torn down by reconcile until one of those happens (for example terminate or close).
 

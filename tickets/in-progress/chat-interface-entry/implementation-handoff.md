@@ -4,11 +4,11 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: independent architecture review was selected. It passed ARCH-REV-003 (IR-001) and ARCH-REV-005 (the SR-009 package for IR-002). This round ends with a D-14 `Design Impact`, which `get_handoff_rules` routes to the solution designer.
+- Upstream review applicability and handoff-rule result: independent architecture review was selected. It passed ARCH-REV-003 (IR-001), ARCH-REV-005 (SR-009, IR-002) and ARCH-REV-006 (SR-010, IR-003). IR-003 completes the package, so `get_handoff_rules` routes it to code review (Large/High).
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/requirements-doc.md` (SR-003)
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/investigation-notes.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/solution-revision-record.md` (SR-003, SR-004, SR-007, SR-008, SR-009)
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-spec.md` (SR-009, D-01..D-15; "CRR-002 Resolution")
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/solution-revision-record.md` (SR-003, SR-004, SR-007, SR-008, SR-009, SR-010)
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-spec.md` (SR-010, D-01..D-15; D-14 revised in SR-010)
 - Supplemental task artifacts (normative R2 UI): `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/chat-interface-entry/ui-ux-spec.md`, `.../visual-references/` (VIS-001..025, `manifest.json`), `.../ui-behavior-test-matrix.md`. Product design handoffs: `product-design-request-handoff.md`, `product-design-revision-request-handoff.md` in the ticket folder.
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-revision-record.md`; handoff: `.../architecture-review-handoff.md`
@@ -21,13 +21,13 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (baseline IR-001)
-- Related solution revision IDs: SR-003, SR-004, SR-007, SR-008, SR-009
-- Related architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004, ARCH-REV-005
+- Current implementation revision ID: `IR-003` (IR-002: CR-002 and D-15; IR-001: baseline)
+- Related solution revision IDs: SR-003, SR-004, SR-007, SR-008, SR-009, SR-010
+- Related architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004, ARCH-REV-005, ARCH-REV-006
 - Related code-review revision IDs: CRR-001, CRR-002
 - Related API/E2E revision IDs: API-REV-001
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: CR-002 (F-01), CR-003 (F-02), CR-004 (F-03), AR-008, IC-1, IC-2
+- Triggering finding IDs: CR-002 (F-01), CR-003 (F-02), CR-004 (F-03), AR-008, IC-1, IC-2; for IR-003, the IR-002 D-14 Design Impact (AF-33) and R-2 / MP-013
 
 Commits (in design change-sequence order):
 
@@ -40,7 +40,22 @@ Commits (in design change-sequence order):
 | `360de94a9` | 5 | Skill-request instruction codec, `requestedSkillNames`, message chips |
 | `797d49d6a` | 6–9 | Chat draft/launch/routing, Chat components and pages, removals, localization, docs |
 | `717603e61` | — | Ticket package (IR-001) |
+| `5f11d52f6` | IR-003 | D-14 activation-pending marker (SR-010): mark/clear in `agentRunStore`, `onSendMessageCommandAck`, reconcile skip + clear on active snapshot, SR-008 guard removed; R-2 workspace request generation; web execution doc |
 | `da1033860` | IR-002 | CR-002 footer thinking source; D-14 `submissionPending` reconcile guard; D-15 request strength (Rule 1, Rule 2 A/B, IC-1, IC-2) across Codex/Claude/ACP-Grok/AGY; `workspace-skill-links.ts` split; server skills doc |
+
+### IR-003 outcome
+
+- **D-14 / CR-003 / F-02 / RSK-007 are resolved as revised in SR-010.**
+  - `agentRunStore` owns the activation-pending marker.
+  - A first send is marked with the permanent id right after promotion. A resume of an Offline/Error run is marked when the submission starts. Both happen before the stream connects.
+  - Reconcile skips a marked run and clears the marker once a snapshot lists the run as `isActive || shouldConnectStream`.
+  - The send owner clears it on a handled failure (including the connect timeout), on a rejected `SEND_MESSAGE` ack (the new `onSendMessageCommandAck`), and on terminate/close.
+  - Live `AGENT_STATUS` never clears it. The SR-008 `submissionPending` guard is removed.
+- **Evidence** (`implementation-evidence/README.md` § D-14 (SR-010)):
+  - The deterministic stale reproductions fail without the marker and pass with it, for both a first send and an Offline resume.
+  - The resend journey passed 14/14 with 0 losses.
+  - No close of P was observed with the marker, so there was nothing to return as `Unclear`.
+- **R-2 (optional) is included:** the workspace branch of `fetchRunHistoryTree` now carries a request generation.
 
 ### IR-002 outcome
 
@@ -49,7 +64,7 @@ Commits (in design change-sequence order):
   - Verified live: a live Codex chat opened fresh shows its thinking control locked at "Low", with the lock tooltip.
 - **D-15 / CR-004 / F-03 / AR-008** are implemented, including IC-1 and IC-2.
   - The live probe passes V-A to V-E on Claude, Codex and Grok (ACP), and V-D on AGY.
-- **D-14 / CR-003 / F-02: Design Impact.** The guard is implemented exactly as designed, and the unit reproduction passes. The required live evidence, though, shows the guard cannot close the race:
+- **D-14 / CR-003 / F-02: Design Impact.** This was superseded by IR-003 (SR-010). The guard is implemented exactly as designed, and the unit reproduction passes. The required live evidence, though, shows the guard cannot close the race:
   - The closer is `reconcileDiscoveredActiveRuns`, as the design expected.
   - But `submissionPending` is already `false` when it fires. The backend sends `AGENT_STATUS {status: offline}` as soon as the socket connects, and `applyLiveAgentStatusEvent` clears the flag before `SEND_MESSAGE`.
   - The deterministic reproduction fails both before and after the guard.
@@ -64,19 +79,19 @@ Commits (in design change-sequence order):
 
 - Task size: `Large`
 - Architecture risk: `High`
-- Design classification section / evidence reference: design-spec.md classification (carried from SR-009 / ARCH-REV-005).
+- Design classification section / evidence reference: design-spec.md classification (carried from SR-010 / ARCH-REV-006).
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale: unchanged by IR-002, which adds a shared registry change on four runtimes plus the reconcile invariant. The change spans a server contract (`skillScope` in GraphQL and persisted `agent-config.json`), runtime skill exposure on every runtime, a new built-in agent sync policy, shell routing (`/`, `/chat`, `/workspace` redirect), and a shared message-box ownership refactor used by team and org views. No scope was added beyond the design.
-- Selected route: `Solution Designer` (a D-14 Design Impact; via `get_handoff_rules`). After the D-14 revision, the Large/High package returns to code review.
+- Selected route: `Code Review` (Large/High; via `get_handoff_rules`).
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
-- New design impact or escalation trigger: **D-14 Design Impact**. Its premise (AF-30: "`submissionPending` stays true through prepare → connect → send") is contradicted by the connect-time `AGENT_STATUS offline` frame; evidence is above. RSK-003 is resolved by D-15.
+- New design impact or escalation trigger: `None` after IR-003. The IR-002 D-14 Design Impact was resolved by SR-010. History: Its premise (AF-30: "`submissionPending` stays true through prepare → connect → send") is contradicted by the connect-time `AGENT_STATUS offline` frame; evidence is above. RSK-003 is resolved by D-15.
 
 ## Reviewed Behavior Implementation Trace
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
 | BEH-001 | Chat first in nav; `/` → `/chat` | `composables/useShellPrimaryNavigation.ts` (`chat` key), `components/AppLeftPanel.vue` (Chat item + `app-left-panel-new-chat` pencil), `pages/index.vue` | Implemented |
-| BEH-005 | Chat → type → send → Daily Assistant run in chat view | `stores/chatDraftStore.ts` → `composables/chat/chatDraftComposerTarget.ts` → `services/chat/chatLaunchService.ts#launchAgentChat` (D-04 order) → `agentContextsStore.registerDraftRun` → `agentRunStore.sendUserInputAndSubscribe` → `/chat?id=<selected id>`; `pages/chat.vue` + `useChatRouteRunSync` (D-13) | Implemented; a failed first send lands on `/chat?id=<temp>`. **IR-002 (D-14):** `reconcileDiscoveredActiveRuns` skips `submissionPending` contexts. This is insufficient; see the Design Impact |
+| BEH-005 | Chat → type → send → Daily Assistant run in chat view | `stores/chatDraftStore.ts` → `composables/chat/chatDraftComposerTarget.ts` → `services/chat/chatLaunchService.ts#launchAgentChat` (D-04 order) → `agentContextsStore.registerDraftRun` → `agentRunStore.sendUserInputAndSubscribe` → `/chat?id=<selected id>`; `pages/chat.vue` + `useChatRouteRunSync` (D-13) | Implemented; a failed first send lands on `/chat?id=<temp>`. **IR-002 (D-14):** `reconcileDiscoveredActiveRuns` skips `submissionPending` contexts. This is insufficient; see the Design Impact. **IR-003 (D-14, SR-010):** an activation-pending marker in `agentRunStore` (first send and Offline/Error resume) replaces the IR-002 guard; `reconcileDiscoveredActiveRuns` skips marked runs and clears the marker on an active snapshot; R-2 adds a workspace request generation |
 | BEH-003 | Compact model menu, schema thinking, last-used default | `components/chat/ChatModelMenu.vue`, `ChatModelList.vue`, `ChatThinkingControl.vue`, `composables/chat/useChatModelCatalog.ts` (catalogs load on the first search keystroke, "Searching all runtimes…", RSK-001), `utils/chat/chatLastModelPreference.ts` (D-12) | Implemented; last-used is written only after a successful promotion |
 | BEH-004 | Temp workspace default; pick existing or open folder before send | `components/chat/ChatWorkspaceMenu.vue`, `chatLaunchService#resolveChatWorkspace` (`ensureRunHistoryWorkspaceByRootPath`) | Implemented; folder is resolved at send, before register |
 | BEH-007 | `/` tags → instruction in content; chips on the message | `components/chat/ChatSkillMenu.vue`, `chatComposerMenus.ts`, `useChatComposerOptions.ts` (ALL_INSTALLED → enabled `skillStore` skills; else configured names), `utils/skills/skillRequestInstruction.ts`, `AgentContext.requestedSkillNames`, `agentRunStore` compose, `components/conversation/SkillRequestChips.vue`, `utils/runTreeSummary.ts` | Implemented |
@@ -132,7 +147,7 @@ Web (`autobyteus-web`):
 
 ## Known Risks
 
-- **RSK-007 / D-14 is open (Design Impact).** A quiet history refresh landing between the connect-time `AGENT_STATUS offline` frame and activation still disconnects a first send. The evidence reproduces it deterministically.
+- RSK-007 / D-14 is resolved in IR-003; the stale reproductions pass for a first send and an Offline resume. Residual: the marker has no timeout. A send the server accepts but never activates stays out of reconcile teardown until terminate, close, a failure or a rejected ack.
 - AGY ALL_INSTALLED collisions with workspace skills are resolved by D-15 Rule 1 (live V-D on AGY). Capsule size and time passed API/E2E on the real catalog (RSK-003).
 - Voice dictation is still not exercised live, because the extension is absent. The IR-002 D-15 materialization was exercised live on Claude, Codex, Grok (ACP) and AGY.
 - Advanced model parameters beyond the schema-driven thinking control are not exposed for single-agent runs in the chat footer. This is per the UI spec, but it narrows what the removed standalone gear editor offered (design Cost note, D-08).
@@ -178,6 +193,16 @@ Web (`autobyteus-web`):
 - Dev env: `pnpm dev` from the worktree (backend :8000, web :3000, data root `.autobyteus/development`). It is stopped.
 
 ## Local Implementation Checks Run
+
+IR-003:
+- **Web**
+  - `pnpm test:nuxt run`: 3337 passed. The only failing files are the 4 baseline ones.
+  - `pnpm test:electron run`: 177 passed.
+  - vue-tsc: no errors in the changed files. The web-boundary, localization-boundary and literal-audit guards pass.
+  - `runHistoryReconcileActivationPending.spec.ts` (6 tests): five fail against the previous `runHistoryLoadActions.ts`; the sixth (no Offline cleanup) also passes there, because the old guard covered `submissionPending === true`.
+  - `agentRunStore.spec.ts`: 8 marker tests. They cover marking a first send (after promotion, before connect) and an Offline or Error resume; not marking a live run; and clearing the marker on a handled failure, a connect timeout, a rejected but not an accepted ack, terminate and close.
+  - `AgentStreamingService.spec.ts`: the ack callback, including that the ack is still projected.
+- **Live** (`implementation-evidence/`): first-send and Offline-resume stale reproductions fail without the marker and pass with it. The resend journey passed 14/14 with 0 losses.
 
 IR-002:
 - **Server**
