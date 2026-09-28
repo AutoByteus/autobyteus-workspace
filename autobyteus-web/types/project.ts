@@ -17,6 +17,22 @@ export interface Project {
   createdAt: string
   updatedAt: string
   workspaces: ProjectWorkspace[]
+  /** Number of this Project's Tasks whose status is not DONE. */
+  openTaskCount: number
+}
+
+export type ProjectTaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE'
+
+export const PROJECT_TASK_STATUSES: readonly ProjectTaskStatus[] = ['TODO', 'IN_PROGRESS', 'DONE']
+
+/** A Project Task. It has no title: the description is its content, and its first line is its summary. */
+export interface ProjectTask {
+  taskId: string
+  projectId: string
+  description: string
+  status: ProjectTaskStatus
+  createdAt: string
+  updatedAt: string
 }
 
 export type ProjectErrorCode =
@@ -26,3 +42,5 @@ export type ProjectErrorCode =
   | 'WORKSPACE_NOT_REGISTERED'
   | 'WORKSPACE_ALREADY_LINKED'
   | 'WORKSPACE_LINK_NOT_FOUND'
+  | 'TASK_DESCRIPTION_REQUIRED'
+  | 'TASK_NOT_FOUND'

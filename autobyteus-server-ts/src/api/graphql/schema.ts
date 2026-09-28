@@ -37,6 +37,7 @@ import { SecretStorageResolver } from './types/secret-storage.js';
 import { DefinitionAdmissionResolver } from './types/definition-admission.js';
 import { CollaborationRootHistoryResolver } from './types/collaboration-root-history.js';
 import { ProjectResolver } from './types/projects.js';
+import { ProjectTaskResolver } from './types/project-tasks.js';
 import { ProjectsCapabilityResolver } from './types/projects-capability.js';
 
 export async function buildGraphqlSchema() {
@@ -79,6 +80,7 @@ export async function buildGraphqlSchema() {
       DefinitionAdmissionResolver,
       CollaborationRootHistoryResolver,
       ProjectResolver,
+      ProjectTaskResolver,
       ProjectsCapabilityResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],

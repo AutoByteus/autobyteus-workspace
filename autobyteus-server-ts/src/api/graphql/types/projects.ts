@@ -3,6 +3,7 @@ import {
   Arg,
   Field,
   InputType,
+  Int,
   Mutation,
   ObjectType,
   Query,
@@ -62,6 +63,10 @@ export class Project {
 
   @Field(() => [ProjectWorkspace])
   workspaces!: ProjectWorkspace[];
+
+  /** Number of this Project's Tasks whose status is not DONE. */
+  @Field(() => Int)
+  openTaskCount!: number;
 }
 
 @InputType()
@@ -134,9 +139,10 @@ const toGraphqlProject = (project: ProjectView): Project => ({
   createdAt: project.createdAt,
   updatedAt: project.updatedAt,
   workspaces: project.workspaces.map(toGraphqlWorkspace),
+  openTaskCount: project.openTaskCount,
 });
 
-const withProjectErrors = async <T>(operation: () => Promise<T>): Promise<T> => {
+export const withProjectErrors = async <T>(operation: () => Promise<T>): Promise<T> => {
   try {
     return await operation();
   } catch (error) {

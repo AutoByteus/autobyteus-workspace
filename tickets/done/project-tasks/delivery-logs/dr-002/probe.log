@@ -1,0 +1,63 @@
+
+> autobyteus@1.4.88 test:e2e:projects /Users/normy/autobyteus_org/autobyteus-worktrees/project-tasks/autobyteus-web
+> node tests/e2e/projects-feature-probe.mjs --output-dir=/tmp/ptasks-delivery/r2/probe
+
+[E2E-001] Flag off by default: nav hidden, routes redirect, Basics toggle disabled
+[E2E-001] Pass
+[E2E-002] Basics toggle on/off shows/hides nav without reload, persists, and a capability error still hides + redirects
+[E2E-002] Pass
+[E2E-003] Create, validate, duplicate, search, no-match, open, edit and rename collision
+[E2E-003] Pass
+[E2E-004] Add-workspace default path links a registered workspace; Temp never offered; register-then-link
+[E2E-004] Pass
+[E2E-005] Removed workspace stays linked as Unavailable; re-registration restores; edit and unlink
+[E2E-005] Pass
+[E2E-006] Delete requires confirmation; cancel keeps everything; confirm removes only the Project
+[E2E-006] Pass
+[E2E-007] Keyboard-only journey: create, search, open, edit, link, unlink, delete with focus trap/return
+[E2E-007] Pass
+[E2E-008] zh-CN renders Projects surfaces; no raw translation keys on any Project surface
+[E2E-008] Pass
+[E2E-009] Advanced-table ENABLE_PROJECTS edit hides/shows nav live; open Project route redirects when off
+[E2E-009] Pass
+[E2E-010] Backend restart keeps ENABLE_PROJECTS and Projects with their links
+[E2E-010] Pass
+[E2E-011] Rebinding to node B shows B’s Projects; rebinding back shows A’s
+[E2E-011] Pass
+[E2E-012] Applications and Skill Improvement toggles and Applications gating are unchanged
+[E2E-012] Pass
+[E2E-013] Narrow desktop width (1024x700): index, detail and dialogs fit without horizontal overflow
+[E2E-013] Pass
+[E2E-014] Create a Task from a description: lands in To Do (count 1), card shows the description, empty rejected, grid count updates, newest first, no status control
+[E2E-014] Pass
+[E2E-015] Edit a Task description (Cancel discards, empty rejected, save) and delete with confirmation (Cancel keeps)
+[E2E-015] Pass
+[E2E-016] 120 Tasks: search across columns under 100 ms with filtered column counts, no-match and clear; nothing changes
+[E2E-016] Pass
+[E2E-017] Project delete with 5 Tasks states the count (both tabs), Cancel keeps everything, confirm cascades; workspaces untouched
+[E2E-017] Pass
+[E2E-018] Project cards show "N open tasks · N workspaces" (singular, plural and none)
+[E2E-018] Pass
+[E2E-019] Projects off hides Tasks; on shows the same Tasks
+[E2E-019] Pass
+[E2E-020] Grid → full-width Project page → "← Projects"; deep link opens the board; unknown id not-found with Back
+[E2E-020] Pass
+[E2E-021] Keyboard-only Task journey: create (Ctrl/⌘+Enter), validation, view/edit/cancel, delete with confirmation, tabs Home/End, Project delete
+[E2E-021] Pass
+[E2E-022] zh-CN Task surfaces: tabs, board columns, New task, card counts, dialogs, empty board; no raw keys or English Task strings
+[E2E-022] Pass
+[E2E-023] Narrow window (700x900): board columns stack, no horizontal overflow, Task dialog fits
+[E2E-023] Pass
+[E2E-027] Width guards in the real shell: 1200x800 default panel = three columns ≥ 240 px with 3-line cards; 520 px panel and a 1000 px window = ≥ 240 px or stacked
+[E2E-027] Pass
+[E2E-028] Width sweep 760–1600 px with the default and the 520 px side panel: columns are always ≥ 240 px side by side or stacked, never squeezed; no horizontal overflow
+[E2E-028] Pass
+[E2E-029] "← Projects" works in the error state; the Project description is clamped to 2 lines
+[E2E-029] Pass
+[E2E-024] Released v1.4.86 projects.json on a live node: intact, no open tasks, no rewrite while browsing; first Task write keeps released fields
+[E2E-024] Pass
+[E2E-026] Mixed-status file (stand-in for future agent-written status): one card per column with filtered counts; "2 open tasks" excludes Done
+[E2E-026] Pass
+[E2E-025] Tasks survive a real backend restart
+[E2E-025] Pass
+Pass: /tmp/ptasks-delivery/r2/probe/result.json

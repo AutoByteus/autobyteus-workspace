@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import ProjectWorkspaceLinkDialog from '../ProjectWorkspaceLinkDialog.vue'
-import { ProjectRequestError } from '~/stores/projectStore'
+import { ProjectRequestError } from '~/utils/projects/projectRequestError'
 import type { Project } from '~/types/project'
 
 const { projectStoreMock, workspaceStoreMock } = vi.hoisted(() => ({
@@ -38,6 +38,7 @@ const project: Project = {
   description: '',
   createdAt: '',
   updatedAt: '',
+  openTaskCount: 0,
   workspaces: [{
     workspaceId: 'agent_ws_a1',
     workspaceRootPath: '/work/superrepo',

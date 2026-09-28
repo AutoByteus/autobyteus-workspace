@@ -120,6 +120,7 @@ export class ProjectService {
       createdAt: timestamp,
       updatedAt: timestamp,
       workspaces: [],
+      tasks: [],
     };
 
     await this.store.updateRecords((records) => {
@@ -141,7 +142,10 @@ export class ProjectService {
     return this.toView(updated);
   }
 
-  /** Removes only the Project record and its links. Returns `false` when it does not exist. */
+  /**
+   * Removes the Project record with its links and its embedded Tasks in one locked write.
+   * Returns `false` when it does not exist.
+   */
   async deleteProject(projectId: string): Promise<boolean> {
     let removed = false;
     await this.store.updateRecords((records) => {
@@ -218,9 +222,14 @@ export class ProjectService {
   }
 
   private async toView(project: Project): Promise<ProjectView> {
-    const links = [...project.workspaces].sort((left, right) => left.addedAt.localeCompare(right.addedAt));
+    const { tasks, workspaces: storedLinks, ...fields } = project;
+    const links = [...storedLinks].sort((left, right) => left.addedAt.localeCompare(right.addedAt));
     const workspaces = await Promise.all(links.map((link) => this.toWorkspaceView(link)));
-    return { ...project, workspaces };
+    return {
+      ...fields,
+      workspaces,
+      openTaskCount: tasks.filter((task) => task.status !== "DONE").length,
+    };
   }
 
   private async toWorkspaceView(link: ProjectWorkspaceLink): Promise<ProjectWorkspaceView> {

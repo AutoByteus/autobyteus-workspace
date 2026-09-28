@@ -1,0 +1,342 @@
+
+ RUN  v4.0.18 /private/tmp/ptasks-delivery/base-wt/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/tmp/ptasks-delivery/base-wt/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.17                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:20223) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
+Platform detection: Windows=false
+App root directory: /private/tmp/ptasks-delivery/base-wt/autobyteus-server-ts
+App data directory: /private/tmp/ptasks-delivery/base-wt/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts (6 tests | 1 failed) 52ms
+     ✓ converts standalone v4 with absent lineage, exact active provenance, exact cleanup, and idempotence 16ms
+     ✓ converts standalone v4 with zero-byte lineage, exact active provenance, exact cleanup, and idempotence 8ms
+     ✓ uses memberRunId as team snapshot identity and publishes an empty strict v5 with warnings when nothing survives 6ms
+     ✓ skips any nonempty-lineage location before snapshot inspection or cleanup 4ms
+     ✓ retains equivalent current-v5 bytes while cleaning obsolete files and rejects identity conflict without mutation 10ms
+     × runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade 8ms
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:20226) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion
+Platform detection: Windows=false
+App root directory: /private/tmp/ptasks-delivery/base-wt/autobyteus-server-ts
+App data directory: /private/tmp/ptasks-delivery/base-wt/autobyteus-server-ts
+
+ ❯ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts (3 tests | 1 failed) 18ms
+     ✓ renames local standalone and nested team active raw trace files 7ms
+     ✓ renames imported Memory Sync active files and rewrites matching manifest file records 5ms
+     × registers external cleanup then both raw-layout prerequisites before native snapshot conversion 6ms
+(node:20227) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts (3 tests | 3 failed) 154ms
+     × normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup 68ms
+     × rolls back an injected cleanup failure and succeeds through the same ordinary retry 31ms
+     × returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file 54ms
+(node:20231) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts (8 tests | 1 failed) 239ms
+     × imports later JSON integers after four leading NULLs in the same real Prisma batch 49ms
+     ✓ rejects 'JSON real' and rolls the real migration transaction back 29ms
+     ✓ rejects 'JSON text' and rolls the real migration transaction back 26ms
+     ✓ rejects 'JSON true' and rolls the real migration transaction back 26ms
+     ✓ rejects 'JSON array' and rolls the real migration transaction back 27ms
+     ✓ rejects 'JSON object' and rolls the real migration transaction back 25ms
+     ✓ rejects 'negative JSON integer' and rolls the real migration transaction back 27ms
+     ✓ rejects 'integer above SafeInt' and rolls the real migration transaction back 28ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts > MigrateNativeWorkingContextSnapshotsV5Migration > runs the default prerequisite class order through the ordinary runner and preserves a raw-1-backed direct upgrade
+AssertionError: expected [ 11, 12, 14 ] to deeply equal [ 11, 12, 13 ]
+
+- Expected
++ Received
+
+  [
+    11,
+    12,
+-   13,
++   14,
+  ]
+
+ ❯ tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts:353:59
+    351|     expect(v2Index).toBe(layoutIndex + 1);
+    352|     expect(externalIndex).toBeGreaterThan(v2Index);
+    353|     expect([rotationIndex, activeNameIndex, nativeIndex]).toEqual([
+       |                                                           ^
+    354|       externalIndex + 1,
+    355|       externalIndex + 2,
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts > RawTraceActiveFileNameMigration > registers external cleanup then both raw-layout prerequisites before native snapshot conversion
+AssertionError: expected [ 11, 12, 14 ] to deeply equal [ 11, 12, 13 ]
+
+- Expected
++ Received
+
+  [
+    11,
+    12,
+-   13,
++   14,
+  ]
+
+ ❯ tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts:159:8
+    157|       definitionIds.indexOf(RAW_TRACE_ACTIVE_FILE_NAME_MIGRATION_ID),
+    158|       definitionIds.indexOf(MIGRATE_NATIVE_WORKING_CONTEXT_SNAPSHOTS_V…
+    159|     ]).toEqual([externalIndex + 1, externalIndex + 2, externalIndex + …
+       |        ^
+    160|   });
+    161| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > normalizes direct-upgrade rows before validation, current persistence, and atomic cleanup
+AssertionError: expected '\nInvalid `this.transaction.tokenUsag…' to be null
+
+- Expected:
+null
+
++ Received:
+"
+Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
+/private/tmp/ptasks-delivery/base-wt/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
+
+  176 }
+  177
+  178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
+→ 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
+The column `claude_sdk_usage_state_json` does not exist in the current database."
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:175:35
+    173|
+    174|       const result = await migration.execute();
+    175|       expect(result.errorMessage).toBeNull();
+       |                                   ^
+    176|       expect(result).toMatchObject({
+    177|         status: "SUCCEEDED",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > rolls back an injected cleanup failure and succeeds through the same ordinary retry
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'FAILED', …(2) }
+
+- Expected
++ Received
+
+@@ -1,7 +1,15 @@
+  {
+-   "errorMessage": "injected cleanup failure",
++   "errorMessage": "
++ Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
++ /private/tmp/ptasks-delivery/base-wt/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
++
++   176 }
++   177
++   178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
++ → 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
++ The column `claude_sdk_usage_state_json` does not exist in the current database.",
+    "status": "FAILED",
+    "summary": {
+      "failedCount": 1,
+      "migratedCount": 0,
+    },
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:279:22
+    277|       };
+    278|       const failed = await new TokenUsageRunRecordsV1AppDataMigration(…
+    279|       expect(failed).toMatchObject({
+       |                      ^
+    280|         status: "FAILED",
+    281|         errorMessage: "injected cleanup failure",
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts > TokenUsageRunRecordsV1AppDataMigration released unknown-input semantics > returns deleted source pages to SQLite's freelist without shrinking or vacuuming the file
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'SUCCEEDED', …(1) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "status": "SUCCEEDED",
++   "status": "FAILED",
+    "summary": {
+-     "failedCount": 0,
+-     "migratedCount": 6,
+-     "scannedCount": 403,
++     "failedCount": 1,
++     "migratedCount": 0,
++     "scannedCount": 0,
+    },
+  }
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts:311:22
+    309|         new LegacyTokenUsageConsolidationRepository(prisma),
+    310|       ).execute();
+    311|       expect(result).toMatchObject({
+       |                      ^
+    312|         status: "SUCCEEDED",
+    313|         summary: { scannedCount: 403, migratedCount: 6, failedCount: 0…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/6]⎯
+
+ FAIL  tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts > token usage consolidation source-token decoding > imports later JSON integers after four leading NULLs in the same real Prisma batch
+AssertionError: expected { status: 'FAILED', …(2) } to match object { status: 'SUCCEEDED', …(2) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "errorMessage": null,
+-   "status": "SUCCEEDED",
++   "errorMessage": "
++ Invalid `this.transaction.tokenUsageRunRecord.create()` invocation in
++ /private/tmp/ptasks-delivery/base-wt/autobyteus-server-ts/src/app-data-migrations/migrations/token-usage-run-records-v1/legacy-token-usage-consolidation-repository.ts:179:66
++
++   176 }
++   177
++   178 async insertCurrentRecord(record: TokenUsageRunRecord): Promise<void> {
++ → 179   const persisted = await this.transaction.tokenUsageRunRecord.create(
++ The column `claude_sdk_usage_state_json` does not exist in the current database.",
++   "status": "FAILED",
+    "summary": {
+-     "failedCount": 0,
+-     "migratedCount": 1,
+-     "scannedCount": 6,
++     "failedCount": 1,
++     "migratedCount": 0,
++     "scannedCount": 0,
+    },
+  }
+
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:142:22
+    140|
+    141|       const result = await new TokenUsageRunRecordsV1AppDataMigration(…
+    142|       expect(result).toMatchObject({
+       |                      ^
+    143|         status: "SUCCEEDED",
+    144|         errorMessage: null,
+ ❯ withFixture tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:118:5
+ ❯ tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts:127:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/6]⎯
+
+
+ Test Files  4 failed (4)
+      Tests  6 failed | 14 passed (20)
+   Start at  22:02:05
+   Duration  5.45s (transform 1.80s, setup 23ms, import 4.28s, tests 463ms, environment 0ms)

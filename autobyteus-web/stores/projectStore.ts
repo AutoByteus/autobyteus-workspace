@@ -12,38 +12,14 @@ import {
   UpdateProject,
   UpdateProjectWorkspace,
 } from '~/graphql/mutations/projectMutations'
-import type { Project, ProjectErrorCode } from '~/types/project'
+import type { Project } from '~/types/project'
+import {
+  ProjectRequestError,
+  throwProjectGraphqlErrors as throwGraphqlErrors,
+  toProjectRequestError as toRequestError,
+} from '~/utils/projects/projectRequestError'
 
 type DocumentNode = ReturnType<typeof gqlTag>
-
-type GraphqlErrorLike = { message?: string; extensions?: Record<string, unknown> }
-
-/** A failed Project request. `code` carries the server `ProjectError` code when there is one. */
-export class ProjectRequestError extends Error {
-  constructor(message: string, readonly code: ProjectErrorCode | string | null) {
-    super(message)
-    this.name = 'ProjectRequestError'
-  }
-}
-
-const toRequestError = (cause: unknown): ProjectRequestError => {
-  if (cause instanceof ProjectRequestError) {
-    return cause
-  }
-  const graphqlError = (cause as { graphQLErrors?: GraphqlErrorLike[] } | null)?.graphQLErrors?.[0]
-  const code = typeof graphqlError?.extensions?.code === 'string' ? graphqlError.extensions.code : null
-  const message = graphqlError?.message || (cause instanceof Error ? cause.message : String(cause))
-  return new ProjectRequestError(message, code)
-}
-
-const throwGraphqlErrors = (errors: readonly GraphqlErrorLike[] | null | undefined): void => {
-  const first = errors?.[0]
-  if (!first) {
-    return
-  }
-  const code = typeof first.extensions?.code === 'string' ? first.extensions.code : null
-  throw new ProjectRequestError(errors!.map((entry) => entry.message).join(', '), code)
-}
 
 const compareProjects = (left: Project, right: Project): number => {
   const byName = left.name.toLocaleLowerCase().localeCompare(right.name.toLocaleLowerCase())
@@ -126,11 +102,13 @@ export const useProjectStore = defineStore('projects', () => {
     }
   }
 
-  /** Loads one Project into the cache. Returns `null` (and drops any cached copy) when it does not exist. */
+  /**
+   * Loads one Project into the cache. Returns `null` (and drops any cached copy) when it does not exist.
+   * It does not touch the list's `loading`/`error`: the caller owns the detail load state, so a
+   * detail load or failure never blanks or flags the Project list shown beside it.
+   */
   const fetchProject = async (projectId: string): Promise<Project | null> => {
     const bindingRevisionAtStart = windowNodeContextStore.bindingRevision
-    loading.value = true
-    error.value = null
 
     try {
       await ensureBackendReady()
@@ -157,13 +135,15 @@ export const useProjectStore = defineStore('projects', () => {
       if (hasBindingRevisionChanged(bindingRevisionAtStart)) {
         return null
       }
-      error.value = toRequestError(cause)
-      throw error.value
-    } finally {
-      if (!hasBindingRevisionChanged(bindingRevisionAtStart)) {
-        loading.value = false
-      }
+      throw toRequestError(cause)
     }
+  }
+
+  /** Updates the cached open-Task count of one Project after a Task change. */
+  const setOpenTaskCount = (projectId: string, count: number): void => {
+    projects.value = projects.value.map((project) => (
+      project.projectId === projectId ? { ...project, openTaskCount: count } : project
+    ))
   }
 
   const mutate = async <TResult>(
@@ -236,6 +216,7 @@ export const useProjectStore = defineStore('projects', () => {
     invalidate,
     fetchProjects,
     fetchProject,
+    setOpenTaskCount,
     createProject,
     updateProject,
     deleteProject,
