@@ -48,7 +48,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
     factory = new AgyAgentRunBackendFactory(
       { getAgentDefinitionById: async () => ({ name: "Test agent", description: "Unit test",
         instructions, toolNames: [], skillNames: [] }) } as never,
-      { resolveConfiguredSkillBindingsForAgentDetailed: () => [] } as never,
+      { hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgentDetailed: () => [] } as never,
       { resolveWorkingDirectory: async () => workspace } as never,
       { activateForRun: () => ({ kind: "not_exposed" }) } as never,
     );

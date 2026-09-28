@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
-import { Skill } from "../domain/models.js";
+import type { InstalledSkillRecord } from "../domain/installed-skill-record.js";
 import { SkillLoader } from "../loader.js";
 
 type SkillDirectoryConfig = {
@@ -83,8 +83,18 @@ const getSkillFolderDirectories = (skillsDir: string): string[] => {
   return skillDirectories;
 };
 
-const getAgentSkillDirectories = (agentsDir: string): string[] => {
-  const skillDirectories: string[] = [];
+type BundledSkillLocation = {
+  path: string;
+  origin: "agent_private" | "team_shared";
+  /** Trusted and configured root implied by the layout. */
+  root: string;
+};
+
+const getAgentSkillLocations = (
+  agentsDir: string,
+  rootForAgent: (agentDir: string) => string,
+): BundledSkillLocation[] => {
+  const locations: BundledSkillLocation[] = [];
 
   for (const agentEntry of readSortedDirectoryEntries(agentsDir)) {
     if (!agentEntry.isDirectory()) {
@@ -92,18 +102,22 @@ const getAgentSkillDirectories = (agentsDir: string): string[] => {
     }
 
     const agentDir = path.join(agentsDir, agentEntry.name);
-    skillDirectories.push(...getSkillFolderDirectories(path.join(agentDir, "skills")));
+    const root = rootForAgent(agentDir);
+    for (const skillDir of getSkillFolderDirectories(path.join(agentDir, "skills"))) {
+      locations.push({ path: skillDir, origin: "agent_private", root });
+    }
   }
 
-  return skillDirectories;
+  return locations;
 };
 
-export const getBundledSkillDirectoriesFromDefinitionRoot = (
+const getBundledSkillLocationsFromDefinitionRoot = (
   definitionRoot: string,
-): string[] => {
-  const skillDirectories = [
-    ...getAgentSkillDirectories(path.join(definitionRoot, "agents")),
-  ];
+): BundledSkillLocation[] => {
+  const locations = getAgentSkillLocations(
+    path.join(definitionRoot, "agents"),
+    (agentDir) => agentDir,
+  );
 
   const teamRoots = path.join(definitionRoot, "agent-teams");
   for (const teamEntry of readSortedDirectoryEntries(teamRoots)) {
@@ -112,37 +126,45 @@ export const getBundledSkillDirectoriesFromDefinitionRoot = (
     }
 
     const teamDir = path.join(teamRoots, teamEntry.name);
-    skillDirectories.push(
-      ...getAgentSkillDirectories(path.join(teamDir, "agents")),
-      ...getSkillFolderDirectories(path.join(teamDir, "skills")),
+    locations.push(
+      ...getAgentSkillLocations(path.join(teamDir, "agents"), () => teamDir),
+      ...getSkillFolderDirectories(path.join(teamDir, "skills")).map((skillDir) => ({
+        path: skillDir,
+        origin: "team_shared" as const,
+        root: teamDir,
+      })),
     );
   }
 
-  return skillDirectories;
+  return locations;
 };
 
 export const scanBundledSkillsFromDefinitionRoot = (
   definitionRoot: string,
   dependencies: SkillDiscoveryDependencies,
-): Skill[] => {
-  const skills: Skill[] = [];
+): InstalledSkillRecord[] => {
+  const records: InstalledSkillRecord[] = [];
 
-  for (const skillDir of getBundledSkillDirectoriesFromDefinitionRoot(definitionRoot)) {
+  for (const location of getBundledSkillLocationsFromDefinitionRoot(definitionRoot)) {
     try {
-      skills.push(
-        dependencies.loader.loadSkill(
-          skillDir,
-          dependencies.isReadonlyPath(skillDir),
-        ),
+      const skill = dependencies.loader.loadSkill(
+        location.path,
+        dependencies.isReadonlyPath(location.path),
       );
+      records.push({
+        skill,
+        origin: location.origin,
+        trustedRoot: path.resolve(location.root),
+        configuredRoot: path.resolve(location.root),
+      });
     } catch (error) {
       dependencies.logger.warn(
-        `Error loading bundled skill at ${skillDir}: ${String(error)}`,
+        `Error loading bundled skill at ${location.path}: ${String(error)}`,
       );
     }
   }
 
-  return skills;
+  return records;
 };
 
 export const searchBundledSkillDirectory = (
@@ -150,7 +172,7 @@ export const searchBundledSkillDirectory = (
   name: string,
   dependencies: SkillDiscoveryDependencies,
 ): string | null => {
-  for (const skillDir of getBundledSkillDirectoriesFromDefinitionRoot(definitionRoot)) {
+  for (const { path: skillDir } of getBundledSkillLocationsFromDefinitionRoot(definitionRoot)) {
     try {
       const skill = dependencies.loader.loadSkill(
         skillDir,
@@ -224,13 +246,15 @@ export const searchConfiguredSkillCandidate = (directory: string, name: string):
   return search(directory);
 };
 
+/** Scan one global skills root (and its nested `skills` folders) into catalog records. */
 export const scanSkillDirectory = (
   directory: string,
   dependencies: SkillDiscoveryDependencies,
-): Skill[] => {
-  const skills: Skill[] = [];
+  configuredRoot: string = directory,
+): InstalledSkillRecord[] => {
+  const records: InstalledSkillRecord[] = [];
   if (!fs.existsSync(directory)) {
-    return skills;
+    return records;
   }
 
   const entries = readSortedDirectoryEntries(directory);
@@ -243,12 +267,16 @@ export const scanSkillDirectory = (
       continue;
     }
     try {
-      skills.push(
-        dependencies.loader.loadSkill(
-          itemPath,
-          dependencies.isReadonlyPath(itemPath),
-        ),
+      const skill = dependencies.loader.loadSkill(
+        itemPath,
+        dependencies.isReadonlyPath(itemPath),
       );
+      records.push({
+        skill,
+        origin: "global",
+        trustedRoot: skill.rootPath,
+        configuredRoot: path.resolve(configuredRoot),
+      });
     } catch (error) {
       dependencies.logger.warn(`Error loading skill ${entry.name}: ${String(error)}`);
     }
@@ -256,8 +284,8 @@ export const scanSkillDirectory = (
 
   const nestedSkillsDir = path.join(directory, "skills");
   if (isExistingDirectory(nestedSkillsDir)) {
-    skills.push(...scanSkillDirectory(nestedSkillsDir, dependencies));
+    records.push(...scanSkillDirectory(nestedSkillsDir, dependencies, configuredRoot));
   }
 
-  return skills;
+  return records;
 };

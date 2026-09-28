@@ -18,6 +18,7 @@ import {
   searchConfiguredSkillCandidate,
 } from "./skill-discovery.js";
 import { ConfiguredAgentSkillResolver } from "./configured-agent-skill-resolver.js";
+import type { InstalledSkillRecord } from "../domain/installed-skill-record.js";
 import {
   collectResolvedConfiguredSkills,
   type ConfiguredAgentSkillBinding,
@@ -141,36 +142,36 @@ export class SkillService {
     return false;
   }
 
-  listSkills(): Skill[] {
-    const skills: Skill[] = [];
+  /**
+   * The installed skill catalog: global skill dirs first, then skills bundled under
+   * each definition root, de-duplicated by name (first wins). Each record keeps the
+   * real origin and roots of its layout.
+   */
+  listInstalledSkillRecords(): InstalledSkillRecord[] {
+    const records: InstalledSkillRecord[] = [];
     const seen = new Set<string>();
+    const dependencies = this.getDiscoveryDependencies();
+    const candidates = [
+      ...getAllSkillDirectories(this.config).flatMap((directory) =>
+        scanSkillDirectory(directory, dependencies)),
+      ...getAllDefinitionRoots(this.config).flatMap((definitionRoot) =>
+        scanBundledSkillsFromDefinitionRoot(definitionRoot, dependencies)),
+    ];
 
-    for (const directory of getAllSkillDirectories(this.config)) {
-      for (const skill of scanSkillDirectory(directory, this.getDiscoveryDependencies())) {
-        if (seen.has(skill.name)) {
-          continue;
-        }
-        skill.isDisabled = this.disabledStore.isDisabled(skill.name);
-        skills.push(skill);
-        seen.add(skill.name);
+    for (const record of candidates) {
+      if (seen.has(record.skill.name)) {
+        continue;
       }
+      record.skill.isDisabled = this.disabledStore.isDisabled(record.skill.name);
+      records.push(record);
+      seen.add(record.skill.name);
     }
 
-    for (const definitionRoot of getAllDefinitionRoots(this.config)) {
-      for (const skill of scanBundledSkillsFromDefinitionRoot(
-        definitionRoot,
-        this.getDiscoveryDependencies(),
-      )) {
-        if (seen.has(skill.name)) {
-          continue;
-        }
-        skill.isDisabled = this.disabledStore.isDisabled(skill.name);
-        skills.push(skill);
-        seen.add(skill.name);
-      }
-    }
+    return records.sort((a, b) => a.skill.name.localeCompare(b.skill.name));
+  }
 
-    return skills.sort((a, b) => a.name.localeCompare(b.name));
+  listSkills(): Skill[] {
+    return this.listInstalledSkillRecords().map((record) => record.skill);
   }
 
   reloadSkillCatalog(): SkillCatalogReloadResult {
@@ -218,26 +219,29 @@ export class SkillService {
     );
   }
 
+  /** Effective skill bindings for a definition after applying its skill scope. */
   resolveConfiguredSkillBindingsForAgent(
     agentDefinition: AgentDefinition | null | undefined,
   ): ConfiguredAgentSkillBinding[] {
-    const resolver = new ConfiguredAgentSkillResolver({
-      loader: this.loader,
-      isReadonlyPath: this.isReadonlyPath.bind(this),
-      resolveGlobalSkill: this.getGlobalSkill.bind(this),
-      isSkillDisabled: this.disabledStore.isDisabled.bind(this.disabledStore),
-      logger,
-    });
+    if (!agentDefinition) {
+      return [];
+    }
+    const resolver = this.createConfiguredSkillResolver();
+    if (agentDefinition.skillScope === "ALL_INSTALLED") {
+      return this.listEnabledInstalledSkillRecords().map((record) =>
+        resolver.bindInstalledRecord(record));
+    }
     return resolver.resolveForAgent(agentDefinition);
   }
 
+  /** Effective, cause-certified skill resolutions (AGY) after applying the skill scope. */
   resolveConfiguredSkillBindingsForAgentDetailed(
     agentDefinition: AgentDefinition | null | undefined,
   ): DetailedConfiguredSkillResolution[] {
-    const resolver = new ConfiguredAgentSkillResolver({
-      loader: this.loader,
-      isReadonlyPath: this.isReadonlyPath.bind(this),
-      resolveGlobalSkill: this.getGlobalSkill.bind(this),
+    if (!agentDefinition) {
+      return [];
+    }
+    const resolver = this.createConfiguredSkillResolver({
       globalCandidatePaths: (name) => {
         for (const root of getAllSkillDirectories(this.config)) {
           const candidate = searchConfiguredSkillCandidate(root, name);
@@ -245,10 +249,42 @@ export class SkillService {
         }
         return [];
       },
+    });
+    if (agentDefinition.skillScope === "ALL_INSTALLED") {
+      return this.listEnabledInstalledSkillRecords().map((record) =>
+        resolver.resolveInstalledRecordDetailed(record));
+    }
+    return resolver.resolveForAgentDetailed(agentDefinition);
+  }
+
+  /** Whether a definition runs with any skills once its skill scope is applied. */
+  hasEffectiveSkills(agentDefinition: AgentDefinition | null | undefined): boolean {
+    if (!agentDefinition) {
+      return false;
+    }
+    if (agentDefinition.skillScope === "ALL_INSTALLED") {
+      return this.listEnabledInstalledSkillRecords().length > 0;
+    }
+    return (agentDefinition.skillNames ?? []).some(
+      (name) => typeof name === "string" && name.trim().length > 0,
+    );
+  }
+
+  private listEnabledInstalledSkillRecords(): InstalledSkillRecord[] {
+    return this.listInstalledSkillRecords().filter((record) => !record.skill.isDisabled);
+  }
+
+  private createConfiguredSkillResolver(
+    overrides: Pick<ConstructorParameters<typeof ConfiguredAgentSkillResolver>[0], "globalCandidatePaths"> = {},
+  ): ConfiguredAgentSkillResolver {
+    return new ConfiguredAgentSkillResolver({
+      loader: this.loader,
+      isReadonlyPath: this.isReadonlyPath.bind(this),
+      resolveGlobalSkill: this.getGlobalSkill.bind(this),
       isSkillDisabled: this.disabledStore.isDisabled.bind(this.disabledStore),
       logger,
+      ...overrides,
     });
-    return resolver.resolveForAgentDetailed(agentDefinition);
   }
 
   createSkill(name: string, description: string, content: string): Skill {
@@ -398,11 +434,11 @@ export class SkillService {
 
     try {
       const seen = new Set<string>();
-      for (const skill of [
+      for (const record of [
         ...scanSkillDirectory(directory, this.getDiscoveryDependencies()),
         ...scanBundledSkillsFromDefinitionRoot(directory, this.getDiscoveryDependencies()),
       ]) {
-        seen.add(skill.name);
+        seen.add(record.skill.name);
       }
       return seen.size;
     } catch {

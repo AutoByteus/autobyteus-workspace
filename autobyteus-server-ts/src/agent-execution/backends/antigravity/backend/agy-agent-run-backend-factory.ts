@@ -32,7 +32,10 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const workspacePath = await this.workspaces.resolveWorkingDirectory(config.workspaceId);
     const definition = await this.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`AGY_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
-    const skillAccessMode = resolveSkillAccessMode(config.skillAccessMode, definition.skillNames?.length ?? 0);
+    const skillAccessMode = resolveSkillAccessMode(
+      config.skillAccessMode,
+      this.skills.hasEffectiveSkills(definition) ? 1 : 0,
+    );
     const bindings = skillAccessMode === "NONE" ? [] : this.skills.resolveConfiguredSkillBindingsForAgentDetailed(definition);
     const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext });
     const descriptor = this.activateMcp(runId, config, workspacePath, definition);

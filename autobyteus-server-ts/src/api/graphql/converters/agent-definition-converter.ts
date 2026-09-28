@@ -2,6 +2,7 @@ import type { AgentDefinition as DomainAgentDefinition } from "../../../agent-de
 import {
   AgentDefinition as GraphqlAgentDefinition,
   AgentDefinitionOwnershipScope,
+  AgentSkillScope as GraphqlAgentSkillScope,
 } from "../types/agent-definition.js";
 import { toGraphqlDefaultLaunchConfig } from "../types/default-launch-config.js";
 
@@ -45,6 +46,9 @@ export class AgentDefinitionConverter {
         toolInvocationPreprocessorNames: domainDefinition.toolInvocationPreprocessorNames,
         lifecycleProcessorNames: domainDefinition.lifecycleProcessorNames,
         skillNames: domainDefinition.skillNames,
+        skillScope: domainDefinition.skillScope === "ALL_INSTALLED"
+          ? GraphqlAgentSkillScope.ALL_INSTALLED
+          : GraphqlAgentSkillScope.CONFIGURED,
         ownershipScope: toGraphqlOwnershipScope(domainDefinition.ownershipScope),
         ownerTeamId: domainDefinition.ownerTeamId ?? null,
         ownerTeamName: domainDefinition.ownerTeamName ?? null,

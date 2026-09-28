@@ -6,6 +6,7 @@ import type {
 } from "../../agent-definition/domain/models.js";
 import { Skill } from "../domain/models.js";
 import type { ConfiguredAgentSkillBinding, ConfiguredSkillSource, DetailedConfiguredSkillResolution } from "../domain/configured-agent-skill-binding.js";
+import type { InstalledSkillRecord } from "../domain/installed-skill-record.js";
 import { SkillLoader } from "../loader.js";
 import { isSkillDirectory } from "./skill-discovery.js";
 import { assertConfiguredSkillSourceSafety, fingerprintConfiguredSkillSource } from "./configured-skill-source-fingerprint.js";
@@ -147,6 +148,36 @@ export class ConfiguredAgentSkillResolver {
       outcomes.push(outcome ?? { kind: "certified_absent", name });
     }
     return outcomes;
+  }
+
+  /** Regular binding for one catalog record: its real origin and trusted root, no name lookup. */
+  bindInstalledRecord(record: InstalledSkillRecord): ConfiguredAgentSkillBinding {
+    return {
+      kind: "resolved",
+      skill: record.skill,
+      source: this.sourceFor(record.origin, record.skill, record.trustedRoot),
+    };
+  }
+
+  /** Detailed (AGY) resolution for one catalog record. The existing candidate checks
+   * (provenance, source safety, manifest/name, fingerprint) run on a candidate built
+   * from the record's real path and roots. */
+  resolveInstalledRecordDetailed(record: InstalledSkillRecord): DetailedConfiguredSkillResolution {
+    const name = record.skill.name;
+    if (!/^[a-zA-Z0-9][a-zA-Z0-9_-]*$/.test(name)) {
+      return { kind: "invalid_candidate", name, reason: "unsafe_name" };
+    }
+    // Bundled layouts are keyed by folder name; a folder whose manifest declares
+    // another name is a manifest/name mismatch, not a provenance breach.
+    if (record.origin !== "global" && path.basename(record.skill.rootPath) !== name) {
+      return { kind: "invalid_candidate", name, reason: "name_mismatch" };
+    }
+    return this.resolveDetailedCandidates(name, [{
+      path: record.skill.rootPath,
+      origin: record.origin,
+      trustedRoot: record.trustedRoot,
+      configuredRoot: record.configuredRoot,
+    }]) ?? { kind: "certified_absent", name };
   }
 
   private resolveDetailedCandidates(name: string, candidates: DetailedCandidate[]): DetailedConfiguredSkillResolution | null {
