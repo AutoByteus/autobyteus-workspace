@@ -14,6 +14,8 @@ The runtime image also ships with:
 
 - Codex CLI
 - Claude Code
+- Antigravity CLI (`agy`)
+- Grok CLI (`grok`)
 
 ## Quick Start
 
@@ -297,13 +299,36 @@ a local runtime still fails under large prompts, lower
 
 ## CLI Auth Model
 
-Codex CLI and Claude Code are preinstalled in the image. The intended auth flow is:
+Codex CLI, Claude Code, Antigravity CLI and Grok CLI are preinstalled, not
+pre-authenticated. Installation does not add or change AutoByteus runtime
+selectors; runtime availability still depends on the existing integration and
+provider configuration. ZCode and DSH are not included. The intended auth flow is:
 
 1. start the container,
 2. open the container environment through terminal/noVNC,
 3. log in inside the container with:
    - `codex login`
    - `claude auth login`
+   - `agy` (follow the provider sign-in flow)
+   - `grok` (follow the provider sign-in flow)
+
+Use the backend's root terminal, or `docker exec -it --user root <container> bash`
+with `HOME=/root`. A terminal opened directly in the noVNC desktop can instead
+run as `vncuser`; its login/configuration is separate from the root backend.
+
+Antigravity settings normally live at
+`/root/.gemini/antigravity-cli/settings.json`; its account authentication can
+also depend on Linux Secret Service/DBus. Persisting `/root` alone does not prove
+keyring-backed login durability. Follow the official
+[Antigravity installation and authentication guide](https://antigravity.google/docs/cli/install/)
+for browser sign-in or Gemini API-key configuration.
+
+Grok uses `/root/.grok` by default (including `config.toml`); this image does not
+set a runtime `GROK_HOME`. Start `grok` for browser sign-in, or supply your own
+`XAI_API_KEY` at runtime as described in the
+[Grok getting-started guide](https://docs.x.ai/build/overview).
+Never put tokens or API keys in Docker build arguments or the image. No provider
+login or inference is performed by the build checks.
 
 Use `codex login` directly in the default container shell. The container runs as
 `root`, so `sudo codex login` is not required in the normal Docker setup.
@@ -392,15 +417,38 @@ If you only want to build the image without starting it:
 ```
 
 By default, the server Dockerfile asks npm for the current `latest` dist-tag of
-both bundled runtime CLIs:
+the npm-distributed CLIs:
 
 - `@openai/codex`
 - `@anthropic-ai/claude-code`
+- `@xai-official/grok`
+
+Antigravity is acquired from its official latest-channel installer. Both new
+commands are installed outside `/root`: `agy` in `/usr/local/bin`, and `grok`
+as a global npm native executable. Build-only installer state is discarded;
+version checks must succeed and print the resolved versions in the build log.
+A failed latest installation fails the build instead of falling back to an old
+home-installed copy.
 
 The build scripts pass a changing `CLI_INSTALL_CACHE_BUSTER` build arg so the
 CLI install layer is re-run during scripted builds instead of silently reusing a
-stale Docker cache layer. If you need a reproducible rollback or emergency pin,
-override the package versions explicitly:
+stale Docker cache layer. This covers all four CLI installations, including
+AGY's download; release CI uses the same cache-buster for default/zh builds.
+Raw Docker/Compose builds can reuse the layer if cache inputs do not change:
+pass a fresh `--build-arg CLI_INSTALL_CACHE_BUSTER=$(date -u +%Y%m%d%H%M%S)`
+or use `--no-cache` to force acquisition.
+
+"Latest" means the version resolved when the image is built, not a guarantee
+that an already-running container tracks future releases. Rebuild (or pull a
+newly built image) and recreate while keeping the existing root-home, server
+data and Chromium volumes. No container-start installer or updater is added;
+provider-managed self-updates are separate from image packaging. User shell
+PATH customizations can still deliberately select a different executable;
+check `command -v agy`, `command -v grok`, `agy --version` and `grok --version`
+when troubleshooting. Do not delete auth volumes to refresh the commands.
+
+The existing Codex/Claude version overrides remain available for an emergency
+pin (AGY/Grok continue to resolve latest):
 
 ```bash
 docker buildx build \
