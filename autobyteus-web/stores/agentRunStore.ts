@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia';
+import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
 import { getApolloClient } from '~/utils/apolloClient'
 import { CancelPreparedAgentRun, PrepareAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
@@ -145,7 +146,10 @@ export const useAgentRunStore = defineStore('agentRun', {
       if (isNewAgent) {
         state.conversation.llmModelIdentifier = config.llmModelIdentifier;
       }
-      const messageContent = currentAgent.requirement;
+      const userText = currentAgent.requirement;
+      const messageContent = skillRequestInstruction.compose(currentAgent.requestedSkillNames, userText);
+      // The run summary reads from the user's own words; only a tags-only message uses the instruction.
+      const initialSummary = userText.trim() ? userText : messageContent;
       const draftAttachments = [...currentAgent.contextFilePaths];
       const draftOwner = buildAgentDraftContextFileOwner(runId);
       const localSubmission = beginLocalUserSubmission(currentAgent, {
@@ -171,7 +175,7 @@ export const useAgentRunStore = defineStore('agentRun', {
                 llmConfig: config.llmConfig ?? null,
                 skillAccessMode: config.skillAccessMode,
                 runtimeKind: config.runtimeKind,
-                initialSummary: messageContent,
+                initialSummary,
               }
             }
           });

@@ -184,6 +184,7 @@ describe('agentRunStore', () => {
             },
             requirement: 'do something',
             contextFilePaths: [],
+            requestedSkillNames: [],
             submissionPending: false,
             isSubscribed: false,
         };
@@ -253,6 +254,35 @@ describe('agentRunStore', () => {
             dedupeKey: expect.stringMatching(/^agent_run_input:perm-agent-id:client_/),
           }),
         );
+    });
+
+    it('composes skill tags into the sent content, keeps the summary on the user text and clears the tags', async () => {
+        mockAgentContext.requestedSkillNames = ['skill-optimizer', 'writer'];
+        const store = useAgentRunStore();
+
+        await store.sendUserInputAndSubscribe();
+
+        const composed = 'Use these skills for this request: skill-optimizer, writer.\n\ndo something';
+        expect(mockAgentContext.state.conversation.messages[0].text).toBe(composed);
+        expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+          variables: { input: expect.objectContaining({ initialSummary: 'do something' }) },
+        }));
+        expect(mockSendMessage).toHaveBeenCalledWith(composed, [], [], expect.anything());
+        expect(mockAgentContext.requestedSkillNames).toEqual([]);
+        expect(mockAgentContext.requirement).toBe('');
+    });
+
+    it('uses the instruction as the summary only for a tags-only message', async () => {
+        mockAgentContext.requirement = '';
+        mockAgentContext.requestedSkillNames = ['writer'];
+        const store = useAgentRunStore();
+
+        await store.sendUserInputAndSubscribe();
+
+        expect(mutateMock).toHaveBeenCalledWith(expect.objectContaining({
+          variables: { input: expect.objectContaining({ initialSummary: 'Use the writer skill for this request.' }) },
+        }));
+        expect(mockSendMessage).toHaveBeenCalledWith('Use the writer skill for this request.', [], [], expect.anything());
     });
 
     it('publishes the authoritative Error status with exact navigation when preparation fails', async () => {

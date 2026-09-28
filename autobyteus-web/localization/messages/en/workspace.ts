@@ -1,6 +1,7 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "Sent to the agent as",
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",
   "workspace.teamCopy.loading": "Reading saved Team configuration…",
   "workspace.teamCopy.failed": "Could not copy this Team configuration: {error} Use New (+) to retry.",
