@@ -1,0 +1,16 @@
+{
+  "ticket_commit": "14aeabaf268c6d9bd9ae18520121d3bc64bc8164",
+  "target_before": "f7b4f7f4abe5f36a4ae78fd013a869fd61b6c69e",
+  "target_merge": "dae08045082af7539c1242757dc8baea8c90d405",
+  "ticket_push": "Completed",
+  "target_push": "Completed",
+  "target_method": "Detached isolated target worktree based on refreshed origin/personal; merge --no-ff ticket, push HEAD:personal. Shared local personal unchanged due unrelated dirty files overlapping incoming base.",
+  "ticket_worktree_removed": true,
+  "target_worktree_removed": true,
+  "local_ticket_branch": "Deleted after remote ancestor check",
+  "remote_ticket_branch": "Retained for audit; deletion not required",
+  "prune": "Not required: worktree remove deregistered both; dry-run returned no stale entries",
+  "shared_unrelated_files_verified_unchanged": 138,
+  "release": "Not required \u2014 user explicitly declined",
+  "artifact_copy": "Task archive extracted from pushed origin/personal into shared workspace, leaving unrelated files and index unchanged."
+}

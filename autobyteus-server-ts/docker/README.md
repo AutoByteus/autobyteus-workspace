@@ -101,6 +101,32 @@ on `latest-zh`):
 autobyteus-docker upgrade --all
 ```
 
+**Release tracks: `latest` and `beta`**
+
+- `latest` is the newest **stable** release. This is the default, and nodes on
+  `latest` never receive beta images.
+- `beta` always points to the **newest build**, beta or stable. It moves forward
+  on every release tag and never moves back to an older build.
+
+To follow betas, switch every managed node once. Later plain upgrades then
+follow each newer build:
+
+```bash
+autobyteus-docker upgrade --all --tag beta   # once
+autobyteus-docker upgrade --all              # later: pulls the newest build
+```
+
+To return to stable:
+
+```bash
+autobyteus-docker upgrade --all --tag latest
+```
+
+> **Caution:** only return to `latest` once a stable release **at least as new
+> as the beta you are running** is available. While `latest` is older than
+> your beta, switching back runs an older server on data that the newer
+> version may already have migrated.
+
 To intentionally retarget every managed node to a new tag or image, make that
 explicit:
 
@@ -409,14 +435,22 @@ What it does:
 - Stable default releases publish:
   - `<image>:<version>`
   - `<image>:latest`
-- Default prereleases such as `v1.2.3-rc1` publish:
-  - `<image>:1.2.3-rc1`
+- Default prereleases such as `v1.2.3-beta.1` publish:
+  - `<image>:1.2.3-beta.1`
+- Default releases, stable or beta, then move the forward-only `<image>:beta`
+  tag to the version image just pushed. This happens only when the tag is the
+  newest recognized release tag (`vX.Y.Z` or `vX.Y.Z-beta.N`, checked with
+  `scripts/release_versions.py is-newest` after a fresh tag fetch).
+  - A manual re-publish of an older tag leaves `:beta` on the newer build.
+  - If a newer tag's build fails, `:beta` stays one build behind until that
+    run is re-run.
+  - The `zh` variant has no `beta` tag.
 - Manual `workflow_dispatch` runs can publish only the `zh` runtime variant by enabling `publish_zh`.
 - Stable manual `zh` publishes use:
   - `<image>:<version>-zh`
   - `<image>:latest-zh`
 - Manual `zh` prereleases use:
-  - `<image>:1.2.3-rc1-zh`
+  - `<image>:1.2.3-beta.1-zh`
 
 Required GitHub repository secrets:
 

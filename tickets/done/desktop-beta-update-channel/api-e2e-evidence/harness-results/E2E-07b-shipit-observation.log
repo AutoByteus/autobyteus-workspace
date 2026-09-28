@@ -1,0 +1,11 @@
+before: bundle inode=432358372 exe inode=432358375
+update.nnI68Mc
+E2E-07b-downloaded-then-check-then-opt-out: exit=0
+[{"name":"E2E-07b-downloaded-then-check-then-opt-out","exit":0}]
+after: bundle inode=432358372 exe inode=432358375
+total 0
+drwxr-xr-x@   3 normy  staff    96 Sep 27 11:52 .
+drwx------+ 180 normy  staff  5760 Sep 27 11:51 ..
+drwx------@   4 normy  staff   128 Sep 27 11:53 update.nqKS591
+--- ShipIt_stderr.log
+tail: /Users/normy/Library/Caches/com.github.Electron.ShipIt/ShipIt_stderr.log: No such file or directory

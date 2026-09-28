@@ -577,6 +577,45 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
   - `app-update:check`
   - `app-update:download`
   - `app-update:install`
+  - `app-update:set-channel`
+
+### Update Channel (Stable / Beta)
+
+- `Settings > Updates` has a "Receive beta updates" switch, off by default.
+  The value is saved locally in `userData/app-update-channel.v1.json`
+  (`{ "channel": "stable" | "beta" }`) by `electron/updater/appUpdateChannelStore.ts`.
+  A missing, unreadable or invalid file means `stable`. The value is never sent
+  to a server.
+- `AppUpdater` applies the channel before **every** check:
+  `autoUpdater.allowPrerelease = channel === 'beta'` and
+  `autoUpdater.allowDowngrade = false`. Never set `autoUpdater.channel`: its
+  setter forces `allowDowngrade = true`.
+- Stable installs read only GitHub `/releases/latest`, which excludes
+  pre-releases. This also protects older installs that predate the switch.
+  Beta installs take the newest entry in the releases feed, beta or stable.
+- `app-update:set-channel` returns `{ accepted, persisted, state }`:
+  - It is refused (`accepted: false`) for an invalid value, or when
+    `isAppUpdateChannelLocked(state)` (in `shared/appUpdateTypes.ts`) is
+    true. That means the status is `checking`, `downloading` or
+    `installing`, or `updateStaged` is true.
+  - `updateStaged` becomes `true` on `update-downloaded` and stays true
+    until the app restarts. A staged update installs on quit, and a later
+    manual or failed check does not unstage it, so the lock cannot key on
+    the transient `downloaded` status.
+  - The About switch is disabled on the same rule. While `updateStaged` is
+    true, whatever the status, a hint asks the user to install or restart
+    first.
+  - Accepted limitation: if a replacement download fails after an earlier
+    update was staged, the switch stays locked until restart.
+  - Otherwise the value is saved and applied. If the save fails, the channel
+    still applies for this session, `persisted` is `false`, and the renderer
+    shows a save-failed toast.
+  - Packaged apps then re-check when idle, `no-update`, `available` or
+    `error`, so an offer from the previous channel is replaced.
+- Turning Beta off never downgrades. The install stays on its current version
+  until a newer stable release exists.
+- `AppUpdateState.currentVersionIsPrerelease` drives the Beta badge next to
+  the version in the About card.
 
 ### Updater Error Safety
 

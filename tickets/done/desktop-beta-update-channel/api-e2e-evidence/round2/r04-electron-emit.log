@@ -1,0 +1,7 @@
+tsc new exit=0
+appUpdateTypes.js
+embeddedServerClientEndpoint.js
+localFileUrl.js
+exports= isAppUpdateChannelLocked staged-lock= true idle-lock= false
+tsc base exit=0
+electron copy exit=0

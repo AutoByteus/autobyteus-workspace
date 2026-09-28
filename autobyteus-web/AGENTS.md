@@ -43,6 +43,7 @@ The tools and environments where agents live and users interact.
     * `autobyteus-web/package.json` version must match release tag version (`vX.Y.Z`).
 *   Prefer the root helper script to avoid drift:
     * `pnpm release <x.y.z>`: normal new personal release path. It bumps the version, creates the release commit, creates the tag, and pushes branch + tag.
+    * `bash scripts/desktop-release.sh beta [--base <X.Y.Z>]`: beta release path. It computes the next unused `vX.Y.Z-beta.N`, then bumps, commits, tags and pushes without curated notes. The tag is published as a GitHub pre-release with generated notes and is offered only to desktop installs with "Receive beta updates" on.
     * `pnpm release:test --ref personal`: build-only validation path. This does **not** publish a release.
     * `pnpm release:manual-dispatch v<x.y.z> --ref personal`: manual workflow-dispatch path for an **existing** tag or a recovery/retry case.
 *   Canonical new release flow:

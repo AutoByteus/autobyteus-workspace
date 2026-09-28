@@ -1,0 +1,7 @@
+before relaunch: bundle inode=432358372
+after relaunch: bundle inode=432358372
+update.nqKS591
+ls: /Users/normy/Library/Caches/com.github.Electron.ShipIt/ShipIt_stderr.log: No such file or directory
+Timestamp                       Thread     Type        Activity             PID    TTL  
+2026-09-27 11:53:00.088893+0200 0x1efdc63  Error       0x0                  0      0    kernel: (Sandbox) System Policy: mds(349) deny(2) file-read-metadata /Users/normy/Library/Caches/com.github.Electron.ShipIt/update.nqKS591/__MACOSX/Electron.app/Contents/Frameworks/Electron Framework.framework/Versions/A/Resources/ur_FEMININE.lproj
+2026-09-27 11:53:57.292329+0200 0x1efe601  Default     0x0                  74037  0    log: [com.apple.log:] log run noninteractively, parent: 73709 (bash), args: 'log' 'show' '--last' '5m' '--predicate' 'process == "ShipIt" OR eventMessage CONTAINS[c] "ShipIt"'

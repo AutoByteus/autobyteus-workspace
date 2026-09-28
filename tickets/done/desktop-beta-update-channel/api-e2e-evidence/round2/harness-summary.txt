@@ -1,0 +1,96 @@
+
+### E2E-01a-new-stable-1.4.90 code=new v=1.4.90
+  init: channel=stable staged=false policy={"allowPrerelease":false,"allowDowngrade":false}
+  startup: no-update/stable/staged=false/avail=null policy=false/false file=null
+  check: no-update/stable/staged=false/avail=null policy=false/false file=null
+  requests: /releases.atom=200, api/releases/latest=200, dl/v1.4.90/latest-mac.yml=200, /releases.atom=200, api/releases/latest=200, dl/v1.4.90/latest-mac.yml=200
+
+### E2E-01b-new-stable-1.4.89 code=new v=1.4.89
+  init: channel=stable staged=false policy={"allowPrerelease":false,"allowDowngrade":false}
+  check: available/stable/staged=false/avail=1.4.90 policy=false/false file=null
+  requests: /releases.atom=200, api/releases/latest=200, dl/v1.4.90/latest-mac.yml=200
+
+### E2E-02a-base-1.4.89 code=base v=1.4.89
+  init: channel=undefined staged=undefined policy={"allowPrerelease":false,"allowDowngrade":false}
+  startup: available/undefined/staged=undefined/avail=1.4.90 policy=false/false file=null
+  check: available/undefined/staged=undefined/avail=1.4.90 policy=false/false file=null
+  requests: /releases.atom=200, api/releases/latest=200, dl/v1.4.90/latest-mac.yml=200, /releases.atom=200, api/releases/latest=200, dl/v1.4.90/latest-mac.yml=200
+
+### E2E-02b-base-1.4.90 code=base v=1.4.90
+  init: channel=undefined staged=undefined policy={"allowPrerelease":false,"allowDowngrade":false}
+  check: no-update/undefined/staged=undefined/avail=null policy=false/false file=null
+  requests: /releases.atom=200, api/releases/latest=200, dl/v1.4.90/latest-mac.yml=200
+
+### E2E-03-ipc-opt-in code=new v=1.4.90
+  init: channel=stable staged=false policy={"allowPrerelease":false,"allowDowngrade":false}
+  window:  policy=false/false file=null
+  ipc-check: no-update/stable/staged=false/avail=null policy=false/false file=null
+  ipc-set(beta): accepted=true persisted=true available/beta/staged=false/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  wait:  policy=true/false file="{\"channel\":\"beta\"}"
+  renderer-broadcasts:  bc=7 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-get: available/beta/staged=false/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  requests: /releases.atom=200, api/releases/latest=200, dl/v1.4.90/latest-mac.yml=200, /releases.atom=200, dl/v1.4.91-beta.1/beta-mac.yml=404, dl/v1.4.91-beta.1/latest-mac.yml=200
+
+### E2E-04a-restart code=new v=1.4.90
+  init: channel=beta staged=false policy={"allowPrerelease":true,"allowDowngrade":false}
+  startup: available/beta/staged=false/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  requests: /releases.atom=200, dl/v1.4.91-beta.1/beta-mac.yml=404, dl/v1.4.91-beta.1/latest-mac.yml=200
+
+### E2E-04b-after-upgrade-to-beta code=new v=1.4.91-beta.1
+  init: channel=beta staged=false policy={"allowPrerelease":true,"allowDowngrade":false}
+  startup: available/beta/staged=false/avail=1.4.91-beta.2 policy=true/false file="{\"channel\":\"beta\"}"
+  requests: /releases.atom=200, dl/v1.4.91-beta.2/beta-mac.yml=404, dl/v1.4.91-beta.2/latest-mac.yml=200
+
+### E2E-05-beta-offered-newer-stable code=new v=1.4.91-beta.2
+  init: channel=beta staged=false policy={"allowPrerelease":true,"allowDowngrade":false}
+  check: available/beta/staged=false/avail=1.4.91 policy=true/false file="{\"channel\":\"beta\"}"
+  requests: /releases.atom=200, dl/v1.4.91/latest-mac.yml=200
+
+### E2E-06a-opt-out-on-beta-build code=new v=1.4.91-beta.1
+  init: channel=beta staged=false policy={"allowPrerelease":true,"allowDowngrade":false}
+  window:  policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-check: available/beta/staged=false/avail=1.4.91-beta.2 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-set(stable): accepted=true persisted=true no-update/stable/staged=false/avail=null policy=false/false file="{\"channel\":\"stable\"}"
+  ipc-check: no-update/stable/staged=false/avail=null policy=false/false file="{\"channel\":\"stable\"}"
+  requests: /releases.atom=200, dl/v1.4.91-beta.2/beta-mac.yml=404, dl/v1.4.91-beta.2/latest-mac.yml=200, /releases.atom=200, api/releases/latest=200, dl/v1.4.90/latest-mac.yml=200, /releases.atom=200, api/releases/latest=200, dl/v1.4.90/latest-mac.yml=200
+
+### E2E-06b-opted-out-later-stable code=new v=1.4.91-beta.1
+  init: channel=stable staged=false policy={"allowPrerelease":false,"allowDowngrade":false}
+  check: available/stable/staged=false/avail=1.4.91 policy=false/false file="{\"channel\":\"stable\"}"
+  requests: /releases.atom=200, api/releases/latest=200, dl/v1.4.91/latest-mac.yml=200
+
+### E2E-07-downloaded-lock code=new v=1.4.90
+  init: channel=beta staged=false policy={"allowPrerelease":true,"allowDowngrade":false}
+  window:  policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-check: available/beta/staged=false/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-download: downloaded/beta/staged=true/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-set(stable): accepted=false persisted=false downloaded/beta/staged=true/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-check: available/beta/staged=true/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-get: available/beta/staged=true/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  requests: /releases.atom=200, dl/v1.4.91-beta.1/beta-mac.yml=404, dl/v1.4.91-beta.1/latest-mac.yml=200, dl/v1.4.91-beta.1/AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip=200, /releases.atom=200, dl/v1.4.91-beta.1/beta-mac.yml=404, dl/v1.4.91-beta.1/latest-mac.yml=200
+
+### E2E-07b-downloaded-then-check-then-opt-out code=new v=1.4.90
+  init: channel=beta staged=false policy={"allowPrerelease":true,"allowDowngrade":false}
+  window:  policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-check: available/beta/staged=false/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-download: downloaded/beta/staged=true/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-check: available/beta/staged=true/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-set(stable): accepted=false persisted=false available/beta/staged=true/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-get: available/beta/staged=true/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  requests: /releases.atom=200, dl/v1.4.91-beta.1/beta-mac.yml=404, dl/v1.4.91-beta.1/latest-mac.yml=200, /releases.atom=200, dl/v1.4.91-beta.1/beta-mac.yml=404, dl/v1.4.91-beta.1/latest-mac.yml=200
+
+### E2E-07c-downloaded-then-failed-check code=new v=1.4.90
+  init: channel=beta staged=false policy={"allowPrerelease":true,"allowDowngrade":false}
+  window:  policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-check: available/beta/staged=false/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-download: downloaded/beta/staged=true/avail=1.4.91-beta.1 policy=true/false file="{\"channel\":\"beta\"}"
+  feed-down:  policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-check: error/beta/staged=true/avail=1.4.91-beta.1/err=unknown policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-set(stable): accepted=false persisted=false error/beta/staged=true/avail=1.4.91-beta.1/err=unknown policy=true/false file="{\"channel\":\"beta\"}"
+  ipc-get: error/beta/staged=true/avail=1.4.91-beta.1/err=unknown policy=true/false file="{\"channel\":\"beta\"}"
+  requests: /releases.atom=200, dl/v1.4.91-beta.1/beta-mac.yml=404, dl/v1.4.91-beta.1/latest-mac.yml=200, /releases.atom=503
+
+### E2E-08-corrupt-preference code=new v=1.4.90
+  init: channel=stable staged=false policy={"allowPrerelease":false,"allowDowngrade":false}
+  check: no-update/stable/staged=false/avail=null policy=false/false file="{\"channel\":\"beta\""
+  requests: /releases.atom=200, api/releases/latest=200, dl/v1.4.90/latest-mac.yml=200

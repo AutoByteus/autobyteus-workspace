@@ -1,0 +1,28 @@
+test_is_newest_prints_true_or_false_with_exit_zero (scripts.tests.test_release_versions.CommandLineTest) ... ok
+test_next_beta_prints_version (scripts.tests.test_release_versions.CommandLineTest) ... ok
+test_next_beta_refusal_exits_non_zero_with_message (scripts.tests.test_release_versions.CommandLineTest) ... ok
+test_reads_git_tags_when_no_file_given (scripts.tests.test_release_versions.CommandLineTest) ... ok
+test_recognizes_only_canonical_grammar (scripts.tests.test_release_versions.GrammarTest) ... ok
+test_semver_precedence (scripts.tests.test_release_versions.GrammarTest) ... ok
+test_beta_ten_is_newer_than_beta_nine (scripts.tests.test_release_versions.IsNewestTest) ... ok
+test_concurrent_later_beta_wins (scripts.tests.test_release_versions.IsNewestTest) ... ok
+test_out_of_grammar_candidate_is_false (scripts.tests.test_release_versions.IsNewestTest) ... ok
+test_real_inventory_ignores_rc_e2e_and_voice_tags (scripts.tests.test_release_versions.IsNewestTest) ... ok
+test_republish_of_older_tag_does_not_move_beta (scripts.tests.test_release_versions.IsNewestTest) ... ok
+test_stable_is_newer_than_its_betas (scripts.tests.test_release_versions.IsNewestTest) ... ok
+test_default_base_moves_past_new_stable (scripts.tests.test_release_versions.NextBetaTest) ... ok
+test_explicit_base (scripts.tests.test_release_versions.NextBetaTest) ... ok
+test_increments_existing_betas_for_base (scripts.tests.test_release_versions.NextBetaTest) ... ok
+test_rc_tags_do_not_count_as_betas (scripts.tests.test_release_versions.NextBetaTest) ... ok
+test_real_inventory_defaults_to_next_patch (scripts.tests.test_release_versions.NextBetaTest) ... ok
+test_refuses_invalid_base (scripts.tests.test_release_versions.NextBetaTest) ... ok
+test_refuses_past_ninety_eight (scripts.tests.test_release_versions.NextBetaTest) ... ok
+test_refuses_when_stable_for_base_exists (scripts.tests.test_release_versions.NextBetaTest) ... ok
+test_refuses_without_stable_tag_or_base (scripts.tests.test_release_versions.NextBetaTest) ... ok
+test_fixture_matches_recorded_inventory (scripts.tests.test_release_versions.RealInventoryFixtureTest) ... ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 0.405s
+
+OK
+exit=0

@@ -1,0 +1,71 @@
+[2026-09-27T10:21:18.587Z] [INFO] [electron] Application started
+[2026-09-27T10:21:18.828Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:18.831Z] [INFO] [electron] [updater] Generated new staging user ID: 6d247838-fa3f-5ab1-9543-7f6c0deb8e5c
+[2026-09-27T10:21:18.842Z] [INFO] [electron] [updater] Found version 1.4.91-beta.1 (url: AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip)
+[2026-09-27T10:21:18.843Z] [INFO] [electron] [updater] Downloading update from AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip
+[2026-09-27T10:21:18.847Z] [INFO] [electron] [updater] Checked for macOS Rosetta environment (isRosetta=false)
+[2026-09-27T10:21:18.851Z] [INFO] [electron] [updater] Checked 'uname -a': arm64=true
+[2026-09-27T10:21:18.972Z] [INFO] [electron] [updater] Update has already been downloaded to /Users/normy/Library/Caches/abx-e2e-updater/pending/AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip).
+[2026-09-27T10:21:19.098Z] [INFO] [electron] [updater] / requested
+[2026-09-27T10:21:19.102Z] [INFO] [electron] [updater] /2b8c1a09dc60107810ae3c2293736ad202b3de196aabe17f13a2ae4bd76efc0cde850da9e4c8116b789a5be8ada24b832fb893bdd0784c6ddbce9f54493c388e.zip requested
+[2026-09-27T10:21:19.102Z] [INFO] [electron] [updater] /2b8c1a09dc60107810ae3c2293736ad202b3de196aabe17f13a2ae4bd76efc0cde850da9e4c8116b789a5be8ada24b832fb893bdd0784c6ddbce9f54493c388e.zip requested by Squirrel.Mac, pipe /Users/normy/Library/Caches/abx-e2e-updater/pending/AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip
+[2026-09-27T10:21:19.402Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:19.404Z] [ERROR] [electron] [updater] Error: HttpError: 503 Service Unavailable
+"method: GET url: http://127.0.0.1:55665/AutoByteus/autobyteus-workspace/releases.atom\n\n          Data:\n          Service Unavailable\n          "
+Headers: {
+  "connection": "keep-alive",
+  "content-type": "text/plain",
+  "date": "Sun, 27 Sep 2026 10:21:19 GMT",
+  "keep-alive": "timeout=5",
+  "transfer-encoding": "chunked"
+}
+    at createHttpError (/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/node_modules/.pnpm/builder-util-runtime@9.5.1/node_modules/builder-util-runtime/out/httpExecutor.js:21:12)
+    at IncomingMessage.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/node_modules/.pnpm/builder-util-runtime@9.5.1/node_modules/builder-util-runtime/out/httpExecutor.js:152:28)
+    at IncomingMessage.emit (node:events:509:28)
+    at endReadableNT (node:internal/streams/readable:1735:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21)
+[2026-09-27T10:21:19.405Z] [ERROR] [electron] [updater] Auto-update failed. (kind=unknown, operation=manual-check, code=HTTP_ERROR_503)
+503 Service Unavailable
+"method: GET url: http://127.0.0.1:55665/AutoByteus/autobyteus-workspace/releases.atom\n\n          Data:\n          Service Unavailable\n          "
+Headers: {
+  "connection": "keep-alive",
+  "content-type": "text/plain",
+  "date": "Sun, 27 Sep 2026 10:21:19 GMT",
+  "keep-alive": "timeout=5",
+  "transfer-encoding": "chunked"
+}
+HttpError: 503 Service Unavailable
+"method: GET url: http://127.0.0.1:55665/AutoByteus/autobyteus-workspace/releases.atom\n\n          Data:\n          Service Unavailable\n          "
+Headers: {
+  "connection": "keep-alive",
+  "content-type": "text/plain",
+  "date": "Sun, 27 Sep 2026 10:21:19 GMT",
+  "keep-alive": "timeout=5",
+  "transfer-encoding": "chunked"
+}
+    at createHttpError (/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/node_modules/.pnpm/builder-util-runtime@9.5.1/node_modules/builder-util-runtime/out/httpExecutor.js:21:12)
+    at IncomingMessage.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/node_modules/.pnpm/builder-util-runtime@9.5.1/node_modules/builder-util-runtime/out/httpExecutor.js:152:28)
+    at IncomingMessage.emit (node:events:509:28)
+    at endReadableNT (node:internal/streams/readable:1735:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) HttpError: 503 Service Unavailable
+"method: GET url: http://127.0.0.1:55665/AutoByteus/autobyteus-workspace/releases.atom\n\n          Data:\n          Service Unavailable\n          "
+Headers: {
+  "connection": "keep-alive",
+  "content-type": "text/plain",
+  "date": "Sun, 27 Sep 2026 10:21:19 GMT",
+  "keep-alive": "timeout=5",
+  "transfer-encoding": "chunked"
+}
+    at createHttpError (/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/node_modules/.pnpm/builder-util-runtime@9.5.1/node_modules/builder-util-runtime/out/httpExecutor.js:21:12)
+    at IncomingMessage.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/node_modules/.pnpm/builder-util-runtime@9.5.1/node_modules/builder-util-runtime/out/httpExecutor.js:152:28)
+    at IncomingMessage.emit (node:events:509:28)
+    at endReadableNT (node:internal/streams/readable:1735:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:90:21) {
+  statusCode: 503,
+  description: 'method: GET url: http://127.0.0.1:55665/AutoByteus/autobyteus-workspace/releases.atom\n' +
+    '\n' +
+    '          Data:\n' +
+    '          Service Unavailable\n' +
+    '          ',
+  code: 'HTTP_ERROR_503'
+}

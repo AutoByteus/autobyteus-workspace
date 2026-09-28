@@ -1,0 +1,5 @@
+{
+  "agent": "browser-retest-agent",
+  "team": "browser-retest-team",
+  "url": "http://127.0.0.1:54254/agent-teams?view=team-detail&id=browser-retest-team"
+}

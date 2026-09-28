@@ -1,0 +1,193 @@
+{
+  "scenario": "E2E-07b-downloaded-then-check-then-opt-out",
+  "appVersion": "1.4.90",
+  "code": "new",
+  "steps": [
+    {
+      "op": "window",
+      "arg": null,
+      "bridgeSetChannelType": "function",
+      "policy": {
+        "allowPrerelease": true,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\"channel\":\"beta\"}"
+    },
+    {
+      "op": "ipc-check",
+      "arg": null,
+      "state": {
+        "status": "available",
+        "currentVersion": "1.4.90",
+        "currentVersionIsPrerelease": false,
+        "updateChannel": "beta",
+        "updateStaged": false,
+        "availableVersion": "1.4.91-beta.1",
+        "message": "Version 1.4.91-beta.1 is available.",
+        "errorKind": null
+      },
+      "policy": {
+        "allowPrerelease": true,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\"channel\":\"beta\"}"
+    },
+    {
+      "op": "ipc-download",
+      "arg": null,
+      "initial": {
+        "status": "downloaded",
+        "currentVersion": "1.4.90",
+        "currentVersionIsPrerelease": false,
+        "updateChannel": "beta",
+        "updateStaged": true,
+        "availableVersion": "1.4.91-beta.1",
+        "message": "Update downloaded. Restart to install.",
+        "errorKind": null
+      },
+      "timedOut": false,
+      "state": {
+        "status": "downloaded",
+        "currentVersion": "1.4.90",
+        "currentVersionIsPrerelease": false,
+        "updateChannel": "beta",
+        "updateStaged": true,
+        "availableVersion": "1.4.91-beta.1",
+        "message": "Update downloaded. Restart to install.",
+        "errorKind": null
+      },
+      "policy": {
+        "allowPrerelease": true,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\"channel\":\"beta\"}"
+    },
+    {
+      "op": "ipc-check",
+      "arg": null,
+      "state": {
+        "status": "available",
+        "currentVersion": "1.4.90",
+        "currentVersionIsPrerelease": false,
+        "updateChannel": "beta",
+        "updateStaged": true,
+        "availableVersion": "1.4.91-beta.1",
+        "message": "Version 1.4.91-beta.1 is available.",
+        "errorKind": null
+      },
+      "policy": {
+        "allowPrerelease": true,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\"channel\":\"beta\"}"
+    },
+    {
+      "op": "ipc-set",
+      "arg": "stable",
+      "response": {
+        "accepted": false,
+        "persisted": false,
+        "state": {
+          "status": "available",
+          "currentVersion": "1.4.90",
+          "currentVersionIsPrerelease": false,
+          "updateChannel": "beta",
+          "updateStaged": true,
+          "availableVersion": "1.4.91-beta.1",
+          "message": "Version 1.4.91-beta.1 is available.",
+          "errorKind": null
+        }
+      },
+      "policy": {
+        "allowPrerelease": true,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\"channel\":\"beta\"}"
+    },
+    {
+      "op": "ipc-get",
+      "arg": null,
+      "state": {
+        "status": "available",
+        "currentVersion": "1.4.90",
+        "currentVersionIsPrerelease": false,
+        "updateChannel": "beta",
+        "updateStaged": true,
+        "availableVersion": "1.4.91-beta.1",
+        "message": "Version 1.4.91-beta.1 is available.",
+        "errorKind": null
+      },
+      "policy": {
+        "allowPrerelease": true,
+        "allowDowngrade": false
+      },
+      "channelFile": "{\"channel\":\"beta\"}"
+    }
+  ],
+  "requests": [
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases.atom",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.91-beta.1/beta-mac.yml",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.91-beta.1/latest-mac.yml",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases.atom",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.91-beta.1/beta-mac.yml",
+      "status": 404
+    },
+    {
+      "method": "GET",
+      "path": "/AutoByteus/autobyteus-workspace/releases/download/v1.4.91-beta.1/latest-mac.yml",
+      "status": 200
+    }
+  ],
+  "afterInitialize": {
+    "state": {
+      "status": "idle",
+      "currentVersion": "1.4.90",
+      "currentVersionIsPrerelease": false,
+      "updateChannel": "beta",
+      "updateStaged": false,
+      "availableVersion": null,
+      "message": "Update status is idle.",
+      "errorKind": null
+    },
+    "policy": {
+      "allowPrerelease": true,
+      "allowDowngrade": false
+    },
+    "channelFile": "{\"channel\":\"beta\"}"
+  },
+  "final": {
+    "state": {
+      "status": "available",
+      "currentVersion": "1.4.90",
+      "currentVersionIsPrerelease": false,
+      "updateChannel": "beta",
+      "updateStaged": true,
+      "availableVersion": "1.4.91-beta.1",
+      "message": "Version 1.4.91-beta.1 is available.",
+      "errorKind": null
+    },
+    "policy": {
+      "allowPrerelease": true,
+      "allowDowngrade": false
+    },
+    "channelFile": "{\"channel\":\"beta\"}"
+  }
+}

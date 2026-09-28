@@ -12,7 +12,7 @@ on:
         default: false
         type: boolean
       release_tag:
-        description: "Release tag to publish/update when publish_release is enabled (example: v1.1.11-rc1)"
+        description: "Release tag to publish/update when publish_release is enabled (example: v1.4.90-beta.1)"
         required: false
         type: string
       prerelease:
@@ -42,16 +42,22 @@ jobs:
       - name: Resolve release metadata
         id: meta
         run: |
+          # A tag with a pre-release suffix (vX.Y.Z-beta.N) is always published as a
+          # GitHub pre-release so /releases/latest (the Stable update feed) never sees it.
           if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
             RELEASE_TAG="${GITHUB_REF_NAME}"
             RELEASE_REF="${GITHUB_REF_NAME}"
             ENFORCE_VERSION="true"
-            PRERELEASE="false"
+            if [[ "${RELEASE_TAG}" == *-* ]]; then
+              PRERELEASE="true"
+            else
+              PRERELEASE="false"
+            fi
           elif [[ -n "${{ github.event.inputs.release_tag }}" ]]; then
             RELEASE_TAG="${{ github.event.inputs.release_tag }}"
             RELEASE_REF="${{ github.event.inputs.release_tag }}"
             ENFORCE_VERSION="true"
-            if [[ "${{ github.event.inputs.prerelease }}" == "true" ]]; then
+            if [[ "${RELEASE_TAG}" == *-* || "${{ github.event.inputs.prerelease }}" == "true" ]]; then
               PRERELEASE="true"
             else
               PRERELEASE="false"
@@ -626,9 +632,20 @@ jobs:
 
       - name: Resolve release notes mode
         id: release_notes
+        env:
+          RELEASE_TAG: ${{ needs.prepare-release.outputs.release_tag }}
         run: |
           CURATED_PATH=".github/release-notes/release-notes.md"
-          if [[ -f "$CURATED_PATH" ]] && grep -Eq '\S' "$CURATED_PATH"; then
+          # The curated notes file persists after each stable release, so pre-release
+          # tags always use generated notes instead of the previous stable's notes.
+          if [[ "$RELEASE_TAG" == *-* ]]; then
+            echo "has_curated_notes=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Release notes mode"
+              echo ""
+              echo "Pre-release tag \`$RELEASE_TAG\`; using generated GitHub notes."
+            } >> "$GITHUB_STEP_SUMMARY"
+          elif [[ -f "$CURATED_PATH" ]] && grep -Eq '\S' "$CURATED_PATH"; then
             echo "has_curated_notes=true" >> "$GITHUB_OUTPUT"
             echo "release_notes_path=$CURATED_PATH" >> "$GITHUB_OUTPUT"
             {

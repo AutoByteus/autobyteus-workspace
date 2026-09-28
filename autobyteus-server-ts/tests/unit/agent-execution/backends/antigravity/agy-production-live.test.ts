@@ -8,13 +8,15 @@ import { AgyStreamProcess } from "../../../../../src/agent-execution/backends/an
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
 
+const evidenceDir = path.resolve(process.env["AGY_LIVE_EVIDENCE_DIR"] ?? path.join(os.tmpdir(), "agy-production-live-evidence"));
+
 const readIfExists = async (file: string) => fs.readFile(file, "utf8").catch(() => null);
 
 it.skipIf(process.env.AGY_LIVE !== "1")("loads production-generated main agent and targets selected workspace for generic file and shell tasks", async () => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-product-live-"));
   const workspacePath = path.join(base, "real-workspace");
   await fs.mkdir(workspacePath);
-  const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "live-run", memoryDir: path.join(base, "memory"),
+  const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "live-run", memoryDir: path.join(base, "memory"),
     workspacePath, identity: "You are the AutoByteus test main agent. Your identity code is AGY-ID-8614. Answer accurately when asked for this code.",
     configuredSkillBindings: [], skillAccessMode: "NONE", mcpDescriptor: null });
   const process = new AgyStreamProcess();
@@ -41,7 +43,8 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads production-generated main agent a
     capsuleFile: await readIfExists(path.join(capsule.path, "generic-file.txt")),
     workspaceShell: await readIfExists(path.join(capsule.manifest.workspacePath, "generic-shell.txt")),
     capsuleShell: await readIfExists(path.join(capsule.path, "generic-shell.txt")) };
-  await fs.writeFile(path.resolve(globalThis.process.cwd(), "../tickets/in-progress/antigravity-cli-runtime-redesign-20260924/implementation-local-live-probe.json"), JSON.stringify(report, null, 2));
+  await fs.mkdir(evidenceDir, { recursive: true });
+  await fs.writeFile(path.join(evidenceDir, "implementation-local-live-probe.json"), JSON.stringify(report, null, 2));
   process.stop();
   expect(JSON.stringify(identity)).toContain("AGY-ID-8614");
   expect(report.workspaceFile).toContain("FILE-MARKER-9172");
@@ -58,7 +61,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads an AutoByteus-configured PRELOADE
   await fs.writeFile(path.join(source, "SKILL.md"), "# Codebook\nWhen asked for the codebook marker, answer SKILL-MARKER-6381.\n");
   const binding = { kind: "resolved" as const, skill: new Skill({ name: "codebook", description: "A configured marker codebook.", content: "", rootPath: source }),
     source: { origin: "global" as const, sourceRoot: await fs.realpath(source), trustedRoot: await fs.realpath(source) } };
-  const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", nativeToolProfile: { cliVersion: "1.2.11", permittedNativeToolNames: ["generate_image", "view_file"] }, runId: "skill-live", memoryDir: path.join(base, "memory"),
+  const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "skill-live", memoryDir: path.join(base, "memory"),
     workspacePath, identity: "You are an AutoByteus agent. Consult the codebook skill when asked about its marker.",
     configuredSkillBindings: [{ ...binding, sourceTreeSha256: fingerprintConfiguredSkillSource(source, source) }], skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
   const process = new AgyStreamProcess();
@@ -73,7 +76,8 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads an AutoByteus-configured PRELOADE
     for (let attempt = 0; attempt < 180 && !observed.some((event) => event.event === "result"); attempt++)
       await new Promise((resolve) => setTimeout(resolve, 500));
     const result = observed.find((event) => event.event === "result");
-    await fs.writeFile(path.resolve(globalThis.process.cwd(), "../tickets/in-progress/antigravity-cli-runtime-redesign-20260924/implementation-local-skill-live.json"),
+    await fs.mkdir(evidenceDir, { recursive: true });
+    await fs.writeFile(path.join(evidenceDir, "implementation-local-skill-live.json"),
       JSON.stringify({ base, observed, closeErrors }, null, 2));
     expect(result).toBeDefined();
     expect(JSON.stringify(result)).toContain("SKILL-MARKER-6381");

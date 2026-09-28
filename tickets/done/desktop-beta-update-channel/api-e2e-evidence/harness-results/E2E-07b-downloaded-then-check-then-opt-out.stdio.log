@@ -1,0 +1,18 @@
+exit=0
+[2026-09-27T10:21:16.416Z] [INFO] [electron] Application started
+[2026-09-27T10:21:16.647Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:16.649Z] [INFO] [electron] [updater] Generated new staging user ID: ce879784-c4f9-51b8-ae3b-99478f34b7d0
+[2026-09-27T10:21:16.660Z] [INFO] [electron] [updater] Found version 1.4.91-beta.1 (url: AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip)
+[2026-09-27T10:21:16.660Z] [INFO] [electron] [updater] Downloading update from AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip
+[2026-09-27T10:21:16.664Z] [INFO] [electron] [updater] Checked for macOS Rosetta environment (isRosetta=false)
+[2026-09-27T10:21:16.668Z] [INFO] [electron] [updater] Checked 'uname -a': arm64=true
+[2026-09-27T10:21:16.789Z] [INFO] [electron] [updater] Update has already been downloaded to /Users/normy/Library/Caches/abx-e2e-updater/pending/AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip).
+[2026-09-27T10:21:16.921Z] [INFO] [electron] [updater] / requested
+[2026-09-27T10:21:16.925Z] [INFO] [electron] [updater] /d0273f6ee5c6fbd288fef4f704e0aab1640307114f790d5d1140ef0b35561f7ef99a12ebd0cc7a3a153e634e4e861b4760f269cb1f9d15f69a87740ddfaede23.zip requested
+[2026-09-27T10:21:16.925Z] [INFO] [electron] [updater] /d0273f6ee5c6fbd288fef4f704e0aab1640307114f790d5d1140ef0b35561f7ef99a12ebd0cc7a3a153e634e4e861b4760f269cb1f9d15f69a87740ddfaede23.zip requested by Squirrel.Mac, pipe /Users/normy/Library/Caches/abx-e2e-updater/pending/AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip
+[2026-09-27T10:21:17.228Z] [INFO] [electron] [updater] Checking for update
+[2026-09-27T10:21:17.232Z] [INFO] [electron] [updater] Found version 1.4.91-beta.1 (url: AutoByteus_personal_macos-arm64-1.4.91-beta.1.zip)
+
+ERROR: Unrecognized attribute string flag '?' in attribute string "T@"NSString",?,R,C" for property debugDescription
+ERROR: Unrecognized attribute string flag '?' in attribute string "T@"NSString",?,R,C" for property debugDescription
+2026-09-27 12:21:17.279 Electron[42901:32680619] Download completed to: file:///Users/normy/Library/Caches/com.github.Electron.ShipIt/update.ryo2JsI/d0273f6ee5c6fbd288fef4f704e0aab1640307114f790d5d1140ef0b35561f7ef99a12ebd0cc7a3a153e634e4e861b4760f269cb1f9d15f69a87740ddfaede23.zip

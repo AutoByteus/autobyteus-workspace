@@ -1,5 +1,5 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
-import { mkdtemp, writeFile, chmod, rm } from "node:fs/promises";
+import { mkdtemp, writeFile, readFile, chmod, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import http from "node:http";
@@ -11,16 +11,28 @@ beforeAll(async () => {
   directory = await mkdtemp(path.join(tmpdir(), "agy-discovery-unit-"));
   fakeCli = path.join(directory, "agy-fake");
   await writeFile(fakeCli, `#!/usr/bin/env node
+const { appendFileSync } = require('node:fs');
 const mode = process.env.AGY_FAKE_MODE;
 const arg = process.argv[2];
+appendFileSync(process.env.AGY_FAKE_COMMAND_LOG, arg + '\\n');
 if (arg === '--version') {
-  if (mode === 'hang-version') { setInterval(() => {}, 1000); }
-  else if (mode === 'oversized-version') process.stdout.write('x'.repeat(70 * 1024));
-  else process.stdout.write(mode === 'bad-version' ? 'agy version 1.2.10\\n' : 'agy version 1.2.11\\n');
+  throw new Error('Version probing must not be used for admission');
 } else if (arg === '--help') {
-  process.stdout.write(mode === 'bad-flags' ? '--agent\\n' : '--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\\n');
+  if (mode === 'hang-help') { setInterval(() => {}, 1000); }
+  else if (mode === 'oversized-help') process.stdout.write('x'.repeat(70 * 1024));
+  else if (mode === 'oversized-help-stderr') process.stderr.write('x'.repeat(70 * 1024));
+  else if (mode === 'failed-help') { process.stderr.write('secret /private/credential-path token=abc'); process.exitCode = 8; }
+  else {
+    const help = (process.env.AGY_FAKE_VERSION ?? 'agy version 1.2.11') + '\\n' +
+      (mode === 'bad-flags' ? '--agent\\n' : '--agent --new-project --add-dir --conversation --input-format --output-format --dangerously-skip-permissions\\n');
+    (mode === 'stderr-help' ? process.stderr : process.stdout).write(help);
+  }
 } else if (arg === 'models') {
   if (mode === 'failed-models') { process.stderr.write('secret /private/credential-path token=abc'); process.exitCode = 8; }
+  else if (mode === 'hang-models') { setInterval(() => {}, 1000); }
+  else if (mode === 'oversized-models') process.stdout.write('x'.repeat(1024 * 1024 + 1));
+  else if (mode === 'oversized-models-stderr') process.stderr.write('x'.repeat(1024 * 1024 + 1));
+  else if (mode === 'empty-models') process.stdout.write('');
   else if (mode === 'invalid-models') process.stdout.write('not-a-model\\n');
   else if (mode === 'slow-models') setTimeout(() => process.stdout.write('gemini-test\\tGemini Test\\n'), 500);
   else process.stdout.write('gemini-test\\tGemini Test\\n');
@@ -35,6 +47,8 @@ afterAll(async () => { await rm(directory, { recursive: true, force: true }); })
 const capability = async (mode: string) => {
   vi.stubEnv("ANTIGRAVITY_CLI_COMMAND", fakeCli);
   vi.stubEnv("AGY_FAKE_MODE", mode);
+  vi.stubEnv("AGY_FAKE_COMMAND_LOG", path.join(directory, "commands.log"));
+  await writeFile(path.join(directory, "commands.log"), "");
   vi.resetModules();
   return import("../../../src/runtime-management/antigravity-cli-capability.js");
 };
@@ -43,20 +57,42 @@ describe("bounded AGY CLI discovery", () => {
   it("classifies a missing CLI without exposing its configured path", async () => {
     vi.stubEnv("ANTIGRAVITY_CLI_COMMAND", path.join(directory, "private-token-missing-cli"));
     vi.resetModules();
-    const { probeAntigravityCli } = await import("../../../src/runtime-management/antigravity-cli-capability.js");
-    const probe = await probeAntigravityCli();
-    expect(probe).toMatchObject({ available: false, diagnostic: { code: "AGY_CLI_UNAVAILABLE" } });
-    expect(probe.reason).not.toContain("private-token");
+    const { listAntigravityModels } = await import("../../../src/runtime-management/antigravity-cli-capability.js");
+    const error = await listAntigravityModels().catch((value: unknown) => value);
+    expect(error).toMatchObject({ diagnostic: { code: "AGY_CLI_UNAVAILABLE" } });
+    expect(String(error)).not.toContain("private-token");
   });
 
   it("accepts a compatible CLI and returns dynamic model slugs", async () => {
-    const { probeAntigravityCli, listAntigravityModels } = await capability("ready");
-    await expect(probeAntigravityCli()).resolves.toMatchObject({ available: true, reason: null });
+    const { listAntigravityModels } = await capability("ready");
     await expect(listAntigravityModels()).resolves.toEqual([{ id: "gemini-test", name: "Gemini Test" }]);
     const { AntigravityModelCatalog } = await import("../../../src/llm-management/services/antigravity-model-catalog.js");
     await expect(new AntigravityModelCatalog().listModels()).resolves.toEqual([
       expect.objectContaining({ model_identifier: "gemini-test", display_name: "Gemini Test" }),
     ]);
+  });
+
+  it.each(["1.2.10", "1.2.11", "1.2.12", "99.0.0", "unparseable release", ""])(
+    "ignores release text %j and never requests --version", async (version) => {
+      const { listAntigravityModels } = await capability("ready");
+      vi.stubEnv("AGY_FAKE_VERSION", version);
+      await expect(listAntigravityModels()).resolves.toEqual([{ id: "gemini-test", name: "Gemini Test" }]);
+      expect(await readFile(path.join(directory, "commands.log"), "utf8")).toBe("--help\nmodels\n");
+    },
+  );
+
+  it("accepts required help flags on stderr", async () => {
+    const { listAntigravityModels } = await capability("stderr-help");
+    await expect(listAntigravityModels()).resolves.toHaveLength(1);
+  });
+
+  it("enables AGY availability using capabilities rather than release text", async () => {
+    await capability("ready");
+    vi.stubEnv("AGY_FAKE_VERSION", "future release");
+    const { getRuntimeAvailabilityService } = await import("../../../src/runtime-management/runtime-availability-service.js");
+    const { RuntimeKind } = await import("../../../src/runtime-management/runtime-kind-enum.js");
+    await expect(getRuntimeAvailabilityService().getRuntimeAvailability(RuntimeKind.ANTIGRAVITY_CLI))
+      .resolves.toMatchObject({ enabled: true, reason: null });
   });
 
   it("makes AGY runtime availability await discovery and report only a safe failure", async () => {
@@ -70,25 +106,31 @@ describe("bounded AGY CLI discovery", () => {
   });
 
   it.each([
-    ["bad-version", "AGY_CLI_UNSUPPORTED"],
     ["bad-flags", "AGY_CLI_UNSUPPORTED"],
     ["invalid-models", "AGY_MODEL_CATALOG_INVALID"],
     ["failed-models", "AGY_MODEL_DISCOVERY_FAILED"],
-    ["oversized-version", "AGY_MODEL_DISCOVERY_FAILED"],
+    ["empty-models", "AGY_MODEL_CATALOG_INVALID"],
+    ["failed-help", "AGY_MODEL_DISCOVERY_FAILED"],
+    ["oversized-help", "AGY_MODEL_DISCOVERY_FAILED"],
+    ["oversized-help-stderr", "AGY_MODEL_DISCOVERY_FAILED"],
+    ["oversized-models", "AGY_MODEL_DISCOVERY_FAILED"],
+    ["oversized-models-stderr", "AGY_MODEL_DISCOVERY_FAILED"],
   ])("returns a safe typed diagnostic for %s", async (mode, code) => {
     const { listAntigravityModels } = await capability(mode);
     const error = await listAntigravityModels().catch((value: unknown) => value);
     expect(error).toMatchObject({ diagnostic: { code } });
-    expect(String(error)).not.toMatch(/secret|private|credential-path|token=abc|agy-fake/);
+    expect(String(error)).not.toMatch(/secret|private|credential-path|token=abc|agy-fake|version/i);
+    if (mode === "bad-flags") expect(await readFile(path.join(directory, "commands.log"), "utf8")).toBe("--help\n");
   });
 
-  it("bounds a hung child and returns a sanitized timeout rather than hanging", async () => {
-    const { listAntigravityModels } = await capability("hang-version");
+  it.each([["hang-help", 5_000], ["hang-models", 17_000]] as const)(
+    "bounds %s and returns a sanitized timeout rather than hanging", async (mode, limit) => {
+    const { listAntigravityModels } = await capability(mode);
     const started = Date.now();
     const error = await listAntigravityModels().catch((value: unknown) => value);
     expect(error).toMatchObject({ diagnostic: { code: "AGY_MODEL_DISCOVERY_TIMEOUT" } });
-    expect(Date.now() - started).toBeLessThan(5_000);
-  }, 8_000);
+    expect(Date.now() - started).toBeLessThan(limit);
+  }, 20_000);
 
   it("keeps a concurrent health request responsive while model discovery waits", async () => {
     const { listAntigravityModels } = await capability("slow-models");

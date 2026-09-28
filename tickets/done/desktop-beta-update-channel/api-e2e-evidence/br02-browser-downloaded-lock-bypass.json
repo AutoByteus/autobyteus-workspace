@@ -1,0 +1,6 @@
+[
+ {"label":"downloaded","status":"downloaded","switchChecked":"true","switchDisabled":true,"hint":"An update is downloaded. Install it or restart AutoByteus before changing the update channel.","checkDisabled":false,"calls":[]},
+ {"label":"switch-click-in-downloaded","status":"downloaded","switchChecked":"true","switchDisabled":true,"hint":"An update is downloaded. Install it or restart AutoByteus before changing the update channel.","checkDisabled":false,"calls":[]},
+ {"label":"after-check-click","status":"available","switchChecked":"true","switchDisabled":false,"hint":null,"checkDisabled":false,"calls":["check"]},
+ {"label":"after-switch-click","status":"no-update","switchChecked":"false","switchDisabled":false,"hint":null,"checkDisabled":false,"calls":["check","set-channel:stable"]}
+]
