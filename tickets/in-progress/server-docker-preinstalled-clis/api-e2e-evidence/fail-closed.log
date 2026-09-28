@@ -1,0 +1,8 @@
+test_executable_with_empty_successful_version_fails_layer (test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_failed_official_download_fails_layer (test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+test_successful_installer_without_payload_fails_layer (test_server_docker_cli_install_failures.ServerDockerCliInstallFailuresTest) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.294s
+
+OK

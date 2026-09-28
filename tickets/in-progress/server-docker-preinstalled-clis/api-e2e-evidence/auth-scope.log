@@ -1,0 +1,20 @@
+autobyteus-server-ts/docker/Dockerfile.monorepo
+autobyteus-server-ts/docker/README.md
+scripts/tests/test_server_docker_cli_latest_defaults.py
+tickets/in-progress/server-docker-preinstalled-clis/design-spec.md
+tickets/in-progress/server-docker-preinstalled-clis/implementation-handoff.md
+tickets/in-progress/server-docker-preinstalled-clis/implementation-local-checks.log
+tickets/in-progress/server-docker-preinstalled-clis/implementation-revision-record.md
+tickets/in-progress/server-docker-preinstalled-clis/investigation-notes.md
+tickets/in-progress/server-docker-preinstalled-clis/investigation-result.md
+tickets/in-progress/server-docker-preinstalled-clis/requirements-doc.md
+tickets/in-progress/server-docker-preinstalled-clis/solution-handoff.md
+tickets/in-progress/server-docker-preinstalled-clis/solution-revision-record.md
+PASS-no-provider-credentials-or-GROK_HOME-in-clean-image
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+v22.23.3

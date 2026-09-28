@@ -1,0 +1,588 @@
+$ docker volume create cli-api001-615c2b4d86-home
+cli-api001-615c2b4d86-home
+
+$ docker volume create cli-api001-615c2b4d86-data
+cli-api001-615c2b4d86-data
+
+$ docker volume create cli-api001-615c2b4d86-browser
+cli-api001-615c2b4d86-browser
+
+$ docker run --pull=never --rm --name cli-api001-615c2b4d86-seed --network none --entrypoint /bin/bash --mount type=volume,source=cli-api001-615c2b4d86-home,target=/root --mount type=volume,source=cli-api001-615c2b4d86-data,target=/home/autobyteus/data --mount type=volume,source=cli-api001-615c2b4d86-browser,target=/home/vncuser/.config/chromium autobyteus-cli-api001:default-arm64 -c
+set -eu
+mkdir -p /root/.local/bin /root/.grok/bin /root/.gemini/antigravity-cli /root/.claude /root/.codex
+for path in /root/.local/bin/agy /root/.local/bin/grok /root/.grok/bin/grok; do
+  printf '#!/bin/sh\necho OLD_HOME_TOOL_SELECTED >&2\nexit 97\n' > "$path"
+  chmod +x "$path"
+done
+printf '{"fixture":"synthetic-no-credentials"}\n' > /root/.gemini/antigravity-cli/settings.json
+printf '# synthetic fixture, no credentials\n' > /root/.grok/config.toml
+for dir in /root /home/autobyteus/data /home/vncuser/.config/chromium; do
+  printf 'cli-smoke-preserved\n' > "$dir/cli-smoke-marker"
+done
+sha256sum /root/.local/bin/agy /root/.local/bin/grok /root/.grok/bin/grok /root/.gemini/antigravity-cli/settings.json /root/.grok/config.toml > /root/cli-smoke-checksums
+
+chown -R vncuser:vncuser /home/vncuser/.config/chromium
+
+$ docker run --pull=never -d --name cli-api001-615c2b4d86-1 --network none --cap-add SYS_ADMIN --security-opt seccomp=unconfined -e AUTOBYTEUS_SKIP_SYNC=1 --mount type=volume,source=cli-api001-615c2b4d86-home,target=/root --mount type=volume,source=cli-api001-615c2b4d86-data,target=/home/autobyteus/data --mount type=volume,source=cli-api001-615c2b4d86-browser,target=/home/vncuser/.config/chromium
+14b1e085c48ceac1eef800cfe653d2010a28cdfae9314aba1376254b4d98da69
+
+$ docker exec cli-api001-615c2b4d86-1 curl -fsS --max-time 3 http://127.0.0.1:8000/rest/health
+curl: (7) Failed to connect to 127.0.0.1 port 8000 after 0 ms: Couldn't connect to server
+
+$ docker exec cli-api001-615c2b4d86-1 curl -fsS --max-time 3 http://127.0.0.1:8000/rest/health
+curl: (7) Failed to connect to 127.0.0.1 port 8000 after 0 ms: Couldn't connect to server
+
+$ docker exec cli-api001-615c2b4d86-1 curl -fsS --max-time 3 http://127.0.0.1:8000/rest/health
+{"status":"ok","message":"Server is running"}
+$ docker logs --tail 100 cli-api001-615c2b4d86-1
+
+2026-09-28 04:44:42,663 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'stop_background_process'
+
+2026-09-28 04:44:42,663 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'search_web'
+
+2026-09-28 04:44:42,663 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+
+2026-09-28 04:44:42,663 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+
+2026-09-28 04:44:42,668 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+
+2026-09-28 04:44:42,668 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+2026-09-28 04:44:42,668 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Task Delegation Tools
+
+2026-09-28 04:44:42,668 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Media Tools
+
+2026-09-28 04:44:42,683 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+
+2026-09-28 04:44:42,685 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+
+2026-09-28 04:44:42,685 DEBG 'autobyteus_server' stderr output:
+Overwriting existing tool definition for name: 'search_web'
+
+2026-09-28 04:44:42,698 DEBG 'autobyteus_server' stdout output:
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+2026-09-28 04:44:42,699 DEBG 'autobyteus_server' stdout output:
+Populating agent definition cache for the first time...
+
+2026-09-28 04:44:42,701 DEBG 'autobyteus_server' stdout output:
+Agent definition cache populated with 2 items.
+
+2026-09-28 04:44:42,701 DEBG 'autobyteus_server' stdout output:
+Populating agent definition cache for the first time...
+
+2026-09-28 04:44:42,701 DEBG 'autobyteus_server' stdout output:
+[2026-09-28T04:44:42.701Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+2026-09-28 04:44:42,702 DEBG 'autobyteus_server' stdout output:
+[2026-09-28T04:44:42.702Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+2026-09-28 04:44:42,703 DEBG 'autobyteus_server' stdout output:
+Agent definition cache populated with 2 items.
+
+2026-09-28 04:44:42,717 DEBG 'autobyteus_server' stdout output:
+{"level":30,"time":1790570682711,"pid":56,"hostname":"14b1e085c48c","msg":"Server listening at http://127.0.0.1:44179"}
+
+2026-09-28 04:44:42,759 DEBG 'autobyteus_server' stdout output:
+{"level":30,"time":1790570682757,"pid":56,"hostname":"14b1e085c48c","msg":"Server listening at http://0.0.0.0:8000"}
+
+2026-09-28 04:44:42,759 DEBG 'autobyteus_server' stdout output:
+[2026-09-28T04:44:42.759Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+
+2026-09-28 04:44:42,760 DEBG 'autobyteus_server' stdout output:
+Scheduling Studio-only non-critical startup tasks...
+
+2026-09-28 04:44:42,766 DEBG 'autobyteus_server' stdout output:
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+
+$ docker exec cli-api001-615c2b4d86-1 bash -c tail -100 /var/log/supervisor/autobyteus_server.err.log; tail -30 /var/log/supervisor/autobyteus_server.log
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+(node:56) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Overwriting existing tool definition for name: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-09-28T04:44:42.701Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-28T04:44:42.702Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1790570682711,"pid":56,"hostname":"14b1e085c48c","msg":"Server listening at http://127.0.0.1:44179"}
+{"level":30,"time":1790570682757,"pid":56,"hostname":"14b1e085c48c","msg":"Server listening at http://0.0.0.0:8000"}
+[2026-09-28T04:44:42.759Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+$ docker exec cli-api001-615c2b4d86-1 bash -lc
+set -eu
+test "$(id -u)" = 0
+test "$HOME" = /root
+test -z "${GROK_HOME+x}"
+test -f /app/autobyteus-server-ts/dist/app.js
+test "$(command -v agy)" = /usr/local/bin/agy
+test "$(readlink -f "$(command -v grok)")" = "$(npm root -g)/@xai-official/grok/bin/grok-native"
+for cli in agy grok; do
+  native="$(readlink -f "$(command -v "$cli")")"
+  test "$(od -An -tx1 -N4 "$native" | tr -d ' \n')" = 7f454c46
+  printf 'NATIVE %s %s\n' "$cli" "$native"
+done
+for cli in agy grok codex claude; do
+  version="$(timeout 30s "$cli" --version)"
+  printf '%s\n' "$version" | grep -Eq '[0-9]+\.[0-9]+\.[0-9]+'
+  printf 'VERSION %s %s\n' "$cli" "$version"
+done
+node --version
+
+for dir in /root /home/autobyteus/data /home/vncuser/.config/chromium; do
+  test "$(cat "$dir/cli-smoke-marker")" = cli-smoke-preserved
+done
+sha256sum -c /root/cli-smoke-checksums
+
+NATIVE agy /usr/local/bin/agy
+NATIVE grok /usr/lib/node_modules/@xai-official/grok/bin/grok-native
+VERSION agy 1.2.12
+VERSION grok grok 1.0.41 (4220f3b224a6)
+VERSION codex codex-cli 0.157.1
+VERSION claude 2.1.283 (Claude Code)
+v22.23.3
+/root/.local/bin/agy: OK
+/root/.local/bin/grok: OK
+/root/.grok/bin/grok: OK
+/root/.gemini/antigravity-cli/settings.json: OK
+/root/.grok/config.toml: OK
+
+$ docker exec cli-api001-615c2b4d86-1 curl -fsS --max-time 5 http://127.0.0.1:6080/
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Directory listing for /</title>
+</head>
+<body>
+<h1>Directory listing for /</h1>
+<hr>
+<ul>
+<li><a href="__init__.py">__init__.py</a></li>
+<li><a href="__main__.py">__main__.py</a></li>
+<li><a href="__pycache__/">__pycache__/</a></li>
+<li><a href="auth_plugins.py">auth_plugins.py</a></li>
+<li><a href="sysloghandler.py">sysloghandler.py</a></li>
+<li><a href="token_plugins.py">token_plugins.py</a></li>
+<li><a href="websocket.py">websocket.py</a></li>
+<li><a href="websocketproxy.py">websocketproxy.py</a></li>
+<li><a href="websocketserver.py">websocketserver.py</a></li>
+<li><a href="websockifyserver.py">websockifyserver.py</a></li>
+</ul>
+<hr>
+</body>
+</html>
+
+$ docker exec cli-api001-615c2b4d86-1 curl -fsS --max-time 5 http://127.0.0.1:9223/json/version
+{
+   "Browser": "Chrome/153.0.8010.52",
+   "Protocol-Version": "1.3",
+   "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+   "V8-Version": "15.3.76.13",
+   "WebKit-Version": "537.36 (@78e5e45d4bb41035e17ea4da2cc257f496416ac9)",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/browser/51a40b96-1f9c-444b-a06c-3a406861a688"
+}
+
+$ docker exec cli-api001-615c2b4d86-1 timeout 20s /usr/local/bin/open-vnc-browser-url.sh http://127.0.0.1:8000/rest/health?cli-api001=1
+Opening in existing browser session.
+
+$ docker exec cli-api001-615c2b4d86-1 curl -fsS --max-time 5 http://127.0.0.1:9223/json/list
+[ {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@78e5e45d4bb41035e17ea4da2cc257f496416ac9/inspector.html?ws=127.0.0.1:9223/devtools/page/B6A9913747A2F172A16E367FC8CBEB93",
+   "id": "B6A9913747A2F172A16E367FC8CBEB93",
+   "title": "127.0.0.1:8000/rest/health?cli-api001=1",
+   "type": "page",
+   "url": "http://127.0.0.1:8000/rest/health?cli-api001=1",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/page/B6A9913747A2F172A16E367FC8CBEB93"
+}, {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@78e5e45d4bb41035e17ea4da2cc257f496416ac9/inspector.html?ws=127.0.0.1:9223/devtools/page/E27B57F6F16145531647F64B39D868C0",
+   "id": "E27B57F6F16145531647F64B39D868C0",
+   "title": "New Tab",
+   "type": "page",
+   "url": "chrome://newtab/",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/page/E27B57F6F16145531647F64B39D868C0"
+}, {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@78e5e45d4bb41035e17ea4da2cc257f496416ac9/inspector.html?ws=127.0.0.1:9223/devtools/page/3D9EAF67EECA73782143168908D2DE9E",
+   "id": "3D9EAF67EECA73782143168908D2DE9E",
+   "parentId": "E27B57F6F16145531647F64B39D868C0",
+   "title": "chrome-untrusted://new-tab-page/one-google-bar?paramsencoded=",
+   "type": "iframe",
+   "url": "chrome-untrusted://new-tab-page/one-google-bar?paramsencoded=",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/page/3D9EAF67EECA73782143168908D2DE9E"
+}, {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@78e5e45d4bb41035e17ea4da2cc257f496416ac9/inspector.html?ws=127.0.0.1:9223/devtools/page/30D23F17ED31E7744EB743C24D9E7D8E",
+   "id": "30D23F17ED31E7744EB743C24D9E7D8E",
+   "title": "Omnibox Popup",
+   "type": "browser_ui",
+   "url": "chrome://omnibox-popup.top-chrome/",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/page/30D23F17ED31E7744EB743C24D9E7D8E"
+}, {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@78e5e45d4bb41035e17ea4da2cc257f496416ac9/inspector.html?ws=127.0.0.1:9223/devtools/page/49758CCFDEA4448079C1BB29CBB9C030",
+   "id": "49758CCFDEA4448079C1BB29CBB9C030",
+   "title": "Omnibox Popup",
+   "type": "browser_ui",
+   "url": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/page/49758CCFDEA4448079C1BB29CBB9C030"
+} ]
+
+$ docker rm -f cli-api001-615c2b4d86-1
+cli-api001-615c2b4d86-1
+
+$ docker run --pull=never -d --name cli-api001-615c2b4d86-2 --network none --cap-add SYS_ADMIN --security-opt seccomp=unconfined -e AUTOBYTEUS_SKIP_SYNC=1 --mount type=volume,source=cli-api001-615c2b4d86-home,target=/root --mount type=volume,source=cli-api001-615c2b4d86-data,target=/home/autobyteus/data --mount type=volume,source=cli-api001-615c2b4d86-browser,target=/home/vncuser/.config/chromium
+ee77fdba49292e7c4905ff608804715e01071dd8f0d901c049c8d3f5f7e74fd6
+
+$ docker exec cli-api001-615c2b4d86-2 curl -fsS --max-time 3 http://127.0.0.1:8000/rest/health
+curl: (7) Failed to connect to 127.0.0.1 port 8000 after 0 ms: Couldn't connect to server
+
+$ docker exec cli-api001-615c2b4d86-2 curl -fsS --max-time 3 http://127.0.0.1:8000/rest/health
+{"status":"ok","message":"Server is running"}
+$ docker logs --tail 100 cli-api001-615c2b4d86-2
+
+2026-09-28 04:44:56,189 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+
+2026-09-28 04:44:56,190 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+2026-09-28 04:44:56,190 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Task Delegation Tools
+
+2026-09-28 04:44:56,190 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Media Tools
+
+2026-09-28 04:44:56,207 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'publish_artifacts'
+
+2026-09-28 04:44:56,207 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+
+2026-09-28 04:44:56,208 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+2026-09-28 04:44:56,208 DEBG 'autobyteus_server' stdout output:
+Registered required tool unit: Agent Communication Tools
+
+2026-09-28 04:44:56,222 DEBG 'autobyteus_server' stdout output:
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+
+2026-09-28 04:44:56,222 DEBG 'autobyteus_server' stderr output:
+Overwriting existing tool definition for name: 'search_web'
+
+2026-09-28 04:44:56,253 DEBG 'autobyteus_server' stdout output:
+Populating agent definition cache for the first time...
+
+2026-09-28 04:44:56,258 DEBG 'autobyteus_server' stdout output:
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-09-28T04:44:56.258Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+2026-09-28 04:44:56,259 DEBG 'autobyteus_server' stdout output:
+[2026-09-28T04:44:56.259Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+2026-09-28 04:44:56,264 DEBG 'autobyteus_server' stdout output:
+Agent definition cache populated with 2 items.
+
+2026-09-28 04:44:56,270 DEBG 'autobyteus_server' stdout output:
+{"level":30,"time":1790570696269,"pid":58,"hostname":"ee77fdba4929","msg":"Server listening at http://127.0.0.1:40767"}
+
+2026-09-28 04:44:56,317 DEBG 'autobyteus_server' stdout output:
+{"level":30,"time":1790570696317,"pid":58,"hostname":"ee77fdba4929","msg":"Server listening at http://0.0.0.0:8000"}
+
+2026-09-28 04:44:56,317 DEBG 'autobyteus_server' stdout output:
+[2026-09-28T04:44:56.317Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+
+2026-09-28 04:44:56,318 DEBG 'autobyteus_server' stdout output:
+Scheduling Studio-only non-critical startup tasks...
+
+2026-09-28 04:44:56,323 DEBG 'autobyteus_server' stdout output:
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+
+2026-09-28 04:44:56,323 DEBG 'autobyteus_server' stdout output:
+Running MCP tool registration background task...
+
+2026-09-28 04:44:56,324 DEBG 'autobyteus_server' stdout output:
+Loading and registering all MCP server configurations from file...
+
+2026-09-28 04:44:56,324 DEBG 'autobyteus_server' stdout output:
+Background task 'Memory Sync Worker' completed successfully.
+
+2026-09-28 04:44:56,324 DEBG 'autobyteus_server' stdout output:
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+
+2026-09-28 04:44:56,324 DEBG 'autobyteus_server' stdout output:
+Pre-loaded 0 MCP server configs into cache.
+
+2026-09-28 04:44:56,325 DEBG 'autobyteus_server' stdout output:
+Finished loading and registering all MCP server configurations.
+
+2026-09-28 04:44:56,325 DEBG 'autobyteus_server' stdout output:
+Background task 'MCP Tool Registration' completed successfully.
+
+2026-09-28 04:44:56,326 DEBG 'autobyteus_server' stdout output:
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+
+$ docker exec cli-api001-615c2b4d86-2 bash -c tail -100 /var/log/supervisor/autobyteus_server.err.log; tail -30 /var/log/supervisor/autobyteus_server.log
+Unable to resolve Prisma engine override paths; Prisma CLI will use default engine resolution.
+(node:58) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Overwriting existing tool definition for name: 'search_web'
+Registered required tool unit: Agent Communication Tools
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Populating agent definition cache for the first time...
+Agent definition cache populated with 2 items.
+Populating agent definition cache for the first time...
+[2026-09-28T04:44:56.258Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-28T04:44:56.259Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 2 items.
+{"level":30,"time":1790570696269,"pid":58,"hostname":"ee77fdba4929","msg":"Server listening at http://127.0.0.1:40767"}
+{"level":30,"time":1790570696317,"pid":58,"hostname":"ee77fdba4929","msg":"Server listening at http://0.0.0.0:8000"}
+[2026-09-28T04:44:56.317Z] [INFO] [server.runtime] Server listening on 0.0.0.0:8000
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+
+$ docker exec cli-api001-615c2b4d86-2 bash -lc
+set -eu
+test "$(id -u)" = 0
+test "$HOME" = /root
+test -z "${GROK_HOME+x}"
+test -f /app/autobyteus-server-ts/dist/app.js
+test "$(command -v agy)" = /usr/local/bin/agy
+test "$(readlink -f "$(command -v grok)")" = "$(npm root -g)/@xai-official/grok/bin/grok-native"
+for cli in agy grok; do
+  native="$(readlink -f "$(command -v "$cli")")"
+  test "$(od -An -tx1 -N4 "$native" | tr -d ' \n')" = 7f454c46
+  printf 'NATIVE %s %s\n' "$cli" "$native"
+done
+for cli in agy grok codex claude; do
+  version="$(timeout 30s "$cli" --version)"
+  printf '%s\n' "$version" | grep -Eq '[0-9]+\.[0-9]+\.[0-9]+'
+  printf 'VERSION %s %s\n' "$cli" "$version"
+done
+node --version
+
+for dir in /root /home/autobyteus/data /home/vncuser/.config/chromium; do
+  test "$(cat "$dir/cli-smoke-marker")" = cli-smoke-preserved
+done
+sha256sum -c /root/cli-smoke-checksums
+
+NATIVE agy /usr/local/bin/agy
+NATIVE grok /usr/lib/node_modules/@xai-official/grok/bin/grok-native
+VERSION agy 1.2.12
+VERSION grok grok 1.0.41 (4220f3b224a6)
+VERSION codex codex-cli 0.157.1
+VERSION claude 2.1.283 (Claude Code)
+v22.23.3
+/root/.local/bin/agy: OK
+/root/.local/bin/grok: OK
+/root/.grok/bin/grok: OK
+/root/.gemini/antigravity-cli/settings.json: OK
+/root/.grok/config.toml: OK
+
+$ docker exec cli-api001-615c2b4d86-2 curl -fsS --max-time 5 http://127.0.0.1:6080/
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Directory listing for /</title>
+</head>
+<body>
+<h1>Directory listing for /</h1>
+<hr>
+<ul>
+<li><a href="__init__.py">__init__.py</a></li>
+<li><a href="__main__.py">__main__.py</a></li>
+<li><a href="__pycache__/">__pycache__/</a></li>
+<li><a href="auth_plugins.py">auth_plugins.py</a></li>
+<li><a href="sysloghandler.py">sysloghandler.py</a></li>
+<li><a href="token_plugins.py">token_plugins.py</a></li>
+<li><a href="websocket.py">websocket.py</a></li>
+<li><a href="websocketproxy.py">websocketproxy.py</a></li>
+<li><a href="websocketserver.py">websocketserver.py</a></li>
+<li><a href="websockifyserver.py">websockifyserver.py</a></li>
+</ul>
+<hr>
+</body>
+</html>
+
+$ docker exec cli-api001-615c2b4d86-2 curl -fsS --max-time 5 http://127.0.0.1:9223/json/version
+{
+   "Browser": "Chrome/153.0.8010.52",
+   "Protocol-Version": "1.3",
+   "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/153.0.0.0 Safari/537.36",
+   "V8-Version": "15.3.76.13",
+   "WebKit-Version": "537.36 (@78e5e45d4bb41035e17ea4da2cc257f496416ac9)",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/browser/79401c49-3f55-4f62-8e40-94316448623b"
+}
+
+$ docker exec cli-api001-615c2b4d86-2 timeout 20s /usr/local/bin/open-vnc-browser-url.sh http://127.0.0.1:8000/rest/health?cli-api001=2
+Opening in existing browser session.
+
+$ docker exec cli-api001-615c2b4d86-2 curl -fsS --max-time 5 http://127.0.0.1:9223/json/list
+[ {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@78e5e45d4bb41035e17ea4da2cc257f496416ac9/inspector.html?ws=127.0.0.1:9223/devtools/page/82571FE67BE89C67667E46886531A6D8",
+   "id": "82571FE67BE89C67667E46886531A6D8",
+   "title": "127.0.0.1:8000/rest/health?cli-api001=2",
+   "type": "page",
+   "url": "http://127.0.0.1:8000/rest/health?cli-api001=2",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/page/82571FE67BE89C67667E46886531A6D8"
+}, {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@78e5e45d4bb41035e17ea4da2cc257f496416ac9/inspector.html?ws=127.0.0.1:9223/devtools/page/59E758D3B9DC30B6088CBBB03AB1745F",
+   "id": "59E758D3B9DC30B6088CBBB03AB1745F",
+   "title": "New Tab",
+   "type": "page",
+   "url": "chrome://newtab/",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/page/59E758D3B9DC30B6088CBBB03AB1745F"
+}, {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@78e5e45d4bb41035e17ea4da2cc257f496416ac9/inspector.html?ws=127.0.0.1:9223/devtools/page/A8109A0858FCF3BC226035D7B74BE725",
+   "id": "A8109A0858FCF3BC226035D7B74BE725",
+   "parentId": "59E758D3B9DC30B6088CBBB03AB1745F",
+   "title": "chrome-untrusted://new-tab-page/one-google-bar?paramsencoded=",
+   "type": "iframe",
+   "url": "chrome-untrusted://new-tab-page/one-google-bar?paramsencoded=",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/page/A8109A0858FCF3BC226035D7B74BE725"
+}, {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@78e5e45d4bb41035e17ea4da2cc257f496416ac9/inspector.html?ws=127.0.0.1:9223/devtools/page/2B0CA8B317B8BF37475336293CB2CFCB",
+   "id": "2B0CA8B317B8BF37475336293CB2CFCB",
+   "title": "Omnibox Popup",
+   "type": "browser_ui",
+   "url": "chrome://omnibox-popup.top-chrome/",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/page/2B0CA8B317B8BF37475336293CB2CFCB"
+}, {
+   "description": "",
+   "devtoolsFrontendUrl": "https://chrome-devtools-frontend.appspot.com/serve_rev/@78e5e45d4bb41035e17ea4da2cc257f496416ac9/inspector.html?ws=127.0.0.1:9223/devtools/page/BCC1176C32EB4D1E9E28C06D78FEDF71",
+   "id": "BCC1176C32EB4D1E9E28C06D78FEDF71",
+   "title": "Omnibox Popup",
+   "type": "browser_ui",
+   "url": "chrome://omnibox-popup.top-chrome/omnibox_popup_aim.html",
+   "webSocketDebuggerUrl": "ws://127.0.0.1:9223/devtools/page/BCC1176C32EB4D1E9E28C06D78FEDF71"
+} ]
+
+$ docker rm -f cli-api001-615c2b4d86-2
+cli-api001-615c2b4d86-2
+
+PASS full production startup/browser bridge/state recreate
+$ docker rm -f cli-api001-615c2b4d86-seed
+Error response from daemon: No such container: cli-api001-615c2b4d86-seed
+
+$ docker rm -f cli-api001-615c2b4d86-1
+Error response from daemon: No such container: cli-api001-615c2b4d86-1
+
+$ docker rm -f cli-api001-615c2b4d86-2
+Error response from daemon: No such container: cli-api001-615c2b4d86-2
+
+$ docker volume rm cli-api001-615c2b4d86-browser
+cli-api001-615c2b4d86-browser
+
+$ docker volume rm cli-api001-615c2b4d86-data
+cli-api001-615c2b4d86-data
+
+$ docker volume rm cli-api001-615c2b4d86-home
+cli-api001-615c2b4d86-home
+
+PROBE_EXIT=0

@@ -1,0 +1,2 @@
+ERROR: use `docker --context=default buildx` to switch to context "default"
+BUILD_EXIT=1
