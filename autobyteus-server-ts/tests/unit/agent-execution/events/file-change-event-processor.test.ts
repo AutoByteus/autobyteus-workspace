@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from "vitest";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../src/agent-execution/domain/agent-run-event.js";
 import { ClaudeSessionEventConverter } from "../../../../src/agent-execution/backends/claude/events/claude-session-event-converter.js";
 import { ClaudeSessionEventName } from "../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
+import { AgyStreamEventConverter } from "../../../../src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js";
 import { CodexThreadEventConverter } from "../../../../src/agent-execution/backends/codex/events/codex-thread-event-converter.js";
 import { CodexThreadEventName } from "../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
 import { AgentRunEventPipeline } from "../../../../src/agent-execution/events/agent-run-event-pipeline.js";
@@ -133,6 +134,29 @@ describe("FileChangeEventProcessor", () => {
       expect(nonAgy.fileChanges(await nonAgy.process([nativeEvent({ provider_state: "DONE", file_path: path.join(workspaceRoot, "not-on-disk.png") })]))).toMatchObject([
         { payload: { path: "not-on-disk.png", status: "available", sourceTool: "generated_output" } },
       ]);
+    } finally {
+      fs.rmSync(workspaceRoot, { recursive: true, force: true });
+    }
+  });
+
+  it("projects exactly one generated_output entry for an AGY-resolved native image outside the workspace", async () => {
+    const workspaceRoot = fs.mkdtempSync(path.join(os.tmpdir(), "agy-file-projection-"));
+    const brainImage = path.join(os.tmpdir(), "agy-brain-conv", "golden_retriever_dog_1790572457860.jpg");
+    try {
+      const converter = new AgyStreamEventConverter("run-file-change-pipeline", "conversation", "gemini", undefined,
+        () => ({ path: brainImage, outputText: `Using prompt: A dog\n\nGenerated image is saved at ${brainImage}.`, reason: null }));
+      converter.startTurn("turn");
+      const step = (state: string) => converter.convert({ event: "step_update", step_update: {
+        conversation_id: "conversation", step_index: 2, step_type: "tool", state, tool_name: "generate_image",
+        tool_info: { parameters: { ImageName: "golden_retriever_dog", Prompt: "A dog", AspectRatio: "1:1" } },
+      } });
+      const agy = createPipelineHarness(workspaceRoot, RuntimeKind.ANTIGRAVITY_CLI);
+      const changes = agy.fileChanges(await agy.process([...step("ACTIVE"), ...step("DONE")]));
+      expect(changes).toHaveLength(1);
+      expect(changes[0]?.payload).toMatchObject({
+        path: brainImage, status: "available", sourceTool: "generated_output",
+        sourceInvocationId: "agy-tool-turn-2",
+      });
     } finally {
       fs.rmSync(workspaceRoot, { recursive: true, force: true });
     }

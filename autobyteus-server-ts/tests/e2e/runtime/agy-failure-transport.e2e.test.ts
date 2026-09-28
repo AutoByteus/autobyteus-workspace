@@ -111,6 +111,8 @@ suite("controlled AGY failure through app WebSocket and history", () => {
   it("redacts native image denial on ACK, tool card, history while retaining private bounded diagnostic", async () => {
     const observed = await execute("tool_denied");
     expect(observed.messages.some((m) => m.type === "TOOL_DENIED" && m.payload["tool_name"] === "generate_image")).toBe(true);
+    expect(observed.messages.find((m) => m.type === "TOOL_EXECUTION_STARTED" && m.payload["tool_name"] === "generate_image")
+      ?.payload["arguments"]).toEqual({ ImageName: "blue_dog", Prompt: "blue dog" });
     expect(observed.messages.some((m) => m.type === "TOOL_EXECUTION_SUCCEEDED")).toBe(false);
   }, 40_000);
 

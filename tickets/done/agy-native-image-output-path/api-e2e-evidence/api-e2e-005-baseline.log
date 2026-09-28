@@ -1,0 +1,397 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ [31m❯[39m tests/unit/run-history/services/team-run-history-catalog-service.test.ts [2m([22m[2m7 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[33m 326[2mms[22m[39m
+     [32m✓[39m records one derived catalog row without creating a fourth Team state authority[32m 24[2mms[22m[39m
+[31m     [31m×[31m records the first summary only and serializes current lifecycle updates[39m[32m 44[2mms[22m[39m
+[31m     [31m×[31m archives the exact V2 execution tree and derived catalog row together[39m[32m 53[2mms[22m[39m
+[31m     [31m×[31m restores the exact tree and index snapshot after an archive index failure[39m[32m 63[2mms[22m[39m
+     [32m✓[39m blocks active deletion and rejects unsafe identities before filesystem effects[32m 41[2mms[22m[39m
+[31m     [31m×[31m keeps the current row and package when the candidate index write fails[39m[32m 43[2mms[22m[39m
+     [32m✓[39m durably compensates and validates the original row before reporting package removal failure[32m 58[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-provisioning-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/agent-execution/agent-run-provisioning-service.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 12[2mms[22m[39m
+     [32m✓[39m prepares a standalone run identity through the catalog without persisted live status[32m 6[2mms[22m[39m
+[31m     [31m×[31m does not persist activation failure state and permits retry from prepared facts[39m[32m 2[2mms[22m[39m
+     [32m✓[39m delegates prepared cancellation to the catalog boundary[32m 1[2mms[22m[39m
+     [32m✓[39m cleans up only expired prepared identities[32m 2[2mms[22m[39m
+ [31m❯[39m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[32m 15[2mms[22m[39m
+[31m     [31m×[31m retains exact tool identity across a retry diagnostic[39m[32m 10[2mms[22m[39m
+[31m     [31m×[31m correlates started/local-completed/raw output and admits it through the strict Team boundary[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m uses an exact direct raw provider tool name without inventing correlation[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output[39m[32m 1[2mms[22m[39m
+     [32m✓[39m fails closed when lifecycle facts conflict for the same invocation[32m 0[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/published-artifact-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/run-history/services/published-artifact-projection-service.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 8[2mms[22m[39m
+[31m     [31m×[31m reads historical published-artifact summaries and revision text from durable projection storage[39m[32m 8[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 10 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/agent-run-provisioning-service.test.ts[2m > [22mAgentRunProvisioningService[2m > [22mdoes not persist activation failure state and permits retry from prepared facts
+[31m[1mTypeError[22m: service.activatePreparedRun is not a function[39m
+[36m [2m❯[22m tests/unit/agent-execution/agent-run-provisioning-service.test.ts:[2m169:26[22m[39m
+    [90m167| [39m    [35mconst[39m service [33m=[39m [34mbuildService[39m()[33m;[39m
+    [90m168| [39m
+    [90m169| [39m    await expect(service.activatePreparedRun(runId)).rejects.toThrow("…
+    [90m   | [39m                         [31m^[39m
+    [90m170| [39m    expect(historyCatalogService.recordRunStarted).not.toHaveBeenCalle…
+    [90m171| [39m    [34mexpect[39m(metadataByRunId[33m.[39m[35mget[39m(runId))[33m.[39m[34mtoMatchObject[39m({
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/published-artifact-projection-service.test.ts[2m > [22mPublishedArtifactProjectionService[2m > [22mreads historical published-artifact summaries and revision text from durable projection storage
+[31m[1mError[22m: The process AgentRunManager is not initialized.[39m
+[36m [2m❯[22m Function.getInstance src/agent-execution/services/agent-run-manager.ts:[2m76:13[22m[39m
+    [90m 74| [39m  [35mstatic[39m [34mgetInstance[39m()[33m:[39m [33mAgentRunManager[39m {
+    [90m 75| [39m    [35mif[39m ([33m![39m[33mAgentRunManager[39m[33m.[39minstance) {
+    [90m 76| [39m      throw new Error("The process AgentRunManager is not initialized.…
+    [90m   | [39m            [31m^[39m
+    [90m 77| [39m    }
+    [90m 78| [39m    [35mreturn[39m [33mAgentRunManager[39m[33m.[39minstance[33m;[39m
+[90m [2m❯[22m new PublishedArtifactProjectionService src/run-history/services/published-artifact-projection-service.ts:[2m41:71[22m[39m
+[90m [2m❯[22m tests/unit/run-history/services/published-artifact-projection-service.test.ts:[2m70:21[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/team-run-history-catalog-service.test.ts[2m > [22mTeamRunHistoryCatalogService current V2 tree[2m > [22mrecords the first summary only and serializes current lifecycle updates
+[31m[1mAssertionError[22m: expected null to match object { summary: 'first', …(1) }[39m
+
+[32m- Expected:[39m 
+{
+  "summary": "first",
+  "terminatedAt": "2026-08-15T11:00:00.000Z",
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/run-history/services/team-run-history-catalog-service.test.ts:[2m75:5[22m[39m
+    [90m 73| [39m    ])[33m;[39m
+    [90m 74| [39m    await service.recordTeamRunTerminated({ teamRunId: "team-1", termi…
+    [90m 75| [39m    await expect(service.getCatalogRow("team-1")).resolves.toMatchObje…
+    [90m   | [39m    [31m^[39m
+    [90m 76| [39m      summary[33m:[39m [32m"first"[39m[33m,[39m
+    [90m 77| [39m      terminatedAt[33m:[39m [32m"2026-08-15T11:00:00.000Z"[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/team-run-history-catalog-service.test.ts[2m > [22mTeamRunHistoryCatalogService current V2 tree[2m > [22marchives the exact V2 execution tree and derived catalog row together
+[31m[1mAssertionError[22m: expected null to match object { archivedAt: Any<String> }[39m
+
+[32m- Expected:[39m 
+{
+  "archivedAt": Any<String>,
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/run-history/services/team-run-history-catalog-service.test.ts:[2m92:5[22m[39m
+    [90m 90| [39m    await expect(new TeamRunExecutionTreeStore().read(rootDir, "team-1…
+    [90m 91| [39m      [33m.[39mresolves[33m.[39m[34mtoMatchObject[39m({ archivedAt[33m:[39m expect[33m.[39m[34many[39m([33mString[39m) })[33m;[39m
+    [90m 92| [39m    await expect(service.getCatalogRow("team-1")).resolves.toMatchObje…
+    [90m   | [39m    [31m^[39m
+    [90m 93| [39m  })[33m;[39m
+    [90m 94| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/team-run-history-catalog-service.test.ts[2m > [22mTeamRunHistoryCatalogService current V2 tree[2m > [22mrestores the exact tree and index snapshot after an archive index failure
+[31m[1mAssertionError[22m: expected null to match object { archivedAt: null }[39m
+
+[32m- Expected:[39m 
+{
+  "archivedAt": null,
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/run-history/services/team-run-history-catalog-service.test.ts:[2m109:5[22m[39m
+    [90m107| [39m    expect(await new TeamRunExecutionTreeStore().read(rootDir, "team-1…
+    [90m108| [39m    expect((await indexStore.readIndexStrict()).rows).toEqual(beforeIn…
+    [90m109| [39m    await expect(service.getCatalogRow("team-1")).resolves.toMatchObje…
+    [90m   | [39m    [31m^[39m
+    [90m110| [39m  })[33m;[39m
+    [90m111| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/run-history/services/team-run-history-catalog-service.test.ts[2m > [22mTeamRunHistoryCatalogService current V2 tree[2m > [22mkeeps the current row and package when the candidate index write fails
+[31m[1mAssertionError[22m: expected null to match object { teamRunId: 'team-1' }[39m
+
+[32m- Expected:[39m 
+{
+  "teamRunId": "team-1",
+}
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/run-history/services/team-run-history-catalog-service.test.ts:[2m140:5[22m[39m
+    [90m138| [39m
+    [90m139| [39m    await expect(service.deleteTeamRun("team-1")).resolves.toMatchObje…
+    [90m140| [39m    await expect(service.getCatalogRow("team-1")).resolves.toMatchObje…
+    [90m   | [39m    [31m^[39m
+    [90m141| [39m    [35mawait[39m [34mexpect[39m(fs[33m.[39m[34mstat[39m(rootDir))[33m.[39mresolves[33m.[39m[34mtoBeDefined[39m()[33m;[39m
+    [90m142| [39m    [34mexpect[39m(packageCatalog[33m.[39m[34misAdmitted[39m([32m"team-1"[39m))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22mretains exact tool identity across a retry diagnostic
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m92:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22mcorrelates started/local-completed/raw output and admits it through the strict Team boundary
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m134:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22muses an exact direct raw provider tool name without inventing correlation
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m188:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/10]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22msuppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m216:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/10]⎯[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Unhandled Errors [49m[22m[31m⎯⎯⎯⎯⎯⎯[39m
+[31m[1m
+Vitest caught 4 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.[22m[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Current run package 'agent_team:team-1' could not be admitted.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.admitCurrent src/run-history/services/root-run-package-readiness-index.ts:[2m52:45[22m[39m
+    [90m 50| [39m    [35mthis[39m[33m.[39mstate[33m.[39mmutationRevision [33m+=[39m [34m1[39m[33m;[39m
+    [90m 51| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mrebuild[39m()[33m;[39m
+    [90m 52| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Current run pac…
+    [90m   | [39m                                            [31m^[39m
+    [90m 53| [39m  }
+    [90m 54| [39m  excludeCurrent(family: RootRunPackageFamily, id: string, reason: str…
+
+[31mThis error originated in "[1mtests/unit/run-history/services/team-run-history-catalog-service.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1mrecords the first summary only and serializes current lifecycle updates[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Current run package 'agent_team:team-1' could not be admitted.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.admitCurrent src/run-history/services/root-run-package-readiness-index.ts:[2m52:45[22m[39m
+    [90m 50| [39m    [35mthis[39m[33m.[39mstate[33m.[39mmutationRevision [33m+=[39m [34m1[39m[33m;[39m
+    [90m 51| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mrebuild[39m()[33m;[39m
+    [90m 52| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Current run pac…
+    [90m   | [39m                                            [31m^[39m
+    [90m 53| [39m  }
+    [90m 54| [39m  excludeCurrent(family: RootRunPackageFamily, id: string, reason: str…
+
+[31mThis error originated in "[1mtests/unit/run-history/services/team-run-history-catalog-service.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1marchives the exact V2 execution tree and derived catalog row together[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Current run package 'agent_team:team-1' could not be admitted.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.admitCurrent src/run-history/services/root-run-package-readiness-index.ts:[2m52:45[22m[39m
+    [90m 50| [39m    [35mthis[39m[33m.[39mstate[33m.[39mmutationRevision [33m+=[39m [34m1[39m[33m;[39m
+    [90m 51| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mrebuild[39m()[33m;[39m
+    [90m 52| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Current run pac…
+    [90m   | [39m                                            [31m^[39m
+    [90m 53| [39m  }
+    [90m 54| [39m  excludeCurrent(family: RootRunPackageFamily, id: string, reason: str…
+
+[31mThis error originated in "[1mtests/unit/run-history/services/team-run-history-catalog-service.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1mrestores the exact tree and index snapshot after an archive index failure[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+
+[31m⎯⎯⎯⎯[39m[1m[41m Unhandled Rejection [49m[22m[31m⎯⎯⎯⎯⎯[39m
+[31m[1mError[22m: Current run package 'agent_team:team-1' could not be admitted.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.admitCurrent src/run-history/services/root-run-package-readiness-index.ts:[2m52:45[22m[39m
+    [90m 50| [39m    [35mthis[39m[33m.[39mstate[33m.[39mmutationRevision [33m+=[39m [34m1[39m[33m;[39m
+    [90m 51| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mrebuild[39m()[33m;[39m
+    [90m 52| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Current run pac…
+    [90m   | [39m                                            [31m^[39m
+    [90m 53| [39m  }
+    [90m 54| [39m  excludeCurrent(family: RootRunPackageFamily, id: string, reason: str…
+
+[31mThis error originated in "[1mtests/unit/run-history/services/team-run-history-catalog-service.test.ts[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+[31mThe latest test that might've caused the error is "[1mkeeps the current row and package when the candidate index write fails[22m". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.[39m
+[31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
+
+
+[2m Test Files [22m [1m[31m4 failed[39m[22m[90m (4)[39m
+[2m      Tests [22m [1m[31m10 failed[39m[22m[2m | [22m[1m[32m7 passed[39m[22m[90m (17)[39m
+[2m     Errors [22m [1m[31m4 errors[39m[22m
+[2m   Start at [22m 15:41:50
+[2m   Duration [22m 5.53s[2m (transform 2.60s, setup 24ms, import 4.42s, tests 362ms, environment 0ms)[22m
+

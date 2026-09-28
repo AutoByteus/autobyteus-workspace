@@ -8,6 +8,7 @@ import type { AgyRunContext } from "./agy-agent-run-context.js";
 import { AgyStreamProcess } from "../stream/agy-stream-process.js";
 import { AgyStreamEventConverter } from "../stream/agy-stream-event-converter.js";
 import { recordAgyProviderDiagnostic } from "../stream/agy-provider-diagnostic-sink.js";
+import { readAgyNativeImagePath } from "../stream/agy-step-output-reader.js";
 import type { AgyStreamMessage } from "../stream/agy-stream-message.js";
 
 export class AgyAgentRunBackend implements AgentRunBackend {
@@ -22,12 +23,14 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   private cancelled = false;
 
   constructor(private readonly context: AgyRunContext, private readonly process: AgyStreamProcess) {
-    this.converter = new AgyStreamEventConverter(context.runId, context.runtimeContext.conversationId, context.config.llmModelIdentifier,
+    const conversationId = context.runtimeContext.conversationId;
+    this.converter = new AgyStreamEventConverter(context.runId, conversationId, context.config.llmModelIdentifier,
       (diagnostic) => {
         if (!context.config.memoryDir) return;
         void recordAgyProviderDiagnostic(context.config.memoryDir, diagnostic)
           .catch(() => console.warn(`AGY_PROVIDER_DIAGNOSTIC_WRITE_FAILED: run=${context.runId}`));
-      });
+      },
+      (stepIndex) => readAgyNativeImagePath(conversationId, stepIndex));
     process.subscribe((message) => {
       if (message.event === "init") return;
       this.enqueue(() => this.handleMessage(message));

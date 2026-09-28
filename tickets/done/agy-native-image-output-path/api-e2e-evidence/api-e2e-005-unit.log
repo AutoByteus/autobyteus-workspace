@@ -1,0 +1,1049 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ [31m❯[39m tests/unit/run-history/services/team-run-history-catalog-service.test.ts [2m([22m[2m7 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[33m 349[2mms[22m[39m
+     [32m✓[39m records one derived catalog row without creating a fourth Team state authority[32m 25[2mms[22m[39m
+[31m     [31m×[31m records the first summary only and serializes current lifecycle updates[39m[32m 44[2mms[22m[39m
+[31m     [31m×[31m archives the exact V2 execution tree and derived catalog row together[39m[32m 55[2mms[22m[39m
+[31m     [31m×[31m restores the exact tree and index snapshot after an archive index failure[39m[32m 70[2mms[22m[39m
+     [32m✓[39m blocks active deletion and rejects unsafe identities before filesystem effects[32m 43[2mms[22m[39m
+[31m     [31m×[31m keeps the current row and package when the candidate index write fails[39m[32m 42[2mms[22m[39m
+     [32m✓[39m durably compensates and validates the original row before reporting package removal failure[32m 70[2mms[22m[39m
+ [31m❯[39m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[32m 15[2mms[22m[39m
+[31m     [31m×[31m retains exact tool identity across a retry diagnostic[39m[32m 8[2mms[22m[39m
+[31m     [31m×[31m correlates started/local-completed/raw output and admits it through the strict Team boundary[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m uses an exact direct raw provider tool name without inventing correlation[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output[39m[32m 1[2mms[22m[39m
+     [32m✓[39m fails closed when lifecycle facts conflict for the same invocation[32m 1[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-provisioning-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/agent-execution/agent-run-provisioning-service.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 15[2mms[22m[39m
+     [32m✓[39m prepares a standalone run identity through the catalog without persisted live status[32m 7[2mms[22m[39m
+[31m     [31m×[31m does not persist activation failure state and permits retry from prepared facts[39m[32m 3[2mms[22m[39m
+     [32m✓[39m delegates prepared cancellation to the catalog boundary[32m 1[2mms[22m[39m
+     [32m✓[39m cleans up only expired prepared identities[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/published-artifact-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/run-history/services/published-artifact-projection-service.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 8[2mms[22m[39m
+[31m     [31m×[31m reads historical published-artifact summaries and revision text from durable projection storage[39m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/acp/acp-agent-session.test.ts [2m([22m[2m16 tests[22m[2m)[22m[33m 1283[2mms[22m[39m
+     [33m[2m✓[22m[39m fails an idle turn but not while a tool call is pending [33m 493[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run.test.ts [2m([22m[2m34 tests[22m[2m)[22m[33m 951[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler-system-instruction-debug.test.ts[2m > [22m[2mAgentStreamHandler system-instruction diagnostics[2m > [22m[2mretains identifiers and derived length without serializing exact prompt content
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler-system-instruction-debug.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 852[2mms[22m[39m
+     [33m[2m✓[22m[39m retains identifiers and derived length without serializing exact prompt content [33m 851[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/root-run-package-readiness-index.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 620[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 398[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-catalog-service.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 287[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-configured-skill-materializer.test.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 235[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts [2m([22m[2m16 tests[22m[2m)[22m[32m 192[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-run-history-index-repair.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 125[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/team-run-package-catalog.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 134[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-thread.test.ts [2m([22m[2m40 tests[22m[2m)[22m[32m 124[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/input/agent-run-provider-input-normalizer.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 71[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 76[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/shared/workspace-skill-materializer.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/collaboration-root-history-readiness.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/collaboration-root-history-readiness.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 98[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/autobyteus/application-agent-tools/application-agent-tool.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 61[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mpasses raw run llmConfig to LLMFactory without wrapping it as extraParams
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mpasses raw run llmConfig to LLMFactory without wrapping it as extraParams
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mcomposes the selected application-owned tool through the real AutoByteus provider factory
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mcomposes the selected application-owned tool through the real AutoByteus provider factory
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mwires one subject-scoped API-key resolver into the core factory
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mwires one subject-scoped API-key resolver into the core factory
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mfilters mixed task-management tools, composes server team prompts, and injects primitive team context
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mfilters mixed task-management tools, composes server team prompts, and injects primitive team context
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2madvertises the strict filesystem-like logical protocol without a flat roster
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2madvertises the strict filesystem-like logical protocol without a flat roster
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mkeeps task-management tools for standalone AutoByteus runs without member team context
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mkeeps task-management tools for standalone AutoByteus runs without member team context
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mroutes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mroutes mixed AutoByteus send_message_to through server delivery and reports rejected delivery
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mkeeps the exact-run send_message_to selector on the canonical Team binding
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mkeeps the exact-run send_message_to selector on the canonical Team binding
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mbinds the exact AutoByteus task Agent identity and root capability into the task tool
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mbinds the exact AutoByteus task Agent identity and root capability into the task tool
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2minjects a server-backed compaction runner using the parent workspace context
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2minjects a server-backed compaction runner using the parent workspace context
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mprovisions the canonical Memory Compactor as disabled without creating a runner
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mprovisions the canonical Memory Compactor as disabled without creating a runner
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mfails normal-agent composition on a null result without a disabled fallback
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mfails normal-agent composition on a null result without a disabled fallback
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mfails normal-agent composition on a thrown failure without a disabled fallback
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'assign_task_to'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts[2m > [22m[2mAutoByteusAgentRunBackendFactory[2m > [22m[2mfails normal-agent composition on a thrown failure without a disabled fallback
+[22m[39mUsing temp workspace (ID: workspace-1) for agent.
+
+ [32m✓[39m tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-run-capsule.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session.test.ts [2m([22m[2m37 tests[22m[2m)[22m[32m 66[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 49[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/agent-run-view-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/agent-run-view-projection-service.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 53[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-run-history-existing-index.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 42[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/atomic-json-file-writer.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/team-run-file-commit-writer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 34[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/agent-run-metadata-store.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-agent-run-backend-factory.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/atomic-run-package-file-commit-writer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 38[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-thread-event-converter.test.ts [2m([22m[2m64 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-tool-gating.test.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/agent-run-history-index-store.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mkeeps a new run private until synchronous candidate publication
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mkeeps a new run private until synchronous candidate publication
+[22m[39mPublished codex_app_server agent run 'run-codex'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mclaims the run id before the first backend await and rejects overlapping preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mallows retry only after candidate abort confirms inactivity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines an uncertain candidate cleanup and rejects same-process replacement
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mstrictly restores codex_app_server from the exact provider identity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mstrictly restores codex_app_server from the exact provider identity
+[22m[39mPublished codex_app_server agent run 'run-codex_app_server'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mstrictly restores claude_agent_sdk from the exact provider identity
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mstrictly restores claude_agent_sdk from the exact provider identity
+[22m[39mPublished claude_agent_sdk agent run 'run-claude_agent_sdk'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2maborts a mismatched platform restore privately and leaves confirmed cleanup retryable
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mrolls back already-attached run resources when a later attachment fails
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates exactly once when a post-activation backend identity mismatch fails before attachment
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines attachment rollback when exact-run session deactivation fails
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates pre-attachment sessions after a post-activation create failure
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdeactivates pre-attachment sessions after a post-activation restore failure
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mquarantines with primary then deactivation cleanup evidence
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mrejects another candidate after publication without replacing the active run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mrejects another candidate after publication without replacing the active run
+[22m[39mPublished codex_app_server agent run 'run-active'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdetaches run resources and invokes exact-run MCP cleanup after accepted termination
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager candidate lifecycle[2m > [22m[2mdetaches run resources and invokes exact-run MCP cleanup after accepted termination
+[22m[39mPublished codex_app_server agent run 'run-with-mcp'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mallows only one non-waiting quiescence preparation attempt per exact run
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mallows only one non-waiting quiescence preparation attempt per exact run
+[22m[39mPublished codex_app_server agent run 'run-quiescent-attempt'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcancels through the exact run without releasing it and permits a fresh preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcancels through the exact run without releasing it and permits a fresh preparation
+[22m[39mPublished codex_app_server agent run 'run-cancel'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretries only after a rejected finish and releases once after acceptance
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mretries only after a rejected finish and releases once after acceptance
+[22m[39mPublished codex_app_server agent run 'run-retry-finish'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcoalesces one committed finish attempt and caches successful finalization
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcoalesces one committed finish attempt and caches successful finalization
+[22m[39mPublished codex_app_server agent run 'run-coalesced'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcaches accepted-but-active failure without removing or retrying
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcaches accepted-but-active failure without removing or retrying
+[22m[39mPublished codex_app_server agent run 'run-remained-active'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcaches cleanup failure after exact removal and never releases twice
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mcaches cleanup failure after exact removal and never releases twice
+[22m[39mPublished codex_app_server agent run 'run-cleanup-terminal'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mtreats exact-current removal not_found as terminal without resource cleanup
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mtreats exact-current removal not_found as terminal without resource cleanup
+[22m[39mPublished codex_app_server agent run 'run-not_found'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mtreats exact-current removal identity_mismatch as terminal without resource cleanup
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mtreats exact-current removal identity_mismatch as terminal without resource cleanup
+[22m[39mPublished codex_app_server agent run 'run-identity_mismatch'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mrejects a missing or different exact instance before lower-level preparation
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mrejects a missing or different exact instance before lower-level preparation
+[22m[39mPublished codex_app_server agent run 'run-exact-instance'.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mroutes stop-all active runs through the managed prepared boundary
+[22m[39mAgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/agent-run-manager.test.ts[2m > [22m[2mAgentRunManager published-run termination[2m > [22m[2mroutes stop-all active runs through the managed prepared boundary
+[22m[39mPublished codex_app_server agent run 'run-stop-all'.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-manager.test.ts [2m([22m[2m25 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-step-output-reader.test.ts [2m([22m[2m17 tests[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/store/team-run-history-index-store.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 29[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts [2m([22m[2m52 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-index-service.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 21[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic V1 snapshot before lifecycle changes
+[22m[39mCreated agent session 63ae6cec-6e69-4971-8085-580b48bc2b08 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic V1 snapshot before lifecycle changes
+[22m[39mAgent Team WebSocket connected: session=63ae6cec-6e69-4971-8085-580b48bc2b08, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mconnects with one atomic V1 snapshot before lifecycle changes
+[22m[39mClosed agent session 63ae6cec-6e69-4971-8085-580b48bc2b08
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mCreated agent session 97f4070d-f3a0-441e-901a-4cabc2705ecc for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mAgent Team WebSocket connected: session=97f4070d-f3a0-441e-901a-4cabc2705ecc, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mstreams strict live status N and the following Agent event N+1 after the snapshot barrier
+[22m[39mClosed agent session 97f4070d-f3a0-441e-901a-4cabc2705ecc
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mCreated agent session 8fed0505-3d2b-4667-a759-9127961f366b for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mAgent Team WebSocket connected: session=8fed0505-3d2b-4667-a759-9127961f366b, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mroutes SEND_MESSAGE by the exact concrete AgentRun ID and records activity once
+[22m[39mClosed agent session 8fed0505-3d2b-4667-a759-9127961f366b
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mCreated agent session bcd963d8-7c95-41ab-bfe2-2daa908f16fe for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mAgent Team WebSocket connected: session=bcd963d8-7c95-41ab-bfe2-2daa908f16fe, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreports exact-target rejection without persistent or address fallback
+[22m[39mClosed agent session bcd963d8-7c95-41ab-bfe2-2daa908f16fe
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mCreated agent session 0fda4a69-04f8-4796-b02b-6b072f9647a7 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mAgent Team WebSocket connected: session=0fda4a69-04f8-4796-b02b-6b072f9647a7, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when the exact AgentRun rejects message admission
+[22m[39mClosed agent session 0fda4a69-04f8-4796-b02b-6b072f9647a7
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mCreated agent session 4c140416-b437-426f-9c7c-829955c9af62 for run team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mAgent Team WebSocket connected: session=4c140416-b437-426f-9c7c-829955c9af62, run=team-run-root
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts[2m > [22m[2mAgentTeamStreamHandler current root stream[2m > [22m[2mreturns a target-correlated failure when message execution throws
+[22m[39mClosed agent session 4c140416-b437-426f-9c7c-829955c9af62
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/projection/local-memory-run-view-projection-provider.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to a run identity and sends CONNECTED plus projected status without restoring runtime
+[22m[39mCreated agent session 3b5fb645-090d-48ba-a06b-a914a98ac004 for run agent-123
+Agent WebSocket connected: session=3b5fb645-090d-48ba-a06b-a914a98ac004, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to run events through the AgentRun subject for active runtime-managed runs
+[22m[39mCreated agent session d6388613-3fd7-4690-8b3b-880a4e088554 for run runtime-run-1
+Agent WebSocket connected: session=d6388613-3fd7-4690-8b3b-880a4e088554, run=runtime-run-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps Codex AgentRunEvents directly to websocket messages for single-agent runs
+[22m[39mCreated agent session 8c47690c-eb35-4f07-b3c3-5619447af7a4 for run runtime-run-2
+Agent WebSocket connected: session=8c47690c-eb35-4f07-b3c3-5619447af7a4, run=runtime-run-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps turn lifecycle AgentRunEvents directly to websocket messages
+[22m[39mCreated agent session 8527c6b3-3e75-43b7-a130-51d95ffbba46 for run runtime-run-3
+Agent WebSocket connected: session=8527c6b3-3e75-43b7-a130-51d95ffbba46, run=runtime-run-3
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mregisters the websocket connection for run-scoped live message broadcasts
+[22m[39mCreated agent session 14a4ed82-1310-4288-ac4c-c2e0fd6c91b6 for run agent-123
+Agent WebSocket connected: session=14a4ed82-1310-4288-ac4c-c2e0fd6c91b6, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mpublishes terminal offline status to an already-connected websocket when a run terminates
+[22m[39mCreated agent session 25b54faf-6c36-46ce-acbe-d37083610b35 for run run-terminate-1
+Agent WebSocket connected: session=25b54faf-6c36-46ce-acbe-d37083610b35, run=run-terminate-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles SEND_MESSAGE through the command coordinator and returns an ACK
+[22m[39mCreated agent session f260b66a-3727-46c6-951d-f7943a262a23 for run agent-123
+Agent WebSocket connected: session=f260b66a-3727-46c6-951d-f7943a262a23, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mdefers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+[22m[39mCreated agent session 6cfecefe-5917-4ba8-b036-ef70cf603ae7 for run agent-123
+Agent WebSocket connected: session=6cfecefe-5917-4ba8-b036-ef70cf603ae7, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mCreated agent session 81c2b6cc-837e-44e7-954e-bef2cad7b048 for run agent-123
+Agent WebSocket connected: session=81c2b6cc-837e-44e7-954e-bef2cad7b048, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mreturns exactly one same-socket acknowledgement for an accepted interrupt
+[22m[39mCreated agent session 7afb04ec-f09b-4848-b57d-ec983bd1b979 for run agent-123
+Agent WebSocket connected: session=7afb04ec-f09b-4848-b57d-ec983bd1b979, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mrejects an empty interrupt command id before runtime execution
+[22m[39mCreated agent session a2865639-7701-433d-9a0c-d5b250a495b0 for run agent-123
+Agent WebSocket connected: session=a2865639-7701-433d-9a0c-d5b250a495b0, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mCreated agent session e98b3488-1398-40a5-a501-65b43a854dcc for run agent-123
+Agent WebSocket connected: session=e98b3488-1398-40a5-a501-65b43a854dcc, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles tool approvals for active sessions
+[22m[39mCreated agent session c87437f4-c16e-4bed-903e-7b3290097f8f for run agent-123
+Agent WebSocket connected: session=c87437f4-c16e-4bed-903e-7b3290097f8f, run=agent-123
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/codex-run-view-projection-provider.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/collaboration-run-history-catalog-core.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/codex/backend/codex-thread-bootstrapper.test.ts [2m([22m[2m27 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2mowns one Agent, standalone Team, and AgentOrg process manager family
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.021Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2mcontinues the exact Org, Team, Agent shutdown order and aggregates failures
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.026Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2mreleases AgentRunManager when exclusive Team manager initialization fails
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.028Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.028Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2munwinds both root managers when process AgentRunService binding fails
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.029Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2mrejects validator-only capabilities before manager mutation
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.030Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts[2m > [22m[2mGeneralProcessRunSupervisor ownership[2m > [22m[2mrejects each required construction input before manager mutation
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.030Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.030Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.030Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.031Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.031Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.031Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.031Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.031Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.031Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T13:40:53.031Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+ [32m✓[39m tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/events/file-change-event-processor.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/events/file-change-event-processor.test.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts [2m([22m[2m28 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-websocket-egress.test.ts [2m([22m[2m31 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/agent-run-command-registry.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/grok/grok-build-runtime-registration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/backends/grok/grok-build-runtime-registration.test.ts[2m > [22m[2mgrok_build runtime registration[2m > [22m[2mrestores from the stored Grok session id and references it as the run session
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/agent-execution/backends/grok/grok-build-runtime-registration.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/team-execution-view-projector.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-status-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-status-projection-service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-manager.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts [2m([22m[2m32 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-provider-diagnostic-sink.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-command-coordinator.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-command-coordinator.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-provider-factory-builder.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-provider-factory-builder.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/studio-run-model-config-service.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-token-usage.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts [2m([22m[2m26 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-thread-manager.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-termination-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-termination-service.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/run-file-change-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/run-history/services/run-file-change-projection-service.test.ts[2m > [22m[2mRunFileChangeProjectionService current run identity[2m > [22m[2mreads an active standalone run from the runtime owner
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/run-history/services/run-file-change-projection-service.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-identity-allocator.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-identity-allocator.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/events/token-usage-event-enrichment-transformer.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/projection/user-file-attachment-projection.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/projection/user-file-attachment-projection.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/prompt/carpenter-prompt-composer.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/events/token-usage-run-persistence-transformer-lifecycle.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/events/token-usage-run-persistence-transformer-lifecycle.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/codex-workspace-skill-materializer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mskips a stale removed name without changing the configured names or blocking a retained tool
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts[2m > [22m[2mresolveAutoByteusAgentTools[2m > [22m[2mmaterializes the native foundation baseline through the existing registry
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+ [32m✓[39m tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/compaction/memory-compactor-agent-launch-resolver.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/compaction/memory-compactor-agent-launch-resolver.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/autobyteus/events/autobyteus-stream-event-converter.test.ts [2m([22m[2m28 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/team-member-run-view-projection-service.import.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 11[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/team-member-run-view-projection-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/run-history/team-member-run-view-projection-service.test.ts[2m > [22m[2mTeamMemberRunViewProjectionService exact AgentRun identity[2m > [22m[2mresolves and projects a member by root TeamRun plus concrete AgentRun ID
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-native-image-output-path/autobyteus-server-ts
+
+ [32m✓[39m tests/unit/run-history/team-member-run-view-projection-service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/grok/grok-build-session-profile.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcreates sessions successfully
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mthrows when creating a duplicate session
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mallows multiple sessions for the same agent
+[22m[39mCreated agent session s1 for run agent-123
+Created agent session s2 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mretrieves sessions by ID
+[22m[39mCreated agent session s1 for run agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mretrieves sessions for an agent
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses sessions and removes them
+[22m[39mCreated agent session s1 for run agent-123
+Closed agent session s1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses all sessions for an agent
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-1
+Created agent session s3 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mcloses all sessions
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+Closed agent session s1
+Closed agent session s2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session-manager.test.ts[2m > [22m[2mAgentSessionManager[2m > [22m[2mlists active sessions
+[22m[39mCreated agent session s1 for run agent-1
+Created agent session s2 for run agent-2
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-session-manager.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/claude-agent-run-backend.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-client-thread-router.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/claude-workspace-skill-materializer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/runtime/agent-run-activation-registry.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/team-run-history-service.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/team-run-v2-package-schema.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/unit/run-history/services/agent-run-history-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-service.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/current-execution-tree-runtime-admission.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/claude-run-view-projection-provider.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-org-run-history-summary-writer.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/codex-app-server-model-normalizer.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/claude/backend/claude-session-bootstrapper.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-user-message-builder.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-run-model-selection-commit.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/workspace-run-history-service.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-lifecycle-observation.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-lifecycle-observation.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/acp/acp-permission-bridge-and-prompt.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-item-event-payload-parser.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/active-trace-event-page-policy.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/agent-api-status-projectors.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-restore-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-restore-service.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/acp/acp-session-update-converter.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-run-event-message-mapper.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/history/codex-thread-history-item-normalizer.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-create-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/agent-run-create-service.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/autobyteus/events/autobyteus-status-projector.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/event-monitor-active-trace-page-projection.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/agent-run-resource-manager.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/domain/agent-run-token-usage-provider-name.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-tracker.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/grok/grok-build-tool-projection.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/thread/codex-user-input-mapper.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/events/agent-run-event-dispatch-queue.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/pending-system-instruction-event.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/events/default-agent-run-event-pipeline-lifecycle.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/events/default-agent-run-event-pipeline-lifecycle.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/payload-serialization.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [32m✓[39m tests/unit/agent-execution/backends/autobyteus/autobyteus-runtime-tool-exposure.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/agent-run-error-evidence.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/projection/recent-run-projection-policy.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/backend/codex-configured-tool-gating.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/agent-run-id.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mconnects and reports connected state
+[22m[39mAgentSession s1 connected to run agent-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mprevents connecting a closed session
+[22m[39mAgentSession s2 closed
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-session.test.ts[2m > [22m[2mAgentSession[2m > [22m[2mcloses and resets connected state
+[22m[39mAgentSession s3 connected to run agent-3
+AgentSession s3 closed
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-session.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/agent-run-metadata-service.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-ordered-tool-boundary-tracker.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/shared/runtime-agent-tool-exposure.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/codex/agent-tools-mcp/codex-agent-tools-mcp-materializer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-broadcaster.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/domain/agent-run-file-change.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/agent-tools-mcp/claude-agent-tools-mcp-materializer.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/domain/agent-run-file-path-identity.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/build-claude-session-mcp-servers.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/shared/context-image-source.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session-config.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/events/agent-run-event-pipeline.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-process-diagnostics.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/run-history/services/agent-run-history-identity.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-native-tool-policy.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/autobyteus/autobyteus-collaboration-tool-exposure.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [2m[90m↓[39m[22m tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tests/unit/agent-execution/backends/antigravity/agy-production-live.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+
+[2m Test Files [22m [1m[31m4 failed[39m[22m[2m | [22m[1m[32m142 passed[39m[22m[2m | [22m[33m3 skipped[39m[90m (149)[39m
+[2m      Tests [22m [1m[31m10 failed[39m[22m[2m | [22m[1m[32m1184 passed[39m[22m[2m | [22m[33m5 skipped[39m[90m (1199)[39m
+[2m     Errors [22m [1m[31m4 errors[39m[22m
+[2m   Start at [22m 15:40:23
+[2m   Duration [22m 58.70s[2m (transform 4.82s, setup 649ms, import 37.39s, tests 7.25s, environment 11ms)[22m
+

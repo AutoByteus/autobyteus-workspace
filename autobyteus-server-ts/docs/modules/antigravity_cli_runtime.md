@@ -154,11 +154,35 @@ do not invent an exit code.
 
 The provider-native `generate_image` ACTIVE/DONE step becomes the ordinary
 STARTED/SUCCEEDED tool-card lifecycle, with matching invocation and turn IDs.
-AGY may report DONE without output or a path; that is a truthful native-tool
-success with `output: null`, not an AutoByteus-owned image artifact. AGY owns
-image storage. AutoByteus does **not** find/copy/serve/index/render/retain
-image bytes or paths, nor infer a file from assistant prose. Native image
-ERROR or explicit denial is a non-green failed/denied tool event with fixed
+Its provider `parameters` (including the prompt) are shown as ordinary public
+tool arguments. AGY's stream DONE step carries no output or path, so on native
+image DONE the converter asks the off-spine `agy-step-output-reader` for AGY's
+own persisted step output,
+`~/.gemini/antigravity-cli/brain/<conversation>/.system_generated/steps/<step>/output.txt`.
+The reader makes one synchronous bounded read (≤16 KiB, opened without
+following a final symlink) and parses the `Generated image is saved at <abs>`
+line. It accepts the reported path only when it is a regular, non-symlink file
+whose realpath lies inside that conversation's brain directory. On success the
+SUCCEEDED result is `{ provider_state: "DONE", output: <AGY output text>,
+file_path: <absolute path> }`. The shared `FileChangeEventProcessor` then
+projects exactly one `generated_output` Artifacts entry, which is served by the
+ordinary run file-change content route. AGY still owns image storage.
+AutoByteus does not copy, move or retain the bytes, and it never infers a file
+from assistant prose.
+
+If the step output is missing, unsafe, oversized, worded differently, or
+reports a path that is missing or outside the conversation (for example, a
+pre-layout conversation or a changed AGY version), the tool stays a truthful
+success with `output: null` and no Artifacts entry. The server then logs one
+content-free warning, `AGY_NATIVE_IMAGE_PATH_UNRESOLVED run=<runId>
+step=<n> reason=<code>`. Reason codes are `INVALID_IDENTITY`, `OUTPUT_MISSING`,
+`OUTPUT_UNSAFE`, `OUTPUT_TOO_LARGE`, `PATH_NOT_FOUND_IN_OUTPUT`,
+`PATH_OUTSIDE_CONVERSATION`, `IMAGE_MISSING`, `READ_FAILED` and
+`RESOLVER_FAILED`. Neither the reader nor the converter lets a lookup failure
+throw into the backend event queue. The step-output layout is undocumented AGY
+internals, validated only against AGY 1.2.12. The gated live e2e tests
+(`agy-native-image-step-output`, `agy-native-image-app-chat`) are the drift
+detectors. Native image ERROR or explicit denial is a non-green failed/denied tool event with fixed
 safe public wording and a bounded private diagnostic. A failed or unknown
 terminal provider result emits a safe turn error, not a successful turn or a
 raw provider response. Successful turns retain ordinary assistant text and

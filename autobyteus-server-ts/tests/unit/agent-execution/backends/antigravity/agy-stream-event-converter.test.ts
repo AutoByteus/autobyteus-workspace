@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import { describe, expect, it } from "vitest";
-import { AgyStreamEventConverter } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js";
+import { describe, expect, it, vi } from "vitest";
+import { AgyStreamEventConverter, type AgyNativeImagePathResolver } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.js";
 import { parseAgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 import { AgentRunEventType } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentSegmentLifecycleEventTransformer } from "../../../../../src/agent-execution/events/processors/segment-lifecycle/agent-segment-lifecycle-event-transformer.js";
@@ -28,36 +28,52 @@ const convert = (name: string, directory?: string) => {
 };
 
 describe("AGY canonical stream conversion", () => {
-  it("redacts native image denial but does not classify an MCP image call as native", () => {
+  it("shows native image parameters, redacts native image denial, and does not classify an MCP image call as native", () => {
     const diagnostics: unknown[] = [];
-    const converter = new AgyStreamEventConverter("run", "conversation", "gemini", (value) => diagnostics.push(value));
+    const resolver = vi.fn<AgyNativeImagePathResolver>();
+    const converter = new AgyStreamEventConverter("run", "conversation", "gemini", (value) => diagnostics.push(value), resolver);
     converter.startTurn("turn");
     const active = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
       step_index: 1, step_type: "tool", state: "ACTIVE", tool_name: "generate_image",
-      tool_info: { parameters: { secret: "token=private" } } } });
+      tool_info: { parameters: { ImageName: "blue_dog", Prompt: "A blue dog" } } } });
+    expect(active[0]?.payload.arguments).toEqual({ ImageName: "blue_dog", Prompt: "A blue dog" });
     const terminal = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
       step_index: 1, step_type: "tool", state: "ERROR", tool_name: "generate_image",
       tool_info: { error: "permission denied token=private /private/path", output: "secret-output" } } });
-    expect(JSON.stringify([...active, ...terminal])).not.toMatch(/token=private|private\/path|secret-output/);
+    expect(JSON.stringify(terminal)).not.toMatch(/token=private|private\/path|secret-output/);
     expect(terminal[0]?.eventType).toBe(AgentRunEventType.TOOL_DENIED);
+    expect(terminal[0]?.payload.result).toEqual({ provider_state: "ERROR", output: null });
     expect(diagnostics).toHaveLength(1);
+    const doneWithError = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
+      step_index: 3, step_type: "tool", state: "DONE", tool_name: "generate_image",
+      tool_info: { error: "quota token=private", output: "secret-output" } } });
+    expect(JSON.stringify(doneWithError)).not.toMatch(/token=private|secret-output/);
+    expect(doneWithError.at(-1)?.eventType).toBe(AgentRunEventType.TOOL_EXECUTION_FAILED);
+    expect(resolver).not.toHaveBeenCalled();
     const mcp = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
       step_index: 2, step_type: "tool", state: "DONE", tool_name: "call_mcp_tool",
       tool_info: { parameters: { ToolName: "generate_image" }, output: { file_path: "/tmp/mcp.png" } } } });
-    expect(mcp.find((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)?.payload.tool_name).toBe("call_mcp_tool");
+    expect(mcp.find((event) => event.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)?.payload.result)
+      .toEqual({ provider_state: "DONE", output: { file_path: "/tmp/mcp.png" } });
+    expect(resolver).not.toHaveBeenCalled();
   });
 
-  it("reports native image DONE without an output path or app-owned artifact", () => {
-    const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
+  it("enriches native image DONE with AGY's step output text and resolved file_path", () => {
+    const resolver = vi.fn<AgyNativeImagePathResolver>().mockReturnValue({
+      path: "/brain/conv/dog_1.jpg", outputText: "Generated image is saved at /brain/conv/dog_1.jpg.", reason: null,
+    });
+    const converter = new AgyStreamEventConverter("run", "conversation", "gemini", undefined, resolver);
     converter.startTurn("turn");
     const events = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
-      step_index: 1, step_type: "tool", state: "DONE", tool_name: "generate_image",
-      tool_info: { output: { file_path: "/untrusted/provider-path.png" } } } });
+      step_index: 2, step_type: "tool", state: "DONE", tool_name: "generate_image",
+      tool_info: { parameters: { ImageName: "dog", Prompt: "A dog" }, output: { file_path: "/untrusted/provider-path.png" } } } });
     expect(events.map((item) => item.eventType)).toEqual([
       AgentRunEventType.TOOL_EXECUTION_STARTED, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
     ]);
-    expect(events[0]?.payload.arguments).toEqual({});
-    expect(events[1]?.payload.result).toEqual({ provider_state: "DONE", output: null });
+    expect(resolver).toHaveBeenCalledExactlyOnceWith(2);
+    expect(events[0]?.payload.arguments).toEqual({ ImageName: "dog", Prompt: "A dog" });
+    expect(events[1]?.payload.result).toEqual({ provider_state: "DONE",
+      output: "Generated image is saved at /brain/conv/dog_1.jpg.", file_path: "/brain/conv/dog_1.jpg" });
     expect(JSON.stringify(events)).not.toContain("/untrusted/provider-path.png");
     const terminal = converter.convert({ event: "result", result: {
       conversation_id: "conversation", status: "SUCCESS", response: "Image available in AGY.",
@@ -65,6 +81,52 @@ describe("AGY canonical stream conversion", () => {
     expect(terminal.find((item) => item.eventType === AgentRunEventType.SEGMENT_CONTENT)?.payload.delta)
       .toBe("Image available in AGY.");
     expect(terminal.at(-1)?.eventType).toBe(AgentRunEventType.TURN_COMPLETED);
+  });
+  it.each(["OUTPUT_MISSING", "OUTPUT_UNSAFE", "OUTPUT_TOO_LARGE", "PATH_NOT_FOUND_IN_OUTPUT",
+    "PATH_OUTSIDE_CONVERSATION", "IMAGE_MISSING", "READ_FAILED", "INVALID_IDENTITY"] as const)(
+    "keeps native image DONE successful with output null and a content-free warning when unresolved (%s)", (reason) => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+      try {
+        const converter = new AgyStreamEventConverter("run", "conversation", "gemini", undefined,
+          () => ({ path: null, outputText: null, reason }));
+        converter.startTurn("turn");
+        const events = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
+          step_index: 5, step_type: "tool", state: "DONE", tool_name: "generate_image", tool_info: {} } });
+        expect(events.at(-1)?.eventType).toBe(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
+        expect(events.at(-1)?.payload.result).toEqual({ provider_state: "DONE", output: null });
+        expect(warn).toHaveBeenCalledExactlyOnceWith(`AGY_NATIVE_IMAGE_PATH_UNRESOLVED run=run step=5 reason=${reason}`);
+      } finally { warn.mockRestore(); }
+    });
+  it("never lets a throwing resolver escape convert", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini", undefined, () => {
+        throw new Error("boom /secret/path");
+      });
+      converter.startTurn("turn");
+      let events: ReturnType<typeof converter.convert> = [];
+      expect(() => { events = converter.convert({ event: "step_update", step_update: { conversation_id: "conversation",
+        step_index: 4, step_type: "tool", state: "DONE", tool_name: "generate_image", tool_info: {} } }); }).not.toThrow();
+      expect(events.at(-1)?.eventType).toBe(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
+      expect(events.at(-1)?.payload.result).toEqual({ provider_state: "DONE", output: null });
+      expect(warn).toHaveBeenCalledExactlyOnceWith("AGY_NATIVE_IMAGE_PATH_UNRESOLVED run=run step=4 reason=RESOLVER_FAILED");
+      expect(converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS" } })
+        .at(-1)?.eventType).toBe(AgentRunEventType.TURN_COMPLETED);
+    } finally { warn.mockRestore(); }
+  });
+  it("resolves distinct paths for parallel native image steps", () => {
+    const converter = new AgyStreamEventConverter("run", "conversation", "gemini", undefined,
+      (step) => ({ path: `/brain/conv/image_${step}.jpg`, outputText: `saved ${step}`, reason: null }));
+    converter.startTurn("turn");
+    const events = [6, 7].flatMap((stepIndex) => converter.convert({ event: "step_update", step_update: {
+      conversation_id: "conversation", step_index: stepIndex, step_type: "tool", state: "DONE",
+      tool_name: "generate_image", tool_info: {},
+    } }));
+    expect(events.filter((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)
+      .map((item) => item.payload.result)).toEqual([
+        { provider_state: "DONE", output: "saved 6", file_path: "/brain/conv/image_6.jpg" },
+        { provider_state: "DONE", output: "saved 7", file_path: "/brain/conv/image_7.jpg" },
+      ]);
   });
   it("reports distinct native image steps without duplicating terminal events", () => {
     const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
