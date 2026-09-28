@@ -5,6 +5,8 @@ const PROJECT_ERROR_MESSAGE_KEYS: Readonly<Record<string, string>> = {
   WORKSPACE_NOT_REGISTERED: 'projects.errors.workspaceNotRegistered',
   WORKSPACE_ALREADY_LINKED: 'projects.errors.workspaceAlreadyLinked',
   WORKSPACE_LINK_NOT_FOUND: 'projects.errors.workspaceLinkNotFound',
+  TASK_DESCRIPTION_REQUIRED: 'projects.errors.taskDescriptionRequired',
+  TASK_NOT_FOUND: 'projects.errors.taskNotFound',
 }
 
 /** Translation key for a Project request failure; unknown failures use the generic key. */

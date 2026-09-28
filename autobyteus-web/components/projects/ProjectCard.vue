@@ -15,8 +15,8 @@
         </p>
       </div>
     </div>
-    <p class="mt-auto pt-4 text-xs font-medium text-slate-500" data-testid="project-card-workspace-count">
-      {{ workspaceCountLabel }}
+    <p class="mt-auto pt-4 text-xs font-medium text-slate-500" data-testid="project-card-counts">
+      {{ t('projects.components.projects.ProjectCard.counts', { tasks: openTasksLabel, workspaces: workspacesLabel }) }}
     </p>
   </NuxtLink>
 </template>
@@ -31,7 +31,18 @@ const props = defineProps<{ project: Project }>()
 
 const { t } = useLocalization()
 
-const workspaceCountLabel = computed(() => {
+// Open Tasks are those not Done (`openTaskCount`); every Task is open until Task admission lets agents finish them.
+const openTasksLabel = computed(() => {
+  const count = props.project.openTaskCount
+  if (count === 0) {
+    return t('projects.components.projects.ProjectCard.noOpenTasks')
+  }
+  return count === 1
+    ? t('projects.components.projects.ProjectCard.oneOpenTask')
+    : t('projects.components.projects.ProjectCard.openTaskCount', { count })
+})
+
+const workspacesLabel = computed(() => {
   const count = props.project.workspaces.length
   if (count === 0) {
     return t('projects.components.projects.ProjectCard.noWorkspaces')

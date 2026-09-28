@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import ProjectFormDialog from '../ProjectFormDialog.vue'
-import { ProjectRequestError } from '~/stores/projectStore'
+import { ProjectRequestError } from '~/utils/projects/projectRequestError'
 
 const { projectStoreMock } = vi.hoisted(() => ({
   projectStoreMock: {

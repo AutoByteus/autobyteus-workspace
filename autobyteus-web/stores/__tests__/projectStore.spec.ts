@@ -13,7 +13,8 @@ vi.mock('~/utils/apolloClient', () => ({
   getApolloClient: vi.fn(() => apolloClientMock),
 }))
 
-import { ProjectRequestError, useProjectStore } from '../projectStore'
+import { useProjectStore } from '../projectStore'
+import { ProjectRequestError } from '~/utils/projects/projectRequestError'
 import { useWindowNodeContextStore } from '../windowNodeContextStore'
 import type { Project } from '~/types/project'
 
@@ -24,6 +25,7 @@ const project = (projectId: string, name: string, overrides: Partial<Project> = 
   createdAt: '2026-09-26T00:00:00.000Z',
   updatedAt: '2026-09-26T00:00:00.000Z',
   workspaces: [],
+  openTaskCount: 0,
   ...overrides,
 })
 
@@ -166,5 +168,34 @@ describe('projectStore', () => {
     resolveQuery({ data: { projects: [project('p1', 'node A project')] } })
     await expect(pending).resolves.toEqual([])
     expect(store.projects).toEqual([])
+  })
+
+  it('updates the cached open Task count of one Project', async () => {
+    apolloClientMock.query.mockResolvedValue({
+      data: { projects: [project('p1', 'a', { openTaskCount: 1 }), project('p2', 'b', { openTaskCount: 3 })] },
+    })
+
+    const store = useProjectStore()
+    await store.fetchProjects()
+    store.setOpenTaskCount('p1', 5)
+
+    expect(store.getProjectById('p1')?.openTaskCount).toBe(5)
+    expect(store.getProjectById('p2')?.openTaskCount).toBe(3)
+  })
+
+  it('does not drive the list loading/error state when loading one Project', async () => {
+    apolloClientMock.query
+      .mockResolvedValueOnce({ data: { projects: [project('p1', 'a')] } })
+      .mockRejectedValueOnce(new Error('detail failed'))
+
+    const store = useProjectStore()
+    await store.fetchProjects()
+    const pending = store.fetchProject('p1')
+    expect(store.loading).toBe(false)
+    await expect(pending).rejects.toThrow('detail failed')
+
+    expect(store.loading).toBe(false)
+    expect(store.error).toBeNull()
+    expect(store.projects.map((entry) => entry.projectId)).toEqual(['p1'])
   })
 })

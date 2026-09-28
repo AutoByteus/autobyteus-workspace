@@ -46,6 +46,7 @@ const project: Project = {
   description: '',
   createdAt: '',
   updatedAt: '',
+  openTaskCount: 0,
   workspaces: [{
     workspaceId: LINKED.workspaceId,
     workspaceRootPath: LINKED.absolutePath,

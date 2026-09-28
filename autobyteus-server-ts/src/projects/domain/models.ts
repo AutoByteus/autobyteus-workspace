@@ -7,6 +7,17 @@ export interface ProjectWorkspaceLink {
   addedAt: string;
 }
 
+export type ProjectTaskStatus = "TODO" | "IN_PROGRESS" | "DONE";
+
+/** A Task as persisted inside its Project record. It has no title; the description is the content. */
+export interface ProjectTask {
+  taskId: string;
+  description: string;
+  status: ProjectTaskStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
 /** A Project as persisted in `<appDataDir>/projects/projects.json`. */
 export interface Project {
   projectId: string;
@@ -15,6 +26,7 @@ export interface Project {
   createdAt: string;
   updatedAt: string;
   workspaces: ProjectWorkspaceLink[];
+  tasks: ProjectTask[];
 }
 
 export type ProjectWorkspaceAvailability = "AVAILABLE" | "UNREGISTERED";
@@ -25,8 +37,15 @@ export interface ProjectWorkspaceView extends ProjectWorkspaceLink {
   availability: ProjectWorkspaceAvailability;
 }
 
-export interface ProjectView extends Omit<Project, "workspaces"> {
+export interface ProjectView extends Omit<Project, "workspaces" | "tasks"> {
   workspaces: ProjectWorkspaceView[];
+  /** Number of Tasks whose status is not `DONE`; computed at read time. */
+  openTaskCount: number;
+}
+
+/** A Task as returned to clients; `projectId` is added for client keying and is not stored in the Task. */
+export interface ProjectTaskView extends ProjectTask {
+  projectId: string;
 }
 
 export interface CreateProjectCommand {
@@ -55,4 +74,20 @@ export interface UpdateProjectWorkspaceCommand {
 export interface RemoveProjectWorkspaceCommand {
   projectId: string;
   workspaceId: string;
+}
+
+export interface CreateProjectTaskCommand {
+  projectId: string;
+  description: string;
+}
+
+export interface UpdateProjectTaskCommand {
+  projectId: string;
+  taskId: string;
+  description: string;
+}
+
+export interface DeleteProjectTaskCommand {
+  projectId: string;
+  taskId: string;
 }

@@ -6,13 +6,14 @@ import { useProjectStore } from '~/stores/projectStore'
 
 let store: ReturnType<typeof useProjectStore>
 
-const project = (projectId: string, name: string, description = '', workspaces: unknown[] = []) => ({
+const project = (projectId: string, name: string, description = '', workspaces: unknown[] = [], openTaskCount = 0) => ({
   projectId,
   name,
   description,
   createdAt: '',
   updatedAt: '',
   workspaces,
+  openTaskCount,
 })
 
 const mountList = () => mount(ProjectsList, {
@@ -48,14 +49,15 @@ describe('ProjectsList', () => {
 
   it('filters by name or description and recovers from no matches', async () => {
     store.projects = [
-      project('p1', 'autobyteus', 'AutoByteus product', [{}, {}, {}]),
+      project('p1', 'autobyteus', 'AutoByteus product', [{}, {}, {}], 4),
       project('p2', 'Marketing site', 'Landing pages'),
     ] as any
     const wrapper = mountList()
     await flushPromises()
 
     expect(wrapper.findAll('[data-testid^="project-card-p"]')).toHaveLength(2)
-    expect(wrapper.get('[data-testid="project-card-p1"]').text()).toContain('3 linked workspaces')
+    expect(wrapper.get('[data-testid="project-card-p1"] [data-testid="project-card-counts"]').text()).toBe('4 open tasks · 3 workspaces')
+    expect(wrapper.get('[data-testid="project-card-p2"] [data-testid="project-card-counts"]').text()).toBe('No open tasks · No workspaces')
 
     await wrapper.get('[data-testid="projects-search-input"]').setValue('landing')
     expect(wrapper.findAll('[data-testid^="project-card-p"]').map((card) => card.attributes('data-testid'))).toEqual(['project-card-p2'])
@@ -82,5 +84,13 @@ describe('ProjectsList', () => {
     await flushPromises()
 
     expect(wrapper.getComponent(RouterLinkStub).props('to')).toBe('/projects/project_1')
+  })
+
+  it('uses singular forms for one open task and one workspace (REQ-009)', async () => {
+    store.projects = [project('p1', 'autobyteus', '', [{}], 1)] as any
+    const wrapper = mountList()
+    await flushPromises()
+
+    expect(wrapper.get('[data-testid="project-card-counts"]').text()).toBe('1 open task · 1 workspace')
   })
 })
