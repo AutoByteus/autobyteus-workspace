@@ -1,0 +1,4 @@
+{"conclusion":"success","name":"Resolve iOS Release Metadata","status":"completed"}
+{"conclusion":"success","name":"Build And Test iOS App","status":"completed"}
+{"conclusion":"success","name":"Validate iOS Publish Secrets","status":"completed"}
+{"conclusion":"success","name":"Archive And Upload To App Store Connect","status":"completed"}
