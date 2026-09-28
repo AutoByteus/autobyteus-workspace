@@ -35,11 +35,8 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
-import { useWorkspaceStore } from '~/stores/workspace';
-import { getFilePathsFromFolder } from '~/utils/fileExplorer/fileUtils';
-import type { TreeNode } from '~/utils/fileExplorer/TreeNode';
+import { useComposerFilePathDrop } from '~/composables/agentInput/useComposerFilePathDrop';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import { resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -53,9 +50,8 @@ const props = defineProps<{
   beforeSend?: () => void | Promise<void>;
 }>();
 
-const windowNodeContextStore = useWindowNodeContextStore();
 const contextFileUploadStore = useContextFileUploadStore();
-const workspaceStore = useWorkspaceStore();
+const { resolveDroppedFilePaths } = useComposerFilePathDrop();
 const internalRequirement = ref('');
 
 const targetContext = computed<AgentContext | null>(() => props.target?.context ?? null);
@@ -219,44 +215,7 @@ const insertFilePaths = (
 const handleDrop = async (event: DragEvent) => {
   const dropContext = targetContext.value;
   if (!dropContext) return;
-
-  const dataTransfer = event.dataTransfer;
-  if (!dataTransfer) return;
-
-  let filePaths: string[] = [];
-  const dragData = dataTransfer.getData('application/json');
-
-  if (dragData) {
-    console.log('[INFO] Drop event is from internal file explorer.');
-    try {
-      const droppedNode: TreeNode = JSON.parse(dragData);
-      filePaths = getFilePathsFromFolder(droppedNode);
-
-      if (workspaceStore.activeWorkspace?.absolutePath) {
-        const basePath = workspaceStore.activeWorkspace.absolutePath;
-        const separator = basePath.includes('\\') ? '\\' : '/';
-        filePaths = filePaths.map(relativePath => {
-          const cleanRelativePath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
-          const parts = [basePath.replace(/[/\\]$/, ''), ...cleanRelativePath.split('/')];
-          return parts.join(separator);
-        });
-      }
-    } catch (error) {
-      console.error('Failed to parse dropped node data:', error);
-    }
-  } else if (windowNodeContextStore.isEmbeddedWindow && dataTransfer.files.length > 0 && window.electronAPI) {
-    console.log('[INFO] Drop event from native OS in Electron.');
-    const files = Array.from(dataTransfer.files);
-    const pathPromises = files.map(f => window.electronAPI.getPathForFile(f));
-    const paths = (await Promise.all(pathPromises)).filter((p): p is string => Boolean(p));
-    filePaths = paths;
-    console.log('[INFO] Received native file paths from preload bridge:', filePaths);
-  } else if (!windowNodeContextStore.isEmbeddedWindow && dataTransfer.files.length > 0) {
-    console.log('[INFO] Drop event from native OS in browser, using filenames as fallback.');
-    filePaths = Array.from(dataTransfer.files).map(file => file.name);
-  }
-
-  insertFilePaths(filePaths, dropContext);
+  insertFilePaths(await resolveDroppedFilePaths(event), dropContext);
 };
 
 const handleKeyDown = (event: KeyboardEvent) => {

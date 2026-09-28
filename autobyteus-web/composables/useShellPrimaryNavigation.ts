@@ -5,6 +5,7 @@ import { useProjectsCapabilityStore } from '~/stores/projectsCapabilityStore';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 
 export type ShellPrimaryNavKey =
+  | 'chat'
   | 'agents'
   | 'agentTeams'
   | 'agentOrgs'
@@ -23,6 +24,7 @@ export interface ShellPrimaryNavItem {
 export const SHELL_NODES_NETWORK_ICON = 'autobyteus:nodes-network';
 
 const allShellPrimaryNavItems: readonly ShellPrimaryNavItem[] = [
+  { key: 'chat', labelKey: 'shell.navigation.chat', icon: 'heroicons:chat-bubble-left-right' },
   { key: 'agents', labelKey: 'shell.navigation.agents', icon: 'heroicons:users' },
   { key: 'agentTeams', labelKey: 'shell.navigation.agentTeams', icon: 'heroicons:user-group' },
   { key: 'agentOrgs', labelKey: 'shell.navigation.agentOrgs', icon: 'heroicons:building-office-2' },
@@ -35,6 +37,8 @@ const allShellPrimaryNavItems: readonly ShellPrimaryNavItem[] = [
 
 export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocationRaw {
   switch (key) {
+    case 'chat':
+      return '/chat';
     case 'agents':
       return { path: '/agents', query: { view: 'list' } };
     case 'agentTeams':
@@ -56,6 +60,8 @@ export function resolveShellPrimaryRoute(key: ShellPrimaryNavKey): RouteLocation
 
 export function isShellPrimaryRouteActive(key: ShellPrimaryNavKey, path: string): boolean {
   switch (key) {
+    case 'chat':
+      return path.startsWith('/chat');
     case 'agents':
       return path.startsWith('/agents');
     case 'agentTeams':

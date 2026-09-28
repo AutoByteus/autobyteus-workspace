@@ -28,8 +28,6 @@ const messages = {
   'workspace.components.progress.ToolActivityItem.error': 'Error',
   'workspace.components.progress.ToolActivityItem.result': 'Result',
   'workspace.components.workspace.agent.AgentStatusDisplay.agent_status': '`Agent Status: ${visuals.text}`',
-  'workspace.components.workspace.agent.AgentWorkspaceView.headertitle': 'headerTitle',
-  'workspace.components.workspace.agent.AgentWorkspaceView.select_an_agent_or_start_a': 'Select an agent or start a new one.',
   'workspace.components.workspace.agent.ArtifactContentViewer.edit_mode': 'Edit Mode',
   'workspace.components.workspace.agent.ArtifactContentViewer.file_not_found': 'File not found',
   'workspace.components.workspace.agent.ArtifactContentViewer.loading_content': 'Loading content...',

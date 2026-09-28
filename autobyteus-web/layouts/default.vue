@@ -82,12 +82,16 @@ const showLeftPanelSurface = computed(
 const showLeftDrawerBackdrop = computed(
   () => !isApplicationImmersive.value && showLeftDrawer.value,
 )
+// Routes that mount WorkspaceToolShell: /workspace and an open chat run.
+const routeShowsToolShell = computed(
+  () => route.path === '/workspace' || (route.path === '/chat' && typeof route.query.id === 'string' && route.query.id.length > 0),
+)
 const leftDrawerBackdropStyle = computed(() => ({
   zIndex: leftDrawerBackdropZIndex.value,
   // The workspace right strip is a normal 50px flow item, not an overlay.
   // Keep that opposite-side opener outside this backdrop's hit-test region
   // while the left drawer is open.
-  ...(route.path === '/workspace' && responsiveWorkspaceShellState.value.showRightStrip
+  ...(routeShowsToolShell.value && responsiveWorkspaceShellState.value.showRightStrip
     ? { right: `${responsiveWorkspaceShellState.value.rightPanel.consumedWidth}px` }
     : {}),
 }))

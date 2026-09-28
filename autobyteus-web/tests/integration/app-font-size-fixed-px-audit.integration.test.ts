@@ -17,10 +17,14 @@ const EXCLUDED_DIRECTORIES = new Set([
 ]);
 
 const SETTINGS_COMPONENT_FILES = collectSourceFiles('components/settings');
+// Single-agent runs render in the chat view (it replaced the standalone agent workspace view).
+const CHAT_COMPONENT_FILES = collectSourceFiles('components/chat');
 
 const TARGETED_FILES = Array.from(new Set([
   ...SETTINGS_COMPONENT_FILES,
+  ...CHAT_COMPONENT_FILES,
   'pages/settings.vue',
+  'pages/chat.vue',
   'components/conversation/segments/renderer/MarkdownRenderer.vue',
   'components/conversation/segments/renderer/FileDisplay.vue',
   'components/fileExplorer/FileItem.vue',
@@ -28,7 +32,6 @@ const TARGETED_FILES = Array.from(new Set([
   'components/workspace/agent/ArtifactItem.vue',
   'components/agentInput/AgentUserInputTextArea.vue',
   'components/agentInput/ContextFilePathInputArea.vue',
-  'components/workspace/agent/AgentWorkspaceView.vue',
   'components/workspace/team/TeamWorkspaceView.vue',
   'components/workspace/common/WorkspaceHeaderActions.vue',
   'components/conversation/segments/InterAgentMessageSegment.vue',

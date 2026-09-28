@@ -1,0 +1,158 @@
+<template>
+  <!-- The Chat box is the product's existing message box (frame, Context Files area, textarea,
+       mic and send) plus the Chat features: chips, `/` and `@`, and the footer row (DEC-014). -->
+  <div
+    class="relative rounded-xl border border-gray-200 bg-white shadow-sm focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-500/20"
+    data-test="chat-composer"
+  >
+    <div class="overflow-hidden rounded-t-xl">
+      <ContextFilePathInputArea :target="target" />
+    </div>
+
+    <div class="border-t border-gray-100">
+      <div class="flex flex-col bg-white">
+        <div v-if="hasChips()" class="flex flex-wrap items-center gap-1.5 px-3 pt-2.5" data-test="chat-composer-chips">
+          <slot name="chips" />
+          <span
+            v-for="name in requestedSkillNames"
+            :key="name"
+            class="inline-flex max-w-full items-center gap-1 rounded-md border border-indigo-200 bg-indigo-50 py-0.5 pl-1.5 pr-1 text-xs font-medium text-indigo-700"
+            :data-test="`chat-skill-chip-${name}`"
+          >
+            <Icon icon="heroicons:sparkles" class="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+            <span class="truncate">/{{ name }}</span>
+            <button
+              type="button"
+              class="rounded p-0.5 text-indigo-400 hover:bg-indigo-100 hover:text-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
+              :aria-label="$t('chat.composer.removeSkill', { name })"
+              @click="removeSkill(name)"
+            >
+              <Icon icon="heroicons:x-mark" class="h-3 w-3" aria-hidden="true" />
+            </button>
+          </span>
+        </div>
+
+        <ChatMessageInput
+          ref="inputRef"
+          :context="target?.context ?? null"
+          :placeholder="placeholder"
+          :disabled="starting || target?.access === 'read_only'"
+          :skill-options="skillOptions"
+          :skills-all-installed="skillsAllInstalled"
+          :target-options="targetOptions"
+          :autofocus="autofocus"
+          @submit="activatePrimaryAction"
+          @select-target="emit('select-target', $event)"
+        />
+
+        <VoiceInputStatusRow class="mx-3 mb-2" />
+      </div>
+    </div>
+
+    <!-- Footer: what can still change for this chat. Left: workspace and approval (New chat only). -->
+    <div class="flex flex-wrap items-center gap-0.5 rounded-b-xl border-t border-gray-100 bg-white px-2 py-1.5" data-test="chat-composer-footer">
+      <slot name="footer-left" />
+      <div class="ml-auto flex items-center gap-0.5">
+        <slot name="footer-right" />
+        <span class="w-1" aria-hidden="true"></span>
+        <VoiceInputButton :target="target" compact />
+        <MessagePrimaryActionButton
+          data-test="chat-primary-action"
+          compact
+          :kind="primaryKind"
+          :disabled="primaryDisabled"
+          :busy="starting"
+          :title="primaryTitle"
+          @activate="activatePrimaryAction"
+        />
+      </div>
+    </div>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { computed, ref, useSlots } from 'vue'
+import { Icon } from '@iconify/vue'
+import ContextFilePathInputArea from '~/components/agentInput/ContextFilePathInputArea.vue'
+import VoiceInputButton from '~/components/agentInput/VoiceInputButton.vue'
+import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue'
+import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue'
+import ChatMessageInput from '~/components/chat/ChatMessageInput.vue'
+import type { ChatSkillOption, ChatTargetOption } from '~/components/chat/chatComposerMenus'
+import type { ComposerTarget } from '~/composables/agentInput/useComposerTarget'
+import type { ChatTarget } from '~/stores/chatDraftStore'
+import { useContextFileUploadStore } from '~/stores/contextFileUploadStore'
+import { useToasts } from '~/composables/useToasts'
+import { hasSendableDraft, resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction'
+import { AgentStatus } from '~/types/agent/AgentStatus'
+
+const props = withDefaults(defineProps<{
+  target: ComposerTarget | null
+  placeholder: string
+  skillOptions: ChatSkillOption[] | null
+  skillsAllInstalled?: boolean
+  targetOptions?: ChatTargetOption[] | null
+  /** The first send of a New chat is in flight. */
+  starting?: boolean
+  /** Why the draft cannot be sent (e.g. its runtime is unavailable); labels the disabled send button. */
+  sendBlockedReason?: string | null
+  autofocus?: boolean
+}>(), {
+  skillsAllInstalled: false,
+  targetOptions: null,
+  starting: false,
+  sendBlockedReason: null,
+  autofocus: false,
+})
+const emit = defineEmits<{ (event: 'select-target', target: ChatTarget): void }>()
+
+const slots = useSlots()
+const inputRef = ref<InstanceType<typeof ChatMessageInput> | null>(null)
+const contextFileUploadStore = useContextFileUploadStore()
+
+const requestedSkillNames = computed(() => props.target?.context.requestedSkillNames ?? [])
+// Slots are not reactive: evaluate at render time.
+const hasChips = () => requestedSkillNames.value.length > 0 || Boolean(slots.chips)
+
+const primaryAction = computed(() => {
+  const context = props.target?.context
+  return resolveAgentPrimaryAction({
+    hasContext: Boolean(context),
+    status: context?.state.currentStatus ?? AgentStatus.Offline,
+    submissionPending: context?.submissionPending ?? false,
+    isUploading: contextFileUploadStore.isUploading,
+    // Send is enabled by text, a skill tag or a context file.
+    hasDraft: context ? hasSendableDraft(context, { attachmentsAreSendable: true }) : false,
+  })
+})
+const primaryKind = computed(() => (primaryAction.value.kind === 'interrupt' ? 'interrupt' : 'send'))
+const primaryDisabled = computed(() => props.starting
+  || !primaryAction.value.enabled
+  || props.target?.access === 'read_only'
+  || (primaryAction.value.kind === 'send' && Boolean(props.sendBlockedReason)))
+const primaryTitle = computed(() => (primaryKind.value === 'send' && props.sendBlockedReason ? props.sendBlockedReason : null))
+
+const removeSkill = (name: string) => {
+  const context = props.target?.context
+  if (!context) return
+  context.requestedSkillNames = context.requestedSkillNames.filter((entry) => entry !== name)
+  inputRef.value?.focus()
+}
+
+const activatePrimaryAction = async () => {
+  const target = props.target
+  if (!target || primaryDisabled.value) return
+  try {
+    if (primaryAction.value.kind === 'interrupt') {
+      await target.interrupt?.()
+      return
+    }
+    await target.send()
+  } catch (error) {
+    console.error('Chat send failed:', error)
+    useToasts().addToast(error instanceof Error && error.message ? error.message : String(error), 'error')
+  }
+}
+
+defineExpose({ focus: () => inputRef.value?.focus() })
+</script>

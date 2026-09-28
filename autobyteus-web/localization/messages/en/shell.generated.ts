@@ -21,7 +21,6 @@ const messages = {
   'shell.components.layout.WorkspaceMobileLayout.running_list': 'Running List',
   'shell.components.layout.WorkspaceMobileLayout.select_or_run_an_agent_team': 'Select or run an agent/team to begin.',
   'shell.layouts.default.open_menu': 'Open menu',
-  'shell.pages.index.redirecting_to_agent_management': 'Redirecting to agent management...',
 } satisfies TranslationCatalog;
 
 export default messages;

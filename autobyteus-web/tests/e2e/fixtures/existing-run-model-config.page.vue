@@ -55,6 +55,7 @@ onMounted(() => {
     toolInvocationPreprocessorNames: [],
     lifecycleProcessorNames: [],
     skillNames: [],
+    skillScope: 'CONFIGURED',
     defaultLaunchConfig: null,
   }]
 

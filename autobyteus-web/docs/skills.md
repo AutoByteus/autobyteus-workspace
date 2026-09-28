@@ -203,7 +203,11 @@ bundled package skills that are visible in the normal Skills catalog.
 - **Data Field**: `skillNames` (List of strings)
 
 When an agent is created, the selected `skillNames` are sent to the backend
-`AgentDefinition`.
+`AgentDefinition`. The **Use all installed skills** checkbox sets
+`skillScope: ALL_INSTALLED` instead; the picker is then disabled and the backend
+binds every enabled installed skill from its own discovered root at run start.
+In Chat, `/` offers the skills the current agent can use (enabled installed
+skills for `ALL_INSTALLED`, configured names otherwise).
 
 The backend treats `skillNames` as logical names at runtime. For package-authored
 agents, runtime resolution is context-first: those names may resolve to

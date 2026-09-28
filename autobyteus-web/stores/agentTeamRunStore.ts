@@ -13,7 +13,11 @@ import type { ContextAttachment } from '~/types/conversation';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { planContextAttachmentSubmission } from '~/utils/contextFiles/contextAttachmentSend';
-import { buildTeamMemberDraftContextFileOwner, buildTeamMemberFinalContextFileOwner } from '~/utils/contextFiles/contextFileOwner';
+import {
+  buildTeamMemberDraftContextFileOwner,
+  buildTeamMemberFinalContextFileOwner,
+  type DraftContextFileOwnerDescriptor,
+} from '~/utils/contextFiles/contextFileOwner';
 import { buildTeamMemberTreeFromDefinition, flattenLeafAgentMemberNodes } from '~/utils/teamDefinitionMembers';
 import { projectTeamRunLaunchRecords } from '~/utils/teamRunLaunchHierarchy';
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState';
@@ -220,7 +224,16 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       const team = useAgentTeamContextsStore().activeTeamContext;
       if (team) await this.terminateTeamRun(team.view.getRootTeamRunId());
     },
-    async sendMessageToFocusedMember(text: string, contextAttachments: ContextAttachment[]) {
+    /**
+     * Send to the focused member of the selected Team run or launch draft.
+     * `attachmentDraftOwner` names where the attachments were uploaded when that is not the
+     * team member's own draft (a Team started from a New chat uploads under the chat draft).
+     */
+    async sendMessageToFocusedMember(
+      text: string,
+      contextAttachments: ContextAttachment[],
+      options: { attachmentDraftOwner?: DraftContextFileOwnerDescriptor } = {},
+    ) {
       const contexts = useAgentTeamContextsStore();
       const drafts = useTeamRunConfigStore();
       const selection = useAgentSelectionStore();
@@ -272,7 +285,8 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           text, attachments: contextAttachments,
           navigationTarget: { kind: 'team_member', teamRunId: rootTeamRunId, agentRunId: targetAgentRunId },
         });
-        const draftOwner = buildTeamMemberDraftContextFileOwner(draftOwnerId, location.memberAddress);
+        const draftOwner = options.attachmentDraftOwner
+          ?? buildTeamMemberDraftContextFileOwner(draftOwnerId, location.memberAddress);
         const finalized = await useContextFileUploadStore().finalizeDraftAttachments({
           draftOwner,
           finalOwner: buildTeamMemberFinalContextFileOwner(

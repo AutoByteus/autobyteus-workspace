@@ -186,10 +186,11 @@ The Pinia stores act as the primary interface for the UI components to interact 
 ### AgentOrg Workspace Subject And Current-Member Configuration
 
 Standalone Agent/Team selection and AgentOrg selection are mutually exclusive
-center subjects. `AppLeftPanel.isPlainWorkspaceRoute()` accepts only an exact
-query-free `/workspace` as the canonical standalone route; selecting or creating
-a standalone run therefore removes any stale AgentOrg query before the existing
-standalone selection owns the center. In the reverse direction,
+center subjects. `AppLeftPanel` routes a running-run selection through
+`resolveSelectionRoute()`: a standalone agent run opens `/chat?id=<runId>` (see
+`chat.md`) and a team run opens query-free `/workspace`, so selecting a run
+removes any stale AgentOrg query before the standalone selection owns the
+center. In the reverse direction,
 `useWorkspaceHistorySubjectActions` clears the standalone selection before it
 connects/selects the exact Org context and publishes the typed AgentOrg route.
 URL, center content, and one highlighted history row consequently describe the

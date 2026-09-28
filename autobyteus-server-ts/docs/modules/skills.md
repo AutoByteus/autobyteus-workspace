@@ -115,6 +115,36 @@ configured/default/private/team-shared sources should still be avoided; the
 catalog uses first-seen precedence and the runtime resolver prefers the owning
 context before global fallback.
 
+### Installed skill records and `ALL_INSTALLED` scope
+
+`SkillService.listInstalledSkillRecords()` is the single catalog scan. It
+returns one `InstalledSkillRecord` per catalog skill
+(`src/skills/domain/installed-skill-record.ts`): the parsed `Skill`, its
+`origin` (configured/global directory or bundled package layout), the trusted
+root it was discovered under, and the configured root that owns it. Discovery
+order, first-seen duplicate precedence and malformed-skill skipping are
+unchanged; `listSkills()` is a projection of these records.
+
+When an agent definition has `skillScope: ALL_INSTALLED`,
+`resolveConfiguredSkillBindingsForAgent(Detailed)` does not read `skillNames`.
+It builds bindings from the enabled installed records at run start. Each
+binding is resolved from the record's own discovered root through
+`ConfiguredAgentSkillResolver.resolveInstalledRecordDetailed(record)`; a skill
+is never re-resolved by name, so a skill bundled inside another agent package
+folder binds to that package folder, not to a same-named global skill. The
+record path applies the same safety checks as configured resolution: unsafe
+names are rejected, `SKILL.md` must still exist and parse, and a bundled record
+whose folder name does not match its frontmatter `name` is reported as
+`name_mismatch` and omitted.
+
+`SkillService.hasEffectiveSkills(agentDefinition)` answers whether the
+definition would expose any skill under its scope (any non-empty configured name for
+`CONFIGURED`; any enabled installed record for `ALL_INSTALLED`). Runtime
+factories use it instead of inspecting `skillNames` so that an
+`ALL_INSTALLED` agent with an empty `skillNames` list still enables skill
+support. For `ALL_INSTALLED`, disabled skills are excluded from both the
+bindings and this check.
+
 ## Runtime Consumption
 
 Runtime bootstraps consume contextual configured-skill results, not a

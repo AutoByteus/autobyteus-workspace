@@ -1,6 +1,9 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const shellMessages = {
+  'shell.pages.index.redirecting_to_chat': 'Opening Chat...',
+  'shell.navigation.chat': 'Chat',
+  'shell.components.AppLeftPanel.new_chat': 'New chat',
   'shell.navigation.agents': 'Agents',
   'shell.navigation.agentTeams': 'Agent Teams',
   'shell.navigation.agentOrgs': 'Agent Orgs',

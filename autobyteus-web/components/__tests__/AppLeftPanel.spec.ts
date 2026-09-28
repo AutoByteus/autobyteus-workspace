@@ -34,7 +34,9 @@ describe('AppLeftPanel', () => {
     const content = readFileSync(filePath, 'utf-8');
     expect(content).toContain('data-testid="nodes-network-icon"');
     expect(content).toContain('@run-selected="onRunningRunSelected"');
-    expect(content).toContain('@run-created="onRunningRunCreated"');
+    expect(content).not.toContain('@run-created');
+    // Committed run selections route through the single route authority.
+    expect(content).toContain('resolveSelectionRoute(selection)');
   });
 
   it('keeps exactly one unified Workspace history panel mounted for every route', () => {

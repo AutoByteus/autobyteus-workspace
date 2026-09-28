@@ -11,6 +11,11 @@ const routerHarness = vi.hoisted(() => ({
   replace: vi.fn().mockResolvedValue(undefined),
 }));
 
+const chatDraftStoreMock = vi.hoisted(() => ({ startNewChat: vi.fn() }));
+vi.mock('~/stores/chatDraftStore', () => ({
+  useChatDraftStore: () => chatDraftStoreMock,
+}));
+
 vi.mock('vue-router', () => ({
   useRoute: () => routerHarness.route,
   useRouter: () => ({
@@ -283,7 +288,6 @@ const {
       }),
       formatRelativeTime: vi.fn((iso: string) => (iso.includes('01:00') ? 'now' : '4h')),
       selectTreeRun: vi.fn().mockResolvedValue({ disposition: 'committed' }),
-      createDraftRun: vi.fn().mockResolvedValue({ disposition: 'committed' }),
       createWorkspace: vi.fn(async (rootPath: string) => rootPath),
       deleteRun: vi.fn().mockResolvedValue(true),
       deleteTeamRun: vi.fn().mockResolvedValue(true),
@@ -1081,7 +1085,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     ]);
   });
 
-  it('creates draft run from agent row plus button and emits run-created', async () => {
+  it('starts a New chat preset to the agent and workspace from the agent row plus button', async () => {
     const wrapper = mountComponent();
     await flushPromises();
     await expandWorkspace(wrapper);
@@ -1092,14 +1096,12 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     await createButtons[0]!.trigger('click');
     await flushPromises();
 
-    expect(runHistoryStoreMock.createDraftRun).toHaveBeenCalledWith(expect.objectContaining({
+    expect(chatDraftStoreMock.startNewChat).toHaveBeenCalledWith({
       workspaceRootPath: '/ws/a',
       agentDefinitionId: 'agent-def-1',
-      selectionIntent: expect.any(Object),
-    }));
-    expect(wrapper.emitted('run-created')).toEqual([
-      [{ type: 'agent', definitionId: 'agent-def-1' }],
-    ]);
+    });
+    expect(routerHarness.push).toHaveBeenCalledWith('/chat');
+    expect(wrapper.emitted('run-selected')).toBeUndefined();
   });
 
   it('does not render run-row configuration button', async () => {

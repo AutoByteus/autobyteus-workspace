@@ -6,6 +6,8 @@ import { useAgentSelectionStore } from '../agentSelectionStore';
 import type { AgentDefinition } from '../agentDefinitionStore';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
+import { AgentContext } from '~/types/agent/AgentContext';
+import { AgentRunState } from '~/types/agent/AgentRunState';
 
 // Mock AgentDefinition
 const mockAgentDef: AgentDefinition = {
@@ -33,6 +35,31 @@ describe('agentContextsStore', () => {
         const store = useAgentContextsStore();
         expect(store.runs.size).toBe(0);
         expect(store.activeRun).toBeUndefined();
+    });
+
+    describe('registerDraftRun', () => {
+        const buildDraft = (runId: string) => new AgentContext({
+            agentDefinitionId: 'def-1', agentDefinitionName: 'TestAgent', llmModelIdentifier: 'm', runtimeKind: 'autobyteus',
+            workspaceId: 'ws-1', workspaceMetadata: null, autoExecuteTools: true, skillAccessMode: 'PRELOADED_ONLY', isLocked: false,
+        }, new AgentRunState(runId, { id: runId, messages: [], createdAt: '', updatedAt: '', agentDefinitionId: 'def-1' }));
+
+        it('registers a prepared temp context and selects it', () => {
+            const store = useAgentContextsStore();
+            const context = buildDraft('temp-chat-1');
+
+            expect(store.registerDraftRun(context)).toBe('temp-chat-1');
+
+            expect(store.getRun('temp-chat-1')?.state.runId).toBe('temp-chat-1');
+            expect(useAgentSelectionStore().selectedType).toBe('agent');
+            expect(useAgentSelectionStore().selectedRunId).toBe('temp-chat-1');
+        });
+
+        it('rejects permanent ids and duplicate registration', () => {
+            const store = useAgentContextsStore();
+            expect(() => store.registerDraftRun(buildDraft('run-1'))).toThrow();
+            store.registerDraftRun(buildDraft('temp-chat-2'));
+            expect(() => store.registerDraftRun(buildDraft('temp-chat-2'))).toThrow();
+        });
     });
 
     describe('createRunFromTemplate', () => {
