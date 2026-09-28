@@ -1,0 +1,51 @@
+{"Id": "sha256:4c0c11c1df531872a0111e92b333dd496ea190b24052ebeda3f41d043a71e1a1", "Os": "linux", "Architecture": "arm64", "Size": 2377349156} autobyteus-cli-api001:default-arm64
+PASS clean image identity/known auth paths/environment
+aarch64
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+v22.23.3
+{"Id": "sha256:3e798ce367f93b34bc465fbd25e16d94028e24cf7fb1e18377a46fc0b8f7bfb6", "Os": "linux", "Architecture": "arm64", "Size": 2623920478} autobyteus-cli-api001:zh-arm64
+PASS clean image identity/known auth paths/environment
+aarch64
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+v22.23.3
+{"Id": "sha256:b4b1b8d28bd5bd17decb69df6bdfa998fef8ac035ccf66894bd187eb4b1942d2", "Os": "linux", "Architecture": "amd64", "Size": 2427463930} autobyteus-cli-api001:default-amd64
+PASS clean image identity/known auth paths/environment
+x86_64
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+v22.23.3
+{"Id": "sha256:8af3a21eb71fb34691101cab703a814e2becadf3bbaf18deafa90769fc2850f9", "Os": "linux", "Architecture": "amd64", "Size": 2676846689} autobyteus-cli-api001:zh-amd64
+PASS clean image identity/known auth paths/environment
+x86_64
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+v22.23.3
+{"Id": "sha256:5ede84734d582e21a501746459d08fef464c66e9aae970d8c0f1536b9f57a471", "Os": "linux", "Architecture": "arm64", "Size": 2377348353} autobyteus-cli-api001:default-arm64-refresh
+PASS clean image identity/known auth paths/environment
+aarch64
+PRETTY_NAME="Ubuntu 24.04.5 LTS"
+NAME="Ubuntu"
+VERSION_ID="24.04"
+VERSION="24.04.5 LTS (Noble Numbat)"
+VERSION_CODENAME=noble
+ID=ubuntu
+v22.23.3
+INVENTORY_EXIT=0

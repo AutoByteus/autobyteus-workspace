@@ -49,13 +49,38 @@ ARG CLAUDE_CODE_VERSION
 ARG CLI_INSTALL_CACHE_BUSTER=0
 
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends git ripgrep \
+  && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates \
   && rm -rf /var/lib/apt/lists/*
 
+# Keep provider setup writes out of the persisted runtime home. Verify native
+# payloads explicitly: both upstream installers can report success after failures.
 RUN echo "CLI install cache buster: ${CLI_INSTALL_CACHE_BUSTER}" \
   && npm install -g \
   "@openai/codex@${CODEX_CLI_VERSION}" \
-  "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}"
+  "@anthropic-ai/claude-code@${CLAUDE_CODE_VERSION}" \
+  && cli_scratch="$(mktemp -d)" \
+  && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin" \
+  && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest" \
+  && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh" \
+  && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin" \
+  && test -x "${cli_scratch}/agy-bin/agy" \
+  && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)" \
+  && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+' \
+  && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy \
+  && rm -rf "$cli_scratch" \
+  && grok_native="$(readlink -f "$(command -v grok)")" \
+  && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native" \
+  && test -x "$grok_native" \
+  && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46' \
+  && test "$(command -v agy)" = /usr/local/bin/agy \
+  && probe_home="$(mktemp -d)" \
+  && agy_version="$(HOME="$probe_home" timeout 30s agy --version)" \
+  && grok_version="$(HOME="$probe_home" timeout 30s grok --version)" \
+  && printf 'Installed agy: %s\n' "$agy_version" \
+  && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+' \
+  && printf 'Installed grok: %s\n' "$grok_version" \
+  && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+' \
+  && rm -rf "$probe_home"
 
 RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
 

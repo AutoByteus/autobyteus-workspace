@@ -14,6 +14,8 @@ The runtime image also ships with:
 
 - Codex CLI
 - Claude Code
+- Antigravity CLI (`agy`)
+- Grok CLI (`grok`)
 
 ## Quick Start
 
@@ -297,13 +299,36 @@ a local runtime still fails under large prompts, lower
 
 ## CLI Auth Model
 
-Codex CLI and Claude Code are preinstalled in the image. The intended auth flow is:
+Codex CLI, Claude Code, Antigravity CLI and Grok CLI are preinstalled, not
+pre-authenticated. Installation does not add or change AutoByteus runtime
+selectors; runtime availability still depends on the existing integration and
+provider configuration. ZCode and DSH are not included. The intended auth flow is:
 
 1. start the container,
 2. open the container environment through terminal/noVNC,
 3. log in inside the container with:
    - `codex login`
    - `claude auth login`
+   - `agy` (follow the provider sign-in flow)
+   - `grok` (follow the provider sign-in flow)
+
+Use the backend's root terminal, or `docker exec -it --user root <container> bash`
+with `HOME=/root`. A terminal opened directly in the noVNC desktop can instead
+run as `vncuser`; its login/configuration is separate from the root backend.
+
+Antigravity settings normally live at
+`/root/.gemini/antigravity-cli/settings.json`; its account authentication can
+also depend on Linux Secret Service/DBus. Persisting `/root` alone does not prove
+keyring-backed login durability. Follow the official
+[Antigravity installation and authentication guide](https://antigravity.google/docs/cli/install/)
+for browser sign-in or Gemini API-key configuration.
+
+Grok uses `/root/.grok` by default (including `config.toml`); this image does not
+set a runtime `GROK_HOME`. Start `grok` for browser sign-in, or supply your own
+`XAI_API_KEY` at runtime as described in the
+[Grok getting-started guide](https://docs.x.ai/build/overview).
+Never put tokens or API keys in Docker build arguments or the image. No provider
+login or inference is performed by the build checks.
 
 Use `codex login` directly in the default container shell. The container runs as
 `root`, so `sudo codex login` is not required in the normal Docker setup.
@@ -320,7 +345,9 @@ or upgraded to pick up browser-bridge script changes from a rebuilt image.
 The container runs as `root`, and `/root` is persisted in a Docker-managed named volume per launcher node or source-helper project. That means:
 
 - auth state is isolated per Docker node/instance,
-- auth state survives normal restart and recreate for the same friendly node,
+- file-backed configuration/auth state stored under `/root` survives normal
+  restart and recreate for the same friendly node (provider keyrings or other
+  external credential stores are not covered by this volume guarantee),
 - auth state is removed only if you explicitly remove that node's volumes.
 
 Host credential folders are not mounted into the container by default.
@@ -392,15 +419,38 @@ If you only want to build the image without starting it:
 ```
 
 By default, the server Dockerfile asks npm for the current `latest` dist-tag of
-both bundled runtime CLIs:
+the npm-distributed CLIs:
 
 - `@openai/codex`
 - `@anthropic-ai/claude-code`
+- `@xai-official/grok`
+
+Antigravity is acquired from its official latest-channel installer. Both new
+commands are installed outside `/root`: `agy` in `/usr/local/bin`, and `grok`
+as a global npm native executable. Build-only installer state is discarded;
+version checks must succeed and print the resolved versions in the build log.
+A failed latest installation fails the build instead of falling back to an old
+home-installed copy.
 
 The build scripts pass a changing `CLI_INSTALL_CACHE_BUSTER` build arg so the
 CLI install layer is re-run during scripted builds instead of silently reusing a
-stale Docker cache layer. If you need a reproducible rollback or emergency pin,
-override the package versions explicitly:
+stale Docker cache layer. This covers all four CLI installations, including
+AGY's download; release CI uses the same cache-buster for default/zh builds.
+Raw Docker/Compose builds can reuse the layer if cache inputs do not change:
+pass a fresh `--build-arg CLI_INSTALL_CACHE_BUSTER=$(date -u +%Y%m%d%H%M%S)`
+or use `--no-cache` to force acquisition.
+
+"Latest" means the version resolved when the image is built, not a guarantee
+that an already-running container tracks future releases. Rebuild (or pull a
+newly built image) and recreate while keeping the existing root-home, server
+data and Chromium volumes. No container-start installer or updater is added;
+provider-managed self-updates are separate from image packaging. User shell
+PATH customizations can still deliberately select a different executable;
+check `command -v agy`, `command -v grok`, `agy --version` and `grok --version`
+when troubleshooting. Do not delete auth volumes to refresh the commands.
+
+The existing Codex/Claude version overrides remain available for an emergency
+pin (AGY/Grok continue to resolve latest):
 
 ```bash
 docker buildx build \
@@ -409,6 +459,28 @@ docker buildx build \
   -f autobyteus-server-ts/docker/Dockerfile.monorepo \
   .
 ```
+
+## CLI Packaging Regression Checks
+
+From the repository root, run the network-free packaging checks:
+
+```bash
+python3 -m unittest discover -s scripts/tests -p 'test_server_docker*.py' -v
+python3 -m unittest discover -s scripts/tests -p test_docker_build_context_sources.py -v
+```
+
+For a locally built **full production image**, run the opt-in offline check:
+
+```bash
+python3 scripts/tests/server_docker_cli_smoke.py --image <local-image> --platform linux/arm64
+```
+
+Repeat for `linux/amd64` and the default/`zh` variants as appropriate. The harness
+neither builds nor pulls images. It checks native command resolution and versions
+for all four CLIs in clean/reused-home default and root login shells, preserving
+synthetic home/data/browser markers. It owns and removes its temporary containers
+and volumes; no user credentials or existing volumes are used. This is not a
+server-startup, full noVNC UI, authentication/keyring, or inference test.
 
 ## Multi-Arch Release Image
 
@@ -487,7 +559,7 @@ Manual republish:
 Public launcher named volumes (per friendly node):
 - `<node-name>-workspace`: built artifacts
 - `<node-name>-data`: private server app data at `/home/autobyteus/data` (`.env`, SQLite DB, logs, media, memory, agents, skills, workspaces)
-- `<node-name>-root-home`: in-container root home, including Codex/Claude auth state
+- `<node-name>-root-home`: in-container root home, including file-backed CLI configuration/auth state (see CLI Auth Model)
 - `<node-name>-chromium-profile`: private Chromium browser profile state at `/home/vncuser/.config/chromium` (cookies, local storage, preferences)
 
 Public launcher host bind mounts (additional, per friendly node unless noted):
@@ -498,7 +570,7 @@ Public launcher host bind mounts (additional, per friendly node unless noted):
 Source helper named volumes (per Compose project):
 - `<project>_autobyteus-server-workspace`: built artifacts
 - `<project>_autobyteus-server-data`: `.env`, SQLite DB, logs, media, memory
-- `<project>_autobyteus-server-root-home`: in-container root home, including Codex/Claude auth state
+- `<project>_autobyteus-server-root-home`: in-container root home, including file-backed CLI configuration/auth state (see CLI Auth Model)
 - `<project>_autobyteus-server-chromium-profile`: private Chromium browser profile state at `/home/vncuser/.config/chromium`
 
 Server data directory in container: `/home/autobyteus/data`
@@ -512,7 +584,10 @@ Docker bind mounts on an existing container requires recreation, but
 folders. On Linux, files written from the current root-running container may be
 root-owned on the host.
 
-To reset Codex/Claude login for a source-helper instance, remove the project volumes:
+**Destructive reset, not an upgrade step:** removing source-helper project
+volumes also deletes persisted server data, root-home CLI state and browser
+profile state. Back up anything needed first. Do not use this to refresh CLI
+binaries or as a routine provider logout:
 
 ```bash
 ./docker-start.sh down --volumes

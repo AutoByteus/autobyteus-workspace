@@ -1,0 +1,60 @@
+$ python3 scripts/tests/server_docker_cli_smoke.py --image autobyteus-cli-api001:zh-amd64 --platform linux/amd64
+Testing sha256:8af3a21eb71fb34691101cab703a814e2becadf3bbaf18deafa90769fc2850f9 (linux/amd64)
+$ docker run --pull=never --rm --name cli-smoke-4bd2d6c550f8-97fb99 --network none --user 0 --entrypoint /bin/bash --platform linux/amd64
+NATIVE agy /usr/local/bin/agy
+NATIVE grok /usr/lib/node_modules/@xai-official/grok/bin/grok-native
+VERSION agy 1.2.12
+VERSION grok grok 1.0.41 (4220f3b224a6)
+VERSION codex codex-cli 0.157.1
+VERSION claude 2.1.283 (Claude Code)
+v22.23.3
+$ docker run --pull=never --rm --name cli-smoke-4bd2d6c550f8-3b0ea0 --network none --user 0 --entrypoint /bin/bash --platform linux/amd64
+NATIVE agy /usr/local/bin/agy
+NATIVE grok /usr/lib/node_modules/@xai-official/grok/bin/grok-native
+VERSION agy 1.2.12
+VERSION grok grok 1.0.41 (4220f3b224a6)
+VERSION codex codex-cli 0.157.1
+VERSION claude 2.1.283 (Claude Code)
+v22.23.3
+$ docker volume create --label autobyteus.validation=cli-smoke cli-smoke-4bd2d6c550f8-home
+cli-smoke-4bd2d6c550f8-home
+$ docker volume create --label autobyteus.validation=cli-smoke cli-smoke-4bd2d6c550f8-data
+cli-smoke-4bd2d6c550f8-data
+$ docker volume create --label autobyteus.validation=cli-smoke cli-smoke-4bd2d6c550f8-browser
+cli-smoke-4bd2d6c550f8-browser
+$ docker run --pull=never --rm --name cli-smoke-4bd2d6c550f8-01e4dc --network none --user 0 --entrypoint /bin/bash --platform linux/amd64
+$ docker run --pull=never --rm --name cli-smoke-4bd2d6c550f8-9ab8c2 --network none --user 0 --entrypoint /bin/bash --platform linux/amd64
+NATIVE agy /usr/local/bin/agy
+NATIVE grok /usr/lib/node_modules/@xai-official/grok/bin/grok-native
+VERSION agy 1.2.12
+VERSION grok grok 1.0.41 (4220f3b224a6)
+VERSION codex codex-cli 0.157.1
+VERSION claude 2.1.283 (Claude Code)
+v22.23.3
+/root/.local/bin/agy: OK
+/root/.local/bin/grok: OK
+/root/.grok/bin/grok: OK
+/root/.gemini/antigravity-cli/settings.json: OK
+/root/.grok/config.toml: OK
+$ docker run --pull=never --rm --name cli-smoke-4bd2d6c550f8-90a340 --network none --user 0 --entrypoint /bin/bash --platform linux/amd64
+NATIVE agy /usr/local/bin/agy
+NATIVE grok /usr/lib/node_modules/@xai-official/grok/bin/grok-native
+VERSION agy 1.2.12
+VERSION grok grok 1.0.41 (4220f3b224a6)
+VERSION codex codex-cli 0.157.1
+VERSION claude 2.1.283 (Claude Code)
+v22.23.3
+/root/.local/bin/agy: OK
+/root/.local/bin/grok: OK
+/root/.grok/bin/grok: OK
+/root/.gemini/antigravity-cli/settings.json: OK
+/root/.grok/config.toml: OK
+PASS: clean/reused-home default and login shells; offline versions; preserved fixtures
+$ docker volume rm cli-smoke-4bd2d6c550f8-browser
+cli-smoke-4bd2d6c550f8-browser
+$ docker volume rm cli-smoke-4bd2d6c550f8-data
+cli-smoke-4bd2d6c550f8-data
+$ docker volume rm cli-smoke-4bd2d6c550f8-home
+cli-smoke-4bd2d6c550f8-home
+
+EXEC_EXIT=0

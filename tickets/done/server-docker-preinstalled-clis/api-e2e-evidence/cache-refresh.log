@@ -1,0 +1,311 @@
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile.monorepo
+#1 transferring dockerfile: 39B 0.0s
+#1 transferring dockerfile: 7.92kB 0.1s done
+#1 DONE 0.2s
+
+#2 resolve image config for docker-image://docker.io/docker/dockerfile:1
+#2 DONE 0.8s
+
+#3 docker-image://docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32
+#3 resolve docker.io/docker/dockerfile:1@sha256:ecfaec9ed6d810b56388c508f4121597bfbba70d41a6dfeee4d8cad5f295fc32 0.0s done
+#3 CACHED
+
+#4 [internal] load metadata for docker.io/library/node:22-bookworm
+#4 DONE 0.5s
+
+#5 [internal] load metadata for docker.io/autobyteus/chrome-vnc:latest
+#5 DONE 0.5s
+
+#6 [internal] load .dockerignore
+#6 transferring context: 282B 0.1s done
+#6 DONE 0.1s
+
+#7 [internal] load build context
+#7 DONE 0.0s
+
+#8 [builder  1/28] FROM docker.io/library/node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7
+#8 resolve docker.io/library/node:22-bookworm@sha256:363e1587494626837fa7f9a23bdb453d13b0ff3c67c705c2805cfc69c2d2fad7 0.1s done
+#8 DONE 0.1s
+
+#9 [runtime  1/32] FROM docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
+#9 resolve docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
+#9 resolve docker.io/autobyteus/chrome-vnc:latest@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4 0.1s done
+#9 DONE 0.1s
+
+#10 [runtime  2/32] WORKDIR /app
+#10 CACHED
+
+#7 [internal] load build context
+#7 transferring context: 620.54kB 1.0s done
+#7 DONE 1.0s
+
+#11 [builder  9/28] COPY autobyteus-agent-presentation-contracts/package.json autobyteus-agent-presentation-contracts/tsconfig.build.json autobyteus-agent-presentation-contracts/tsconfig.json ./autobyteus-agent-presentation-contracts/
+#11 CACHED
+
+#12 [builder 25/28] RUN pnpm -C autobyteus-team-stream-contracts build
+#12 CACHED
+
+#13 [builder 24/28] RUN pnpm -C autobyteus-collaboration-stream-contracts build
+#13 CACHED
+
+#14 [builder 26/28] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#14 CACHED
+
+#15 [builder 10/28] COPY autobyteus-collaboration-stream-contracts/package.json autobyteus-collaboration-stream-contracts/tsconfig.build.json autobyteus-collaboration-stream-contracts/tsconfig.json ./autobyteus-collaboration-stream-contracts/
+#15 CACHED
+
+#16 [builder 22/28] COPY autobyteus-web ./autobyteus-web
+#16 CACHED
+
+#17 [builder 14/28] RUN pnpm install --no-frozen-lockfile
+#17 CACHED
+
+#18 [builder  2/28] WORKDIR /app
+#18 CACHED
+
+#19 [builder 11/28] COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/
+#19 CACHED
+
+#20 [builder 21/28] COPY autobyteus-server-ts ./autobyteus-server-ts
+#20 CACHED
+
+#21 [builder 17/28] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#21 CACHED
+
+#22 [builder 13/28] COPY autobyteus-web/package.json ./autobyteus-web/
+#22 CACHED
+
+#23 [builder 27/28] RUN pnpm -C autobyteus-server-ts build
+#23 CACHED
+
+#24 [builder 15/28] COPY autobyteus-ts ./autobyteus-ts
+#24 CACHED
+
+#25 [builder 18/28] COPY autobyteus-agent-presentation-contracts ./autobyteus-agent-presentation-contracts
+#25 CACHED
+
+#26 [builder 16/28] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#26 CACHED
+
+#27 [builder  6/28] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+#27 CACHED
+
+#28 [builder  3/28] RUN corepack enable
+#28 CACHED
+
+#29 [builder  8/28] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#29 CACHED
+
+#30 [builder  5/28] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#30 CACHED
+
+#31 [builder 12/28] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#31 CACHED
+
+#32 [builder 19/28] COPY autobyteus-collaboration-stream-contracts ./autobyteus-collaboration-stream-contracts
+#32 CACHED
+
+#33 [builder  7/28] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#33 CACHED
+
+#34 [builder 23/28] RUN pnpm -C autobyteus-agent-presentation-contracts build
+#34 CACHED
+
+#35 [builder 20/28] COPY autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts
+#35 CACHED
+
+#36 [builder  4/28] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#36 CACHED
+
+#37 [builder 28/28] RUN pnpm -C autobyteus-web build:mobile-web
+#37 CACHED
+
+#38 [runtime  3/32] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#38 0.642 Get:1 https://deb.nodesource.com/node_22.x nodistro InRelease [12.1 kB]
+#38 0.671 Get:2 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble InRelease [17.8 kB]
+#38 0.748 Get:3 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble InRelease [24.1 kB]
+#38 0.801 Get:4 https://deb.nodesource.com/node_22.x nodistro/main arm64 Packages [12.4 kB]
+#38 0.841 Get:5 http://ports.ubuntu.com/ubuntu-ports noble InRelease [256 kB]
+#38 1.013 Get:6 https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu noble/main arm64 Packages [52.1 kB]
+#38 1.120 Get:7 https://ppa.launchpadcontent.net/xtradeb/apps/ubuntu noble/main arm64 Packages [59.6 kB]
+#38 1.505 Get:8 http://ports.ubuntu.com/ubuntu-ports noble-updates InRelease [126 kB]
+#38 1.638 Get:9 http://ports.ubuntu.com/ubuntu-ports noble-backports InRelease [126 kB]
+#38 1.784 Get:10 http://ports.ubuntu.com/ubuntu-ports noble-security InRelease [126 kB]
+#38 2.024 Get:11 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Packages [1,776 kB]
+#38 2.389 Get:12 http://ports.ubuntu.com/ubuntu-ports noble/main arm64 Components [658 kB]
+#38 2.445 Get:13 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Packages [19.0 MB]
+#38 4.166 Get:14 http://ports.ubuntu.com/ubuntu-ports noble/universe arm64 Components [5,467 kB]
+#38 4.651 Get:15 http://ports.ubuntu.com/ubuntu-ports noble/restricted arm64 Packages [113 kB]
+#38 4.653 Get:16 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Packages [274 kB]
+#38 4.653 Get:17 http://ports.ubuntu.com/ubuntu-ports noble/multiverse arm64 Components [37.7 kB]
+#38 4.654 Get:18 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Packages [1,692 kB]
+#38 4.762 Get:19 http://ports.ubuntu.com/ubuntu-ports noble-updates/main arm64 Components [239 kB]
+#38 4.782 Get:20 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Packages [2,198 kB]
+#38 4.958 Get:21 http://ports.ubuntu.com/ubuntu-ports noble-updates/universe arm64 Components [532 kB]
+#38 5.000 Get:22 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Packages [2,996 kB]
+#38 5.238 Get:23 http://ports.ubuntu.com/ubuntu-ports noble-updates/restricted arm64 Components [159 B]
+#38 5.238 Get:24 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Packages [94.8 kB]
+#38 5.245 Get:25 http://ports.ubuntu.com/ubuntu-ports noble-updates/multiverse arm64 Components [159 B]
+#38 5.245 Get:26 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Packages [49.0 kB]
+#38 5.249 Get:27 http://ports.ubuntu.com/ubuntu-ports noble-backports/main arm64 Components [3,712 B]
+#38 5.249 Get:28 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Packages [36.3 kB]
+#38 5.252 Get:29 http://ports.ubuntu.com/ubuntu-ports noble-backports/universe arm64 Components [13.6 kB]
+#38 5.253 Get:30 http://ports.ubuntu.com/ubuntu-ports noble-backports/restricted arm64 Components [160 B]
+#38 5.253 Get:31 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Packages [671 B]
+#38 5.349 Get:32 http://ports.ubuntu.com/ubuntu-ports noble-backports/multiverse arm64 Components [161 B]
+#38 5.349 Get:33 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Packages [1,357 kB]
+#38 5.454 Get:34 http://ports.ubuntu.com/ubuntu-ports noble-security/main arm64 Components [56.2 kB]
+#38 5.458 Get:35 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Packages [1,637 kB]
+#38 5.588 Get:36 http://ports.ubuntu.com/ubuntu-ports noble-security/universe arm64 Components [97.7 kB]
+#38 5.599 Get:37 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Packages [2,811 kB]
+#38 5.819 Get:38 http://ports.ubuntu.com/ubuntu-ports noble-security/restricted arm64 Components [156 B]
+#38 5.819 Get:39 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Packages [89.7 kB]
+#38 5.826 Get:40 http://ports.ubuntu.com/ubuntu-ports noble-security/multiverse arm64 Components [157 B]
+#38 7.363 Fetched 42.1 MB in 5s (7,666 kB/s)
+#38 7.363 Reading package lists...
+#38 8.611 Reading package lists...
+#38 9.702 Building dependency tree...
+#38 10.09 Reading state information...
+#38 10.52 git is already the newest version (1:2.43.0-1ubuntu7.3).
+#38 10.52 ripgrep is already the newest version (14.1.0-1).
+#38 10.52 curl is already the newest version (8.5.0-2ubuntu10.15).
+#38 10.52 ca-certificates is already the newest version (20260601~24.04.1).
+#38 10.52 The following packages were automatically installed and are no longer required:
+#38 10.52   geocode-glib-common gnome-keyring-pkcs11 libabsl20220623t64
+#38 10.52   libebackend-1.2-11t64 libebook-1.2-21t64 libebook-contacts-1.2-4t64
+#38 10.52   libedata-book-1.2-27t64 libedata-cal-2.0-2t64 libedataserverui-1.2-4t64
+#38 10.52   libgeocode-glib-2-0 libgweather-4-0t64 libgweather-4-common libphonenumber8
+#38 10.52   libprotobuf32t64 p11-kit p11-kit-modules
+#38 10.52 Use 'apt autoremove' to remove them.
+#38 10.57 0 upgraded, 0 newly installed, 0 to remove and 8 not upgraded.
+#38 DONE 10.6s
+
+#39 [runtime  4/32] RUN echo "CLI install cache buster: api001-b"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#39 0.295 CLI install cache buster: api001-b
+#39 52.47
+#39 52.47 added 4 packages in 52s
+#39 70.01
+#39 70.01 added 3 packages in 17s
+#39 70.40 ⠋ Detecting system environment...
+#39 70.40 ✓ Platform detected: linux_arm64
+#39 70.40 ⠋ Querying release repository...
+#39 70.71 ✓ Latest available version: 1.2.12
+#39 70.71 ⠋ Downloading release package...
+#39 88.29 ✓ Download complete and checksum verified.
+#39 88.29 ⠋ Extracting binary from archive...
+#39 89.66 ⠋ Configuring shell environment...
+#39 89.80 ERROR: logging before google.Init: I0928 04:50:21.958094       1 installer.go:27] Running Antigravity CLI setup...
+#39 89.80
+#39 89.80 Warning: /tmp/tmp.HK7u4gSNtJ/agy-bin is not present in your active PATH.
+#39 89.80 To use the 'agy' CLI globally, please manually add it to your shell profile:
+#39 89.80
+#39 89.80   echo 'export PATH="/tmp/tmp.HK7u4gSNtJ/agy-bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+#39 89.80
+#39 89.80
+#39 89.80 ✅ Antigravity CLI binary placed successfully at /tmp/tmp.HK7u4gSNtJ/home/.local/bin/agy
+#39 89.80 Note: The binary is installed, but it is not in your active PATH. Please follow the instructions above to add it, then restart your terminal session.
+#39 90.18 1.2.12
+#39 90.50 Installed agy: 1.2.12
+#39 90.50 1.2.12
+#39 90.50 Installed grok: grok 1.0.41 (4220f3b224a6)
+#39 90.50 grok 1.0.41 (4220f3b224a6)
+#39 DONE 91.0s
+
+#40 [runtime  5/32] RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
+#40 DONE 0.3s
+
+#41 [runtime  6/32] COPY --from=builder /app/node_modules ./node_modules
+#41 DONE 20.4s
+
+#42 [runtime  7/32] COPY --from=builder /app/autobyteus-ts/node_modules ./autobyteus-ts/node_modules
+#42 DONE 0.5s
+
+#43 [runtime  8/32] COPY --from=builder /app/autobyteus-ts/dist ./autobyteus-ts/dist
+#43 DONE 0.3s
+
+#44 [runtime  9/32] COPY --from=builder /app/autobyteus-ts/package.json ./autobyteus-ts/package.json
+#44 DONE 0.1s
+
+#45 [runtime 10/32] COPY --from=builder /app/autobyteus-application-sdk-contracts/dist ./autobyteus-application-sdk-contracts/dist
+#45 DONE 0.1s
+
+#46 [runtime 11/32] COPY --from=builder /app/autobyteus-application-sdk-contracts/package.json ./autobyteus-application-sdk-contracts/package.json
+#46 DONE 0.0s
+
+#47 [runtime 12/32] COPY --from=builder /app/autobyteus-agent-presentation-contracts/node_modules ./autobyteus-agent-presentation-contracts/node_modules
+#47 DONE 0.0s
+
+#48 [runtime 13/32] COPY --from=builder /app/autobyteus-agent-presentation-contracts/dist ./autobyteus-agent-presentation-contracts/dist
+#48 DONE 0.0s
+
+#49 [runtime 14/32] COPY --from=builder /app/autobyteus-agent-presentation-contracts/package.json ./autobyteus-agent-presentation-contracts/package.json
+#49 DONE 0.0s
+
+#50 [runtime 15/32] COPY --from=builder /app/autobyteus-collaboration-stream-contracts/node_modules ./autobyteus-collaboration-stream-contracts/node_modules
+#50 DONE 0.0s
+
+#51 [runtime 16/32] COPY --from=builder /app/autobyteus-collaboration-stream-contracts/dist ./autobyteus-collaboration-stream-contracts/dist
+#51 DONE 0.0s
+
+#52 [runtime 17/32] COPY --from=builder /app/autobyteus-collaboration-stream-contracts/package.json ./autobyteus-collaboration-stream-contracts/package.json
+#52 DONE 0.0s
+
+#53 [runtime 18/32] COPY --from=builder /app/autobyteus-team-stream-contracts/node_modules ./autobyteus-team-stream-contracts/node_modules
+#53 DONE 0.0s
+
+#54 [runtime 19/32] COPY --from=builder /app/autobyteus-team-stream-contracts/dist ./autobyteus-team-stream-contracts/dist
+#54 DONE 0.0s
+
+#55 [runtime 20/32] COPY --from=builder /app/autobyteus-team-stream-contracts/package.json ./autobyteus-team-stream-contracts/package.json
+#55 DONE 0.0s
+
+#56 [runtime 21/32] COPY --from=builder /app/autobyteus-server-ts/node_modules ./autobyteus-server-ts/node_modules
+#56 DONE 0.1s
+
+#57 [runtime 22/32] COPY --from=builder /app/autobyteus-server-ts/dist ./autobyteus-server-ts/dist
+#57 DONE 0.9s
+
+#58 [runtime 23/32] COPY --from=builder /app/autobyteus-server-ts/prisma ./autobyteus-server-ts/prisma
+#58 DONE 0.1s
+
+#59 [runtime 24/32] COPY --from=builder /app/autobyteus-server-ts/package.json ./autobyteus-server-ts/package.json
+#59 DONE 0.1s
+
+#60 [runtime 25/32] COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+#60 DONE 0.2s
+
+#61 [runtime 26/32] COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervisor/conf.d/supervisor-autobyteus-server.conf
+#61 DONE 0.7s
+
+#62 [runtime 27/32] COPY autobyteus-server-ts/docker/bootstrap.sh /usr/local/bin/autobyteus-bootstrap.sh
+#62 DONE 0.0s
+
+#63 [runtime 28/32] COPY autobyteus-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+#63 DONE 0.0s
+
+#64 [runtime 29/32] COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh
+#64 DONE 0.0s
+
+#65 [runtime 30/32] COPY autobyteus-server-ts/docker/xdg-open-root-bridge.sh /usr/local/bin/xdg-open
+#65 DONE 0.0s
+
+#66 [runtime 31/32] COPY autobyteus-server-ts/docker/exo-open-root-bridge.sh /usr/local/bin/exo-open
+#66 DONE 0.0s
+
+#67 [runtime 32/32] RUN chmod +x   /usr/local/bin/autobyteus-bootstrap.sh   /usr/local/bin/entrypoint.sh   /usr/local/bin/open-vnc-browser-url.sh   /usr/local/bin/xdg-open   /usr/local/bin/exo-open
+#67 DONE 0.2s
+
+#68 exporting to image
+#68 exporting layers
+#68 exporting layers 57.0s done
+#68 exporting manifest sha256:09ad1746f8fdc0aa08ce26ee28242c3b2de2f1bccc5a06dce4bade48595999ec done
+#68 exporting config sha256:2bcd44d6673371ce0fcfbc2d780e9cabde8c1d4bbd54d7ca1a9c6bfcf15e4edd done
+#68 exporting attestation manifest sha256:1ca8c52dfa1b775cba88decc047b1a3c84743ac81ba8e7ecd32c2f29ae53a598 0.0s done
+#68 exporting manifest list sha256:5ede84734d582e21a501746459d08fef464c66e9aae970d8c0f1536b9f57a471 done
+#68 naming to docker.io/library/autobyteus-cli-api001:default-arm64-refresh done
+#68 unpacking to docker.io/library/autobyteus-cli-api001:default-arm64-refresh
+#68 unpacking to docker.io/library/autobyteus-cli-api001:default-arm64-refresh 18.1s done
+#68 DONE 75.3s
+BUILD_EXIT=0
