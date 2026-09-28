@@ -113,6 +113,20 @@
       <legend class="text-xl font-semibold text-gray-900">{{ $t('agents.components.agents.AgentDefinitionForm.skills_configuration') }}</legend>
       <div class="mt-4 grid grid-cols-1 gap-x-8 gap-y-8">
         <div>
+          <label class="flex items-start gap-3">
+            <input
+              id="skill_scope_all_installed"
+              v-model="useAllInstalledSkills"
+              type="checkbox"
+              class="mt-1 h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+            />
+            <span>
+              <span class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.useAllInstalledSkills') }}</span>
+              <span class="block text-sm text-gray-500">{{ $t('agents.components.agents.AgentDefinitionForm.useAllInstalledSkillsHelp') }}</span>
+            </span>
+          </label>
+        </div>
+        <div :class="{ 'pointer-events-none opacity-50': useAllInstalledSkills }" :aria-disabled="useAllInstalledSkills ? 'true' : undefined">
           <label for="skill_names" class="block text-base font-medium text-gray-800">{{ $t('agents.components.agents.AgentDefinitionForm.skillsLabel') }}</label>
           <p class="text-sm text-gray-500 mb-2">{{ $t('agents.components.agents.AgentDefinitionForm.select_skills_to_equip_the_agent') }}</p>
           <GroupableTagInput
@@ -342,6 +356,7 @@ const getInitialValue = (): { [key: string]: any } => ({
 
 const formData = reactive(getInitialValue());
 const launchPreferences = reactive(toEditableDefaultLaunchConfig(null));
+const useAllInstalledSkills = ref(false);
 
 watch(initialData, (newData) => {
   if (newData && !isCreateMode.value) {
@@ -352,6 +367,7 @@ watch(initialData, (newData) => {
     formData.instructions = newData.instructions || '';
     formData.avatar_url = newData.avatarUrl || newData.avatar_url || '';
     Object.assign(launchPreferences, toEditableDefaultLaunchConfig(newData.defaultLaunchConfig));
+    useAllInstalledSkills.value = newData.skillScope === 'ALL_INSTALLED';
     componentFields.value.forEach(field => {
       const key = field.name as keyof typeof formData;
       formData[key] = newData[field.camelCase] || newData[key] || [];
@@ -359,6 +375,7 @@ watch(initialData, (newData) => {
   } else {
     Object.assign(formData, getInitialValue());
     Object.assign(launchPreferences, toEditableDefaultLaunchConfig(null));
+    useAllInstalledSkills.value = false;
   }
 }, { immediate: true, deep: true });
 
@@ -444,6 +461,7 @@ const handleSubmit = () => {
     instructions: formData.instructions,
     avatarUrl: formData.avatar_url,
     skillNames: formData.skill_names,
+    skillScope: useAllInstalledSkills.value ? 'ALL_INSTALLED' : 'CONFIGURED',
     toolNames: formData.tool_names,
     inputProcessorNames: formData.input_processor_names,
     llmResponseProcessorNames: formData.llm_response_processor_names,

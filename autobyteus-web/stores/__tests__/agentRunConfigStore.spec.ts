@@ -17,6 +17,7 @@ const mockAgentDef: AgentDefinition = {
   toolInvocationPreprocessorNames: [],
   lifecycleProcessorNames: [],
   skillNames: [],
+  skillScope: 'CONFIGURED',
   defaultLaunchConfig: {
     runtimeKind: 'codex',
     llmModelIdentifier: 'gpt-5.4',

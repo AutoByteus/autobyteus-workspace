@@ -61,7 +61,8 @@
               </div>
               <div class="rounded-lg border border-indigo-100 bg-white px-3 py-2">
                 <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.skillsLabel') }}</p>
-                <p class="text-lg font-semibold text-gray-900">{{ agentDef.skillNames.length }}</p>
+                <p v-if="agentDef.skillScope === 'ALL_INSTALLED'" class="text-sm font-semibold leading-7 text-gray-900">{{ $t('agents.components.agents.AgentDetail.allInstalledSkills') }}</p>
+                <p v-else class="text-lg font-semibold text-gray-900">{{ agentDef.skillNames.length }}</p>
               </div>
             </div>
 

@@ -101,6 +101,7 @@ function seedCatalogAndWorkspace(): void {
       toolInvocationPreprocessorNames: [],
       lifecycleProcessorNames: [],
       skillNames: [],
+      skillScope: 'CONFIGURED',
       defaultLaunchConfig: {
         runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
         llmModelIdentifier: "test-model",
@@ -119,6 +120,7 @@ function seedCatalogAndWorkspace(): void {
       toolInvocationPreprocessorNames: [],
       lifecycleProcessorNames: [],
       skillNames: [],
+      skillScope: 'CONFIGURED',
       defaultLaunchConfig: {
         runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
         llmModelIdentifier: "test-model",
@@ -137,6 +139,7 @@ function seedCatalogAndWorkspace(): void {
       toolInvocationPreprocessorNames: [],
       lifecycleProcessorNames: [],
       skillNames: [],
+      skillScope: 'CONFIGURED',
     },
   ];
   useAgentTeamDefinitionStore().agentTeamDefinitions = [

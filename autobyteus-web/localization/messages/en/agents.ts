@@ -1,6 +1,11 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
+  'agents.components.agents.AgentCard.allInstalledSkills': 'All installed skills',
+  'agents.components.agents.AgentDetail.allInstalledSkills': 'All installed',
+  'agents.components.agents.AgentDetail.allInstalledSkillsDescription': 'All installed skills. The agent receives every installed skill that is enabled, including skills installed later.',
+  'agents.components.agents.AgentDefinitionForm.useAllInstalledSkills': 'Use all installed skills',
+  'agents.components.agents.AgentDefinitionForm.useAllInstalledSkillsHelp': 'The agent receives every installed skill that is enabled, including skills installed later. The skill list below is ignored while this is on.',
   'agents.components.agents.AgentCard.teamLabel': 'Team: {{team}}',
   'agents.components.agents.AgentCard.toolsSummary': 'Tools {{count}}',
   'agents.components.agents.AgentCard.skillsSummary': 'Skills {{count}}',
