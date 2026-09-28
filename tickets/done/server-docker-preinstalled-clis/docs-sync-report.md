@@ -5,7 +5,7 @@
 - Trigger: API-REV-001 Pass, SR-004 / IR-001 unchanged.
 - Bootstrap: origin/personal `fcdfcd2ca4200dff27ef766e477c38d0969e55f6`.
 - Fetched `origin personal`; integrated latest origin/personal `8900e786bed796d2aa5fc56b0657fae4243e3154` by conflict-free merge `8fce9fdf24c6ce38944f6a2afe9de6dc94e4c376` before delivery edits.
-- Post-integration checks: 19 tests passed; exact commands/results in `/Users/normy/autobyteus_org/autobyteus-worktrees/server-docker-preinstalled-clis/tickets/done/server-docker-preinstalled-clis/delivery-evidence/post-integration.log`.
+- Post-integration checks: 19 tests passed; exact commands/results in `/Users/normy/autobyteus_org/delivery-artifacts/server-docker-preinstalled-clis/tickets/done/server-docker-preinstalled-clis/delivery-evidence/post-integration.log`.
 
 ## Long-lived documentation
 | Path (repository relative) | Result | Rationale |
@@ -20,4 +20,7 @@
 - No source component removed/replaced; additive packaging. Corrected blanket persistence wording rather than expanding auth guarantees.
 
 ## Continuation
-Docs sync Pass / Updated. No unresolved intended-behavior ambiguity. Await explicit user verification and repository-finalization authorization. No publication or deployment in approved scope. Independent architecture/source/test review artifacts: N/A — direct route.
+Docs sync Pass / Updated. No unresolved intended-behavior ambiguity. User verified on 2026-09-28 and authorized finalization plus beta release; finalization/publication/cleanup completed in DR-002. No application deployment performed. Independent architecture/source/test review artifacts: N/A — direct route.
+
+## DR-002 continuity
+Docs content unchanged after user acceptance. Archived ticket and durable evidence paths updated after successful beta publication and task-worktree cleanup. Historical upstream paths refer to original authoring locations; use the cumulative artifact index in handoff-summary.md for current paths.

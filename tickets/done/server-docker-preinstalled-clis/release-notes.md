@@ -1,6 +1,6 @@
 # Release Notes — Server Docker preinstalled CLIs
 
-Beta publication authorized after user testing on 2026-09-28. The beta helper uses GitHub-generated notes; these archived functional notes remain supporting context, not injected into the generated beta notes.
+Published as v1.4.91-beta.3 after user testing on 2026-09-28; all four release workflows succeeded. The beta helper uses GitHub-generated notes; these archived functional notes remain supporting context, not injected into the generated beta notes.
 
 - Production server images now preinstall official Antigravity (`agy`) and Grok (`grok`) alongside Codex and Claude Code.
 - Supported cache-busted builds resolve latest releases. Existing running images do not automatically update; rebuild/pull a newly published image and recreate, retaining volumes.

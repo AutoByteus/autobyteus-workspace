@@ -1,0 +1,7 @@
+warning: deleting branch 'codex/server-docker-preinstalled-clis' that has been merged to
+         'refs/remotes/origin/codex/server-docker-preinstalled-clis', but not yet merged to HEAD
+warning: deleting branch 'delivery/server-docker-preinstalled-clis-beta' that has been merged to
+         'refs/remotes/origin/personal', but not yet merged to HEAD
+Deleted branch codex/server-docker-preinstalled-clis (was 1be277862).
+Deleted branch delivery/server-docker-preinstalled-clis-beta (was a1d4faf66).
+Verified after cleanup: both task worktree directories absent; both local task refs absent; shared local personal working-tree status unchanged. Remote ticket branch retained; both removed branch tips were ancestors of origin/personal.
