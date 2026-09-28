@@ -104,13 +104,19 @@ export class BuiltInAgentBootstrapper {
     const templateDir = this.getTemplateDir(definition);
 
     await fs.mkdir(agentDir, { recursive: true });
+    const syncFile = definition.syncPolicy === "seedIfMissing"
+      ? this.seedFileFromTemplateIfMissing.bind(this)
+      : this.syncFileFromTemplate.bind(this);
+    const syncDirectory = definition.syncPolicy === "seedIfMissing"
+      ? this.seedDirectoryFromTemplateIfMissing.bind(this)
+      : this.syncDirectoryMirrorFromTemplate.bind(this);
     const [syncedAgentMd, syncedAgentConfig, syncedSkills] = await Promise.all([
-      this.syncFileFromTemplate(path.join(templateDir, "agent.md"), path.join(agentDir, "agent.md")),
-      this.syncFileFromTemplate(
+      syncFile(path.join(templateDir, "agent.md"), path.join(agentDir, "agent.md")),
+      syncFile(
         path.join(templateDir, "agent-config.json"),
         path.join(agentDir, "agent-config.json"),
       ),
-      this.syncDirectoryMirrorFromTemplate(
+      syncDirectory(
         path.join(templateDir, "skills"),
         path.join(agentDir, "skills"),
       ),
@@ -172,6 +178,40 @@ export class BuiltInAgentBootstrapper {
       dereference: false,
     });
     return true;
+  }
+
+  private async seedFileFromTemplateIfMissing(
+    templatePath: string,
+    targetPath: string,
+  ): Promise<boolean> {
+    if (await this.exists(targetPath)) {
+      return false;
+    }
+    return this.syncFileFromTemplate(templatePath, targetPath);
+  }
+
+  private async seedDirectoryFromTemplateIfMissing(
+    templatePath: string,
+    targetPath: string,
+  ): Promise<boolean> {
+    if (!(await this.isDirectory(templatePath)) || (await this.exists(targetPath))) {
+      return false;
+    }
+    await fs.mkdir(path.dirname(targetPath), { recursive: true });
+    await fs.cp(templatePath, targetPath, { recursive: true, dereference: false });
+    return true;
+  }
+
+  private async exists(targetPath: string): Promise<boolean> {
+    try {
+      await fs.lstat(targetPath);
+      return true;
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+        return false;
+      }
+      throw error;
+    }
   }
 
   private async isDirectory(targetPath: string): Promise<boolean> {
