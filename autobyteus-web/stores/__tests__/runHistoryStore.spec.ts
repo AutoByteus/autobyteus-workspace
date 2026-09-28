@@ -332,6 +332,8 @@ const {
       connectToAgentStream: vi.fn(),
       disconnectAgentStream: vi.fn(),
       isAgentStreamReady: vi.fn().mockReturnValue(false),
+      isActivationPending: vi.fn().mockReturnValue(false),
+      clearActivationPending: vi.fn(),
     },
     agentTeamRunStoreMock: {
       connectToTeamStream: vi.fn(),

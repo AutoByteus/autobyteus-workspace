@@ -65,6 +65,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     agentOrgHistory: [] as AgentOrgRunHistoryItem[],
     historyFamilyErrors: { workspace: null, agentOrg: null } as RunHistoryFamilyErrors,
     agentOrgRequestGeneration: 0,
+    workspaceRequestGeneration: 0,
     workspaceHistoryLoadingById: {} as Record<string, boolean>,
     workspaceHistoryErrorById: {} as Record<string, string | null>,
     agentAvatarByDefinitionId: {} as Record<string, string>,

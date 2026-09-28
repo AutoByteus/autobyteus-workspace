@@ -269,6 +269,29 @@ describe('AgentStreamingService', () => {
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
     });
 
+    it('reports every SEND_MESSAGE ack to onSendMessageCommandAck and still projects it', () => {
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+        } as any;
+        const onSendMessageCommandAck = vi.fn();
+        const ackService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient, onSendMessageCommandAck });
+        ackService.connect('run-1', mockAgentContext);
+        const rejected = {
+            command_type: 'SEND_MESSAGE', run_id: 'run-1', message_id: 'm-1', dedupe_key: 'agent_run_input:run-1:m-1',
+            state: 'rejected', accepted: false, duplicate: false, code: 'ACTIVATION_FAILED', message: 'Activation failed.',
+        };
+
+        callbacks.get('onMessage')?.(JSON.stringify({ type: 'AGENT_COMMAND_ACK', payload: rejected }));
+        callbacks.get('onMessage')?.(JSON.stringify({ type: 'AGENT_STATUS', payload: { status: 'offline' } }));
+
+        expect(onSendMessageCommandAck).toHaveBeenCalledTimes(1);
+        expect(onSendMessageCommandAck).toHaveBeenCalledWith(expect.objectContaining({ run_id: 'run-1', accepted: false, code: 'ACTIVATION_FAILED' }));
+        expect(mockConversation.messages.at(-1)?.segments).toContainEqual(
+            expect.objectContaining({ type: 'error', code: 'ACTIVATION_FAILED' }));
+    });
+
     it.each(['disconnected', 'connecting', 'reconnecting'])('rejects standalone interrupt while %s without sending', (state) => {
         const wsClient = {
             state, connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), on: vi.fn(), off: vi.fn(),

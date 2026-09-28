@@ -7,6 +7,7 @@ import {
   AgentStreamingService,
   type InterruptGenerationCommandAckPayload,
   type InterruptCommandTransportFailure,
+  type SendMessageCommandAckPayload,
 } from '~/services/agentStreaming';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
 import { useWorkspaceStore } from '~/stores/workspace';
@@ -78,6 +79,16 @@ const showInterruptTransportFailure = (failure: InterruptCommandTransportFailure
 const streamingServices = new Map<string, AgentStreamingService>();
 
 /**
+ * Runs this client sent to while it did not consider them live (a first send or a resume of an
+ * Offline/Error run), until the server confirms activation. History reconcile must not tear such
+ * a run down on a snapshot taken before activation (D-14). Live AGENT_STATUS events never clear
+ * the marker: the server reports `offline` as soon as the stream connects, before SEND_MESSAGE.
+ */
+const activationPendingRunIds = new Set<string>();
+
+const NOT_LIVE_STATUSES = new Set<string>([AgentStatus.Offline, AgentStatus.Error]);
+
+/**
  * @store agentRun
  * @description This store orchestrates single-agent lifecycle and streaming.
  * GraphQL creates new runs; WebSocket handles the first and subsequent messages.
@@ -106,6 +117,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const { config, state } = currentAgent;
       const runId = state.runId;
       const isNewAgent = runId.startsWith('temp-');
+      const isResumeOfStoppedRun = !isNewAgent && NOT_LIVE_STATUSES.has(String(state.currentStatus));
       const resumeConfig = !isNewAgent ? runHistoryStore.getResumeConfig(runId) : null;
       const workspaceId = config.workspaceId;
       const workspaceRootPath = config.workspaceMetadata?.workspaceRootPath || (workspaceId
@@ -159,6 +171,11 @@ export const useAgentRunStore = defineStore('agentRun', {
       });
 
       let preparedRunId: string | null = null;
+      let activationPendingRunId: string | null = null;
+      if (isResumeOfStoppedRun) {
+        activationPendingRunId = runId;
+        this.markActivationPending(runId);
+      }
       try {
         let finalRunId = runId;
         if (isNewAgent) {
@@ -201,6 +218,8 @@ export const useAgentRunStore = defineStore('agentRun', {
           finalRunId = permanentRunId;
           preparedRunId = permanentRunId;
           agentContextsStore.promoteTemporaryId(runId, permanentRunId);
+          activationPendingRunId = permanentRunId;
+          this.markActivationPending(permanentRunId);
           retargetLocalUserSubmission(localSubmission, {
             kind: 'standalone',
             runId: permanentRunId,
@@ -237,6 +256,7 @@ export const useAgentRunStore = defineStore('agentRun', {
         runHistoryStore.refreshTreeQuietly();
       } catch (error: any) {
         console.error('Error sending user input:', error);
+        if (activationPendingRunId) this.clearActivationPending(activationPendingRunId);
         if (preparedRunId) {
           getApolloClient().mutate({
             mutation: CancelPreparedAgentRun,
@@ -279,11 +299,27 @@ export const useAgentRunStore = defineStore('agentRun', {
       const service = new AgentStreamingService(wsEndpoint, {
         onInterruptCommandResult: showInterruptCommandResult,
         onInterruptCommandTransportFailure: showInterruptTransportFailure,
+        onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => {
+          // A rejected send never activates the run.
+          if (!ack.accepted) this.clearActivationPending(ack.run_id || runId);
+        },
       });
       streamingServices.set(runId, service);
 
       service.connect(runId, agent);
       return service;
+    },
+
+    markActivationPending(runId: string): void {
+      activationPendingRunIds.add(runId);
+    },
+
+    clearActivationPending(runId: string): void {
+      activationPendingRunIds.delete(runId);
+    },
+
+    isActivationPending(runId: string): boolean {
+      return activationPendingRunIds.has(runId);
     },
 
     isAgentStreamReady(runId: string): boolean {
@@ -377,6 +413,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const context = agentContextsStore.getRun(runId);
 
       const teardownLocalRuntime = () => {
+        this.clearActivationPending(runId);
         if (streamingServices.has(runId)) {
           this.disconnectAgentStream(runId);
         }
@@ -436,6 +473,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       } else {
         this.disconnectAgentStream(runIdToClose);
       }
+      this.clearActivationPending(runIdToClose);
 
       agentContextsStore.removeRun(runIdToClose);
     },

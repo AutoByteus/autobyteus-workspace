@@ -65,6 +65,7 @@ export interface RunHistoryFetchStoreLike {
   agentOrgHistory: AgentOrgRunHistoryItem[];
   historyFamilyErrors: RunHistoryFamilyErrors;
   agentOrgRequestGeneration: number;
+  workspaceRequestGeneration: number;
   refreshRunNavigationTopology(reason: string): void;
   findAgentNameByRunId(runId: string): string | null;
   ensureWorkspaceByRootPath(rootPath: string): Promise<string | null>;
@@ -92,6 +93,8 @@ export const fetchRunHistoryTree = async (
 ): Promise<void> => {
   const quiet = options.quiet === true;
   const agentOrgGeneration = ++store.agentOrgRequestGeneration;
+  // An older workspace snapshot must not be applied (or reconciled) after a newer one.
+  const workspaceGeneration = ++store.workspaceRequestGeneration;
   if (!quiet) {
     store.loading = true;
     store.error = null;
@@ -115,6 +118,7 @@ export const fetchRunHistoryTree = async (
         if (result.errors?.length) {
           throw new Error(result.errors.map((error: { message: string }) => error.message).join(', '));
         }
+        if (workspaceGeneration !== store.workspaceRequestGeneration) return;
         store.workspaceGroups = result.data?.listWorkspaceRunHistory || [];
         store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: null };
         store.error = null;
@@ -123,8 +127,10 @@ export const fetchRunHistoryTree = async (
           store.agentAvatarByDefinitionId,
           { loadDefinitionsIfNeeded: true },
         );
+        if (workspaceGeneration !== store.workspaceRequestGeneration) return;
         await reconcileDiscoveredActiveRuns(store);
       } catch (error) {
+        if (workspaceGeneration !== store.workspaceRequestGeneration) return;
         const detail = error instanceof Error ? error.message : String(error);
         store.historyFamilyErrors = { ...store.historyFamilyErrors, workspace: detail };
         if (!quiet) store.error = detail;
@@ -233,9 +239,8 @@ export const reconcileDiscoveredActiveRuns = async (
     if (runId.startsWith('temp-') || activeAgentRunIds.has(runId)) {
       continue;
     }
-    // A local first send is in flight (prepare → connect → send, until the first live status or
-    // a handled failure). A snapshot taken before the run became active must not tear it down.
-    if (context.submissionPending) {
+    // A send to this run awaits server activation; this snapshot may predate it (D-14).
+    if (agentRunStore.isActivationPending(runId)) {
       continue;
     }
 
@@ -250,6 +255,8 @@ export const reconcileDiscoveredActiveRuns = async (
   }
 
   for (const runId of activeAgentRunIds) {
+    // Server-confirmed activation ends a pending send.
+    agentRunStore.clearActivationPending(runId);
     const activeRun = activeAgentRunById.get(runId);
     const existingContext = agentContextsStore.getRun(runId);
     if (existingContext) {
