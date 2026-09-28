@@ -2,7 +2,7 @@
 
 - Result classification: `Architecture Design Complete`
 - Package identifier: `chat-interface-entry`
-- Current solution revision: `SR-007`. This is a re-review for ARCH-REV-002. Earlier bases: SR-005 (round 1) and SR-006 (round 2).
+- Current solution revision: `SR-010`. This revises D-14 after the IR-002 evidence. Earlier: `SR-009` (ARCH-REV-005 Pass) and `SR-008`. This is a review of the post-implementation design revision from the API/E2E failure-origin review CRR-002. Earlier bases: SR-005, SR-006, and SR-007 (ARCH-REV-003 Pass).
 - From: Solution Designer (`/software_engineering_team/solution_designer`)
 - Date: 2026-09-28
 - Classification:
@@ -120,3 +120,39 @@ Intended behavior is unchanged. The requirements edits are editorial only, with 
 | AR-007 | **D-04 order:** mark the draft `starting` → register → select → await send → route to `/chat?id=<selected id>` → then `chatDraftStore.startNewChat()`. New chat shows the UXJ-001 starting state throughout |
 
 Intended behavior is unchanged, and there is no approval impact.
+
+
+## SR-008 Revision For CRR-002 (API/E2E failure origin) — review request
+
+Source: `code-review-report.md` "API/E2E Failure-Origin Review (Round 2)" and `code-review-revision-record.md` CRR-002. API/E2E artifacts: `api-e2e-execution-coverage-report.md`, `api-e2e-test-case-ledger.md`, `api-e2e-evidence/`.
+
+| Finding | Resolution in `design-spec.md` |
+| --- | --- |
+| CR-004 / F-03 (Design Impact, RSK-003 trigger) | **D-15.** Under `ALL_INSTALLED`, a user-owned workspace skill with the same name wins, for AGY `.agents/skills` and Codex/Claude `.codex|.claude/skills`. The installed copy is skipped with a logged `skipped-workspace-owned` disposition, and the run starts. `CONFIGURED` stays fail-fast. The policy is passed to the materializers as `workspaceCollisionPolicy`, derived from `SkillService.resolveSkillScope` |
+| CR-003 / F-02 (Unclear) | **D-14 (Missing Invariant, pre-existing).** `reconcileDiscoveredActiveRuns` skips contexts with `submissionPending === true`. Evidence AF-30: the 5 s tree poll + a snapshot that predates activation + no guard. Required verification: close-stack capture, deterministic stale-snapshot reproduction, and a 14× resend probe. If the closer differs, return `Unclear` |
+| CR-002 / F-01 (Local Fix) | Included in the same implementation round. The persisted-mode footer ensures the run's runtime schema source is loaded |
+
+Intended behavior is unchanged, and there is no approval impact. The source changes from IR-001 are committed on `codex/chat-interface-entry`; the API/E2E test additions are uncommitted in the worktree.
+
+
+## SR-009 Revision For ARCH-REV-004 (re-review request)
+
+| Finding | Resolution in `design-spec.md` |
+| --- | --- |
+| AR-008 / MP-008 | **D-15 Rule 2:** each request carries `requestStrength` (`all_installed` = weak, `configured` = strong), and the registry tracks strong/weak holder counts. **Direction A:** a weak request against any different-source holder skips the skill and logs `skipped-held-by-other-run`; it never throws. **Direction B:** a strong request against a weak-only entry waits if `acquiring`; if `ready`, it atomically re-points the materializer-owned link (temp link + rename), merges the holders and logs `yielded-to-configured`, and it never fails because of an ALL_INSTALLED run. Strong vs strong stays fail-fast. Release by counts. An example and validation cases V-A to V-E are added |
+| AR-008 / MP-009 | ACP/Grok (`.grok/skills`, `acp-agent-run-backend-factory.ts`) is added to D-15's scope and the File Mapping |
+| Presentation note | Accepted: `/` shows the installed description |
+
+Intended behavior is unchanged, and there is no approval impact. The evidence is AF-32.
+
+
+## SR-010 Revision Of D-14 (IR-002 Design Impact) — review request
+
+Source: Implementation Engineer IR-002, `implementation-handoff.md`, `implementation-revision-record.md` and `implementation-evidence/README.md` (D-14 evidence folders). The code is at commits `da1033860` / `46f28bb9f` on `codex/chat-interface-entry`. D-15 and CR-002 are implemented and validated, and are unchanged by this revision.
+
+| Item | Resolution |
+| --- | --- |
+| The D-14 premise (AF-30) was disproved | A connect-time `AGENT_STATUS offline` clears `submissionPending` before `SEND_MESSAGE` (AF-33), so the guard only covered pre-connect. The closer is confirmed as `reconcileDiscoveredActiveRuns` ← `fetchRunHistoryTree` |
+| New D-14 | An `agentRunStore` `activationPendingRunIds` marker. **Set** before connecting, for first sends (after promotion) and for Offline/Error resumes. **Cleared** when a snapshot lists the run as active or should-connect (server-confirmed; the server projects `COMMAND_OVERLAY initializing` / `ACTIVE_RUNTIME` once SEND_MESSAGE is received), on a handled failure/cancel, on a rejected SEND_MESSAGE ack (new `onSendMessageCommandAck` callback), or on terminate/close. It is never cleared by live status events. Reconcile skips marked runs. The SR-008 `submissionPending` guard is removed |
+| Rejected alternatives | (a) change the clearing of `submissionPending`: this has a UI and team/org blast radius. (c) server snapshots marking prepared runs should-connect: this has cross-window and cross-client hydration side effects |
+| Validation | The probe `--scenario stale` must fail without the marker and pass with it, for a first send and an Offline resume. Unit tests for each clear path. A 14× resend probe |

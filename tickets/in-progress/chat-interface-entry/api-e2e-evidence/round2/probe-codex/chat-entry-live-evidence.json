@@ -1,0 +1,379 @@
+{
+  "startedAt": "2026-09-28T23:23:59.968Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C01": {
+      "title": "Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED",
+      "result": "Pass",
+      "ms": 8,
+      "details": {
+        "da": {
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "skillScope": "ALL_INSTALLED",
+          "skillNames": []
+        },
+        "legacy": {
+          "id": "probe-legacy",
+          "name": "Probe Legacy",
+          "skillScope": "CONFIGURED",
+          "skillNames": [
+            "probe-alpha"
+          ]
+        }
+      }
+    },
+    "C02": {
+      "title": "Landing: / → /chat, Chat first with pencil, New chat defaults",
+      "result": "Pass",
+      "ms": 4087,
+      "details": {
+        "nav": [
+          "Chat",
+          "Agents",
+          "Agent Teams"
+        ],
+        "workspace": "Temp workspace",
+        "approval": "Auto-approve",
+        "model": "Choose a model\nAutoByteus"
+      }
+    },
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 2646,
+      "details": {
+        "model": "gpt-5.5",
+        "skills": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 12949,
+      "details": {
+        "runId": "daily_assistant_4e79afdbb5f04129ad02638a4ad463f0",
+        "exposure": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "gpt-5.5 · Codex"
+      }
+    },
+    "C05": {
+      "title": "Live run footer: model and thinking locked (REQ-011, UIS-004, VIS-015)",
+      "result": "Pass",
+      "ms": 5341,
+      "details": {
+        "thinking": 1,
+        "editability": {
+          "editable": false,
+          "reason": "RUN_ACTIVE"
+        }
+      }
+    },
+    "C06": {
+      "title": "Terminate → Offline → runtime-fixed save → reload (D-08) → save → resume uses the saved model",
+      "result": "Pass",
+      "ms": 16754,
+      "details": {
+        "saved": [
+          "gpt-5.6-luna",
+          "gpt-5.6-sol"
+        ],
+        "resumed": {
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": null,
+          "runtimeKind": "codex_app_server",
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/server-data/temp_workspace"
+        }
+      }
+    },
+    "C07#1": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 5635,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_0fe5db932d7d4577ba7b4bab76760cc4",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#2": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 4689,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_9e51da50ec194afc8b7d63fdf73055e2",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#3": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 5030,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_bbbf2f4898764550ba8ab341cebc477a",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#4": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 5396,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_8c4dcce88e7c4f779b9ef15f54fe9e63",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#5": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 6085,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_024bcbf3540a4c599d08f242846ca8fc",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#6": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 5113,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_1e73447c6ce8478c9afe4502ad118237",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#7": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 5299,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_f259fa461e644fc9a5baf88bfb198aa1",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#8": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 5715,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_9bd23ddca6424a559d711bd7c407d611",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#9": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 5206,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_76ea6df33ccf473482d42dfecf50d436",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#10": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 5593,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_e7358e7142314d4a9cddacda5183c473",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#11": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 6001,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_69fdf5e216584563a40e149ab4e60e84",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#12": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 6611,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_a0de9939ef954c91b2f2eca123751d61",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#13": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 5402,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_222a668f486d418c82891a89aea33cea",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C07#14": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 4881,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_bc4d1c0edcbc42eeb66e1d307508f34f",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/folder-ws"
+      }
+    },
+    "C08": {
+      "title": "Catalog Run (form unchanged) → /chat?id=temp-* → first send → permanent URL and streamed reply",
+      "result": "Pass",
+      "ms": 6940,
+      "details": {
+        "runId": "probe_legacy_15bf09af21c04b0385041f37e2724ea0"
+      }
+    },
+    "C09": {
+      "title": "@agent scoped /, × back to Daily Assistant, tree + preset",
+      "result": "Pass",
+      "ms": 1791,
+      "details": {
+        "scoped": [
+          "probe-bundled"
+        ],
+        "presetUrl": "/chat"
+      }
+    },
+    "C10": {
+      "title": "Team quick path with an attachment: uniform member config, coordinator reads the file, Team view with the unchanged box",
+      "result": "Pass",
+      "ms": 9250,
+      "details": {
+        "teamRunId": "probe_team_0e30c138a26b43e6ab03a94285ec7786",
+        "coordinator": "/lead",
+        "memberConfig": {
+          "runtime_kind": "codex_app_server",
+          "llm_model_identifier": "gpt-5.5",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY/server-data/temp_workspace"
+        }
+      }
+    },
+    "C11": {
+      "title": "RSK-005 redirects, missing and unregistered ids, tool strip collapsed",
+      "result": "Pass",
+      "ms": 7591,
+      "details": {
+        "orgRunId": "probe_org_9ae94c89e58942f3818deae0c8e0511e"
+      }
+    },
+    "C12": {
+      "title": "Narrow 390×844: no horizontal overflow; model menu is a bottom sheet with drill-in",
+      "result": "Pass",
+      "ms": 2901,
+      "details": {
+        "sheet": {
+          "x": 8,
+          "y": 569,
+          "width": 374,
+          "height": 267
+        }
+      }
+    },
+    "C14": {
+      "title": "D-15 Rule 1 (V-D): a user-owned workspace skill wins for the Daily Assistant; a configured agent still fails fast",
+      "result": "Pass",
+      "ms": 6946,
+      "details": {
+        "daRun": "daily_assistant_7f304ac388c14d1f9b1bec85f37523a9",
+        "strongRun": "probe_shadow_owner_46c3cf1ba6744320b53bc0131dc2a2ce",
+        "strongError": "Failed to prepare agent run 'probe_shadow_owner_46c3cf1ba6744320b53bc0131dc2a2ce'.",
+        "userFolderIntact": true
+      }
+    },
+    "C15": {
+      "title": "D-15 Rule 2: configured launch re-points a weak-held link (V-B), a new Daily Assistant chat skips a strong-held link (V-A), link removed after all terminate (V-E)",
+      "result": "Pass",
+      "ms": 17609,
+      "details": {
+        "weak1": "daily_assistant_2d0e4e8ac92d4772a0bd2eab3b7482d0",
+        "strong": "probe_shadow_owner_3fe87d0dcb3246a39678230c7e1209d8",
+        "weak2": "daily_assistant_57c058aafe6847a68ec2594c78f6f32c"
+      }
+    },
+    "C13": {
+      "title": "Daily Assistant restart lifecycle: user edit preserved; deleted config restored from the template",
+      "result": "Pass",
+      "ms": 3139,
+      "details": {
+        "restored": true
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 36343
+    },
+    {
+      "label": "frontend",
+      "pid": 36365
+    },
+    {
+      "label": "backend-restart-1",
+      "pid": 58513
+    },
+    {
+      "label": "backend-restart-2",
+      "pid": 58519
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 58519,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 58513,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 36365,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 36343,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-aXqSKY",
+  "backendUrl": "http://127.0.0.1:55913",
+  "frontUrl": "http://127.0.0.1:55914",
+  "browserErrors": [],
+  "completedAt": "2026-09-28T23:27:02.946Z"
+}

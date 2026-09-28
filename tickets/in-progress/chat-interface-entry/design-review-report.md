@@ -2,255 +2,288 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/requirements-doc.md` (Approved SR-003; SR-004 supplement; SR-006 editorial cleanup only)
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/investigation-notes.md` (AF-01–AF-27)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/requirements-doc.md` (Approved SR-003; SR-004 supplement; SR-006 editorial only)
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/investigation-notes.md` (AF-01–AF-31)
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-spec.md` (SR-007)
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-spec.md` (SR-010: D-14 revised to an `agentRunStore` activation-pending marker; D-15 and CR-002 unchanged, implemented and validated in `da1033860`/`46f28bb9f`)
 - Supplemental Task Artifacts Reviewed:
-  - `ui-ux-spec.md` R2 + VIS-001–025 (no VIS-020) at `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/chat-interface-entry/`
-  - `architecture-review-handoff.md` (SR-006 and SR-007 sections)
-  - The historical product request handoffs
-- Relevant Solution Revision IDs: SR-003, SR-004, SR-005, SR-006, SR-007
+  - `ui-ux-spec.md` R2 + VIS-001–025 (no VIS-020)
+  - `architecture-review-handoff.md` (SR-008, SR-009 and SR-010 sections)
+  - `implementation-evidence/README.md` (IR-002 D-14 and D-15 probe evidence), `implementation-handoff.md`, `implementation-revision-record.md`
+  - The triggering downstream evidence:
+    - `code-review-report.md` ("API/E2E Failure-Origin Review (Round 2)")
+    - `code-review-revision-record.md` (CRR-002)
+    - `api-e2e-execution-coverage-report.md` (API-REV-001)
+    - `api-e2e-evidence/real-catalog-all-installed.json`
+    - `implementation-handoff.md`
+- Relevant Solution Revision IDs: SR-003, SR-004, SR-009, SR-010
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: `3`
-- Trigger: Solution Designer re-review request (SR-007) for the ARCH-REV-002 findings (the remaining part of AR-001, and AR-007)
-- Prior Review Round Reviewed: Round 2 / ARCH-REV-002 (Fail, Design Impact)
-- Latest Authoritative Round: 3
-- Current-State Evidence Basis: the round 1 code reads (worktree `codex/chat-interface-entry` @ `origin/personal@fcd3e83a4`, no source changes), plus these round 2 reads:
-  - `services/runOpen/agentRunOpenCoordinator.ts` L52–63 (`config.isLocked = resumeConfig.isActive`)
-  - `services/runHydration/runContextHydrationService.ts` L165 (`isLocked: resumeConfig.isActive`)
-  - `stores/agentContextsStore.ts` `lockConfig`
-  - The `voiceInputStore` callers (`AgentUserInputTextArea.vue` L268, `VoiceInputExtensionCard.vue` L540)
-  - `skills/services/skill-discovery.ts` `getBundledSkillDirectoriesFromDefinitionRoot` layouts
-  - A folder/declared-name scan of the user's bundled skills in `/Users/normy/autobyteus_org/autobyteus-agents` (no mismatches)
-- Round 3 reads:
-  - `services/agent-streaming/agent-stream-handler.ts` (send path)
-  - `run-history/services/studio-run-model-config-service.ts` (`updateStoppedAgentRunModelConfig` → `agentRunService.updateStoppedModelConfig`), which confirms the saved Offline config is what the existing resume uses
+- Current Architecture Review Revision ID: `ARCH-REV-006`
+- Current Review Round: `6`
+- Trigger (round 6): Implementation Engineer IR-002 returned `Design Impact` on D-14. The closer is confirmed as `reconcileDiscoveredActiveRuns` ← `fetchRunHistoryTree`, and the `submissionPending` premise is disproved (AF-33). The Solution Designer revised D-14 in SR-010.
+- Earlier trigger (round 4): the Solution Designer's post-implementation design revision SR-008. Its source is Code Reviewer CRR-002 (the API/E2E failure-origin review of API-REV-001):
+  - CR-004: Design Impact, which fired the RSK-003 trigger.
+  - CR-003: Unclear, reclassified by the designer as a Missing Invariant.
+  - CR-002: Local Fix.
+- Prior Review Round Reviewed: Round 5 / ARCH-REV-005 (Pass, SR-009)
+- Latest Authoritative Round: 6
+- Current-State Evidence Basis: the implemented branch `codex/chat-interface-entry` (IR-001 commits through `717603e61`, plus uncommitted API/E2E tests). Read in round 4:
+  - Server:
+    - `agent-execution/backends/antigravity/capsule/agy-configured-skill-materializer.ts` L125–L170: materializes into the capsule, probes the workspace `.agents/skills`, and has a case-insensitive intra-set name check.
+    - `backends/shared/workspace-skill-materializer.ts`: registry `sourceCollisionError` L145–L150, path states L205–L250, `reconcileUnavailable`.
+    - The `codex-workspace-skill-materializer.ts` / `claude-…` / `grok-workspace-skill-materializer.ts` profiles.
+    - `acp-agent-run-backend-factory.ts` L116–L151.
+    - The Codex/Claude cleanup call sites (skills are released at thread/session cleanup).
+    - `skills/services/skill-service.ts` `listInstalledSkillRecords` (L150–L171) and `skill-discovery.ts` `scanSkillDirectory` (top level only).
+  - Web: `stores/runHistoryLoadActions.ts` `reconcileDiscoveredActiveRuns` (L213–L245); the `submissionPending` lifecycle (`localUserSubmission.ts` L78/L114, `agentRuntimeStatusState.ts` L30–L32/L63).
+  - Data:
+    - The real skill roots from `real-catalog-all-installed.json` (`autobyteus-agents`, `autobyteus-private-agents`, `~/.codex/skills`, `autobyteus-skills`).
+    - A name scan found seven same-name skills with different sources, including `software-tutorial-video-maker` (the agent-private copy in `autobyteus-agents/agents/software-tutorial-video-maker/skills/` and a global copy in `~/.codex/skills/`).
+    - That agent's `agent-config.json` configures `skillNames: ["software-tutorial-video-maker"]`.
 
 ## Routing Classification Review
 
 - Task size: `Large`
 - Architectural risk: `High`
-- Classification rationale reviewed: unchanged and still accurate.
+- Classification rationale reviewed: unchanged. The SR-008 changes touch server skill materialization for several runtimes and the shared history-reconcile lifecycle.
 - Independent Architecture Review required by the classification: `Yes`
 - Classification evidence or correction required: None
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed`
-- Approved requirements / intended behavior understood: Yes, unchanged since round 1. The SR-006 requirements edits are editorial only: the stale Recent wording and the traceability notes, which DEC-011 and DEC-013 already covered. There is no approval impact.
-- Relevant existing behavior and evidence confirmed: Yes. AF-23–AF-27 match the code. There is one new relevant fact: a persisted standalone run that is opened from history while not active gets `config.isLocked === false` (AF-11 context; see MP-006).
-- Scope guardrail confirmed: Yes.
+- Overall Basis Status: `Confirmed`. SR-008 did not change any requirement.
+- Approved requirements / intended behavior understood: Yes, unchanged.
+- Relevant existing behavior and evidence confirmed: Yes. AF-29 to AF-32 match the code. Round 5 also read `workspace-skill-materializer.ts` `releaseMaterializedSkill` (L329–L356: early return when `entry.descriptor !== descriptor`) and `removeOwnedLink` (L480–L500: unlinks only when the link target equals the releasing descriptor's source). These govern the implementation constraints IC-1 and IC-2 below. Windows is a supported desktop build target (`build:electron:windows`). There is one additional relevant fact: Codex and Claude materialized skill symlinks are held in a process-wide registry for each run's whole lifetime and released only at thread/session cleanup. A live (Idle) chat therefore keeps its names occupied in its workspace.
+- Scope guardrail confirmed: Yes. D-14 changes pre-existing code, but it protects the in-scope REQ-003 / AC-002 first send, which the chat makes the main entry point. It is proportionate.
 - Every prospective blocking `Design Impact` finding is traceable: `Yes`.
 - Remaining material ambiguity: None.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | Pass | Pass | Pass | Confirmed | — |
-| BEH-003 | User | Pass | Pass | Pass | Confirmed | — |
-| BEH-004 | User | Pass | Pass | Pass | Confirmed | — |
-| BEH-005 | User | Pass | Pass | Pass. D-04 lands a failed first send on `/chat?id=<temp>`; its order keeps the UXJ-001 starting state (AR-007 resolved) | Confirmed | — |
-| BEH-007 | User | Pass | Pass | Pass (AR-003 and AR-005 resolved) | Confirmed | — |
-| BEH-008 | User | Pass | Pass | Pass (the `setTarget` rebuild updates both definition ids) | Confirmed | — |
-| BEH-009 | User | Pass | Pass | Pass | Confirmed | — |
-| BEH-010 | User | Pass | Pass | Pass. D-08 keys the mode on run identity; a permanent id always uses `existingRunConfigStore` (AR-001 resolved) | Confirmed | — |
-| BEH-011 | User | Pass | Pass | Pass (D-13 route sync) | Confirmed | — |
-| BEH-012 | User | Pass | Pass | Pass (AR-004 resolved) | Confirmed | — |
-| BEH-013 | User | Pass | Pass | Pass | Confirmed | — |
-| BEH-014 | User | Pass | Pass | Pass | Confirmed | — |
-| REQ-007 (system) | System | Pass | Pass | Pass (AR-003 resolved) | Confirmed | — |
-| REQ-017 | User | Pass | Pass | Pass (catalog draft → chat view → promotion sync) | Confirmed | — |
+| BEH-001, 003, 004, 007, 008, 009, 011, 012, 013, 014 | User | Pass | Pass | Pass (unchanged since ARCH-REV-003) | Confirmed | — |
+| BEH-005 | User | Pass | Pass | Pass. D-14 protects the first send against the stale-snapshot teardown (AF-30) | Confirmed | — |
+| BEH-010 | User | Pass | Pass | Pass. CR-002 is a local implementation fix (the live persisted footer loads the runtime schema source) | Confirmed | — |
+| REQ-007 (system) | System | Pass | Pass | Pass. D-15 Rule 1, Rule 2 A/B and the ACP scope cover MP-008 and MP-009 | Confirmed | IC-1, IC-2 (implementation constraints) |
+| REQ-017 / preserved run lifecycle | User | Pass | Pass | Pass. Direction B: a strong request never fails because of weak-only holders; strong vs strong is unchanged | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
 | Artifact | Purpose And Scope Are Clear? | Linked To Relevant Core Artifacts? | Internally Complete? | Consistent With Related Core Artifacts? | Status And Approval Applicability Are Clear? | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `ui-ux-spec.md` R2 + VIS-001–025 (no VIS-020) | Pass | Pass | Pass | Pass | Pass | — |
-| `ui-behavior-test-matrix.md` | Pass | Pass | Pass | Pass | Pass | — |
-| Product request handoffs (historical) | Pass | Pass | Pass | Pass | Pass | — |
-| Investigation-notes supplement inventory | Pass | Pass | Pass (refreshed in SR-006) | Pass | Pass | — |
+| `ui-ux-spec.md` R2 + VIS | Pass | Pass | Pass | Pass | Pass | — |
+| Code review CRR-002 / API/E2E API-REV-001 evidence | Pass | Pass | Pass | Pass | Pass | — |
+| Investigation notes AF-29–AF-32 | Pass | Pass | Pass | Pass | Pass | — |
 
 ## Task Design Health Assessment Verdict
 
 | Assessment Area | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Assessment is present for the current task posture | Pass | Larger Requirement; Boundary Or Ownership Issue | — |
-| Root-cause classification is explicit and evidence-backed | Pass | AF-03, AF-06, AF-19 (+ AF-23–AF-27) | — |
-| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | Yes | — |
-| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | The file mapping, the sequence, and the removal plan | — |
+| Assessment is present for the current task posture | Pass | Unchanged; D-14 is classified as a Missing Invariant | — |
+| Root-cause classification is explicit and evidence-backed | Pass | D-14: AF-30. D-15: AF-29 | — |
+| Refactor needed now / no refactor needed / deferred decision is explicit | Pass | — | — |
+| Refactor decision is supported by the concrete design sections or residual-risk rationale | Pass | The file mapping includes `runHistoryLoadActions.ts` and the materializers | — |
 
 ## Spine Inventory Verdict
 
 | Spine ID | Scope | Spine Is Readable? | Narrative Is Clear? | Facade Vs Governing Owner Is Clear? | Main Domain Subject Naming Is Clear? | Ownership Is Clear? | Off-Spine Concerns Stay Off Main Line? | Verdict |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 New chat launch | Primary | Pass | Pass | Pass | Pass | Pass (D-04 destination, D-13 sync) | Pass | Pass |
-| DS-002 Team quick path | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-003 Standalone routing / open | Primary | Pass | Pass | Pass | Pass | Pass (`useChatRouteRunSync`) | Pass | Pass |
-| DS-004 Reply | Primary | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
-| DS-005 Offline model edit | Primary | Pass | Pass | Pass | Pass | Pass (identity-keyed entry) | Pass | Pass |
-| DS-006 Model catalog | Bounded local | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DS-007 Daily Assistant bootstrap | Primary (system) | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
-| DS-008 Effective skills | Primary (system) | Pass | Pass | Pass | Pass | Pass (`listInstalledSkillRecords`) | Pass | Pass |
-| DS-009 Skill instruction codec | Return/Event | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
+| DS-001–DS-007, DS-009 | as before | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-004 / first-send reconcile (D-14) | Primary + bounded (history poll) | Pass | Pass | Pass | Pass | Pass (single reconcile owner) | Pass | Pass |
+| DS-008 Effective skills → workspace materialization (D-15) | Primary (system) | Pass | Pass | Pass | Pass | Pass (registry-authoritative weak/strong holders) | Pass | Pass |
 
 ## Boundary Encapsulation Verdict
 
 | Boundary / Owner | Authoritative Public Entry Point Is Clear? | Internal Owned Mechanisms Stay Internal? | Caller Bypass Risk Is Controlled? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `chatLaunchService` | Pass | Pass | Pass | Pass | — |
-| `SkillService` | Pass | Pass | Pass | Pass | `listInstalledSkillRecords` is internal; `listSkills` maps from it |
-| `workspaceNavigationService` + `pages/chat.vue` (`useChatRouteRunSync`) | Pass | Pass | Pass | Pass | — |
-| `existingRunConfigStore` | Pass | Pass | Pass | Pass | A forbidden bypass is explicit: editing the `context.config` of a permanent-id run, or calling the store for a `temp-*` id |
-| `ComposerTarget` / `voiceInputStore` | Pass | Pass | Pass | Pass | Both callers are covered (the composer and `settings-test`) |
+| `SkillService.resolveSkillScope` → bootstrappers → materializers (`workspaceCollisionPolicy`) | Pass | Pass | Pass | Pass | Materializers never inspect `skillScope`; this is good |
+| Shared `WorkspaceSkillMaterializer` registry | Pass | Pass | Pass | Pass | All transitions go through the registry phases. IC-1 binds the release semantics |
+| `reconcileDiscoveredActiveRuns` | Pass | Pass | Pass | Pass | — |
+| Chat-side owners | Pass | Pass | Pass | Pass | Unchanged |
 
 ## Dependency Direction / Forbidden Shortcut Verdict
 
 | Owner / Boundary | Allowed Dependencies Are Clear? | Forbidden Shortcuts Are Explicit? | Direction Is Coherent With Ownership? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `components/chat/*` | Pass | Pass | Pass | Pass | — |
-| `agentInput` + `voiceInputStore` | Pass | Pass | Pass | Pass | AR-002 resolved: no agentInput → chat imports |
-| `chatLaunchService` | Pass | Pass | Pass | Pass | — |
-| Server factories → `SkillService` | Pass | Pass | Pass | Pass | — |
+| Runtime bootstrappers → `SkillService` → materializer policy | Pass | Pass | Pass | Pass | — |
+| Web reconcile → contexts/run store | Pass | Pass | Pass | Pass | — |
+| Other owners | Pass | Pass | Pass | Pass | Unchanged |
 
 ## Interface Boundary Verdict
 
 | Interface / API / Query / Command / Method | Subject Is Clear? | Responsibility Is Singular? | Identity Shape Is Explicit? | Generic Boundary Risk | Verdict |
 | --- | --- | --- | --- | --- | --- |
-| `chatDraftStore.startNewChat` / `setTarget` (rebuild) | Pass | Pass | Pass | Low | Pass |
-| `chatLaunchService.launchAgentChat` / `launchTeamChat` | Pass | Pass | Pass | Low | Pass |
-| `agentContextsStore.registerDraftRun` | Pass | Pass | Pass | Low | Pass |
-| `agentTeamRunStore.sendMessageToFocusedMember(..., { attachmentDraftOwner })` | Pass | Pass | Pass | Low | Pass |
-| `useChatRouteRunSync` | Pass | Pass | Pass | Low | Pass |
-| `voiceInputStore.toggleRecording/startRecording(request)` | Pass | Pass | Pass (discriminated union) | Low | Pass |
-| `chatRunModelControls` footer mode selection | Pass | Pass | Pass (keyed on run id: `temp-*` vs permanent) | Low | Pass |
-| `SkillService.listInstalledSkillRecords` + ALL_INSTALLED bindings | Pass | Pass | Pass (record carries real root/origin) | Low | Pass |
-| GraphQL `AgentDefinition.skillScope` | Pass | Pass | Pass | Low | Pass |
+| `requestStrength: 'all_installed' (weak) \| 'configured' (strong)` | Pass | Pass | Pass (defined over user-owned, held-by-other-run, weak-only and strong holder states) | Low | Pass |
+| `SkillService.resolveSkillScope(definition)` | Pass | Pass | Pass | Low | Pass |
+| The `reconcileDiscoveredActiveRuns` guard (`submissionPending`) | Pass | Pass | Pass | Low | Pass |
+| All previously passed interfaces | Pass | Pass | Pass | Low | Pass |
 
 ## Existing Capability / Subsystem Reuse Verdict
 
 | Need / Concern | Existing Capability Area Was Checked? | Reuse / Extension Decision Is Sound? | New Support Piece Is Justified? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| First send / team first send | Pass | Pass | Pass | Pass | — |
-| Existing-run model edit | Pass | Pass | N/A | Pass | The owner is right; the entry rule is AR-001 |
-| Attachments / voice | Pass | Pass | N/A | Pass | — |
-| Right tool shell / built-ins / SkillService | Pass | Pass | Pass | Pass | — |
+| Collision handling | Pass | Pass (extends the existing materializers and dispositions) | N/A | Pass | The coverage gap is AR-008 |
+| Reconcile invariant | Pass | Pass (reuses `submissionPending`, no new state) | N/A | Pass | — |
 
 ## Subsystem / Capability-Area Allocation Verdict
 
 | Subsystem / Capability Area | Ownership Allocation Is Clear? | Reuse / Extend / Create-New Decision Is Sound? | Supports The Right Spine Owners? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Web `chat` | Pass | Pass | Pass | Pass | — |
-| Web `agentInput` | Pass | Pass | Pass | Pass | — |
-| Web layout / navigation / history / stores | Pass | Pass | Pass | Pass | — |
-| Server built-ins / agent-definition / GraphQL / skills | Pass | Pass | Pass | Pass | — |
+| Server agent-execution materializers (AGY, shared Codex/Claude/ACP) | Pass | Pass | Pass | Pass | ACP/Grok is included |
+| Web run history | Pass | Pass | Pass | Pass | — |
+| Others | Pass | Pass | Pass | Pass | Unchanged |
 
 ## Reusable Owned Structures Verdict
 
 | Repeated Structure / Logic | Extraction Need Was Evaluated? | Shared File Choice Is Sound? | Ownership Of Shared Structure Is Clear? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Composer target (active in agentInput; draft in chat) | Pass | Pass | Pass | Pass | — |
-| Mic/send buttons, codec, tool shell, team config builder | Pass | Pass | Pass | Pass | — |
-| Installed skill records | Pass | Pass | Pass | Pass | One enumeration for `listSkills` and ALL_INSTALLED |
+| The collision policy value, shared by AGY and the shared materializer | Pass | Pass | Pass | Pass | — |
+| Others | Pass | Pass | Pass | Pass | Unchanged |
 
 ## Shared Structure / Data Model Tightness Verdict
 
 | Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Overlapping Representation Risk Is Controlled? | Shared Core Vs Specialized Variant / Composition Decision Is Sound? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `ComposerTarget`, `ChatDraft`, `requestedSkillNames`, `skillScope` | Pass | Pass | Pass | N/A | Pass | — |
-| Installed skill record `{ skill, origin, trustedRoot, configuredRoot }` | Pass | Pass | Pass | N/A | Pass | — |
-| Voice recording request union | Pass | Pass | Pass | Pass | Pass | — |
+| `requestStrength` + registry `strongHolderCount` / `weakHolderCount` | Pass | Pass | Pass | N/A | Pass | IC-1: per-holder strength must be tracked for release |
+| Others | Pass | Pass | Pass | N/A | Pass | Unchanged |
 
 ## File Responsibility Mapping Verdict
 
 | File | Responsibility Is Singular And Clear? | Responsibility Matches The Intended Owner/Boundary? | Responsibilities Were Re-Tightened After Shared-Structure Extraction? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `pages/chat.vue` + `composables/chat/useChatRouteRunSync.ts` | Pass | Pass | N/A | Pass | — |
-| `components/chat/chatRunModelControls.ts` | Pass | Pass | N/A | Pass | — |
-| `composables/chat/chatDraftComposerTarget.ts` | Pass | Pass | Pass | Pass | — |
-| `stores/voiceInputStore.ts`, `VoiceInputExtensionCard.vue` | Pass | Pass | N/A | Pass | — |
-| `src/skills/services/skill-service.ts`, `skill-discovery.ts`, `configured-agent-skill-resolver.ts` | Pass | Pass | N/A | Pass | — |
-| All other mapped files | Pass | Pass | Pass | Pass | — |
+| `stores/runHistoryLoadActions.ts` (D-14) | Pass | Pass | N/A | Pass | — |
+| `agy-configured-skill-materializer.ts`, `workspace-skill-materializer.ts`, Codex/Claude bootstrappers | Pass | Pass | N/A | Pass | — |
+| `acp-agent-run-backend-factory.ts` | Pass | Pass | N/A | Pass | Added in SR-009 |
+| `chatRunModelControls.ts` (CR-002) | Pass | Pass | N/A | Pass | Local fix |
 
 ## Subsystem / Folder / File Placement Verdict
 
 | Path / Item | Target Placement Is Clear? | Folder Matches Owning Boundary? | Mixed-Layer Or Over-Split Risk | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `components/chat/`, `services/chat/`, `stores/chatDraftStore.ts`, `composables/chat/`, `utils/chat/` | Pass | Pass | Low | Pass | — |
-| `composables/agentInput/useComposerTarget.ts` (active only) | Pass | Pass | Low | Pass | — |
-| Server skill files / built-in template | Pass | Pass | Low | Pass | — |
+| All mapped paths | Pass | Pass | Low | Pass | — |
 
 ## Removal / Decommission Completeness Verdict
 
 | Item / Area | Redundant / Obsolete Piece To Remove Is Named? | Replacement Owner / Structure Is Clear? | Removal / Decommission Scope Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| `AgentWorkspaceView.vue`, the standalone `showSelectedRunConfig` mode, and its header actions | Pass | Pass | Pass | Pass | — |
-| `createDraftRun` tree path | Pass | Pass | Pass | Pass | — |
-| Direct `activeContextStore` reads in the box pieces and `voiceInputStore` | Pass | Pass | Pass | Pass | — |
-| `/workspace` agent execution links; `skillNames.length` consumers; landing copy | Pass | Pass | Pass | Pass | — |
+| Unchanged since ARCH-REV-003 | Pass | Pass | Pass | Pass | SR-008 removes nothing |
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Area | Compatibility Wrapper / Dual-Path / Legacy Retention Exists? | Clean-Cut Removal Is Explicit? | Verdict | Notes |
 | --- | --- | --- | --- | --- |
-| Standalone run view / routing | No | Pass | Pass | — |
-| Voice recording source string → request union | No | Pass | Pass | — |
-| Skill scope / built-in sync policy | No | Pass | Pass | — |
+| Collision policy (`fail` for CONFIGURED, `prefer_workspace` for ALL_INSTALLED) | No. These are two semantic policies, not an old/new dual path | Pass | Pass | — |
 
 ## Persisted-Data Transition Verdict (When Applicable)
 
 | Area / Stored Subject | Approved Decision | Representative Reader / Semantic / Invariant Evidence Is Sufficient? | Direct Use, Rebuild, Or Migration Choice Is Proportionate? | Migration Safety Is Complete If Required? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- | --- |
-| `agents/*/agent-config.json` | Directly Usable — No Migration | Pass | Pass | N/A | Pass | — |
-| `agents/autobyteus-daily-assistant/` | New data (seedIfMissing) | Pass | Pass | N/A | Pass | — |
-| localStorage `autobyteus.chat.lastModel` | New data | Pass | Pass | N/A | Pass | — |
+| Unchanged (agent-config `skillScope`, the built-in folder, the local preference) | Directly Usable / New data | Pass | Pass | N/A | Pass | Workspace skill symlinks are run-scoped runtime state, not persisted data |
 
 ## Change / Refactor Safety Verdict
 
 | Area | Sequence Is Realistic? | Temporary Seams Are Explicit? | Cleanup / Removal Is Explicit? | Verdict |
 | --- | --- | --- | --- | --- |
-| Server skillScope (with bundled-skill tests on every runtime path) → built-ins → web contract | Pass | Pass | Pass | Pass |
-| Web behavior-preserving refactors (step 4, including the voice request) before chat code | Pass | Pass | Pass | Pass |
-| Chat core, routing, team quick path | Pass | Pass | Pass | Pass |
+| D-14 with the evidence-gated verification (close stack, deterministic reproduction, 14× probe; return `Unclear` if the closer differs) | Pass | Pass | Pass | Pass |
+| D-15 + CR-002 in the same implementation round, with validation cases V-A to V-E | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
 | Topic / Area | Example Was Needed? | Example Is Present And Clear? | Bad / Avoided Shape Is Explained When Helpful? | Verdict | Notes |
 | --- | --- | --- | --- | --- | --- |
-| Skill instruction / New chat draft / box binding / routing | Yes | Pass | Pass | Pass | — |
-| Effective skills (bundled record) | Yes | Pass | Pass | Pass | — |
-| Registered-draft route transition | Yes | Pass | Pass | Pass | — |
-| Footer mode by context | Yes | Pass | Pass | Pass | A reopened Offline `run-7` example is added |
+| Collision precedence under ALL_INSTALLED | Yes | Pass (A, B, C with `software-tutorial-video-maker`) | Pass | Pass | — |
+| Others | — | Pass | Pass | Pass | Unchanged |
 
 ## Material Premise Validation (Only When Needed)
 
-MP-001–MP-004 from round 1 are still valid, and their consequences are now addressed by the SR-006 design (AR-003, AR-001 route/destination, AR-004). MP-005 remains `Unclear` and is handled by the SR-006 rule "change-driven redirect, never on an org route".
+MP-001 to MP-007 are unchanged from earlier rounds. See ARCH-REV-001 to ARCH-REV-003 in the revision record.
 
-### MP-006 — A persisted Offline standalone run opened from history reaches the chat footer with `config.isLocked === false`
+### MP-008 — Same-name skill held by another live run in the same workspace with a different source (Codex/Claude registry collision)
 
-- Related approved requirement: REQ-011 / AC-009 ("runtime never changes for a run; settings apply when the next message resumes the run; server rejects edits while active"); the preserved server `runModelConfigEditability` rule; DS-005 (the existing owner is `existingRunConfigStore`).
-- Relevant behavior ID(s): BEH-010.
+- Related approved requirement:
+  - REQ-007 / AC-002: the Daily Assistant (default) chat starts, with all installed skills.
+  - REQ-017 / AC-014 and the preserved normal run lifecycle: catalog and other agent launches work unchanged.
+  - REQ-004: the temp workspace is the New chat default.
+- Relevant behavior ID(s): BEH-005, REQ-007 (system), REQ-017.
 - Initiating basis kind: `User`.
-- Independent trigger: the Workspaces tree → click a stored (Offline) single-agent run or chat (UXJ-011, TR-014), or reopen the app and open an earlier chat.
-- Forward path:
-  1. Tree row → `resolveSelectionRoute` → `/chat?id=<runId>` → `pages/chat.vue` `ensureRunOpen` → `openAgentRun`.
-  2. `agentRunOpenCoordinator` sets `config.isLocked = shouldTreatAsLive` (= `resumeConfig.isActive`, which is false for a stored run), and `runContextHydrationService` also sets `isLocked: resumeConfig.isActive`.
-  3. → `ChatRunView` → `chatRunModelControls` applies D-08: `config.isLocked === false` → the "unlocked draft context" mode.
-- Consequence:
-  - The footer edits `context.config` directly with a **selectable runtime**, and "nothing reaches the server".
-  - The next send takes the non-temp path in `sendUserInputAndSubscribe` (no `PrepareAgentRun`), so the chosen model is never persisted through `existingRunConfigStore` and does not apply at resume. AC-009 fails.
-  - The runtime can appear changeable, which violates REQ-011.
-  - `runModelConfigEditability` is bypassed.
-  - Inconsistently, a run terminated in the same session keeps `isLocked === true` and would take the persisted path.
-- Reachability: `Reachable`. This is the core SCN-007 / UXJ-011 path.
-- Review consequence: AR-001 (remaining part). Resolved in SR-007 through the identity-keyed D-08 (AF-28).
+- Independent trigger: the user's real installation has seven same-name skills with different sources. One of them is `software-tutorial-video-maker`:
+  - one copy is agent-private at `/Users/normy/autobyteus_org/autobyteus-agents/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker`;
+  - one copy is global at `~/.codex/skills/software-tutorial-video-maker`;
+  - the "Software Tutorial Video Maker" agent configures `skillNames: ["software-tutorial-video-maker"]`.
+- Support evidence: the supported surfaces are the Chat (`@` or tree `+`) and the Agents catalog, which launch that agent. New chat launches the Daily Assistant. Both use the temp workspace by default (REQ-004) and the Codex or Claude runtime.
+- Forward path. Two data facts first:
+  - ALL_INSTALLED records come from `listInstalledSkillRecords`: `scanSkillDirectory` is top-level only, so the global `~/.codex/skills` copy wins for the Daily Assistant.
+  - CONFIGURED resolution for the agent picks its agent-private copy (`resolveContextualSkill`).
+  - **Direction A (agent first).** The agent run is live and holds the registry entry `<temp_ws>/.codex/skills/software-tutorial-video-maker` → private source. The user sends a New chat. The Codex bootstrapper → `acquireResolved` finds `existing.sourceRootPath !== sourceRootPath` → `sourceCollisionError` → prepare fails. D-15's `prefer_workspace` does not apply, because this entry is materializer-owned, not "user-owned".
+  - **Direction B (chat first).** A Daily Assistant chat is live; Idle chats stay live until terminated, so its symlinks for every installed name persist. The user launches the Software Tutorial Video Maker agent from the catalog or with `@` in the temp workspace. CONFIGURED → `acquireResolved` → `sourceCollisionError` → the agent fails to start.
+- Lifecycle and consequence:
+  - Direction A breaks AC-002 for the default chat.
+  - Direction B is a regression of a preserved, unchanged launch that the new always-live ALL_INSTALLED holder causes.
+  - Before this change, only two CONFIGURED agents sharing a name could collide. ALL_INSTALLED makes the default chat claim every installed name in the shared default workspace.
+- Reachability: `Reachable`.
+- Review consequence: AR-008. Resolved in SR-009 (D-15 Rule 2).
 
-### MP-007 — Bundled skill folder name differs from its declared `SKILL.md` name (AGY layout check)
+### MP-009 — ACP/Grok workspace-owned collision under ALL_INSTALLED
 
-- Initiating basis: data state only. No supported product action creates it, and the current CONFIGURED path already rejects such skills.
-- Evidence: a scan of the user's installed package (`agents/*/skills/*`, `agent-teams/*/skills/*`, `agent-teams/*/agents/*/skills/*`) found no mismatches.
+- Related approved requirement: REQ-007 / AC-002 on any enabled runtime; this is the same governing basis as CR-004 / F-03 and the RSK-003 trigger.
+- Initiating basis kind: `User`.
+- Trigger: the Daily Assistant is run on the Grok (ACP) runtime in a workspace whose `.grok/skills/<name>` matches an installed skill. This is the same user workflow that CRR-002 accepted as supported for `.agents/skills`.
+- Forward path: `acp-agent-run-backend-factory.ts` L116 → the shared `materializeConfiguredWorkspaceSkills` (the `grok-workspace-skill-materializer` profile `.grok/skills`). A `non-symlink` state → `pathStateCollisionError`. D-15 and its file mapping name only AGY, Codex and Claude, so ACP keeps the `fail` behavior.
+- Reachability: `Reachable` on the same basis as F-03.
+- Review consequence: AR-008 (scope part). Resolved in SR-009.
+
+### MP-010 — Case-variant installed names in one ALL_INSTALLED set (AGY intra-set check)
+
+- Basis: data state only. The real 78-skill catalog passed the AGY capsule materialization (CAT-78), and the name scan found no case variants.
 - Reachability: `Not Reachable` on current evidence.
-- Review consequence: no finding. It stays covered by the RSK-003 escalation trigger.
+- Review consequence: none. It stays covered by RSK-003.
+
+### MP-011 — Stale history snapshot tears down a pending first send (D-14)
+
+- Initiating basis kind: `System` (the supported 5 s `refreshTreeQuietly` poll in `WorkspaceAgentRunsTreePanel.vue`), during a supported New chat or resend first send.
+- Forward path: the server projects a prepared-but-not-started run as not active (AF-30) → `reconcileDiscoveredActiveRuns` → `disconnectAgentStream` + Offline cleanup for a permanent-id context whose `submissionPending` is true.
+- Reachability: `Reachable` in principle, and the design gates the fix on close-stack evidence.
+- Review consequence: D-14 is accepted as proportionate. It adds no new state, and if the captured closer differs it returns `Unclear`.
+
+### MP-012 — Weak request skipped (Direction A), then the strong holder releases while the weak chat is still live
+
+- Initiating basis kind: `User`. V-A, followed by the user terminating the configured agent from the tree while the Daily Assistant chat stays live.
+- Forward path: the strong entry's release brings the counts to zero → the link is removed. The weak run never held the entry, so its live runtime loses that one same-named skill until its next bootstrap (resume).
+- Consequence: one duplicate-named skill (seven exist in the real catalog) is temporarily unavailable to a live chat. Nothing fails.
+- Reachability: `Reachable`. The consequence is minor.
+- Review consequence: non-blocking recommendation R-1 (see Residual Risks). This is not a finding.
+
+## Round 6 — D-14 Revision Review (SR-010)
+
+- Evidence verified:
+  - IR-002 `implementation-evidence/README.md`: the closer stack is identical before and after the SR-008 guard. Frames: open +2 ms, CONNECTED +5, `AGENT_STATUS offline` +6, stale snapshot +6, close +10, with `submissionPending=false` at close.
+  - Web `stores/runHistoryLoadActions.ts`:
+    - `fetchRunHistoryTree`: the workspace branch has no generation guard (the org branch has one) and awaits `buildNextAgentAvatarIndex` before `reconcileDiscoveredActiveRuns`.
+    - `reconcileDiscoveredActiveRuns`: inactive runs → disconnect + Offline cleanup; active runs → `connectToAgentStream` when not connected, so it self-heals.
+  - `stores/agentRunStore.ts` calls `refreshTreeQuietly()` right after `SEND_MESSAGE`.
+  - `services/agentStreaming/agentStreamMessageProjector.ts` already receives `AGENT_COMMAND_ACK` for `SEND_MESSAGE`.
+- Verdict on D-14 (SR-010): `Pass`.
+  - **Right owner.** `agentRunStore` is the single standalone send owner, and reconcile consults it through `isActivationPending`. It does not reach into the send state, so there is no boundary bypass.
+  - **Right invariant.** The marker spans exactly the window that matters: from connect to server-confirmed activation. A snapshot that lists the run as active or should-connect can only be taken after the server has received `SEND_MESSAGE`. So before `SEND_MESSAGE` no snapshot can clear the marker, and the reproduced loss (MP-011 / AF-33) is fully closed.
+  - **Clear paths are complete for supported flows:** active snapshot, handled failure or cancel (including the connect timeout), rejected send ack, terminate or close. Live status events are correctly excluded.
+  - **Clean cut.** The SR-008 `submissionPending` guard is removed, and `submissionPending` UI semantics are unchanged for agent, team and org views.
+  - **Rejected alternatives are sound.** (a) would change the send/stop UI across views. (c) would make other clients attach to prepared, possibly abandoned runs.
+  - **Validation is adequate:** the deterministic `stale` probe (first send and Offline resume), a unit test per clear path, and the 14× resend probe. If a close remains, return `Unclear`.
+
+### MP-013 — Out-of-order quiet snapshots after `SEND_MESSAGE`
+
+- Basis: `System`.
+  - A 5 s poll snapshot requested before activation, and the post-send `refreshTreeQuietly()` snapshot, can complete out of order. The workspace branch has no generation guard, and each response awaits the avatar index before reconciling.
+  - If the fresh (active) snapshot clears the marker first, a later stale one would disconnect the stream and apply Offline cleanup.
+- Consequence: `SEND_MESSAGE` has already been accepted, so the message is not lost. The next snapshot, within 5 s, sees the run active and reconnects (`connectToAgentStream`). The result is a transient Offline flicker at most.
+- Reachability: `Reachable`, but rare. The consequence is minor and self-healing.
+- Review consequence: non-blocking recommendation R-2. Give the workspace branch the same request-generation guard the org branch has (pre-existing gap), in this round or a separate ticket.
+
+### MP-014 — A run activates and ends before any snapshot sees it active
+
+- Basis: `System`, a runtime that fails immediately after accepting `SEND_MESSAGE`.
+- Consequence: the marker stays set until terminate or close, so reconcile skips that run. Its UI state still follows the live stream (error/offline events).
+- Reachability: `Unclear` / rare, and the consequence is limited.
+- Review consequence: residual note only; no machinery required.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
@@ -262,18 +295,22 @@ None
 
 ## Findings
 
-None open. All findings are resolved; see `architecture-review-revision-record.md` ARCH-REV-003.
+None open. The D-14 revision (SR-010) passes; see ARCH-REV-006. AR-001 to AR-005, AR-007 and AR-008 stay resolved. IC-1 and IC-2 were honored in IR-002, where V-B and V-E pass on Claude, Codex and Grok.
 
-- AR-001 (High): resolved.
-  - Round 2 verified the D-13 route sync and the D-04 failed-launch destination.
-  - SR-007 verified the D-08 footer mode, which is now keyed on run identity: `temp-*` → `context.config`; a permanent id → `existingRunConfigStore`, whatever `isLocked` holds.
-  - The design's Ownership Boundaries, Boundary Map, File Mapping row, Example and Guidance are aligned.
-- AR-002, AR-003, AR-004, AR-005: resolved in round 2.
-- AR-007 (Low): resolved. The D-04 order is: mark the draft `starting` → register → select → await send → route to `/chat?id=<selected id>` → reset the draft.
+### Binding implementation constraints (not design findings; derived from the current code the design extends)
+
+- **IC-1 — Holder release after a re-point (D-15 Direction B, V-E).**
+  - Today `releaseMaterializedSkill` returns early when `entry.descriptor !== descriptor`, and `removeOwnedLink` unlinks only when the link target equals the releasing descriptor's `sourceRootPath`.
+  - After a re-point, the weak holders' descriptors are stale. Implement release against the registry entry: per-holder strength, decrementing the matching count, and removing the link when both counts reach zero, checked against the entry's current source.
+  - Descriptor identity and a descriptor's original source must not gate release. Otherwise links leak and V-E fails.
+- **IC-2 — Re-point on Windows.**
+  - The desktop app also builds for Windows. Renaming a temporary directory link over an existing one is not guaranteed to replace it there.
+  - Where rename-over is not supported, perform the re-point as unlink + symlink inside the registry's exclusive phase. The registry serialization is the invariant; a momentary absence of the link is acceptable.
+  - Cover this in the materializer unit tests with a simulated rename failure.
 
 ## Classification
 
-N/A. The review passed with no open findings.
+N/A. Pass.
 
 ## Recommended Recipient
 
@@ -281,19 +318,23 @@ N/A. The review passed with no open findings.
 
 ## Residual Risks
 
-- RSK-001, RSK-003 (now including bundled skills and AGY per-layout provenance; MP-007 is covered by its escalation trigger), RSK-004, RSK-005 (change-driven redirect, never on an org route) and RSK-006 (Codex reload tooltip), as stated in the design.
-- The hand-off tradeoff remains: the gear editor's advanced non-thinking parameters are not exposed for single-agent runs. This is recorded in the design guidance for the user.
+- RSK-001, RSK-004, RSK-005 and RSK-006 are unchanged.
+- RSK-007 (D-14 closer evidence) is correctly gated.
+- RSK-003: size and time passed on four runtimes with the real catalog. The collision coverage is AR-008.
+- The `/` menu description versus the workspace or held copy is a presentation note, accepted in the design.
+- R-2 (non-blocking, MP-013): add a request-generation guard to the workspace branch of `fetchRunHistoryTree` so an older snapshot cannot reconcile after a newer one.
+- MP-014: the marker can outlive a very short activation until terminate or close. This has limited consequence.
+- R-1 (non-blocking, MP-012): in Direction A the weak request could join the existing entry as a weak co-holder instead of skipping. The link would then survive the strong holder's release, which is symmetrical with Direction B's "remaining holders accept the last source". The designer may adopt this in a later revision; the current rule is acceptable.
+- CR-002 is a local implementation fix. It must keep DEC-009: hide the control when the model has no thinking parameters.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-  - MP-001–MP-004 and MP-006 are reachable, and their consequences are resolved in the design.
-  - MP-005 is Unclear; the change-driven redirect rule handles it and it drives no machinery.
-  - MP-007 is Not Reachable.
-  - No in-scope machinery depends on an unsupported premise.
+  - MP-011 is resolved by the SR-010 marker.
+  - MP-012 and MP-013 are minor and give recommendations only.
+  - MP-014 is a residual.
 - Notes:
-  - The design is ready for implementation.
-  - Implementation should honor the escalation triggers in the design's "Task Size And Architectural Risk" section and in RSK-003.
-  - The step 4 behavior-preserving refactor must land with the existing team/org/agent tests passing before any chat code (RSK-004).
-  - Bundled-skill ALL_INSTALLED coverage is required on every runtime path.
+  - SR-010 D-14 is ready for implementation.
+  - D-15 and CR-002 are unchanged and already validated (IR-002).
+  - Implementation must run the `stale` probe for both the first send and an Offline resume, add a unit test per clear path, and run the 14× resend probe. If a close remains, return `Unclear` with the stack.

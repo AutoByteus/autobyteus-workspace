@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-007`. This revision addresses ARCH-REV-002 (the remaining part of AR-001, plus AR-007). SR-006 addressed ARCH-REV-001.
+- Current solution revision ID: `SR-010`. D-14 was revised after the IR-002 implementation evidence; D-15 and CR-002 are implemented and unchanged. Earlier: `SR-009` (ARCH-REV-005 Pass) and `SR-008`. This revision addresses the API/E2E failure-origin review CRR-002 (CR-004 Design Impact, CR-003 Unclear, and the sequencing of the CR-002 local fix). SR-007 addressed ARCH-REV-002 and passed ARCH-REV-003.
 - Approved requirements baseline and user-approval reference:
   - Baseline: `requirements-doc.md` `SR-003`.
   - User approval: 2026-09-28 in the Solution Designer conversation.
@@ -189,7 +189,57 @@ Constraints to respect:
     - Detailed (AGY) path: the existing candidate checks run on a candidate built from the record's real path, origin, trusted root and configured root: provenance, source safety, manifest/name checks and fingerprint.
     - `CONFIGURED` resolution is unchanged.
   - **Web `/` source:** Daily Assistant's `/` list = `skillStore` skills (the same `listSkills()` catalog) with `isDisabled === false`. The offered tags therefore equal the set the runtime receives.
-- **D-12 — Last-used model.** One device-local value records the runtime and model. It is used as the New chat default, then the Daily Assistant default launch config, then the runtime default.
+- **D-14 — A send awaiting server activation survives history reconcile (CRR-002 CR-003; revised in SR-010 after IR-002 evidence).**
+  - **Evidence (AF-33).** The closer is confirmed as `reconcileDiscoveredActiveRuns` ← `fetchRunHistoryTree` (stale snapshot, P inactive).
+    - `submissionPending` cannot mark the window: the server sends `AGENT_STATUS offline` on connect (+6 ms), and `applyLiveAgentStatusEvent` clears the flag before `SEND_MESSAGE`.
+    - The SR-008 `submissionPending` guard is therefore **replaced** (clean cut), not kept.
+  - **Marker owner: `agentRunStore`, the single standalone send owner.** It keeps module-level `activationPendingRunIds: Set<string>` with methods `markActivationPending(runId)`, `clearActivationPending(runId)` and `isActivationPending(runId)`.
+    - **Set:** in `sendUserInputAndSubscribe`, before the stream connects, for any send to a run the client does not currently consider live. That means a first send, marked with the permanent id right after `promoteTemporaryId`, and a resume of an Offline/Error run, which has the same window.
+    - **Cleared by `reconcileDiscoveredActiveRuns`:** when a snapshot lists the run in its active set (`isActive || shouldConnectStream`). That is server-confirmed activation: once `SEND_MESSAGE` is received, the server projects `COMMAND_OVERLAY initializing` or `ACTIVE_RUNTIME`.
+    - **Cleared by the send owner:**
+      - on a handled failure or cancel (the `catch` path, including the stream-connect timeout);
+      - on a rejected `SEND_MESSAGE` ack, surfaced through a new `AgentStreamingService` `onSendMessageCommandAck` callback that mirrors the existing interrupt-ack callback;
+      - on terminate or close of the run.
+    - **Not** cleared on live `AGENT_STATUS` events. The connect-time `offline` status is exactly what broke SR-008.
+  - **Reconcile rule.** `reconcileDiscoveredActiveRuns` skips a context whose `agentRunStore.isActivationPending(runId)` is true: no disconnect and no Offline cleanup. `submissionPending` semantics (UI primary action, team/org) are unchanged.
+  - **Why not the other options:**
+    - (a) Changing `submissionPending` clearing would alter the send/stop/read-only UI for agent, team and org views.
+    - (c) Having server snapshots mark prepared runs `shouldConnectStream` would make other windows and clients hydrate and connect to prepared, possibly abandoned runs.
+  - **Validation:**
+    - `implementation-evidence/d14-reconcile-probe.mjs --scenario stale` fails without the marker and passes with it, for both a first send and an Offline resume.
+    - Unit tests cover each clear path (active snapshot, failure, rejected ack, terminate).
+    - The resend probe must pass 14×.
+  - If the probe still shows a close, return `Unclear` with the stack.
+- **D-15 — Skill-path collisions under ALL_INSTALLED: `ALL_INSTALLED` requests are weak; configured requests are strong (CRR-002 CR-004, ARCH-REV-004 AR-008).**
+  - **Scope.** Every runtime that exposes skills through a workspace skill path:
+    - AGY `.agents/skills` (a per-run capsule plus a workspace check);
+    - the shared `WorkspaceSkillMaterializer` profiles: Codex `.codex/skills`, Claude `.claude/skills` and ACP/Grok `.grok/skills` (`acp-agent-run-backend-factory.ts` L116).
+  - **Request strength.** Each run's skill requests carry `requestStrength`:
+    - `all_installed` (weak) when the definition's `skillScope` is `ALL_INSTALLED`;
+    - `configured` (strong) otherwise.
+    - The bootstrappers/factories (Codex, Claude, ACP/Grok, AGY) derive it from `SkillService.resolveSkillScope(definition)`. Materializers never inspect `skillScope`.
+  - **Rule 1 — a user-owned workspace entry.** This means a non-symlink or foreign path the materializer does not own; for AGY, any existing `<workspace>/.agents/skills/<name>`.
+    - Weak: skip the installed copy, log `skipped-workspace-owned`, and start the run. The runtime discovers the workspace's own skill natively.
+    - Strong: today's fail-fast `pathStateCollisionError` / `AGY_SKILL_NAME_COLLISION`, unchanged.
+  - **Rule 2 — a path held by another live run with a different source** (shared materializer registry, `acquireResolved` L145–L150). In both directions below, the process-wide registry stays authoritative, and all transitions go through its phases (`acquiring` / `ready` / `releasing`).
+    - **Direction A — a weak request meets any existing holder with a different source.**
+      - The weak request skips that skill. It logs `skipped-held-by-other-run` (run, skill, holder source) and never throws.
+      - The weak run starts without its copy. The name stays discoverable through the holder's link, so the agent still has a skill by that name.
+    - **Direction B — a strong request meets an entry with a different source.**
+      - If the entry has **any strong holder**, today's fail-fast `sourceCollisionError` applies. This is the pre-existing conflict between two configured runs, and it is unchanged.
+      - If the entry has **only weak holders**, the strong request never fails:
+        - If the entry is `acquiring`, wait for readiness and re-evaluate.
+        - If it is `ready`, re-point the materializer-owned symlink to the strong source atomically (create a temporary link, then rename it over the old one). The entry's source becomes the strong source, and its holders are merged into it.
+        - Log `yielded-to-configured` (weak run ids, old source → new source). The weak runs keep a skill of that name, now served from the configured copy.
+      - Configured launches therefore never regress because an ALL_INSTALLED chat is live (REQ-017/AC-014).
+    - The registry entry tracks `strongHolderCount` and `weakHolderCount`. Release decrements the matching count, and the link is removed when both reach zero. The link source stays whatever it last pointed to; the remaining holders accept that because the name is the same.
+  - **Unchanged:**
+    - Same-source sharing.
+    - `reconcile-discoverable` / `reconcile-unresolved` handling.
+    - Repair of materializer-owned symlinks (`repaired`, `removed-and-skipped`).
+    - AGY per-run capsule copies, which are not shared between runs, so Rule 2 does not arise for AGY.
+  - **Presentation note (accepted):** when a workspace or held copy is used, `/` still shows the installed skill's description.
+- - **D-12 — Last-used model.** One device-local value records the runtime and model. It is used as the New chat default, then the Daily Assistant default launch config, then the runtime default.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -556,6 +606,10 @@ Web (`autobyteus-web/`):
 | `stores/agentContextsStore.ts` | Modify | Registration | `registerDraftRun` |
 | `stores/agentRunStore.ts`, `types/agent/AgentContext.ts`, `services/runSubmission/localUserSubmission.ts`, `stores/activeContextStore.ts` | Modify | Send | Compose instruction; `initialSummary` = user text (tags-only fallback: the instruction); `requestedSkillNames`; clear on submission; `hasDraft` counts tags |
 | `stores/agentTeamRunStore.ts` | Modify | Team send | `attachmentDraftOwner` option |
+| `stores/runHistoryLoadActions.ts` | Modify | Reconcile (D-14, SR-010) | Skip contexts where `agentRunStore.isActivationPending(runId)`; clear the marker for runs in the active set. Remove the SR-008 `submissionPending` guard |
+| `stores/agentRunStore.ts` (D-14) | Modify | Activation marker | `activationPendingRunIds` + mark/clear/is; set before connecting for first sends (after promotion) and Offline/Error resumes; clear on failure/cancel, a rejected ack, or terminate/close |
+| `services/agentStreaming/AgentStreamingService.ts` | Modify | Send ack callback | `onSendMessageCommandAck(ack)` option, mirroring `onInterruptCommandResult` |
+| `components/chat/chatRunModelControls.ts` (CR-002 local fix) | Modify | Footer thinking schema | Persisted mode ensures the run's runtime catalog/schema source is loaded (`useChatModelCatalog` / `llmProviderConfig` ensure for that runtime) whether live or Offline. Models with no thinking parameters still hide the control |
 | `stores/agentDefinitionStore.ts`, `graphql/queries/agentDefinitionQueries.ts`, agent-definition mutations | Modify | Contract | `skillScope` |
 | `components/agents/AgentDefinitionForm.vue`, `AgentCard.vue`, `AgentDefinitionDetailSections.vue`, `AgentDetail.vue` | Modify | Editor | "Use all installed skills" option (picker disabled when on); cards/detail show "All installed skills" |
 | `localization/messages/{en,zh-CN}/*` | Modify | Copy | Spec copy (normative English; zh-CN translations) |
@@ -572,6 +626,8 @@ Server (`autobyteus-server-ts/`):
 | `src/agent-tools/agent-management/get-agent-definition.ts`, `list-agent-definitions.ts` | Modify | Expose `skill_scope` |
 | `src/skills/services/skill-service.ts`, `skill-discovery.ts`, `configured-agent-skill-resolver.ts` | Modify | `listInstalledSkillRecords` (records with origin, trusted root and configured root; same precedence as `listSkills`); `hasEffectiveSkills`. ALL_INSTALLED regular and detailed bindings are built from enabled records; the resolver exposes candidate validation for a given record. CONFIGURED is unchanged |
 | `src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts`, `antigravity/backend/agy-agent-run-backend-factory.ts` (+ any Codex/Claude `skillNames` reads found during implementation) | Modify | Use SkillService effective skills |
+| `src/agent-execution/backends/antigravity/capsule/agy-configured-skill-materializer.ts`, `backends/shared/workspace-skill-materializer.ts`, and their callers: `codex/backend/codex-thread-bootstrapper.ts`, `claude/backend/claude-session-bootstrapper.ts`, `acp/backend/acp-agent-run-backend-factory.ts` (Grok `.grok/skills`), and the AGY factory/capsule | Modify | D-15 `requestStrength` (weak/strong). Rule 1: `skipped-workspace-owned`. Rule 2: registry strong/weak holder counts; `skipped-held-by-other-run` (A); atomic re-point + `yielded-to-configured` when only weak holders exist (B). Strength comes from `SkillService.resolveSkillScope` |
+| `src/skills/services/skill-service.ts` | Modify | Add `resolveSkillScope(definition)` (the normalized scope), used for the collision policy |
 
 Tests: update or add unit tests beside each changed owner. Add e2e for Daily Assistant bootstrap (seed + preserve edits), `skillScope` GraphQL round trip, and effective skills per runtime factory. Add web integration for chat launch (agent and team), `/chat?id` routing, the composer target (team/org box unchanged), footer lock/save, and the skill codec round trip.
 
@@ -612,6 +668,7 @@ Tests: update or add unit tests beside each changed owner. Add e2e for Daily Ass
 | Routing | `resolveSelectionRoute({ type: 'agent', runId })` → `/chat?id=…` | `if (isChat) router.push('/chat') else '/workspace'` inside the tree and the left panel | Single route authority |
 | Effective skills | `ALL_INSTALLED`: `listInstalledSkillRecords().filter(r => !r.skill.isDisabled).map(r => ({ kind: 'resolved', skill: r.skill, source: sourceFor(r.origin, r.skill, r.trustedRoot) }))`. Example: `/…/autobyteus-agents/agents/research-engineer/skills/<n>` → `agent_private`, trusted root `/…/autobyteus-agents/agents/research-engineer` | `if (def.skillNames.length)` in factories; `ALL_INSTALLED` implemented as `resolve({ skillNames: listSkills().map(s => s.name) })`, which misses definition-root bundles through `getGlobalSkill` | Offered `/` tags = the runtime's set |
 | Footer mode for a reopened Offline run | Tree → `run-7` (Offline, reopened; `isLocked === false`) → the id is permanent → footer uses `existingRunConfigStore.loadAgentCanonical('run-7')`. The model menu lists only its runtime with "Runtime fixed · Codex". A pick calls `updateAgentModelConfig` + `save()`. The next send resumes with the saved model | Choosing the mode by `config.isLocked`, which treats `run-7` as a draft, edits `context.config` locally, and never saves (the model is silently not applied) | Identity-keyed mode: same behavior after a terminate or a reopen |
+| Skill-path collision between live runs (D-15) | Temp workspace on Codex. (A) The configured agent `software-tutorial-video-maker` is live and holds `.codex/skills/software-tutorial-video-maker` → its private source. A Daily Assistant New chat requests the global copy (weak): it logs `skipped-held-by-other-run`, the chat starts, and the name resolves via the existing link. (B) A Daily Assistant chat is live and holds that path → the global source (weak only). Launching the configured agent (strong) re-points the link to the private source, logs `yielded-to-configured`, and the launch succeeds; the Daily Assistant keeps a same-named skill. (C) Two configured agents with different sources on the same name → fail-fast, as today | The weak request throws `sourceCollisionError` (a New chat fails), or the strong request throws because a chat is live (a catalog launch regresses) | Neither side's failure is caused by an ALL_INSTALLED run |
 | Registered-draft route transition | Catalog "Run agent" → `/chat?id=temp-1` → send → `promoteTemporaryId(temp-1, run-9)` → `useChatRouteRunSync` → `router.replace('/chat?id=run-9')`. A failed first send stays on `/chat?id=temp-1`, shows the error, and allows a resend | A launch-only "route after promotion"; treating `temp-1` as unknown after promotion and bouncing to New chat | Every send path keeps the view |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -667,6 +724,8 @@ Presentation (`components/chat`) → chat domain (`chatDraftStore`, `chatLaunchS
   - It is selection-change-driven only: a watcher on the selected standalone run id, not an on-mount check of a stale selection.
   - It fires only after a committed selection.
   - It never fires while the route has `rootSubjectKind=agent_org`.
+- **RSK-003 status:** the collision limit is resolved by D-15. Materialization size and time with the real 78-skill catalog passed API/E2E on all four runtimes.
+- **RSK-007:** the closer is confirmed (AF-33). The SR-010 marker covers the full window from connect until server-confirmed activation. The residual risk is a run the server accepts but never reports active; the existing failure and timeout paths clear the marker.
 - **RSK-006:** for Codex, reloaded user content may include the appended context-file reference section. The prefix parser is unaffected, but the reloaded "sent as" tooltip may show more text than the live one. This is accepted.
 
 ## ARCH-REV-001 Resolution
@@ -686,6 +745,15 @@ Presentation (`components/chat`) → chat domain (`chatDraftStore`, `chatLaunchS
 | --- | --- | --- |
 | AR-001 remaining (MP-006, High) | The footer mode is keyed on run identity. `temp-*` → `context.config`, runtime selectable. Permanent id → `existingRunConfigStore`: locked while live, runtime fixed when Offline, saved config applied on resume. It is never keyed on `isLocked` | D-08, Ownership Boundaries, Boundary Map, `chatRunModelControls` row, Examples, Guidance |
 | AR-007 (Low) | Launch order: `starting` state, then register → select → await send → route to `/chat?id=<selected id>`, then reset the draft. New chat shows the UXJ-001 starting state throughout | D-04 |
+
+## CRR-002 Resolution (API/E2E failure origin, SR-008)
+
+| Finding | Classification | Resolution | Sections |
+| --- | --- | --- | --- |
+| CR-004 / F-03 | Design Impact (High), RSK-003 trigger | D-15 Rule 1: under ALL_INSTALLED, a user-owned workspace entry wins (skip + `skipped-workspace-owned`); CONFIGURED stays fail-fast | D-15, File Mapping, Risks |
+| ARCH-REV-004 AR-008 (High) | Design Impact | D-15 Rule 2: weak/strong request strength in the shared registry. (A) A weak request skips a skill held by another run with a different source. (B) A strong request re-points a link held only by weak holders (atomic) and never fails because of an ALL_INSTALLED run; strong vs strong stays fail-fast. ACP/Grok `.grok/skills` added. Example and validation cases V-A to V-E added | D-15, File Mapping, Examples, Guidance |
+| CR-003 / F-02 | Missing Invariant (pre-existing; closer confirmed by the IR-002 stack) | SR-010 D-14: an `agentRunStore` activation-pending marker, set before connecting for first sends and Offline resumes, and cleared by an active snapshot, a failure, a rejected ack or terminate. Reconcile skips marked runs. The SR-008 `submissionPending` guard is replaced | D-14, File Mapping |
+| CR-002 / F-01 | Local Fix (implementation), sequenced in this package | Persisted-mode footer loads the run's runtime schema source | File Mapping |
 
 ## Guidance For Implementation
 
@@ -712,6 +780,13 @@ Presentation (`components/chat`) → chat domain (`chatDraftStore`, `chatLaunchS
 - **Footer on a registered pre-first-send draft** (catalog launch): the same controls as the right group of the New chat footer (runtime selectable, model, thinking), editing `context.config`. It has no workspace or approval controls; those are header facts.
 - **Tradeoff to tell the user at hand-off:** single-agent Offline runs change model and thinking in the chat footer. Advanced non-thinking model parameters, which the standalone gear editor used to reach, are not exposed for single-agent runs. This follows from DEC-007/REQ-012.
 - **Naming note:** the built-in "Daily Assistant" and the user's package agent `daily-assistant` share a display name, and `@` excludes only the built-in. The user may remove the package copy, which lives outside this repo.
+- **D-15 validation cases** (API/E2E, temp workspace, on Codex and Claude plus ACP/Grok where available; AGY Rule 1 only):
+  - **V-A:** configured agent live → a New chat with Daily Assistant starts, logging `skipped-held-by-other-run`.
+  - **V-B:** Daily Assistant live → the configured agent launches from the catalog and via `@`, logging `yielded-to-configured`; Daily Assistant stays usable.
+  - **V-C:** two configured agents with a same-name, different-source skill → fail-fast, unchanged.
+  - **V-D:** a user-owned folder at the workspace skill path → Daily Assistant starts (`skipped-workspace-owned`), and a configured agent fails fast, unchanged.
+  - **V-E:** both runs terminate → the link is removed and the registry is empty.
+  - Use a same-name, different-source skill pair from the real catalog (seven exist, e.g. `software-tutorial-video-maker`).
 - **Header status** uses the existing run-status mapping.
 - **Title** is the run summary, truncated to 42 characters with an ellipsis.
 - **Tree:** `/chat?id` sets the selected row, expands its workspace and agent, and is selected with `bg-indigo-50 text-indigo-900`.

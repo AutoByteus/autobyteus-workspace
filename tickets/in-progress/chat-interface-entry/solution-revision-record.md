@@ -11,6 +11,9 @@
 | SR-005 | Design | Architecture investigation + design on approved SR-003/SR-004 basis | N/A | Requirements Approved; design N/A | Design Ready; Architecture Design Complete (Large/High) | All REQ/AC via behavior map | Routed to architecture review |
 | SR-006 | Design | ARCH-REV-001 (Fail, Design Impact), `design-review-report.md` | AR-001–AR-005 + non-blocking notes | Design Ready (SR-005) | Design Ready; Architecture Design Complete (Large/High) | BEH-005, 007, 010, 011, 012; REQ-002, 007, 008, 011, 012, 013, 015, 016, 017; editorial REQ-010/013 traceability, SCN-002 | Returned to architecture review (ARCH-REV-002) |
 | SR-007 | Design | ARCH-REV-002 (Fail, Design Impact) | AR-001 remainder (MP-006), AR-007 | Design Ready (SR-006) | Design Ready; Architecture Design Complete (Large/High) | BEH-010, BEH-005; REQ-011, REQ-002 | Returned to architecture review (ARCH-REV-003) |
+| SR-008 | Design | Code Reviewer CRR-002 (API/E2E failure origin for API-REV-001) | CR-004, CR-003, CR-002 | Design Ready (SR-007), ARCH-REV-003 Pass | Design Ready; Architecture Design Complete (Large/High) | REQ-007, AC-002, REQ-003, REQ-011 (UXJ-007) | Routed to architecture review |
+| SR-009 | Design | ARCH-REV-004 (Fail, Design Impact) | AR-008 (MP-008, MP-009) | Design Ready (SR-008) | Design Ready; Architecture Design Complete (Large/High) | REQ-007/AC-002, REQ-017/AC-014, REQ-004 | Returned to architecture review (ARCH-REV-005) |
+| SR-010 | Design | Implementation Engineer IR-002 Design Impact on D-14 | CR-003 / RSK-007 (AF-30 premise disproved) | Design Ready (SR-009), ARCH-REV-005 Pass | Design Ready; Architecture Design Complete (Large/High) | REQ-003/AC-002, REQ-011/AC-009 | Routed to architecture review |
 
 ## Revision Entries
 
@@ -177,3 +180,77 @@
 
 - 2026-09-28: Architecture Reviewer ARCH-REV-003 — **Pass**, with no open findings. Basis: SR-003, SR-004 and SR-007. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`.
 - The reviewer handed the cumulative package to `/software_engineering_team/implementation_engineer`, and delivery was confirmed. Solution Designer did not duplicate that handoff.
+
+### SR-008 — Design revision for the API/E2E failure-origin review CRR-002
+
+- Phase and classification: Design — Design Impact (CR-004) + Unclear resolved as a Missing Invariant (CR-003) + sequencing of the Local Fix (CR-002)
+- Triggering input: Code Reviewer CRR-002 round 2 (run `code_reviewer_ee824e288f4b487ba385d3ae690145ac`), `code-review-report.md` "API/E2E Failure-Origin Review (Round 2)"; API/E2E API-REV-001
+- Triggering finding IDs: CR-004/F-03, CR-003/F-02, CR-002/F-01
+- Prior status: design Ready (SR-007), ARCH-REV-003 Pass; implementation IR-001 committed (`b7336203a`…`717603e61`)
+- Current status: design Ready (SR-008); `Architecture Design Complete`; Large / High (unchanged)
+- IDs affected: new D-14 and D-15; File Mapping; Risks (RSK-003 status, RSK-007)
+- Evidence: AF-29–AF-31
+- Intended behavior changed: No.
+  - D-15 is a precedence rule that realizes REQ-007 ("all installed skills") in a workspace that has its own skill of the same name. It follows the local-overrides-global convention the runtimes already apply when they discover workspace skills natively.
+  - It is surfaced to the user as a technical decision the user may veto.
+  - D-14 restores a lifecycle invariant for REQ-003/AC-002.
+- Approval impact: none. SR-003 approval and the R2 confirmation stand.
+- Affected design/review basis: ARCH-REV-003 covered SR-007; D-14/D-15 are new design, so re-review is required before implementation continues
+- Post-design classification: Large / High, unchanged
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` — see `architecture-review-handoff.md` (SR-008 section)
+- Downstream impact: after review, implementation (D-14, D-15, CR-002 together), then source review, then API/E2E rerun
+- Remaining gaps: D-14's close-stack evidence is required during implementation (RSK-007)
+- Next action: architecture review of SR-008
+
+### SR-009 — Complete D-15 for live-run holders and ACP/Grok (ARCH-REV-004)
+
+- Phase and classification: Design — Design Impact
+- Triggering input: Architecture Reviewer ARCH-REV-004, `design-review-report.md`. D-14, the core rule of D-15, and the CR-002 sequencing were accepted.
+- Triggering finding IDs: AR-008 (MP-008 cross-run different-source holders; MP-009 ACP/Grok omission)
+- Prior status: design Ready (SR-008), review Fail
+- Current status: design Ready (SR-009); `Architecture Design Complete`; Large / High (unchanged)
+- IDs affected: D-15 (Rule 1 user-owned; Rule 2 weak/strong holders with direction A skip and direction B atomic yield; ACP/Grok scope); File Mapping; Examples; Guidance (validation V-A to V-E); CRR-002 Resolution table
+- Evidence: AF-32
+- Intended behavior changed: No. This is a technical precedence and concurrency rule within REQ-007 that preserves REQ-017 configured launches. It is surfaced to the user.
+- Approval impact: none
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` — see `architecture-review-handoff.md` (SR-009 section)
+- Next action: ARCH-REV-005; then implementation (D-14, D-15, CR-002), source review, and the API/E2E rerun
+
+#### Review outcome for SR-009 (informational)
+
+- 2026-09-29: Architecture Reviewer ARCH-REV-005 — **Pass**. Basis: SR-009, with approved SR-003/SR-004. AR-008 is resolved. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`.
+- The reviewer handed the package to `/software_engineering_team/implementation_engineer` with binding constraints:
+  - **IC-1:** release after a re-point is by registry-entry counts.
+  - **IC-2:** on Windows, the re-point uses a registry-serialized unlink + symlink.
+  - Solution Designer did not duplicate the handoff.
+- Non-blocking recommendation R-1 (MP-012), recorded as a deferred design candidate:
+  - The idea: in Direction A, the weak request joins the existing entry as a weak co-holder instead of skipping, so the link survives the strong holder's release.
+  - Residual risk while deferred: if the configured holder ends first, a live Daily Assistant chat loses that one same-named skill link until its next run.
+  - Revisit if API/E2E or the user raises it.
+
+### SR-010 — D-14 revised: activation-pending marker (IR-002 evidence)
+
+- Phase and classification: Design — Design Impact (evidence correction)
+- Triggering input: Implementation Engineer IR-002 (run `implementation_engineer_a590e11b3b474f6483962c929f601ae8`); commits `da1033860` (code) and `46f28bb9f` (evidence). D-15 and CR-002 are implemented and validated.
+- Triggering finding IDs: CR-003 / F-02, RSK-007. The AF-30 premise was disproved (AF-33).
+- Prior status: design Ready (SR-009), ARCH-REV-005 Pass
+- Current status: design Ready (SR-010); `Architecture Design Complete`; Large / High (unchanged)
+- IDs affected: D-14 (replaced), File Mapping (`runHistoryLoadActions`, `agentRunStore`, `AgentStreamingService`), CRR-002 Resolution row, RSK-007; investigation AF-30 (corrected) and AF-33
+- Decision: an `agentRunStore` activation-pending marker.
+  - Set: before connecting, for first sends (after promotion) and for Offline/Error resumes.
+  - Cleared: by an active snapshot, a handled failure/cancel, a rejected SEND_MESSAGE ack, or terminate/close.
+  - Reconcile skips marked runs. The SR-008 `submissionPending` guard is removed.
+  - Options (a) and (c) were rejected, with the reasons recorded in D-14.
+- Intended behavior changed: No
+- Approval impact: none
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` — see `architecture-review-handoff.md` (SR-010 section)
+- Next action: architecture review of the D-14 revision; then implementation IR-003 (D-14 only), source review, and the API/E2E rerun
+
+#### Review outcome for SR-010 (informational)
+
+- 2026-09-29: Architecture Reviewer ARCH-REV-006 — **Pass**. Basis: SR-010, with approved SR-003/SR-004. The D-14 activation-pending marker is accepted. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`.
+- The reviewer handed the package to `/software_engineering_team/implementation_engineer`. Solution Designer did not duplicate the handoff.
+- Deferred non-blocking items (separate-ticket candidates unless downstream evidence escalates them):
+  - **R-2:** the workspace branch of `fetchRunHistoryTree` lacks the org branch's request-generation guard. Out-of-order snapshots can cause a transient, self-healing Offline flicker after a send. No message is lost. Pre-existing.
+  - **MP-014:** the marker can outlive a very short activation, until terminate or close. Residual and accepted.
+- Also deferred earlier: R-1 (ARCH-REV-005, weak co-holder instead of skip).

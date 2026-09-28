@@ -1,0 +1,113 @@
+{
+  "startedAt": "2026-09-28T23:27:36.138Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "C01": {
+      "title": "Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED",
+      "result": "Pass",
+      "ms": 7,
+      "details": {
+        "da": {
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "skillScope": "ALL_INSTALLED",
+          "skillNames": []
+        },
+        "legacy": {
+          "id": "probe-legacy",
+          "name": "Probe Legacy",
+          "skillScope": "CONFIGURED",
+          "skillNames": [
+            "probe-alpha"
+          ]
+        }
+      }
+    },
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 5716,
+      "details": {
+        "model": "sonnet",
+        "skills": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 8422,
+      "details": {
+        "runId": "daily_assistant_8d94f8fc583d49e2a02282908a0f1800",
+        "exposure": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "sonnet · Claude SDK"
+      }
+    },
+    "C14": {
+      "title": "D-15 Rule 1 (V-D): a user-owned workspace skill wins for the Daily Assistant; a configured agent still fails fast",
+      "result": "Pass",
+      "ms": 10747,
+      "details": {
+        "daRun": "daily_assistant_21ae3da24616485d96cfd506b062d06b",
+        "strongRun": "probe_shadow_owner_3feb3a90124344c59c8e3858cbfaaeb5",
+        "strongError": "Failed to prepare agent run 'probe_shadow_owner_3feb3a90124344c59c8e3858cbfaaeb5'.",
+        "userFolderIntact": true
+      }
+    },
+    "C15": {
+      "title": "D-15 Rule 2: configured launch re-points a weak-held link (V-B), a new Daily Assistant chat skips a strong-held link (V-A), link removed after all terminate (V-E)",
+      "result": "Pass",
+      "ms": 21146,
+      "details": {
+        "weak1": "daily_assistant_b15e9295e22b4806ae213e6e805ac6e2",
+        "strong": "probe_shadow_owner_445ac761a8d440f99e434dd0766b5315",
+        "weak2": "daily_assistant_64b3d1d5362849e699db4b80a3fbac79"
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 59524
+    },
+    {
+      "label": "frontend",
+      "pid": 59553
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 59553,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 59524,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-xArSYm"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-xArSYm",
+  "backendUrl": "http://127.0.0.1:57124",
+  "frontUrl": "http://127.0.0.1:57125",
+  "browserErrors": [],
+  "completedAt": "2026-09-28T23:28:30.752Z"
+}

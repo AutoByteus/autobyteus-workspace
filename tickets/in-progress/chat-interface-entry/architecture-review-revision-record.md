@@ -9,6 +9,9 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-001 | Round 1: initial review of SR-005 `Architecture Design Complete` (Large/High) | SR-003, SR-004, SR-005 | N/A | Fail (Design Impact) | AR-001, AR-002, AR-003, AR-004, AR-005 |
 | ARCH-REV-002 | Round 2: SR-006 re-review | SR-006 | Fail (Design Impact) | Fail (Design Impact) | AR-001 (remaining part), AR-007 (new, Low); AR-002–AR-005 resolved |
 | ARCH-REV-003 | Round 3: SR-007 re-review | SR-007 | Fail (Design Impact) | Pass | AR-001, AR-007 resolved |
+| ARCH-REV-004 | Round 4: SR-008 post-implementation revision (CRR-002) | SR-008 | Pass | Fail (Design Impact) | AR-008 (new, High) |
+| ARCH-REV-005 | Round 5: SR-009 re-review | SR-009 | Fail (Design Impact) | Pass | AR-008 resolved; IC-1 and IC-2 implementation constraints |
+| ARCH-REV-006 | Round 6: SR-010 D-14 revision (after IR-002 Design Impact) | SR-010 | Pass | Pass | None; R-2 recommendation, MP-014 residual |
 
 ## Revision Entries
 
@@ -101,3 +104,91 @@ None
   - RSK-001 and RSK-003–RSK-006.
   - MP-005 is Unclear and handled by the redirect rule.
   - The escalation triggers in the design apply during implementation.
+
+### ARCH-REV-004 — SR-008 (CRR-002) review: D-14 accepted; D-15 incomplete
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 4, triggered by the Solution Designer's SR-008 revision after the API/E2E failure (API-REV-001) and Code Reviewer CRR-002.
+- Triggering role, report path, and finding IDs: Code Reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md` (CR-002, CR-003, CR-004), routed by the Solution Designer.
+- Relevant solution revision IDs: SR-008
+- Prior authoritative decision: Pass (ARCH-REV-003, SR-007)
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - D-14 is accepted. The `submissionPending` guard in the single reconcile owner is evidence-gated.
+  - CR-002 is accepted as a local implementation fix.
+  - D-15 is accepted in principle (the user-owned workspace skill wins under ALL_INSTALLED), but it is incomplete (AR-008):
+    - Codex and Claude materialized skills are held in a process-wide registry for each run's lifetime.
+    - A same-name skill with a different source, held by another live run in the shared temp workspace, still throws `sourceCollisionError`. This happens in both directions: the default chat fails, or an unchanged CONFIGURED agent launch fails while a chat is live.
+    - This is reproducible from the user's real catalog, for example `software-tutorial-video-maker` (MP-008).
+    - The ACP/Grok materializer is not in scope (MP-009).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-005, AR-007 | Resolved (ARCH-REV-003) | Still resolved | SR-007 | SR-008 does not affect them |
+
+- New or remaining finding IDs: AR-008 (High)
+- Material classification changes: None. CR-003 was reclassified by the designer as a Missing Invariant with evidence gating, and the reviewer accepts that.
+- Recommended recipient: `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty:
+  - RSK-007 (the D-14 closer evidence).
+  - MP-010 is Not Reachable.
+  - The `/` description versus the workspace copy is a presentation note only.
+
+### ARCH-REV-005 — SR-009 re-review: D-15 completed; Pass with implementation constraints
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 5, triggered by the Solution Designer's SR-009 re-review request for ARCH-REV-004 AR-008.
+- Triggering role, report path, and finding IDs: Solution Designer; ARCH-REV-004 AR-008.
+- Relevant solution revision IDs: SR-009
+- Prior authoritative decision: Fail (Design Impact)
+- Current authoritative decision: Pass
+- What changed:
+  - D-15 now defines request strength (weak ALL_INSTALLED, strong configured).
+  - Rule 1 covers user-owned entries.
+  - Rule 2 covers different-source entries held by another run: Direction A skips; Direction B re-points links held only by weak holders and never fails; strong vs strong stays fail-fast.
+  - ACP/Grok is in scope, and the example and V-A to V-E are added.
+  - Code-derived implementation constraints recorded: IC-1 (release must be registry/count based after a re-point; today's descriptor identity and source checks would leak links) and IC-2 (Windows re-point via registry-serialized unlink + symlink where rename-over is unsupported).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-008 | Open (High) | Resolved | SR-009 D-15, File Mapping, Examples, V-A to V-E, AF-32 | Both directions of MP-008 are defined without failures caused by ALL_INSTALLED; strong vs strong is unchanged; the ACP factory is mapped (MP-009) |
+
+- New or remaining finding IDs: None. IC-1 and IC-2 are implementation constraints. R-1 is a recommendation.
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary); `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty:
+  - RSK-007 (the D-14 closer evidence).
+  - MP-012 / R-1 (a skipped weak skill after the strong holder releases).
+  - Windows re-point coverage (IC-2).
+
+### ARCH-REV-006 — SR-010 D-14 activation-pending marker: Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 6, triggered by the Solution Designer's SR-010 after Implementation Engineer IR-002 returned `Design Impact` on D-14 (the closer confirmed, the premise disproved; AF-33).
+- Triggering role, report path, and finding IDs: Implementation Engineer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/implementation-evidence/README.md`, `implementation-handoff.md`.
+- Relevant solution revision IDs: SR-010
+- Prior authoritative decision: Pass (ARCH-REV-005, SR-009)
+- Current authoritative decision: Pass
+- What changed:
+  - D-14 is now an `agentRunStore`-owned activation-pending marker, set from connect until server-confirmed activation or a handled failure, rejection or termination. Reconcile skips marked runs, and the `submissionPending` guard is removed cleanly.
+  - Verified that no active snapshot can precede `SEND_MESSAGE`, so the reproduced loss window is closed.
+  - Out-of-order snapshots after send (MP-013) are self-healing via the active-run reconnect; this is recommendation R-2.
+  - D-15 and CR-002 are unchanged, with IC-1 and IC-2 honored and V-A to V-E passing (IR-002).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-005, AR-007, AR-008 | Resolved | Still resolved | SR-009, SR-010 | SR-010 changes D-14 only |
+
+- New or remaining finding IDs: None
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary); `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty:
+  - R-2 (a generation guard for the workspace history branch).
+  - MP-014 (the marker lifetime for a very short activation).
+  - R-1 (weak co-holder).

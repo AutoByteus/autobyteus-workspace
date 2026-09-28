@@ -1,0 +1,264 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:58027
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:58027
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:62329) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T23:30:27.826Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-28T23:30:27.924Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-28T23:30:27.924Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1790638227929,"pid":62329,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58034"}
+{"level":30,"time":1790638227951,"pid":62329,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58027"}
+[2026-09-28T23:30:27.951Z] [INFO] [server.runtime] Server listening on 127.0.0.1:58027
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[2026-09-28T23:30:28.124Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID probe-team.
+Agent Team Definition created successfully with ID: probe-team
+[CodexAppServerClient] stderr: [2m2026-09-28T23:30:37.332324Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Created agent session 1d97dfdb-cba1-46d2-b209-09731b3119a8 for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Agent WebSocket connected: session=1d97dfdb-cba1-46d2-b209-09731b3119a8, run=daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Resolved configured temp workspace root to TempWorkspace.
+{"level":40,"time":1790638243019,"pid":62329,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_s6md98br0lOySREJbTSc64vKDOOJbV0HJMSZAr5foMs","statusCode":400,"elapsedMs":0.8792089968919754,"msg":"http request completed"}
+Published grok_build agent run 'daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4'.
+Closed agent session 1d97dfdb-cba1-46d2-b209-09731b3119a8
+Agent WebSocket disconnected: 1d97dfdb-cba1-46d2-b209-09731b3119a8
+Agent websocket attached for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Created agent session 2f427c93-c036-4c97-840d-3f4ba23c2ee9 for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Agent WebSocket connected: session=2f427c93-c036-4c97-840d-3f4ba23c2ee9, run=daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Closed agent session 2f427c93-c036-4c97-840d-3f4ba23c2ee9
+Agent WebSocket disconnected: 2f427c93-c036-4c97-840d-3f4ba23c2ee9
+Agent websocket attached for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Created agent session 156ef3ca-f771-427b-b57c-1c0759550fac for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Agent WebSocket connected: session=156ef3ca-f771-427b-b57c-1c0759550fac, run=daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Closed agent session 156ef3ca-f771-427b-b57c-1c0759550fac
+Agent WebSocket disconnected: 156ef3ca-f771-427b-b57c-1c0759550fac
+Agent websocket attached for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Created agent session 4c89c3e0-3851-4b50-b1ad-4233f80c9589 for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Agent WebSocket connected: session=4c89c3e0-3851-4b50-b1ad-4233f80c9589, run=daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws.
+Created and registered workspace ID: agent_ws_8cf1b61207c665eaf50c7091ef69007aab20ae493a873703fa408f6f50491daf
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws.
+Reusing registered workspace ID: agent_ws_8cf1b61207c665eaf50c7091ef69007aab20ae493a873703fa408f6f50491daf
+Agent websocket attached for run daily_assistant_5d9a28d2d8d542d0ad5a7008926337fd
+Created agent session 0ca96a11-6aae-4bb6-91d8-212e3eb5f594 for run daily_assistant_5d9a28d2d8d542d0ad5a7008926337fd
+Agent WebSocket connected: session=0ca96a11-6aae-4bb6-91d8-212e3eb5f594, run=daily_assistant_5d9a28d2d8d542d0ad5a7008926337fd
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws.
+Reusing registered workspace ID: agent_ws_8cf1b61207c665eaf50c7091ef69007aab20ae493a873703fa408f6f50491daf
+Grok Build workspace skill reconciliation: run='daily_assistant_5d9a28d2d8d542d0ad5a7008926337fd', skill='probe-alpha', path='/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws/.grok/skills/probe-alpha', previousTarget='none', currentSource='/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/skills/probe-alpha', disposition='skipped-workspace-owned'.
+{"level":40,"time":1790638288096,"pid":62329,"hostname":"MacBookPro","reqId":"req-5","method":"POST","url":"/mcp/agent-tools/agtrun_rtptkxK6-mUJv5Jd9XNrJPIa6zfAX4znJcsv40ZpREU","statusCode":400,"elapsedMs":0.32758399844169617,"msg":"http request completed"}
+Published grok_build agent run 'daily_assistant_5d9a28d2d8d542d0ad5a7008926337fd'.
+Closed agent session 4c89c3e0-3851-4b50-b1ad-4233f80c9589
+Agent WebSocket disconnected: 4c89c3e0-3851-4b50-b1ad-4233f80c9589
+Closed agent session 0ca96a11-6aae-4bb6-91d8-212e3eb5f594
+Agent WebSocket disconnected: 0ca96a11-6aae-4bb6-91d8-212e3eb5f594
+Agent websocket attached for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Created agent session 41dd21d0-8512-4865-999f-5a5596a3aa41 for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Agent WebSocket connected: session=41dd21d0-8512-4865-999f-5a5596a3aa41, run=daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Agent websocket attached for run daily_assistant_5d9a28d2d8d542d0ad5a7008926337fd
+Created agent session 824fd272-acb6-4018-8b72-9a222250fa01 for run daily_assistant_5d9a28d2d8d542d0ad5a7008926337fd
+Agent WebSocket connected: session=824fd272-acb6-4018-8b72-9a222250fa01, run=daily_assistant_5d9a28d2d8d542d0ad5a7008926337fd
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws.
+Reusing registered workspace ID: agent_ws_8cf1b61207c665eaf50c7091ef69007aab20ae493a873703fa408f6f50491daf
+Agent websocket attached for run probe_shadow_owner_e30e5ba86de044c8a8e0aa02f22f9d57
+Created agent session 77e0b382-a990-4531-9b20-636fcf5c2151 for run probe_shadow_owner_e30e5ba86de044c8a8e0aa02f22f9d57
+Agent WebSocket connected: session=77e0b382-a990-4531-9b20-636fcf5c2151, run=probe_shadow_owner_e30e5ba86de044c8a8e0aa02f22f9d57
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws.
+Reusing registered workspace ID: agent_ws_8cf1b61207c665eaf50c7091ef69007aab20ae493a873703fa408f6f50491daf
+Unexpected failure while preparing agent run 'probe_shadow_owner_e30e5ba86de044c8a8e0aa02f22f9d57' for runtime 'grok_build'. Error: Workspace skill path collision for Grok Build skill 'probe-alpha': path '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/user-owned-skill-ws/.grok/skills/probe-alpha' already exists as a directory.
+    at WorkspaceSkillLinks.pathStateCollisionError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-links.js:158:16)
+    at WorkspaceSkillMaterializer.reconcileResolved (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:196:35)
+    at async WorkspaceSkillMaterializer.completeAcquisition (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:134:29)
+SEND_MESSAGE command not accepted for agent run probe_shadow_owner_e30e5ba86de044c8a8e0aa02f22f9d57: [ACTIVATION_FAILED] Failed to prepare agent run 'probe_shadow_owner_e30e5ba86de044c8a8e0aa02f22f9d57'.
+Closed agent session 41dd21d0-8512-4865-999f-5a5596a3aa41
+Agent WebSocket disconnected: 41dd21d0-8512-4865-999f-5a5596a3aa41
+Closed agent session 824fd272-acb6-4018-8b72-9a222250fa01
+Agent WebSocket disconnected: 824fd272-acb6-4018-8b72-9a222250fa01
+Closed agent session 77e0b382-a990-4531-9b20-636fcf5c2151
+Agent WebSocket disconnected: 77e0b382-a990-4531-9b20-636fcf5c2151
+Agent websocket attached for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Created agent session 544df991-5359-4cbd-8aae-908b056df675 for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Agent WebSocket connected: session=544df991-5359-4cbd-8aae-908b056df675, run=daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws.
+Created and registered workspace ID: agent_ws_ef34dc02a921ec8c9a6e5e23244051f23fa580bc57a8f8515485f330770cd977
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws.
+Reusing registered workspace ID: agent_ws_ef34dc02a921ec8c9a6e5e23244051f23fa580bc57a8f8515485f330770cd977
+Agent websocket attached for run daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a
+Created agent session 749ac69d-5f4d-4d61-be21-2292ca8cfa11 for run daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a
+Agent WebSocket connected: session=749ac69d-5f4d-4d61-be21-2292ca8cfa11, run=daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws.
+Reusing registered workspace ID: agent_ws_ef34dc02a921ec8c9a6e5e23244051f23fa580bc57a8f8515485f330770cd977
+{"level":40,"time":1790638302906,"pid":62329,"hostname":"MacBookPro","reqId":"req-9","method":"POST","url":"/mcp/agent-tools/agtrun_dNT8w0NJYu8urATDPSDgx7wpNm95W_CCR7B4NuQ5xrM","statusCode":400,"elapsedMs":0.3357499986886978,"msg":"http request completed"}
+Published grok_build agent run 'daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a'.
+Closed agent session 544df991-5359-4cbd-8aae-908b056df675
+Agent WebSocket disconnected: 544df991-5359-4cbd-8aae-908b056df675
+Closed agent session 749ac69d-5f4d-4d61-be21-2292ca8cfa11
+Agent WebSocket disconnected: 749ac69d-5f4d-4d61-be21-2292ca8cfa11
+Agent websocket attached for run daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a
+Created agent session 93e7335f-87f5-4036-9f9c-6f4d4848fd5c for run daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a
+Agent WebSocket connected: session=93e7335f-87f5-4036-9f9c-6f4d4848fd5c, run=daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a
+Agent websocket attached for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Created agent session e982e049-2387-40ba-90cb-4baa53e529a9 for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Agent WebSocket connected: session=e982e049-2387-40ba-90cb-4baa53e529a9, run=daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws.
+Reusing registered workspace ID: agent_ws_ef34dc02a921ec8c9a6e5e23244051f23fa580bc57a8f8515485f330770cd977
+Agent websocket attached for run probe_shadow_owner_515148d198ab4c7cba8f24469bbfe411
+Created agent session f435d6e3-3d94-4830-ac74-3fdabc5b793f for run probe_shadow_owner_515148d198ab4c7cba8f24469bbfe411
+Agent WebSocket connected: session=f435d6e3-3d94-4830-ac74-3fdabc5b793f, run=probe_shadow_owner_515148d198ab4c7cba8f24469bbfe411
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws.
+Reusing registered workspace ID: agent_ws_ef34dc02a921ec8c9a6e5e23244051f23fa580bc57a8f8515485f330770cd977
+Grok Build workspace skill reconciliation: run='probe_shadow_owner_515148d198ab4c7cba8f24469bbfe411', skill='probe-alpha', path='/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws/.grok/skills/probe-alpha', previousTarget='/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/skills/probe-alpha', currentSource='/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/agents/probe-shadow-owner/skills/probe-alpha', disposition='yielded-to-configured', yieldingRuns='daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a'.
+Published grok_build agent run 'probe_shadow_owner_515148d198ab4c7cba8f24469bbfe411'.
+Closed agent session 93e7335f-87f5-4036-9f9c-6f4d4848fd5c
+Agent WebSocket disconnected: 93e7335f-87f5-4036-9f9c-6f4d4848fd5c
+Closed agent session f435d6e3-3d94-4830-ac74-3fdabc5b793f
+Agent WebSocket disconnected: f435d6e3-3d94-4830-ac74-3fdabc5b793f
+Closed agent session e982e049-2387-40ba-90cb-4baa53e529a9
+Agent WebSocket disconnected: e982e049-2387-40ba-90cb-4baa53e529a9
+Agent websocket attached for run daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a
+Created agent session fb60ac73-1fb5-41e0-85f8-164a68bc1b60 for run daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a
+Agent WebSocket connected: session=fb60ac73-1fb5-41e0-85f8-164a68bc1b60, run=daily_assistant_f56c5803feaf4c82ba45313fd17cbd3a
+Agent websocket attached for run probe_shadow_owner_515148d198ab4c7cba8f24469bbfe411
+Created agent session 97033c76-001e-4e60-ae7e-01780c176079 for run probe_shadow_owner_515148d198ab4c7cba8f24469bbfe411
+Agent WebSocket connected: session=97033c76-001e-4e60-ae7e-01780c176079, run=probe_shadow_owner_515148d198ab4c7cba8f24469bbfe411
+Agent websocket attached for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Created agent session 89176df2-ac86-4323-9624-166c620897b0 for run daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Agent WebSocket connected: session=89176df2-ac86-4323-9624-166c620897b0, run=daily_assistant_de0cfaee4c854acabba7a6aa06ac38b4
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws.
+Reusing registered workspace ID: agent_ws_ef34dc02a921ec8c9a6e5e23244051f23fa580bc57a8f8515485f330770cd977
+Agent websocket attached for run daily_assistant_d6956db6ab5b4efc8aaa018a3707cd6f
+Created agent session c650b7e5-00ac-4975-b24f-9359baef5adc for run daily_assistant_d6956db6ab5b4efc8aaa018a3707cd6f
+Agent WebSocket connected: session=c650b7e5-00ac-4975-b24f-9359baef5adc, run=daily_assistant_d6956db6ab5b4efc8aaa018a3707cd6f
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws.
+Reusing registered workspace ID: agent_ws_ef34dc02a921ec8c9a6e5e23244051f23fa580bc57a8f8515485f330770cd977
+Grok Build workspace skill reconciliation: run='daily_assistant_d6956db6ab5b4efc8aaa018a3707cd6f', skill='probe-alpha', path='/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/shared-skill-ws/.grok/skills/probe-alpha', previousTarget='/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/agents/probe-shadow-owner/skills/probe-alpha', currentSource='/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-Rndlmp/server-data/skills/probe-alpha', disposition='skipped-held-by-other-run'.
+{"level":40,"time":1790638319281,"pid":62329,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/mcp/agent-tools/agtrun_IcmxWHCiYhRgYtJraL_aWDyL8Lduxc_DmT66LfFCr9c","statusCode":400,"elapsedMs":0.2157920002937317,"msg":"http request completed"}
+Published grok_build agent run 'daily_assistant_d6956db6ab5b4efc8aaa018a3707cd6f'.
+Closed agent session fb60ac73-1fb5-41e0-85f8-164a68bc1b60
+Agent WebSocket disconnected: fb60ac73-1fb5-41e0-85f8-164a68bc1b60
+Closed agent session c650b7e5-00ac-4975-b24f-9359baef5adc
+Agent WebSocket disconnected: c650b7e5-00ac-4975-b24f-9359baef5adc
+Closed agent session 97033c76-001e-4e60-ae7e-01780c176079
+Agent WebSocket disconnected: 97033c76-001e-4e60-ae7e-01780c176079
+Closed agent session 89176df2-ac86-4323-9624-166c620897b0
+Agent WebSocket disconnected: 89176df2-ac86-4323-9624-166c620897b0
+[2026-09-28T23:32:07.909Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-28T23:32:08.158Z] [INFO] [server.runtime] Server closed cleanly.
