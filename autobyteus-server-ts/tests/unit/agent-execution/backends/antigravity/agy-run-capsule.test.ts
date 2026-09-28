@@ -213,9 +213,31 @@ describe("AGY run capsule", () => {
     const binding = globalBinding(source);
     await expect(createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "collision", memoryDir: root.memoryDir,
       workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [binding],
-      skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null })).rejects.toThrow("AGY_SKILL_NAME_COLLISION");
+      skillRequestStrength: "configured", skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null })).rejects.toThrow("AGY_SKILL_NAME_COLLISION");
     expect(await fs.readFile(path.join(userSkill, "SKILL.md"), "utf8")).toBe("# User owned");
     await expect(fs.stat(path.join(root.memoryDir, "agy-project"))).rejects.toMatchObject({ code: "ENOENT" });
+  });
+
+  it("lets a user-owned workspace skill win over an all-installed skill of the same name (D-15 Rule 1)", async () => {
+    const root = await roots();
+    const source = path.join(root.base, "skill-source");
+    const otherSource = path.join(root.base, "other-source");
+    const userSkill = path.join(root.workspacePath, ".agents", "skills", "example-skill");
+    await fs.mkdir(source); await fs.mkdir(otherSource); await fs.mkdir(userSkill, { recursive: true });
+    await fs.writeFile(path.join(source, "SKILL.md"), "# Installed");
+    await fs.writeFile(path.join(otherSource, "SKILL.md"), "# Other installed");
+    await fs.writeFile(path.join(userSkill, "SKILL.md"), "# User owned");
+    const warning = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+
+    const capsule = await createAgyRunCapsule({ agentDefinitionId: "autobyteus-daily-assistant", runId: "chat-run",
+      memoryDir: root.memoryDir, workspacePath: root.workspacePath, identity: "Identity",
+      configuredSkillBindings: [globalBinding(source), globalBinding(otherSource, "other-skill")],
+      skillRequestStrength: "all_installed", skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
+
+    expect(capsule.manifest.skills.map((entry) => entry.name)).toEqual(["other-skill"]);
+    await expect(fs.stat(path.join(capsule.path, ".agents", "skills", "example-skill"))).rejects.toMatchObject({ code: "ENOENT" });
+    expect(await fs.readFile(path.join(userSkill, "SKILL.md"), "utf8")).toBe("# User owned");
+    expect(warning).toHaveBeenCalledWith(expect.stringContaining("run=chat-run, agent=autobyteus-daily-assistant, skill=example-skill, disposition=skipped-workspace-owned"));
   });
 
   it("rejects user-owned AutoByteus MCP key collisions before generating run config", async () => {

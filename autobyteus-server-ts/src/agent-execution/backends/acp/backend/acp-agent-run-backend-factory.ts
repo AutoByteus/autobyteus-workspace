@@ -1,4 +1,5 @@
 import { SkillAccessMode, resolveSkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { skillRequestStrengthForScope } from "../../shared/skill-request-strength.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
@@ -115,6 +116,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     const skillAccessMode = resolveSkillAccessMode(config.skillAccessMode ?? null, bindings.length);
     const materializedSkills = await this.deps.skillMaterializer.materializeConfiguredWorkspaceSkills({
       runId, workingDirectory, skillAccessMode,
+      requestStrength: skillRequestStrengthForScope(this.deps.skills.resolveSkillScope(definition)),
       requests: skillAccessMode === SkillAccessMode.NONE ? [] : bindings.map((binding) => binding.kind === "resolved"
         ? { kind: "expose-resolved" as const, skill: binding.skill }
         : { kind: "reconcile-unresolved" as const, name: binding.name }),

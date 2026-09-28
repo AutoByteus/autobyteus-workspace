@@ -77,6 +77,18 @@ export function useChatRunModelControls(context: Ref<AgentContext | null>) {
     if (draft || live) attemptedRunId = null
   })
 
+  // The thinking schema of a persisted run falls back to its runtime catalog (always for a live
+  // run, whose canonical config is not loaded). Load that catalog when nothing has requested it
+  // yet, so a live run opened fresh still shows its locked thinking control (CR-002). Only an
+  // `idle` catalog is requested: a failed load is not retried here.
+  watch(
+    () => (mode.value === 'persisted' ? runtimeKind.value : ''),
+    (kind) => {
+      if (kind && catalog.catalogState(kind) === 'idle') catalog.ensureCatalog(kind)
+    },
+    { immediate: true },
+  )
+
   const fixedModels = computed<ChatFixedModelList>(() => {
     const state = existingRunConfigStore.modelOptionsByAddress['/']
     if (!persistedDraft.value || !state || state.status === 'loading') return { status: 'loading', groups: [] }

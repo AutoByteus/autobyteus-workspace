@@ -3,6 +3,7 @@ import { constants, type BigIntStats } from "node:fs";
 import path from "node:path";
 import type { DetailedConfiguredSkillResolution } from "../../../../skills/domain/configured-agent-skill-binding.js";
 import { fingerprintConfiguredSkillSource } from "../../../../skills/services/configured-skill-source-fingerprint.js";
+import { isWeakSkillRequest, type SkillRequestStrength } from "../../shared/skill-request-strength.js";
 
 export type AgySkillSnapshot = { name: string; relativePath: string };
 
@@ -21,6 +22,11 @@ const contains = (root: string, candidate: string): boolean => {
 const same = (a: BigIntStats, b: BigIntStats): boolean =>
   a.dev === b.dev && a.ino === b.ino && a.mode === b.mode && a.size === b.size
   && a.mtimeNs === b.mtimeNs && a.ctimeNs === b.ctimeNs;
+
+const workspaceEntryExists = async (entry: string): Promise<boolean> => {
+  try { await fs.lstat(entry); return true; }
+  catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return false; throw error; }
+};
 
 /** Copy one checked source tree into a newly created capsule path, never dereferencing a directory link. */
 const snapshotSkill = async (binding: Extract<DetailedConfiguredSkillResolution, { kind: "resolved" }>, target: string, name: string): Promise<void> => {
@@ -129,6 +135,8 @@ export const materializeAgyConfiguredSkills = async (input: {
   enabled: boolean;
   runId: string;
   agentDefinitionId: string;
+  /** From `SkillService.resolveSkillScope` via `skillRequestStrengthForScope` (D-15 Rule 1). */
+  requestStrength: SkillRequestStrength;
 }): Promise<AgySkillSnapshot[]> => {
   if (!input.enabled) return [];
   const names = new Set<string>();
@@ -149,8 +157,12 @@ export const materializeAgyConfiguredSkills = async (input: {
     if (names.has(name.toLowerCase())) throw failure("AGY_SKILL_NAME_COLLISION", name);
     names.add(name.toLowerCase());
     const workspaceSkill = path.join(input.workspacePath, ".agents", "skills", name);
-    try { await fs.lstat(workspaceSkill); throw failure("AGY_SKILL_NAME_COLLISION", name); }
-    catch (error) { if ((error as NodeJS.ErrnoException).code !== "ENOENT") throw error; }
+    if (await workspaceEntryExists(workspaceSkill)) {
+      // The workspace owns this name: AGY discovers it natively. Configured requests fail fast.
+      if (!isWeakSkillRequest(input.requestStrength)) throw failure("AGY_SKILL_NAME_COLLISION", name);
+      console.warn(`AGY configured skill skipped: run=${logIdentity(input.runId)}, agent=${logIdentity(input.agentDefinitionId)}, skill=${logIdentity(name)}, disposition=skipped-workspace-owned`);
+      continue;
+    }
     const relativePath = path.join(".agents", "skills", name);
     try { await snapshotSkill(binding, path.join(input.capsulePath, relativePath), name); }
     catch (error) {

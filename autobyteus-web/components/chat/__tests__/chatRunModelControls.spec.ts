@@ -16,10 +16,17 @@ vi.mock('~/stores/chatDraftStore', () => ({
   useChatDraftStore: () => ({ draft: null, setModel: vi.fn(), setThinkingConfig: vi.fn() }),
 }))
 vi.mock('~/composables/useToasts', () => ({ useToasts: () => ({ addToast: vi.fn() }) }))
+const catalogMock = vi.hoisted(() => ({
+  states: {} as Record<string, string>,
+  schemas: {} as Record<string, unknown>,
+  ensureCatalog: null as any,
+}))
 vi.mock('~/composables/chat/useChatModelCatalog', () => ({
   useChatModelCatalog: () => ({
     modelLabel: (_runtime: string, id: string) => id,
-    schemaFor: () => null,
+    schemaFor: (runtime: string, id: string) => catalogMock.schemas[`${runtime}/${id}`] ?? null,
+    catalogState: (runtime: string) => catalogMock.states[runtime] ?? 'idle',
+    ensureCatalog: (runtime: string) => catalogMock.ensureCatalog(runtime),
   }),
 }))
 
@@ -43,6 +50,9 @@ const mountControls = (context: AgentContext) => {
 
 describe('useChatRunModelControls', () => {
   beforeEach(() => {
+    catalogMock.states = {}
+    catalogMock.schemas = reactive({})
+    catalogMock.ensureCatalog = vi.fn()
     existing.store = reactive({
       draft: null as any,
       loadingCanonical: false,
@@ -114,5 +124,33 @@ describe('useChatRunModelControls', () => {
     await nextTick()
     await nextTick()
     expect(existing.store.loadAgentCanonical).toHaveBeenCalledTimes(1)
+  })
+
+  it('loads the runtime catalog for a live persisted run so its locked thinking control can render (CR-002)', async () => {
+    const schema = { parameters: { reasoning_effort: { type: 'enum', enum: ['low', 'high'], default: 'low' } } }
+    const context = buildContext('run-live', { isLocked: true, status: AgentStatus.Idle })
+    const controls = mountControls(context)
+    await nextTick()
+
+    expect(catalogMock.ensureCatalog).toHaveBeenCalledWith('codex_app_server')
+    expect(controls.lockedReason.value).toBeTruthy()
+    expect(controls.thinkingSchema.value).toBeNull()
+
+    // The catalog arrives: the schema comes from it while the control stays locked.
+    catalogMock.schemas['codex_app_server/gpt-5.5'] = schema
+    await nextTick()
+    expect(controls.thinkingSchema.value).not.toBeNull()
+    expect(controls.lockedReason.value).toBeTruthy()
+  })
+
+  it('does not request a catalog that is already loading, loaded or failed, nor for a draft', async () => {
+    for (const state of ['loading', 'ready', 'error']) {
+      catalogMock.states = { codex_app_server: state }
+      mountControls(buildContext(`run-${state}`, { isLocked: true, status: AgentStatus.Running }))
+    }
+    catalogMock.states = {}
+    mountControls(buildContext('temp-2'))
+    await nextTick()
+    expect(catalogMock.ensureCatalog).not.toHaveBeenCalled()
   })
 })

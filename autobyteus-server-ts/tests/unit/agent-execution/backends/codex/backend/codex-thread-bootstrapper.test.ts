@@ -145,6 +145,7 @@ const createBootstrapper = (input: {
   toolNames?: string[];
   agentToolsDescriptor?: AgentToolMcpDescriptor;
   materializeImplementation?: WorkspaceSkillMaterializer["materializeConfiguredWorkspaceSkills"];
+  skillScope?: "CONFIGURED" | "ALL_INSTALLED";
 }) => {
   const workspaceSkillMaterializer = createMaterializerMock();
   if (input.materializeImplementation) {
@@ -166,7 +167,7 @@ const createBootstrapper = (input: {
     })),
   } as unknown as AgentDefinitionService;
   const skillService = {
-    resolveConfiguredSkillBindingsForAgent: vi.fn(() =>
+    resolveSkillScope: () => input.skillScope ?? "CONFIGURED", resolveConfiguredSkillBindingsForAgent: vi.fn(() =>
       input.bindings ?? input.skills.map(resolvedBinding)),
   } as unknown as SkillService;
   const client = {
@@ -422,8 +423,23 @@ describe("CodexThreadBootstrapper", () => {
         { kind: "expose-resolved", skill: missing },
       ],
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      requestStrength: "configured",
     });
     expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
+  });
+
+  it("requests workspace skills weakly for an ALL_INSTALLED definition (D-15)", async () => {
+    const installed = createSkill("installed_skill");
+    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper({
+      skills: [installed],
+      skillScope: "ALL_INSTALLED",
+      requestImplementation: async () => ({ data: [{ cwd: WORKING_DIRECTORY, skills: [], errors: [] }] }),
+    });
+
+    await bootstrapper.bootstrapForCreate(createRunContext());
+
+    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
+      expect.objectContaining({ requestStrength: "all_installed", requests: [{ kind: "expose-resolved", skill: installed }] }));
   });
 
   it("normalizes llmConfig service_tier into Codex thread serviceTier", async () => {

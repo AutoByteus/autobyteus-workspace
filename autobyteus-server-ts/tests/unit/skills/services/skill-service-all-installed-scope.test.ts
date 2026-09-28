@@ -162,6 +162,13 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
     expect(service.hasEffectiveSkills(configured)).toBe(true);
   });
 
+  it("resolves the normalized skill scope that runtimes map to a request strength (D-15)", () => {
+    expect(service.resolveSkillScope(dailyAssistant())).toBe("ALL_INSTALLED");
+    expect(service.resolveSkillScope(dailyAssistant({ skillScope: "CONFIGURED" }))).toBe("CONFIGURED");
+    expect(service.resolveSkillScope(dailyAssistant({ skillScope: "unknown" as never }))).toBe("CONFIGURED");
+    expect(service.resolveSkillScope(null)).toBe("CONFIGURED");
+  });
+
   it("reports no effective skills when every installed skill is disabled", () => {
     for (const record of service.listInstalledSkillRecords()) service.disableSkill(record.skill.name);
 
@@ -211,6 +218,7 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
         runId: "run-all-installed",
         workingDirectory: workspace,
         skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+        requestStrength: "all_installed",
         requests: bindings.map((binding) => binding.kind === "resolved"
           ? { kind: "expose-resolved" as const, skill: binding.skill }
           : { kind: "reconcile-unresolved" as const, name: binding.name }),
@@ -230,6 +238,7 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
         memoryDir: path.join(tempRoot, "agy-memory"),
         workspacePath: workspace,
         identity: "Identity",
+        skillRequestStrength: "all_installed",
         configuredSkillBindings: service.resolveConfiguredSkillBindingsForAgentDetailed(dailyAssistant()),
         skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         mcpDescriptor: null,

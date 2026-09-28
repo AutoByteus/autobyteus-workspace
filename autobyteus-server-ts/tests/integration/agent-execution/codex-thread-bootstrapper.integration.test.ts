@@ -231,7 +231,7 @@ const createBootstrapper = (input: {
     }),
   } as unknown as AgentDefinitionService;
   const skillService = {
-    resolveConfiguredSkillBindingsForAgent: () =>
+    resolveSkillScope: () => "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () =>
       input.configuredSkills.map((skill) => ({ kind: "resolved" as const, skill })),
   } as unknown as SkillService;
   const agentToolMcpRunSessions = {

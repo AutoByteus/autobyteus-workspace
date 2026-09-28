@@ -5,6 +5,7 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { WorkspaceSkillMaterializer } from "../../../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
+import type { SkillRequestStrength } from "../../../../../src/agent-execution/backends/shared/skill-request-strength.js";
 
 const tempRoots: string[] = [];
 const profile = { runtimeLabel: "Test", workspaceSkillsRootSegments: [".test", "skills"] };
@@ -27,8 +28,10 @@ const materializedPath = (workspace: string, name: string): string =>
 
 const expose = (skill: Skill) => ({ kind: "expose-resolved" as const, skill });
 const discoverable = (skill: Skill) => ({ kind: "reconcile-discoverable" as const, skill });
-const run = (materializer: WorkspaceSkillMaterializer, workspace: string, requests: Array<ReturnType<typeof expose> | ReturnType<typeof discoverable> | { kind: "reconcile-unresolved"; name: string }>, skillAccessMode = SkillAccessMode.PRELOADED_ONLY) =>
-  materializer.materializeConfiguredWorkspaceSkills({ runId: "run-1", workingDirectory: workspace, requests, skillAccessMode });
+type TestRequest = ReturnType<typeof expose> | ReturnType<typeof discoverable> | { kind: "reconcile-unresolved"; name: string };
+const run = (materializer: WorkspaceSkillMaterializer, workspace: string, requests: TestRequest[], skillAccessMode = SkillAccessMode.PRELOADED_ONLY,
+  requestStrength: SkillRequestStrength = "configured", runId = "run-1") =>
+  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, skillAccessMode, requestStrength });
 
 const isAbsent = async (target: string): Promise<boolean> => {
   try { await fs.lstat(target); return false; } catch (error) {
@@ -73,15 +76,16 @@ describe("WorkspaceSkillMaterializer", () => {
     const first = await run(materializer, workspace, [expose(skill), expose(skill)]);
     const second = await run(materializer, workspace, [expose(skill)]);
 
-    expect(first[0]).toBe(first[1]);
-    expect(second[0]).toBe(first[0]);
+    // Every occurrence is its own holder of the one shared link.
+    expect(new Set([first[0], first[1], second[0]].map((descriptor) => descriptor!.materializedRootPath)).size).toBe(1);
+    expect(new Set([first[0], first[1], second[0]].map((descriptor) => descriptor!.holderId)).size).toBe(3);
     await materializer.cleanupMaterializedWorkspaceSkills(first);
     expect((await fs.lstat(first[0]!.materializedRootPath)).isSymbolicLink()).toBe(true);
     await materializer.cleanupMaterializedWorkspaceSkills(second);
     expect(await isAbsent(first[0]!.materializedRootPath)).toBe(true);
   });
 
-  it("joins concurrent acquisition and publishes one shared descriptor", async () => {
+  it("joins concurrent acquisition to one link with one holder per acquisition", async () => {
     const source = await tempDir("workspace-skill-source-");
     const workspace = await tempDir("workspace-skill-workspace-");
     const skill = await skillFixture(source, "concurrent");
@@ -102,7 +106,8 @@ describe("WorkspaceSkillMaterializer", () => {
     const results = await Promise.all([firstPromise, secondPromise]);
     const first = results[0][0]!;
     const second = results[1][0]!;
-    expect(second).toBe(first);
+    expect(second.materializedRootPath).toBe(first.materializedRootPath);
+    expect(second.holderId).not.toBe(first.holderId);
 
     await materializer.cleanupMaterializedWorkspaceSkills([first]);
     expect((await fs.lstat(first.materializedRootPath)).isSymbolicLink()).toBe(true);

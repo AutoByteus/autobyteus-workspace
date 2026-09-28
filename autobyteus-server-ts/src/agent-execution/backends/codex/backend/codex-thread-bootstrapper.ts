@@ -2,6 +2,10 @@ import {
   SkillAccessMode,
   resolveSkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import {
+  skillRequestStrengthForScope,
+  type SkillRequestStrength,
+} from "../../shared/skill-request-strength.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
@@ -256,6 +260,7 @@ export class CodexThreadBootstrapper {
       workingDirectory,
       configuredSkillBindings,
       skillAccessMode,
+      requestStrength: skillRequestStrengthForScope(this.skillService.resolveSkillScope(agentDefinition)),
     });
 
     return new AgentRunContext({
@@ -338,6 +343,7 @@ export class CodexThreadBootstrapper {
     workingDirectory: string;
     configuredSkillBindings: ConfiguredAgentSkillBinding[];
     skillAccessMode: SkillAccessMode;
+    requestStrength: SkillRequestStrength;
   }): Promise<MaterializedWorkspaceSkill[]> {
     const requests = await this.planWorkspaceSkillRequests(input);
     return this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
@@ -345,6 +351,7 @@ export class CodexThreadBootstrapper {
       workingDirectory: input.workingDirectory,
       requests,
       skillAccessMode: input.skillAccessMode,
+      requestStrength: input.requestStrength,
     });
   }
 

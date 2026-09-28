@@ -233,6 +233,11 @@ export const reconcileDiscoveredActiveRuns = async (
     if (runId.startsWith('temp-') || activeAgentRunIds.has(runId)) {
       continue;
     }
+    // A local first send is in flight (prepare → connect → send, until the first live status or
+    // a handled failure). A snapshot taken before the run became active must not tear it down.
+    if (context.submissionPending) {
+      continue;
+    }
 
     if (agentRunStore.isAgentStreamReady(runId)) {
       agentRunStore.disconnectAgentStream(runId);

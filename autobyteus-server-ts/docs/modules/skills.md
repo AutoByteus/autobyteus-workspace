@@ -205,7 +205,8 @@ The shared path-state policy is deliberately narrow and non-destructive:
 - a same-source runtime link is reused, with path-keyed holder tracking and
   guarded cleanup after the final owner releases it;
 - a live different-target symlink, file, directory, or other non-symlink path is
-  a fatal collision and is never overwritten or trusted; and
+  a collision and is never overwritten or trusted (a fatal one for configured
+  requests; see request strength below); and
 - batch failure rolls back links acquired by that invocation without replacing
   the original failure.
 
@@ -213,6 +214,39 @@ Warnings include the runtime, run, skill, path, relevant old/current target, and
 repair/skip disposition. Claude and Codex continue to use their
 provider-specific bootstrap paths; the native catalog-only processor does not
 replace those paths.
+
+### Request strength (`ALL_INSTALLED` versus configured)
+
+The same materializer also serves ACP/Grok (`.grok/skills`). Every call carries
+one `requestStrength` for the run, which the bootstrappers and factories
+(Codex, Claude, ACP/Grok, AGY) derive from `SkillService.resolveSkillScope`
+through `skillRequestStrengthForScope`: `ALL_INSTALLED` requests are weak
+(`all_installed`), all others strong (`configured`). The materializers never
+read `skillScope` themselves.
+
+- **Rule 1 — a user-owned workspace entry** (a non-symlink, or a link the
+  registry does not own): a weak request leaves it in place, omits its own copy
+  and logs `skipped-workspace-owned`; the runtime discovers the workspace skill
+  natively. A strong request still fails with the path collision error. AGY
+  applies the same rule to `<workspace>/.agents/skills/<name>`
+  (`AGY_SKILL_NAME_COLLISION` for strong requests only).
+- **Rule 2 — a path held by another live run with a different source.** The
+  process-wide registry records every holder with its run id and strength.
+  - A weak request skips the skill and logs `skipped-held-by-other-run`; the
+    name stays discoverable through the holder's link.
+  - A strong request fails fast when any strong holder exists. When only weak
+    holders exist it waits for an `acquiring` entry, then re-points the link to
+    its source while the entry stays in the exclusive `acquiring` phase: a
+    temporary link renamed over the old one, or, where renaming over a
+    directory link is unsupported (Windows), unlink + link. The weak holders
+    are merged into the entry and `yielded-to-configured` is logged with their
+    run ids. A configured source that is unavailable leaves the weak holders
+    untouched.
+- **Release** is keyed by each holder's registration, never by descriptor
+  identity or the descriptor's original source. The link is removed once no
+  holder remains, and only while it still points at the entry's current source.
+
+AGY run capsules copy skills per run, so Rule 2 does not arise there.
 
 ### Access modes and historical context
 

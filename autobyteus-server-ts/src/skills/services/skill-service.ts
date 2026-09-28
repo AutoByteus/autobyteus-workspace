@@ -4,7 +4,11 @@ import { appConfigProvider } from "../../config/app-config-provider.js";
 import { DirectoryTraversal } from "../../file-explorer/directory-traversal.js";
 import { TreeNode } from "../../file-explorer/tree-node.js";
 import { getServerSettingsService } from "../../services/server-settings-service.js";
-import type { AgentDefinition } from "../../agent-definition/domain/models.js";
+import {
+  normalizeAgentSkillScope,
+  type AgentDefinition,
+  type AgentSkillScope,
+} from "../../agent-definition/domain/models.js";
 import { Skill, SkillSourceInfo } from "../domain/models.js";
 import { DisabledSkillsStore } from "../disabled-skills-store.js";
 import { SkillLoader } from "../loader.js";
@@ -219,6 +223,14 @@ export class SkillService {
     );
   }
 
+  /**
+   * The definition's normalized skill scope. Runtimes derive their workspace skill request
+   * strength from this (D-15); they never read `skillScope` themselves.
+   */
+  resolveSkillScope(agentDefinition: AgentDefinition | null | undefined): AgentSkillScope {
+    return normalizeAgentSkillScope(agentDefinition?.skillScope);
+  }
+
   /** Effective skill bindings for a definition after applying its skill scope. */
   resolveConfiguredSkillBindingsForAgent(
     agentDefinition: AgentDefinition | null | undefined,
@@ -227,7 +239,7 @@ export class SkillService {
       return [];
     }
     const resolver = this.createConfiguredSkillResolver();
-    if (agentDefinition.skillScope === "ALL_INSTALLED") {
+    if (this.resolveSkillScope(agentDefinition) === "ALL_INSTALLED") {
       return this.listEnabledInstalledSkillRecords().map((record) =>
         resolver.bindInstalledRecord(record));
     }
@@ -250,7 +262,7 @@ export class SkillService {
         return [];
       },
     });
-    if (agentDefinition.skillScope === "ALL_INSTALLED") {
+    if (this.resolveSkillScope(agentDefinition) === "ALL_INSTALLED") {
       return this.listEnabledInstalledSkillRecords().map((record) =>
         resolver.resolveInstalledRecordDetailed(record));
     }
@@ -262,7 +274,7 @@ export class SkillService {
     if (!agentDefinition) {
       return false;
     }
-    if (agentDefinition.skillScope === "ALL_INSTALLED") {
+    if (this.resolveSkillScope(agentDefinition) === "ALL_INSTALLED") {
       return this.listEnabledInstalledSkillRecords().length > 0;
     }
     return (agentDefinition.skillNames ?? []).some(

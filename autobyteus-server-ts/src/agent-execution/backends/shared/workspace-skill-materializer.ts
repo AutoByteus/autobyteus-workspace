@@ -2,6 +2,12 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { Skill } from "../../../skills/domain/models.js";
+import { isWeakSkillRequest, type SkillRequestStrength } from "./skill-request-strength.js";
+import {
+  WorkspaceSkillLinks,
+  type WorkspaceSkillFileSystem,
+  type WorkspaceSkillPathState,
+} from "./workspace-skill-links.js";
 
 export type WorkspaceSkillMaterializationProfile = { runtimeLabel: string; workspaceSkillsRootSegments: readonly string[] };
 
@@ -10,38 +16,48 @@ export type WorkspaceSkillReconciliationRequest =
   | { kind: "reconcile-discoverable"; skill: Skill }
   | { kind: "reconcile-unresolved"; name: string };
 
-export type MaterializedWorkspaceSkill = { name: string; sourceRootPath: string; materializedRootPath: string; registryKey: string };
-
-type WorkspaceSkillFileSystem = Pick<typeof fs,
-  "lstat" | "readlink" | "stat" | "realpath" | "mkdir" | "symlink" | "unlink">;
+/**
+ * One run's hold on a materialized workspace skill path. Release is keyed by `registryKey` +
+ * `holderId`; `sourceRootPath` is the source at acquisition time and may be stale after the
+ * path was re-pointed to a configured source.
+ */
+export type MaterializedWorkspaceSkill = {
+  name: string;
+  sourceRootPath: string;
+  materializedRootPath: string;
+  registryKey: string;
+  holderId: number;
+  requestStrength: SkillRequestStrength;
+};
 
 type WorkspaceSkillMaterializerOptions = { logger?: { warn: (...args: unknown[]) => void }; fileSystem?: Partial<WorkspaceSkillFileSystem> };
 
-type BrokenSymlinkState = { kind: "broken-symlink"; rawTargetPath: string; resolvedTargetPath: string; device: number; inode: number };
-
-type WorkspaceSkillPathState =
-  | { kind: "missing" }
-  | { kind: "same-source-symlink"; rawTargetPath: string; resolvedTargetPath: string }
-  | BrokenSymlinkState
-  | { kind: "live-different-symlink"; rawTargetPath: string; resolvedTargetPath: string }
-  | { kind: "non-symlink"; pathType: "file" | "directory" | "other" };
-
 type Deferred<T> = { promise: Promise<T>; resolve: (value: T) => void; reject: (reason: unknown) => void };
 
-type AcquiringRegistryEntry = { phase: "acquiring"; sourceRootPath: string; holderCount: number; claimWhenAvailable: boolean; readiness: Promise<MaterializedWorkspaceSkill | null> };
+type RegistryHolder = { runId: string; strength: SkillRequestStrength };
 
-type ReadyRegistryEntry = { phase: "ready"; sourceRootPath: string; holderCount: number; descriptor: MaterializedWorkspaceSkill };
+/** `workspace-owned`: a user-owned entry occupies the path (Rule 1); strong holders throw `error`, weak holders skip. */
+type AcquisitionOutcome = { kind: "ready" } | { kind: "absent" } | { kind: "workspace-owned"; error: Error };
 
-type ReleasingRegistryEntry = { phase: "releasing"; sourceRootPath: string; holderCount: 0; descriptor: MaterializedWorkspaceSkill; cleanup: Promise<void> };
+type AcquiringRegistryEntry = { phase: "acquiring"; sourceRootPath: string; holders: Map<number, RegistryHolder>; claimWhenAvailable: boolean; readiness: Promise<AcquisitionOutcome> };
+
+type ReadyRegistryEntry = { phase: "ready"; sourceRootPath: string; holders: Map<number, RegistryHolder> };
+
+type ReleasingRegistryEntry = { phase: "releasing"; sourceRootPath: string; cleanup: Promise<void> };
 
 type WorkspaceSkillRegistryEntry = AcquiringRegistryEntry | ReadyRegistryEntry | ReleasingRegistryEntry;
 
-const defaultLogger = { warn: (...args: unknown[]) => console.warn(...args) };
+type ResolvedRequest = Exclude<WorkspaceSkillReconciliationRequest, { kind: "reconcile-unresolved" }>;
 
-const isAbsenceError = (error: unknown): boolean => {
-  const code = (error as NodeJS.ErrnoException)?.code;
-  return code === "ENOENT" || code === "ENOTDIR";
+type AcquisitionTarget = {
+  runId: string; strength: SkillRequestStrength; request: ResolvedRequest;
+  sourceRootPath: string; materializedRootPath: string; registryKey: string;
 };
+
+type Disposition = "repaired" | "removed-and-skipped" | "skipped"
+  | "skipped-workspace-owned" | "skipped-held-by-other-run" | "yielded-to-configured";
+
+const defaultLogger = { warn: (...args: unknown[]) => console.warn(...args) };
 
 const createDeferred = <T>(): Deferred<T> => {
   let resolve!: (value: T) => void;
@@ -53,38 +69,40 @@ const createDeferred = <T>(): Deferred<T> => {
   return { promise, resolve, reject };
 };
 
-const collapseWhitespace = (value: string): string => value.replace(/\s+/g, " ").trim();
-
 const sanitizeDirectorySegment = (value: string): string => {
-  const normalized = collapseWhitespace(value)
+  const normalized = value.replace(/\s+/g, " ").trim()
     .toLowerCase()
     .replace(/[^a-z0-9_-]+/g, "-")
     .replace(/^-+|-+$/g, "");
   return normalized || "skill";
 };
 
-const resolveSymlinkTargetPath = (linkPath: string, targetPath: string): string =>
-  path.resolve(path.dirname(linkPath), targetPath);
+export const strongHolderCount = (holders: ReadonlyMap<number, RegistryHolder>): number =>
+  [...holders.values()].filter((holder) => !isWeakSkillRequest(holder.strength)).length;
 
-const pathTypeForStats = (
-  stats: Awaited<ReturnType<typeof fs.lstat>>,
-): "file" | "directory" | "other" =>
-  stats.isFile() ? "file" : stats.isDirectory() ? "directory" : "other";
+export const weakHolderCount = (holders: ReadonlyMap<number, RegistryHolder>): number =>
+  [...holders.values()].filter((holder) => isWeakSkillRequest(holder.strength)).length;
 
+/**
+ * Process-wide owner of materialized workspace skill links for one runtime profile. The
+ * registry is the authority for every path: acquisition, re-pointing and release go through its
+ * `acquiring` / `ready` / `releasing` phases, and it tracks each holder's request strength (D-15).
+ */
 export class WorkspaceSkillMaterializer {
   private readonly registry = new Map<string, WorkspaceSkillRegistryEntry>();
   private readonly logger: NonNullable<WorkspaceSkillMaterializerOptions["logger"]>;
-  private readonly fileSystem: WorkspaceSkillFileSystem;
+  private readonly links: WorkspaceSkillLinks;
+  private nextHolderId = 0;
 
   constructor(private readonly profile: WorkspaceSkillMaterializationProfile,
     options: WorkspaceSkillMaterializerOptions = {}) {
     this.logger = options.logger ?? defaultLogger;
-    this.fileSystem = {
+    this.links = new WorkspaceSkillLinks(profile.runtimeLabel, {
       lstat: options.fileSystem?.lstat ?? fs.lstat, readlink: options.fileSystem?.readlink ?? fs.readlink,
       stat: options.fileSystem?.stat ?? fs.stat, realpath: options.fileSystem?.realpath ?? fs.realpath,
       mkdir: options.fileSystem?.mkdir ?? fs.mkdir, symlink: options.fileSystem?.symlink ?? fs.symlink,
-      unlink: options.fileSystem?.unlink ?? fs.unlink,
-    };
+      unlink: options.fileSystem?.unlink ?? fs.unlink, rename: options.fileSystem?.rename ?? fs.rename,
+    });
   }
 
   async materializeConfiguredWorkspaceSkills(options: {
@@ -92,6 +110,8 @@ export class WorkspaceSkillMaterializer {
     workingDirectory: string;
     requests?: WorkspaceSkillReconciliationRequest[] | null;
     skillAccessMode?: SkillAccessMode | null;
+    /** From `SkillService.resolveSkillScope` via `skillRequestStrengthForScope`. */
+    requestStrength: SkillRequestStrength;
   }): Promise<MaterializedWorkspaceSkill[]> {
     const requests = options.skillAccessMode === SkillAccessMode.NONE
       ? []
@@ -101,7 +121,7 @@ export class WorkspaceSkillMaterializer {
       for (const request of requests) {
         const descriptor = request.kind === "reconcile-unresolved"
           ? await this.reconcileUnresolved(options.runId, options.workingDirectory, request.name)
-          : await this.acquireResolved(options.runId, options.workingDirectory, request);
+          : await this.acquireResolved(this.targetFor(options.runId, options.workingDirectory, request, options.requestStrength));
         if (descriptor) acquired.push(descriptor);
       }
       return acquired;
@@ -129,136 +149,200 @@ export class WorkspaceSkillMaterializer {
       sanitizeDirectorySegment(skillName));
   }
 
-  private async acquireResolved(
-    runId: string,
-    workingDirectory: string,
-    request: Exclude<WorkspaceSkillReconciliationRequest, { kind: "reconcile-unresolved" }>,
-  ): Promise<MaterializedWorkspaceSkill | null> {
-    const sourceRootPath = path.resolve(request.skill.rootPath);
-    const materializedRootPath = this.buildMaterializedRootPath(workingDirectory, request.skill.name), registryKey = path.resolve(materializedRootPath);
+  private targetFor(runId: string, workingDirectory: string, request: ResolvedRequest,
+    strength: SkillRequestStrength): AcquisitionTarget {
+    const materializedRootPath = this.buildMaterializedRootPath(workingDirectory, request.skill.name);
+    return { runId, strength, request, sourceRootPath: path.resolve(request.skill.rootPath),
+      materializedRootPath, registryKey: path.resolve(materializedRootPath) };
+  }
 
+  private async acquireResolved(target: AcquisitionTarget): Promise<MaterializedWorkspaceSkill | null> {
     while (true) {
-      const existing = this.registry.get(registryKey);
+      const existing = this.registry.get(target.registryKey);
       if (existing?.phase === "releasing") {
         await existing.cleanup;
         continue;
       }
-      if (existing) {
-        if (existing.sourceRootPath !== sourceRootPath) {
-          throw this.sourceCollisionError(request.skill.name, materializedRootPath,
-            existing.sourceRootPath, sourceRootPath);
-        }
-        if (existing.phase === "ready") {
-          existing.holderCount += 1;
-          return existing.descriptor;
-        }
-        existing.holderCount += 1;
-        if (request.kind === "expose-resolved") existing.claimWhenAvailable = true;
-        return existing.readiness;
-      }
+      if (!existing) return this.startAcquisition(target);
+      if (existing.sourceRootPath === target.sourceRootPath) return this.joinHolders(existing, target);
 
-      const deferred = createDeferred<MaterializedWorkspaceSkill | null>();
-      const acquiring: AcquiringRegistryEntry = { phase: "acquiring", sourceRootPath,
-        holderCount: 1, claimWhenAvailable: request.kind === "expose-resolved",
-        readiness: deferred.promise };
-      this.registry.set(registryKey, acquiring);
-      void this.completeAcquisition({ runId, request, sourceRootPath, materializedRootPath,
-        registryKey, acquiring, deferred });
-      return deferred.promise;
+      // Rule 2: another live run holds this path with a different source.
+      if (isWeakSkillRequest(target.strength)) {
+        // Direction A: the name stays discoverable through the holder's link.
+        this.warnDisposition(target, existing.sourceRootPath, "skipped-held-by-other-run");
+        return null;
+      }
+      if (strongHolderCount(existing.holders) > 0) {
+        throw this.links.sourceCollisionError(target.request.skill.name, target.materializedRootPath,
+          existing.sourceRootPath, target.sourceRootPath);
+      }
+      if (existing.phase === "acquiring") {
+        await existing.readiness.catch(() => undefined);
+        continue;
+      }
+      // Direction B: only weak holders; the configured source takes the path.
+      return this.yieldToConfigured(existing, target);
     }
   }
 
-  private async completeAcquisition(input: {
-    request: Exclude<WorkspaceSkillReconciliationRequest, { kind: "reconcile-unresolved" }>;
-    runId: string; sourceRootPath: string; materializedRootPath: string; registryKey: string;
-    acquiring: AcquiringRegistryEntry;
-    deferred: Deferred<MaterializedWorkspaceSkill | null>;
-  }): Promise<void> {
+  private startAcquisition(target: AcquisitionTarget): Promise<MaterializedWorkspaceSkill | null> {
+    const deferred = createDeferred<AcquisitionOutcome>();
+    const holders = new Map<number, RegistryHolder>();
+    const holderId = this.addHolder(holders, target);
+    const acquiring: AcquiringRegistryEntry = { phase: "acquiring", sourceRootPath: target.sourceRootPath,
+      holders, claimWhenAvailable: target.request.kind === "expose-resolved", readiness: deferred.promise };
+    this.registry.set(target.registryKey, acquiring);
+    void this.completeAcquisition(target, acquiring, deferred);
+    return this.descriptorForOutcome(deferred.promise, target, holderId);
+  }
+
+  private joinHolders(existing: AcquiringRegistryEntry | ReadyRegistryEntry,
+    target: AcquisitionTarget): Promise<MaterializedWorkspaceSkill | null> {
+    const holderId = this.addHolder(existing.holders, target);
+    if (existing.phase === "ready") return Promise.resolve(this.descriptorFor(target, holderId));
+    if (target.request.kind === "expose-resolved") existing.claimWhenAvailable = true;
+    return this.descriptorForOutcome(existing.readiness, target, holderId);
+  }
+
+  private async completeAcquisition(target: AcquisitionTarget, acquiring: AcquiringRegistryEntry,
+    deferred: Deferred<AcquisitionOutcome>): Promise<void> {
     try {
-      const descriptor = await this.reconcileResolved(input);
-      if (this.registry.get(input.registryKey) !== input.acquiring) {
-        throw new Error(`Workspace skill acquisition registry changed unexpectedly for '${input.materializedRootPath}'.`);
+      const outcome = await this.reconcileResolved(target, acquiring);
+      if (this.registry.get(target.registryKey) !== acquiring) {
+        throw new Error(`Workspace skill acquisition registry changed unexpectedly for '${target.materializedRootPath}'.`);
       }
-      if (descriptor) {
-        this.registry.set(input.registryKey, {
-          phase: "ready",
-          sourceRootPath: input.sourceRootPath,
-          holderCount: input.acquiring.holderCount,
-          descriptor,
-        });
+      if (outcome.kind === "ready") {
+        this.registry.set(target.registryKey, { phase: "ready", sourceRootPath: target.sourceRootPath, holders: acquiring.holders });
       } else {
-        this.registry.delete(input.registryKey);
+        this.registry.delete(target.registryKey);
       }
-      input.deferred.resolve(descriptor);
+      deferred.resolve(outcome);
     } catch (error) {
-      if (this.registry.get(input.registryKey) === input.acquiring) {
-        this.registry.delete(input.registryKey);
+      if (this.registry.get(target.registryKey) === acquiring) {
+        this.registry.delete(target.registryKey);
       }
-      input.deferred.reject(error);
+      deferred.reject(error);
     }
   }
 
-  private async reconcileResolved(input: {
-    request: Exclude<WorkspaceSkillReconciliationRequest, { kind: "reconcile-unresolved" }>;
-    runId: string; sourceRootPath: string; materializedRootPath: string; registryKey: string;
-    acquiring: AcquiringRegistryEntry;
-  }): Promise<MaterializedWorkspaceSkill | null> {
-    const sourceAvailable = await this.hasValidSkillManifest(input.sourceRootPath);
-    let state = await this.inspectPath(input.materializedRootPath, input.sourceRootPath);
+  private async descriptorForOutcome(readiness: Promise<AcquisitionOutcome>, target: AcquisitionTarget,
+    holderId: number): Promise<MaterializedWorkspaceSkill | null> {
+    const outcome = await readiness;
+    if (outcome.kind === "ready") return this.descriptorFor(target, holderId);
+    if (outcome.kind === "workspace-owned") {
+      // Rule 1: a configured request fails fast; an all-installed request leaves the user's entry.
+      if (!isWeakSkillRequest(target.strength)) throw outcome.error;
+      this.warnDisposition(target, null, "skipped-workspace-owned");
+    }
+    return null;
+  }
+
+  private async reconcileResolved(target: AcquisitionTarget, acquiring: AcquiringRegistryEntry): Promise<AcquisitionOutcome> {
+    const skillName = target.request.skill.name;
+    const sourceAvailable = await this.links.hasValidSkillManifest(target.sourceRootPath);
+    let state = await this.links.inspectPath(target.materializedRootPath, target.sourceRootPath);
     if (!sourceAvailable) {
-      return this.reconcileWithoutSource({
-        runId: input.runId,
-        skillName: input.request.skill.name,
-        sourceRootPath: input.sourceRootPath,
-        materializedRootPath: input.materializedRootPath,
-        state,
-      });
+      await this.reconcileUnavailable(target.runId, skillName, target.materializedRootPath, target.sourceRootPath, state);
+      return { kind: "absent" };
     }
 
     let observedBrokenTarget: string | null = null;
     for (let reclassificationCount = 0; reclassificationCount <= 1; reclassificationCount += 1) {
       if (state.kind === "broken-symlink") {
         observedBrokenTarget ??= state.resolvedTargetPath;
-        if (!(await this.unlinkBrokenLinkIfStillMatching(input.materializedRootPath, state))) {
-          state = await this.inspectPath(input.materializedRootPath, input.sourceRootPath);
+        if (!(await this.links.unlinkBrokenLinkIfStillMatching(target.materializedRootPath, state))) {
+          state = await this.links.inspectPath(target.materializedRootPath, target.sourceRootPath);
           continue;
         }
-        await this.createOrAcceptSameSourceLink(input.materializedRootPath,
-          input.sourceRootPath, input.request.skill.name);
-        this.warnDisposition({
-          runId: input.runId,
-          skillName: input.request.skill.name,
-          materializedRootPath: input.materializedRootPath,
-          previousTarget: observedBrokenTarget,
-          currentSource: input.sourceRootPath,
-          disposition: "repaired",
-        });
-        return this.descriptorFor(input);
+        await this.links.createOrAcceptSameSourceLink(target.materializedRootPath, target.sourceRootPath, skillName);
+        this.warnDisposition(target, observedBrokenTarget, "repaired");
+        return { kind: "ready" };
       }
       if (state.kind === "missing") {
-        if (!input.acquiring.claimWhenAvailable) return null;
-        await this.createOrAcceptSameSourceLink(input.materializedRootPath,
-          input.sourceRootPath, input.request.skill.name);
-        return this.descriptorFor(input);
+        if (!acquiring.claimWhenAvailable) return { kind: "absent" };
+        await this.links.createOrAcceptSameSourceLink(target.materializedRootPath, target.sourceRootPath, skillName);
+        return { kind: "ready" };
       }
       if (state.kind === "same-source-symlink") {
-        return input.acquiring.claimWhenAvailable ? this.descriptorFor(input) : null;
+        return acquiring.claimWhenAvailable ? { kind: "ready" } : { kind: "absent" };
       }
-      throw this.pathStateCollisionError(input.request.skill.name,
-        input.materializedRootPath, input.sourceRootPath, state);
+      // A non-symlink or a link the registry does not own: the workspace owns this name.
+      return { kind: "workspace-owned",
+        error: this.links.pathStateCollisionError(skillName, target.materializedRootPath, target.sourceRootPath, state) };
     }
-    throw new Error(`Workspace skill path '${input.materializedRootPath}' changed repeatedly during broken-link repair.`);
+    throw new Error(`Workspace skill path '${target.materializedRootPath}' changed repeatedly during broken-link repair.`);
   }
 
-  private descriptorFor(input: {
-    request: { skill: Skill }; sourceRootPath: string; materializedRootPath: string;
-    registryKey: string;
-  }): MaterializedWorkspaceSkill {
+  /**
+   * Re-points a path held only by all-installed runs to the configured source (D-15 Direction B).
+   * The entry stays `acquiring` for the whole switch, so the registry serializes it; the weak
+   * holders are merged into the configured entry and keep a skill of the same name.
+   */
+  private async yieldToConfigured(existing: ReadyRegistryEntry, target: AcquisitionTarget): Promise<MaterializedWorkspaceSkill | null> {
+    const previousSource = existing.sourceRootPath;
+    const holders = existing.holders;
+    const originalHolderIds = new Set(holders.keys());
+    const yieldingRunIds = [...new Set([...holders.values()].map((holder) => holder.runId))];
+    const holderId = this.addHolder(holders, target);
+    const deferred = createDeferred<AcquisitionOutcome>();
+    // Joiners observe a failed switch through `readiness`; with none, the rejection is expected.
+    deferred.promise.catch(() => undefined);
+    const repointing: AcquiringRegistryEntry = { phase: "acquiring", sourceRootPath: target.sourceRootPath,
+      holders, claimWhenAvailable: true, readiness: deferred.promise };
+    this.registry.set(target.registryKey, repointing);
+
+    // Back to the previous source without the holders that joined this switch.
+    const restorePrevious = (): void => {
+      for (const id of [...holders.keys()]) if (!originalHolderIds.has(id)) holders.delete(id);
+      if (this.registry.get(target.registryKey) !== repointing) return;
+      const restored: ReadyRegistryEntry = { phase: "ready", sourceRootPath: previousSource, holders };
+      this.registry.set(target.registryKey, restored);
+      if (holders.size === 0) void this.releaseUnheldEntry(target.registryKey, restored, target.request.skill.name);
+    };
+
+    try {
+      if (!(await this.links.hasValidSkillManifest(target.sourceRootPath))) {
+        restorePrevious();
+        deferred.resolve({ kind: "absent" });
+        this.warnDisposition(target, previousSource, "skipped");
+        return null;
+      }
+      const state = await this.links.inspectPath(target.materializedRootPath, previousSource);
+      if (state.kind === "same-source-symlink" || state.kind === "broken-symlink") {
+        await this.links.replaceOwnedLink(target.materializedRootPath, target.sourceRootPath);
+      } else if (state.kind === "missing") {
+        await this.links.createOrAcceptSameSourceLink(target.materializedRootPath, target.sourceRootPath, target.request.skill.name);
+      } else {
+        throw this.links.pathStateCollisionError(target.request.skill.name, target.materializedRootPath, target.sourceRootPath, state);
+      }
+      if (this.registry.get(target.registryKey) !== repointing) {
+        throw new Error(`Workspace skill re-point registry changed unexpectedly for '${target.materializedRootPath}'.`);
+      }
+      this.registry.set(target.registryKey, { phase: "ready", sourceRootPath: target.sourceRootPath, holders });
+      deferred.resolve({ kind: "ready" });
+      this.warnDisposition(target, previousSource, "yielded-to-configured", yieldingRunIds);
+      return this.descriptorFor(target, holderId);
+    } catch (error) {
+      restorePrevious();
+      deferred.reject(error);
+      throw error;
+    }
+  }
+
+  private addHolder(holders: Map<number, RegistryHolder>, target: AcquisitionTarget): number {
+    this.nextHolderId += 1;
+    holders.set(this.nextHolderId, { runId: target.runId, strength: target.strength });
+    return this.nextHolderId;
+  }
+
+  private descriptorFor(target: AcquisitionTarget, holderId: number): MaterializedWorkspaceSkill {
     return {
-      name: input.request.skill.name,
-      sourceRootPath: input.sourceRootPath,
-      materializedRootPath: input.materializedRootPath,
-      registryKey: input.registryKey,
+      name: target.request.skill.name,
+      sourceRootPath: target.sourceRootPath,
+      materializedRootPath: target.materializedRootPath,
+      registryKey: target.registryKey,
+      holderId,
+      requestStrength: target.strength,
     };
   }
 
@@ -283,263 +367,72 @@ export class WorkspaceSkillMaterializer {
     }
   }
 
-  private async reconcileWithoutSource(input: {
-    runId: string;
-    skillName: string;
-    sourceRootPath: string;
-    materializedRootPath: string;
-    state: WorkspaceSkillPathState;
-  }): Promise<null> {
-    return this.reconcileUnavailable(input.runId, input.skillName, input.materializedRootPath,
-      input.sourceRootPath, input.state);
-  }
-
   private async reconcileUnavailable(runId: string, skillName: string,
     materializedRootPath: string, sourceRootPath: string | null,
     initialState?: WorkspaceSkillPathState): Promise<null> {
-    let state = initialState ?? await this.inspectPath(materializedRootPath, sourceRootPath);
+    const log = { runId, request: { skill: { name: skillName } }, materializedRootPath, sourceRootPath };
+    let state = initialState ?? await this.links.inspectPath(materializedRootPath, sourceRootPath);
     for (let reclassificationCount = 0; reclassificationCount <= 1; reclassificationCount += 1) {
       if (state.kind === "missing" || state.kind === "same-source-symlink") {
-        this.warnDisposition({
-          runId, skillName, materializedRootPath,
-          previousTarget: state.kind === "same-source-symlink" ? state.resolvedTargetPath : null,
-          currentSource: sourceRootPath,
-          disposition: "skipped",
-        });
+        this.warnDisposition(log, state.kind === "same-source-symlink" ? state.resolvedTargetPath : null, "skipped");
         return null;
       }
       if (state.kind === "broken-symlink") {
-        if (!(await this.unlinkBrokenLinkIfStillMatching(materializedRootPath, state))) {
-          state = await this.inspectPath(materializedRootPath, sourceRootPath);
+        if (!(await this.links.unlinkBrokenLinkIfStillMatching(materializedRootPath, state))) {
+          state = await this.links.inspectPath(materializedRootPath, sourceRootPath);
           continue;
         }
-        this.warnDisposition({
-          runId, skillName, materializedRootPath,
-          previousTarget: state.resolvedTargetPath,
-          currentSource: sourceRootPath,
-          disposition: "removed-and-skipped",
-        });
+        this.warnDisposition(log, state.resolvedTargetPath, "removed-and-skipped");
         return null;
       }
-      throw this.pathStateCollisionError(skillName, materializedRootPath, sourceRootPath, state);
+      throw this.links.pathStateCollisionError(skillName, materializedRootPath, sourceRootPath, state);
     }
     throw new Error(`Workspace skill path '${materializedRootPath}' changed repeatedly during unavailable-source reconciliation.`);
   }
 
+  /**
+   * Releases one holder (IC-1). The registry entry decides: the holder is removed from it, and the
+   * link is removed only when no holder remains, checked against the entry's current source.
+   * Neither descriptor identity nor the descriptor's original source gates release.
+   */
   private async releaseMaterializedSkill(descriptor: MaterializedWorkspaceSkill, rollbackRunId?: string): Promise<void> {
     const entry = this.registry.get(descriptor.registryKey);
-    if (entry?.phase !== "ready" || entry.descriptor !== descriptor) return;
-    entry.holderCount -= 1;
-    if (entry.holderCount > 0) return;
+    if (!entry || entry.phase === "releasing") return;
+    if (!entry.holders.delete(descriptor.holderId)) return;
+    if (entry.phase !== "ready" || entry.holders.size > 0) return;
+    await this.releaseUnheldEntry(descriptor.registryKey, entry, descriptor.name, rollbackRunId);
+  }
 
+  private async releaseUnheldEntry(registryKey: string, entry: ReadyRegistryEntry, skillName: string,
+    rollbackRunId?: string): Promise<void> {
     const cleanup = Promise.resolve()
-      .then(() => this.removeOwnedLink(descriptor))
+      .then(() => this.links.removeLinkToSource(registryKey, entry.sourceRootPath))
       .catch((error) => {
         this.logger.warn(rollbackRunId
-            ? `Failed to roll back ${this.profile.runtimeLabel} workspace skill acquisition for run '${rollbackRunId}', skill '${descriptor.name}', path '${descriptor.materializedRootPath}'.`
-            : `Failed to clean up materialized ${this.profile.runtimeLabel} workspace skill '${descriptor.name}' at '${descriptor.materializedRootPath}'.`,
+            ? `Failed to roll back ${this.profile.runtimeLabel} workspace skill acquisition for run '${rollbackRunId}', skill '${skillName}', path '${registryKey}'.`
+            : `Failed to clean up materialized ${this.profile.runtimeLabel} workspace skill '${skillName}' at '${registryKey}'.`,
           error);
       });
-    const releasing: ReleasingRegistryEntry = {
-      phase: "releasing",
-      sourceRootPath: entry.sourceRootPath,
-      holderCount: 0,
-      descriptor,
-      cleanup,
-    };
-    this.registry.set(descriptor.registryKey, releasing);
+    const releasing: ReleasingRegistryEntry = { phase: "releasing", sourceRootPath: entry.sourceRootPath, cleanup };
+    this.registry.set(registryKey, releasing);
     try {
       await cleanup;
     } finally {
-      if (this.registry.get(descriptor.registryKey) === releasing) {
-        this.registry.delete(descriptor.registryKey);
+      if (this.registry.get(registryKey) === releasing) {
+        this.registry.delete(registryKey);
       }
     }
   }
 
-  private async hasValidSkillManifest(sourceRootPath: string): Promise<boolean> {
-    try {
-      const stats = await this.fileSystem.stat(path.join(sourceRootPath, "SKILL.md"));
-      return stats.isFile();
-    } catch (error) {
-      if (isAbsenceError(error)) return false;
-      throw error;
-    }
-  }
-
-  private async inspectPath(
-    materializedRootPath: string,
-    sourceRootPath: string | null,
-  ): Promise<WorkspaceSkillPathState> {
-    let stats: Awaited<ReturnType<typeof fs.lstat>>;
-    try {
-      stats = await this.fileSystem.lstat(materializedRootPath);
-    } catch (error) {
-      if (isAbsenceError(error)) return { kind: "missing" };
-      throw error;
-    }
-    if (!stats.isSymbolicLink()) {
-      return { kind: "non-symlink", pathType: pathTypeForStats(stats) };
-    }
-    const rawTargetPath = await this.fileSystem.readlink(materializedRootPath);
-    const resolvedTargetPath = resolveSymlinkTargetPath(materializedRootPath, rawTargetPath);
-    try {
-      await this.fileSystem.stat(resolvedTargetPath);
-    } catch (error) {
-      if (isAbsenceError(error)) {
-        return {
-          kind: "broken-symlink",
-          rawTargetPath,
-          resolvedTargetPath,
-          device: stats.dev,
-          inode: stats.ino,
-        };
-      }
-      throw error;
-    }
-    if (
-      sourceRootPath &&
-      await this.pathsReferToSameTarget(resolvedTargetPath, sourceRootPath)
-    ) {
-      return { kind: "same-source-symlink", rawTargetPath, resolvedTargetPath };
-    }
-    return { kind: "live-different-symlink", rawTargetPath, resolvedTargetPath };
-  }
-
-  private async pathsReferToSameTarget(leftPath: string, rightPath: string): Promise<boolean> {
-    if (path.resolve(leftPath) === path.resolve(rightPath)) return true;
-    try {
-      const [leftRealPath, rightRealPath] = await Promise.all([
-        this.fileSystem.realpath(leftPath),
-        this.fileSystem.realpath(rightPath),
-      ]);
-      return leftRealPath === rightRealPath;
-    } catch (error) {
-      if (isAbsenceError(error)) return false;
-      throw error;
-    }
-  }
-
-  private async unlinkBrokenLinkIfStillMatching(
-    materializedRootPath: string,
-    expected: BrokenSymlinkState,
-  ): Promise<boolean> {
-    let stats: Awaited<ReturnType<typeof fs.lstat>>;
-    try {
-      stats = await this.fileSystem.lstat(materializedRootPath);
-    } catch (error) {
-      if (isAbsenceError(error)) return true;
-      throw error;
-    }
-    if (
-      !stats.isSymbolicLink() ||
-      stats.dev !== expected.device ||
-      stats.ino !== expected.inode
-    ) {
-      return false;
-    }
-    const rawTargetPath = await this.fileSystem.readlink(materializedRootPath);
-    if (rawTargetPath !== expected.rawTargetPath) return false;
-    try {
-      await this.fileSystem.stat(expected.resolvedTargetPath);
-      return false;
-    } catch (error) {
-      if (!isAbsenceError(error)) throw error;
-    }
-    try {
-      await this.fileSystem.unlink(materializedRootPath);
-    } catch (error) {
-      if (!isAbsenceError(error)) throw error;
-    }
-    return true;
-  }
-
-  private async createOrAcceptSameSourceLink(
-    materializedRootPath: string,
-    sourceRootPath: string,
-    skillName: string,
-  ): Promise<void> {
-    await this.fileSystem.mkdir(path.dirname(materializedRootPath), { recursive: true });
-    try {
-      await this.fileSystem.symlink(sourceRootPath, materializedRootPath, "dir");
-    } catch (error) {
-      if ((error as NodeJS.ErrnoException)?.code !== "EEXIST") throw error;
-      const state = await this.inspectPath(materializedRootPath, sourceRootPath);
-      if (state.kind === "same-source-symlink") return;
-      throw this.pathStateCollisionError(
-        skillName,
-        materializedRootPath,
-        sourceRootPath,
-        state,
-      );
-    }
-  }
-
-  private async removeOwnedLink(descriptor: MaterializedWorkspaceSkill): Promise<void> {
-    let stats: Awaited<ReturnType<typeof fs.lstat>>;
-    try {
-      stats = await this.fileSystem.lstat(descriptor.materializedRootPath);
-    } catch (error) {
-      if (isAbsenceError(error)) return;
-      throw error;
-    }
-    if (!stats.isSymbolicLink()) return;
-    const rawTargetPath = await this.fileSystem.readlink(descriptor.materializedRootPath);
-    const resolvedTargetPath = resolveSymlinkTargetPath(
-      descriptor.materializedRootPath,
-      rawTargetPath,
-    );
-    if (!(await this.pathsReferToSameTarget(resolvedTargetPath, descriptor.sourceRootPath))) {
-      return;
-    }
-    try {
-      await this.fileSystem.unlink(descriptor.materializedRootPath);
-    } catch (error) {
-      if (!isAbsenceError(error)) throw error;
-    }
-  }
-
-  private sourceCollisionError(
-    skillName: string,
-    materializedRootPath: string,
-    existingSource: string,
-    requestedSource: string,
-  ): Error {
-    return new Error(
-      `Workspace skill path collision for ${this.profile.runtimeLabel} skill '${skillName}': path '${materializedRootPath}' is being materialized from '${existingSource}' instead of '${requestedSource}'.`,
-    );
-  }
-
-  private pathStateCollisionError(
-    skillName: string,
-    materializedRootPath: string,
-    sourceRootPath: string | null,
-    state: WorkspaceSkillPathState,
-  ): Error {
-    const detail = state.kind === "live-different-symlink"
-      ? `already points to live target '${state.resolvedTargetPath}'${sourceRootPath ? ` instead of '${sourceRootPath}'` : ""}`
-      : state.kind === "non-symlink"
-        ? `already exists as a ${state.pathType}`
-        : state.kind === "broken-symlink"
-          ? `is a broken symlink to '${state.resolvedTargetPath}'`
-          : state.kind === "missing"
-            ? "changed during an exclusive link creation"
-            : `already points to the configured source but is not owned by this request`;
-    return new Error(
-      `Workspace skill path collision for ${this.profile.runtimeLabel} skill '${skillName}': path '${materializedRootPath}' ${detail}.`,
-    );
-  }
-
-  private warnDisposition(input: {
-    runId: string;
-    skillName: string;
-    materializedRootPath: string;
-    previousTarget: string | null;
-    currentSource: string | null;
-    disposition: "repaired" | "removed-and-skipped" | "skipped";
-  }): void {
+  private warnDisposition(
+    target: { runId: string; request: { skill: { name: string } }; materializedRootPath: string; sourceRootPath: string | null },
+    previousTarget: string | null,
+    disposition: Disposition,
+    yieldingRunIds: readonly string[] = [],
+  ): void {
+    const yielding = yieldingRunIds.length ? `, yieldingRuns='${yieldingRunIds.join(",")}'` : "";
     this.logger.warn(
-      `${this.profile.runtimeLabel} workspace skill reconciliation: run='${input.runId}', skill='${input.skillName}', path='${input.materializedRootPath}', previousTarget='${input.previousTarget ?? "none"}', currentSource='${input.currentSource ?? "none"}', disposition='${input.disposition}'.`,
+      `${this.profile.runtimeLabel} workspace skill reconciliation: run='${target.runId}', skill='${target.request.skill.name}', path='${target.materializedRootPath}', previousTarget='${previousTarget ?? "none"}', currentSource='${target.sourceRootPath ?? "none"}', disposition='${disposition}'${yielding}.`,
     );
   }
 }

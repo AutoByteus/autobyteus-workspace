@@ -36,7 +36,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("restores the exact AGY conversation, im
   const factory = new AgyAgentRunBackendFactory(
     { getAgentDefinitionById: async () => ({ name: "Restore agent", description: "Exact restore probe.",
       instructions: definitionInstructions, toolNames: [], skillNames: [] }) } as never,
-    { resolveConfiguredSkillBindingsForAgent: () => [] } as never,
+    { resolveSkillScope: () => "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () => [] } as never,
     { resolveWorkingDirectory: async () => selectedWorkspace } as never,
     { activateForRun: () => ({ kind: "not_exposed" }) } as never,
   );

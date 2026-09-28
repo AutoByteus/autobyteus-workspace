@@ -239,7 +239,7 @@ const createFactory = async (input: {
   const builder = createAgentProviderFactoryBuilder({
     workspaceManager: getWorkspaceManager(),
     skillService: {
-      resolveConfiguredSkillBindingsForAgent: () => [],
+      resolveSkillScope: () => "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () => [],
     } as never,
     autoByteus: {
       agentFactory: inert,
