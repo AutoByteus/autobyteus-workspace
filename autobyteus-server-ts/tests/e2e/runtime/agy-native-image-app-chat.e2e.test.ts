@@ -157,6 +157,28 @@ suite("real AutoByteus AGY standalone native image chat", () => {
     expect(preview.status).toBe(200);
     expect(preview.headers.get("content-type")).toMatch(/^image\//);
     expect(Buffer.from(await preview.arrayBuffer()).equals(await fs.readFile(filePath))).toBe(true);
+    // History restore/reopen replays the same tool result and Artifacts entry, live and after termination.
+    const expectReopenedHistory = async () => {
+      const projection = (await graphql<{ getRunProjection: { conversation: Array<Record<string, unknown>>;
+        activities: Array<Record<string, unknown>> } }>(
+        "query($runId: String!) { getRunProjection(runId: $runId) { conversation activities } }", { runId })).getRunProjection;
+      expect(projection.conversation.find((row) => row["invocationId"] === invocationId)).toMatchObject({
+        kind: "tool_call", toolName: "generate_image", toolArgs: startedEvent.payload["arguments"], toolResult: result });
+      expect(projection.activities.find((row) => row["invocationId"] === invocationId)).toMatchObject({
+        toolName: "generate_image", status: "success", result });
+      const files = await graphql<{ getRunFileChanges: Array<Record<string, unknown>> }>(
+        "query($runId: String!) { getRunFileChanges(runId: $runId) { path sourceTool sourceInvocationId status } }", { runId });
+      expect(files.getRunFileChanges).toEqual([{ path: filePath, sourceTool: "generated_output",
+        sourceInvocationId: invocationId, status: "available" }]);
+      const reopenedPreview = await fetch(new URL(`/rest/runs/${runId}/file-change-content?path=${encodeURIComponent(filePath)}`, url));
+      expect(reopenedPreview.status).toBe(200);
+      expect(Buffer.from(await reopenedPreview.arrayBuffer()).equals(await fs.readFile(filePath))).toBe(true);
+    };
+    await expectReopenedHistory();
+    expect((await graphql<{ terminateAgentRun: { success: boolean } }>(
+      "mutation($agentRunId: String!) { terminateAgentRun(agentRunId: $agentRunId) { success } }",
+      { agentRunId: runId })).terminateAgentRun.success).toBe(true);
+    await expectReopenedHistory();
     expect(messages.some((m) => m.type === "TOOL_EXECUTION_STARTED" && m.payload["tool_name"] === "call_mcp_tool")).toBe(false);
     expect(messages.some((m) => m.type === "SEGMENT_CONTENT" && String(m.payload["delta"] ?? "").trim())).toBe(true);
     expect(messages.some((m) => m.type === "TURN_COMPLETED")).toBe(true);
