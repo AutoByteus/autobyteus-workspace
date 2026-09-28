@@ -5,7 +5,7 @@
 - Ticket: `desktop-beta-update-channel`. Classification is preserved: `task_size=Medium`, `architectural_risk=High`, reviewed route.
 - Trigger: delivery package from `/code_reviewer` after CRR-005 Pass (API-REV-002 Pass, 92%).
 - Bootstrap base reference: `origin/personal` @ `82f3359cb`.
-- Integrated base reference used for docs sync: `origin/personal` @ `f7b4f7f4a` (v1.4.90 bump). It was merged into the ticket branch as `24813fd4e` with no conflicts, on top of delivery checkpoint `68a3c9270`.
+- Integrated base reference used for docs sync: `origin/personal` @ `f7b4f7f4a` (v1.4.90 bump). Re-integrated onto `36c14aaf5` in DR-002; that base changes only Antigravity server files, so there is no additional docs impact. It was merged into the ticket branch as `24813fd4e` with no conflicts, on top of delivery checkpoint `68a3c9270`.
 - Post-integration verification reference: `release-deployment-report.md` → "Initial Delivery Integration Refresh". Logs are in `/tmp/dbuc-delivery/`.
 
 ## Why Docs Were Updated

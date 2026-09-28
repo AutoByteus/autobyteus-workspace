@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-- Round: **DR-001, the integrated verification hold.** Finalization and release are waiting for explicit user verification.
+- Round: **DR-002, the integrated verification hold** (re-integrated onto `36c14aaf5`). Finalization and release are waiting for explicit user verification.
 - Classification (preserved): `task_size=Medium`, `architectural_risk=High`.
 - Route: reviewed.
   - ARCH-REV-003 Pass (design SR-005).
@@ -14,10 +14,10 @@
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/tickets/in-progress/desktop-beta-update-channel/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/tickets/done/desktop-beta-update-channel/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/tickets/in-progress/desktop-beta-update-channel/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/tickets/done/desktop-beta-update-channel/delivery-revision-record.md`
+- Current delivery revision ID: `DR-002`
 
 ## Initial Delivery Integration Refresh
 
@@ -47,16 +47,35 @@
 - Post-integration verification result: `Passed`
 - Delivery edits started only after the integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`, as of 2026-09-27.
+
+### DR-002 Re-integration (User Request)
+
+- Latest tracked remote base checked: `origin/personal` @ `36c14aaf5`. It had advanced 13 commits: the Antigravity runtime correction and its delivery records.
+- Overlap with this ticket's files: none. The non-ticket changes are only under `autobyteus-server-ts/`.
+- Delivery edits were protected first as commit `287657544`, with explicit staging and the build-output `dist/` folders excluded.
+- Integration method: `Merge` → `feecfd20a`, with no conflicts. The branch is 0 commits behind.
+- Post-integration rerun (logs in `/tmp/dbuc-delivery/r2/`) passed:
+  - release helper, workflow steps and beta script: OK;
+  - launcher beta-track test: OK;
+  - Electron `tsc`: exit 0;
+  - updater specs: 37 passed;
+  - store/About specs: 42 passed;
+  - `actionlint` and `shellcheck`: clean.
+  - `next-beta` is `1.4.91-beta.1`, and the version is `1.4.90`.
+- Result: `Passed`. The handoff state is current with `origin/personal` @ `36c14aaf5`.
 - Process note: the checkpoint used `git add -A`. `autobyteus-web/AGENTS.md` asks for explicit staging. `git status` was checked beforehand and held only ticket-scoped paths, with no build outputs. Finalization will stage explicitly.
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`. Delivery is waiting for it.
-- Renewed verification required after later re-integration: `No`, so far.
+- Initial explicit user completion/verification received: `Yes` (DR-003, 2026-09-28).
+  - Solution Designer relayed it at the user's explicit request. The user's words, verbatim: "i want to release a beta. now". Earlier in the same conversation: "finalize and release beta is enough".
+  - Delivery accepts this as the explicit go-ahead to finalize and publish, on the DR-002 handoff state `feecfd20a`.
+  - The user did **not** separately confirm running the suggested local-build checks (switch persistence, no downgrade). This is recorded truthfully. Those behaviors are covered by API-REV-002 packaged-harness E2E-03/04/06, and the release itself is CI-01.
+- Renewed verification required after later re-integration: `No`. `origin/personal` was still `36c14aaf5` at the post-signal refresh (2026-09-28), so there was no new effective state.
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/tickets/in-progress/desktop-beta-update-channel/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/tickets/done/desktop-beta-update-channel/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Delivery edits:
   - `README.md` (release notes rule, release channels, Docker `:beta`, beta command)
@@ -66,7 +85,7 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/desktop-beta-update-channel`: `No`. This happens after user verification.
+- Ticket moved to `tickets/done/desktop-beta-update-channel`: `Yes` (DR-003), before the final ticket commit.
 
 ## Version / Tag / Release Commit
 
@@ -77,7 +96,7 @@
 ## Repository Finalization
 
 - Bootstrap context source: the `/code_reviewer` delivery message and `design-spec.md`.
-- Ticket branch: `codex/desktop-beta-update-channel`, currently at `24813fd4e` plus uncommitted delivery edits.
+- Ticket branch: `codex/desktop-beta-update-channel`, currently at `feecfd20a` plus the uncommitted DR-002 artifact updates.
 - Ticket branch commit and push results: pending user verification.
 - Finalization target: remote `origin`, branch `personal`.
 - Repository finalization status: `Blocked`. This is the expected verification hold, not a defect.
@@ -105,7 +124,7 @@
 
 ## Release Notes Summary
 
-- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/tickets/in-progress/desktop-beta-update-channel/release-notes.md`
+- Release notes artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/desktop-beta-update-channel/tickets/done/desktop-beta-update-channel/release-notes.md`
 - Release notes status: `Updated`
 
 ## Environment Or Persisted-Data Transition Notes
