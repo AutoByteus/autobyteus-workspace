@@ -15,6 +15,7 @@ const hasProviderError = (value: unknown): boolean => {
   return true;
 };
 const errorText = (value: unknown): string => agyString(value) ?? agyString(agyRecord(value)?.message) ?? "";
+const BACKGROUND_TOOL_OUTPUT = "Started as a background task; still running when the turn ended.";
 
 export class AgyStreamEventConverter {
   private turnId: string | null = null;
@@ -22,6 +23,8 @@ export class AgyStreamEventConverter {
   private readonly textOpen = new Set<number>();
   private readonly toolStarts = new Set<number>();
   private readonly toolTerminals = new Set<number>();
+  /** Started tool steps without DONE/ERROR yet (stepIndex -> start payload); AGY never finishes a daemon step. */
+  private readonly openTools = new Map<number, Record<string, unknown>>();
   private textSeen = false;
 
   constructor(private readonly runId: string, private readonly conversationId: string, private readonly model: string,
@@ -31,7 +34,8 @@ export class AgyStreamEventConverter {
   startTurn(turnId: string): AgentRunEvent[] {
     if (this.turnId) throw new Error("AGY_TURN_ALREADY_ACTIVE");
     this.turnId = turnId;
-    this.textSteps.clear(); this.textOpen.clear(); this.toolStarts.clear(); this.toolTerminals.clear(); this.textSeen = false;
+    this.textSteps.clear(); this.textOpen.clear(); this.toolStarts.clear(); this.toolTerminals.clear(); this.openTools.clear();
+    this.textSeen = false;
     return [this.event(AgentRunEventType.TURN_STARTED, { turn_id: turnId })];
   }
 
@@ -56,6 +60,7 @@ export class AgyStreamEventConverter {
     const turnId = this.turnId;
     if (!turnId) return [];
     const events = this.closeText(turnId);
+    this.openTools.clear();
     events.push(this.event(AgentRunEventType.TURN_INTERRUPTED, { turn_id: turnId }));
     this.turnId = null;
     return events;
@@ -91,10 +96,12 @@ export class AgyStreamEventConverter {
     const events: AgentRunEvent[] = [];
     if (!this.toolStarts.has(stepIndex)) {
       this.toolStarts.add(stepIndex);
+      this.openTools.set(stepIndex, common);
       events.push(this.event(AgentRunEventType.TOOL_EXECUTION_STARTED, common));
     }
     if (state === "ACTIVE") return events;
     this.toolTerminals.add(stepIndex);
+    this.openTools.delete(stepIndex);
     const explicitError = info?.error;
     if (nativeImage && (state === "ERROR" || hasProviderError(explicitError))) {
       const denied = denial(errorText(explicitError));
@@ -133,6 +140,7 @@ export class AgyStreamEventConverter {
 
   private result(payload: Record<string, unknown>, turnId: string): AgentRunEvent[] {
     const events = this.closeText(turnId);
+    events.push(...this.closeBackgroundTools());
     const status = payload.status;
     if (status !== "SUCCESS" || hasProviderError(payload.error)) {
       this.onProviderFailure?.({ kind: "turn", runId: this.runId, turnId,
@@ -173,6 +181,16 @@ export class AgyStreamEventConverter {
     }));
     events.push(this.event(AgentRunEventType.TURN_COMPLETED, { turn_id: turnId, provider_status: "SUCCESS" }, "IDLE"));
     this.turnId = null;
+    return events;
+  }
+
+  /** At turn end, a step AGY never finished (e.g. a daemon) is still running in the background. */
+  private closeBackgroundTools(): AgentRunEvent[] {
+    const events = [...this.openTools.entries()].sort(([a], [b]) => a - b).map(([, common]) =>
+      this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
+        ...common, result: { provider_state: "RUNNING", output: BACKGROUND_TOOL_OUTPUT }, provider_state: "RUNNING",
+      }));
+    this.openTools.clear();
     return events;
   }
 

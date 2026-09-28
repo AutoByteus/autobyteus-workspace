@@ -152,6 +152,19 @@ non-green, even if the overall turn succeeds. A `DONE` step does **not** prove
 that an underlying shell command exited zero: retain provider state/output and
 do not invent an exit code.
 
+AGY turns have no idle timeout. A turn ends only on AGY `result`, AGY process
+exit/error or a stream protocol violation, or user Stop/Terminate; the 60 s
+startup readiness timeout is the only clock. This matters for background
+commands: while a background `run_command` step is still running, AGY withholds
+later step updates, so a healthy, working AGY can send nothing for many minutes
+and then deliver the withheld steps together with `result`. A daemon step (for
+example a dev server started with `IsDaemon`) never reports `DONE`. When
+`result` arrives while a started tool step is still unfinished, the converter
+closes it before the turn's completion or turn error as canonical success with
+`provider_state: "RUNNING"` and output `Started as a background task; still
+running when the turn ended.`. User Stop and process death before `result`
+still interrupt open tool steps instead.
+
 The provider-native `generate_image` ACTIVE/DONE step becomes the ordinary
 STARTED/SUCCEEDED tool-card lifecycle, with matching invocation and turn IDs.
 Its provider `parameters` (including the prompt) are shown as ordinary public

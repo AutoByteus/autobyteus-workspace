@@ -100,6 +100,32 @@ describe("AGY ordinary turn lifecycle", () => {
     expect((await start(after.backend, "retry")).code).toBe("AGENT_RUN_NOT_ACCEPTING_INPUT");
   });
 
+  it("closes a still-running daemon step as background at result, but interrupts it on process close", async () => {
+    const daemon = (): AgyStreamMessage => ({ event: "step_update", step_update: {
+      conversation_id: conversationId, step_index: 2, step_type: "tool", state: "ACTIVE", tool_name: "run_command",
+      tool_info: { parameters: { CommandLine: "pnpm dev" } },
+    } });
+    const completed = setup();
+    await start(completed.backend, "first");
+    completed.process.emit(daemon());
+    completed.process.emit(result("SUCCESS", "Dev server started."));
+    await waitFor(() => completed.events.some((item) => item.eventType === AgentRunEventType.TURN_COMPLETED));
+    const types = completed.events.map((item) => item.eventType);
+    const success = completed.events.find((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED);
+    expect(success?.payload).toMatchObject({ invocation_id: expect.stringMatching(/-2$/), provider_state: "RUNNING",
+      result: { provider_state: "RUNNING", output: "Started as a background task; still running when the turn ended." } });
+    expect(types.indexOf(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)).toBeLessThan(types.indexOf(AgentRunEventType.TURN_COMPLETED));
+    expect(completed.backend.getLifecycleSnapshot().phase).toBe("idle");
+
+    const closed = setup();
+    await start(closed.backend, "first");
+    closed.process.emit(daemon());
+    await waitFor(() => closed.events.some((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_STARTED));
+    closed.process.close();
+    await waitFor(() => closed.events.some((item) => item.eventType === AgentRunEventType.TURN_INTERRUPTED));
+    expect(closed.events.some((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)).toBe(false);
+  });
+
   it("redacts failed input dispatch and interrupts without a late tool success", async () => {
     const send = setup();
     send.process.failSend = true;
