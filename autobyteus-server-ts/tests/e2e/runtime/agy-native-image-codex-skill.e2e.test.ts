@@ -52,6 +52,7 @@ async function run(input: { name: string; prompt: string; skillSource?: string;
   const capsule = await createAgyRunCapsule({ runId: input["name"], memoryDir: path.join(base, "memory"),
     workspacePath: workspace, identity: "You are an AutoByteus agent. Follow the user's request using your available tools and configured skills.",
     agentDefinitionId: "codex", configuredSkillBindings: [...bindings, ...(input.extraSkillBindings ?? [])],
+    skillRequestStrength: "configured",
     skillAccessMode: source || input.extraSkillBindings?.length ? "PRELOADED_ONLY" : "NONE",
     mcpDescriptor: null });
   const stream = new AgyStreamProcess();
