@@ -1,0 +1,288 @@
+{
+  "startedAt": "2026-09-28T22:33:06.328Z",
+  "runtimes": {
+    "claude_agent_sdk": {
+      "model": "haiku",
+      "pair": "software-tutorial-video-maker",
+      "cases": {
+        "V-A": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A/.claude/skills/software-tutorial-video-maker",
+          "afterConfigured": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker"
+          },
+          "afterDailyAssistant": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker"
+          },
+          "log": "Claude workspace skill reconciliation: run='daily_assistant_1946de03c8a24978837ab158d5155bfb', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A/.claude/skills/software-tutorial-video-maker', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', disposition='skipped-held-by-other-run'.",
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "absent"
+          }
+        },
+        "V-B": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B/.claude/skills/software-tutorial-video-maker",
+          "afterDailyAssistant": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker"
+          },
+          "afterConfigured": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker"
+          },
+          "log": "Claude workspace skill reconciliation: run='software_tutorial_video_maker_0edad17e10bf4c97a9b10d5b98f28478', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B/.claude/skills/software-tutorial-video-maker', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker', disposition='yielded-to-configured', yieldingRuns='daily_assistant_00c68bee36bd440ea9b61ef6d5ba03c1'.",
+          "dailyAssistantStillActive": true,
+          "afterWeakTerminated": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker"
+          },
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "absent"
+          }
+        },
+        "V-C": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C/.claude/skills/software-tutorial-video-maker",
+          "second": {
+            "success": false,
+            "message": "AgentCreationError: Failed to prepare agent run 'probe_configured_global_609f31f0f3b0453a9b5b9e299c804ef2'.",
+            "runId": null
+          },
+          "cause": "Workspace skill path collision for Claude skill 'software-tutorial-video-maker': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C/.claude/skills/software-tutorial-video-maker' is being materialized from '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutori",
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "absent"
+          }
+        },
+        "V-D": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D/.claude/skills/software-tutorial-video-maker",
+          "dailyAssistant": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "daily_assistant_1d7a58b787184eec8a3e913539a0d9a8"
+          },
+          "log": "Claude workspace skill reconciliation: run='daily_assistant_1d7a58b787184eec8a3e913539a0d9a8', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D/.claude/skills/software-tutorial-video-maker', previousTarget='none', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', disposition='skipped-workspace-owned'.",
+          "configured": {
+            "success": false,
+            "message": "AgentCreationError: Failed to prepare agent run 'software_tutorial_video_maker_b4c4f75cc189400ca637c57a92dccf5c'.",
+            "runId": null
+          },
+          "cause": "Workspace skill path collision for Claude skill 'software-tutorial-video-maker': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D/.claude/skills/software-tutorial-video-maker' already exists as a directory.",
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "directory"
+          }
+        }
+      }
+    },
+    "codex_app_server": {
+      "model": "gpt-5.5",
+      "pair": "resume-designer",
+      "cases": {
+        "V-A": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A/.codex/skills/resume-designer",
+          "afterConfigured": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer"
+          },
+          "afterDailyAssistant": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer"
+          },
+          "log": "Codex workspace skill reconciliation: run='daily_assistant_1ba8c0e6735b4a6ca7d511c40761c69b', skill='resume-designer', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A/.codex/skills/resume-designer', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/resume-designer', disposition='skipped-held-by-other-run'.",
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "absent"
+          }
+        },
+        "V-B": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B/.codex/skills/resume-designer",
+          "afterDailyAssistant": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/resume-designer"
+          },
+          "afterConfigured": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer"
+          },
+          "log": "Codex workspace skill reconciliation: run='resume_designer_d25bbbedc51a4e78a49354a0d15846ff', skill='resume-designer', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B/.codex/skills/resume-designer', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/resume-designer', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer', disposition='yielded-to-configured', yieldingRuns='daily_assistant_bfc9912b2bc349c68ac4c543d0ca9e5e'.",
+          "dailyAssistantStillActive": true,
+          "afterWeakTerminated": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer"
+          },
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "absent"
+          }
+        },
+        "V-C": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C/.codex/skills/resume-designer",
+          "second": {
+            "success": false,
+            "message": "AgentCreationError: Failed to prepare agent run 'probe_configured_global_3e7c06b4a7da4e4099ded86302cb13d9'.",
+            "runId": null
+          },
+          "cause": "Workspace skill path collision for Codex skill 'resume-designer': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C/.codex/skills/resume-designer' is being materialized from '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer' instead of '/private/var/folders/7w/9r4_s1",
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "absent"
+          }
+        },
+        "V-D": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D/.codex/skills/resume-designer",
+          "dailyAssistant": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "daily_assistant_7ccb4b0bc4764e97b844579eeb95b3a6"
+          },
+          "log": "Codex workspace skill reconciliation: run='daily_assistant_7ccb4b0bc4764e97b844579eeb95b3a6', skill='resume-designer', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D/.codex/skills/resume-designer', previousTarget='none', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/resume-designer', disposition='skipped-workspace-owned'.",
+          "configured": {
+            "success": false,
+            "message": "AgentCreationError: Failed to prepare agent run 'resume_designer_7c6b0c878d264a48a202c020f99e13ef'.",
+            "runId": null
+          },
+          "cause": "Workspace skill path collision for Codex skill 'resume-designer': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D/.codex/skills/resume-designer' already exists as a directory.",
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "directory"
+          }
+        }
+      }
+    },
+    "grok_build": {
+      "model": "grok-4.7",
+      "pair": "software-tutorial-video-maker",
+      "cases": {
+        "V-A": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A/.grok/skills/software-tutorial-video-maker",
+          "afterConfigured": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker"
+          },
+          "afterDailyAssistant": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker"
+          },
+          "log": "Grok Build workspace skill reconciliation: run='daily_assistant_39331634da364c17aa48f3c3c863b600', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A/.grok/skills/software-tutorial-video-maker', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', disposition='skipped-held-by-other-run'.",
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "absent"
+          }
+        },
+        "V-B": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B/.grok/skills/software-tutorial-video-maker",
+          "afterDailyAssistant": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker"
+          },
+          "afterConfigured": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker"
+          },
+          "log": "Grok Build workspace skill reconciliation: run='software_tutorial_video_maker_594c1302159d4e108ea876ed2faa9a7e', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B/.grok/skills/software-tutorial-video-maker', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker', disposition='yielded-to-configured', yieldingRuns='daily_assistant_91a55dda734a4843bdde529e94bdf5f5'.",
+          "dailyAssistantStillActive": true,
+          "afterWeakTerminated": {
+            "kind": "symlink",
+            "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker"
+          },
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "absent"
+          }
+        },
+        "V-C": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C/.grok/skills/software-tutorial-video-maker",
+          "second": {
+            "success": false,
+            "message": "AgentCreationError: Failed to prepare agent run 'probe_configured_global_97e34a2f2fcf43a6b6dbebb612adeb00'.",
+            "runId": null
+          },
+          "cause": "Workspace skill path collision for Grok Build skill 'software-tutorial-video-maker': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C/.grok/skills/software-tutorial-video-maker' is being materialized from '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-v",
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "absent"
+          }
+        },
+        "V-D": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D/.grok/skills/software-tutorial-video-maker",
+          "dailyAssistant": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "daily_assistant_4b5c79c4847848378a20d7fc842cccf7"
+          },
+          "log": "Grok Build workspace skill reconciliation: run='daily_assistant_4b5c79c4847848378a20d7fc842cccf7', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D/.grok/skills/software-tutorial-video-maker', previousTarget='none', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', disposition='skipped-workspace-owned'.",
+          "configured": {
+            "success": false,
+            "message": "AgentCreationError: Failed to prepare agent run 'software_tutorial_video_maker_643a3f0ea0844c96927c111bfa98af99'.",
+            "runId": null
+          },
+          "cause": "Workspace skill path collision for Grok Build skill 'software-tutorial-video-maker': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D/.grok/skills/software-tutorial-video-maker' already exists as a directory.",
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "directory"
+          }
+        }
+      }
+    },
+    "antigravity_cli": {
+      "model": "gemini-3.1-pro-high",
+      "pair": "software-tutorial-video-maker",
+      "cases": {
+        "V-D": {
+          "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-antigravity_cli-V-D",
+          "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-antigravity_cli-V-D/.agents/skills/software-tutorial-video-maker",
+          "dailyAssistant": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "daily_assistant_cd2cec7853c342329766357b67ac6bb0"
+          },
+          "log": "AGY configured skill skipped: run=daily_assistant_cd2cec7853c342329766357b67ac6bb0, agent=autobyteus-daily-assistant, skill=software-tutorial-video-maker, disposition=skipped-workspace-owned",
+          "configured": {
+            "success": false,
+            "message": "AgentCreationError: Failed to prepare agent run 'software_tutorial_video_maker_a5d152dd9ae44f6a8986b8698d94f27d'.",
+            "runId": null
+          },
+          "cause": "AGY_SKILL_NAME_COLLISION: software-tutorial-video-maker",
+          "result": "Pass",
+          "afterAllTerminated": {
+            "kind": "directory"
+          }
+        }
+      }
+    }
+  },
+  "cleanup": [
+    {
+      "removed": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux"
+    }
+  ],
+  "ownedRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux",
+  "backendUrl": "http://127.0.0.1:52978",
+  "sources": {
+    "software-tutorial-video-maker": {
+      "agentId": "software-tutorial-video-maker",
+      "private": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker",
+      "global": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker"
+    },
+    "resume-designer": {
+      "agentId": "resume-designer",
+      "private": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer",
+      "global": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/resume-designer"
+    }
+  },
+  "completedAt": "2026-09-28T22:33:44.535Z"
+}

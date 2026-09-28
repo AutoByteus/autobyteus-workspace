@@ -1,0 +1,406 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data
+AppConfig instance created.
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:52978
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:52978
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:37778) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-28T22:33:08.102Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 6 items.
+Populating agent definition cache for the first time...
+[2026-09-28T22:33:08.204Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-28T22:33:08.204Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 6 items.
+{"level":30,"time":1790634788211,"pid":37778,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52984"}
+{"level":30,"time":1790634788234,"pid":37778,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52978"}
+[2026-09-28T22:33:08.234Z] [INFO] [server.runtime] Server listening on 127.0.0.1:52978
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A.
+Created and registered workspace ID: agent_ws_230dd453f86b3035cb4e30ae4f3bff15155dd99188aaede3ee2a7c3b6089bab3
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A.
+Reusing registered workspace ID: agent_ws_230dd453f86b3035cb4e30ae4f3bff15155dd99188aaede3ee2a7c3b6089bab3
+Published claude_agent_sdk agent run 'software_tutorial_video_maker_4fed031e2b544fcf86ca118f732018e6'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A.
+Reusing registered workspace ID: agent_ws_230dd453f86b3035cb4e30ae4f3bff15155dd99188aaede3ee2a7c3b6089bab3
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A.
+Reusing registered workspace ID: agent_ws_230dd453f86b3035cb4e30ae4f3bff15155dd99188aaede3ee2a7c3b6089bab3
+Claude workspace skill reconciliation: run='daily_assistant_1946de03c8a24978837ab158d5155bfb', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-A/.claude/skills/software-tutorial-video-maker', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', disposition='skipped-held-by-other-run'.
+Published claude_agent_sdk agent run 'daily_assistant_1946de03c8a24978837ab158d5155bfb'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B.
+Created and registered workspace ID: agent_ws_9f19a12adf177810ac3abda54c98541db399cc1f07e5ae17df62aa1ffa2530c5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B.
+Reusing registered workspace ID: agent_ws_9f19a12adf177810ac3abda54c98541db399cc1f07e5ae17df62aa1ffa2530c5
+Published claude_agent_sdk agent run 'daily_assistant_00c68bee36bd440ea9b61ef6d5ba03c1'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B.
+Reusing registered workspace ID: agent_ws_9f19a12adf177810ac3abda54c98541db399cc1f07e5ae17df62aa1ffa2530c5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B.
+Reusing registered workspace ID: agent_ws_9f19a12adf177810ac3abda54c98541db399cc1f07e5ae17df62aa1ffa2530c5
+Claude workspace skill reconciliation: run='software_tutorial_video_maker_0edad17e10bf4c97a9b10d5b98f28478', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-B/.claude/skills/software-tutorial-video-maker', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker', disposition='yielded-to-configured', yieldingRuns='daily_assistant_00c68bee36bd440ea9b61ef6d5ba03c1'.
+Published claude_agent_sdk agent run 'software_tutorial_video_maker_0edad17e10bf4c97a9b10d5b98f28478'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C.
+Created and registered workspace ID: agent_ws_8c2e7f7303c571519cd0c1939704b4f14c1bbf063efcaaadca2312ea5fcd2f1b
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C.
+Reusing registered workspace ID: agent_ws_8c2e7f7303c571519cd0c1939704b4f14c1bbf063efcaaadca2312ea5fcd2f1b
+Published claude_agent_sdk agent run 'software_tutorial_video_maker_6d0194488c294b31862e1a957de98fa8'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C.
+Reusing registered workspace ID: agent_ws_8c2e7f7303c571519cd0c1939704b4f14c1bbf063efcaaadca2312ea5fcd2f1b
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C.
+Reusing registered workspace ID: agent_ws_8c2e7f7303c571519cd0c1939704b4f14c1bbf063efcaaadca2312ea5fcd2f1b
+Unexpected failure while preparing agent run 'probe_configured_global_609f31f0f3b0453a9b5b9e299c804ef2' for runtime 'claude_agent_sdk'. Error: Workspace skill path collision for Claude skill 'software-tutorial-video-maker': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-C/.claude/skills/software-tutorial-video-maker' is being materialized from '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker' instead of '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker'.
+    at WorkspaceSkillLinks.sourceCollisionError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-links.js:146:16)
+    at WorkspaceSkillMaterializer.acquireResolved (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:104:34)
+    at WorkspaceSkillMaterializer.materializeConfiguredWorkspaceSkills (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:55:34)
+    at ClaudeSessionBootstrapper.bootstrapInternal (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/claude/backend/claude-session-bootstrapper.js:41:84)
+    at async ClaudeAgentRunBackendFactory.createBackend (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.js:16:28)
+    at async AgentRunManager.prepareCandidateOnce (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:266:23)
+Error in createAgentRun: AgentCreationError: Failed to prepare agent run 'probe_configured_global_609f31f0f3b0453a9b5b9e299c804ef2'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D.
+Created and registered workspace ID: agent_ws_ca26c60653630d627c025c0867600d95bd21c989ff2e17498a3b826102f2208e
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D.
+Reusing registered workspace ID: agent_ws_ca26c60653630d627c025c0867600d95bd21c989ff2e17498a3b826102f2208e
+Claude workspace skill reconciliation: run='daily_assistant_1d7a58b787184eec8a3e913539a0d9a8', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D/.claude/skills/software-tutorial-video-maker', previousTarget='none', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', disposition='skipped-workspace-owned'.
+Published claude_agent_sdk agent run 'daily_assistant_1d7a58b787184eec8a3e913539a0d9a8'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D.
+Reusing registered workspace ID: agent_ws_ca26c60653630d627c025c0867600d95bd21c989ff2e17498a3b826102f2208e
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D.
+Reusing registered workspace ID: agent_ws_ca26c60653630d627c025c0867600d95bd21c989ff2e17498a3b826102f2208e
+Unexpected failure while preparing agent run 'software_tutorial_video_maker_b4c4f75cc189400ca637c57a92dccf5c' for runtime 'claude_agent_sdk'. Error: Workspace skill path collision for Claude skill 'software-tutorial-video-maker': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-claude_agent_sdk-V-D/.claude/skills/software-tutorial-video-maker' already exists as a directory.
+    at WorkspaceSkillLinks.pathStateCollisionError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-links.js:158:16)
+    at WorkspaceSkillMaterializer.reconcileResolved (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:196:35)
+    at async WorkspaceSkillMaterializer.completeAcquisition (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:134:29)
+Error in createAgentRun: AgentCreationError: Failed to prepare agent run 'software_tutorial_video_maker_b4c4f75cc189400ca637c57a92dccf5c'.
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:15.741539Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A.
+Created and registered workspace ID: agent_ws_67769a068a487f9d9d908aa78e323821abea49ca6b6008c80a2e2e8c91e3beef
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A.
+Reusing registered workspace ID: agent_ws_67769a068a487f9d9d908aa78e323821abea49ca6b6008c80a2e2e8c91e3beef
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:15.873430Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:15.963930Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A as a trusted project in /Users/normy/.codex/config.toml.
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:15.963976Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'resume_designer_05d7656c2f954b84a8ba3a0651edab53'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A.
+Reusing registered workspace ID: agent_ws_67769a068a487f9d9d908aa78e323821abea49ca6b6008c80a2e2e8c91e3beef
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A.
+Reusing registered workspace ID: agent_ws_67769a068a487f9d9d908aa78e323821abea49ca6b6008c80a2e2e8c91e3beef
+Codex workspace skill reconciliation: run='daily_assistant_1ba8c0e6735b4a6ca7d511c40761c69b', skill='resume-designer', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-A/.codex/skills/resume-designer', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/resume-designer', disposition='skipped-held-by-other-run'.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'skills/changed',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: []
+}
+Published codex_app_server agent run 'daily_assistant_1ba8c0e6735b4a6ca7d511c40761c69b'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B.
+Created and registered workspace ID: agent_ws_c78c4a12cfbb3d77cc46734ec0475f91662647b2405f3b75ea613a046fc7e6cc
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B.
+Reusing registered workspace ID: agent_ws_c78c4a12cfbb3d77cc46734ec0475f91662647b2405f3b75ea613a046fc7e6cc
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:18.112682Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:18.203820Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B as a trusted project in /Users/normy/.codex/config.toml.
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:18.203865Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'daily_assistant_bfc9912b2bc349c68ac4c543d0ca9e5e'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B.
+Reusing registered workspace ID: agent_ws_c78c4a12cfbb3d77cc46734ec0475f91662647b2405f3b75ea613a046fc7e6cc
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B.
+Reusing registered workspace ID: agent_ws_c78c4a12cfbb3d77cc46734ec0475f91662647b2405f3b75ea613a046fc7e6cc
+Codex workspace skill reconciliation: run='resume_designer_d25bbbedc51a4e78a49354a0d15846ff', skill='resume-designer', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-B/.codex/skills/resume-designer', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/resume-designer', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer', disposition='yielded-to-configured', yieldingRuns='daily_assistant_bfc9912b2bc349c68ac4c543d0ca9e5e'.
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'skills/changed',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: []
+}
+[CodexClientThreadRouter] app-server message was not routed {
+  kind: 'notification',
+  method: 'account/updated',
+  requestId: undefined,
+  threadCount: 2,
+  paramKeys: [ 'authMode', 'planType' ]
+}
+Published codex_app_server agent run 'resume_designer_d25bbbedc51a4e78a49354a0d15846ff'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C.
+Created and registered workspace ID: agent_ws_30cdc8b8a0e2c3677ffb4667f3edde3dd9274c1606ca8eb5a82595d989e7fde9
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C.
+Reusing registered workspace ID: agent_ws_30cdc8b8a0e2c3677ffb4667f3edde3dd9274c1606ca8eb5a82595d989e7fde9
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:20.373531Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:20.463725Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C as a trusted project in /Users/normy/.codex/config.toml.
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:20.463768Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'resume_designer_6e6bc8ed72c746d793c6aa3f68f40c14'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C.
+Reusing registered workspace ID: agent_ws_30cdc8b8a0e2c3677ffb4667f3edde3dd9274c1606ca8eb5a82595d989e7fde9
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C.
+Reusing registered workspace ID: agent_ws_30cdc8b8a0e2c3677ffb4667f3edde3dd9274c1606ca8eb5a82595d989e7fde9
+Unexpected failure while preparing agent run 'probe_configured_global_3e7c06b4a7da4e4099ded86302cb13d9' for runtime 'codex_app_server'. Error: Workspace skill path collision for Codex skill 'resume-designer': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-C/.codex/skills/resume-designer' is being materialized from '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/resume-designer/skills/resume-designer' instead of '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/resume-designer'.
+    at WorkspaceSkillLinks.sourceCollisionError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-links.js:146:16)
+    at WorkspaceSkillMaterializer.acquireResolved (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:104:34)
+    at WorkspaceSkillMaterializer.materializeConfiguredWorkspaceSkills (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:55:34)
+    at async CodexThreadBootstrapper.bootstrapInternal (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-thread-bootstrapper.js:138:46)
+    at async CodexAgentRunBackendFactory.createBackend (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.js:17:28)
+    at async AgentRunManager.prepareCandidateOnce (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:266:23)
+Error in createAgentRun: AgentCreationError: Failed to prepare agent run 'probe_configured_global_3e7c06b4a7da4e4099ded86302cb13d9'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D.
+Created and registered workspace ID: agent_ws_8c7ba421d54601bcb92f3a7d65251d073fcefe26900b4c3eb49846183d187f0a
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D.
+Reusing registered workspace ID: agent_ws_8c7ba421d54601bcb92f3a7d65251d073fcefe26900b4c3eb49846183d187f0a
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:22.330259Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D as a trusted project in /Users/normy/.codex/config.toml.
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:22.330307Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Codex workspace skill reconciliation: run='daily_assistant_7ccb4b0bc4764e97b844579eeb95b3a6', skill='resume-designer', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D/.codex/skills/resume-designer', previousTarget='none', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/resume-designer', disposition='skipped-workspace-owned'.
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:22.420142Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D as a trusted project in /Users/normy/.codex/config.toml.
+[CodexAppServerClient] stderr: [2m2026-09-28T22:33:22.420187Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'daily_assistant_7ccb4b0bc4764e97b844579eeb95b3a6'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D.
+Reusing registered workspace ID: agent_ws_8c7ba421d54601bcb92f3a7d65251d073fcefe26900b4c3eb49846183d187f0a
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D.
+Reusing registered workspace ID: agent_ws_8c7ba421d54601bcb92f3a7d65251d073fcefe26900b4c3eb49846183d187f0a
+Unexpected failure while preparing agent run 'resume_designer_7c6b0c878d264a48a202c020f99e13ef' for runtime 'codex_app_server'. Error: Workspace skill path collision for Codex skill 'resume-designer': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-codex_app_server-V-D/.codex/skills/resume-designer' already exists as a directory.
+    at WorkspaceSkillLinks.pathStateCollisionError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-links.js:158:16)
+    at WorkspaceSkillMaterializer.reconcileResolved (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:196:35)
+    at async WorkspaceSkillMaterializer.completeAcquisition (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:134:29)
+Error in createAgentRun: AgentCreationError: Failed to prepare agent run 'resume_designer_7c6b0c878d264a48a202c020f99e13ef'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A.
+Created and registered workspace ID: agent_ws_aee3b25cbdc46af69fab09bccc9c5bf157b5e1e55e94f1b9a84cab2d817b8f8b
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A.
+Reusing registered workspace ID: agent_ws_aee3b25cbdc46af69fab09bccc9c5bf157b5e1e55e94f1b9a84cab2d817b8f8b
+Published grok_build agent run 'software_tutorial_video_maker_b411c4e76abb4f378276726134e7d9c9'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A.
+Reusing registered workspace ID: agent_ws_aee3b25cbdc46af69fab09bccc9c5bf157b5e1e55e94f1b9a84cab2d817b8f8b
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A.
+Reusing registered workspace ID: agent_ws_aee3b25cbdc46af69fab09bccc9c5bf157b5e1e55e94f1b9a84cab2d817b8f8b
+Grok Build workspace skill reconciliation: run='daily_assistant_39331634da364c17aa48f3c3c863b600', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-A/.grok/skills/software-tutorial-video-maker', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', disposition='skipped-held-by-other-run'.
+{"level":40,"time":1790634805723,"pid":37778,"hostname":"MacBookPro","reqId":"req-a","method":"POST","url":"/mcp/agent-tools/agtrun_CsetwLwASlk_fLVAQKk3ThEu5tpJXByBHpZhDf8lXL0","statusCode":400,"elapsedMs":0.4872089996933937,"msg":"http request completed"}
+Published grok_build agent run 'daily_assistant_39331634da364c17aa48f3c3c863b600'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B.
+Created and registered workspace ID: agent_ws_7c0888484b907cbeb642d30c626e39fed87729fffc5d72d44b1879f40078a09a
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B.
+Reusing registered workspace ID: agent_ws_7c0888484b907cbeb642d30c626e39fed87729fffc5d72d44b1879f40078a09a
+{"level":40,"time":1790634808585,"pid":37778,"hostname":"MacBookPro","reqId":"req-e","method":"POST","url":"/mcp/agent-tools/agtrun_9VwhRk-rEIrCZwo2fskmjcFV-FvmwAkR-YYnBTc8pAU","statusCode":400,"elapsedMs":0.22266599908471107,"msg":"http request completed"}
+Published grok_build agent run 'daily_assistant_91a55dda734a4843bdde529e94bdf5f5'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B.
+Reusing registered workspace ID: agent_ws_7c0888484b907cbeb642d30c626e39fed87729fffc5d72d44b1879f40078a09a
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B.
+Reusing registered workspace ID: agent_ws_7c0888484b907cbeb642d30c626e39fed87729fffc5d72d44b1879f40078a09a
+Grok Build workspace skill reconciliation: run='software_tutorial_video_maker_594c1302159d4e108ea876ed2faa9a7e', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-B/.grok/skills/software-tutorial-video-maker', previousTarget='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker', disposition='yielded-to-configured', yieldingRuns='daily_assistant_91a55dda734a4843bdde529e94bdf5f5'.
+Published grok_build agent run 'software_tutorial_video_maker_594c1302159d4e108ea876ed2faa9a7e'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C.
+Created and registered workspace ID: agent_ws_f14c0f9ed75d78ef79ccf95e061370252742fdf37a0e1d73b6964f5c75529dc7
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C.
+Reusing registered workspace ID: agent_ws_f14c0f9ed75d78ef79ccf95e061370252742fdf37a0e1d73b6964f5c75529dc7
+Published grok_build agent run 'software_tutorial_video_maker_f9931a259f54431da2db27ac3ba95535'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C.
+Reusing registered workspace ID: agent_ws_f14c0f9ed75d78ef79ccf95e061370252742fdf37a0e1d73b6964f5c75529dc7
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C.
+Reusing registered workspace ID: agent_ws_f14c0f9ed75d78ef79ccf95e061370252742fdf37a0e1d73b6964f5c75529dc7
+Unexpected failure while preparing agent run 'probe_configured_global_97e34a2f2fcf43a6b6dbebb612adeb00' for runtime 'grok_build'. Error: Workspace skill path collision for Grok Build skill 'software-tutorial-video-maker': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-C/.grok/skills/software-tutorial-video-maker' is being materialized from '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/agents/software-tutorial-video-maker/skills/software-tutorial-video-maker' instead of '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker'.
+    at WorkspaceSkillLinks.sourceCollisionError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-links.js:146:16)
+    at WorkspaceSkillMaterializer.acquireResolved (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:104:34)
+    at WorkspaceSkillMaterializer.materializeConfiguredWorkspaceSkills (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:55:34)
+    at AcpAgentRunBackendFactory.prepare (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.js:77:70)
+    at async AcpAgentRunBackendFactory.createBackend (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.js:39:26)
+    at async AgentRunManager.prepareCandidateOnce (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:266:23)
+Error in createAgentRun: AgentCreationError: Failed to prepare agent run 'probe_configured_global_97e34a2f2fcf43a6b6dbebb612adeb00'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D.
+Created and registered workspace ID: agent_ws_37ee926fea4ec2e477c01696a152dfdf1517d927d22dc33ac660a07158850746
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D.
+Reusing registered workspace ID: agent_ws_37ee926fea4ec2e477c01696a152dfdf1517d927d22dc33ac660a07158850746
+Grok Build workspace skill reconciliation: run='daily_assistant_4b5c79c4847848378a20d7fc842cccf7', skill='software-tutorial-video-maker', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D/.grok/skills/software-tutorial-video-maker', previousTarget='none', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/server-data/skills/software-tutorial-video-maker', disposition='skipped-workspace-owned'.
+{"level":40,"time":1790634813469,"pid":37778,"hostname":"MacBookPro","reqId":"req-i","method":"POST","url":"/mcp/agent-tools/agtrun_3jXAERbm1j-8M9LgcvhgHZextJeBgKWhFG20eo2z3Yg","statusCode":400,"elapsedMs":0.23466699942946434,"msg":"http request completed"}
+Published grok_build agent run 'daily_assistant_4b5c79c4847848378a20d7fc842cccf7'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D.
+Reusing registered workspace ID: agent_ws_37ee926fea4ec2e477c01696a152dfdf1517d927d22dc33ac660a07158850746
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D.
+Reusing registered workspace ID: agent_ws_37ee926fea4ec2e477c01696a152dfdf1517d927d22dc33ac660a07158850746
+Unexpected failure while preparing agent run 'software_tutorial_video_maker_643a3f0ea0844c96927c111bfa98af99' for runtime 'grok_build'. Error: Workspace skill path collision for Grok Build skill 'software-tutorial-video-maker': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-grok_build-V-D/.grok/skills/software-tutorial-video-maker' already exists as a directory.
+    at WorkspaceSkillLinks.pathStateCollisionError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-links.js:158:16)
+    at WorkspaceSkillMaterializer.reconcileResolved (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:196:35)
+    at async WorkspaceSkillMaterializer.completeAcquisition (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/shared/workspace-skill-materializer.js:134:29)
+Error in createAgentRun: AgentCreationError: Failed to prepare agent run 'software_tutorial_video_maker_643a3f0ea0844c96927c111bfa98af99'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-antigravity_cli-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-antigravity_cli-V-D.
+Created and registered workspace ID: agent_ws_38966921c3f39c0f7c5656f1b91e9e9edfa7e8e5efbce079a018c75224e432ac
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-antigravity_cli-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-antigravity_cli-V-D.
+Reusing registered workspace ID: agent_ws_38966921c3f39c0f7c5656f1b91e9e9edfa7e8e5efbce079a018c75224e432ac
+AGY configured skill skipped: run=daily_assistant_cd2cec7853c342329766357b67ac6bb0, agent=autobyteus-daily-assistant, skill=software-tutorial-video-maker, disposition=skipped-workspace-owned
+Published antigravity_cli agent run 'daily_assistant_cd2cec7853c342329766357b67ac6bb0'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-antigravity_cli-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-antigravity_cli-V-D.
+Reusing registered workspace ID: agent_ws_38966921c3f39c0f7c5656f1b91e9e9edfa7e8e5efbce079a018c75224e432ac
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-antigravity_cli-V-D
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d15-xXsaux/ws-antigravity_cli-V-D.
+Reusing registered workspace ID: agent_ws_38966921c3f39c0f7c5656f1b91e9e9edfa7e8e5efbce079a018c75224e432ac
+Unexpected failure while preparing agent run 'software_tutorial_video_maker_a5d152dd9ae44f6a8986b8698d94f27d' for runtime 'antigravity_cli'. Error: AGY_SKILL_NAME_COLLISION: software-tutorial-video-maker
+    at failure (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/antigravity/capsule/agy-configured-skill-materializer.js:13:33)
+    at materializeAgyConfiguredSkills (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/antigravity/capsule/agy-configured-skill-materializer.js:186:23)
+    at async createAgyRunCapsule (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/antigravity/capsule/agy-run-capsule.js:27:24)
+    at async AgyAgentRunBackendFactory.createBackend (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.js:36:25)
+    at async AgentRunManager.prepareCandidateOnce (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/agent-execution/services/agent-run-manager.js:266:23)
+Error in createAgentRun: AgentCreationError: Failed to prepare agent run 'software_tutorial_video_maker_a5d152dd9ae44f6a8986b8698d94f27d'.
+[2026-09-28T22:33:44.485Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-28T22:33:44.496Z] [INFO] [server.runtime] Server closed cleanly.
