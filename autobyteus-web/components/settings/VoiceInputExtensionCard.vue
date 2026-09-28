@@ -537,7 +537,7 @@ function handleAudioInputDeviceChange(event: Event): void {
 }
 
 async function handleSettingsTestToggle(): Promise<void> {
-  await voiceInputStore.toggleRecording('settings-test');
+  await voiceInputStore.toggleRecording({ source: 'settings-test' });
 }
 
 async function refreshAudioInputs(): Promise<void> {

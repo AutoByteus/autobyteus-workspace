@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { withActiveComposerTarget } from '~/test-support/activeComposerTargetHarness'
 import { flushPromises, mount } from '@vue/test-utils';
 import { nextTick, reactive } from 'vue';
 import ContextFilePathInputArea from '../ContextFilePathInputArea.vue';
@@ -157,7 +158,7 @@ describe('ContextFilePathInputArea', () => {
     context.contextFilePaths.push(createWorkspaceContextAttachment('/tmp/test-image.png', 'Image'));
     selectContext(context);
 
-    const wrapper = mount(ContextFilePathInputArea, {
+    const wrapper = mount(withActiveComposerTarget(ContextFilePathInputArea), {
       global: {
         stubs: {
           FullScreenImageModal: true,
@@ -183,7 +184,7 @@ describe('ContextFilePathInputArea', () => {
         }),
     );
 
-    const wrapper = mount(ContextFilePathInputArea, {
+    const wrapper = mount(withActiveComposerTarget(ContextFilePathInputArea), {
       global: {
         stubs: {
           FullScreenImageModal: true,
@@ -243,7 +244,7 @@ describe('ContextFilePathInputArea', () => {
     context.contextFilePaths.push(draftAttachment);
     selectContext(context);
 
-    const wrapper = mount(ContextFilePathInputArea, {
+    const wrapper = mount(withActiveComposerTarget(ContextFilePathInputArea), {
       global: {
         stubs: {
           FullScreenImageModal: true,
@@ -292,7 +293,7 @@ describe('ContextFilePathInputArea', () => {
       },
     );
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-    const wrapper = mount(ContextFilePathInputArea, {
+    const wrapper = mount(withActiveComposerTarget(ContextFilePathInputArea), {
       global: { stubs: { FullScreenImageModal: true } },
     });
 
@@ -345,7 +346,7 @@ describe('ContextFilePathInputArea', () => {
       }),
     );
 
-    const wrapper = mount(ContextFilePathInputArea, {
+    const wrapper = mount(withActiveComposerTarget(ContextFilePathInputArea), {
       global: {
         stubs: {
           FullScreenImageModal: true,

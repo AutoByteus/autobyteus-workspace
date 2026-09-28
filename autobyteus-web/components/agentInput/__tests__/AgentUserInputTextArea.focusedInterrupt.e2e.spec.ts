@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { withActiveComposerTarget } from '~/test-support/activeComposerTargetHarness'
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { nextTick, reactive } from 'vue';
@@ -191,7 +192,7 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
       })),
     });
 
-    const wrapper = mount(AgentUserInputTextArea, {
+    const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), {
       global: {
         mocks: {
           $t: (key: string) => key,

@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { withActiveComposerTarget } from '~/test-support/activeComposerTargetHarness'
 import { mount, flushPromises } from '@vue/test-utils'
 import { reactive } from 'vue'
 import AgentOrgWorkspaceView from '~/components/workspace/org/AgentOrgWorkspaceView.vue'
@@ -97,7 +98,7 @@ async function open(agentRunId = 'agent-director') {
   const org = store.contextFor('org-run')!
   org.select({ kind: 'agent_execution', agentRunId })
   const active = useActiveContextStore()
-  wrapper = mount(AgentUserInputTextArea, { global: { stubs: { Icon: true } } })
+  wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
   await flushPromises()
   return { org, active, context: active.activeAgentContext! }
 }
@@ -383,7 +384,7 @@ async function inactive(id = 'agent-director') {
   await store.openForInspection('org-run')
   store.select('org-run', { kind: 'agent_execution', agentRunId: id })
   const active = useActiveContextStore()
-  wrapper = mount(AgentUserInputTextArea, { global: { stubs: { Icon: true } } })
+  wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea), { global: { stubs: { Icon: true } } })
   await flushPromises()
   return { store, active, context: active.activeAgentContext! }
 }

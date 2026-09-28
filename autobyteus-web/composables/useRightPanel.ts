@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed, ref, type Ref } from 'vue'
 import {
   RIGHT_PANEL_DEFAULT_WIDTH_PX,
   RIGHT_PANEL_MIN_WIDTH_PX,
@@ -8,8 +8,32 @@ import {
   type RightPanelResizeIntent,
 } from '~/utils/layout/responsiveLayoutPolicy'
 
-// Global user preference for right panel visibility and width shared across workspace surfaces.
-const isRightPanelVisible = ref(true)
+/**
+ * Which tool shell owns the right-panel visibility preference.
+ * - `workspace`: agent team / org views; the panel is docked by default.
+ * - `chat`: the single-agent chat view; the panel starts collapsed to the strip.
+ */
+export type RightPanelScope = 'workspace' | 'chat'
+
+// One visibility preference per scope. Width stays shared across surfaces.
+const visibilityByScope: Record<RightPanelScope, Ref<boolean>> = {
+  workspace: ref(true),
+  chat: ref(false),
+}
+
+// The mounted tool shell sets the scope it renders; only one shell is shown at a time.
+const activeRightPanelScope = ref<RightPanelScope>('workspace')
+
+export const setActiveRightPanelScope = (scope: RightPanelScope): void => {
+  activeRightPanelScope.value = scope
+}
+
+const isRightPanelVisible = computed<boolean>({
+  get: () => visibilityByScope[activeRightPanelScope.value].value,
+  set: (visible) => {
+    visibilityByScope[activeRightPanelScope.value].value = visible
+  },
+})
 
 export const DEFAULT_RIGHT_PANEL_WIDTH = RIGHT_PANEL_DEFAULT_WIDTH_PX
 export const MIN_RIGHT_PANEL_WIDTH = RIGHT_PANEL_MIN_WIDTH_PX

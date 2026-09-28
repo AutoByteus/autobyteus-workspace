@@ -1,7 +1,6 @@
 import { defineStore } from 'pinia';
 import { useToasts } from '~/composables/useToasts';
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
-import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useExtensionsStore } from '~/stores/extensionsStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import {
@@ -13,7 +12,14 @@ import {
   toVoicePermissionState,
 } from '~/utils/voiceInputCapture';
 
-export type VoiceInputRecordingSource = 'composer' | 'settings-test';
+/**
+ * What a recording is for. A composer recording names the context its transcript
+ * goes into; the caller (the composer's target) decides, never the store.
+ */
+export type VoiceInputRecordingRequest =
+  | { source: 'composer'; targetContext: AgentContext }
+  | { source: 'settings-test' };
+export type VoiceInputRecordingSource = VoiceInputRecordingRequest['source'];
 export type VoiceInputResultOutcome = 'idle' | 'recording' | 'transcribing' | 'transcript-ready' | 'no-speech' | 'empty-transcript' | 'error';
 export type VoiceInputPermissionState = 'unknown' | 'prompt' | 'granted' | 'denied' | 'unsupported';
 
@@ -230,17 +236,16 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       }
     },
 
-    async startRecording(source: VoiceInputRecordingSource = 'composer'): Promise<void> {
+    async startRecording(request: VoiceInputRecordingRequest): Promise<void> {
       if (this.isStarting || this.isRecording || this.isTranscribing) {
         return;
       }
 
+      const source = request.source;
       const attemptGeneration = ++this.startupAttemptGeneration;
       this.isStarting = true;
       this.recordingSource = source;
-      this.composerTargetContext = source === 'composer'
-        ? useActiveContextStore().activeAgentContext
-        : null;
+      this.composerTargetContext = request.source === 'composer' ? request.targetContext : null;
       this.error = null;
       this.liveInputLevel = 0;
       this.hasReceivedCaptureStats = false;
@@ -477,15 +482,11 @@ export const useVoiceInputStore = defineStore('voiceInput', {
           diagnostics: capture.diagnostics,
         });
 
-        if (source === 'composer') {
-          const activeContextStore = useActiveContextStore();
-          const targetContext = composerTargetContext;
-          if (targetContext) {
-            activeContextStore.updateRequirementForContext(
-              targetContext,
-              mergeTranscriptWithDraft(targetContext.requirement, result.text),
-            );
-          }
+        if (source === 'composer' && composerTargetContext) {
+          composerTargetContext.requirement = mergeTranscriptWithDraft(
+            composerTargetContext.requirement,
+            result.text,
+          );
         }
       } catch (error) {
         this.error = error instanceof Error ? error.message : t('settings.voiceInput.store.voiceTranscriptionFailed');
@@ -508,20 +509,20 @@ export const useVoiceInputStore = defineStore('voiceInput', {
       }
     },
 
-    async toggleRecording(source: VoiceInputRecordingSource = 'composer'): Promise<void> {
+    async toggleRecording(request: VoiceInputRecordingRequest): Promise<void> {
       if (this.isStarting || this.isTranscribing) {
         return;
       }
 
       if (this.isRecording) {
-        if (this.recordingSource !== source) {
+        if (this.recordingSource !== request.source) {
           return;
         }
         await this.stopRecording();
         return;
       }
 
-      await this.startRecording(source);
+      await this.startRecording(request);
     },
 
     async resetSettingsTestState(): Promise<void> {

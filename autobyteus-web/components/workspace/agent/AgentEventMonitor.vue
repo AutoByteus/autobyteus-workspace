@@ -31,7 +31,9 @@
         {{ filePreviewStatus }}
       </p>
       <slot name="composerContext" />
-      <AgentUserInputForm :before-send="beforeSend" />
+      <slot name="composer">
+        <AgentUserInputForm :before-send="beforeSend" />
+      </slot>
     </div>
   </div>
 </template>

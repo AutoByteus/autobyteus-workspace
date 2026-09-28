@@ -38,10 +38,10 @@
 
       <aside class="rounded-lg bg-white p-3 shadow-sm">
         <div data-test="composer-attachments" class="border-b">
-          <ContextFilePathInputArea />
+          <ContextFilePathInputArea :target="composerTarget" />
         </div>
         <div data-test="composer-input">
-          <AgentUserInputTextArea />
+          <AgentUserInputTextArea :target="composerTarget" />
         </div>
         <div class="mt-3 text-xs text-slate-600">
           <p data-test="rich-focus">focus={{ richTeam.view.getFocusedAgentRunId() }}</p>
@@ -59,6 +59,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, reactive, ref, watch } 
 import WorkspaceHistoryWorkspaceSection from '~/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue';
 import ContextFilePathInputArea from '~/components/agentInput/ContextFilePathInputArea.vue';
 import AgentUserInputTextArea from '~/components/agentInput/AgentUserInputTextArea.vue';
+import { useComposerTarget } from '~/composables/agentInput/useComposerTarget';
 import type {
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
@@ -89,6 +90,8 @@ import {
   testSubTeamNode,
   testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures';
+
+const composerTarget = useComposerTarget();
 
 definePageMeta({ layout: false });
 
