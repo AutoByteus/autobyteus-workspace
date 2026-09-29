@@ -1,0 +1,327 @@
+{
+  "case": "LIVE-BG-001",
+  "runId": "agy_background_live_fe27a4a6_d524_4e43_918b_2789_e4c3da5600e34adcb9f4ae2844dd0cc6",
+  "port": 59806,
+  "model": "gemini-3.8-flash-high",
+  "turn": [
+    {
+      "at_ms": 8,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 8,
+      "type": "AGENT_COMMAND_ACK",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 8,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 8,
+      "type": "TURN_STARTED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 5223,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-ebcd5a17-938a-4dbd-ae1b-d9e7b3cfeb3e-2",
+      "command": "python3 -m http.server 59806 --bind 127.0.0.1",
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 21165,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-ebcd5a17-938a-4dbd-ae1b-d9e7b3cfeb3e-4",
+      "command": "echo AFTER_ONE",
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 21165,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-ebcd5a17-938a-4dbd-ae1b-d9e7b3cfeb3e-4",
+      "command": "echo AFTER_ONE",
+      "result": {
+        "provider_state": "DONE",
+        "output": "AFTER_ONE\r\n"
+      },
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 21165,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-ebcd5a17-938a-4dbd-ae1b-d9e7b3cfeb3e-6",
+      "command": "sleep 5 && echo AFTER_TWO",
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 21165,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-ebcd5a17-938a-4dbd-ae1b-d9e7b3cfeb3e-6",
+      "command": "sleep 5 && echo AFTER_TWO",
+      "result": {
+        "provider_state": "DONE",
+        "output": "AFTER_TWO\r\n"
+      },
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 21165,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-ebcd5a17-938a-4dbd-ae1b-d9e7b3cfeb3e-8",
+      "command": "printf \"OK\\n\" > done.txt",
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 21165,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-ebcd5a17-938a-4dbd-ae1b-d9e7b3cfeb3e-8",
+      "command": "printf \"OK\\n\" > done.txt",
+      "result": {
+        "provider_state": "DONE",
+        "output": null
+      },
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 21165,
+      "type": "SEGMENT_START",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 21165,
+      "type": "SEGMENT_CONTENT",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": "DONE\n"
+    },
+    {
+      "at_ms": 21165,
+      "type": "SEGMENT_END",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 22082,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-ebcd5a17-938a-4dbd-ae1b-d9e7b3cfeb3e-2",
+      "command": "python3 -m http.server 59806 --bind 127.0.0.1",
+      "result": {
+        "provider_state": "RUNNING",
+        "output": "Started as a background task; still running when the turn ended."
+      },
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 22082,
+      "type": "TOKEN_USAGE_UPDATED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 22082,
+      "type": "TURN_COMPLETED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 22082,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    }
+  ],
+  "turnEnd": "TURN_COMPLETED",
+  "quietWindow": {
+    "ms": 130000,
+    "events": []
+  },
+  "nextTurn": [
+    {
+      "at_ms": 152623,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 152623,
+      "type": "AGENT_COMMAND_ACK",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 152623,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 152623,
+      "type": "TURN_STARTED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 154282,
+      "type": "SEGMENT_START",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 154308,
+      "type": "SEGMENT_CONTENT",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": "NEXT_TURN_OK"
+    },
+    {
+      "at_ms": 154308,
+      "type": "SEGMENT_END",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 154314,
+      "type": "TOKEN_USAGE_UPDATED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 154314,
+      "type": "TURN_COMPLETED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 154314,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    }
+  ],
+  "historyDaemonRow": {
+    "kind": "tool_call",
+    "invocationId": "agy-tool-ebcd5a17-938a-4dbd-ae1b-d9e7b3cfeb3e-2",
+    "role": null,
+    "content": "",
+    "toolName": "run_command",
+    "toolArgs": {
+      "CommandLine": "python3 -m http.server 59806 --bind 127.0.0.1"
+    },
+    "toolResult": {
+      "provider_state": "RUNNING",
+      "output": "Started as a background task; still running when the turn ended."
+    },
+    "toolError": null,
+    "media": null,
+    "ts": 1790624049.728
+  },
+  "daemonListeningAfterTerminate": true,
+  "result": "Fail",
+  "error": "AssertionError: expected true to be false // Object.is equality"
+}
