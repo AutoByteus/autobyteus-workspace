@@ -2,7 +2,7 @@
 
 ## Review Meta
 
-- Review Round: 2 (latest authoritative). Round 1 (CRR-004) reviewed the API-REV-002 changes, which were committed in `a4b22fc27`.
+- Review Round: 3 (latest authoritative; `Not Applicable`). Round 2 (CRR-006) reviewed the API-REV-003 probe update, since committed in `030bab78d`. Round 1 (CRR-004) reviewed the API-REV-002 changes, committed in `a4b22fc27`.
 - Trigger: API/E2E Pass, API-REV-003 (api_e2e_engineer, 95%), at HEAD `e9f2ce399` (IR-004 / D-16 on the `origin/personal` merge), with an uncommitted probe update
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-003 intended behavior)
 - Investigation Notes Reviewed As Context: `investigation-notes.md`
@@ -13,7 +13,7 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001..IR-003)
 - Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md` (CRR-005, Pass, round 4, D-16)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-006`
+- Current Code Review Revision ID: `CRR-007`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`, with the round-2 delta
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md` (the "Round 3" section is authoritative)
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-003)
@@ -22,6 +22,26 @@
 - Final Validation Confidence: 95%
 - Prior unresolved test-review findings rechecked: none were blocking. Advisories A-1..A-3 from round 1: A-1 and A-3 are unchanged (still advisory); A-2 is partly addressed, since the C16 prerequisites are commented at the case.
 - Supported Product Scenario Basis Confirmed: `Yes`. Every probe case exercises a scenario already established upstream. Round 2 adds C16 for REQ-021/AC-018 (SCN-002; D-16 V-L1..V-L5), user-approved after UVF-001.
+
+## Round 3 (API-REV-004, real desktop app addendum)
+
+- Trigger: API-REV-004 Pass (95%). The isolated real desktop instance (`iso-9333-19f3`) was built from HEAD `3c062a180` (`origin/personal` `8778420fc`). Cases DT-00..DT-05 passed.
+- Durable test changes: **none**.
+  - `git diff 030bab78d HEAD -- autobyteus-web/tests/e2e/chat-entry-live-probe.mjs` is empty, so the probe reviewed in round 2 is committed unchanged.
+  - The worktree has no modified test files; only ticket artifacts are modified.
+- Commits since `e9f2ce399` on the ticket branch:
+  - delivery merge refreshes of `origin/personal` (other tickets' code, reviewed in their own tickets);
+  - delivery docs and ticket checkpoints (`46c8d98fc`, `ab2a0480d`);
+  - `030bab78d`, which commits the round-2 probe.
+  - No chat-owned source changed: an empty diff over `components/chat`, `composables/chat`, `services/chat`, `chatDraftStore`, `pages/chat.vue`, `agentRunStore`, `runHistoryLoadActions`, server `skills` and `backends/shared`.
+- Result: `Not Applicable`.
+- Observations forwarded (implementation behavior, not test code; not review findings):
+  - **O-2:** the Chat `/` skill list loads once per app session (`useChatComposerOptions` fetches only while `skillStore` is empty).
+    - A skill added outside the Skills page (another client, or files placed in a skill root) is missing from `/` until the Skills page is visited or the app restarts.
+    - The runtime still receives it, because ALL_INSTALLED is resolved at run start.
+    - The approved requirements do not define freshness of the `/` list for skills added externally while the app is open. It is for delivery to show the user; if the user wants it changed, it goes to the Solution Designer.
+  - **O-3:** at the desktop default width (1200 px), a long Codex display-name label also truncates the footer's runtime badge ("Co…"), with the full text in the tooltip. This is within the approved single-line-with-tooltip rule (DEC-015) and cosmetic.
+  - **O-1** (round 2) is still open for user re-verification.
 
 ## Round 2 Delta (API-REV-003)
 
@@ -89,12 +109,9 @@ Advisory notes (no action required for delivery; worth folding in the next time 
 
 ## Latest Authoritative Result
 
-- Result: `Pass` (round 2)
-- Changed durable test paths reviewed:
-  - Round 2: `autobyteus-web/tests/e2e/chat-entry-live-probe.mjs` (Updated; C04, C16, `MODEL_ROW`).
-  - Round 1, already committed in `a4b22fc27`: the probe (Added), `package.json` (Updated), and `WorkspaceAgentRunsTreePanel.regressions.spec.ts` (Updated, CR-001).
+- Result: `Not Applicable` (round 3: no durable test changed in API-REV-004). The last reviewed test code passed in round 2 (CRR-006).
+- Changed durable test paths reviewed: none this round.
+  - Earlier rounds: `chat-entry-live-probe.mjs` (Added, round 1; Updated, round 2; committed in `a4b22fc27` and `030bab78d`), `package.json` (Updated, round 1), and `WorkspaceAgentRunsTreePanel.regressions.spec.ts` (Updated, round 1, CR-001).
 - Unresolved finding IDs: None. A-1..A-4 are advisory.
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
-- Notes:
-  - The round-2 probe update is uncommitted and must be committed at finalization.
-  - Observation O-1 (the transient identifier label on a fresh New chat) should be shown to the user in UVF-001 re-verification.
+- Notes: observations O-1, O-2 and O-3 are for user re-verification. They are not test-review findings.

@@ -7,6 +7,7 @@
 | API-REV-001 | code_reviewer / `code-review-report.md` CRR-001 / round 1 | SR-003, SR-004, SR-007; ARCH-REV-003; IR-001; CRR-001 | N/A | Fail / 88% |
 | API-REV-002 | code_reviewer / `code-review-report.md` CRR-003 / round 2 | SR-010; ARCH-REV-006; IR-002, IR-003; CRR-002, CRR-003 | Fail / 88% | Pass / 95% |
 | API-REV-003 | code_reviewer / `code-review-report.md` CRR-005 / round 3 | SR-011, SR-012; ARCH-REV-008; IR-004; CRR-005; DR-002 (UVF-001) | Pass / 95% | Pass / 95% |
+| API-REV-004 | user direction / real desktop app via isolated instance | same as API-REV-003; HEAD `3c062a180` | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -77,3 +78,17 @@ None — no prior failure was open (API-REV-002 Pass).
 - Observation: O-1 — a fresh New chat trigger shows the identifier for ~0.6–3 s until the runtime catalog loads (non-blocking)
 - Recommended recipient: `/software_engineering_team/code_reviewer` (proportional test-code review)
 - Remaining risks: O-1; voice dictation not automatable; the D-14 marker has no timeout (approved); the Windows re-point fallback is unit-only
+
+### API-REV-004 — Real desktop app validated through an isolated instance
+
+- Trigger: user direction — validate the real desktop app as an isolated instance (`isolated-app start --build`), driven by the browser-automation CLI on control port 9333, then stop it.
+- Scope: DT-00..DT-05 (isolation, landing, AC-018 labels, tag-send-reply with D-13, D-08 lock/terminate/save, restart persistence and resume). HEAD `3c062a180` (contains `origin/personal` `8778420fc`).
+- Coverage changes: none to repository tests; evidence under `api-e2e-evidence/round4-desktop/` (screenshots, two MP4 recordings, instance JSON).
+
+#### Prior Failure Resolution
+
+None — no prior failure open.
+
+- Result and confidence: Pass, 95% (user-surface/desktop category 93% → 95%)
+- New failure IDs: none. New observations: O-2 (`/` skill list loads once per session), O-3 (runtime badge truncation with long labels at 1200 px).
+- Recommended recipient: `/software_engineering_team/code_reviewer` (informational addendum to the round-3 pass)

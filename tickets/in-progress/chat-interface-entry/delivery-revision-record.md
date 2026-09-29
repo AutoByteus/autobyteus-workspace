@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery handoff from `code_reviewer` after CRR-004 Pass (2026-09-29) | N/A | Integrated, checked, docs synced; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/` |
+| DR-005 | User asked to check `personal` and rebuild | DR-004 waiting for verification | Re-integrated `origin/personal@39e512edd` (`3c062a180`), checked (new failures proven upstream baseline), rebuilt; waiting for verification | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-electron-build-r4.log`, `server-build-full-r4.log`, `refresh4-baseline-proof.txt` |
 | DR-004 | User asked for a rebuild after `personal` advanced | DR-003 waiting for renewed verification | Re-integrated `origin/personal@c84b57739` (`97c169c71`), checked, rebuilt; waiting for renewed verification | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-electron-build-r3.log` |
 | DR-003 | `code_reviewer` delivery handoff after the UVF-001 rework (CRR-006 Pass) | DR-002 `Blocked` | Re-integrated (`a1f2a26d2`), checked, docs verified, local build rebuilt; waiting for renewed verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` (addendum), `release-notes.md`, `delivery-evidence/delivery-electron-build-r2.log` |
 | DR-002 | User verification of the local build: model menu labels (UVF-001) | DR-001 waiting for verification | `Blocked`: Requirement Gap routed to `/software_engineering_team/solution_designer` | `user-verification-finding-001.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/catalog-*.json`, `delivery-evidence/delivery-electron-build.log` |
@@ -109,3 +110,26 @@
 - Next recipient/action: the user verifies the r3 build and decides on a beta release.
 - Remaining blockers, rollback concerns, or untested scope: user verification pending.
 - DR-004 addendum (2026-09-29): the user asked for another rebuild after `personal` advanced to `8778420fc`. That commit only touches `tickets/done/agent-isolated-app-recording/` (the beta.6 delivery records). It was merged as `20d1ec13f` with no conflicts, and there is no diff outside `tickets/` compared with `97c169c71`. No rebuild was needed: the r3 build is identical in code, and the user was told this and offered a rebuild on request.
+
+### DR-005: Fourth integration refresh and rebuild at the user's request
+
+- Delivery round and trigger: the user asked to check whether `origin/personal` had been updated and to rebuild (2026-09-29).
+- Triggering upstream report, verification, or evidence: `origin/personal@39e512edd`, 7 new commits (runtime stop-cleanup and Org/Team recovery; release `1.4.91-beta.7`).
+- Prior authoritative result: DR-004, waiting for renewed verification.
+- Current authoritative result: re-integrated (checkpoint `ab2a0480d`, merge `3c062a180`, clean), checked and rebuilt. Waiting for renewed user verification.
+- Docs sync report: no change. The merged base updates its own server docs, and the delivery AGY doc edit was preserved.
+- Handoff summary: updated.
+- Release/publication/deployment report: updated. A release would now be `1.4.91-beta.8`.
+- Integration and post-integration verification:
+  - Server build tsc and `build:full`: passed.
+  - Server units: 1147 passed, 16 failed. 4 are the known Codex baseline; 12 in Team/Org run-config tests were proven pre-existing on clean `origin/personal@39e512edd`.
+  - Marker packaging test: 4/4.
+  - App build r4: exit 0, personal flavor.
+- User verification/finalization state: renewed verification pending. Nothing was pushed, merged or released.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Terminal message/reference: —
+- Why this baseline or delivery revision was recorded: the base advanced with server runtime changes, and the test build changed.
+- Next recipient/action: the user verifies the r4 build (UVF-001 steady state, O-1) and decides on a beta release.
+- Remaining blockers, rollback concerns, or untested scope:
+  - User verification is pending.
+  - The upstream Team/Org run-config unit failures are pre-existing on `personal`; they are outside this ticket and should be reported to their owners.

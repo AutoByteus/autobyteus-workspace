@@ -1,0 +1,24 @@
+
+> autobyteus-workspace@ isolated-app /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry
+> node autobyteus-web/scripts/isolated-app/cli.mjs start --build
+
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-9333-19f3",
+    "pid": 56471,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:51240",
+    "graphqlUrl": "http://127.0.0.1:51240/graphql",
+    "controlEndpoint": "http://127.0.0.1:9333",
+    "controlPort": 9333,
+    "serverPort": 51240,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-tHk8IE",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-tHk8IE/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-9333-19f3.log"
+  }
+}

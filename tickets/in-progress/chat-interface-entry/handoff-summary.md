@@ -2,12 +2,12 @@
 
 ## Status
 
-- Stage: Delivery round 4 (DR-004). The UVF-001 rework is integrated with `origin/personal@c84b57739` and checked. **Waiting for renewed user verification.** Nothing has been pushed, merged into `personal`, or released.
+- Stage: Delivery round 5 (DR-005). The UVF-001 rework is integrated with `origin/personal@39e512edd` and checked. **Waiting for renewed user verification.** Nothing has been pushed, merged into `personal`, or released.
 - Classification (preserved): `task_size=Large`, `architectural_risk=High`, route `Reviewed`. The latest chain is SR-011/SR-012 → ARCH-REV-008 → IR-004 (D-16) → CRR-005 Pass → API-REV-003 Pass 95% → CRR-006 Pass.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
-- Ticket branch: `codex/chat-interface-entry` at `20d1ec13f` (local only; not pushed yet). `20d1ec13f` merges `origin/personal@8778420fc`, which contains ticket records only, so the code is identical to the r3 build at `97c169c71`.
+- Ticket branch: `codex/chat-interface-entry` at `3c062a180` (local only; not pushed yet). It merges `origin/personal@39e512edd` (runtime stop-cleanup and Org/Team recovery; release `1.4.91-beta.7`).
 - Finalization target: `personal` (remote `origin`)
-- Delivery revision: DR-004 (`delivery-revision-record.md`)
+- Delivery revision: DR-005 (`delivery-revision-record.md`)
 
 ## Integrated State For Verification
 
@@ -105,7 +105,8 @@ The second merge touches AGY server files, two web spec files (`toolLifecycleHan
 ## User Verification
 
 - **Renewed verification pending (DR-003).** The UVF-001 rework (D-16) is integrated and checked. A new local build is below. Please check O-1 as well.
-- 2026-09-29 (DR-004, at the user's request after `personal` advanced): rebuilt the local unsigned macOS ARM64 personal-flavor app from `97c169c71`. The log is `delivery-evidence/delivery-electron-build-r3.log` (exit 0, personal). Outputs are `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.91-beta.6.dmg` / `.zip` and `mac-arm64/AutoByteus.app`, which contains `Resources/isolated-launch.json`. The version string is the merged base's `1.4.91-beta.6`; it is not the published beta.6. **This is the current test build.**
+- 2026-09-29 (DR-005, at the user's request): rebuilt from `3c062a180`. The log is `delivery-evidence/delivery-electron-build-r4.log` (exit 0, personal). Outputs are `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.91-beta.7.dmg` / `.zip` and `mac-arm64/AutoByteus.app`, and the marker packaging test passed 4/4. The version string is the merged base's `1.4.91-beta.7`; it is not the published beta.7. **This is the current test build.**
+- Superseded: 2026-09-29 (DR-004, at the user's request after `personal` advanced): rebuilt the local unsigned macOS ARM64 personal-flavor app from `97c169c71`. The log is `delivery-evidence/delivery-electron-build-r3.log` (exit 0, personal). Outputs are `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.91-beta.6.dmg` / `.zip` and `mac-arm64/AutoByteus.app`, which contains `Resources/isolated-launch.json`. The version string is the merged base's `1.4.91-beta.6`; it is not the published beta.6. (superseded by DR-005)
 - Superseded: 2026-09-29 (DR-003) rebuilt the local unsigned macOS ARM64 personal-flavor app from `a1f2a26d2`. The log is `delivery-evidence/delivery-electron-build-r2.log` (exit 0, "Resolved build flavor: personal"). Outputs are `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.91-beta.5.dmg` / `.zip` and `mac-arm64/AutoByteus.app`. The version string is the merged base's `1.4.91-beta.5`; it is not the published beta.5.
 - Earlier result: **not verified; blocked by UVF-001** (`user-verification-finding-001.md`, DR-002). The Chat model menu labels models by raw identifier (`opus`), where the launch form shows `claude-opus-5-5`, "Opus 5.5" and the Recommended badge. No model is missing. This was routed as a Requirement Gap to `/software_engineering_team/solution_designer` on 2026-09-29.
 - 2026-09-29: at the user's request, built a local unsigned macOS ARM64 personal-flavor desktop app from this integrated state (`4b440e719`). Command: README "macOS Build With Logs (No Notarization)" plus `AUTOBYTEUS_BUILD_FLAVOR=personal`. The log is `delivery-evidence/delivery-electron-build.log` (exit 0, "Resolved build flavor: personal"). Outputs are in `autobyteus-web/electron-dist/`: `AutoByteus_personal_macos-arm64-1.4.91-beta.4.dmg` / `.zip` and `mac-arm64/AutoByteus.app`. The version string is the merged base's `1.4.91-beta.4`, because no release bump has been made.

@@ -10,7 +10,7 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
+- Current delivery revision ID: `DR-005`
 - Notes: the UVF-001 rework is re-integrated; waiting for renewed user verification.
 
 ## Initial Delivery Integration Refresh
@@ -66,6 +66,22 @@
 - Post-integration verification result: `Passed`
 - Handoff state current with latest tracked remote base: `Yes` (as of 2026-09-29)
 
+### Fourth Integration Refresh (DR-005, at the user's request)
+
+- Latest tracked remote base reference checked: `origin/personal@39e512edd`. It had advanced 7 commits: the runtime stop-cleanup and Org/Team recovery fix (server) and the `1.4.91-beta.7` release bump.
+- Local checkpoint commit result: `Completed`, `ab2a0480d`.
+- Integration method: `Merge`, `3c062a180`, no conflicts. The delivery edit in `antigravity_cli_runtime.md` was preserved.
+- Post-integration checks:
+  - server `tsc -p tsconfig.build.json`: exit 0
+  - `pnpm build:full`: exit 0 (`delivery-evidence/server-build-full-r4.log`)
+  - server units, now also covering `agent-collaboration`, `agent-org-execution` and `agent-team-execution`: 1147 passed, 16 failed
+    - 4 are the baseline `codex-tool-log-correlation`
+    - 12 are in `team-run-model-selection-save` (11) and `agent-org-run-config` (1). These were proven pre-existing on a clean `origin/personal@39e512edd` worktree with identical failures (`delivery-evidence/refresh4-baseline-proof.txt`), so they are not caused by this merge.
+  - web: only the version changed. The app build ran the web guards, and the marker packaging test passed 4/4.
+  - local build `delivery-evidence/delivery-electron-build-r4.log`: exit 0
+- Post-integration verification result: `Passed`
+- Handoff state current with latest tracked remote base: `Yes` (as of 2026-09-29)
+
 ## User Verification
 
 - Initial explicit user completion/verification received: `No` (pending)
@@ -88,7 +104,7 @@
 
 ## Version / Tag / Release Commit
 
-- Pending the user's decision. The documented method is `bash scripts/desktop-release.sh beta --branch <finalize-branch> --no-push`, then pushing the tag. The next version would be `1.4.91-beta.7`, because `origin/personal` has already released beta.6.
+- Pending the user's decision. The documented method is `bash scripts/desktop-release.sh beta --branch <finalize-branch> --no-push`, then pushing the tag. The next version would be `1.4.91-beta.8`, because `origin/personal` has already released beta.7.
 
 ## Repository Finalization
 

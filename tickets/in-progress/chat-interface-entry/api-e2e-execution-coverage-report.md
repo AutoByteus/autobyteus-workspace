@@ -243,6 +243,27 @@ No owned roots or probe processes remain. The user's app was not touched (it is 
 
 - Result: `Pass`; final confidence 95%; broader validation `Required` — executed (browser + live runtimes); recommended recipient `code_reviewer` for proportional test-code review of the probe changes.
 
+## Round 4 (API-REV-004) — Real desktop app (isolated instance)
+
+At the user's direction the real desktop app was validated directly: this ticket's app was built and launched as an isolated instance (`pnpm --dir <worktree> isolated-app start --build`; own data root, own ports, production settings excluded), driven through the browser-automation CLI in attach-only mode on control port 9333 (clicks and typing via `run-script` + `__abDemo`; screenshots and two MP4 recordings as supporting evidence), and stopped afterwards. HEAD `3c062a180` contains `origin/personal` `8778420fc` (only the docs-only `f2924a2b0` is newer).
+
+| Case | Proves | Result | Evidence |
+| --- | --- | --- | --- |
+| DT-00 | Isolation: fresh data root, only built-ins visible, Daily Assistant seeded ALL_INSTALLED | Pass | `round4-desktop/isolated-start.json` |
+| DT-01 | Desktop lands on `#/chat`; Chat first; defaults (AC-001, AC-017) | Pass | `DT01-landing.png` |
+| DT-02 | AC-018 labels in the packaged app (Claude canonical + Recommended first; Codex display names) | Pass | `DT02-*` |
+| DT-03 | Tag → send → streamed reply, D-13 permanent id, chips, last-used label (AC-002, AC-006, AC-016) | Pass | `DT03-chat-reply.png` |
+| DT-04 | Live lock (model + thinking), tree terminate, Offline runtime-fixed save (AC-009, D-08) | Pass | `DT04-offline-saved.png` |
+| DT-05 | Desktop restart: Daily Assistant edit preserved; chat reopened from the tree with chips and saved model; resume on the saved model | Pass | `DT05-*.png` |
+| Recordings | Supporting video of DT-01..DT-04 and DT-05 | — | `desktop-chat-journey.mp4` (202 s), `desktop-after-restart.mp4` (37 s) |
+
+Observations (non-blocking):
+- **O-2:** the Chat `/` skill list is loaded once per app session (`useChatComposerOptions` fetches only while the store is empty). A skill added outside the Skills page (another client, files dropped into a skill root) is missing from `/` until the Skills page is visited or the app restarts; the runtime still receives it (ALL_INSTALLED is resolved at run start). `location.reload()` does not reload this renderer, so a reload is not a user remedy either.
+- **O-3:** at the desktop default width (1200 px) a long Codex label (`GPT-5.6-Luna (default reasoning: …`) also truncates the runtime badge in the footer trigger to "Co…"; the full text stays in the tooltip.
+- O-1 (identifier before the catalog loads) was not observable after the desktop restart: the label had already settled when sampled.
+
+Result: `Pass`. The desktop evidence replaces the earlier packaged-harness evidence for launch, seeding, restart persistence and the core Chat journeys. Final confidence stays **95%**; the user-surface/desktop category rises to 95%. Cleanup: instance stopped gracefully, ports released, data root removed, the user's AutoByteus untouched.
+
 ## Latest Authoritative Result (round 2 — superseded by the Round 3 Result above)
 
 - Result: `Pass`

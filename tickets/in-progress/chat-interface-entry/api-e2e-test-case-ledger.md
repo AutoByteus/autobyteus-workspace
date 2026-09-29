@@ -90,9 +90,24 @@ Evidence folder: `api-e2e-evidence/round3/`.
 | 53 | C01/C03/C04 | R3 | Completed | `--runtime claude_agent_sdk` and `--runtime grok_build` | Trigger = policy label | Claude `claude-opus-5-5 · Claude SDK` (first `opus`, 1580 ms); Grok `Grok 4.7 · Grok Build` (first `grok-4.7`, 1735 ms) | Pass | `round3/probe-claude/`, `round3/probe-grok/` | — |
 | 54 | — | R3 | Completed | Cleanup check | No leftovers | No owned roots or probe processes; the user's app is running (pid now 60384 — restarted by the user, not by this validation) | Done | — | — |
 
+### Round 4 (API-REV-004) — Real desktop app, isolated instance (user direction)
+
+HEAD `3c062a180` (delivery merge; contains `origin/personal` `8778420fc`; lacks only the docs-only `f2924a2b0`). Instance built and launched with `pnpm --dir <worktree> isolated-app start --build` (`iso-9333-19f3`, control :9333, backend :51240, own temp data root), driven with the browser-automation CLI (`CHROME_REMOTE_DEBUGGING_PORT=9333 BROWSER_AUTOMATION_ATTACH_ONLY=1`, clicks/typing via `run-script` + `__abDemo`), stopped afterwards. Evidence: `api-e2e-evidence/round4-desktop/`.
+
+| Seq | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence | Next Action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 55 | DT-00 | R4 | Completed | `isolated-app start --build`; `health-check`; `list-tabs`; GraphQL | Isolated instance ready; no production data | Ready; one window tab on `#/chat`; only built-in agents and one built-in skill visible (no production package roots); Daily Assistant seeded `ALL_INSTALLED` on the fresh root | Pass | `isolated-start.json`, `isolated-build.log` | — |
+| 56 | DT-01 | R4 | Completed | Screenshot + DOM read | AC-001, AC-017, REQ-004, REQ-014 | Lands on `#/chat`; nav Chat, Agents, Agent Teams; Temp workspace; Auto-approve; send disabled when empty (1200×768 window) | Pass | `DT01-landing.png` | — |
+| 57 | DT-02 | R4 | Completed | `__abDemo.click` model trigger → Claude SDK → Codex | AC-018 V-L1/V-L3 | Claude: `claude-opus-5-5` "Opus 5.5 · For complex work…" Recommended, first of 10; Codex display names, one line, truncated; submenu opens left within the window | Pass | `DT02-model-rows.json`, `DT02-codex-rows.png` | — |
+| 58 | DT-03 | R4 | Checkpoint | Test skill `desk-alpha` created through the instance's GraphQL; `/desk` typed | `/` lists the skill | `/` did not list it: the web skill store loads once per app session (`useChatComposerOptions` fetches only when empty) and `location.reload()` does not reload this renderer; text `/desk…` was sent literally (Codex still used the skill via ALL_INSTALLED) | Observation O-2 | — | Use the user path (Skills page refreshes) |
+| 59 | DT-03 | R4 | Completed | Skills page → pencil → `/desk` → pick `desk-alpha` → text → send | AC-002, AC-006, AC-016, D-13 | New chat preselected last-used `GPT-5.5 (default reasoning: medium) · Codex`; chip; sent-as "Use the desk-alpha skill for this request."; reply `DESK-ALPHA-OK`; `#/chat?id=daily_assistant_e38b…`; tree row selected | Pass | `DT03-chat-reply.png` | — |
+| 60 | DT-04 | R4 | Completed | Live lock → tree terminate → Offline → fixed list → pick `gpt-5.6-luna` | AC-009, D-08, AC-018 V-L2 (Codex) | Live: model locked with tooltip, thinking `Medium` shown; server `RUN_ACTIVE`. Offline: "Runtime fixed · Codex App Server", 7 Codex display-name rows; saved server-side `gpt-5.6-luna` | Pass | `DT04-offline-saved.png` | — |
+| 61 | DT-05 | R4 | Completed | GraphQL edit of Daily Assistant → `isolated-app restart` → reopen the chat from the tree → resume | REQ-007/D-10 across a desktop restart; D-08 after restart | Edit preserved (`ALL_INSTALLED` kept); reopened chat Offline with `/desk-alpha` chip and saved `GPT-5.6-Luna` trigger (unlocked); resume replied `DESK-RESUMED-OK`; server active on `gpt-5.6-luna`; footer locked again | Pass | `DT05-*.png` | — |
+| 62 | — | R4 | Completed | `stop-recording` ×2; `isolated-app stop iso-9333-19f3` | Clean stop | Recordings 201.9 s / 37.3 s (`end_reason: stopped`); stop graceful, both ports released, data root removed; the user's running AutoByteus untouched | Done | `desktop-chat-journey.mp4`, `desktop-after-restart.mp4`, `isolated-stop.json` | — |
+
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: Seq 54 (round 3 complete)
+- Last durably recorded event: Seq 62 (round 4 desktop complete)
 - Round 2 last event: Seq 45
 - Round 1 last event: Seq 33
 - Last completed case and result: durable probe run (C05 Fail = F-01)
