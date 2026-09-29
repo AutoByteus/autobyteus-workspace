@@ -14,6 +14,7 @@
     "android:server:start:bg": "bash scripts/android-run-server-termux.sh --background",
     "android:server:stop": "bash scripts/android-run-server-termux.sh --stop",
     "android:server:status": "bash scripts/android-run-server-termux.sh --status",
+    "isolated-app": "node autobyteus-web/scripts/isolated-app/cli.mjs",
     "release": "bash scripts/desktop-release.sh release",
     "release:test": "bash scripts/desktop-release.sh test",
     "release:manual-dispatch": "bash scripts/desktop-release.sh manual-dispatch"

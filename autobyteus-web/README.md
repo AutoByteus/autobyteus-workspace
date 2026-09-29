@@ -312,14 +312,20 @@ pnpm test:e2e:electron \
   --data-root /absolute/path/to/existing-safe-e2e-root
 ```
 
-The launcher preserves the caller environment and overlays only
+The launcher preserves the caller environment for the desktop process, removes
+an inherited `ELECTRON_RUN_AS_NODE`, and overlays
 `AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE=e2e`,
 `AUTOBYTEUS_ELECTRON_SERVER_PORT`, and
-`AUTOBYTEUS_ELECTRON_DATA_ROOT`. It does not define an API-key, provider,
-search, Codex, or other credential policy; existing application/server
-provisioning remains authoritative. Do not place the three isolation values in
-a repository `.env`, production data-root `.env`, build profile, or alternate
-product name.
+`AUTOBYTEUS_ELECTRON_DATA_ROOT`. In the `e2e` profile the embedded server
+receives only a system-baseline environment (see the
+[server environment policy](docs/electron_packaging.md#isolated-server-environment));
+provision credentials into the isolated database with `pnpm secrets:import`.
+Do not place the three isolation values in a repository `.env`, production
+data-root `.env`, build profile, or alternate product name.
+
+For long-lived isolated instances that agents control, screenshot and record,
+use `pnpm isolated-app` from the repository root instead; see
+[isolated app instances](../docs/isolated-app-instances.md).
 
 For the complete five-scenario coexistence, routing, invalid-profile,
 parallelism, updater, and cleanup probe, run:

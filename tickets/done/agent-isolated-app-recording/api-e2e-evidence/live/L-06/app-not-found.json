@@ -1,0 +1,9 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "start",
+  "error": {
+    "code": "APP_NOT_FOUND",
+    "message": "Application not found: /nonexistent/AutoByteus.app"
+  }
+}

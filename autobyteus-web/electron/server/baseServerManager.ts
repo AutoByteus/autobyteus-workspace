@@ -12,6 +12,7 @@ import { AppDataService } from './services/AppDataService'
 import { createServerProcessOutputForwarder } from './serverOutputLogging'
 import { parseEmbeddedServerPlatformFatal, platformFatalError } from './embeddedServerPlatformFatal'
 import type { EmbeddedServerLaunchConfig } from './embeddedServerLaunchConfig'
+import { buildServerProcessEnv } from './serverRuntimeEnv'
 import type { EmbeddedServerUrls } from '../../types/serverStatus'
 
 const logger = rootLogger.child('server.base-server-manager')
@@ -332,6 +333,21 @@ export abstract class BaseServerManager extends EventEmitter {
 
   protected getRuntimeEnvOverrides(): Record<string, string> {
     return { ...this.runtimeEnvOverrides }
+  }
+
+  /**
+   * Compose the server child environment under this launch's environment policy.
+   */
+  protected buildServerEnv(loginShellPath: string | null): NodeJS.ProcessEnv {
+    return buildServerProcessEnv({
+      policy: this.launchConfig.environmentPolicy,
+      callerEnv: process.env,
+      loginShellPath,
+      port: this.serverPort,
+      appDataDir: this.appDataDir,
+      publicServerUrl: this.serverUrl,
+      runtimeOverrides: this.getRuntimeEnvOverrides(),
+    })
   }
 
   /**

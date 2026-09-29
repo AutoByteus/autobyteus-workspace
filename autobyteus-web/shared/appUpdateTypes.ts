@@ -6,7 +6,9 @@ export type AppUpdateStatus =
   | 'downloaded'
   | 'installing'
   | 'no-update'
-  | 'error';
+  | 'error'
+  /** This launch never checks for updates (isolated app instances); the UI stays quiet. */
+  | 'disabled';
 
 export type AppUpdateErrorKind =
   | 'network'

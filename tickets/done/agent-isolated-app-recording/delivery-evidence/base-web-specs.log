@@ -1,0 +1,42 @@
+
+> autobyteus@1.4.91-beta.5 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web
+
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/runProjectionConversation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runHydration/__tests__/runProjectionConversation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runHydration/__tests__/runProjectionConversation.spec.ts (13 tests) 8ms
+stderr | services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts > toolLifecycleHandler > drops malformed denied payload without state mutation
+[toolLifecycleHandler] Dropping malformed TOOL_DENIED payload {
+  invocation_id: [32m'tool-4'[39m,
+  tool_name: [32m'delete_file'[39m,
+  reason: [1mnull[22m,
+  error: [1mnull[22m
+}
+
+ ✓ services/agentStreaming/handlers/__tests__/toolLifecycleHandler.spec.ts (14 tests) 12ms
+
+ Test Files  2 passed (2)
+      Tests  27 passed (27)
+   Start at  06:39:48
+   Duration  5.29s (transform 3.16s, setup 9.53s, collect 57ms, tests 20ms, environment 284ms, prepare 228ms)
+

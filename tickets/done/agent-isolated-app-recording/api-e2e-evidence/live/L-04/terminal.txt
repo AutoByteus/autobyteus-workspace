@@ -1,0 +1,16 @@
+
+The default interactive shell is now zsh.
+To update your account to use zsh, please run `chsh -s /bin/zsh`.
+For more details, please visit https://support.apple.com/kb/HT208050.
+[?1034h/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-roott-QTbizi/server-data/temp_workspace $ echo PROBE_START; echo "home=$HOME shell=$ SHELL term=$TERM"; git --version; command -v codex claude node uv; echo "memdir= ${AUTOBYTEUS_MEMORY_DIR:-unset} dbname=${DB_NAME:-unset}"; pwd; echo PROBE""_END [A${AUTOBYTEUS_MEMORY_DIR:-unset} dbname=${DB_NAME:-unset}"; pwd; echo PROBE""_EN[KD
+PROBE_START
+home=/Users/normy shell=/bin/bash term=xterm-256color
+git version 2.50.1 (Apple Git-155)
+/Users/normy/.local/bin/codex
+/Users/normy/.local/bin/claude
+/Users/normy/.local/bin/node
+/opt/homebrew/bin/uv
+memdir=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/memory dbname=unset
+/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace
+PROBE_END
+

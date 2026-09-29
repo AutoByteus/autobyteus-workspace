@@ -286,15 +286,21 @@ async function processesInGroup(processGroupId) {
   return (await listProcessTable()).filter((entry) => entry.processGroupId === processGroupId)
 }
 
-async function inspectBackendEnvironment(pid, expectedMarkers) {
+// The isolated (`e2e`) server child receives only the system-baseline allowlist of
+// the caller environment plus Electron-owned values (REQ-002, `isolated-baseline`).
+async function inspectBackendEnvironment(pid, backendMarkers, serverDataPath) {
   if (process.platform === 'win32') {
     return { supported: false, reason: 'Windows environment inspection is not part of this host probe' }
   }
   const stdout = await execFileText('ps', ['eww', '-p', String(pid)], { maxBuffer: 8 * 1024 * 1024 })
-  const matches = Object.fromEntries(
-    Object.entries(expectedMarkers).map(([key, value]) => [key, stdout.includes(`${key}=${value}`)]),
+  const inherited = Object.fromEntries(
+    Object.entries(backendMarkers.inherited).map(([key, value]) => [key, stdout.includes(`${key}=${value}`)]),
   )
-  return { supported: true, matches }
+  const dropped = Object.fromEntries(
+    Object.entries(backendMarkers.dropped).map(([key, value]) => [key, !stdout.includes(value)]),
+  )
+  const ownDatabaseUrl = stdout.includes(`DATABASE_URL=file:${path.join(serverDataPath, 'db', 'production.db')}`)
+  return { supported: true, inherited, dropped, ownDatabaseUrl }
 }
 
 function expectedProfilePaths(rootPath) {
@@ -311,7 +317,7 @@ function expectedProfilePaths(rootPath) {
   }
 }
 
-async function inspectReadyProcessTree(session, dataRoot, expectedMarkers) {
+async function inspectReadyProcessTree(session, dataRoot, backendMarkers) {
   if (process.platform === 'win32') {
     return { supported: false, processTreeIdentity: session.processController.processTreeIdentity }
   }
@@ -330,11 +336,15 @@ async function inspectReadyProcessTree(session, dataRoot, expectedMarkers) {
     group.helper.command.includes(`--user-data-dir=${expected.userData}`),
     'Chromium helper did not use isolated userData path',
   )
-  const backendEnvironment = await inspectBackendEnvironment(group.backend.pid, expectedMarkers)
+  const backendEnvironment = await inspectBackendEnvironment(group.backend.pid, backendMarkers, expected.serverData)
   if (backendEnvironment.supported) {
-    for (const [key, matched] of Object.entries(backendEnvironment.matches)) {
-      assert(matched, `Backend child did not preserve caller sentinel ${key}`)
+    for (const [key, matched] of Object.entries(backendEnvironment.inherited)) {
+      assert(matched, `Backend child did not inherit allowlisted caller variable ${key}`)
     }
+    for (const [key, absent] of Object.entries(backendEnvironment.dropped)) {
+      assert(absent, `Backend child inherited non-allowlisted caller variable ${key}`)
+    }
+    assert(backendEnvironment.ownDatabaseUrl, 'Backend child DATABASE_URL does not point at the isolated server-data database')
   }
   return {
     supported: true,
@@ -377,9 +387,11 @@ async function assertPreparedEnvironment(prepared, expectedMarkers) {
   assert(prepared.env.AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE === 'e2e', 'Prepared profile was not forced to e2e')
   assert(prepared.env.AUTOBYTEUS_ELECTRON_SERVER_PORT === String(prepared.port), 'Prepared port was not forced')
   assert(prepared.env.AUTOBYTEUS_ELECTRON_DATA_ROOT === prepared.dataRoot, 'Prepared root was not forced')
+  assert(!('ELECTRON_RUN_AS_NODE' in prepared.env), 'Prepared environment kept the inherited ELECTRON_RUN_AS_NODE')
   return {
     preservedMarkerKeys: Object.keys(expectedMarkers),
     isolationKeysForced: true,
+    inheritedRunAsNodeRemoved: true,
   }
 }
 
@@ -515,25 +527,38 @@ async function exerciseRendererJourney(session, expectedMarkers) {
   assert(!/Failed to load providers and models/i.test(providerText), 'Provider settings journey reported a load failure', { providerText })
   await page.screenshot({ path: providerScreenshotPath, fullPage: true })
 
-  const updateBeforeDelay = await page.evaluate(async () => {
+  // Isolated launches register the disabled update controller (REQ-009): every
+  // request answers the quiet `disabled` state and every action is refused.
+  const readDisabledUpdater = () => page.evaluate(async () => {
     try {
-      await window.electronAPI.getAppUpdateState()
-      return { handlerRegistered: true }
+      const api = window.electronAPI
+      return {
+        ok: true,
+        state: await api.getAppUpdateState(),
+        check: await api.checkForAppUpdates(),
+        download: await api.downloadAppUpdate(),
+        install: await api.installAppUpdateAndRestart(),
+        setChannel: await api.setAppUpdateChannel('beta'),
+      }
     } catch (error) {
-      return { handlerRegistered: false, message: error instanceof Error ? error.message : String(error) }
+      return { ok: false, message: error instanceof Error ? error.message : String(error) }
     }
   })
-  assert(!updateBeforeDelay.handlerRegistered, 'Updater IPC handler is registered in E2E mode', updateBeforeDelay)
+  const assertDisabledUpdater = (observed, label) => {
+    assert(observed.ok, `Disabled updater IPC rejected ${label}`, observed)
+    for (const key of ['state', 'check', 'download']) {
+      assert(observed[key]?.status === 'disabled', `Updater ${key} did not answer disabled ${label}`, observed)
+    }
+    assert(observed.install?.accepted === false, `Updater install was not refused ${label}`, observed)
+    assert(observed.setChannel?.accepted === false && observed.setChannel?.persisted === false,
+      `Updater channel change was not refused ${label}`, observed)
+    assert(observed.setChannel?.state?.status === 'disabled', `Updater channel result was not disabled ${label}`, observed)
+  }
+  const updateBeforeDelay = await readDisabledUpdater()
+  assertDisabledUpdater(updateBeforeDelay, 'before the auto-check delay')
   await delay(9000)
-  const updateAfterDelay = await page.evaluate(async () => {
-    try {
-      await window.electronAPI.getAppUpdateState()
-      return { handlerRegistered: true }
-    } catch (error) {
-      return { handlerRegistered: false, message: error instanceof Error ? error.message : String(error) }
-    }
-  })
-  assert(!updateAfterDelay.handlerRegistered, 'Updater IPC handler appeared after the production auto-check delay', updateAfterDelay)
+  const updateAfterDelay = await readDisabledUpdater()
+  assertDisabledUpdater(updateAfterDelay, 'after the production auto-check delay')
 
   const mainSnapshot = await mainProcessSnapshot(session.electronApplication, expectedMarkers)
   assert(mainSnapshot.isPackaged, 'Playwright did not launch a packaged Electron application')
@@ -568,8 +593,9 @@ async function exerciseRendererJourney(session, expectedMarkers) {
       screenshot: providerScreenshotPath,
     },
     updater: {
-      handlerAbsentBeforeDelay: true,
-      handlerAbsentAfterDelay: true,
+      disabledBeforeDelay: updateBeforeDelay.state.status,
+      disabledAfterDelay: updateAfterDelay.state.status,
+      actionsRefused: true,
       logActivityAbsent: true,
     },
     mainSnapshot,
@@ -687,15 +713,31 @@ async function createControlledEnvironment(runRoot) {
   const sourceEnv = Object.fromEntries(
     copiedKeys.filter((key) => process.env[key] !== undefined).map((key) => [key, process.env[key]]),
   )
-  Object.assign(sourceEnv, {
-    HOME: controlledHome,
-    CODEX_HOME: codexHome,
+  // The caller looks like an agent shell inside a production AutoByteus: it
+  // carries ELECTRON_RUN_AS_NODE and production-specific server settings that
+  // point at the controlled production root.
+  const productionDatabase = path.join(productionRoot, 'server-data', 'db', 'production.db')
+  const droppedSentinels = {
     OPENAI_API_KEY: 'non-secret-electron-e2e-openai-sentinel',
     GOOGLE_API_KEY: 'non-secret-electron-e2e-google-sentinel',
     SERPER_API_KEY: 'non-secret-electron-e2e-search-sentinel',
     AUTOBYTEUS_E2E_CALLER_SENTINEL: 'non-secret-electron-e2e-caller-sentinel',
+    AUTOBYTEUS_MEMORY_DIR: path.join(productionRoot, 'server-data', 'memory'),
+    AUTOBYTEUS_AGENT_PACKAGE_ROOTS: path.join(productionRoot, 'agent-packages-sentinel'),
+    AUTOBYTEUS_SKILLS_PATHS: path.join(productionRoot, 'skills-sentinel'),
+    AUTOBYTEUS_FEATURED_CATALOG_ITEMS: '{"version":1,"items":[],"sentinel":"electron-e2e-catalog"}',
+    DB_NAME: productionDatabase,
+    DATABASE_URL: `file:${productionDatabase}`,
+    APP_ENV: 'electron-e2e-app-env-sentinel',
+  }
+  Object.assign(sourceEnv, {
+    HOME: controlledHome,
+    CODEX_HOME: codexHome,
+    ...droppedSentinels,
+    ELECTRON_RUN_AS_NODE: '1',
     NO_PROXY: '127.0.0.1,localhost',
   })
+  // Electron main still receives the caller environment (minus ELECTRON_RUN_AS_NODE).
   const expectedMarkers = {
     CODEX_HOME: sourceEnv.CODEX_HOME,
     OPENAI_API_KEY: sourceEnv.OPENAI_API_KEY,
@@ -703,7 +745,13 @@ async function createControlledEnvironment(runRoot) {
     SERPER_API_KEY: sourceEnv.SERPER_API_KEY,
     AUTOBYTEUS_E2E_CALLER_SENTINEL: sourceEnv.AUTOBYTEUS_E2E_CALLER_SENTINEL,
   }
+  // The isolated server child inherits only allowlisted variables.
+  const backendMarkers = {
+    inherited: { HOME: controlledHome, CODEX_HOME: codexHome },
+    dropped: Object.fromEntries(Object.entries(droppedSentinels).map(([key, value]) => [key, `${key}=${value}`])),
+  }
   return {
+    backendMarkers,
     controlledHome,
     productionRoot,
     ordinaryProfileRoot,
@@ -770,7 +818,7 @@ async function execute() {
       await session.waitUntilReady(timeoutMs)
       await delay(1500)
       const ordinaryDuring = await ordinaryCheckpoint('during direct E2E', ordinaryListenerPids)
-      const processTree = await inspectReadyProcessTree(session, callerRoot, controlled.expectedMarkers)
+      const processTree = await inspectReadyProcessTree(session, callerRoot, controlled.backendMarkers)
       const layout = await assertRootLayout(callerRoot)
       const embedded = layout.registry.nodes.find((node) => node.nodeType === 'embedded')
       assert(embedded?.baseUrl === prepared.clientBaseUrl, 'Persisted registry did not use direct selected endpoint', layout.registry)
@@ -824,7 +872,7 @@ async function execute() {
       sessionCleanup = registerCleanup('Playwright Electron session', () => session.cleanup())
       await session.waitUntilReady(timeoutMs)
       const journey = await exerciseRendererJourney(session, controlled.expectedMarkers)
-      const processTree = await inspectReadyProcessTree(session, ownedRoot, controlled.expectedMarkers)
+      const processTree = await inspectReadyProcessTree(session, ownedRoot, controlled.backendMarkers)
       const layout = await assertRootLayout(ownedRoot)
       const cleanupResult = await runCleanup(sessionCleanup)
       assert(!(await pathExists(ownedRoot)), 'Preparation-owned Playwright root remained after affirmative cleanup')
@@ -919,8 +967,11 @@ async function execute() {
       fs.mkdir(safeRoot, { mode: 0o700 }),
       fs.mkdir(occupiedRoot, { mode: 0o700 }),
     ])
+    // Raw launches bypass the launch overlay, so drop the inherited
+    // ELECTRON_RUN_AS_NODE the way a documented manual launch does.
+    const { ELECTRON_RUN_AS_NODE: _inheritedRunAsNode, ...rawCallerEnv } = controlled.sourceEnv
     const baseE2E = {
-      ...controlled.sourceEnv,
+      ...rawCallerEnv,
       AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE: 'e2e',
     }
     const freeServer = await listenOnPort(0)
