@@ -55,3 +55,7 @@ The current code (both repositories) and `implementation-handoff.md` remain auth
   - Live from an unscrubbed agent shell: installed **1.4.91-beta.5** → `APP_ISOLATION_UNSUPPORTED` exit 3, nothing launched, no root created. Worktree build → started isolated (only Electron-owned server vars, 0 production files open, control port `127.0.0.1` only); restart keeps `ownsDataRoot`; stop removes the root and frees the ports.
 - Next recipient or routing: `get_handoff_rules` → source review (Large/High).
 - Remaining limitations or risks: Linux (AppImage marker inside the image, extracted-layout launch, sandbox) is not validated, per the user decision (macOS-only). The rebuild's final zip step was interrupted (7za exit 255 during a session pause); the `.app`/DMG were produced, and the zip is not needed for validation.
+
+#### Review Pass Notification (informational, no new IR round)
+
+- 2026-09-29: `/code_reviewer` CRR-001 **Pass** on IR-002 (no findings, 9.3/10; report `code-review-report.md`). Optional non-blocking notes CR-C-04 (docstring wording), CR-C-07 (per-user registry hardening), CR-C-08 (duplicate one-line regex) not acted on. The reviewer forwarded the package to `/api_e2e_engineer`; no duplicate forwarding by implementation.
