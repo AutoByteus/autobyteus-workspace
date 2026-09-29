@@ -52,6 +52,7 @@ export const useWorkspaceHistoryTreeState = (params: {
   const expandedAgentOrgDefinitions = ref<Record<string, boolean>>({});
   const expandedAgentOrgRuns = ref<Record<string, boolean>>({});
   const expandedAgentOrgTeams = ref<Record<string, boolean>>({});
+  const expandedAgentOrgTaskTeams = ref<Record<string, boolean>>({});
   const observedSelectionKey = ref<string | null>(null);
   const revealAppliedForObservedKey = ref(false);
 
@@ -150,6 +151,9 @@ export const useWorkspaceHistoryTreeState = (params: {
     `${workspaceKey(workspaceId)}::agent-org-definition::${definitionId.trim()}`;
   const agentOrgTeamKey = (rootRunId: string, address: string): string =>
     `${rootRunId.trim()}::agent-org-team::${address.trim()}`;
+  // Delegated Teams key by execution: one Team can be mounted and delegated (repeatedly) under the same address.
+  const agentOrgTaskTeamKey = (rootRunId: string, teamRunId: string): string =>
+    `${rootRunId.trim()}::agent-org-task-team::${teamRunId.trim()}`;
 
   const isWorkspaceExpanded = (workspaceId: string): boolean => {
     const key = workspaceKey(workspaceId);
@@ -346,6 +350,14 @@ export const useWorkspaceHistoryTreeState = (params: {
       [key]: !isAgentOrgTeamExpanded(rootRunId, address),
     };
   };
+  const isAgentOrgTaskTeamExpanded = (rootRunId: string, teamRunId: string): boolean =>
+    expandedAgentOrgTaskTeams.value[agentOrgTaskTeamKey(rootRunId, teamRunId)] ?? true;
+  const toggleAgentOrgTaskTeam = (rootRunId: string, teamRunId: string): void => {
+    expandedAgentOrgTaskTeams.value = {
+      ...expandedAgentOrgTaskTeams.value,
+      [agentOrgTaskTeamKey(rootRunId, teamRunId)]: !isAgentOrgTaskTeamExpanded(rootRunId, teamRunId),
+    };
+  };
   const isAgentOrgRunSelected = (rootRunId: string): boolean => {
     const selected = params.selectedAgentOrg ? unref(params.selectedAgentOrg) : null;
     return selected?.rootRunId === rootRunId && !selected.selection;
@@ -478,6 +490,8 @@ export const useWorkspaceHistoryTreeState = (params: {
     toggleAgentOrgRun,
     isAgentOrgTeamExpanded,
     toggleAgentOrgTeam,
+    isAgentOrgTaskTeamExpanded,
+    toggleAgentOrgTaskTeam,
     isAgentOrgRunSelected,
     isAgentOrgMemberSelected,
     expandedWorkspaceIds,

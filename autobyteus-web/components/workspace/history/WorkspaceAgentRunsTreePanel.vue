@@ -389,6 +389,8 @@ const sectionState: WorkspaceHistorySectionState = {
   toggleAgentOrgRun: treeState.toggleAgentOrgRun,
   isAgentOrgTeamExpanded: treeState.isAgentOrgTeamExpanded,
   toggleAgentOrgTeam: treeState.toggleAgentOrgTeam,
+  isAgentOrgTaskTeamExpanded: treeState.isAgentOrgTaskTeamExpanded,
+  toggleAgentOrgTaskTeam: treeState.toggleAgentOrgTaskTeam,
   isAgentOrgRunSelected: treeState.isAgentOrgRunSelected,
   isAgentOrgMemberSelected: treeState.isAgentOrgMemberSelected,
   isAgentOrgTerminating: (rootRunId: string) => Boolean(agentOrgContextsStore.operations[rootRunId]) || agentOrgRunStore.terminatingRunIds.has(rootRunId),

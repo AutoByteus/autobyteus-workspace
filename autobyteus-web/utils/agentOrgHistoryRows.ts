@@ -28,6 +28,8 @@ export type AgentOrgHistoryTaskAgentRow = Readonly<{
 export type AgentOrgHistoryTaskTeamRow = Readonly<{
   key: string; kind: 'task_team'; address: string; teamRunId: string; depth: number; coordinatorAgentRunId: string; coordinatorAddress: string
   delegatedBy: AgentOrgHistoryDelegator | null
+  /** Disclosure state: descendants are emitted only while expanded. */
+  hasChildren: boolean; expanded: boolean
 }>
 export type AgentOrgHistoryRow =
   | AgentOrgHistoryAgentRow
@@ -48,6 +50,7 @@ type StatusSource = Readonly<{
   statusForAgentRunId(agentRunId: string): AgentStatus | string | null | undefined
   /** Null when the child was recorded before its delegator was stored (no starter shown). */
   delegatorFor(delegatorAgentRunId: string | undefined): AgentOrgHistoryDelegator | null
+  isTaskTeamExpanded(teamRunId: string): boolean
 }>
 
 const collectAgentAddresses = (tree: AgentOrgRunHistoryItem['executionTree']): ReadonlyMap<string, string> => {
@@ -78,6 +81,7 @@ const collectAgentAddresses = (tree: AgentOrgRunHistoryItem['executionTree']): R
 const statusSource = (
   run: AgentOrgRunHistoryItem,
   context: AgentOrgExecutionContext | null,
+  isTaskTeamExpanded: (teamRunId: string) => boolean,
 ): StatusSource => {
   const live = Boolean(
     run.isActive
@@ -89,6 +93,7 @@ const statusSource = (
   const addresses = collectAgentAddresses(context?.executionTree ?? run.executionTree)
   return {
     authority: live ? 'live' : 'historical',
+    isTaskTeamExpanded,
     delegatorFor: (delegatorAgentRunId) => delegatorAgentRunId === undefined ? null : Object.freeze({
       agentRunId: delegatorAgentRunId,
       address: addresses.get(delegatorAgentRunId) ?? null,
@@ -114,6 +119,8 @@ const exactAgentStatus = (source: StatusSource, agentRunId: string): AgentStatus
 
 const flattenTaskTeam = (team: TaskTeamNode, depth: number, source: StatusSource): AgentOrgHistoryRow[] => {
   const coordinator = source.coordinatorFor(team)
+  const hasChildren = team.members.length > 0 || team.taskExecutions.length > 0
+  const expanded = source.isTaskTeamExpanded(team.teamRunId)
   const rows: AgentOrgHistoryRow[] = [{
     key: `task-team:${team.teamRunId}`,
     kind: 'task_team',
@@ -123,7 +130,10 @@ const flattenTaskTeam = (team: TaskTeamNode, depth: number, source: StatusSource
     depth,
     // A nested Team inside a task Team is not itself delegated; only the outer task Team row names its starter.
     delegatedBy: 'delegatorAgentRunId' in team ? source.delegatorFor(team.delegatorAgentRunId) : null,
+    hasChildren,
+    expanded,
   }]
+  if (hasChildren && !expanded) return rows
   for (const member of team.members) {
     if (isAgentOrgTaskAgentNode(member)) {
       rows.push({
@@ -163,9 +173,11 @@ export const projectAgentOrgHistoryRows = (input: Readonly<{
   run: AgentOrgRunHistoryItem
   context: AgentOrgExecutionContext | null
   isTeamExpanded(address: string): boolean
+  /** Delegated Teams start expanded; omit to show every delegated Team open. */
+  isTaskTeamExpanded?(teamRunId: string): boolean
 }>): AgentOrgHistoryDisplayRow[] => {
   const tree = input.context?.executionTree ?? input.run.executionTree
-  const source = statusSource(input.run, input.context)
+  const source = statusSource(input.run, input.context, input.isTaskTeamExpanded ?? (() => true))
   const rows: AgentOrgHistoryRow[] = []
   for (const member of tree.rootOrg.members) {
     if (isAgentOrgAgentNode(member)) {

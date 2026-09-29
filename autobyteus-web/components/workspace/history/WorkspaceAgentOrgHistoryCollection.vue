@@ -141,9 +141,10 @@
                   <span v-if="display.row.delegatedBy" class="truncate text-[0.6875rem] leading-4 text-gray-400" :data-test="`agent-org-task-agent-started-by-${display.row.agentRunId}`">{{ startedBy(display.row.delegatedBy) }}</span>
                 </span>
               </button>
-              <button type="button" v-else @click="actions.onInspectAgentOrgExecution?.(run, display.row.coordinatorAgentRunId, display.row.coordinatorAddress)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
+              <button type="button" v-else @click="selectTaskTeam(run, display.row)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :aria-expanded="display.row.hasChildren ? display.row.expanded : undefined" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
                 <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
-                <span class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
+                <Icon v-if="display.row.hasChildren" icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 flex-none text-gray-400" :class="display.row.expanded ? '' : '-rotate-90'" :data-test="`agent-org-task-team-disclosure-${display.row.teamRunId}`" aria-hidden="true" />
+                <span v-else class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
                 <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-3.5 w-3.5 flex-none text-indigo-600" />
                 <span class="flex min-w-0 flex-col py-0.5">
                   <span class="truncate">{{ label(display.row.address) }}</span>
@@ -214,6 +215,7 @@ const rowsFor = (run: AgentOrgRunHistoryItem) => projectAgentOrgHistoryRows({
   run,
   context: props.state.agentOrgContextFor?.(run.rootRunId) ?? null,
   isTeamExpanded: (address) => isTeamExpanded(run.rootRunId, address),
+  isTaskTeamExpanded: (teamRunId) => props.state.isAgentOrgTaskTeamExpanded?.(run.rootRunId, teamRunId) ?? true,
 })
 const openRun = (run: AgentOrgRunHistoryItem) => {
   props.state.toggleAgentOrgRun?.(run.rootRunId)
@@ -222,6 +224,10 @@ const openRun = (run: AgentOrgRunHistoryItem) => {
 const selectTeam = (run: AgentOrgRunHistoryItem, address: string) => {
   props.state.toggleAgentOrgTeam?.(run.rootRunId, address)
   return props.actions.onSelectAgentOrgMember?.(run, address)
+}
+const selectTaskTeam = (run: AgentOrgRunHistoryItem, row: AgentOrgHistoryTaskTeamRow) => {
+  if (row.hasChildren) props.state.toggleAgentOrgTaskTeam?.(run.rootRunId, row.teamRunId)
+  return props.actions.onInspectAgentOrgExecution?.(run, row.coordinatorAgentRunId, row.coordinatorAddress)
 }
 </script>
 
