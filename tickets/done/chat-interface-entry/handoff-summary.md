@@ -2,7 +2,7 @@
 
 ## Status
 
-- Stage: Delivery round 7 (DR-007). The package reworked after UVF-001/UVF-002 (D-16..D-19, DEC-017a, CR-010) is integrated with the latest `origin/personal` and checked. **User verified (2026-09-29); finalization and a beta release are in progress.**
+- Stage: Delivery round 7 (DR-007). The package reworked after UVF-001/UVF-002 (D-16..D-19, DEC-017a, CR-010) is integrated with the latest `origin/personal` and checked. **Delivery completed (2026-09-29).** The user verified; the work was finalized into `personal` and released as beta `v1.4.91-beta.10` and then as stable `v1.4.91` (the same code as beta.10). All release workflows succeeded.
 - Classification (preserved): `task_size=Large`, `architectural_risk=High`, route `Reviewed`.
   - Source reviews: D-16 labels CRR-005; D-17 run view CRR-008/CRR-009; D-18/D-19 one skill per name CRR-010 → CRR-011; DEC-017a Agent Org skills CRR-012 → CRR-013; CR-010 toast layer CRR-014 → CRR-015 (Pass, 9.3/10).
   - API/E2E: API-REV-007 Pass (95%), no open findings.
