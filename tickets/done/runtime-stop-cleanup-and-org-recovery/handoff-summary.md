@@ -2,7 +2,7 @@
 
 ## Status
 
-- Delivery state: **Awaiting explicit user verification.** Nothing has been pushed, merged or released.
+- Delivery state: **User verified (2026-09-29, "verified. release the beta")** on the rebuilt local app from `13e93fbe4`. The ticket is archived, finalized into `personal`, and beta `1.4.91-beta.7` is requested. See `release-deployment-report.md` for the final state.
 - Classification: `task_size=Medium`, `architectural_risk=High`. Route: reviewed.
 - Gates passed:
   - SR-004 (user-approved)
@@ -14,13 +14,16 @@
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery`
 - Ticket branch: `codex/runtime-stop-cleanup-and-org-recovery`
 - Finalization target: `origin/personal`
-- Integrated base: `origin/personal@c84b57739` (1.4.91-beta.6).
-  - Delivery checkpoint `292948501`, then merge `c9d8abdf3`. The merge was clean.
-  - The 13 new base commits (isolated-app/Electron work and the beta.6 bump) do not touch `autobyteus-server-ts/src` or `autobyteus-server-ts/tests`.
-- Uncommitted delivery edits, committed at finalization:
-  - docs formatting fix
-  - N-T3 comment fix
-  - delivery artifacts
+- Integrated base: `origin/personal@8778420fc` (1.4.91-beta.6 plus its delivery record). The branch head is `13e93fbe4`.
+  - Refresh 1: delivery checkpoint `292948501`, then merge `c9d8abdf3` of `c84b57739`. The merge was clean. The 13 new base commits (isolated-app/Electron work and the beta.6 bump) do not touch `autobyteus-server-ts/src` or `autobyteus-server-ts/tests`.
+  - Refresh 2 (2026-09-29, at the user's request): delivery edits checkpointed as `8a4111d29`, then merge `13e93fbe4` of `8778420fc`. The merge was clean. The single new base commit changes only `tickets/done/agent-isolated-app-recording/**`.
+- Local test build (rebuilt after refresh 2 from `13e93fbe4`):
+  - unsigned, not notarized, macOS ARM64, `personal` flavor
+  - app: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
+  - DMG: `.../electron-dist/AutoByteus_personal_macos-arm64-1.4.91-beta.6.dmg`
+  - It carries `isolated-launch.json`, so it can be launched with `pnpm isolated-app start --from-worktree`.
+  - Log: `delivery-evidence/delivery-electron-build.log` (exit 0).
+  - The version label is still `1.4.91-beta.6`. A version bump happens only at release.
 
 ## What Changed
 
@@ -81,7 +84,7 @@ These are all documented and non-blocking:
 
 ## Artifacts
 
-In `tickets/in-progress/runtime-stop-cleanup-and-org-recovery/`:
+In `tickets/done/runtime-stop-cleanup-and-org-recovery/`:
 - Solution: `requirements-doc.md`, `investigation-notes.md`, `solution-revision-record.md`, `design-spec.md`, `handoff-architecture-design-complete.md`, `predecessor-delivery-receipt-verification.md`
 - Architecture review: `design-review-report.md`, `architecture-review-revision-record.md`
 - Implementation: `implementation-handoff.md`, `implementation-revision-record.md`

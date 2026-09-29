@@ -11,10 +11,10 @@
 
 ## Handoff Summary
 
-- Handoff summary artifact: `tickets/in-progress/runtime-stop-cleanup-and-org-recovery/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/runtime-stop-cleanup-and-org-recovery/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
+- Current delivery revision ID: `DR-002`
 - Notes: holding for explicit user verification.
 
 ## Initial Delivery Integration Refresh
@@ -31,6 +31,17 @@
 - Delivery edits started only after integrated state was current: `Yes`
 - Handoff state current with latest tracked remote base: `Yes`
 - Blocker: None
+
+### Refresh 2 (2026-09-29, user request "update, rebuild")
+
+- Latest tracked remote base checked: `origin/personal@8778420fcbe6b863895b7d775e1f77c53f299491`. It had advanced by one commit: `docs(delivery): record agent-isolated-app-recording beta.6 publication and cleanup`.
+- Delivery-owned edits protected before re-integration: `Completed`. Checkpoint `8a4111d29` holds the docs reflow, the N-T3 comment and the DR-001 artifacts.
+- Integration method: `Merge`. The result is `13e93fbe4`, with no conflicts.
+- Post-integration executable checks rerun: `No`. The new base commit changes only `tickets/done/agent-isolated-app-recording/**`, with no source, test, config or package changes, so the refresh 1 check results still apply to identical code.
+- Local build: `AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac` in `autobyteus-web`. Exit 0.
+  - Output: `electron-dist/mac-arm64/AutoByteus.app`, plus `AutoByteus_personal_macos-arm64-1.4.91-beta.6.dmg` and `.zip`.
+  - The bundled server contains `agy-background-process-groups`.
+  - Log: `delivery-evidence/delivery-electron-build.log`.
 
 ## User Verification
 
@@ -92,7 +103,7 @@
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `tickets/in-progress/runtime-stop-cleanup-and-org-recovery/release-notes.md`
+- Release notes artifact created before verification / acceptance: `tickets/done/runtime-stop-cleanup-and-org-recovery/release-notes.md`
 - Archived release notes artifact used for release/publication: Pending
 - Release notes status: `Updated`
 
