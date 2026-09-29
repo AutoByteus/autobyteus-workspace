@@ -5,7 +5,6 @@ import * as fs from 'fs'
 import isDev from 'electron-is-dev'
 import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
-import { buildServerRuntimeEnv } from './serverRuntimeEnv'
 
 export class WindowsServerManager extends BaseServerManager {
   private async waitForProcessExit(proc: ChildProcess, timeoutMs: number): Promise<boolean> {
@@ -50,13 +49,7 @@ export class WindowsServerManager extends BaseServerManager {
     }
     
     const publicServerUrl = this.serverUrl
-    const env = {
-      ...process.env,
-      ELECTRON_RUN_AS_NODE: '1',
-      PORT: this.serverPort.toString(),
-      SERVER_PORT: this.serverPort.toString(),
-      ...buildServerRuntimeEnv(this.appDataDir, publicServerUrl, process.env, this.getRuntimeEnvOverrides())
-    }
+    const env = this.buildServerEnv(null)
 
     const options = {
       cwd: this.serverDir,
