@@ -2,10 +2,12 @@ import {
   SkillAccessMode,
   resolveSkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import fs from "node:fs";
+import path from "node:path";
 import {
-  skillRequestStrengthForScope,
-  type SkillRequestStrength,
-} from "../../shared/skill-request-strength.js";
+  workspaceCollisionPolicyForScope,
+  type WorkspaceCollisionPolicy,
+} from "../../shared/workspace-skill-collision-policy.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
@@ -82,8 +84,18 @@ const asObjectRecord = (value: unknown): Record<string, unknown> | null =>
     ? (value as Record<string, unknown>)
     : null;
 
-const collectDiscoverableSkillNames = (payload: unknown): Set<string> => {
-  const result = new Set<string>();
+const canonicalSkillDirectory = (value: string): string => {
+  const directory = path.basename(value) === "SKILL.md" ? path.dirname(value) : value;
+  try {
+    return fs.realpathSync(directory);
+  } catch {
+    return path.resolve(directory);
+  }
+};
+
+/** Enabled `skills/list` entries: name → the real skill directories Codex found for it. */
+const collectDiscoverableSkillPaths = (payload: unknown): Map<string, string[]> => {
+  const result = new Map<string, string[]>();
   const root = asObjectRecord(payload);
   const data = Array.isArray(root?.data) ? root.data : [];
   for (const entryValue of data) {
@@ -95,8 +107,9 @@ const collectDiscoverableSkillNames = (payload: unknown): Set<string> => {
         continue;
       }
       const skillName = asTrimmedString(skill?.name);
+      const skillPath = asTrimmedString(skill?.path);
       if (skillName) {
-        result.add(skillName);
+        result.set(skillName, [...(result.get(skillName) ?? []), ...(skillPath ? [canonicalSkillDirectory(skillPath)] : [])]);
       }
     }
   }
@@ -260,7 +273,7 @@ export class CodexThreadBootstrapper {
       workingDirectory,
       configuredSkillBindings,
       skillAccessMode,
-      requestStrength: skillRequestStrengthForScope(this.skillService.resolveSkillScope(agentDefinition)),
+      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
     });
 
     return new AgentRunContext({
@@ -343,7 +356,7 @@ export class CodexThreadBootstrapper {
     workingDirectory: string;
     configuredSkillBindings: ConfiguredAgentSkillBinding[];
     skillAccessMode: SkillAccessMode;
-    requestStrength: SkillRequestStrength;
+    workspaceCollisionPolicy: WorkspaceCollisionPolicy;
   }): Promise<MaterializedWorkspaceSkill[]> {
     const requests = await this.planWorkspaceSkillRequests(input);
     return this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
@@ -351,7 +364,7 @@ export class CodexThreadBootstrapper {
       workingDirectory: input.workingDirectory,
       requests,
       skillAccessMode: input.skillAccessMode,
-      requestStrength: input.requestStrength,
+      workspaceCollisionPolicy: input.workspaceCollisionPolicy,
     });
   }
 
@@ -374,15 +387,26 @@ export class CodexThreadBootstrapper {
         cwds: [input.workingDirectory],
         forceReload: true,
       });
-      const discoverableSkillNames = collectDiscoverableSkillNames(response);
+      const discoverableSkillPaths = collectDiscoverableSkillPaths(response);
       return input.configuredSkillBindings.map((binding) => {
         if (binding.kind === "unresolved") {
           return { kind: "reconcile-unresolved", name: binding.name };
         }
         const skillName = asTrimmedString(binding.skill.name);
-        return skillName && discoverableSkillNames.has(skillName)
-          ? { kind: "reconcile-discoverable", skill: binding.skill }
-          : { kind: "expose-resolved", skill: binding.skill };
+        const codexPaths = (skillName && discoverableSkillPaths.get(skillName)) || [];
+        // D-19: Codex discovers the catalog's copy natively only when every entry it lists for the
+        // name is that copy. A different copy (e.g. a stale `~/.codex/skills` one) is exposed.
+        const chosenPath = canonicalSkillDirectory(binding.skill.rootPath);
+        const otherPaths = codexPaths.filter((codexPath) => codexPath !== chosenPath);
+        if (codexPaths.length > 0 && otherPaths.length === 0) {
+          return { kind: "reconcile-discoverable", skill: binding.skill };
+        }
+        if (otherPaths.length > 0) {
+          logger.warn(
+            `codex-runtime-duplicate: skill='${binding.skill.name}', codexPaths='${otherPaths.join(",")}', chosenPath='${chosenPath}'; exposing the chosen copy in the workspace.`,
+          );
+        }
+        return { kind: "expose-resolved", skill: binding.skill };
       });
     } catch (error) {
       logger.warn(

@@ -5,7 +5,7 @@ import type { DetailedConfiguredSkillResolution } from "../../../../skills/domai
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import { materializeAgyMcpConfig } from "./agy-mcp-config-materializer.js";
 import { materializeAgyConfiguredSkills, type AgySkillSnapshot } from "./agy-configured-skill-materializer.js";
-import type { SkillRequestStrength } from "../../shared/skill-request-strength.js";
+import type { WorkspaceCollisionPolicy } from "../../shared/workspace-skill-collision-policy.js";
 import { AGY_NATIVE_TOOL_NAMES } from "./agy-native-tool-policy.js";
 
 const sha256 = (value: string): string => createHash("sha256").update(value).digest("hex");
@@ -32,7 +32,7 @@ export const createAgyRunCapsule = async (input: {
   identity: string;
   agentDefinitionId: string;
   configuredSkillBindings: readonly DetailedConfiguredSkillResolution[];
-  skillRequestStrength: SkillRequestStrength;
+  workspaceCollisionPolicy: WorkspaceCollisionPolicy;
   skillAccessMode: "PRELOADED_ONLY" | "NONE";
   mcpDescriptor: AgentToolMcpDescriptor | null;
 }): Promise<AgyRunCapsule> => {
@@ -54,7 +54,7 @@ export const createAgyRunCapsule = async (input: {
     const skills = await materializeAgyConfiguredSkills({
       capsulePath: root, workspacePath, bindings: input.configuredSkillBindings,
       runId: input.runId, agentDefinitionId: input.agentDefinitionId,
-      requestStrength: input.skillRequestStrength,
+      workspaceCollisionPolicy: input.workspaceCollisionPolicy,
       enabled: input.skillAccessMode === "PRELOADED_ONLY",
     });
     await materializeAgyMcpConfig({ capsulePath: root, workspacePath, descriptor: input.mcpDescriptor });

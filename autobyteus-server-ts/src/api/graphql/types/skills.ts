@@ -10,6 +10,7 @@ import {
 } from "type-graphql";
 import { SkillService } from "../../../skills/services/skill-service.js";
 import type { Skill as SkillModel, SkillSourceInfo } from "../../../skills/domain/models.js";
+import { withSkillNameConflictMapping } from "../errors/skill-name-conflict-graphql-error.js";
 
 @ObjectType()
 export class Skill {
@@ -84,6 +85,23 @@ export class SkillSource {
 
   @Field(() => Boolean)
   isDefault!: boolean;
+}
+
+/** Copies of a name the catalog ignores (Skills page banner, REQ-024). */
+@ObjectType()
+export class SkillNameIssue {
+  @Field(() => String)
+  name!: string;
+
+  @Field(() => String)
+  usedPath!: string;
+
+  @Field(() => [String])
+  ignoredPaths!: string[];
+
+  /** `conflict` or `shadowed_runtime_default`. */
+  @Field(() => String)
+  kind!: string;
 }
 
 @ObjectType()
@@ -165,6 +183,16 @@ export class SkillResolver {
     }
   }
 
+  @Query(() => [SkillNameIssue])
+  skillNameIssues(): SkillNameIssue[] {
+    return SkillService.getInstance().listSkillNameIssues().map((issue) => ({
+      name: issue.name,
+      usedPath: issue.usedPath,
+      ignoredPaths: [...issue.ignoredPaths],
+      kind: issue.kind,
+    }));
+  }
+
   @Query(() => [SkillSource])
   skillSources(): SkillSource[] {
     const service = SkillService.getInstance();
@@ -172,10 +200,10 @@ export class SkillResolver {
   }
 
   @Mutation(() => Skill)
-  createSkill(@Arg("input", () => CreateSkillInput) input: CreateSkillInput): Skill {
+  createSkill(@Arg("input", () => CreateSkillInput) input: CreateSkillInput): Promise<Skill> {
     const service = SkillService.getInstance();
-    const skill = service.createSkill(input.name, input.description, input.content);
-    return mapSkill(skill);
+    return withSkillNameConflictMapping(() =>
+      mapSkill(service.createSkill(input.name, input.description, input.content)));
   }
 
   @Mutation(() => Skill)
@@ -248,9 +276,9 @@ export class SkillResolver {
   }
 
   @Mutation(() => [SkillSource])
-  addSkillSource(@Arg("path", () => String) pathValue: string): SkillSource[] {
+  addSkillSource(@Arg("path", () => String) pathValue: string): Promise<SkillSource[]> {
     const service = SkillService.getInstance();
-    return service.addSkillSource(pathValue).map(mapSkillSource);
+    return withSkillNameConflictMapping(() => service.addSkillSource(pathValue).map(mapSkillSource));
   }
 
   @Mutation(() => [SkillSource])

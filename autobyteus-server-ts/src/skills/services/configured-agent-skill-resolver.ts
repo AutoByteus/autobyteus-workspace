@@ -14,19 +14,21 @@ import { assertConfiguredSkillSourceSafety, fingerprintConfiguredSkillSource } f
 type ConfiguredAgentSkillResolverOptions = {
   loader: SkillLoader;
   isReadonlyPath: (skillPath: string) => boolean;
-  resolveGlobalSkill: (name: string) => Skill | null;
-  globalCandidatePaths?: (name: string) => { path: string; configuredRoot: string }[];
   isSkillDisabled: (name: string) => boolean;
   logger: {
     warn: (...args: unknown[]) => void;
   };
 };
 
-type ResolveInput = {
-  skillNames: readonly string[];
-  sourceInfo?: AgentDefinitionSourceInfo | null;
-  agentLabel?: string | null;
-};
+/** The catalog's used copy of a name, or null (D-19: one resolution for every scope). */
+export type SkillCatalogLookup = (name: string) => InstalledSkillRecord | null;
+
+/**
+ * Application-owned agents are sandboxed bundles, not installed skills: they resolve their
+ * app-bundled skills from their bundle first, then the catalog (D-19 boundary).
+ */
+const resolvesFromOwnBundle = (agentDefinition: AgentDefinition): boolean =>
+  agentDefinition.ownershipScope === "application_owned";
 
 type DetailedCandidate = {
   path: string;
@@ -62,61 +64,63 @@ const assertDetailedCandidateProvenance = (candidate: DetailedCandidate, name: s
 export class ConfiguredAgentSkillResolver {
   private readonly loader: SkillLoader;
   private readonly isReadonlyPath: (skillPath: string) => boolean;
-  private readonly resolveGlobalSkill: (name: string) => Skill | null;
-  private readonly globalCandidatePaths: (name: string) => { path: string; configuredRoot: string }[];
   private readonly isSkillDisabled: (name: string) => boolean;
   private readonly logger: ConfiguredAgentSkillResolverOptions["logger"];
 
   constructor(options: ConfiguredAgentSkillResolverOptions) {
     this.loader = options.loader;
     this.isReadonlyPath = options.isReadonlyPath;
-    this.resolveGlobalSkill = options.resolveGlobalSkill;
-    this.globalCandidatePaths = options.globalCandidatePaths ?? (() => []);
     this.isSkillDisabled = options.isSkillDisabled;
     this.logger = options.logger;
   }
 
+  /**
+   * Configured names resolve by name against the catalog, the same copy ALL_INSTALLED and the
+   * Skills page use. Only application-owned agents look in their own bundle first.
+   */
   resolveForAgent(
     agentDefinition: AgentDefinition | null | undefined,
+    catalog: SkillCatalogLookup,
   ): ConfiguredAgentSkillBinding[] {
     if (!agentDefinition) {
       return [];
     }
-    return this.resolve({
-      skillNames: agentDefinition.skillNames ?? [],
-      sourceInfo: agentDefinition.sourceInfo ?? null,
-      agentLabel: agentDefinition.name || agentDefinition.id || null,
-    });
-  }
-
-  resolve(input: ResolveInput): ConfiguredAgentSkillBinding[] {
+    const agentLabel = agentDefinition.name || agentDefinition.id || null;
+    const ownBundle = resolvesFromOwnBundle(agentDefinition);
     const bindings: ConfiguredAgentSkillBinding[] = [];
-    for (const rawSkillName of input.skillNames) {
-      const configuredName = this.validateConfiguredSkillName(rawSkillName, input.agentLabel);
+    for (const rawSkillName of agentDefinition.skillNames ?? []) {
+      const configuredName = this.validateConfiguredSkillName(rawSkillName, agentLabel);
       if (!configuredName) {
         continue;
       }
 
-      const contextual = this.resolveContextualSkill(configuredName, input.sourceInfo ?? null);
-      const skill = contextual?.skill ?? this.resolveGlobalSkill(configuredName);
-
-      if (!skill) {
+      const contextual = ownBundle
+        ? this.resolveContextualSkill(configuredName, agentDefinition.sourceInfo ?? null)
+        : null;
+      if (contextual) {
+        bindings.push({ kind: "resolved", skill: contextual.skill, source: contextual.source });
+        continue;
+      }
+      const record = catalog(configuredName);
+      if (!record) {
         this.logger.warn(
-          `Skill '${configuredName}' defined in agent definition '${input.agentLabel ?? "unknown"}' could not be resolved. Recording an unresolved binding for workspace reconciliation.`,
+          `Skill '${configuredName}' defined in agent definition '${agentLabel ?? "unknown"}' could not be resolved. Recording an unresolved binding for workspace reconciliation.`,
         );
         bindings.push({ kind: "unresolved", name: configuredName });
         continue;
       }
-
-      const source = contextual?.source ?? this.sourceFor("global", skill, skill.rootPath);
-      bindings.push({ kind: "resolved", skill, source });
+      bindings.push(this.bindInstalledRecord(record));
     }
 
     return bindings;
   }
 
-  resolveForAgentDetailed(agentDefinition: AgentDefinition | null | undefined): DetailedConfiguredSkillResolution[] {
+  resolveForAgentDetailed(
+    agentDefinition: AgentDefinition | null | undefined,
+    catalog: SkillCatalogLookup,
+  ): DetailedConfiguredSkillResolution[] {
     if (!agentDefinition) return [];
+    const ownBundle = resolvesFromOwnBundle(agentDefinition);
     const outcomes: DetailedConfiguredSkillResolution[] = [];
     for (const rawName of agentDefinition.skillNames ?? []) {
       const name = typeof rawName === "string" ? rawName.trim() : "";
@@ -124,30 +128,28 @@ export class ConfiguredAgentSkillResolver {
         outcomes.push({ kind: "invalid_candidate", name, reason: "unsafe_name" });
         continue;
       }
-      const sourceInfo = agentDefinition.sourceInfo ?? null;
-      const candidates: DetailedCandidate[] = [];
-      const agentDir = this.normalizeDetailedRoot(sourceInfo?.agentDirPath);
-      const teamDir = this.normalizeDetailedRoot(sourceInfo?.teamDirPath);
-      if (agentDir) candidates.push({ path: path.join(agentDir, "skills", name), origin: "agent_private",
-        trustedRoot: teamDir ?? agentDir, configuredRoot: teamDir ?? agentDir });
-      if (teamDir) candidates.push({ path: path.join(teamDir, "skills", name), origin: "team_shared",
-        trustedRoot: teamDir, configuredRoot: teamDir });
-      let outcome = this.resolveDetailedCandidates(name, candidates);
-      if (!outcome) {
-        let globals: ReturnType<typeof this.globalCandidatePaths>;
-        try { globals = this.globalCandidatePaths(name); }
-        catch (error) {
-          if (error instanceof Error && error.message === "AGY_SKILL_SOURCE_PROVENANCE_INVALID") throw error;
-          throw safetyFailure("AGY_SKILL_SOURCE_ROOT_INVALID");
-        }
-        outcome = this.resolveDetailedCandidates(name, globals.map((candidate) => ({
-          path: candidate.path, origin: "global", trustedRoot: candidate.path,
-          configuredRoot: candidate.configuredRoot,
-        })));
+      const bundled = ownBundle
+        ? this.resolveDetailedCandidates(name, this.bundleCandidates(name, agentDefinition.sourceInfo ?? null))
+        : null;
+      if (bundled) {
+        outcomes.push(bundled);
+        continue;
       }
-      outcomes.push(outcome ?? { kind: "certified_absent", name });
+      const record = catalog(name);
+      outcomes.push(record ? this.resolveInstalledRecordDetailed(record) : { kind: "certified_absent", name });
     }
     return outcomes;
+  }
+
+  private bundleCandidates(name: string, sourceInfo: AgentDefinitionSourceInfo | null): DetailedCandidate[] {
+    const candidates: DetailedCandidate[] = [];
+    const agentDir = this.normalizeDetailedRoot(sourceInfo?.agentDirPath);
+    const teamDir = this.normalizeDetailedRoot(sourceInfo?.teamDirPath);
+    if (agentDir) candidates.push({ path: path.join(agentDir, "skills", name), origin: "agent_private",
+      trustedRoot: teamDir ?? agentDir, configuredRoot: teamDir ?? agentDir });
+    if (teamDir) candidates.push({ path: path.join(teamDir, "skills", name), origin: "team_shared",
+      trustedRoot: teamDir, configuredRoot: teamDir });
+    return candidates;
   }
 
   /** Regular binding for one catalog record: its real origin and trusted root, no name lookup. */

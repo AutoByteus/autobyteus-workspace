@@ -213,7 +213,7 @@ describe("AGY run capsule", () => {
     const binding = globalBinding(source);
     await expect(createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "collision", memoryDir: root.memoryDir,
       workspacePath: root.workspacePath, identity: "Identity", configuredSkillBindings: [binding],
-      skillRequestStrength: "configured", skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null })).rejects.toThrow("AGY_SKILL_NAME_COLLISION");
+      workspaceCollisionPolicy: "fail", skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null })).rejects.toThrow("AGY_SKILL_NAME_COLLISION");
     expect(await fs.readFile(path.join(userSkill, "SKILL.md"), "utf8")).toBe("# User owned");
     await expect(fs.stat(path.join(root.memoryDir, "agy-project"))).rejects.toMatchObject({ code: "ENOENT" });
   });
@@ -232,7 +232,7 @@ describe("AGY run capsule", () => {
     const capsule = await createAgyRunCapsule({ agentDefinitionId: "autobyteus-daily-assistant", runId: "chat-run",
       memoryDir: root.memoryDir, workspacePath: root.workspacePath, identity: "Identity",
       configuredSkillBindings: [globalBinding(source), globalBinding(otherSource, "other-skill")],
-      skillRequestStrength: "all_installed", skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
+      workspaceCollisionPolicy: "prefer_workspace", skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
 
     expect(capsule.manifest.skills.map((entry) => entry.name)).toEqual(["other-skill"]);
     await expect(fs.stat(path.join(capsule.path, ".agents", "skills", "example-skill"))).rejects.toMatchObject({ code: "ENOENT" });

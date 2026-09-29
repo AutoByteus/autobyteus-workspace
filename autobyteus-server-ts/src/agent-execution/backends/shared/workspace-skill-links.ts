@@ -3,7 +3,7 @@ import path from "node:path";
 
 /** Filesystem operations the workspace skill materializer performs on `<workspace>/<skills root>/<name>`. */
 export type WorkspaceSkillFileSystem = Pick<typeof fs,
-  "lstat" | "readlink" | "stat" | "realpath" | "mkdir" | "symlink" | "unlink" | "rename">;
+  "lstat" | "readlink" | "stat" | "realpath" | "mkdir" | "symlink" | "unlink">;
 
 export type BrokenSymlinkState = { kind: "broken-symlink"; rawTargetPath: string; resolvedTargetPath: string; device: number; inode: number };
 
@@ -14,17 +14,10 @@ export type WorkspaceSkillPathState =
   | { kind: "live-different-symlink"; rawTargetPath: string; resolvedTargetPath: string }
   | { kind: "non-symlink"; pathType: "file" | "directory" | "other" };
 
-/** How an owned link was pointed at a new source: atomically, or (where rename-over is unsupported) by unlink + link. */
-export type WorkspaceSkillLinkReplacement = "renamed" | "unlinked-and-linked";
-
 export const isAbsenceError = (error: unknown): boolean => {
   const code = (error as NodeJS.ErrnoException)?.code;
   return code === "ENOENT" || code === "ENOTDIR";
 };
-
-// Error codes of a rename that cannot replace an existing directory link (Windows directory
-// symlinks and junctions). Any other rename failure is a real error.
-const RENAME_OVER_UNSUPPORTED_CODES = new Set(["EPERM", "EEXIST", "EACCES", "ENOTEMPTY", "EISDIR"]);
 
 const resolveSymlinkTargetPath = (linkPath: string, targetPath: string): string =>
   path.resolve(path.dirname(linkPath), targetPath);
@@ -33,8 +26,6 @@ const pathTypeForStats = (
   stats: Awaited<ReturnType<typeof fs.lstat>>,
 ): "file" | "directory" | "other" =>
   stats.isFile() ? "file" : stats.isDirectory() ? "directory" : "other";
-
-let replacementSequence = 0;
 
 /**
  * Link-level operations on one workspace skill path. They never decide ownership: the
@@ -113,27 +104,6 @@ export class WorkspaceSkillLinks {
       if (state.kind === "same-source-symlink") return;
       throw this.pathStateCollisionError(skillName, materializedRootPath, sourceRootPath, state);
     }
-  }
-
-  /**
-   * Points an owned link at `nextSourceRootPath`: a temporary link renamed over the old one. Where
-   * renaming over an existing directory link is unsupported (Windows), falls back to unlink + link;
-   * the caller's registry phase keeps that sequence exclusive, so a momentary absence is harmless.
-   */
-  async replaceOwnedLink(materializedRootPath: string, nextSourceRootPath: string): Promise<WorkspaceSkillLinkReplacement> {
-    replacementSequence += 1;
-    const temporaryPath = `${materializedRootPath}.autobyteus-repoint-${process.pid}-${replacementSequence}`;
-    await this.fileSystem.symlink(nextSourceRootPath, temporaryPath, "dir");
-    try {
-      await this.fileSystem.rename(temporaryPath, materializedRootPath);
-      return "renamed";
-    } catch (error) {
-      await this.unlinkIfPresent(temporaryPath);
-      if (!RENAME_OVER_UNSUPPORTED_CODES.has(String((error as NodeJS.ErrnoException)?.code))) throw error;
-    }
-    await this.unlinkIfPresent(materializedRootPath);
-    await this.fileSystem.symlink(nextSourceRootPath, materializedRootPath, "dir");
-    return "unlinked-and-linked";
   }
 
   /** Removes the link only while it still points at `sourceRootPath` (never a replacement or user entry). */

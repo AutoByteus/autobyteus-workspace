@@ -13,16 +13,25 @@ import { Skill, SkillSourceInfo } from "../domain/models.js";
 import { DisabledSkillsStore } from "../disabled-skills-store.js";
 import { SkillLoader } from "../loader.js";
 import {
-  getAllDefinitionRoots,
-  getAllSkillDirectories,
   scanBundledSkillsFromDefinitionRoot,
   scanSkillDirectory,
-  searchBundledSkillDirectory,
-  searchDirectoryRecursive,
-  searchConfiguredSkillCandidate,
 } from "./skill-discovery.js";
 import { ConfiguredAgentSkillResolver } from "./configured-agent-skill-resolver.js";
-import type { InstalledSkillRecord } from "../domain/installed-skill-record.js";
+import {
+  buildSkillCatalog,
+  listSkillCatalogSources,
+  scanSkillCatalogSource,
+  validateIncomingSkills,
+  type SkillCatalog,
+  type SkillCatalogSource,
+} from "./skill-catalog.js";
+import { createRuntimeDefaultSkillFolderMatcher } from "./runtime-default-skill-folders.js";
+import type {
+  InstalledSkillRecord,
+  SkillNameIssue,
+  SkillNameValidation,
+} from "../domain/installed-skill-record.js";
+import { SkillNameConflictError } from "../domain/skill-name-conflict-error.js";
 import {
   collectResolvedConfiguredSkills,
   type ConfiguredAgentSkillBinding,
@@ -47,6 +56,14 @@ type SkillServiceOptions = {
   config?: AppConfigLike;
   loader?: SkillLoader;
   disabledStore?: DisabledSkillsStore;
+  /** Realpath matcher for runtime default skill folders (tier 4); defaults to the real folders. */
+  isRuntimeDefaultSkillFolder?: (directory: string) => boolean;
+};
+
+/** An incoming skill source to check before it is committed (REQ-023). */
+export type IncomingSkillSource = Pick<SkillCatalogSource, "path" | "layout"> & {
+  /** Tier 2 for agent packages; added folders get tier 3 or 4 from the runtime default matcher. */
+  tier?: SkillCatalogSource["tier"];
 };
 
 export type SkillCatalogReloadResult = {
@@ -72,6 +89,8 @@ export class SkillService {
   readonly skillsDir: string;
   private loader: SkillLoader;
   private disabledStore: DisabledSkillsStore;
+  private readonly isRuntimeDefaultSkillFolder: (directory: string) => boolean;
+  private loggedIssueSignature = "";
 
   constructor(options: SkillServiceOptions = {}) {
     this.config = options.config ?? appConfigProvider.config;
@@ -80,51 +99,8 @@ export class SkillService {
 
     const disabledSkillsPath = path.join(this.config.getAppDataDir(), "disabled_skills.json");
     this.disabledStore = options.disabledStore ?? new DisabledSkillsStore(disabledSkillsPath);
-  }
-
-  private findGlobalSkillLocation(name: string): string | null {
-    for (const directory of getAllSkillDirectories(this.config)) {
-      const match = searchDirectoryRecursive(directory, name);
-      if (match) {
-        return match;
-      }
-    }
-    return null;
-  }
-
-  private findCatalogSkillLocation(name: string): string | null {
-    const globalMatch = this.findGlobalSkillLocation(name);
-    if (globalMatch) {
-      return globalMatch;
-    }
-
-    const discoveryDependencies = this.getDiscoveryDependencies();
-    for (const definitionRoot of getAllDefinitionRoots(this.config)) {
-      const bundledMatch = searchBundledSkillDirectory(
-        definitionRoot,
-        name,
-        discoveryDependencies,
-      );
-      if (bundledMatch) {
-        return bundledMatch;
-      }
-    }
-
-    return null;
-  }
-
-  private loadSkillFromPath(skillPath: string): Skill {
-    const skill = this.loader.loadSkill(skillPath, this.isReadonlyPath(skillPath));
-    skill.isDisabled = this.disabledStore.isDisabled(skill.name);
-    return skill;
-  }
-
-  private getGlobalSkill(name: string): Skill | null {
-    const skillPath = this.findGlobalSkillLocation(name);
-    if (!skillPath) {
-      return null;
-    }
-    return this.loadSkillFromPath(skillPath);
+    this.isRuntimeDefaultSkillFolder = options.isRuntimeDefaultSkillFolder
+      ?? createRuntimeDefaultSkillFolderMatcher();
   }
 
   private isReadonlyPath(skillPath: string): boolean {
@@ -147,31 +123,44 @@ export class SkillService {
   }
 
   /**
-   * The installed skill catalog: global skill dirs first, then skills bundled under
-   * each definition root, de-duplicated by name (first wins). Each record keeps the
-   * real origin and roots of its layout.
+   * Scans every catalog source in precedence order and keeps one copy per name (D-19). The
+   * ignored copies are logged whenever the set of issues changes.
    */
-  listInstalledSkillRecords(): InstalledSkillRecord[] {
-    const records: InstalledSkillRecord[] = [];
-    const seen = new Set<string>();
+  private loadCatalog(): SkillCatalog {
     const dependencies = this.getDiscoveryDependencies();
-    const candidates = [
-      ...getAllSkillDirectories(this.config).flatMap((directory) =>
-        scanSkillDirectory(directory, dependencies)),
-      ...getAllDefinitionRoots(this.config).flatMap((definitionRoot) =>
-        scanBundledSkillsFromDefinitionRoot(definitionRoot, dependencies)),
-    ];
-
-    for (const record of candidates) {
-      if (seen.has(record.skill.name)) {
-        continue;
-      }
+    const catalog = buildSkillCatalog(
+      listSkillCatalogSources(this.config, this.isRuntimeDefaultSkillFolder)
+        .flatMap((source) => scanSkillCatalogSource(source, dependencies)),
+    );
+    for (const record of catalog.records) {
       record.skill.isDisabled = this.disabledStore.isDisabled(record.skill.name);
-      records.push(record);
-      seen.add(record.skill.name);
     }
+    this.logSkillNameIssues(catalog.issues);
+    return catalog;
+  }
 
-    return records.sort((a, b) => a.skill.name.localeCompare(b.skill.name));
+  private logSkillNameIssues(issues: readonly SkillNameIssue[]): void {
+    const signature = JSON.stringify(issues);
+    if (signature === this.loggedIssueSignature) return;
+    this.loggedIssueSignature = signature;
+    for (const issue of issues) {
+      logger.warn(`Skill name '${issue.name}' (${issue.kind}): using '${issue.usedPath}', ignoring ${issue.ignoredPaths.map((ignored) => `'${ignored}'`).join(", ")}.`);
+    }
+  }
+
+  /** The installed skill catalog: exactly one record (the used copy) per name, sorted by name. */
+  listInstalledSkillRecords(): InstalledSkillRecord[] {
+    return [...this.loadCatalog().records].sort((a, b) => a.skill.name.localeCompare(b.skill.name));
+  }
+
+  /** The copies the catalog ignores, for the Skills page banner (REQ-024). */
+  listSkillNameIssues(): SkillNameIssue[] {
+    return this.loadCatalog().issues;
+  }
+
+  /** The used copy of a name. Every name-based operation goes through this (AR-013). */
+  resolveCatalogRecord(name: string): InstalledSkillRecord | null {
+    return this.loadCatalog().records.find((record) => record.skill.name === name) ?? null;
   }
 
   listSkills(): Skill[] {
@@ -186,14 +175,35 @@ export class SkillService {
   }
 
   getSkill(name: string): Skill | null {
-    const skillPath = this.findCatalogSkillLocation(name);
-    if (!skillPath) {
-      return null;
+    return this.resolveCatalogRecord(name)?.skill ?? null;
+  }
+
+  /**
+   * Checks an incoming source against the installed skills before the caller commits it
+   * (REQ-023). Its own folders are not counted as existing copies, so reloading or updating a
+   * package in place only conflicts with other sources.
+   */
+  validateIncomingSkillNames(incoming: IncomingSkillSource): SkillNameValidation {
+    const tier = incoming.tier ?? (this.isRuntimeDefaultSkillFolder(incoming.path) ? 4 : 3);
+    const dependencies = this.getDiscoveryDependencies();
+    return validateIncomingSkills(
+      this.loadCatalog().candidates,
+      scanSkillCatalogSource({ path: incoming.path, layout: incoming.layout, tier }, dependencies),
+    );
+  }
+
+  /** Throws `SkillNameConflictError` on a duplicate among tiers 1–3; logs tier-4 notices. */
+  assertNoIncomingSkillNameConflicts(incoming: IncomingSkillSource): SkillNameValidation {
+    const validation = this.validateIncomingSkillNames(incoming);
+    if (validation.conflicts.length > 0) throw new SkillNameConflictError(validation.conflicts);
+    for (const notice of validation.notices) {
+      logger.info(`Skill '${notice.name}': '${notice.usedPath}' takes precedence; ignoring the runtime default copy '${notice.ignoredPath}'.`);
     }
-    return this.loadSkillFromPath(skillPath);
+    return validation;
   }
 
   getSkills(skillNames: string[]): Skill[] {
+    const records = new Map(this.loadCatalog().records.map((record) => [record.skill.name, record]));
     const skills: Skill[] = [];
 
     for (const rawSkillName of skillNames) {
@@ -205,7 +215,7 @@ export class SkillService {
         continue;
       }
 
-      const skill = this.getSkill(skillName);
+      const skill = records.get(skillName)?.skill;
       if (!skill) {
         logger.warn(`Skill '${skillName}' could not be resolved via SkillService. Skipping.`);
         continue;
@@ -239,11 +249,12 @@ export class SkillService {
       return [];
     }
     const resolver = this.createConfiguredSkillResolver();
+    const records = this.listInstalledSkillRecords();
     if (this.resolveSkillScope(agentDefinition) === "ALL_INSTALLED") {
-      return this.listEnabledInstalledSkillRecords().map((record) =>
+      return records.filter((record) => !record.skill.isDisabled).map((record) =>
         resolver.bindInstalledRecord(record));
     }
-    return resolver.resolveForAgent(agentDefinition);
+    return resolver.resolveForAgent(agentDefinition, catalogLookup(records));
   }
 
   /** Effective, cause-certified skill resolutions (AGY) after applying the skill scope. */
@@ -253,20 +264,13 @@ export class SkillService {
     if (!agentDefinition) {
       return [];
     }
-    const resolver = this.createConfiguredSkillResolver({
-      globalCandidatePaths: (name) => {
-        for (const root of getAllSkillDirectories(this.config)) {
-          const candidate = searchConfiguredSkillCandidate(root, name);
-          if (candidate) return [{ path: candidate, configuredRoot: root }];
-        }
-        return [];
-      },
-    });
+    const resolver = this.createConfiguredSkillResolver();
+    const records = this.listInstalledSkillRecords();
     if (this.resolveSkillScope(agentDefinition) === "ALL_INSTALLED") {
-      return this.listEnabledInstalledSkillRecords().map((record) =>
+      return records.filter((record) => !record.skill.isDisabled).map((record) =>
         resolver.resolveInstalledRecordDetailed(record));
     }
-    return resolver.resolveForAgentDetailed(agentDefinition);
+    return resolver.resolveForAgentDetailed(agentDefinition, catalogLookup(records));
   }
 
   /** Whether a definition runs with any skills once its skill scope is applied. */
@@ -275,27 +279,19 @@ export class SkillService {
       return false;
     }
     if (this.resolveSkillScope(agentDefinition) === "ALL_INSTALLED") {
-      return this.listEnabledInstalledSkillRecords().length > 0;
+      return this.listInstalledSkillRecords().some((record) => !record.skill.isDisabled);
     }
     return (agentDefinition.skillNames ?? []).some(
       (name) => typeof name === "string" && name.trim().length > 0,
     );
   }
 
-  private listEnabledInstalledSkillRecords(): InstalledSkillRecord[] {
-    return this.listInstalledSkillRecords().filter((record) => !record.skill.isDisabled);
-  }
-
-  private createConfiguredSkillResolver(
-    overrides: Pick<ConstructorParameters<typeof ConfiguredAgentSkillResolver>[0], "globalCandidatePaths"> = {},
-  ): ConfiguredAgentSkillResolver {
+  private createConfiguredSkillResolver(): ConfiguredAgentSkillResolver {
     return new ConfiguredAgentSkillResolver({
       loader: this.loader,
       isReadonlyPath: this.isReadonlyPath.bind(this),
-      resolveGlobalSkill: this.getGlobalSkill.bind(this),
       isSkillDisabled: this.disabledStore.isDisabled.bind(this.disabledStore),
       logger,
-      ...overrides,
     });
   }
 
@@ -305,8 +301,15 @@ export class SkillService {
     }
 
     const skillPath = path.join(this.skillsDir, name);
+    // The name must be free across tiers 1–3, this folder included (REQ-023); a runtime default
+    // copy is only shadowed.
+    const existing = this.loadCatalog().candidates.find((record) =>
+      record.skill.name === name && record.tier !== 4);
+    if (existing) {
+      throw new SkillNameConflictError([{ name, existingPath: existing.skill.rootPath, incomingPath: skillPath }]);
+    }
     if (fs.existsSync(skillPath)) {
-      throw new Error(`Skill '${name}' already exists`);
+      throw new Error(`Skill folder '${skillPath}' already exists`);
     }
 
     fs.mkdirSync(skillPath, { recursive: true });
@@ -501,6 +504,8 @@ export class SkillService {
       throw new Error("Skill source already exists");
     }
 
+    this.assertNoIncomingSkillNameConflicts({ path: resolved, layout: "skill_path" });
+
     const rawEnv = this.config.get("AUTOBYTEUS_SKILLS_PATHS", "");
     const newEnvValue = rawEnv ? `${rawEnv},${resolved}` : resolved;
 
@@ -557,3 +562,8 @@ export class SkillService {
     };
   }
 }
+
+const catalogLookup = (records: readonly InstalledSkillRecord[]) => {
+  const byName = new Map(records.map((record) => [record.skill.name, record]));
+  return (name: string): InstalledSkillRecord | null => byName.get(name) ?? null;
+};

@@ -111,14 +111,14 @@ describe("AcpAgentRunBackendFactory", () => {
     expect(backend.getLifecycleSnapshot()).toMatchObject({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
   });
 
-  it.each([["CONFIGURED", "configured"], ["ALL_INSTALLED", "all_installed"]] as const)(
-    "materializes .grok/skills with the strength of the %s scope (D-15)", async (skillScope, requestStrength) => {
+  it.each([["CONFIGURED", "fail"], ["ALL_INSTALLED", "prefer_workspace"]] as const)(
+    "materializes .grok/skills with the collision policy of the %s scope (D-15 Rule 1)", async (skillScope, workspaceCollisionPolicy) => {
       const materialize = vi.fn(async () => { throw new Error("stop after materialization"); });
       const { factory } = createFactory("unused.json", { skillScope,
         skillMaterializer: { materializeConfiguredWorkspaceSkills: materialize, cleanupMaterializedWorkspaceSkills: vi.fn() } });
 
       await expect(factory.createBackend(config(), "run-strength")).rejects.toThrow("stop after materialization");
-      expect(materialize).toHaveBeenCalledWith(expect.objectContaining({ runId: "run-strength", requestStrength }));
+      expect(materialize).toHaveBeenCalledWith(expect.objectContaining({ runId: "run-strength", workspaceCollisionPolicy }));
     });
 
   it("attaches Agent Tools MCP over HTTP and waits until the agent reports it ready", async () => {

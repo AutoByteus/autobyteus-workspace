@@ -5,7 +5,7 @@ import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.j
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { WorkspaceSkillMaterializer } from "../../../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
-import type { SkillRequestStrength } from "../../../../../src/agent-execution/backends/shared/skill-request-strength.js";
+import type { WorkspaceCollisionPolicy } from "../../../../../src/agent-execution/backends/shared/workspace-skill-collision-policy.js";
 
 const tempRoots: string[] = [];
 const profile = { runtimeLabel: "Test", workspaceSkillsRootSegments: [".test", "skills"] };
@@ -30,8 +30,8 @@ const expose = (skill: Skill) => ({ kind: "expose-resolved" as const, skill });
 const discoverable = (skill: Skill) => ({ kind: "reconcile-discoverable" as const, skill });
 type TestRequest = ReturnType<typeof expose> | ReturnType<typeof discoverable> | { kind: "reconcile-unresolved"; name: string };
 const run = (materializer: WorkspaceSkillMaterializer, workspace: string, requests: TestRequest[], skillAccessMode = SkillAccessMode.PRELOADED_ONLY,
-  requestStrength: SkillRequestStrength = "configured", runId = "run-1") =>
-  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, skillAccessMode, requestStrength });
+  workspaceCollisionPolicy: WorkspaceCollisionPolicy = "fail", runId = "run-1") =>
+  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, skillAccessMode, workspaceCollisionPolicy });
 
 const isAbsent = async (target: string): Promise<boolean> => {
   try { await fs.lstat(target); return false; } catch (error) {

@@ -17,6 +17,7 @@ import type {
   AgentPackageImportInput as AgentPackageImportInputModel,
   AgentPackageUpdateInfo as AgentPackageUpdateInfoModel,
 } from "../../../agent-packages/types.js";
+import { withSkillNameConflictMapping } from "../errors/skill-name-conflict-graphql-error.js";
 
 enum AgentPackageSourceKindEnum {
   BUILT_IN = "BUILT_IN",
@@ -179,7 +180,7 @@ export class AgentPackageResolver {
     input: ImportAgentPackageInput,
   ): Promise<AgentPackage[]> {
     const service = AgentPackageService.getInstance();
-    const packages = await service.importAgentPackage(mapImportInput(input));
+    const packages = await withSkillNameConflictMapping(() => service.importAgentPackage(mapImportInput(input)));
     return packages.map(mapAgentPackage);
   }
 
@@ -197,7 +198,7 @@ export class AgentPackageResolver {
     @Arg("packageId", () => String) packageId: string,
   ): Promise<AgentPackage[]> {
     const service = AgentPackageService.getInstance();
-    const packages = await service.reloadAgentPackage(packageId);
+    const packages = await withSkillNameConflictMapping(() => service.reloadAgentPackage(packageId));
     return packages.map(mapAgentPackage);
   }
 
@@ -216,7 +217,7 @@ export class AgentPackageResolver {
     @Arg("packageId", () => String) packageId: string,
   ): Promise<AgentPackage[]> {
     const service = AgentPackageService.getInstance();
-    const packages = await service.updateAgentPackage(packageId);
+    const packages = await withSkillNameConflictMapping(() => service.updateAgentPackage(packageId));
     return packages.map(mapAgentPackage);
   }
 }

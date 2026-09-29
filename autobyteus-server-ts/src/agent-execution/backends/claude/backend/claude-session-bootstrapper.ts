@@ -2,7 +2,7 @@ import {
   SkillAccessMode,
   resolveSkillAccessMode,
 } from "autobyteus-ts/agent/context/skill-access-mode.js";
-import { skillRequestStrengthForScope } from "../../shared/skill-request-strength.js";
+import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
 import { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
 import { SkillService } from "../../../../skills/services/skill-service.js";
@@ -93,7 +93,7 @@ export class ClaudeSessionBootstrapper {
                 : { kind: "reconcile-unresolved", name: binding.name }
             ),
         skillAccessMode,
-        requestStrength: skillRequestStrengthForScope(this.skillService.resolveSkillScope(agentDefinition)),
+        workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
       });
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,

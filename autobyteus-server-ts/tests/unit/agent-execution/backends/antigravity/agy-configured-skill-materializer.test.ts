@@ -10,6 +10,7 @@ import type { ConfiguredAgentSkillBinding, DetailedConfiguredSkillResolution } f
 import { Skill } from "../../../../../src/skills/domain/models.js";
 import { ConfiguredAgentSkillResolver } from "../../../../../src/skills/services/configured-agent-skill-resolver.js";
 import { SkillLoader } from "../../../../../src/skills/loader.js";
+import type { InstalledSkillRecord } from "../../../../../src/skills/domain/installed-skill-record.js";
 
 const tempRoots: string[] = [];
 afterEach(async () => {
@@ -49,14 +50,20 @@ const create = (root: Awaited<ReturnType<typeof fixture>>, configuredSkillBindin
   identity: "Identity", configuredSkillBindings: mode === "NONE" ? [] : configuredSkillBindings.map(detailed), skillAccessMode: mode, mcpDescriptor: null,
 });
 const resolver = new ConfiguredAgentSkillResolver({ loader: new SkillLoader(), isReadonlyPath: () => true,
-  resolveGlobalSkill: () => null, isSkillDisabled: () => false, logger: { warn: () => undefined } });
+  isSkillDisabled: () => false, logger: { warn: () => undefined } });
+/** The catalog's record for the fixture skill, with the roots its package layout implies (D-19). */
+const catalogWith = (skillDir: string, layoutRoot: string) => (name: string): InstalledSkillRecord | null =>
+  name === "solution-designer"
+    ? { skill: new SkillLoader().loadSkill(skillDir, true), origin: "agent_private", trustedRoot: path.resolve(layoutRoot),
+        configuredRoot: path.resolve(layoutRoot), tier: 2, sourcePath: path.resolve(layoutRoot) }
+    : null;
 
 describe("AGY configured skill checked snapshot", () => {
   it("copies both in-team file links as ordinary capsule bytes and keeps exact restore immutable", async () => {
     const root = await fixture();
     const definition = new AgentDefinition({ name: "Solution Designer", description: "Design", instructions: "",
       skillNames: ["solution-designer"], sourceInfo: { agentDirPath: root.agent, teamDirPath: root.team } });
-    const bindings = resolver.resolveForAgent(definition);
+    const bindings = resolver.resolveForAgent(definition, catalogWith(root.skill, root.team));
     expect(bindings[0]).toMatchObject({ kind: "resolved", source: { origin: "agent_private",
       sourceRoot: realpathSync(root.skill), trustedRoot: realpathSync(root.team) } });
     const capsule = await create(root, bindings);
@@ -93,7 +100,7 @@ describe("AGY configured skill checked snapshot", () => {
     await fs.symlink("../../reference.md", path.join(root.skill, "reference.md"));
     const definition = new AgentDefinition({ name: "Standalone", description: "Design", instructions: "",
       skillNames: ["solution-designer"], sourceInfo: { agentDirPath: root.agent } });
-    const bindings = resolver.resolveForAgent(definition);
+    const bindings = resolver.resolveForAgent(definition, catalogWith(root.skill, root.agent));
     expect(bindings[0]).toMatchObject({ kind: "resolved", source: { origin: "agent_private",
       trustedRoot: realpathSync(root.agent) } });
     const capsule = await create(root, bindings);
@@ -185,7 +192,7 @@ it.skipIf(!existsSync(path.join(actualTeam, "agents", "solution-designer", "skil
     const actual = path.join(agent, "skills", "solution-designer");
     const definition = new AgentDefinition({ name: "Solution Designer", description: "Design", instructions: "",
       skillNames: ["solution-designer"], sourceInfo: { agentDirPath: agent, teamDirPath: actualTeam } });
-    const bindings = resolver.resolveForAgent(definition);
+    const bindings = resolver.resolveForAgent(definition, catalogWith(actual, actualTeam));
     const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "actual", memoryDir: path.join(base, "memory"), workspacePath: workspace,
       identity: "Identity", configuredSkillBindings: bindings.map(detailed), skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
     for (const name of ["design-examples.md", "design-principles.md"]) {

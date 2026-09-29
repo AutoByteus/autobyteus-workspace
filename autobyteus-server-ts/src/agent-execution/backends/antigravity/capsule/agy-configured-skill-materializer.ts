@@ -3,7 +3,7 @@ import { constants, type BigIntStats } from "node:fs";
 import path from "node:path";
 import type { DetailedConfiguredSkillResolution } from "../../../../skills/domain/configured-agent-skill-binding.js";
 import { fingerprintConfiguredSkillSource } from "../../../../skills/services/configured-skill-source-fingerprint.js";
-import { isWeakSkillRequest, type SkillRequestStrength } from "../../shared/skill-request-strength.js";
+import type { WorkspaceCollisionPolicy } from "../../shared/workspace-skill-collision-policy.js";
 
 export type AgySkillSnapshot = { name: string; relativePath: string };
 
@@ -135,8 +135,8 @@ export const materializeAgyConfiguredSkills = async (input: {
   enabled: boolean;
   runId: string;
   agentDefinitionId: string;
-  /** From `SkillService.resolveSkillScope` via `skillRequestStrengthForScope` (D-15 Rule 1). */
-  requestStrength: SkillRequestStrength;
+  /** From `SkillService.resolveSkillScope` via `workspaceCollisionPolicyForScope` (D-15 Rule 1). */
+  workspaceCollisionPolicy: WorkspaceCollisionPolicy;
 }): Promise<AgySkillSnapshot[]> => {
   if (!input.enabled) return [];
   const names = new Set<string>();
@@ -159,7 +159,7 @@ export const materializeAgyConfiguredSkills = async (input: {
     const workspaceSkill = path.join(input.workspacePath, ".agents", "skills", name);
     if (await workspaceEntryExists(workspaceSkill)) {
       // The workspace owns this name: AGY discovers it natively. Configured requests fail fast.
-      if (!isWeakSkillRequest(input.requestStrength)) throw failure("AGY_SKILL_NAME_COLLISION", name);
+      if (input.workspaceCollisionPolicy === "fail") throw failure("AGY_SKILL_NAME_COLLISION", name);
       console.warn(`AGY configured skill skipped: run=${logIdentity(input.runId)}, agent=${logIdentity(input.agentDefinitionId)}, skill=${logIdentity(name)}, disposition=skipped-workspace-owned`);
       continue;
     }

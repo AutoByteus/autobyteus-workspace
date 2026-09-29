@@ -218,7 +218,7 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
         runId: "run-all-installed",
         workingDirectory: workspace,
         skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-        requestStrength: "all_installed",
+        workspaceCollisionPolicy: "prefer_workspace",
         requests: bindings.map((binding) => binding.kind === "resolved"
           ? { kind: "expose-resolved" as const, skill: binding.skill }
           : { kind: "reconcile-unresolved" as const, name: binding.name }),
@@ -238,7 +238,7 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
         memoryDir: path.join(tempRoot, "agy-memory"),
         workspacePath: workspace,
         identity: "Identity",
-        skillRequestStrength: "all_installed",
+        workspaceCollisionPolicy: "prefer_workspace",
         configuredSkillBindings: service.resolveConfiguredSkillBindingsForAgentDetailed(dailyAssistant()),
         skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         mcpDescriptor: null,

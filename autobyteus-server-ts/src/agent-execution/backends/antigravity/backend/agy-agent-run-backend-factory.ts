@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import { skillRequestStrengthForScope } from "../../shared/skill-request-strength.js";
+import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
@@ -42,7 +42,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const descriptor = this.activateMcp(runId, config, workspacePath, definition);
     const capsule = await createAgyRunCapsule({ runId, memoryDir, workspacePath, identity,
       agentDefinitionId: config.agentDefinitionId, configuredSkillBindings: bindings,
-      skillRequestStrength: skillRequestStrengthForScope(this.skills.resolveSkillScope(definition)),
+      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skills.resolveSkillScope(definition)),
       skillAccessMode, mcpDescriptor: descriptor });
     return this.launch(config, runId, capsule, null);
   }

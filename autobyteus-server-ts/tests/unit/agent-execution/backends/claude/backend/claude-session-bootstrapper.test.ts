@@ -115,12 +115,12 @@ describe("ClaudeSessionBootstrapper", () => {
         { kind: "reconcile-unresolved", name: "missing-skill" },
       ],
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
-      requestStrength: "configured",
+      workspaceCollisionPolicy: "fail",
     });
     expect(runContext.runtimeContext.configuredSkills).toEqual([skill]);
   });
 
-  it("requests workspace skills weakly for an ALL_INSTALLED definition (D-15)", async () => {
+  it("prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1)", async () => {
     const skill = new Skill({ name: "installed-skill", description: "d", content: "# c", rootPath: "/skills/installed-skill" });
     const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
       { kind: "resolved", skill, source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } },
@@ -129,6 +129,6 @@ describe("ClaudeSessionBootstrapper", () => {
     await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false, skillAccessMode: SkillAccessMode.PRELOADED_ONLY }));
 
     expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
-      expect.objectContaining({ requestStrength: "all_installed" }));
+      expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace" }));
   });
 });
