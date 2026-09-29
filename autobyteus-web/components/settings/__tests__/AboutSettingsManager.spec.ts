@@ -65,6 +65,21 @@ describe('AboutSettingsManager', () => {
     expect(wrapper.get('[data-testid="settings-updates-last-checked"]').text()).toContain('Never');
   });
 
+  it('shows a neutral disabled line and hides update controls when updates are disabled', () => {
+    appUpdateStoreMock.status = 'disabled';
+
+    const wrapper = mount(AboutSettingsManager);
+
+    expect(wrapper.get('[data-testid="settings-updates-status"]').text()).toBe(
+      translate('settings.components.settings.AboutSettingsManager.status.disabled'),
+    );
+    expect(wrapper.get('[data-testid="settings-updates-message"]').text()).toBe(
+      translate('settings.components.settings.AboutSettingsManager.message.disabled'),
+    );
+    expect(wrapper.find('[data-testid="settings-updates-check-updates"]').exists()).toBe(false);
+    expect(wrapper.find('[data-testid="settings-updates-beta-channel-toggle"]').exists()).toBe(false);
+  });
+
   it('calls initialize on mount when store is not initialized', () => {
     mount(AboutSettingsManager);
     expect(appUpdateStoreMock.initialize).toHaveBeenCalledTimes(1);

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "stop",
+  "error": {
+    "code": "INSTANCE_ID_REQUIRED",
+    "message": "Several isolated instances are recorded; pass one id: iso-9333-c818, iso-9334-c01d",
+    "details": {
+      "instanceIds": [
+        "iso-9333-c818",
+        "iso-9334-c01d"
+      ]
+    }
+  }
+}

@@ -36,7 +36,10 @@
           {{ statusMessage }}
         </p>
 
-        <div class="mt-4 flex items-start justify-between gap-4 border-t border-gray-100 pt-4">
+        <div
+          v-if="!updatesDisabled"
+          class="mt-4 flex items-start justify-between gap-4 border-t border-gray-100 pt-4"
+        >
           <div class="min-w-0">
             <p id="settings-updates-beta-channel-label" class="text-sm font-medium text-gray-900">
               {{ $t('settings.components.settings.AboutSettingsManager.betaChannel.label') }}
@@ -72,7 +75,7 @@
           </button>
         </div>
 
-        <div class="mt-4 flex flex-wrap gap-2">
+        <div v-if="!updatesDisabled" class="mt-4 flex flex-wrap gap-2">
           <button
             type="button"
             class="rounded-md bg-sky-600 px-3 py-2 text-sm font-medium text-white transition hover:bg-sky-700 disabled:cursor-not-allowed disabled:opacity-60"
@@ -128,6 +131,8 @@ onMounted(() => {
   }
 });
 
+const updatesDisabled = computed(() => appUpdateStore.status === 'disabled');
+
 const currentVersionLabel = computed(() => (
   appUpdateStore.currentVersion || t('settings.components.settings.AboutSettingsManager.unavailable')
 ));
@@ -148,6 +153,8 @@ const statusLabel = computed(() => {
       return t('settings.components.settings.AboutSettingsManager.status.noUpdate');
     case 'error':
       return t('settings.components.settings.AboutSettingsManager.status.error');
+    case 'disabled':
+      return t('settings.components.settings.AboutSettingsManager.status.disabled');
     default:
       return t('settings.components.settings.AboutSettingsManager.status.idle');
   }
@@ -177,6 +184,8 @@ const statusMessage = computed(() => {
       return t('settings.components.settings.AboutSettingsManager.message.noUpdate');
     case 'error':
       return t(getSettingsAppUpdateErrorMessageKey(appUpdateStore.errorKind));
+    case 'disabled':
+      return t('settings.components.settings.AboutSettingsManager.message.disabled');
     default:
       return t('settings.components.settings.AboutSettingsManager.message.idle');
   }

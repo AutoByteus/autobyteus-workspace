@@ -1,0 +1,30 @@
+e['text']: print(e) "
+
+Good, back on Agents page with Settings visible. Now retry the recording sequence.
+
+run_bash
+· rm -f /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace/tutorial-clip.mp4 BROWSER="/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording/browser-automation/scripts/browser" TAB="50876587DB705AB4BD11513C1FFFE491" env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" start-recording --tab-id "$TAB" --output-file "tutorial-clip.mp4" --fps 25 --overwrite 2>&1 env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" run-script --tab-id "$TAB" --script 'async () => { await __abDemo.caption("Let'"'"'s open Settings", {position: "bottom"}); await new Promise(r => setTimeout(r, 3000)); const res = await __abDemo.click({text: "Settings"}); await new Promise(r => setTimeout(r, 3000)); await __abDemo.hideCaption(); return res; }' 2>&1 env CHROME_REMOTE_DEBUGGING_PORT=9335 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "$BROWSER" stop-recording --tab-id "$TAB" 2>&1
+
+Clip is ~7.3s, close to the target. Now let’s stop the isolated instance.
+
+run_bash
+· ROOT="/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording" node /Users/normy/.cache/node/corepack/v1/pnpm/10.28.2/bin/pnpm.cjs --dir "$ROOT" isolated-app stop iso-9335-32d8 2>&1
+
+Instance stopped cleanly. Let’s verify the output files in the workspace.
+
+run_bash
+· ls -la /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace/tutorial-*
+
+Task complete. Summary:
+
+Instance: iso-9335-32d8 (started from the source worktree build via --from-worktree, control port 9335; now stopped and its data root cleaned up)
+
+Outputs (in workspace):
+
+Screenshot: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace/tutorial-screenshot.png
+Tutorial clip: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-QTbizi/server-data/temp_workspace/tutorial-clip.mp4 (duration ~7.3s, 182 frames @25fps — the presentation helper shows a caption “Let’s open Settings,” waits, clicks the Settings nav item (navigation confirmed to #/settings), waits again, then hides the caption)
+
+The instance was stopped afterward, releasing its control/server ports and removing its auto-created data root.
+
+Context Files (0)
+(drag, paste, or upload)

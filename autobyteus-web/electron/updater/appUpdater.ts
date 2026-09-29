@@ -11,13 +11,16 @@ import { isAppUpdateChannelLocked } from '../../shared/appUpdateTypes';
 import { logger } from '../logger';
 import { classifyAppUpdateError } from './appUpdateErrorClassifier';
 import { isAppUpdateChannel, loadAppUpdateChannel, saveAppUpdateChannel } from './appUpdateChannelStore';
-
-export const APP_UPDATE_STATE_CHANNEL = 'app-update-state';
-const IPC_GET_STATE = 'app-update:get-state';
-const IPC_CHECK = 'app-update:check';
-const IPC_DOWNLOAD = 'app-update:download';
-const IPC_INSTALL = 'app-update:install';
-const IPC_SET_CHANNEL = 'app-update:set-channel';
+import {
+  APP_UPDATE_IPC_CHECK,
+  APP_UPDATE_IPC_COMMAND_CHANNELS,
+  APP_UPDATE_IPC_DOWNLOAD,
+  APP_UPDATE_IPC_GET_STATE,
+  APP_UPDATE_IPC_INSTALL,
+  APP_UPDATE_IPC_SET_CHANNEL,
+  APP_UPDATE_STATE_CHANNEL,
+  type AppUpdateController,
+} from './appUpdateController';
 
 const CHANNEL_RECHECK_STATUSES: ReadonlySet<AppUpdateStatus> = new Set([
   'idle',
@@ -63,7 +66,7 @@ function buildErrorDedupeSignature(
   return `${kind}:${code ?? 'none'}:${diagnosticHeadline}`;
 }
 
-export class AppUpdater {
+export class AppUpdater implements AppUpdateController {
   private state: AppUpdateState;
   private initialized = false;
   private activeOperation: AppUpdateOperation | null = null;
@@ -358,17 +361,15 @@ export class AppUpdater {
   }
 
   private registerIpcHandlers(): void {
-    ipcMain.removeHandler(IPC_GET_STATE);
-    ipcMain.removeHandler(IPC_CHECK);
-    ipcMain.removeHandler(IPC_DOWNLOAD);
-    ipcMain.removeHandler(IPC_INSTALL);
-    ipcMain.removeHandler(IPC_SET_CHANNEL);
+    for (const channel of APP_UPDATE_IPC_COMMAND_CHANNELS) {
+      ipcMain.removeHandler(channel);
+    }
 
-    ipcMain.handle(IPC_GET_STATE, async () => this.getState());
-    ipcMain.handle(IPC_CHECK, async () => await this.checkForUpdates('manual'));
-    ipcMain.handle(IPC_DOWNLOAD, async () => await this.downloadUpdate());
-    ipcMain.handle(IPC_INSTALL, async () => this.installUpdateAndRestart());
-    ipcMain.handle(IPC_SET_CHANNEL, async (_event, channel: unknown) => await this.setUpdateChannel(channel));
+    ipcMain.handle(APP_UPDATE_IPC_GET_STATE, async () => this.getState());
+    ipcMain.handle(APP_UPDATE_IPC_CHECK, async () => await this.checkForUpdates('manual'));
+    ipcMain.handle(APP_UPDATE_IPC_DOWNLOAD, async () => await this.downloadUpdate());
+    ipcMain.handle(APP_UPDATE_IPC_INSTALL, async () => this.installUpdateAndRestart());
+    ipcMain.handle(APP_UPDATE_IPC_SET_CHANNEL, async (_event, channel: unknown) => await this.setUpdateChannel(channel));
   }
 
   private handleError(

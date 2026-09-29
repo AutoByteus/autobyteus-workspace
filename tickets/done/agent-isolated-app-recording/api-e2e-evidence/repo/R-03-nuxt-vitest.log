@@ -1,0 +1,38 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web
+
+stderr | components/settings/__tests__/AboutSettingsManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/appUpdateStore.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | tests/integration/isolated-launch-marker.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | tests/integration/isolated-launch-marker.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/appUpdateStore.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/AboutSettingsManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ tests/integration/isolated-launch-marker.integration.test.ts (4 tests) 5ms
+ ✓ stores/__tests__/appUpdateStore.spec.ts (19 tests) 14ms
+ ✓ components/settings/__tests__/AboutSettingsManager.spec.ts (26 tests) 150ms
+
+ Test Files  3 passed (3)
+      Tests  49 passed (49)
+   Start at  05:54:51
+   Duration  7.97s (transform 4.24s, setup 21.01s, collect 291ms, tests 169ms, environment 740ms, prepare 524ms)
+

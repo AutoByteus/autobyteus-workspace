@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "start",
+  "error": {
+    "code": "CONTROL_PORT_IN_USE",
+    "message": "Control port 9333 is used by isolated instance iso-9333-c818; stop it or pass --control-port",
+    "details": {
+      "instanceId": "iso-9333-c818"
+    }
+  }
+}

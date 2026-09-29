@@ -1,5 +1,5 @@
 import { createElectronE2ESession } from './electronE2ESession.mjs'
-import { createOwnedElectronProcessTreeController } from './ownedElectronProcessTree.mjs'
+import { createOwnedElectronProcessTreeController } from '../electron-launch/processGroupControl.mjs'
 
 function attachCleanupError(primaryError, cleanupError) {
   if (primaryError && typeof primaryError === 'object' && Object.isExtensible(primaryError)) {

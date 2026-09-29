@@ -1,0 +1,62 @@
+{
+  "startedAt": "2026-09-29T03:57:15.553Z",
+  "completedAt": "2026-09-29T03:57:22.833Z",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "webRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web",
+  "skipBuild": true,
+  "artifact": null,
+  "ordinaryApplication": {
+    "before": {
+      "label": "before packaged validation",
+      "listenerPids": [
+        60384
+      ],
+      "health": {
+        "ok": true,
+        "status": 200
+      },
+      "identities": [
+        {
+          "pid": 60384,
+          "fingerprint": "bf41e40f1c24860d11a7f680eb59791bffe961a5bbb214e38832f09da34ee8b7",
+          "commandIsAutoByteus": true
+        }
+      ]
+    }
+  },
+  "scenarios": {
+    "E2E-PKG-001": {
+      "id": "E2E-PKG-001",
+      "title": "Direct same-artifact coexistence, isolated paths, and caller-root retention",
+      "startedAt": "2026-09-29T03:57:15.798Z",
+      "completedAt": "2026-09-29T03:57:22.822Z",
+      "result": "fail",
+      "details": {
+        "message": "Backend child inherited non-allowlisted caller variable OPENAI_API_KEY",
+        "stack": "Error: Backend child inherited non-allowlisted caller variable OPENAI_API_KEY\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:54:17)\n    at inspectReadyProcessTree (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:345:7)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:821:27\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:138:22)\n    at async execute (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:799:3)\n    at async main (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1115:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1149:1"
+      }
+    }
+  },
+  "failures": [
+    {
+      "id": "E2E-PKG-001",
+      "message": "Backend child inherited non-allowlisted caller variable OPENAI_API_KEY",
+      "stack": "Error: Backend child inherited non-allowlisted caller variable OPENAI_API_KEY\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:54:17)\n    at inspectReadyProcessTree (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:345:7)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:821:27\n    at async runScenario (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:138:22)\n    at async execute (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:799:3)\n    at async main (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1115:5)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/tests/e2e/electron-launch-profile-probe.mjs:1149:1"
+    }
+  ],
+  "cleanup": [
+    {
+      "label": "direct Electron session",
+      "result": "pass"
+    },
+    {
+      "label": "controlled caller root",
+      "result": "pass"
+    },
+    {
+      "label": "probe temporary root",
+      "result": "pass"
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+........................                                                 [100%]
+==================================== PASSES ====================================
+=========================== short test summary info ============================
+PASSED tests/integration/test_cli_real_chrome.py::test_independent_cli_processes_operate_one_real_target_without_stray_or_global_close
+PASSED tests/integration/test_cli_real_chrome.py::test_real_content_dom_script_screenshot_and_workspace_artifacts
+PASSED tests/integration/test_cli_real_chrome.py::test_attach_ambiguity_external_close_stale_error_and_user_tab_survival
+PASSED tests/integration/test_cli_real_chrome.py::test_navigation_timeout_rolls_back_only_new_page
+PASSED tests/integration/test_launcher_black_box.py::test_launcher_readiness_branches_and_missing_bundle_are_exactly_once
+PASSED tests/integration/test_launcher_black_box.py::test_relocated_clean_bundle_first_health_and_help_from_unrelated_cwd
+PASSED tests/integration/test_launcher_black_box.py::test_connectivity_failure_is_one_cli_owned_error
+PASSED tests/integration/test_mcp_transports_real.py::test_production_stdio_mcp_launcher_inventory_real_operation_and_error
+PASSED tests/integration/test_mcp_transports_real.py::test_streamable_http_default_loopback_and_explicit_remote_warning
+PASSED tests/integration/test_mcp_transports_real.py::test_mcp_invalid_host_and_port_fail_before_server_start
+PASSED tests/integration/test_mcp_transports_real.py::test_stdio_mcp_recording_survives_concurrent_calls_and_stops_from_another_process
+PASSED tests/integration/test_mcp_transports_real.py::test_stdio_mcp_attach_only_reports_unavailable_and_never_launches_a_browser
+PASSED tests/integration/test_presentation_real_chrome.py::test_helper_is_installed_on_use_only_and_survives_reload
+PASSED tests/integration/test_presentation_real_chrome.py::test_helper_actions_by_selector_and_text
+PASSED tests/integration/test_presentation_real_chrome.py::test_helper_errors_are_structured_values
+PASSED tests/integration/test_presentation_real_chrome.py::test_presentation_overlays_are_transient_and_never_block
+PASSED tests/integration/test_presentation_real_chrome.py::test_targets_are_hit_tested_like_a_person_with_an_open_modal
+PASSED tests/integration/test_recording_real_chrome.py::test_recording_runs_in_background_across_other_cli_calls
+PASSED tests/integration/test_recording_real_chrome.py::test_recording_finalizes_itself_when_the_tab_closes
+PASSED tests/integration/test_recording_real_chrome.py::test_recording_start_errors
+PASSED tests/integration/test_recording_real_chrome.py::test_page_dialog_raised_while_recording_stays_open_and_operable
+PASSED tests/integration/test_runtime_real_chrome.py::test_production_owned_chrome_persists_for_later_cli_processes
+PASSED tests/integration/test_skill_contract.py::test_skill_resolves_only_its_relative_launcher_from_the_advertised_file
+PASSED tests/integration/test_skill_contract.py::test_bundle_and_package_publish_only_the_generic_entrypoints
+24 passed in 87.51s (0:01:27)

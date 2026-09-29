@@ -1,0 +1,12 @@
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "restart",
+  "error": {
+    "code": "APP_ISOLATION_UNSUPPORTED",
+    "message": "/private/tmp/abclone/AutoByteus.app/Contents/MacOS/AutoByteus does not support isolated launches (no isolated-launch.json in /private/tmp/abclone/AutoByteus.app/Contents/Resources). Builds before isolated-launch support would pass your production settings to the instance. Use --from-worktree or --build, or update the installed app to a release with isolated-launch support.",
+    "details": {
+      "executablePath": "/private/tmp/abclone/AutoByteus.app/Contents/MacOS/AutoByteus"
+    }
+  }
+}

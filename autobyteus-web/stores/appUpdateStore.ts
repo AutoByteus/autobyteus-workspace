@@ -69,7 +69,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
         return false;
       }
 
-      if (!state.visible) {
+      if (!state.visible || state.status === 'disabled') {
         return false;
       }
 
@@ -127,7 +127,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     },
 
     async checkForUpdates(): Promise<void> {
-      if (!window.electronAPI?.checkForAppUpdates) {
+      if (this.status === 'disabled' || !window.electronAPI?.checkForAppUpdates) {
         return;
       }
 
@@ -152,7 +152,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     },
 
     async downloadUpdate(): Promise<void> {
-      if (!window.electronAPI?.downloadAppUpdate) {
+      if (this.status === 'disabled' || !window.electronAPI?.downloadAppUpdate) {
         return;
       }
 
@@ -171,7 +171,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     },
 
     async installUpdateAndRestart(): Promise<void> {
-      if (!window.electronAPI?.installAppUpdateAndRestart) {
+      if (this.status === 'disabled' || !window.electronAPI?.installAppUpdateAndRestart) {
         return;
       }
 
@@ -207,7 +207,7 @@ export const useAppUpdateStore = defineStore('appUpdate', {
     },
 
     async setUpdateChannel(channel: AppUpdateChannel): Promise<void> {
-      if (!window.electronAPI?.setAppUpdateChannel) {
+      if (this.status === 'disabled' || !window.electronAPI?.setAppUpdateChannel) {
         return;
       }
 
@@ -262,7 +262,10 @@ export const useAppUpdateStore = defineStore('appUpdate', {
 
       const isQuietError = isQuietStartupAppUpdateError(this);
 
-      if (this.status === 'available') {
+      if (this.status === 'disabled') {
+        // Updates are off for this launch (isolated instance): never show a notice.
+        this.visible = false;
+      } else if (this.status === 'available') {
         if (!this.availableVersion || this.availableVersion !== this.dismissedVersion) {
           this.visible = true;
         }

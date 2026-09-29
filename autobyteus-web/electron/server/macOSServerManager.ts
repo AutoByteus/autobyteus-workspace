@@ -6,7 +6,6 @@ import type { StdioOptions } from 'child_process'
 import { BaseServerManager } from './baseServerManager'
 import { logger } from '../logger'
 import { getLoginShellPath } from '../utils/shellEnv'
-import { buildServerRuntimeEnv } from './serverRuntimeEnv'
 
 export class MacOSServerManager extends BaseServerManager {
   /**
@@ -35,14 +34,7 @@ export class MacOSServerManager extends BaseServerManager {
     if (loginShellPath) {
       logger.info('Using PATH from login shell')
     }
-    const env = {
-      ...process.env,
-      ...(loginShellPath ? { PATH: loginShellPath } : {}),
-      ELECTRON_RUN_AS_NODE: '1',
-      PORT: this.serverPort.toString(),
-      SERVER_PORT: this.serverPort.toString(),
-      ...buildServerRuntimeEnv(this.appDataDir, publicServerUrl, process.env, this.getRuntimeEnvOverrides())
-    }
+    const env = this.buildServerEnv(loginShellPath)
 
     const options = {
       cwd: this.serverDir,

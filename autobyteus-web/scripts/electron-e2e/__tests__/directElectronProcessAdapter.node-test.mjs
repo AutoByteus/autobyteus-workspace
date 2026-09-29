@@ -61,7 +61,7 @@ test('direct adapter spawns the exact artifact in a controllable process tree', 
 test('direct launch failure preserves its primary error and retains the root when tree completion fails', async () => {
   const primaryError = new Error('direct spawn failed after assigning a PID')
   const treeError = Object.assign(new Error('owned descendant remains'), {
-    code: 'ELECTRON_E2E_TREE_UNCONFIRMED',
+    code: 'ELECTRON_PROCESS_TREE_UNCONFIRMED',
   })
   const child = Object.assign(new EventEmitter(), {
     pid: 43211,

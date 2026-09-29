@@ -397,6 +397,69 @@ describe('appUpdateStore', () => {
     expect(addToastMock.mock.calls[0][0]).not.toContain('example.invalid');
   });
 
+  describe('updates disabled for this launch', () => {
+    function disabledState() {
+      return {
+        status: 'disabled',
+        currentVersion: '1.4.91',
+        currentVersionIsPrerelease: false,
+        updateChannel: 'stable',
+        updateStaged: false,
+        availableVersion: null,
+        downloadPercent: null,
+        downloadTransferredBytes: null,
+        downloadTotalBytes: null,
+        releaseNotes: null,
+        message: 'Updates are disabled for this app instance.',
+        errorKind: null,
+        errorOperation: null,
+        checkedAt: null,
+      };
+    }
+
+    it('initializes quietly with no notice and no toast', async () => {
+      setElectronApiMock({
+        getAppUpdateState: vi.fn().mockResolvedValue(disabledState()),
+        onAppUpdateState: vi.fn().mockReturnValue(vi.fn()),
+      });
+
+      const store = useAppUpdateStore();
+      await store.initialize();
+
+      expect(store.status).toBe('disabled');
+      expect(store.visible).toBe(false);
+      expect(store.shouldShow).toBe(false);
+      expect(addToastMock).not.toHaveBeenCalled();
+    });
+
+    it('treats every update action as a no-op', async () => {
+      const api = {
+        getAppUpdateState: vi.fn().mockResolvedValue(disabledState()),
+        onAppUpdateState: vi.fn().mockReturnValue(vi.fn()),
+        checkForAppUpdates: vi.fn(),
+        downloadAppUpdate: vi.fn(),
+        installAppUpdateAndRestart: vi.fn(),
+        setAppUpdateChannel: vi.fn(),
+      };
+      setElectronApiMock(api);
+
+      const store = useAppUpdateStore();
+      await store.initialize();
+      await store.checkForUpdates();
+      await store.downloadUpdate();
+      await store.installUpdateAndRestart();
+      await store.setUpdateChannel('beta');
+
+      expect(api.checkForAppUpdates).not.toHaveBeenCalled();
+      expect(api.downloadAppUpdate).not.toHaveBeenCalled();
+      expect(api.installAppUpdateAndRestart).not.toHaveBeenCalled();
+      expect(api.setAppUpdateChannel).not.toHaveBeenCalled();
+      expect(store.status).toBe('disabled');
+      expect(store.shouldShow).toBe(false);
+      expect(addToastMock).not.toHaveBeenCalled();
+    });
+  });
+
   describe('update channel', () => {
     const remoteState = (overrides: Record<string, unknown> = {}) => ({
       status: 'no-update',

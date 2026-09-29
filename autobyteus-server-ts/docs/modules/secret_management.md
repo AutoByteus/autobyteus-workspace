@@ -243,8 +243,14 @@ atomic batch to exactly the validated database. `secrets:import` is the sole
 import command. There is no local/test wrapper, `--target`, implicit current
 application target, key argument, backend, profile, or access-mode option.
 
-The importer is an operator-only transition command, never a startup, UI, API,
-MCP, agent, or test-runner fallback:
+The importer is an explicit operator command, never a startup, UI, API, MCP,
+or test-runner fallback. An agent may run it as the operator when the user has
+given it a key source file. A typical case is provisioning model access into an
+isolated AutoByteus instance at the `databaseUrl` reported by
+`pnpm isolated-app start`. The agent runs the same command with the same TTY
+confirmation (`script` provides a terminal for agents that cannot type into
+prompts). Nothing runs it automatically, and no tool imports on an agent's
+behalf:
 
 - `--source` must be an explicit absolute path;
 - `--database-url` must appear exactly once and identify an absolute SQLite
