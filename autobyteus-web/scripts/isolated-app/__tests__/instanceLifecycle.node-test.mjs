@@ -3,7 +3,8 @@ import fs from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
-import { createInstanceLifecycle, DEFAULT_CONTROL_PORT } from '../instanceLifecycle.mjs'
+import { PRODUCTION_SERVER_PORT } from '../../electron-launch/launchPorts.mjs'
+import { createInstanceLifecycle } from '../instanceLifecycle.mjs'
 import { createInstanceRegistry } from '../instanceRegistry.mjs'
 
 /**
@@ -62,15 +63,32 @@ function lifecycleFixture(t, overrides = {}) {
   return { lifecycle, registry, state, appPath, tmpDir, base }
 }
 
+/** Free-port picker that hands out `candidates` in order, skipping excluded ports. */
+function scriptedPicker(candidates) {
+  const queue = [...candidates]
+  const calls = []
+  const pick = async (requested, { exclude = [] } = {}) => {
+    calls.push({ requested, exclude })
+    while (queue.length > 0) {
+      const port = queue.shift()
+      if (!exclude.includes(port)) return port
+    }
+    throw new Error('scripted picker exhausted')
+  }
+  return { pick, calls }
+}
+
 test('start launches detached with the isolated overlay, records the instance and reports its facts', async (t) => {
   const { lifecycle, registry, state, appPath, tmpDir } = lifecycleFixture(t)
 
   const result = await lifecycle.start({ app: appPath })
 
-  assert.equal(result.controlPort, DEFAULT_CONTROL_PORT)
-  assert.match(result.instanceId, /^iso-9333-[0-9a-f]{4}$/)
+  assert.ok(Number.isInteger(result.controlPort) && result.controlPort >= 1024)
+  assert.notEqual(result.controlPort, PRODUCTION_SERVER_PORT)
+  assert.notEqual(result.serverPort, result.controlPort)
+  assert.match(result.instanceId, new RegExp(`^iso-${result.controlPort}-[0-9a-f]{4}$`))
   assert.equal(result.executablePath, fs.realpathSync(appPath))
-  assert.equal(result.controlEndpoint, 'http://127.0.0.1:9333')
+  assert.equal(result.controlEndpoint, `http://127.0.0.1:${result.controlPort}`)
   assert.equal(result.backendUrl, `http://127.0.0.1:${result.serverPort}`)
   assert.equal(result.graphqlUrl, `${result.backendUrl}/graphql`)
   assert.ok(result.dataRoot.startsWith(path.join(tmpDir, 'autobyteus-isolated-root-')))
@@ -84,19 +102,90 @@ test('start launches detached with the isolated overlay, records the instance an
   assert.equal(launch.env.AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE, 'e2e')
   assert.equal(launch.env.AUTOBYTEUS_ELECTRON_SERVER_PORT, String(result.serverPort))
   assert.equal(launch.env.AUTOBYTEUS_ELECTRON_DATA_ROOT, result.dataRoot)
-  assert.ok(launch.args.includes('--remote-debugging-port=9333'))
+  assert.ok(launch.args.includes(`--remote-debugging-port=${result.controlPort}`))
   assert.equal(registry.read(result.instanceId).pid, launch.pid)
 })
 
-test('start refuses a busy control port and names the owning instance', async (t) => {
-  const { lifecycle, state, appPath } = lifecycleFixture(t)
-  const first = await lifecycle.start({ app: appPath })
-  state.busyPorts.add(9333)
+test('start without --control-port skips a busy candidate and uses the next free port', async (t) => {
+  const picker = scriptedPicker([41001, 41002, 41003])
+  const { lifecycle, state, appPath } = lifecycleFixture(t, { selectListenerPort: picker.pick })
+  state.busyPorts.add(41001)
+
+  const result = await lifecycle.start({ app: appPath })
+
+  assert.equal(result.controlPort, 41002)
+  assert.equal(result.serverPort, 41003)
+  assert.deepEqual(picker.calls.at(-1).exclude, [41002])
+  assert.ok(state.spawned[0].args.includes('--remote-debugging-port=41002'))
+})
+
+test('start without --control-port fails cleanly when no free candidate is found', async (t) => {
+  const candidates = Array.from({ length: 10 }, (_, index) => 42000 + index)
+  const { lifecycle, registry, state, appPath, tmpDir } = lifecycleFixture(t, {
+    selectListenerPort: scriptedPicker(candidates).pick,
+  })
+  for (const port of candidates) state.busyPorts.add(port)
 
   await assert.rejects(lifecycle.start({ app: appPath }), (error) => (
     error.code === 'CONTROL_PORT_IN_USE'
     && error.category === 'environment'
+    && error.message.includes('Could not find a free control port')
+  ))
+  assert.equal(state.spawned.length, 0)
+  assert.deepEqual(registry.list(), [])
+  assert.deepEqual(fs.readdirSync(tmpDir), [])
+})
+
+test('parallel default starts get distinct control ports', async (t) => {
+  const picker = scriptedPicker([43001, 43002, 43003, 43004])
+  const { lifecycle, appPath } = lifecycleFixture(t, { selectListenerPort: picker.pick })
+
+  const first = await lifecycle.start({ app: appPath })
+  const second = await lifecycle.start({ app: appPath })
+
+  assert.notEqual(first.controlPort, second.controlPort)
+  assert.equal(new Set([first.controlPort, first.serverPort, second.controlPort, second.serverPort]).size, 4)
+})
+
+test('start without --control-port never picks an explicitly requested server port', async (t) => {
+  const picker = scriptedPicker([44001, 44002])
+  const { lifecycle, appPath } = lifecycleFixture(t, { selectListenerPort: picker.pick })
+
+  const result = await lifecycle.start({ app: appPath, serverPort: 44001 })
+
+  assert.equal(result.serverPort, 44001)
+  assert.equal(result.controlPort, 44002)
+  assert.deepEqual(picker.calls[0].exclude, [44001])
+})
+
+test('start honors an explicit --control-port', async (t) => {
+  const { lifecycle, state, appPath } = lifecycleFixture(t)
+
+  const result = await lifecycle.start({ app: appPath, controlPort: 9444 })
+
+  assert.equal(result.controlPort, 9444)
+  assert.match(result.instanceId, /^iso-9444-[0-9a-f]{4}$/)
+  assert.ok(state.spawned[0].args.includes('--remote-debugging-port=9444'))
+})
+
+test('start refuses a busy explicit control port and names the owning instance', async (t) => {
+  const { lifecycle, state, appPath } = lifecycleFixture(t)
+  const first = await lifecycle.start({ app: appPath, controlPort: 9444 })
+  state.busyPorts.add(9444)
+
+  await assert.rejects(lifecycle.start({ app: appPath, controlPort: 9444 }), (error) => (
+    error.code === 'CONTROL_PORT_IN_USE'
+    && error.category === 'environment'
+    && error.details?.instanceId === first.instanceId
     && error.message.includes(first.instanceId)
+    && error.message.includes('omit --control-port')
+    && !error.message.includes('stop it')
+  ))
+  state.busyPorts.add(9445)
+  await assert.rejects(lifecycle.start({ app: appPath, controlPort: 9445 }), (error) => (
+    error.code === 'CONTROL_PORT_IN_USE'
+    && error.details === undefined
+    && error.message.includes('omit --control-port')
   ))
   assert.equal(state.spawned.length, 1)
 })
@@ -207,12 +296,12 @@ test('restart keeps id, ports, data root and ownership flags', async (t) => {
 
 test('list reports liveness per record', async (t) => {
   const { lifecycle, state, appPath } = lifecycleFixture(t)
-  const first = await lifecycle.start({ app: appPath })
+  const first = await lifecycle.start({ app: appPath, controlPort: 9401 })
   await lifecycle.start({ app: appPath, controlPort: 9402 })
   state.running.delete(first.pid)
 
   const { instances } = await lifecycle.list()
-  assert.deepEqual(instances.map((instance) => [instance.controlPort, instance.running]), [[9333, false], [9402, true]])
+  assert.deepEqual(instances.map((instance) => [instance.controlPort, instance.running]), [[9401, false], [9402, true]])
 })
 
 test('--build builds the worktree before resolving its executable', async (t) => {
@@ -226,7 +315,6 @@ test('start refuses an app without isolated-launch support before any port, root
   const oldApp = path.join(base, 'old', 'AutoByteus')
   fs.mkdirSync(path.dirname(oldApp))
   fs.writeFileSync(oldApp, '')
-  state.busyPorts.add(9333)
 
   await assert.rejects(lifecycle.start({ app: oldApp }), (error) => (
     error.code === 'APP_ISOLATION_UNSUPPORTED'

@@ -6,7 +6,8 @@
 // pointing at a controlled "production" root) and proves: start JSON and readiness, loopback-only
 // listeners, the isolated server environment, zero open files under production roots, concurrent
 // instances, control-port conflicts, restart, stop (process group gone, ports free, owned root
-// removed), dead-process stop, and the capability-gate/AppImage refusals that launch nothing.
+// removed), dead-process stop, the capability-gate/AppImage refusals that launch nothing, and
+// concurrent starts without --control-port getting distinct, loopback-only control ports.
 //
 // Usage: node tests/e2e/isolated-app-lifecycle-probe.mjs [--app <.app or executable>] [--output-dir <dir>]
 // Without --app it uses the current worktree build (`start --from-worktree`). macOS/Linux only.
@@ -273,7 +274,8 @@ async function execute() {
       assert(running[instanceA.instanceId] === true && running[instanceB.instanceId] === true && listed.instances.length === 2,
         'List does not show both running instances', listed)
       const conflict = await cliError(['start', ...appArgs, '--control-port', String(portA)], caller.env, 'CONTROL_PORT_IN_USE', 3)
-      assert(conflict.message.includes(instanceA.instanceId), 'Conflict does not name the owning instance', conflict)
+      assert(conflict.message.includes(instanceA.instanceId) && conflict.message.includes('omit --control-port'),
+        'Conflict does not name the owning instance or suggest omitting --control-port', conflict)
       assert((await cliOk(['list'], caller.env)).instances.length === 2, 'Refused start left a record')
       return { instanceB, listed, conflict }
     })
@@ -337,6 +339,42 @@ async function execute() {
       assert(rootsAfter.length === rootsBefore.length, 'A refused start created a data root', { rootsBefore, rootsAfter })
       assert((await cliOk(['list'], caller.env)).instances.length === 0, 'A refused start left a record')
       return { notFound, unsupported }
+    })
+
+    await runScenario('LC-007', 'Concurrent starts without --control-port get distinct loopback-only control ports', async () => {
+      const PARALLEL_STARTS = 3
+      const results = await Promise.allSettled(Array.from({ length: PARALLEL_STARTS }, () => cliOk(['start', ...appArgs], caller.env)))
+      const instances = results.filter(({ status }) => status === 'fulfilled').map(({ value }) => value)
+      started.push(...instances)
+      const rejected = results.filter(({ status }) => status === 'rejected').map(({ reason }) => ({ message: reason.message, details: reason.details }))
+      assert(rejected.length === 0, 'A concurrent default start failed', rejected)
+
+      const controlPorts = instances.map(({ controlPort }) => controlPort)
+      assert(new Set(controlPorts).size === PARALLEL_STARTS, 'Concurrent default starts share a control port', controlPorts)
+      const perInstance = []
+      for (const instance of instances) {
+        assert(instance.instanceId.startsWith(`iso-${instance.controlPort}-`)
+          && instance.controlEndpoint === `http://127.0.0.1:${instance.controlPort}`, 'Start result does not report its own control port', instance)
+        const targets = await listPageTargets(instance.controlPort)
+        assert(targets.length === 1, `Control port ${instance.controlPort} does not list exactly one main window`, targets)
+        const listeners = await groupListeners(instance.pid)
+        const controlListeners = listeners.filter((address) => address.endsWith(`:${instance.controlPort}`))
+        assert(controlListeners.length > 0 && controlListeners.every((address) => /^(?:127\.0\.0\.1|\[::1\]):\d+$/.test(address)),
+          `Control endpoint ${instance.controlPort} is not held loopback-only by its own instance`, listeners)
+        perInstance.push({ instanceId: instance.instanceId, controlPort: instance.controlPort, serverPort: instance.serverPort, tabId: targets[0].id })
+      }
+      assert(new Set(perInstance.map(({ tabId }) => tabId)).size === PARALLEL_STARTS, 'Control ports expose the same main window', perInstance)
+
+      const stops = []
+      for (const instance of instances) {
+        const stopped = await cliOk(['stop', instance.instanceId], caller.env)
+        assert(stopped.instanceId === instance.instanceId && stopped.wasRunning === true && stopped.controlPortReleased === true,
+          `Stopping ${instance.instanceId} by id failed`, stopped)
+        assert(groupAbsent(instance.pid), `Stopped process group ${instance.pid} is still alive`)
+        stops.push(stopped)
+      }
+      assert((await cliOk(['list'], caller.env)).instances.length === 0, 'Stopped instances left records')
+      return { perInstance, stops }
     })
   } finally {
     for (const instance of started.reverse()) {

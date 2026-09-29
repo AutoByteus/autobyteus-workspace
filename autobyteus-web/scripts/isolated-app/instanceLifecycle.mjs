@@ -29,8 +29,8 @@ import {
 } from './instanceProcess.mjs'
 import { environmentError, operationError, usageError } from './isolatedAppErrors.mjs'
 
-export const DEFAULT_CONTROL_PORT = 9333
 export const AUTO_DATA_ROOT_PREFIX = 'autobyteus-isolated-root-'
+const AUTO_CONTROL_PORT_ATTEMPTS = 10
 
 const moduleDir = path.dirname(fileURLToPath(import.meta.url))
 const defaultWebRoot = path.resolve(moduleDir, '..', '..')
@@ -100,6 +100,7 @@ export function createInstanceLifecycle({
   const isRunning = processDeps.isRecordedInstanceRunning ?? isRecordedInstanceRunning
   const createGroupController = processDeps.createProcessGroupController ?? createPosixProcessGroupController
   const portAvailable = processDeps.isPortAvailable ?? isPortAvailable
+  const pickListenerPort = processDeps.selectListenerPort ?? selectListenerPort
   const build = processDeps.runBuild ?? runBuild
   const isolationGate = processDeps.readIsolatedLaunchContract ?? readIsolatedLaunchContract
 
@@ -144,9 +145,26 @@ export function createInstanceLifecycle({
     throw environmentError(
       'CONTROL_PORT_IN_USE',
       owner
-        ? `Control port ${controlPort} is used by isolated instance ${owner.id}; stop it or pass --control-port`
-        : `Control port ${controlPort} is already in use; free it or pass --control-port`,
+        ? `Control port ${controlPort} is used by isolated instance ${owner.id}; omit --control-port to use a free port, or pass another port`
+        : `Control port ${controlPort} is already in use; omit --control-port to use a free port, or pass another port`,
       owner ? { instanceId: owner.id } : undefined,
+    )
+  }
+
+  /**
+   * Pick a free control port (no fixed default, so parallel instances never share one). A
+   * candidate is accepted only when it is also free on loopback, where Chromium binds CDP.
+   * An explicitly requested server port is excluded.
+   */
+  async function selectAutoControlPort(serverPort) {
+    const exclude = serverPort === undefined ? [] : [serverPort]
+    for (let attempt = 0; attempt < AUTO_CONTROL_PORT_ATTEMPTS; attempt += 1) {
+      const candidate = await pickListenerPort(undefined, { exclude })
+      if (await portAvailable(candidate)) return candidate
+    }
+    throw environmentError(
+      'CONTROL_PORT_IN_USE',
+      `Could not find a free control port after ${AUTO_CONTROL_PORT_ATTEMPTS} attempts; pass --control-port <n>`,
     )
   }
 
@@ -155,7 +173,7 @@ export function createInstanceLifecycle({
       throw usageError('USAGE_ERROR', '--server-port must differ from the control port')
     }
     if (requestedPort === undefined) {
-      return selectListenerPort(undefined, { exclude: [controlPort] })
+      return pickListenerPort(undefined, { exclude: [controlPort] })
     }
     try {
       assertValidListenerPort(requestedPort, '--server-port')
@@ -259,15 +277,22 @@ export function createInstanceLifecycle({
     )
   }
 
+  async function resolveControlPort(requestedPort, serverPort) {
+    if (requestedPort === undefined) return selectAutoControlPort(serverPort)
+    await assertControlPortFree(requestedPort)
+    return requestedPort
+  }
+
   async function start(options = {}) {
-    const controlPort = options.controlPort ?? DEFAULT_CONTROL_PORT
     if (options.app && (options.fromWorktree || options.build)) {
       throw usageError('USAGE_ERROR', '--app cannot be combined with --from-worktree or --build')
     }
-    try {
-      assertValidListenerPort(controlPort, '--control-port')
-    } catch (error) {
-      throw usageError('USAGE_ERROR', describeError(error))
+    if (options.controlPort !== undefined) {
+      try {
+        assertValidListenerPort(options.controlPort, '--control-port')
+      } catch (error) {
+        throw usageError('USAGE_ERROR', describeError(error))
+      }
     }
     if (options.build) {
       await build({ webRoot, platform, sourceEnv })
@@ -277,7 +302,7 @@ export function createInstanceLifecycle({
       fromWorktree: options.fromWorktree || options.build,
     })
     await assertIsolatedLaunchSupported(executablePath)
-    await assertControlPortFree(controlPort)
+    const controlPort = await resolveControlPort(options.controlPort, options.serverPort)
     const serverPort = await selectServerPort(options.serverPort, controlPort)
     const ownsDataRoot = !options.dataRoot
     const dataRoot = ownsDataRoot ? createAutoDataRoot() : resolveCallerDataRoot(options.dataRoot)
