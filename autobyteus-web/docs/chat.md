@@ -46,6 +46,22 @@ then model/thinking controls, mic and the primary send/stop action last.
 - The workspace menu accepts an existing workspace or an absolute folder path
   (`~` is rejected); the folder is loaded at send time.
 
+### Model labels
+
+Chat names models exactly as the launch form does (D-16). `useChatModelCatalog.toChatModelOption` is the only place Chat builds a row's `label`, `secondary` and `recommended`, using `utils/modelSelectionLabel.ts`:
+
+| Runtime | `label` | `secondary` |
+| --- | --- | --- |
+| Claude Agent SDK | canonical name | display name · description |
+| AutoByteus | identifier | description |
+| Other runtimes (Codex and the rest) | display name | description |
+
+- **Label source.** The runtime catalog record is preferred. For a persisted run, a model the catalog no longer offers falls back to `existingRunChoiceLabelInput` (shared with the gear editor).
+- **Order.** Claude Agent SDK rows are Recommended first (`compareRecommendedFirstBy`).
+- **Layout.** The label and the Recommended badge share one line, with `secondary` in gray below. Rows and the footer trigger never wrap; the full text is in `title` / `aria-label`.
+- **Search.** One predicate, `matchesModelQuery`, matches the identifier, label, display and canonical names, the secondary text, the provider and the runtime. It serves both the cross-runtime search and a persisted run's fixed list.
+- **Selection.** The stored selection is always `llmModelIdentifier`.
+
 ## Launch
 
 `services/chat/chatLaunchService.ts` owns launch.

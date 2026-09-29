@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ModelInfo, ProviderWithModels } from '~/stores/llmProviderConfig'
-import { buildModelSelectionGroups } from '../modelSelectionOptions'
+import { buildModelSelectionGroups, compareRecommendedFirstBy } from '../modelSelectionOptions'
 
 const model = (
   modelIdentifier: string,
@@ -129,5 +129,13 @@ describe('buildModelSelectionGroups', () => {
       .toEqual(['gpt-b', 'gpt-a'])
     expect(buildModelSelectionGroups([openAi], '')[0]?.items.map((item) => item.name))
       .toEqual(['gpt-b', 'gpt-a'])
+  })
+})
+
+describe('compareRecommendedFirstBy', () => {
+  it('orders recommended items first, then by the given label', () => {
+    const items = [{ label: 'b' }, { label: 'c', recommended: true }, { label: 'a' }]
+    expect([...items].sort(compareRecommendedFirstBy<{ label: string; recommended?: boolean }>((item) => item.label)).map((item) => item.label))
+      .toEqual(['c', 'a', 'b'])
   })
 })

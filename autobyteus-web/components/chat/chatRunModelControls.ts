@@ -2,7 +2,12 @@ import { computed, watch, type Ref } from 'vue'
 import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useChatDraftStore, type ChatModelSelection } from '~/stores/chatDraftStore'
 import { useToasts } from '~/composables/useToasts'
-import { useChatModelCatalog, type ChatModelGroup } from '~/composables/chat/useChatModelCatalog'
+import {
+  orderChatModelOptions,
+  toChatModelOption,
+  useChatModelCatalog,
+  type ChatModelGroup,
+} from '~/composables/chat/useChatModelCatalog'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import { normalizeModelConfigSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
@@ -101,25 +106,28 @@ export function useChatRunModelControls(context: Ref<AgentContext | null>) {
     for (const choice of choices) {
       const group = groups.get(choice.providerName) ?? { providerName: choice.providerName, models: [] }
       if (!group.models.some((model) => model.llmModelIdentifier === choice.llmModelIdentifier)) {
-        group.models.push({
+        // The run runtime's catalog record labels the row when present; the choice otherwise.
+        group.models.push(toChatModelOption({
           runtimeKind: runtimeKind.value,
           llmModelIdentifier: choice.llmModelIdentifier,
-          name: choice.llmModelIdentifier,
-          title: choice.displayName && choice.displayName !== choice.llmModelIdentifier ? choice.displayName : null,
           providerName: choice.providerName,
-          description: choice.description,
-        })
+          catalogModel: catalog.catalogModelFor(runtimeKind.value, choice.llmModelIdentifier),
+          runChoice: choice,
+        }))
       }
       groups.set(choice.providerName, group)
     }
-    return { status: 'ready', groups: [...groups.values()] }
+    return {
+      status: 'ready',
+      groups: [...groups.values()].map((group) => ({ ...group, models: orderChatModelOptions(runtimeKind.value, group.models) })),
+    }
   })
 
   const modelLabel = computed(() => {
     if (mode.value === 'persisted') {
       const match = fixedModels.value.groups.flatMap((group) => group.models)
         .find((model) => model.llmModelIdentifier === llmModelIdentifier.value)
-      if (match) return match.name
+      if (match) return match.label
     }
     return catalog.modelLabel(runtimeKind.value, llmModelIdentifier.value)
   })

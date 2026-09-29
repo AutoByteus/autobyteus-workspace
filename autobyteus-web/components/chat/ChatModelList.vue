@@ -25,11 +25,12 @@
         data-row
         :aria-checked="model.llmModelIdentifier === currentModelIdentifier ? 'true' : 'false'"
         :data-test="`chat-model-option-${model.llmModelIdentifier}`"
-        :title="[model.title, model.description].filter(Boolean).join(' — ') || undefined"
+        :title="fullText(model)"
+        :aria-label="fullText(model)"
         class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
         @click="emit('choose', model)"
       >
-        <span class="min-w-0 flex-1 truncate whitespace-nowrap">{{ model.name }}</span>
+        <ChatModelOptionLabel :option="model" />
         <span class="flex h-4 w-4 flex-shrink-0 items-center justify-center">
           <Icon v-if="model.llmModelIdentifier === currentModelIdentifier" icon="heroicons:check" class="h-4 w-4 text-blue-600" aria-hidden="true" />
         </span>
@@ -41,7 +42,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
+import ChatModelOptionLabel from '~/components/chat/ChatModelOptionLabel.vue'
 import type { ChatCatalogState, ChatModelGroup, ChatModelOption } from '~/composables/chat/useChatModelCatalog'
+import { chatModelOptionFullText as fullText } from '~/components/chat/chatModelOptionText'
 
 const props = defineProps<{
   runtimeKind: string

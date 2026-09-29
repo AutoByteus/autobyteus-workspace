@@ -7,9 +7,13 @@ import {
   isClaudeAgentSdkRuntime,
 } from '~/utils/modelSelectionLabel'
 
-const compareRecommendedFirst = (left: SelectItem, right: SelectItem): number =>
-  Number(Boolean(right.recommended)) - Number(Boolean(left.recommended))
-  || left.name.localeCompare(right.name)
+/** Recommended options first, then by label. Applied to Claude Agent SDK options only. */
+export const compareRecommendedFirstBy = <T extends { recommended?: boolean }>(labelOf: (item: T) => string) =>
+  (left: T, right: T): number =>
+    Number(Boolean(right.recommended)) - Number(Boolean(left.recommended))
+    || labelOf(left).localeCompare(labelOf(right))
+
+const compareRecommendedFirst = compareRecommendedFirstBy<SelectItem>((item) => item.name)
 
 /**
  * Formats the backend's offered rows; it never infers alias identity or hides a choice.

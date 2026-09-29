@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  existingRunChoiceLabelInput,
   getModelSelectionOptionDescription,
   getModelSelectionOptionLabel,
   getModelSelectionSelectedLabel,
@@ -97,5 +98,15 @@ describe('modelSelectionLabel', () => {
     expect(getModelSelectionOptionLabel(model, 'claude_agent_sdk')).toBe('sonnet')
     expect(getModelSelectionOptionDescription(model, 'claude_agent_sdk')).toBe('Sonnet')
     expect(getModelSelectionOptionDescription({ ...model, name: 'sonnet' }, 'claude_agent_sdk')).toBeNull()
+  })
+})
+
+describe('existingRunChoiceLabelInput', () => {
+  it('maps an existing-run choice to the shared label input, as the gear editor did', () => {
+    const input = existingRunChoiceLabelInput({ llmModelIdentifier: 'opus', providerName: 'Anthropic', displayName: 'Opus 5.5',
+      canonicalName: 'claude-opus-5-5', description: 'Most capable', configSchema: null, recommended: true })
+    expect(input).toEqual({ modelIdentifier: 'opus', name: 'Opus 5.5', canonicalName: 'claude-opus-5-5', description: 'Most capable' })
+    expect(getModelSelectionOptionLabel(input, 'claude_agent_sdk')).toBe('claude-opus-5-5')
+    expect(getModelSelectionOptionDescription(input, 'claude_agent_sdk')).toBe('Opus 5.5 · Most capable')
   })
 })

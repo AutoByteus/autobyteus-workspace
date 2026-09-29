@@ -19,14 +19,18 @@ vi.mock('~/composables/useToasts', () => ({ useToasts: () => ({ addToast: vi.fn(
 const catalogMock = vi.hoisted(() => ({
   states: {} as Record<string, string>,
   schemas: {} as Record<string, unknown>,
+  records: {} as Record<string, unknown>,
   ensureCatalog: null as any,
 }))
-vi.mock('~/composables/chat/useChatModelCatalog', () => ({
+// The option builder stays real; only the catalog store access is replaced.
+vi.mock('~/composables/chat/useChatModelCatalog', async (original) => ({
+  ...await original<typeof import('~/composables/chat/useChatModelCatalog')>(),
   useChatModelCatalog: () => ({
     modelLabel: (_runtime: string, id: string) => id,
     schemaFor: (runtime: string, id: string) => catalogMock.schemas[`${runtime}/${id}`] ?? null,
     catalogState: (runtime: string) => catalogMock.states[runtime] ?? 'idle',
     ensureCatalog: (runtime: string) => catalogMock.ensureCatalog(runtime),
+    catalogModelFor: (runtime: string, id: string) => catalogMock.records[`${runtime}/${id}`] ?? null,
   }),
 }))
 
@@ -52,6 +56,7 @@ describe('useChatRunModelControls', () => {
   beforeEach(() => {
     catalogMock.states = {}
     catalogMock.schemas = reactive({})
+    catalogMock.records = {}
     catalogMock.ensureCatalog = vi.fn()
     existing.store = reactive({
       draft: null as any,
@@ -153,4 +158,53 @@ describe('useChatRunModelControls', () => {
     await nextTick()
     expect(catalogMock.ensureCatalog).not.toHaveBeenCalled()
   })
+
+  describe('persisted model labels (D-16)', () => {
+    const claudeChoices = (currentId: string) => ({
+      currentModelIdentifier: currentId,
+      currentModel: { llmModelIdentifier: 'sonnet', providerName: 'Anthropic', displayName: 'Sonnet 5', canonicalName: 'claude-sonnet-5', description: null, configSchema: null, recommended: false },
+      replacements: [
+        { llmModelIdentifier: 'haiku', providerName: 'Anthropic', displayName: 'Haiku 4.5', canonicalName: 'claude-haiku-4-5-20251001', description: null, configSchema: null, recommended: false },
+        { llmModelIdentifier: 'opus', providerName: 'Anthropic', displayName: 'Opus 5.5', canonicalName: 'claude-opus-5-5', description: 'Most capable', configSchema: null, recommended: true },
+      ],
+    })
+    const loadClaude = (currentId: string) => {
+      existing.store.loadAgentCanonical = vi.fn(async (runId: string) => {
+        existing.store.draft = { kind: 'agent', runId, isActive: false, editability: { editable: true } }
+        existing.store.modelOptionsByAddress = { '/': { status: 'ready', options: claudeChoices(currentId) } }
+      })
+    }
+    const claudeContext = (runId: string, model: string) => {
+      const context = buildContext(runId)
+      context.config.runtimeKind = 'claude_agent_sdk'
+      context.config.llmModelIdentifier = model
+      return context
+    }
+
+    it('labels the fixed list with the shared policy from existing-run choices, Recommended first (V-L2)', async () => {
+      loadClaude('sonnet')
+      const controls = mountControls(claudeContext('run-claude', 'sonnet'))
+      await nextTick()
+
+      const models = controls.fixedModels.value.groups[0]!.models
+      expect(models.map((model) => model.llmModelIdentifier)).toEqual(['opus', 'haiku', 'sonnet'])
+      expect(models[0]).toMatchObject({ label: 'claude-opus-5-5', secondary: 'Opus 5.5 · Most capable', recommended: true })
+      expect(controls.modelLabel.value).toBe('claude-sonnet-5')
+    })
+
+    it('prefers the run runtime catalog record over the run choice when present', async () => {
+      loadClaude('opus')
+      catalogMock.records['claude_agent_sdk/opus'] = {
+        modelIdentifier: 'opus', name: 'Opus 5.5', canonicalName: 'claude-opus-5-5', description: 'Catalog text',
+        providerType: 'ANTHROPIC', selectionPresentation: { recommended: true },
+      }
+      const controls = mountControls(claudeContext('run-claude-2', 'opus'))
+      await nextTick()
+
+      const opus = controls.fixedModels.value.groups[0]!.models.find((model) => model.llmModelIdentifier === 'opus')!
+      expect(opus).toMatchObject({ label: 'claude-opus-5-5', secondary: 'Opus 5.5 · Catalog text', recommended: true })
+      expect(controls.modelLabel.value).toBe('claude-opus-5-5')
+    })
+  })
 })
+

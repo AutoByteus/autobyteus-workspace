@@ -1,14 +1,26 @@
 import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig'
+import type { ExistingRunModelChoice } from '~/types/agent/ExistingRunModelConfigDraft'
 
 const CLAUDE_AGENT_SDK_RUNTIME_KIND = 'claude_agent_sdk'
 
-interface ModelSelectionLabelModel {
+export interface ModelSelectionLabelModel {
   modelIdentifier: string
   name?: string | null
   description?: string | null
   canonicalName?: string | null
   providerType?: string | null
 }
+
+/**
+ * Label input for an existing run's model choice (a model the runtime catalog may no longer
+ * offer). It carries no `providerType`, so provider-specific rules fall back to the runtime rule.
+ */
+export const existingRunChoiceLabelInput = (choice: ExistingRunModelChoice): ModelSelectionLabelModel => ({
+  modelIdentifier: choice.llmModelIdentifier,
+  name: choice.displayName,
+  canonicalName: choice.canonicalName,
+  description: choice.description,
+})
 
 export const isClaudeAgentSdkRuntime = (runtimeKind: string | null | undefined): boolean =>
   runtimeKind?.trim() === CLAUDE_AGENT_SDK_RUNTIME_KIND

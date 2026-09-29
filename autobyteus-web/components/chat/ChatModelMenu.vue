@@ -85,10 +85,12 @@
             data-row
             :aria-checked="isCurrent(model) ? 'true' : 'false'"
             :data-test="`chat-model-search-option-${model.llmModelIdentifier}`"
+            :title="optionFullText(model)"
+            :aria-label="optionFullText(model)"
             class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
             @click="choose(model)"
           >
-            <span class="min-w-0 flex-1 truncate whitespace-nowrap text-gray-900">{{ model.name }}</span>
+            <ChatModelOptionLabel :option="model" />
             <span class="flex-shrink-0 whitespace-nowrap text-xs text-gray-400">{{ runtimeShortLabelFor(model.runtimeKind) }}</span>
             <span class="flex h-4 w-4 flex-shrink-0 items-center justify-center">
               <Icon v-if="isCurrent(model)" icon="heroicons:check" class="h-4 w-4 text-blue-600" aria-hidden="true" />
@@ -183,6 +185,8 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { Icon } from '@iconify/vue'
 import ChatModelList from '~/components/chat/ChatModelList.vue'
+import ChatModelOptionLabel from '~/components/chat/ChatModelOptionLabel.vue'
+import { chatModelOptionFullText as optionFullText } from '~/components/chat/chatModelOptionText'
 import { useChatPopover } from '~/composables/chat/useChatPopover'
 import { useChatModelCatalog, type ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import type { ChatFixedModelList } from '~/components/chat/chatRunModelControls'
@@ -288,9 +292,7 @@ watch(query, (value) => {
 const searchLoading = computed(() => !props.fixed && catalog.isSearching(searchRuntimeKinds.value))
 const searchResults = computed<ChatModelOption[]>(() => {
   if (!props.fixed) return catalog.search(query.value, searchRuntimeKinds.value)
-  const terms = query.value.trim().toLowerCase().split(/\s+/).filter(Boolean)
-  return props.fixed.groups.flatMap((group) => group.models)
-    .filter((model) => terms.every((term) => `${model.name} ${model.title ?? ''} ${model.providerName}`.toLowerCase().includes(term)))
+  return catalog.filterOptions(query.value, props.fixed.groups.flatMap((group) => group.models))
 })
 
 // Keyboard: arrows move within the current level; Right opens a runtime; Left returns.

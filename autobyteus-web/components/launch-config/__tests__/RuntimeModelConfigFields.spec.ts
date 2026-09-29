@@ -222,6 +222,28 @@ describe('RuntimeModelConfigFields stored historical values', () => {
     wrapper.unmount()
   })
 
+  it('labels existing-run Claude choices with the shared policy (D-16 V-L5 regression)', async () => {
+    providers = []
+    const claudeChoice = (id: string, displayName: string, canonicalName: string) => ({ llmModelIdentifier: id, providerName: 'Anthropic',
+      displayName, canonicalName, description: null, configSchema: null, recommended: false })
+    const wrapper = mount(RuntimeModelConfigFields, {
+      props: {
+        runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'sonnet', llmConfig: null,
+        originalModelIdentifier: 'sonnet', runtimeSelectionLocked: true,
+        modelOptions: { status: 'ready', options: {
+          currentModelIdentifier: 'sonnet', currentModel: claudeChoice('sonnet', 'Sonnet 5', 'claude-sonnet-5'),
+          replacements: [claudeChoice('opus', 'Opus 5.5', 'claude-opus-5-5')], unavailableReason: null,
+        } },
+      },
+    })
+    await flushPromises()
+    const picker = wrapper.findComponent({ name: 'SearchableGroupedSelect' })
+    expect(picker.props('options')[0].items[0]).toMatchObject({
+      id: 'opus', name: 'claude-opus-5-5', description: 'Opus 5.5', selectedLabel: 'Anthropic / claude-opus-5-5',
+    })
+    wrapper.unmount()
+  })
+
   it('keeps a server-offered external model visible when the separate display catalog lags', async () => {
     providers = [{
       provider: { id: 'ANTHROPIC', name: 'Anthropic', providerType: 'ANTHROPIC', isCustom: false },
