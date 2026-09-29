@@ -4,7 +4,6 @@ import { parseAgyStreamMessage, type AgyStreamMessage } from "./agy-stream-messa
 
 const MAX_LINE = 2 * 1024 * 1024;
 const MAX_STDERR = 4096;
-const TURN_IDLE_TIMEOUT_MS = 300_000;
 
 export class AgyStreamProcess {
   private child: ChildProcessWithoutNullStreams | null = null;
@@ -15,7 +14,6 @@ export class AgyStreamProcess {
   private startupResolve: ((message: Extract<AgyStreamMessage, { event: "init" }>) => void) | null = null;
   private startupReject: ((error: Error) => void) | null = null;
   private initSeen = false;
-  private turnIdleTimer: ReturnType<typeof setTimeout> | null = null;
 
   async start(input: {
     capsulePath: string; agentName: string; workspacePath: string;
@@ -58,13 +56,10 @@ export class AgyStreamProcess {
     const child = this.child;
     if (!child || !this.initSeen || !child.stdin.writable) throw new Error("AGY_PROCESS_NOT_READY");
     const line = `${JSON.stringify({ event: "user", message: { content } })}\n`;
-    this.resetTurnIdleTimer();
-    try { await new Promise<void>((resolve, reject) => child.stdin.write(line, (error) => error ? reject(error) : resolve())); }
-    catch (error) { this.clearTurnIdleTimer(); throw error; }
+    await new Promise<void>((resolve, reject) => child.stdin.write(line, (error) => error ? reject(error) : resolve()));
   }
 
   stop(): void {
-    this.clearTurnIdleTimer();
     this.child?.kill("SIGTERM");
     this.child = null;
   }
@@ -90,8 +85,6 @@ export class AgyStreamProcess {
           this.startupResolve?.(message);
           this.startupResolve = null; this.startupReject = null;
         } else if (!this.initSeen) throw new Error("AGY_STREAM_BEFORE_INIT");
-        if (message.event === "result") this.clearTurnIdleTimer();
-        else if (this.turnIdleTimer) this.resetTurnIdleTimer();
         for (const listener of this.listeners) listener(message);
       } catch (error) { this.fail(error instanceof Error ? error : new Error(String(error))); return; }
     }
@@ -102,15 +95,5 @@ export class AgyStreamProcess {
     this.startupResolve = null; this.startupReject = null;
     for (const listener of this.closeListeners) listener(error);
     this.stop();
-  }
-
-  private resetTurnIdleTimer(): void {
-    this.clearTurnIdleTimer();
-    this.turnIdleTimer = setTimeout(() => this.fail(new Error("AGY_TURN_IDLE_TIMEOUT: no provider event for five minutes.")), TURN_IDLE_TIMEOUT_MS);
-  }
-
-  private clearTurnIdleTimer(): void {
-    if (this.turnIdleTimer) clearTimeout(this.turnIdleTimer);
-    this.turnIdleTimer = null;
   }
 }

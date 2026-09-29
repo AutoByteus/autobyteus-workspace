@@ -36,6 +36,19 @@ describe('runProjectionConversation', () => {
     expect(statuses).toEqual(['denied', 'denied', 'error']);
   });
 
+  it('rehydrates an AGY daemon tool closed as a background task as a succeeded card with its result', () => {
+    const toolResult = { provider_state: 'RUNNING',
+      output: 'Started as a background task; still running when the turn ended.' };
+    const conversation = buildConversationFromProjection('run-agy-daemon', [
+      { kind: 'tool_call', invocationId: 'agy-daemon', toolName: 'run_command',
+        toolArgs: { CommandLine: 'pnpm dev', IsDaemon: true }, toolResult, toolError: null, ts: 1 },
+    ], { agentDefinitionId: 'agent-1', agentName: 'Agent', llmModelIdentifier: 'gemini-3.8-flash-high' });
+    const tools = conversation.messages.flatMap((message) => message.type === 'ai'
+      ? message.segments.filter((segment) => segment.type === 'tool_call') : []);
+    expect(tools).toHaveLength(1);
+    expect(tools[0]).toMatchObject({ status: 'success', result: toolResult });
+  });
+
   it('hydrates the deferred-tool projection as Thinking A, tool card, Thinking B', () => {
     const conversation = buildConversationFromProjection(
       'run-deferred-tool-reasoning',

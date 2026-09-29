@@ -152,6 +152,24 @@ describe('toolLifecycleHandler', () => {
     (useAgentActivityStore as any).mockReturnValue(mockActivityStore);
   });
 
+  it('finishes an AGY daemon run_command closed at turn end as a succeeded background-task card', () => {
+    const context = buildEmptyContext();
+    const invocation_id = 'agy-tool-agy-turn-2';
+    const background = { provider_state: 'RUNNING',
+      output: 'Started as a background task; still running when the turn ended.' };
+    handleToolExecutionStarted({ invocation_id, tool_name: 'run_command', turn_id: 'agy-turn',
+      arguments: { CommandLine: 'pnpm dev', IsDaemon: true } }, context);
+    const card = (context.conversation.messages[0] as any).segments[0] as ToolCallSegment;
+    expect(buildToolCardPresentation(card)).toMatchObject({ toolName: 'run_command', statusKey: 'running' });
+    handleToolExecutionSucceeded({ invocation_id, tool_name: 'run_command', turn_id: 'agy-turn',
+      arguments: { CommandLine: 'pnpm dev', IsDaemon: true }, result: background }, context);
+    expect(card.status).toBe('success');
+    expect(card.result).toEqual(background);
+    expect(buildToolCardPresentation(card)).toMatchObject({ toolName: 'run_command', statusKey: 'success' });
+    expect(mockActivityStore.updateToolActivityStatus).toHaveBeenCalledWith(runId, invocation_id, 'success');
+    expect(mockActivityStore.setToolActivityResult.mock.calls.at(-1)?.slice(0, 3)).toEqual([runId, invocation_id, background]);
+  });
+
   it('projects AGY native generate_image pathless DONE and safe denial as ordinary chat tool cards', () => {
     const successContext = buildEmptyContext();
     const invocation_id = 'agy-native-image-1';

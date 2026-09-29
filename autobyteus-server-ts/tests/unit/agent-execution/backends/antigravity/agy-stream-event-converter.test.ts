@@ -144,6 +144,91 @@ describe("AGY canonical stream conversion", () => {
     expect(converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS" } })
       .filter((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)).toHaveLength(0);
   });
+  describe("background tool steps AGY never finishes", () => {
+    const BACKGROUND = "Started as a background task; still running when the turn ended.";
+    const step = (stepIndex: number, state: string, toolName = "run_command", toolInfo: Record<string, unknown> = {}) =>
+      ({ event: "step_update" as const, step_update: { conversation_id: "conversation", step_index: stepIndex,
+        step_type: "tool", state, tool_name: toolName, tool_info: toolInfo } });
+    const text = (stepIndex: number, state: string, delta?: string) => ({ event: "step_update" as const, step_update: {
+      conversation_id: "conversation", step_index: stepIndex, step_type: "agent_response", state, text_delta: delta } });
+
+    it("closes an unfinished daemon step as a succeeded background task before TURN_COMPLETED", () => {
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
+      converter.startTurn("turn");
+      const started = converter.convert(step(2, "ACTIVE", "run_command",
+        { parameters: { CommandLine: "pnpm dev", IsDaemon: true } }));
+      const later = [
+        ...converter.convert(step(3, "ACTIVE", "write_to_file", { parameters: { TargetFile: "a.ts" } })),
+        ...converter.convert(step(3, "DONE", "write_to_file", { output: "written" })),
+        ...converter.convert(text(4, "ACTIVE", "Dev server is up.")),
+      ];
+      const terminal = converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS",
+        usage: { input_tokens: 1, output_tokens: 2, total_tokens: 3 } } });
+      expect(started.map((item) => item.eventType)).toEqual([AgentRunEventType.TOOL_EXECUTION_STARTED]);
+      expect(later.filter((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)
+        .map((item) => item.payload.invocation_id)).toEqual(["agy-tool-turn-3"]);
+      expect(terminal.map((item) => item.eventType)).toEqual([
+        AgentRunEventType.SEGMENT_END, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+        AgentRunEventType.TOKEN_USAGE_UPDATED, AgentRunEventType.TURN_COMPLETED,
+      ]);
+      expect(terminal[1]).toMatchObject({ statusHint: null, payload: {
+        turn_id: "turn", invocation_id: "agy-tool-turn-2", tool_name: "run_command",
+        arguments: { CommandLine: "pnpm dev", IsDaemon: true }, provider_state: "RUNNING",
+        result: { provider_state: "RUNNING", output: BACKGROUND },
+      } });
+      expect(terminal[1]?.payload).toEqual({ ...started[0]?.payload, provider_state: "RUNNING",
+        result: { provider_state: "RUNNING", output: BACKGROUND } });
+    });
+
+    it("closes every unfinished step in ascending step order", () => {
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
+      converter.startTurn("turn");
+      converter.convert(step(7, "ACTIVE"));
+      converter.convert(step(5, "ACTIVE"));
+      const terminal = converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS" } });
+      expect(terminal.filter((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)
+        .map((item) => item.payload.invocation_id)).toEqual(["agy-tool-turn-5", "agy-tool-turn-7"]);
+    });
+
+    it("closes an unfinished step as background before the turn error on a non-SUCCESS result", () => {
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini", () => undefined);
+      converter.startTurn("turn");
+      converter.convert(step(2, "ACTIVE"));
+      const terminal = converter.convert({ event: "result", result: { conversation_id: "conversation", status: "ERROR" } });
+      expect(terminal.map((item) => item.eventType)).toEqual([
+        AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, AgentRunEventType.ERROR,
+      ]);
+      expect(terminal[0]?.payload.result).toEqual({ provider_state: "RUNNING", output: BACKGROUND });
+    });
+
+    it("adds no background closure for steps AGY finished as DONE, ERROR or denied", () => {
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
+      converter.startTurn("turn");
+      const finished = [
+        ...converter.convert(step(1, "ACTIVE")), ...converter.convert(step(1, "DONE", "run_command", { output: "ok" })),
+        ...converter.convert(step(2, "ACTIVE")), ...converter.convert(step(2, "ERROR", "run_command", { error: "boom" })),
+        ...converter.convert(step(3, "DONE", "run_command", { error: "permission denied" })),
+      ];
+      expect(finished.map((item) => item.eventType)).toEqual([
+        AgentRunEventType.TOOL_EXECUTION_STARTED, AgentRunEventType.TOOL_EXECUTION_SUCCEEDED,
+        AgentRunEventType.TOOL_EXECUTION_STARTED, AgentRunEventType.TOOL_EXECUTION_FAILED,
+        AgentRunEventType.TOOL_EXECUTION_STARTED, AgentRunEventType.TOOL_DENIED,
+      ]);
+      const terminal = converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS" } });
+      expect(terminal.map((item) => item.eventType)).toEqual([AgentRunEventType.TURN_COMPLETED]);
+    });
+
+    it("keeps interruption semantics for an unfinished step and does not leak it into the next turn", () => {
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
+      converter.startTurn("turn");
+      converter.convert(step(2, "ACTIVE"));
+      expect(converter.interrupt().map((item) => item.eventType)).toEqual([AgentRunEventType.TURN_INTERRUPTED]);
+      converter.startTurn("turn-b");
+      const terminal = converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS" } });
+      expect(terminal.map((item) => item.eventType)).toEqual([AgentRunEventType.TURN_COMPLETED]);
+    });
+  });
+
   it.each(["ERROR", "UNKNOWN", undefined])("redacts failed terminal result with status %s, even without a tool", (status) => {
     const diagnostics: unknown[] = [];
     const converter = new AgyStreamEventConverter("run", "conversation", "gemini", (value) => diagnostics.push(value));
