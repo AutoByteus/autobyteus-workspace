@@ -47,7 +47,7 @@ Notes:
   described in [Isolated AutoByteus Instances](docs/isolated-app-instances.md).
   Control them with the browser-automation skill
   (`autobyteus_mcps/browser-automation`), using
-  `CHROME_REMOTE_DEBUGGING_PORT=<control port>` and
+  `CHROME_REMOTE_DEBUGGING_PORT=<controlPort>` (as reported by `start`) and
   `BROWSER_AUTOMATION_ATTACH_ONLY=1`.
 
 ## Choosing the path
@@ -79,12 +79,13 @@ matters.
 2. **Never test against the user's running AutoByteus** or its data
    (`~/.autobyteus`, the OS application-data folders). Only isolated instances,
    test-owned databases and the development stack are test targets.
-3. **One control port per parallel instance.** The default is 9333; pass
-   `--control-port <n>` to a second instance and use the same port for the
-   browser-automation calls.
+3. **Use the ports `start` reports.** Without `--control-port`, `start` picks
+   a free control port, so parallel instances do not collide. Keep the reported
+   `instanceId` and `controlPort`: pass that `controlPort` to browser-automation
+   and that `instanceId` to `restart`/`stop`.
 4. **Credentials go through the importer** into the target database, then
-   `pnpm --silent isolated-app restart` for an isolated instance.
-5. **Stop what you started.** `pnpm --silent isolated-app stop` for instances,
+   `pnpm --silent isolated-app restart <instanceId>` for an isolated instance.
+5. **Stop what you started.** `pnpm --silent isolated-app stop <instanceId>` for instances,
    `Ctrl+C` for `pnpm dev`. Leave other processes and data alone.
 6. **Assertions first.** Prove behavior with test assertions, API results and
    DOM/state checks. Screenshots and recordings are supporting evidence, not
@@ -92,10 +93,12 @@ matters.
 7. **Page dialogs are answered by the agent.** When an action may raise a
    native page dialog (`confirm`, `prompt`, "Leave site?"), pass the decision
    with it: `run-script … --dialog accept` or `--dialog dismiss`
-   (`--prompt-text` for prompts). Without a decision the command fails with
+   (`--prompt-text` for prompts, which exist in browsers only, not in the
+   Electron app). Without a decision the command fails with
    `DIALOG_DECISION_REQUIRED` and the dialog's message; re-run with your
    decision. OS dialogs (file pickers) and dialogs left open in other tabs are
-   answered on screen — by the user, or on Linux by a computer-use agent. While
+   answered on screen — by the user, or with an OS-level screen-control
+   (computer-use) tool where one is available. While
    such a dialog is open, browser commands fail with `PAGE_BLOCKED` (within
    about 8 s) until it is answered.
 8. **Linux:** use `--from-worktree`/`--build` or an extracted AppImage

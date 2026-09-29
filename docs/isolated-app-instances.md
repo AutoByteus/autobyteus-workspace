@@ -206,8 +206,8 @@ modal; `covering` names the cover), `TIMEOUT`, `NOT_EDITABLE` or `INVALID_TARGET
 ### Page dialogs
 
 Some AutoByteus actions ask for confirmation with a native `confirm()` (for example removing a node).
-Pass the answer with the action: `run-script … --dialog accept` or `--dialog dismiss`
-(`--prompt-text` for a `prompt`). Without it the dialog is dismissed so the app is not left blocked,
+Pass the answer with the action: `run-script … --dialog accept` or `--dialog dismiss`.
+(`--prompt-text` answers a `prompt` in browsers; the Electron app has no `window.prompt()`.) Without it the dialog is dismissed so the app is not left blocked,
 and the command fails with `DIALOG_DECISION_REQUIRED` showing the question. Decide, then repeat
 the action with `--dialog`. `alert`s are closed and reported. A dialog left open (for example
 raised between commands) must be answered in the window. Until then commands fail with

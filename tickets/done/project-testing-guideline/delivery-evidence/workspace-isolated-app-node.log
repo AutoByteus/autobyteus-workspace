@@ -1,0 +1,316 @@
+TAP version 13
+# Subtest: explicit executable file and macOS .app bundle both resolve to the binary
+ok 1 - explicit executable file and macOS .app bundle both resolve to the binary
+  ---
+  duration_ms: 9.323334
+  type: 'test'
+  ...
+# Subtest: explicit application errors carry APP_NOT_FOUND
+ok 2 - explicit application errors carry APP_NOT_FOUND
+  ---
+  duration_ms: 7.327083
+  type: 'test'
+  ...
+# Subtest: installed application has no default location on Linux
+ok 3 - installed application has no default location on Linux
+  ---
+  duration_ms: 0.182875
+  type: 'test'
+  ...
+# Subtest: installed application resolves from ~/Applications on macOS when present
+ok 4 - installed application resolves from ~/Applications on macOS when present
+  ---
+  duration_ms: 8.735375
+  type: 'test'
+  ...
+# Subtest: worktree discovery requires exactly one packaged executable
+ok 5 - worktree discovery requires exactly one packaged executable
+  ---
+  duration_ms: 5.145917
+  type: 'test'
+  ...
+# Subtest: resources directory follows the macOS bundle and Linux unpacked layouts
+ok 6 - resources directory follows the macOS bundle and Linux unpacked layouts
+  ---
+  duration_ms: 0.259917
+  type: 'test'
+  ...
+# Subtest: isolated-launch gate accepts the required contract and newer ones
+ok 7 - isolated-launch gate accepts the required contract and newer ones
+  ---
+  duration_ms: 7.619917
+  type: 'test'
+  ...
+# Subtest: isolated-launch gate refuses missing, malformed, non-integer and lower contracts
+ok 8 - isolated-launch gate refuses missing, malformed, non-integer and lower contracts
+  ---
+  duration_ms: 8.518708
+  type: 'test'
+  ...
+# Subtest: packed AppImages are detected by magic or suffix without being executed
+ok 9 - packed AppImages are detected by magic or suffix without being executed
+  ---
+  duration_ms: 6.304208
+  type: 'test'
+  ...
+# Subtest: an extracted AppImage layout goes through the normal marker gate
+ok 10 - an extracted AppImage layout goes through the normal marker gate
+  ---
+  duration_ms: 3.863459
+  type: 'test'
+  ...
+# Subtest: isolated launch environment preserves caller values, drops ELECTRON_RUN_AS_NODE and forces isolation values
+ok 11 - isolated launch environment preserves caller values, drops ELECTRON_RUN_AS_NODE and forces isolation values
+  ---
+  duration_ms: 0.791375
+  type: 'test'
+  ...
+# Subtest: a loopback-only listener makes the port unavailable
+ok 12 - a loopback-only listener makes the port unavailable
+  ---
+  duration_ms: 37.635041
+  type: 'test'
+  ...
+# Subtest: selectListenerPort rejects the production port and honours exclusions
+ok 13 - selectListenerPort rejects the production port and honours exclusions
+  ---
+  duration_ms: 0.610834
+  type: 'test'
+  ...
+# Subtest: whole-tree controller waits for a delayed descendant after the root has exited
+ok 14 - whole-tree controller waits for a delayed descendant after the root has exited
+  ---
+  duration_ms: 108.212208
+  type: 'test'
+  ...
+# Subtest: whole-tree controller force-escalates the same owned tree when a descendant ignores graceful close
+ok 15 - whole-tree controller force-escalates the same owned tree when a descendant ignores graceful close
+  ---
+  duration_ms: 7.286875
+  type: 'test'
+  ...
+# Subtest: whole-tree controller fails when absence cannot be confirmed
+ok 16 - whole-tree controller fails when absence cannot be confirmed
+  ---
+  duration_ms: 4.661
+  type: 'test'
+  ...
+# Subtest: POSIX process-group controller closes a detached group owned by an earlier invocation
+ok 17 - POSIX process-group controller closes a detached group owned by an earlier invocation
+  ---
+  duration_ms: 103.136333
+  type: 'test'
+  ...
+# Subtest: Windows cleanup fails closed when a late child remains after the root exits
+ok 18 - Windows cleanup fails closed when a late child remains after the root exits
+  ---
+  duration_ms: 7.985917
+  type: 'test'
+  ...
+# Subtest: Windows cleanup never targets a reused root PID with another creation identity
+ok 19 - Windows cleanup never targets a reused root PID with another creation identity
+  ---
+  duration_ms: 0.207917
+  type: 'test'
+  ...
+# Subtest: Windows cleanup accepts root absence only after targeting the captured creation identity
+ok 20 - Windows cleanup accepts root absence only after targeting the captured creation identity
+  ---
+  duration_ms: 0.226666
+  type: 'test'
+  ...
+# Subtest: relative paths resolve against INIT_CWD and are rejected without it
+ok 21 - relative paths resolve against INIT_CWD and are rejected without it
+  ---
+  duration_ms: 0.860834
+  type: 'test'
+  ...
+# Subtest: options are validated per command
+ok 22 - options are validated per command
+  ---
+  duration_ms: 0.681167
+  type: 'test'
+  ...
+# Subtest: start has no default control port in the parser or usage text
+ok 23 - start has no default control port in the parser or usage text
+  ---
+  duration_ms: 0.14625
+  type: 'test'
+  ...
+# Subtest: runCli prints one schema-v1 JSON value and maps error categories to exit codes
+ok 24 - runCli prints one schema-v1 JSON value and maps error categories to exit codes
+  ---
+  duration_ms: 0.341042
+  type: 'test'
+  ...
+# Subtest: start launches detached with the isolated overlay, records the instance and reports its facts
+ok 25 - start launches detached with the isolated overlay, records the instance and reports its facts
+  ---
+  duration_ms: 18.645875
+  type: 'test'
+  ...
+# Subtest: start without --control-port skips a busy candidate and uses the next free port
+ok 26 - start without --control-port skips a busy candidate and uses the next free port
+  ---
+  duration_ms: 5.072041
+  type: 'test'
+  ...
+# Subtest: start without --control-port fails cleanly when no free candidate is found
+ok 27 - start without --control-port fails cleanly when no free candidate is found
+  ---
+  duration_ms: 4.608291
+  type: 'test'
+  ...
+# Subtest: parallel default starts get distinct control ports
+ok 28 - parallel default starts get distinct control ports
+  ---
+  duration_ms: 7.129583
+  type: 'test'
+  ...
+# Subtest: start without --control-port never picks an explicitly requested server port
+ok 29 - start without --control-port never picks an explicitly requested server port
+  ---
+  duration_ms: 8.612167
+  type: 'test'
+  ...
+# Subtest: start honors an explicit --control-port
+ok 30 - start honors an explicit --control-port
+  ---
+  duration_ms: 4.375041
+  type: 'test'
+  ...
+# Subtest: start refuses a busy explicit control port and names the owning instance
+ok 31 - start refuses a busy explicit control port and names the owning instance
+  ---
+  duration_ms: 36.921375
+  type: 'test'
+  ...
+# Subtest: readiness failure closes the group, removes the owned root and record, and reports the log tail
+ok 32 - readiness failure closes the group, removes the owned root and record, and reports the log tail
+  ---
+  duration_ms: 8.022458
+  type: 'test'
+  ...
+# Subtest: usage and environment errors happen before anything is launched
+ok 33 - usage and environment errors happen before anything is launched
+  ---
+  duration_ms: 29.797042
+  type: 'test'
+  ...
+# Subtest: Linux has no default installed app
+ok 34 - Linux has no default installed app
+  ---
+  duration_ms: 0.729959
+  type: 'test'
+  ...
+# Subtest: stop ends the group, deletes an owned root and removes the record
+ok 35 - stop ends the group, deletes an owned root and removes the record
+  ---
+  duration_ms: 8.500959
+  type: 'test'
+  ...
+# Subtest: stop of an instance whose app already quit sends no signal and still applies root disposal
+ok 36 - stop of an instance whose app already quit sends no signal and still applies root disposal
+  ---
+  duration_ms: 6.590583
+  type: 'test'
+  ...
+# Subtest: caller-provided roots are never deleted and --keep retains owned roots
+ok 37 - caller-provided roots are never deleted and --keep retains owned roots
+  ---
+  duration_ms: 26.6195
+  type: 'test'
+  ...
+# Subtest: restart keeps id, ports, data root and ownership flags
+ok 38 - restart keeps id, ports, data root and ownership flags
+  ---
+  duration_ms: 8.216625
+  type: 'test'
+  ...
+# Subtest: list reports liveness per record
+ok 39 - list reports liveness per record
+  ---
+  duration_ms: 24.1635
+  type: 'test'
+  ...
+# Subtest: --build builds the worktree before resolving its executable
+ok 40 - --build builds the worktree before resolving its executable
+  ---
+  duration_ms: 2.55
+  type: 'test'
+  ...
+# Subtest: start refuses an app without isolated-launch support before any port, root or spawn work
+ok 41 - start refuses an app without isolated-launch support before any port, root or spawn work
+  ---
+  duration_ms: 3.793333
+  type: 'test'
+  ...
+# Subtest: start refuses a packed AppImage with extraction guidance as a usage error
+ok 42 - start refuses a packed AppImage with extraction guidance as a usage error
+  ---
+  duration_ms: 2.865917
+  type: 'test'
+  ...
+# Subtest: restart re-checks isolated-launch support and leaves the instance running when refused
+ok 43 - restart re-checks isolated-launch support and leaves the instance running when refused
+  ---
+  duration_ms: 6.222708
+  type: 'test'
+  ...
+# Subtest: --from-worktree launches the worktree build when it carries the marker
+ok 44 - --from-worktree launches the worktree build when it carries the marker
+  ---
+  duration_ms: 9.580083
+  type: 'test'
+  ...
+# Subtest: instance args carry the control port, occlusion switches and identity marker
+ok 45 - instance args carry the control port, occlusion switches and identity marker
+  ---
+  duration_ms: 4.995
+  type: 'test'
+  ...
+# Subtest: identity guard: absent group, reused pid, marked leader and leaderless live group
+ok 46 - identity guard: absent group, reused pid, marked leader and leaderless live group
+  ---
+  duration_ms: 0.248625
+  type: 'test'
+  ...
+# Subtest: readiness waits for backend health and the renderer main page
+ok 47 - readiness waits for backend health and the renderer main page
+  ---
+  duration_ms: 4.679416
+  type: 'test'
+  ...
+# Subtest: readiness reports an early exit and a timeout
+ok 48 - readiness reports an early exit and a timeout
+  ---
+  duration_ms: 20.336334
+  type: 'test'
+  ...
+# Subtest: records round-trip atomically and ignore unrelated or invalid files
+ok 49 - records round-trip atomically and ignore unrelated or invalid files
+  ---
+  duration_ms: 8.130291
+  type: 'test'
+  ...
+# Subtest: ids encode the control port and are unique
+ok 50 - ids encode the control port and are unique
+  ---
+  duration_ms: 1.443916
+  type: 'test'
+  ...
+# Subtest: default id resolution requires exactly one record
+ok 51 - default id resolution requires exactly one record
+  ---
+  duration_ms: 10.646541
+  type: 'test'
+  ...
+1..51
+# tests 51
+# suites 0
+# pass 51
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 385.28175

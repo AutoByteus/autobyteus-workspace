@@ -1,0 +1,228 @@
+{
+ "lines": 127,
+ "probe_scripts_available": 20,
+ "script_checks": [
+  {
+   "dir": "autobyteus-web",
+   "script": "test:nuxt",
+   "exists": true
+  },
+  {
+   "dir": "autobyteus-web",
+   "script": "test:electron",
+   "exists": true
+  },
+  {
+   "dir": "autobyteus-web",
+   "script": "test",
+   "exists": true
+  },
+  {
+   "dir": "autobyteus-server-ts",
+   "script": "test",
+   "exists": true
+  },
+  {
+   "dir": "autobyteus-server-ts",
+   "script": "exec",
+   "exists": "skip-generic"
+  },
+  {
+   "dir": "autobyteus-ts",
+   "script": "test",
+   "exists": true
+  },
+  {
+   "dir": "autobyteus-server-ts",
+   "script": "test",
+   "exists": true
+  },
+  {
+   "dir": "autobyteus-web",
+   "script": "test:e2e:<name>",
+   "exists": "skip-generic"
+  },
+  {
+   "dir": "autobyteus-web",
+   "script": "test:e2e:electron",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "test:e2e",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "test:e2e:real:preflight",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "test:e2e:real",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "isolated-app",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "isolated-app",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "secrets:import",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "dev",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "test:e2e",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "isolated-app",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "isolated-app",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "isolated-app",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "dev",
+   "exists": true
+  },
+  {
+   "dir": ".",
+   "script": "isolated-app",
+   "exists": true
+  },
+  {
+   "dir": "autobyteus-web",
+   "script": "test:e2e:electron:isolation",
+   "exists": true
+  },
+  {
+   "dir": "autobyteus-web",
+   "script": "test:e2e:isolated-app",
+   "exists": true
+  }
+ ],
+ "links": [
+  {
+   "target": "autobyteus-server-ts/docs/modules/secret_management.md",
+   "exists": true,
+   "anchor_ok": null
+  },
+  {
+   "target": "README.md#local-full-stack-development",
+   "exists": true,
+   "anchor_ok": true
+  },
+  {
+   "target": "docs/isolated-app-instances.md",
+   "exists": true,
+   "anchor_ok": null
+  },
+  {
+   "target": "docs/isolated-app-instances.md#linux",
+   "exists": true,
+   "anchor_ok": true
+  },
+  {
+   "target": "README.md#packaged-electron-apie2e-testing",
+   "exists": true,
+   "anchor_ok": true
+  },
+  {
+   "target": "README.md#local-full-stack-development",
+   "exists": true,
+   "anchor_ok": true
+  },
+  {
+   "target": "README.md#testing-codex-runtime",
+   "exists": true,
+   "anchor_ok": true
+  },
+  {
+   "target": "autobyteus-web/README.md#testing",
+   "exists": true,
+   "anchor_ok": true
+  },
+  {
+   "target": "autobyteus-web/README.md#packaged-electron-e2e-launches",
+   "exists": true,
+   "anchor_ok": true
+  },
+  {
+   "target": "autobyteus-server-ts/README.md#tests",
+   "exists": true,
+   "anchor_ok": true
+  },
+  {
+   "target": "docs/isolated-app-instances.md",
+   "exists": true,
+   "anchor_ok": null
+  },
+  {
+   "target": "autobyteus-server-ts/docs/modules/secret_management.md",
+   "exists": true,
+   "anchor_ok": null
+  }
+ ],
+ "discoverability": {
+  "README.md": {
+   "links": [
+    "TESTING.md",
+    "TESTING.md",
+    "TESTING.md"
+   ],
+   "resolve": [
+    true,
+    true,
+    true
+   ]
+  },
+  "autobyteus-server-ts/AGENTS.md": {
+   "links": [
+    "../TESTING.md"
+   ],
+   "resolve": [
+    true
+   ]
+  },
+  "autobyteus-web/AGENTS.md": {
+   "links": [
+    "../TESTING.md"
+   ],
+   "resolve": [
+    true
+   ]
+  },
+  "docs/isolated-app-instances.md": {
+   "links": [
+    "../TESTING.md",
+    "../TESTING.md"
+   ],
+   "resolve": [
+    true,
+    true
+   ]
+  }
+ }
+}
