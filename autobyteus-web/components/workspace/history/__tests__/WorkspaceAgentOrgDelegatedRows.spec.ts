@@ -1,5 +1,5 @@
 import { mount } from '@vue/test-utils';
-import { defineComponent, h, nextTick } from 'vue';
+import { defineComponent, h, nextTick, reactive, toRaw } from 'vue';
 import { describe, expect, it, vi } from 'vitest';
 import WorkspaceAgentOrgHistoryCollection from '../WorkspaceAgentOrgHistoryCollection.vue';
 import type { AgentOrgHistoryDefinitionGroup } from '~/stores/runHistoryTypes';
@@ -103,7 +103,7 @@ const mountWithTreeState = () => {
     stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org' as const, rootRunId: 'org-run',
     createdAt: tree.createdAt, archivedAt: null, isActive: false, summary: 'Delegating Org', executionTree: tree,
   };
-  const group: AgentOrgHistoryDefinitionGroup = { stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Restored Org', runs: [run] };
+  const group = reactive<AgentOrgHistoryDefinitionGroup>({ stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Restored Org', runs: [run] });
   const history = { selectedRunId: null, selectedTeamRunId: null, workspaceGroups: [], navigationTopologyRevision: 0,
     getTreeNodes: () => [], getTeamNodes: () => [], getAgentNavigationAncestry: () => null, getTeamNavigationAncestry: () => null,
     getTeamMemberNavigationAncestorRowKeys: () => [], getAgentOrgNavigationAncestry: () => null };
@@ -118,7 +118,7 @@ const mountWithTreeState = () => {
     const state = { ...treeState, agentOrgContextFor: () => null } as unknown as WorkspaceHistorySectionState;
     return () => h(WorkspaceAgentOrgHistoryCollection, { workspaceId: 'ws', groups: [group], state, actions: actions as never, avatars });
   } }));
-  return { wrapper, treeState, actions, run };
+  return { wrapper, treeState, actions, run, group };
 };
 
 describe('Org history delegated Team disclosure', () => {
@@ -168,5 +168,27 @@ describe('Org history delegated Team disclosure', () => {
     expect(treeState.isAgentOrgTaskTeamExpanded('org-run', 'team-task')).toBe(true);
     expect(treeState.isAgentOrgTeamExpanded('org-run', '/team')).toBe(false);
     for (const member of taskMembers) expect(memberVisible(wrapper, member)).toBe(true);
+  });
+
+  /** API-TTRC-002 (REQ-003 / REQ-005): a live execution-tree update re-projects rows without reopening a collapsed delegated Team. */
+  it('keeps a collapsed delegated Team collapsed when the live execution tree gains a member', async () => {
+    const { wrapper, group } = mountWithTreeState();
+    const row = () => wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
+    await row().trigger('click');
+    expect(row().attributes('aria-expanded')).toBe('false');
+
+    const next = structuredClone(toRaw(group.runs[0]!).executionTree);
+    const delegated = next.rootOrg.taskExecutions.find((task) => 'teamRunId' in task && task.teamRunId === 'team-task')!;
+    (delegated as { members: unknown[] }).members.push({ address: '/team/worker', agentRunId: 'agent-task-worker-late', platformAgentRunId: null });
+    group.runs[0] = { ...group.runs[0]!, isActive: true, executionTree: next };
+    await nextTick();
+
+    expect(row().attributes('aria-expanded')).toBe('false');
+    expect(memberVisible(wrapper, 'agent-task-worker-late')).toBe(false);
+    for (const member of taskMembers) expect(memberVisible(wrapper, member)).toBe(false);
+
+    await row().trigger('click');
+    expect(row().attributes('aria-expanded')).toBe('true');
+    for (const member of [...taskMembers, 'agent-task-worker-late']) expect(memberVisible(wrapper, member)).toBe(true);
   });
 });

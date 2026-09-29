@@ -76,4 +76,36 @@ describe('projectAgentOrgHistoryRows delegated Team disclosure', () => {
     expect(find(rows, 'task-team-agent:agent-task-worker').hasFollowingSibling).toBe(true)
     expect(find(rows, 'task-team:reviewers-task').hasFollowingSibling).toBe(false)
   })
+
+  /** API-TTRC-001 (REQ-003 / AC-003, E-005): the same Team delegated twice keeps one state per teamRunId. */
+  it('collapses one of two delegations of the same Team without affecting the other or the mounted Team', () => {
+    const tree = fixtureTree()
+    const first = tree.rootOrg.taskExecutions.find((task) => 'teamRunId' in task)!
+    tree.rootOrg.taskExecutions.push({
+      ...structuredClone(first), teamRunId: 'team-task-2', startedAt: '2026-09-01T00:00:04.000Z',
+      members: [
+        { address: '/team/lead', agentRunId: 'agent-task-lead-2', platformAgentRunId: null },
+        { address: '/team/worker', agentRunId: 'agent-task-worker-2', platformAgentRunId: null },
+      ],
+    } as typeof first)
+    const rows = project(tree, (teamRunId) => teamRunId !== 'team-task')
+    expect(find(rows, 'task-team:team-task').row).toMatchObject({ address: '/team', expanded: false })
+    expect(find(rows, 'task-team:team-task-2').row).toMatchObject({
+      address: '/team', expanded: true, coordinatorAgentRunId: 'agent-task-lead-2',
+    })
+    expect(keys(rows)).not.toContain('task-team-agent:agent-task-lead')
+    expect(keys(rows)).toEqual(expect.arrayContaining(['task-team-agent:agent-task-lead-2', 'task-team-agent:agent-task-worker-2']))
+    // The collapsed first delegation now has a following sibling (the second delegation).
+    expect(find(rows, 'task-team:team-task').hasFollowingSibling).toBe(true)
+    // The mounted '/team' Team keeps its members; its state is independent of task-Team state.
+    expect(keys(rows)).toContain('agent:agent-lead-configured')
+
+    const mountedCollapsed = projectAgentOrgHistoryRows({
+      run: runFor(tree), context: null, isTeamExpanded: () => false, isTaskTeamExpanded: () => true,
+    })
+    expect(keys(mountedCollapsed)).not.toContain('agent:agent-lead-configured')
+    expect(keys(mountedCollapsed)).toEqual(expect.arrayContaining([
+      'task-team-agent:agent-task-lead', 'task-team-agent:agent-task-lead-2',
+    ]))
+  })
 })
