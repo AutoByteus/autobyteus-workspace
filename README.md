@@ -338,10 +338,14 @@ pnpm isolated-app list
 pnpm isolated-app stop
 ```
 
+For when to use an isolated instance in validation, see [TESTING.md](TESTING.md).
 See the [isolated app instances guide](docs/isolated-app-instances.md) and the
 agent skill [`skills/autobyteus-isolated-app`](skills/autobyteus-isolated-app/SKILL.md).
 
 ## Packaged Electron API/E2E testing
+
+How this workspace is tested, and which path to choose for a change, is summarized in
+[TESTING.md](TESTING.md).
 
 After the root [`Setup`](#setup), run packaged Electron checks from the frontend
 project. The thin launcher builds the current host package by default, selects a
@@ -449,6 +453,8 @@ capabilities explicitly; they must not be represented as passed. See the
 server README for server-specific test and credential details.
 
 ## Testing (Codex Runtime)
+
+See [TESTING.md](TESTING.md) for the complete testing guideline.
 
 For Codex-related tickets, run backend tests with Codex live transport enabled.
 Without this env var, Codex live E2E suites are skipped.

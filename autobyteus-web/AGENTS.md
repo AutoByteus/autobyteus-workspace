@@ -11,6 +11,7 @@ Understanding the system's backbone, how the pieces fit together, and how the ap
 *   **[Agent Execution Architecture](./docs/agent_execution_architecture.md)**: A deep dive into the runtime behavior—how user input flows to agents and how streaming responses are parsed and rendered.
 *   **[Electron Packaging & Server Management](./docs/electron_packaging.md)**: How the web app and Python backend are bundled into a single desktop executable.
 *   **[Testing Strategy](./ARCHITECTURE.md#testing-strategy)**: Our approach to quality assurance, including test colocation and tools.
+*   **[Workspace Testing Guideline](../TESTING.md)**: Which test layer or path to use for a change (browser probes, isolated desktop instances, E2E) and the rules for test runs.
 
 ### Chapter 2: Core Entities (The "Brain")
 The primary actors and capabilities within the system.

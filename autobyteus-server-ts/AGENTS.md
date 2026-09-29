@@ -2,6 +2,7 @@
 
 ## Testing
 
+- Workspace testing guideline (layers, path selection, rules): [TESTING.md](../TESTING.md).
 - Run all tests:
   - `pnpm -C autobyteus-server-ts exec vitest`
 - Run integration tests only:
