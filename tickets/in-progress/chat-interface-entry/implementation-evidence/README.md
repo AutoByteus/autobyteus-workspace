@@ -189,3 +189,22 @@ Script: `ir8-d19-ui-check.mjs` on the dev env (`pnpm dev`); results and screensh
 
 The first U3 attempt used `ui-dup`, which already existed in the skills folder itself. It hit the old "already exists" check (a plain error, so no pop-up). `createSkill` now reports that case as a conflict too (D-19: the own-folder check is extended to tiers 1–3).
 
+
+## D-19 Agent Org layouts (IR-009)
+
+Probe: `ir9-org-probe.mjs`; results in `ir9-org/` (`evidence.json`, `backend.log`). It uses an owned backend with a sanitized env and real runtimes. A package root (`AUTOBYTEUS_AGENT_PACKAGE_ROOTS`) holds `agent-orgs/org-desk`, which has two members:
+- an org-owned agent `org-writer`, with skill `org-writer-skill`;
+- an org-owned team `org-crew`, with shared skill `org-crew-shared` and team-local agent `member` (skill `org-member-skill`).
+
+The runs use the exact ids `agent-org-owned-agent:org-desk:org-writer` and `team-local-agent:agent-org-owned-team%3Aorg-desk%3Aorg-crew:member`. Org-owned definitions are not in the shared `agentDefinitions` listing.
+
+| Check | Result |
+| --- | --- |
+| O1 — catalog | Pass. `skills` lists `org-writer-skill`, `org-crew-shared` and `org-member-skill` at their org paths. |
+| Codex (`gpt-5.5`) | Pass. The org agent's workspace link `.codex/skills/org-writer-skill` resolves to the org agent's folder. The team-local agent's links for `org-crew-shared` and `org-member-skill` resolve to the org team's folders. |
+| Claude Agent SDK | Pass, the same with `.claude/skills`. |
+| Grok (ACP) | Pass, the same with `.grok/skills`. |
+| AGY | Pass. The run capsule holds `.agents/skills/<name>` copies of each agent's own skills. |
+| O2 — duplicate org import | Pass. A second package whose org team ships `org-writer-skill` is rejected with `SKILL_NAME_CONFLICT` (the existing org path vs the incoming org path); the package list is unchanged. |
+
+The AutoByteus native runtime is covered by unit tests (`resolveConfiguredSkillsForAgent`), not live, because it needs a native model API key.

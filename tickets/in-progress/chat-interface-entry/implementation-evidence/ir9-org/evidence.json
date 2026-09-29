@@ -1,0 +1,179 @@
+{
+  "startedAt": "2026-09-29T14:30:26.437Z",
+  "checks": {
+    "O1": {
+      "title": "Skills catalog lists the org agent, org team shared and org team-local agent skills with their org paths",
+      "byName": {
+        "org-crew-shared": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agent-teams/org-crew/skills/org-crew-shared",
+        "org-member-skill": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agent-teams/org-crew/agents/member/skills/org-member-skill",
+        "org-writer-skill": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agents/org-writer/skills/org-writer-skill"
+      },
+      "agentIds": {
+        "orgWriter": "agent-org-owned-agent:org-desk:org-writer",
+        "crewMember": "team-local-agent:agent-org-owned-team%3Aorg-desk%3Aorg-crew:member"
+      },
+      "result": "Pass"
+    },
+    "O2": {
+      "title": "Importing a second package with a same-named Agent Org skill → SKILL_NAME_CONFLICT; packages unchanged",
+      "outcome": {
+        "code": "SKILL_NAME_CONFLICT",
+        "conflicts": [
+          {
+            "name": "org-writer-skill",
+            "existingPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agents/org-writer/skills/org-writer-skill",
+            "incomingPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/second-package/agent-orgs/org-copy/agent-teams/copy-team/skills/org-writer-skill"
+          }
+        ]
+      },
+      "packagesUnchanged": true,
+      "result": "Pass"
+    }
+  },
+  "runtimes": {
+    "codex_app_server": {
+      "model": "gpt-5.5",
+      "org agent": {
+        "definitionId": "agent-org-owned-agent:org-desk:org-writer",
+        "run": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "org_writer_536a47cab567405abdfc7f92e8bd6526"
+        },
+        "observed": {
+          "org-writer-skill": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agents/org-writer/skills/org-writer-skill"
+        },
+        "result": "Pass"
+      },
+      "org team-local agent": {
+        "definitionId": "team-local-agent:agent-org-owned-team%3Aorg-desk%3Aorg-crew:member",
+        "run": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "crew_member_d8c9ef86fdfb480e94210a2ce467c65d"
+        },
+        "observed": {
+          "org-crew-shared": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agent-teams/org-crew/skills/org-crew-shared",
+          "org-member-skill": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agent-teams/org-crew/agents/member/skills/org-member-skill"
+        },
+        "result": "Pass"
+      }
+    },
+    "claude_agent_sdk": {
+      "model": "haiku",
+      "org agent": {
+        "definitionId": "agent-org-owned-agent:org-desk:org-writer",
+        "run": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "org_writer_2911c04156944c3aa7164d127cb5572a"
+        },
+        "observed": {
+          "org-writer-skill": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agents/org-writer/skills/org-writer-skill"
+        },
+        "result": "Pass"
+      },
+      "org team-local agent": {
+        "definitionId": "team-local-agent:agent-org-owned-team%3Aorg-desk%3Aorg-crew:member",
+        "run": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "crew_member_5c5ffaeea73f41cb89105ab00fb9c5b3"
+        },
+        "observed": {
+          "org-crew-shared": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agent-teams/org-crew/skills/org-crew-shared",
+          "org-member-skill": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agent-teams/org-crew/agents/member/skills/org-member-skill"
+        },
+        "result": "Pass"
+      }
+    },
+    "grok_build": {
+      "model": "grok-4.7",
+      "org agent": {
+        "definitionId": "agent-org-owned-agent:org-desk:org-writer",
+        "run": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "org_writer_65082bca1bc24d9e89d4fcf0ef6179dd"
+        },
+        "observed": {
+          "org-writer-skill": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agents/org-writer/skills/org-writer-skill"
+        },
+        "result": "Pass"
+      },
+      "org team-local agent": {
+        "definitionId": "team-local-agent:agent-org-owned-team%3Aorg-desk%3Aorg-crew:member",
+        "run": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "crew_member_f635b7a807e0494f85e66fadcd2e2758"
+        },
+        "observed": {
+          "org-crew-shared": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agent-teams/org-crew/skills/org-crew-shared",
+          "org-member-skill": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agent-teams/org-crew/agents/member/skills/org-member-skill"
+        },
+        "result": "Pass"
+      }
+    },
+    "antigravity_cli": {
+      "model": "gemini-3.1-pro-high",
+      "org agent": {
+        "definitionId": "agent-org-owned-agent:org-desk:org-writer",
+        "run": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "org_writer_aab0be671ca1450a943c198161a00f83"
+        },
+        "observed": {
+          "org-writer-skill": "capsule-copy"
+        },
+        "result": "Pass"
+      },
+      "org team-local agent": {
+        "definitionId": "team-local-agent:agent-org-owned-team%3Aorg-desk%3Aorg-crew:member",
+        "run": {
+          "success": true,
+          "message": "Agent run created successfully.",
+          "runId": "crew_member_d68567fe6e01487cbc6059d975e2a15b"
+        },
+        "observed": {
+          "org-crew-shared": "capsule-copy",
+          "org-member-skill": "capsule-copy"
+        },
+        "result": "Pass"
+      }
+    }
+  },
+  "cleanup": [
+    {
+      "removed": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7"
+    }
+  ],
+  "owned": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7",
+  "layout": {
+    "writerSkill": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agents/org-writer/skills/org-writer-skill",
+    "crewShared": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agent-teams/org-crew/skills/org-crew-shared",
+    "memberSkill": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agent-teams/org-crew/agents/member/skills/org-member-skill"
+  },
+  "resolvedDefinitions": [
+    {
+      "id": "agent-org-owned-agent:org-desk:org-writer",
+      "name": "Org Writer",
+      "ownershipScope": "AGENT_ORG_OWNED",
+      "skillNames": [
+        "org-writer-skill"
+      ]
+    },
+    {
+      "id": "team-local-agent:agent-org-owned-team%3Aorg-desk%3Aorg-crew:member",
+      "name": "Crew Member",
+      "ownershipScope": "TEAM_LOCAL",
+      "skillNames": [
+        "org-crew-shared",
+        "org-member-skill"
+      ]
+    }
+  ],
+  "definitions": [],
+  "completedAt": "2026-09-29T14:30:44.503Z"
+}

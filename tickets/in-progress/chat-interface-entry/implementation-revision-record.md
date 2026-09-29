@@ -14,6 +14,7 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
 | IR-006 | code_reviewer / `code-review-report.md` / CRR-008 Fail (round 5) | CR-005, CR-006 | `Local Fix` | SR-014; ARCH-REV-010; CRR-008; API-REV N/A; DR N/A | Run settings scoped to their run in Chat; Team quick path opens on its conversation; agentInput free of `composables/chat` imports (neutral popover and skill-tag helpers) |
 | IR-007 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-011 pass (SR-015; CRR-010 failure origin of API-REV-005) | CR-007 / UF-04, CR-008 / UF-03, IC-3 | Design execution (D-15 Rule 3 server, D-18 web) | SR-015; ARCH-REV-011; CRR-009, CRR-010; API-REV-005; DR N/A | Stopped by the user at `f4864638b` before handoff. D-18 stands (IC-3 verified); the Rule 3 part is removed by IR-008 (D-19) |
 | IR-008 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-013 pass (SR-016 DEC-017; SR-017 for ARCH-REV-012) | REQ-022–024 / AC-019–021, AR-013, R-3 | Design execution (D-19; includes removal of D-15 Rules 2–3 and the IR-007 Rule 3) | SR-016, SR-017; ARCH-REV-012, ARCH-REV-013; CRR-010; API-REV-005; DR N/A | One skill per name at load; duplicates rejected before commit on every import path with the pop-up; banner for out-of-band duplicates; Codex path match; V-F passes with no special rule |
+| IR-009 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-015 pass (SR-018 DEC-017a; SR-019 for ARCH-REV-014) | CRR-012 CR-009 (Design Impact), AR-014 | Design execution (D-19 Agent Org amendment) | SR-018, SR-019; ARCH-REV-014, ARCH-REV-015; CRR-011, CRR-012; API-REV N/A; DR N/A | Agent Org layouts are in tier 2 through a pure correlation core shared by async and sync readers; org agents and org team-local agents run with their own skills on Codex, Claude, Grok and AGY; duplicate org import rejected |
 
 ## Revision Entries
 
@@ -387,4 +388,43 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
   - GitHub import/update rejection is covered by unit tests only.
   - The tier-4 toast is not rendered live.
   - Codex may still show a stale runtime-default copy inside Codex runs (outside AutoByteus).
+
+### IR-009 — D-19 Agent Org layouts (SR-018/SR-019, ARCH-REV-015)
+
+- Triggering role, report path, and round: architecture_reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-handoff.md` (SR-018 and SR-019 sections; report `design-review-report.md`), ARCH-REV-015 Pass after ARCH-REV-014 (Fail, AR-014). Origin: code reviewer CRR-012, where CR-009 (High; Design Impact) was promoted from C-22 on the user's confirmation. That C-22 was the residual IR-008 flagged.
+- Triggering finding IDs: CR-009, AR-014; user direction DEC-017a (AF-37).
+- Classification: design execution. The package stays Large/High.
+- Prior authoritative result: IR-008 (`ec31ff371`, `be6c8977d`, `10556948f`); CRR-011 Pass, then CRR-012 Fail (CR-009).
+- Current authoritative result: commit `0be1dd47e`.
+- Related solution revision IDs: SR-018, SR-019
+- Related architecture-review revision IDs: ARCH-REV-014, ARCH-REV-015
+- Related code-review revision IDs: CRR-011, CRR-012
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: it implements the D-19 Agent Org amendment and restores the `personal` behavior that an org agent's own skill folders are used.
+- Approved behavior or requirement IDs affected: REQ-022 / AC-019 (tier 2 including Agent Orgs), REQ-023 / AC-020 (org layouts validated at import), REQ-024 / AC-021.
+- Implementation delta:
+  - **Correlation core (AR-014).** New `agent-org-definition/providers/agent-org-owned-definition-correlation.ts`: `correlateAgentOrgOwnedMembers({ subject, orgRoot, orgDirName, config, orgDefinitionName, localDirNames, seenDefinitionIds })`, pure. It holds the `org_local` + `refType` filter, the owned-id match, exactly-one handling (a malformed correlation skips only that member), the seen-id skip and path construction. The source type moved here and is re-exported.
+    - Local decision: the per-subject `seen` set is an input (`seenDefinitionIds`, never mutated), and each reader records the returned ids. This keeps the function pure while preserving the cross-Org and cross-root skip.
+  - **Readers.** `agent-org-owned-definition-source-index.ts`: the async `listAgentOrgOwnedDefinitionSources` / `findAgentOrgOwnedDefinitionSource` keep their signatures and delegate to the core. The new `listAgentOrgOwnedDefinitionSourcesSync` uses sync `fs` with the same skip rules (`_` prefix, unreadable or invalid `org-config.json` / `org.md`, missing folders).
+  - **Tier 2.** `skill-discovery.ts` bundle scan per root is `agents/*` → `agent-teams/*` → `agent-orgs/*`. For the Orgs, in name order: org-owned agents by name (`<definitionDir>/skills/*`, `agent_private`, root = agent folder), then org-owned teams by name, each through the shared `getTeamSkillLocations`: team skills (`team_shared`, root = team folder), then `agents/*/skills/*` (`agent_private`, root = team folder).
+    - `skill-catalog.ts` passes `config.getAgentOrgsDir()` as the app-data root's org folder; package roots and added folders use `<root>/agent-orgs`. `getAgentOrgsDir` joins the catalog/service config shape; no `SkillService` method or caller signature changes.
+  - **AGY and import validation** need no new code: detailed bindings use the record roots, which pass `assertDetailedCandidateProvenance` unchanged, and `validateIncomingSkillNames` scans the incoming root with the same scanner.
+  - Docs: server `skills.md` (tier-2 order, org layouts and roots, correlation) and `agent_orgs.md` (correlation core and skills).
+- Tests:
+  - `agent-org-owned-definition-correlation.test.ts`: the core (filter and order, the team subject, a malformed member, seen and repeated members), plus async/sync parity across roots with `_`, broken, repeated and missing orgs.
+  - `skill-catalog-agent-orgs.test.ts`: org paths and roots, the configured app-data Orgs folder, root order, Org order, correlation exactness (no orphan folder, no org-level `skills/`), CONFIGURED and AGY detailed bindings for an org agent and an org team-local agent, and import validation.
+  - `agent-package-skill-name-validation.test.ts`: an org-only duplicate import is rejected with nothing changed.
+  - Test configs gain `getAgentOrgsDir`.
+- Local validation and result:
+  - Server unit (the IR-008 set plus `agent-org-definition`, `collaboration-definition-admission`, `agent-team-definition`): 1380 passed, 21 failed, the same 21 baseline failures.
+  - Skill integration/e2e set: 49 passed, 10 failed, the same baseline.
+  - The API/E2E-owned `skill-name-catalog-graphql.e2e.test.ts`: 7/7 pass.
+  - `tsc` is clean; `pnpm build:full` passes.
+  - Live `ir9-org-probe.mjs`: O1 (catalog lists the org paths); the org agent and the org team-local agent run with their own skills on Codex, Claude and Grok (workspace links to the org folders) and AGY (capsule copies); O2 (a duplicate org import is rejected, packages unchanged).
+- Next recipient or routing: code reviewer, via `get_handoff_rules`.
+- Remaining limitations or risks:
+  - The AutoByteus native runtime is covered by `resolveConfiguredSkillsForAgent` unit tests, not live (it needs a native model API key).
+  - The Skills page listing was checked through its GraphQL `skills` data, not rendered again; the page renders that list unchanged.
+  - Org-owned definitions are not in the shared `agentDefinitions` listing (unchanged); the probe runs them by their exact ids.
 

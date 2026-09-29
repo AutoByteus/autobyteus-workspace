@@ -1,0 +1,191 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data
+AppConfig instance created.
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55700
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55700
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:23249) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-29T14:30:29.083Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-09-29T14:30:29.205Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-29T14:30:29.205Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1790692229211,"pid":23249,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55708"}
+{"level":30,"time":1790692229235,"pid":23249,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55700"}
+[2026-09-29T14:30:29.235Z] [INFO] [server.runtime] Server listening on 127.0.0.1:55700
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+[CodexAppServerClient] stderr: [2m2026-09-29T14:30:29.686317Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-fehq8b
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-fehq8b.
+Created and registered workspace ID: agent_ws_851dcd506eb290a4280473d2cd3423a1531c79e82c8e120fb05ff42609738049
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-fehq8b
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-fehq8b.
+Reusing registered workspace ID: agent_ws_851dcd506eb290a4280473d2cd3423a1531c79e82c8e120fb05ff42609738049
+[CodexAppServerClient] stderr: [2m2026-09-29T14:30:29.827154Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-29T14:30:29.935473Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-fehq8b/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-fehq8b as a trusted project in /Users/normy/.codex/config.toml.
+[CodexAppServerClient] stderr: [2m2026-09-29T14:30:29.935512Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'org_writer_536a47cab567405abdfc7f92e8bd6526'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-DhuopE
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-DhuopE.
+Created and registered workspace ID: agent_ws_a4baefb41796f8cd3e4b61d9140a13dd2f676bdc985b88f704d5639ae3de1e32
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-DhuopE
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-DhuopE.
+Reusing registered workspace ID: agent_ws_a4baefb41796f8cd3e4b61d9140a13dd2f676bdc985b88f704d5639ae3de1e32
+[CodexAppServerClient] stderr: [2m2026-09-29T14:30:30.374855Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-29T14:30:30.469003Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Project-local config, hooks, and exec policies are disabled in the following folders until the project is trusted, but skills still load.
+    1. /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-DhuopE/.codex
+       To load project-local config, hooks, and exec policies, add /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-codex_app_server-DhuopE as a trusted project in /Users/normy/.codex/config.toml.
+[CodexAppServerClient] stderr: [2m2026-09-29T14:30:30.469044Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Published codex_app_server agent run 'crew_member_d8c9ef86fdfb480e94210a2ce467c65d'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-claude_agent_sdk-inx6fY
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-claude_agent_sdk-inx6fY.
+Created and registered workspace ID: agent_ws_b801554f8d058f58b1728f78a5f78015d537f607226a705db4e5e03662d89442
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-claude_agent_sdk-inx6fY
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-claude_agent_sdk-inx6fY.
+Reusing registered workspace ID: agent_ws_b801554f8d058f58b1728f78a5f78015d537f607226a705db4e5e03662d89442
+Published claude_agent_sdk agent run 'org_writer_2911c04156944c3aa7164d127cb5572a'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-claude_agent_sdk-sRSggV
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-claude_agent_sdk-sRSggV.
+Created and registered workspace ID: agent_ws_41f1dac4a9e0c9024f94c9b1aa823d88a4d22b653595671614c55365bf28867d
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-claude_agent_sdk-sRSggV
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-claude_agent_sdk-sRSggV.
+Reusing registered workspace ID: agent_ws_41f1dac4a9e0c9024f94c9b1aa823d88a4d22b653595671614c55365bf28867d
+Published claude_agent_sdk agent run 'crew_member_5c5ffaeea73f41cb89105ab00fb9c5b3'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-grok_build-VWUXEN
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-grok_build-VWUXEN.
+Created and registered workspace ID: agent_ws_76435cb0cf2d4855edbdb2d6f690cfe662d520ca16017d764357ffe19a7daf8e
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-grok_build-VWUXEN
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-grok_build-VWUXEN.
+Reusing registered workspace ID: agent_ws_76435cb0cf2d4855edbdb2d6f690cfe662d520ca16017d764357ffe19a7daf8e
+Published grok_build agent run 'org_writer_65082bca1bc24d9e89d4fcf0ef6179dd'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-grok_build-jre0AI
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-grok_build-jre0AI.
+Created and registered workspace ID: agent_ws_1be0a89f87e83a057f97d2d5cd2814f65d8681058d96ec8cd04867b6c1efd7ae
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-grok_build-jre0AI
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-grok_build-jre0AI.
+Reusing registered workspace ID: agent_ws_1be0a89f87e83a057f97d2d5cd2814f65d8681058d96ec8cd04867b6c1efd7ae
+Published grok_build agent run 'crew_member_f635b7a807e0494f85e66fadcd2e2758'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-antigravity_cli-b6Y7zl
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-antigravity_cli-b6Y7zl.
+Created and registered workspace ID: agent_ws_9d36f3d19f472fab47b1b1f6646d74d01c560b99c88c8168d04850dd41a5d1ad
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-antigravity_cli-b6Y7zl
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-antigravity_cli-b6Y7zl.
+Reusing registered workspace ID: agent_ws_9d36f3d19f472fab47b1b1f6646d74d01c560b99c88c8168d04850dd41a5d1ad
+Published antigravity_cli agent run 'org_writer_aab0be671ca1450a943c198161a00f83'.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-antigravity_cli-fS9fUU
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-antigravity_cli-fS9fUU.
+Created and registered workspace ID: agent_ws_68ff4b382b2ab3fca494545c4ba2b69bfbc701a755851fe09fa2185d2bfc9234
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-antigravity_cli-fS9fUU
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/ws-antigravity_cli-fS9fUU.
+Reusing registered workspace ID: agent_ws_68ff4b382b2ab3fca494545c4ba2b69bfbc701a755851fe09fa2185d2bfc9234
+Published antigravity_cli agent run 'crew_member_d68567fe6e01487cbc6059d975e2a15b'.
+{"level":30,"time":1790692244473,"pid":23249,"hostname":"MacBookPro","reqId":"req-r","err":{"type":"GraphQLError","message":"Duplicate skill names: org-writer-skill","stack":"GraphQLError: Duplicate skill names: org-writer-skill\n    at toSkillNameConflictGraphqlError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:9:7)\n    at withSkillNameConflictMapping (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/errors/skill-name-conflict-graphql-error.js:18:15)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async AgentPackageResolver.importAgentPackage (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/api/graphql/types/agent-packages.js:217:26)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["importAgentPackage"],"locations":[{"line":1,"column":39}],"extensions":{"code":"SKILL_NAME_CONFLICT","conflicts":[{"name":"org-writer-skill","existingPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/org-package/agent-orgs/org-desk/agents/org-writer/skills/org-writer-skill","incomingPath":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-org-ZbehN7/second-package/agent-orgs/org-copy/agent-teams/copy-team/skills/org-writer-skill"}]}},"msg":"Duplicate skill names: org-writer-skill"}
+[2026-09-29T14:30:44.477Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-29T14:30:44.485Z] [INFO] [server.runtime] Server closed cleanly.

@@ -4,11 +4,11 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: independent architecture review was selected. It passed ARCH-REV-003 (IR-001), ARCH-REV-005 (SR-009, IR-002), ARCH-REV-006 (SR-010, IR-003), ARCH-REV-008 (SR-012, IR-004), ARCH-REV-010 (SR-014, IR-005), ARCH-REV-011 (SR-015, IR-007) and ARCH-REV-013 (SR-017, IR-008). The user stopped IR-007 at `f4864638b` before its handoff; IR-008 completes D-19 on top of it (removing the IR-007 Rule 3 code) and keeps D-18, so `get_handoff_rules` routes the package to code review (Large/High).
+- Upstream review applicability and handoff-rule result: independent architecture review was selected. It passed ARCH-REV-003 (IR-001), ARCH-REV-005 (SR-009, IR-002), ARCH-REV-006 (SR-010, IR-003), ARCH-REV-008 (SR-012, IR-004), ARCH-REV-010 (SR-014, IR-005), ARCH-REV-011 (SR-015, IR-007), ARCH-REV-013 (SR-017, IR-008) and ARCH-REV-015 (SR-019, IR-009). The user stopped IR-007 at `f4864638b` before its handoff; IR-008 completes D-19 on top of it (removing the IR-007 Rule 3 code) and keeps D-18. IR-009 adds the D-19 Agent Org amendment for CRR-012 CR-009. `get_handoff_rules` routes the package to code review (Large/High).
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/requirements-doc.md` (SR-003)
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/investigation-notes.md`
-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/solution-revision-record.md` (SR-003, SR-004, SR-007 through SR-017)
-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-spec.md` (SR-017, D-01..D-19; D-15 Rules 2–3 removed by D-19)
+- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/solution-revision-record.md` (SR-003, SR-004, SR-007 through SR-019)
+- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-spec.md` (SR-019, D-01..D-19; D-15 Rules 2–3 removed by D-19; D-19 Agent Org layouts in SR-018/SR-019)
 - Supplemental task artifacts (normative R2 UI): `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/chat-interface-entry/ui-ux-spec.md`, `.../visual-references/` (VIS-001..025, `manifest.json`), `.../ui-behavior-test-matrix.md`. Product design handoffs: `product-design-request-handoff.md`, `product-design-revision-request-handoff.md` in the ticket folder.
 - Design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
 - Architecture review revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-revision-record.md`; handoff: `.../architecture-review-handoff.md`
@@ -23,19 +23,23 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
 - Triggering reports (IR-008):
   - Architecture review: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-handoff.md` (SR-016 and SR-017 sections) and `design-review-report.md` (ARCH-REV-013; ARCH-REV-012 AR-013).
   - Solution revision record: SR-016 (DEC-017, REQ-022–024) and SR-017 (AR-013, R-3). Investigation notes: AF-36.
+- Triggering reports (IR-009):
+  - Code review: `code-review-report.md` / `code-review-revision-record.md` (CRR-012 CR-009, promoted from C-22).
+  - Architecture review: `architecture-review-handoff.md` (SR-018, SR-019) and `design-review-report.md` (ARCH-REV-014 AR-014, ARCH-REV-015 Pass). Requirements: DEC-017a. Investigation: AF-37.
 - Implementation evidence (IR-002): `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/implementation-evidence/README.md`, together with the probes and the result folders beside it.
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/implementation-revision-record.md`
-- Current implementation revision ID: `IR-008` (IR-007: D-18, and a Rule 3 now removed; IR-006: CR-005/CR-006; IR-005: D-17; IR-004: D-16 labels; IR-003: D-14 marker; IR-002: CR-002 and D-15; IR-001: baseline)
-- Related solution revision IDs: SR-003, SR-004, SR-007 through SR-017
-- Related architecture-review revision IDs: ARCH-REV-003 through ARCH-REV-006, ARCH-REV-008, ARCH-REV-010, ARCH-REV-011, ARCH-REV-012, ARCH-REV-013
-- Related code-review revision IDs: CRR-001, CRR-002, CRR-003, CRR-005, CRR-008, CRR-009, CRR-010
+- Current implementation revision ID: `IR-009` (IR-008: D-19; IR-007: D-18, and a Rule 3 now removed; IR-006: CR-005/CR-006; IR-005: D-17; IR-004: D-16 labels; IR-003: D-14 marker; IR-002: CR-002 and D-15; IR-001: baseline)
+- Related solution revision IDs: SR-003, SR-004, SR-007 through SR-019
+- Related architecture-review revision IDs: ARCH-REV-003 through ARCH-REV-006, ARCH-REV-008, ARCH-REV-010 through ARCH-REV-015
+- Related code-review revision IDs: CRR-001, CRR-002, CRR-003, CRR-005, CRR-008 through CRR-012
 - Related API/E2E revision IDs: API-REV-001, API-REV-005
 - Related delivery revision IDs: DR-002
 - Triggering finding IDs:
+  - IR-009: CRR-012 CR-009 (Design Impact) and AR-014; DEC-017a.
   - IR-008: D-19 (REQ-022–024, AC-019–021, DEC-017), AR-013 and R-3.
   - IR-007: CR-007 / UF-04, CR-008 / UF-03, and IC-3.
   - Earlier rounds: CR-002 (F-01), CR-003 (F-02), CR-004 (F-03), AR-008, IC-1 and IC-2. For IR-003, the IR-002 D-14 Design Impact (AF-33) and R-2 / MP-013.
@@ -51,6 +55,7 @@ Commits (in design change-sequence order):
 | `360de94a9` | 5 | Skill-request instruction codec, `requestedSkillNames`, message chips |
 | `797d49d6a` | 6–9 | Chat draft/launch/routing, Chat components and pages, removals, localization, docs |
 | `717603e61` | — | Ticket package (IR-001) |
+| `0be1dd47e` | IR-009 | D-19 Agent Org layouts: pure `correlateAgentOrgOwnedMembers` core; async readers delegate unchanged; new `listAgentOrgOwnedDefinitionSourcesSync`; tier 2 per root `agents/*` → `agent-teams/*` → `agent-orgs/*` (org agents, then org teams: shared, then team-local agents); app-data Orgs from `config.getAgentOrgsDir()`. Tests, docs |
 | `ec31ff371` | IR-008 | D-19 server: tiered one-per-name catalog (`skill-catalog.ts`, `runtime-default-skill-folders.ts`), `listSkillNameIssues`, `resolveCatalogRecord` for every scope and every name-based operation (AR-013), `validateIncomingSkillNames` in add folder / create skill / package import, update and reload (`SKILL_NAME_CONFLICT`), `skillNameIssues` query, Codex path match (`codex-runtime-duplicate`); D-15 Rules 2–3, request strength and the IC-2 fallback removed (Rule 1 as `workspaceCollisionPolicy`). Docs |
 | `be6c8977d` | IR-008 | D-19 web: `SkillNameConflictDialog`, `skillNamesStore` (issues, conflict state, tier-4 toast), `SkillNameIssuesBanner`, conflict parsing in the skill, source and package stores. Docs, localization |
 | `f4864638b` | IR-007 | D-15 Rule 3: `reconcileUnresolved` skips a weak-only `ready` link (`skipped-unresolved-held-by-weak`). D-18: shared `applyModelConfigSchemaDefaults`, `getDefaultThinkingConfig`, and the explicit chat draft `llmConfig` (`explicitChatModelConfig`). Docs |
@@ -59,6 +64,20 @@ Commits (in design change-sequence order):
 | `9d65adf6e` | IR-004 | D-16 Chat model labels (UVF-001): the shared label policy via `toChatModelOption`, Recommended-first order, one search predicate, label + badge + secondary rows; `existingRunChoiceLabelInput` and `compareRecommendedFirstBy` moved into the shared utils |
 | `5f11d52f6` | IR-003 | D-14 activation-pending marker (SR-010): mark/clear in `agentRunStore`, `onSendMessageCommandAck`, reconcile skip + clear on active snapshot, SR-008 guard removed; R-2 workspace request generation; web execution doc |
 | `da1033860` | IR-002 | CR-002 footer thinking source; D-14 `submissionPending` reconcile guard; D-15 request strength (Rule 1, Rule 2 A/B, IC-1, IC-2) across Codex/Claude/ACP-Grok/AGY; `workspace-skill-links.ts` split; server skills doc |
+
+### IR-009 outcome (SR-018/SR-019, ARCH-REV-015; CRR-012 CR-009)
+
+- **Agent Org layouts are in tier 2.** Within each definition root the order is `agents/*` → `agent-teams/*` → `agent-orgs/*`, by name.
+  - Each Org contributes its org-owned agents (`<agentDir>/skills/*`), then its org-owned teams (the team's `skills/*`, then its local agents' `agents/*/skills/*`).
+  - Org-owned folders come from one pure correlation core (`correlateAgentOrgOwnedMembers`). The unchanged async readers use it for the providers and admission, and the new sync reader uses it for the catalog.
+  - The app data dir's Orgs are read from `config.getAgentOrgsDir()`, and a package root's from `<packageRoot>/agent-orgs`. There is no org-level `skills/`.
+- **AGY roots** follow the SR-018 table (agent folder; team folder for shared and team-local skills) and pass the existing provenance checks.
+- **Import validation** covers org layouts: a package whose `agent-orgs/**/skills/*` duplicates a tier 1–3 name is rejected with nothing changed.
+- **Live** (`ir9-org-probe.mjs`):
+  - An org agent and an org team-local agent run with their own skills on Codex, Claude, Grok and AGY.
+  - The catalog lists the org paths.
+  - A duplicate org import is rejected.
+  - This fixes the CR-009 regression against `personal`.
 
 ### IR-008 outcome (SR-016/SR-017, ARCH-REV-013)
 
@@ -182,6 +201,7 @@ Commits (in design change-sequence order):
 | REQ-022 / AC-019 (D-19) | One skill per name, decided at load; every run, `/` tag and the Skills page use that copy | `skills/services/skill-catalog.ts` (`listSkillCatalogSources`, `buildSkillCatalog`), `runtime-default-skill-folders.ts`, `skill-service.ts` (`listInstalledSkillRecords`, `resolveCatalogRecord`, `getSkill`), `configured-agent-skill-resolver.ts` (catalog lookup; application-owned bundle first) | Implemented. Live P1, AR13-T4, AR13-T2, V-F (`ir8-vf`, `ir8-d19`) |
 | REQ-023 / AC-020 (D-19) | Duplicates blocked at import with a pop-up; runtime default duplicates accepted with a notice | `skill-service.ts` (`validateIncomingSkillNames`, `assertNoIncomingSkillNameConflicts`, `addSkillSource`, `createSkill`), `agent-package-service.ts` (import local/GitHub, update, reload), `api/graphql/errors/skill-name-conflict-graphql-error.ts`; web `SkillNameConflictDialog.vue`, `skillNamesStore.ts`, `utils/skills/skillNames.ts`, the skill, source and package stores | Implemented. Live I1–I5, U2–U4; GitHub import/update by unit test |
 | REQ-024 / AC-021 (D-19) | Out-of-band duplicates: one copy, logged, Skills page warning | `listSkillNameIssues` (logged on change), GraphQL `skillNameIssues`, web `SkillNameIssuesBanner.vue` | Implemented. Live P1, I5, U1 |
+| D-19 Agent Orgs (SR-018/SR-019) | Org-owned agents and org-owned teams (shared and team-local agents) in tier 2; AGY roots; import validation | `agent-org-definition/providers/agent-org-owned-definition-correlation.ts`, `agent-org-owned-definition-source-index.ts` (async and sync readers), `skill-discovery.ts` (`getAgentOrgSkillLocations`, `getTeamSkillLocations`), `skill-catalog.ts` (app-data org root) | Implemented. Live O1, O2 and all four runtimes (`ir9-org`) |
 | D-19 Codex | Discoverable only when Codex lists exactly the catalog copy | `codex-thread-bootstrapper.ts#planWorkspaceSkillRequests` (`codex-runtime-duplicate`) | Implemented. Live C1 |
 | REQ-017 | Catalog launch forms unchanged; a standalone run started from `RunConfigPanel` opens in chat | `RunConfigPanel` unchanged; selection change on `/workspace` redirects to `/chat?id=<temp>`, then route sync follows promotion | Implemented. **IR-002:** a configured launch never fails because a live ALL_INSTALLED chat holds the same skill name (D-15 Direction B, V-B). **IR-008 (D-19):** that holds because both runs resolve the same catalog copy; Rules 2–3 are removed (V-F rerun) |
 
@@ -243,7 +263,7 @@ Web (`autobyteus-web`):
 ## Known Risks
 
 - IR-008 (D-19) residuals:
-  - **Org-owned agents' private skills.** An agent owned by an Agent Org (`agent-orgs/<org>/agents/<a>/skills/<n>`) used to resolve its private skills through the removed per-agent lookup. D-19's tier-2 scan covers `agents/*` and `agent-teams/*` only, and the boundary exception covers application-owned agents only, so such a skill now resolves only if the catalog has it. No real data, docs or tests use that layout (checked: `autobyteus-agents`, `autobyteus-private-agents`, the app data root). Flagged for review, not changed.
+  - ~~Org-owned agents' private skills~~ — resolved in IR-009 (CRR-012 CR-009, SR-018/SR-019): Agent Org layouts are part of tier 2.
   - GitHub import and update rejection are covered by unit tests with a mock installer, not by a live GitHub repository.
   - The tier-4 toast is unit-tested; it was not rendered live, because that needs a runtime default folder with a duplicate, and the dev env's only one is the user's real `~/.codex/skills`.
   - Codex may still show both copies inside a Codex run when a stale runtime-default copy exists (outside AutoByteus, openai/codex#25324); the banner recommends removing it.
@@ -295,6 +315,18 @@ Web (`autobyteus-web`):
 - Dev env: `pnpm dev` from the worktree (backend :8000, web :3000, data root `.autobyteus/development`). It is stopped after IR-008.
 
 ## Local Implementation Checks Run
+
+IR-009 (HEAD `0be1dd47e`):
+- **Server**
+  - `tsc -p tsconfig.build.json`: clean. `pnpm build:full`: passed.
+  - Unit (the IR-008 set plus `agent-org-definition`, `collaboration-definition-admission`, `agent-team-definition`): 1380 passed, 21 failed. The 21 are the same baseline failures listed below.
+  - New: `agent-org-owned-definition-correlation.test.ts` (core and async/sync parity), `skill-catalog-agent-orgs.test.ts` (7), and an org duplicate case in `agent-package-skill-name-validation.test.ts`.
+  - Skill integration/e2e set: 49 passed, 10 failed (the same baseline). The API/E2E-owned `skill-name-catalog-graphql.e2e.test.ts`: 7/7 pass.
+- **Web**: no web change in IR-009.
+- **Live** (`implementation-evidence/ir9-org-probe.mjs`, `ir9-org/`):
+  - O1: the catalog lists the org paths.
+  - The org agent and the org team-local agent pass on Codex, Claude, Grok and AGY.
+  - O2: a duplicate org import is rejected.
 
 IR-008 (HEAD `be6c8977d`, which includes the IR-007 D-18 code):
 - **Server**
@@ -435,7 +467,7 @@ IR-001:
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-- D-19: live GitHub import/update rejection, the rendered tier-4 toast, and whether Agent Org-owned agents with private skill folders need a catalog entry (see Known Risks).
+- D-19: live GitHub import/update rejection and the rendered tier-4 toast. IR-009: Agent Org packages on the desktop app (an org run whose agents and team-local agents use their own skills; the Skills page lists them), and the AutoByteus native runtime with an org agent.
 - Live multi-runtime ALL_INSTALLED materialization and capsule-limit validation (Claude, AGY).
 - Built-in Daily Assistant seeding across restart and upgrade in a packaged or Electron build.
 - End-to-end browser coverage of the Chat journeys above, including narrow viewports and voice input with the extension installed.
