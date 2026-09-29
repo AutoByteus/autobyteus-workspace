@@ -1,0 +1,4 @@
+..                                                                       [100%]
+============================= slowest 2 durations ==============================
+4.70s call     tests/integration/test_recording_real_chrome.py::test_page_dialog_raised_while_recording_stays_open_and_operable
+3.31s call     tests/integration/test_dialogs_real_chrome.py::test_recorder_coexists_with_answered_dialogs

@@ -1,0 +1,5 @@
+47.29s call     tests/integration/test_mcp_transports_real.py::test_stdio_mcp_recording_survives_concurrent_calls_and_stops_from_another_process
+9.07s call     tests/integration/test_mcp_transports_real.py::test_stdio_mcp_page_dialogs_follow_the_agent_decision_and_are_reported
+8.80s call     tests/integration/test_dialogs_real_chrome.py::test_dialogs_in_other_tabs_are_left_open_and_unreported
+7.65s call     tests/integration/test_mcp_transports_real.py::test_streamable_http_default_loopback_and_explicit_remote_warning
+5.27s call     tests/integration/test_dialogs_real_chrome.py::test_leave_page_dialog_follows_the_decision

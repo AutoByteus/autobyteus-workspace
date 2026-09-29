@@ -1,0 +1,10 @@
+..                                                                       [100%]
+==================================== PASSES ====================================
+============================= slowest 3 durations ==============================
+16.54s call     tests/integration/test_page_blocked_real_chrome.py::test_open_page_dialog_reports_page_blocked_quickly_and_recovers_once_answered
+8.62s call     tests/integration/test_dialogs_real_chrome.py::test_dialogs_in_other_tabs_are_left_open_and_unreported
+0.65s setup    tests/integration/test_dialogs_real_chrome.py::test_dialogs_in_other_tabs_are_left_open_and_unreported
+=========================== short test summary info ============================
+PASSED tests/integration/test_dialogs_real_chrome.py::test_dialogs_in_other_tabs_are_left_open_and_unreported
+PASSED tests/integration/test_page_blocked_real_chrome.py::test_open_page_dialog_reports_page_blocked_quickly_and_recovers_once_answered
+2 passed in 26.32s

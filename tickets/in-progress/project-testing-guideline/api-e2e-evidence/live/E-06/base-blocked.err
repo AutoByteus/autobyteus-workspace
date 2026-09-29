@@ -1,0 +1,4 @@
+Unable to connect to Chrome over CDP: 
+Future exception was never retrieved
+future: <Future finished exception=TargetClosedError('Target page, context or browser has been closed')>
+playwright._impl._errors.TargetClosedError: Target page, context or browser has been closed

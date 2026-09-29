@@ -1,0 +1,14 @@
+tabs=40 run=1 rc=0 2.39s code=ok 40
+tabs=40 run=2 rc=0 0.96s code=ok 40
+tabs=40 run=3 rc=0 0.94s code=ok 40
+tabs=80 run=1 rc=0 2.7s code=ok 80
+tabs=80 run=2 rc=0 5.8s code=ok 80
+tabs=80 run=3 rc=0 1.39s code=ok 80
+tabs=120 run=1 rc=0 11.49s code=ok 120
+tabs=120 run=2 rc=0 11.92s code=ok 120
+tabs=120 run=3 rc=0 228.23s code=ok 120
+tabs=120 BASE rc=0 3.79s
+tabs=160 run=1 rc=0 6.45s code=ok 160
+tabs=160 run=2 rc=0 2.41s code=ok 160
+tabs=160 run=3 rc=0 2.13s code=ok 160
+tabs=160 BASE rc=0 2.08s
