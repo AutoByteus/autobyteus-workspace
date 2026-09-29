@@ -6,7 +6,7 @@ const launch = (model: string, config: Record<string, unknown> | null = { effort
   autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/workspace',
 })
 const tree = (overrides: Partial<Record<'root'|'direct'|'team'|'nested', ReturnType<typeof launch>>> = {}) => ({
-  schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-17T00:00:00Z', archivedAt: null,
+  subjectKind: 'agent_org', createdAt: '2026-09-17T00:00:00Z', archivedAt: null,
   applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org',
     defaultLaunchConfiguration: overrides.root ?? launch('root'), taskExecutions: [], members: [
       { address: '/direct', agentDefinitionId: 'a', role: 'Direct', description: null, agentRunId: 'direct', platformAgentRunId: null,

@@ -97,7 +97,6 @@ const createOrgView = (
   base_change_sequence: 0,
   is_active: false,
   execution_tree: {
-    schemaVersion: 1,
     subjectKind: 'agent_org',
     createdAt: NOW,
     archivedAt: null,
@@ -121,7 +120,6 @@ const createOrgView = (
       taskExecutions: [],
     },
   },
-  task_records: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId, records: [] },
   communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId, messages: [] },
   agent_statuses: members.map((member) => ({
     member_address: member.address,

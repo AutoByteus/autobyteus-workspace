@@ -18,7 +18,7 @@ import type {
   TaskTeamMemberExecution,
   TaskTeamNestedTeamExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
-import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-delegation-record-v1.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 
 export type AgentOrgIndexedAgentExecution = Readonly<{
   agentRunId: string;
@@ -38,7 +38,7 @@ export type AgentOrgIndexedTaskExecution =
   | Readonly<{ kind: "agent"; address: AgentTeamAddress; host: TaskExecutionHostIdentity; agentRunId: string; source: TaskAgentExecution }>
   | Readonly<{ kind: "team"; address: AgentTeamAddress; host: TaskExecutionHostIdentity; teamRunId: string; source: TaskTeamExecution }>;
 
-/** Immutable fixed-depth lookup over one strict AgentOrg V1 tree. */
+/** Immutable fixed-depth lookup over one strict AgentOrg tree. */
 export class AgentOrgExecutionIndex {
   readonly root;
   private readonly agentsByRunId = new Map<string, AgentOrgIndexedAgentExecution>();
@@ -110,18 +110,26 @@ export class AgentOrgExecutionIndex {
       ? createRootExecutionPhysicalScope({ root: this.root, ancestorTeamRunIds: [] })
       : this.getPhysicalScopeForTeam(host.hostRunId);
   }
-  isLiveAgent(agentRunId: string): boolean {
+  /**
+   * Task executions containing the agent: its own execution when it is a task
+   * Agent, then each enclosing task Team outward. Empty outside any task execution.
+   */
+  listTaskExecutionChainForAgent(agentRunId: string): readonly AgentOrgIndexedTaskExecution[] {
     const agent = this.getAgent(agentRunId);
-    if (!agent || "settledAt" in agent.source && agent.source.settledAt !== null) return false;
-    return agent.host.hostKind === "root" || this.isLiveTeam(agent.host.hostRunId);
-  }
-  isLiveTeam(teamRunId: string): boolean {
-    let team: AgentOrgIndexedTeamExecution | null = this.requireTeam(teamRunId);
-    while (team) {
-      if ("settledAt" in team.source && team.source.settledAt !== null) return false;
-      team = team.parentTeamRunId ? this.requireTeam(team.parentTeamRunId) : null;
+    if (!agent) return Object.freeze([]);
+    const chain: AgentOrgIndexedTaskExecution[] = [];
+    if (agent.executionKind === "task") chain.push(this.requireTaskExecution(agent.agentRunId));
+    if (agent.host.hostKind === "team") {
+      for (const team of this.listTeamAncestorsDeepestFirst(agent.host.hostRunId)) {
+        if (team.executionKind === "task") chain.push(this.requireTaskExecution(team.teamRunId));
+      }
     }
-    return true;
+    return Object.freeze(chain);
+  }
+  private requireTaskExecution(runId: string): AgentOrgIndexedTaskExecution {
+    const execution = this.tasksByRunId.get(runId);
+    if (!execution) throw new Error(`Task execution '${runId}' is not in AgentOrg '${this.orgRunId}'.`);
+    return execution;
   }
 
   private visitRoot(root: RootConfiguredAgentOrgExecutionNode): void {

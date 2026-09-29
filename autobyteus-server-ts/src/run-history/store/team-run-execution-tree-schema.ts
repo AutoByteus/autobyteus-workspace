@@ -6,25 +6,27 @@ import {
 import { normalizeCollaborationHandoffs } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type {
   ConfiguredAgentExecutionNode,
-  TeamRunExecutionTreeFileV2,
+  RootConfiguredTeamExecutionNode,
+  TeamRunExecutionTreeFile,
 } from "../../agent-team-execution/domain/team-run-execution-tree.js";
 import {
-  assertExactKeys,
   canonicalNonRootAddress,
   deepFreeze,
-  exactRecord,
   isoTimestamp,
+  objectRecord,
+  parseApplicationBinding,
+  parseConfiguredAgent,
+  parseLaunchConfiguration,
+  parseTaskExecutions,
   requiredArray,
   requiredString,
-  validateApplicationBinding,
-  validateConfiguredAgent,
-  validateTaskExecution,
-  validateLaunchConfiguration,
+  requireKeys,
+  validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
 
-const validateRootTeam = (value: unknown): void => {
-  const root = exactRecord(value, "rootTeam");
-  assertExactKeys(root, [
+const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
+  const root = objectRecord(value, "rootTeam");
+  requireKeys(root, [
     "address",
     "teamDefinitionId",
     "teamDefinitionName",
@@ -35,13 +37,9 @@ const validateRootTeam = (value: unknown): void => {
     "taskExecutions",
   ], "rootTeam");
   if (root.address !== "/") throw new Error("rootTeam.address must be '/'.");
-  requiredString(root.teamDefinitionId, "rootTeam.teamDefinitionId");
-  requiredString(root.teamDefinitionName, "rootTeam.teamDefinitionName");
-  requiredString(root.teamRunId, "rootTeam.teamRunId");
   const coordinatorAddress = canonicalNonRootAddress(root.coordinatorAddress, "rootTeam.coordinatorAddress");
-  validateLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration");
   const members = requiredArray(root.members, "rootTeam.members").map((member, index) =>
-    validateConfiguredAgent(member, `rootTeam.members[${index}]`));
+    parseConfiguredAgent(member, `rootTeam.members[${index}]`));
   for (const member of members) {
     if (getParentAgentTeamAddress(member.address) !== "/") {
       throw new Error(`Configured placement '${member.address}' is not a direct Agent child of '/'.`);
@@ -50,11 +48,19 @@ const validateRootTeam = (value: unknown): void => {
   if (members.filter((member) => member.address === coordinatorAddress).length !== 1) {
     throw new Error("rootTeam has no unique direct coordinator Agent.");
   }
-  requiredArray(root.taskExecutions, "rootTeam.taskExecutions").forEach((task, index) =>
-    validateTaskExecution(task, `rootTeam.taskExecutions[${index}]`));
+  return {
+    address: "/",
+    teamDefinitionId: requiredString(root.teamDefinitionId, "rootTeam.teamDefinitionId"),
+    teamDefinitionName: requiredString(root.teamDefinitionName, "rootTeam.teamDefinitionName"),
+    teamRunId: requiredString(root.teamRunId, "rootTeam.teamRunId"),
+    coordinatorAddress,
+    defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
+    members,
+    taskExecutions: parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
+  };
 };
 
-const validateInvariants = (tree: TeamRunExecutionTreeFileV2): void => {
+const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
   const byAddress = new Map<AgentTeamAddress, ConfiguredAgentExecutionNode>();
   const runIds = new Set<string>([tree.rootTeam.teamRunId]);
   for (const member of tree.rootTeam.members) {
@@ -69,31 +75,33 @@ const validateInvariants = (tree: TeamRunExecutionTreeFileV2): void => {
     if (!byAddress.has(from)) throw new Error(`Handoff sender '${from}' is not a configured Agent.`);
     if (!byAddress.has(to)) throw new Error(`Handoff recipient '${to}' is not a configured Agent.`);
   }
+  validateTaskExecutionDelegators(
+    tree.rootTeam.members.map((member) => member.agentRunId),
+    [tree.rootTeam],
+  );
 };
 
+/**
+ * Reads a TeamRun execution tree tolerantly (REQ-018): known fields are required and
+ * validated; `schemaVersion`, `settledAt` and any other unknown field are ignored. The
+ * result holds only current fields, so writing it produces the exact current shape.
+ */
 export const validateTeamRunExecutionTreePayload = (
   value: unknown,
   expectedRootTeamRunId?: string,
-): TeamRunExecutionTreeFileV2 => {
-  const payload = exactRecord(value, "TeamRun execution tree");
-  assertExactKeys(payload, [
-    "schemaVersion",
-    "createdAt",
-    "archivedAt",
-    "applicationBinding",
-    "handoffs",
-    "rootTeam",
-  ], "TeamRun execution tree");
-  if (payload.schemaVersion !== 2) throw new Error("TeamRun execution tree schemaVersion must be 2.");
-  isoTimestamp(payload.createdAt, "createdAt");
-  if (payload.archivedAt !== null) isoTimestamp(payload.archivedAt, "archivedAt");
-  validateApplicationBinding(payload.applicationBinding);
-  const handoffs = normalizeCollaborationHandoffs(payload.handoffs);
-  validateRootTeam(payload.rootTeam);
-  const cloned = structuredClone({ ...payload, handoffs }) as unknown as TeamRunExecutionTreeFileV2;
-  if (expectedRootTeamRunId && cloned.rootTeam.teamRunId !== expectedRootTeamRunId) {
-    throw new Error(`Execution tree root '${cloned.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`);
+): TeamRunExecutionTreeFile => {
+  const payload = objectRecord(value, "TeamRun execution tree");
+  requireKeys(payload, ["createdAt", "archivedAt", "applicationBinding", "handoffs", "rootTeam"], "TeamRun execution tree");
+  const tree: TeamRunExecutionTreeFile = {
+    createdAt: isoTimestamp(payload.createdAt, "createdAt"),
+    archivedAt: payload.archivedAt === null ? null : isoTimestamp(payload.archivedAt, "archivedAt"),
+    applicationBinding: parseApplicationBinding(payload.applicationBinding),
+    handoffs: normalizeCollaborationHandoffs(payload.handoffs),
+    rootTeam: parseRootTeam(payload.rootTeam),
+  };
+  if (expectedRootTeamRunId && tree.rootTeam.teamRunId !== expectedRootTeamRunId) {
+    throw new Error(`Execution tree root '${tree.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`);
   }
-  validateInvariants(cloned);
-  return deepFreeze(cloned);
+  validateInvariants(tree);
+  return deepFreeze(tree);
 };

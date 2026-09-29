@@ -7,11 +7,12 @@ import {
   createCollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { createTeamAgentStatusDetails, createTeamAgentStatusSnapshot, type TeamAgentStatusSnapshot } from "../domain/team-agent-status.js";
-import type { PrepareTaskAgentInput } from "../domain/task-agent-execution.js";
-import type { PrepareTaskTeamInput } from "../domain/task-team-execution.js";
+import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../domain/task-agent-execution.js";
+import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../domain/task-team-execution.js";
+import type { TeamRun } from "../domain/team-run.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
 import type { PreparedLocalExecutionTermination } from "../../agent-collaboration/execution/domain/prepared-local-execution-termination.js";
-import type { PreparedTaskSettlement } from "../domain/prepared-task-settlement.js";
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 import type { TeamRunContext } from "../domain/team-run-context.js";
 import { FlatTeamExecutionContext } from "./flat-team-execution-context.js";
@@ -122,15 +123,15 @@ export class FlatTeamExecutionManager {
     });
     return [
       ...configured,
-      ...this.taskAgents.listHandles().flatMap((handle) => handle.getLeafAgentStatusSnapshots()),
+      ...this.taskAgents.getLeafAgentStatusSnapshots(),
       ...this.taskTeams.listTeamRuns().flatMap((run) => run.getLeafAgentStatusSnapshots()),
     ];
   }
 
   hasOpenExecutionWork(): boolean {
     return this.configured.listHandles().some((handle) => handle.hasOpenExecutionWork()) ||
-      this.taskAgents.listHandles().some((handle) => handle.hasOpenExecutionWork()) ||
-      this.taskTeams.listTeamRuns().some((run) => run.hasOpenExecutionWork());
+      this.taskAgents.hasRunningWork() ||
+      this.taskTeams.hasRunningWork();
   }
 
   reserveDirectAgentInput(
@@ -182,14 +183,28 @@ export class FlatTeamExecutionManager {
     return this.taskTeams.prepare(input);
   }
 
-  prepareDirectTaskSettlement(
-    taskId: string,
-    binding: { agentRunId: string } | { teamRunId: string },
-  ): Promise<PreparedTaskSettlement | null> {
+  restoreTaskAgent(input: RestoreTaskAgentInput): Promise<void> {
     this.assertActive();
-    return "agentRunId" in binding
-      ? this.taskAgents.prepareSettlement(taskId, binding.agentRunId)
-      : this.taskTeams.prepareSettlement(taskId, binding.teamRunId);
+    return this.taskAgents.restore(input);
+  }
+
+  restoreTaskTeam(input: RestoreTaskTeamInput): Promise<TeamRun> {
+    this.assertActive();
+    return this.taskTeams.restore(input);
+  }
+
+  hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean {
+    if (!this.isActive()) return false;
+    return "agentRunId" in reference
+      ? this.taskAgents.isLive(reference.agentRunId)
+      : this.taskTeams.get(reference.teamRunId)?.isActive() ?? false;
+  }
+
+  tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean> {
+    this.assertActive();
+    return "agentRunId" in reference
+      ? this.taskAgents.tryShutDownIfQuiet(reference.agentRunId)
+      : this.taskTeams.tryShutDownIfQuiet(reference.teamRunId);
   }
 
   prepareTermination(): Promise<PreparedLocalExecutionTermination> {

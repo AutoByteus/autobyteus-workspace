@@ -93,6 +93,36 @@ export class GlobalAgentRunMessageRouter {
       };
     }
 
+    // A sender inside a collaboration root reaches every AgentRun of that root
+    // through the root boundary, which restores a shut-down delegated child first.
+    // Targets outside the sender's root use the live-only path below.
+    const senderRoot = input.sender.memberExecutionContext
+      ? this.activeRootDirectory.resolve(input.sender.memberExecutionContext.identity.root)
+      : null;
+    if (senderRoot?.hasAgentExecution(targetAgentRunId)) {
+      const result = await senderRoot.deliverExactAgentMessage({
+        sender: Object.freeze({
+          kind: "agent",
+          identity: input.sender.memberExecutionContext!.identity,
+          displayName: input.sender.senderName,
+        }),
+        targetAgentRunId,
+        content,
+        messageType,
+        referenceFiles,
+      });
+      this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
+        accepted: result.accepted,
+        code: result.code ?? (result.accepted ? "DELIVERED" : "TARGET_AGENT_RUN_REJECTED_INPUT"),
+        message: result.message ?? null,
+        senderRunId: input.sender.senderRunId,
+        targetAgentRunId,
+        messageType,
+        referenceFiles,
+      });
+      return result.accepted ? { ...result, agentRunId: targetAgentRunId } : result;
+    }
+
     const targetRun = this.agentRunManager.getActiveRun(targetAgentRunId);
     if (!targetRun) {
       const result = {
@@ -117,36 +147,20 @@ export class GlobalAgentRunMessageRouter {
       targetTeam &&
       sameRootExecutionIdentity(senderTeam.identity.root, targetTeam.identity.root)
     ) {
-      const root = this.activeRootDirectory.resolve(senderTeam.identity.root);
-      const result = root
-        ? await root.deliverExactAgentMessage({
-            sender: Object.freeze({
-              kind: "agent",
-              identity: senderTeam.identity,
-              displayName: input.sender.senderName,
-            }),
-            targetAgentRunId,
-            content,
-            messageType,
-            referenceFiles,
-          })
-        : {
-            accepted: false,
-            code: "COLLABORATION_ROOT_NOT_ACTIVE",
-            message: `Collaboration root '${senderTeam.identity.root.rootSubjectKind}:${senderTeam.identity.root.rootRunId}' is not active.`,
-          } satisfies AgentOperationResult;
+      // The sender's root is not active, so same-root delivery is unavailable.
+      const result = {
+        accepted: false,
+        code: "COLLABORATION_ROOT_NOT_ACTIVE",
+        message: `Collaboration root '${senderTeam.identity.root.rootSubjectKind}:${senderTeam.identity.root.rootRunId}' is not active.`,
+      } satisfies AgentOperationResult;
       this.recordGrantUsage(grantDecision.kind === "allowed" ? grantDecision.grant : null, {
-        accepted: result.accepted,
-        code: result.code ?? (result.accepted ? "DELIVERED" : "TARGET_AGENT_RUN_REJECTED_INPUT"),
-        message: result.message ?? null,
+        ...result,
         senderRunId: input.sender.senderRunId,
         targetAgentRunId,
         messageType,
         referenceFiles,
       });
-      return result.accepted
-        ? { ...result, agentRunId: targetAgentRunId }
-        : result;
+      return result;
     }
 
     const messageId = buildDirectAgentRunMessageId();

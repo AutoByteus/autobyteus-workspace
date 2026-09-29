@@ -3,10 +3,7 @@ import path from "node:path";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { AgentOrgCommunicationMessagesV1Store } from "../../agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
 import { AGENT_ORG_COMMUNICATION_MESSAGES_V1_FILE_NAME } from "../../agent-org-execution/persistence/agent-org-communication-messages-v1.js";
-import { AgentOrgTaskDelegationRecordsV1Store } from "../../agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js";
-import { AGENT_ORG_TASK_DELEGATION_RECORDS_V1_FILE_NAME } from "../../agent-org-execution/persistence/agent-org-task-delegation-records-v1.js";
 import { validateAgentOrgStatePackage } from "../../agent-org-execution/services/agent-org-state-package-validator.js";
-import { TaskDelegationRecordsV1Store, TASK_DELEGATION_RECORDS_V1_FILE_NAME } from "../../agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import { TeamCommunicationV1Store, TEAM_COMMUNICATION_MESSAGES_V1_FILE_NAME } from "../../services/team-communication/team-communication-v1-store.js";
 import { AgentOrgRunExecutionTreeStore } from "../store/agent-org-run-execution-tree-store.js";
 import { AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME } from "../store/agent-org-run-execution-tree-path.js";
@@ -41,26 +38,24 @@ export const isAttemptError = (error: unknown): boolean => typeof (error as Node
 const exists = (filePath: string): Promise<boolean> =>
   fs.access(filePath).then(() => true).catch((error: NodeJS.ErrnoException) => { if (error.code === "ENOENT") return false; throw error; });
 
+// Released task-records files are neither required nor retired: an old package
+// keeps its untouched records file on disk and is still admitted.
 const requiredTeamFiles = Object.freeze([
   TEAM_RUN_EXECUTION_TREE_FILE_NAME,
-  TASK_DELEGATION_RECORDS_V1_FILE_NAME,
   TEAM_COMMUNICATION_MESSAGES_V1_FILE_NAME,
 ]);
 const retiredTeamFiles = Object.freeze([
   "team_run_metadata.json",
   AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME,
-  AGENT_ORG_TASK_DELEGATION_RECORDS_V1_FILE_NAME,
   AGENT_ORG_COMMUNICATION_MESSAGES_V1_FILE_NAME,
 ]);
 const requiredOrgFiles = Object.freeze([
   AGENT_ORG_RUN_EXECUTION_TREE_FILE_NAME,
-  AGENT_ORG_TASK_DELEGATION_RECORDS_V1_FILE_NAME,
   AGENT_ORG_COMMUNICATION_MESSAGES_V1_FILE_NAME,
 ]);
 const retiredOrgFiles = Object.freeze([
   "team_run_metadata.json",
   TEAM_RUN_EXECUTION_TREE_FILE_NAME,
-  TASK_DELEGATION_RECORDS_V1_FILE_NAME,
   TEAM_COMMUNICATION_MESSAGES_V1_FILE_NAME,
 ]);
 
@@ -72,17 +67,13 @@ export class RootRunPackageCurrentValidator {
     private readonly memoryDir: string,
     private readonly stores: Readonly<{
       teamTree: TeamRunExecutionTreeStore;
-      teamTasks: TaskDelegationRecordsV1Store;
       teamMessages: TeamCommunicationV1Store;
       orgTree: AgentOrgRunExecutionTreeStore;
-      orgTasks: AgentOrgTaskDelegationRecordsV1Store;
       orgMessages: AgentOrgCommunicationMessagesV1Store;
     }> = {
       teamTree: new TeamRunExecutionTreeStore(),
-      teamTasks: new TaskDelegationRecordsV1Store(),
       teamMessages: new TeamCommunicationV1Store(),
       orgTree: new AgentOrgRunExecutionTreeStore(),
-      orgTasks: new AgentOrgTaskDelegationRecordsV1Store(),
       orgMessages: new AgentOrgCommunicationMessagesV1Store(),
     },
   ) {
@@ -161,15 +152,14 @@ export class RootRunPackageCurrentValidator {
       return;
     }
     try {
-      const [executionTree, taskRecords, communicationMessages] = await Promise.all([
+      const [executionTree, communicationMessages] = await Promise.all([
         this.stores.teamTree.read(entry.packagePath, rootRunId),
-        this.stores.teamTasks.read(entry.packagePath, rootRunId),
         this.stores.teamMessages.read(entry.packagePath, rootRunId),
       ]);
-      if (!executionTree || !taskRecords || !communicationMessages) {
-        throw new Error("Team Run V2 tree and both strict Team sidecars are required.");
+      if (!executionTree || !communicationMessages) {
+        throw new Error("Team Run V3 tree and strict Team communication messages are required.");
       }
-      validateTeamRunStatePackage({ executionTree, taskRecords, communicationMessages });
+      validateTeamRunStatePackage({ executionTree, communicationMessages });
       const index = new TeamExecutionIndex(executionTree);
       const key = packageKey("agent_team", rootRunId);
       const owners: CurrentContextFileOwner[] = index.listAgentExecutions().map((agent) => ({
@@ -204,15 +194,14 @@ export class RootRunPackageCurrentValidator {
       return;
     }
     try {
-      const [executionTree, taskRecords, communicationMessages] = await Promise.all([
+      const [executionTree, communicationMessages] = await Promise.all([
         this.stores.orgTree.read(entry.packagePath, rootRunId),
-        this.stores.orgTasks.read(entry.packagePath, rootRunId),
         this.stores.orgMessages.read(entry.packagePath, rootRunId),
       ]);
-      if (!executionTree || !taskRecords || !communicationMessages) {
-        throw new Error("AgentOrg Run V1 tree and both strict Org sidecars are required.");
+      if (!executionTree || !communicationMessages) {
+        throw new Error("AgentOrg Run V2 tree and strict Org communication messages are required.");
       }
-      validateAgentOrgStatePackage({ executionTree, taskRecords, communicationMessages });
+      validateAgentOrgStatePackage({ executionTree, communicationMessages });
       const index = new AgentOrgExecutionIndex(executionTree);
       const key = packageKey("agent_org", rootRunId);
       const owners: CurrentContextFileOwner[] = index.listAgents().map((agent) => ({

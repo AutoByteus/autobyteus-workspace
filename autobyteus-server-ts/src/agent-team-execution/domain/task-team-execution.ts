@@ -3,12 +3,17 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 import type { TeamRunAgentTeamNode } from "./team-run-config.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 
-/** Exact local preparation input selected by the root task owner. */
+/** Exact local preparation input selected by the root task-execution owner. */
 export type PrepareTaskTeamInput = Readonly<{
-  taskId: string;
   address: AgentTeamAddress;
   teamRunId: string;
   handoffs: readonly CollaborationHandoff[];
   teamNode: TeamRunAgentTeamNode;
   message: AgentInputUserMessage;
+}>;
+
+/** Deterministic restore node (persisted IDs) for one shut-down task Team. */
+export type RestoreTaskTeamInput = Readonly<{
+  handoffs: readonly CollaborationHandoff[];
+  teamNode: TeamRunAgentTeamNode;
 }>;

@@ -10,7 +10,7 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { TeamStreamingService } from '~/services/agentStreaming/TeamStreamingService';
 import { collectAgentExecutionLocations } from '~/services/teamExecution/teamExecutionTreeSelectors';
-import { buildTestTeamContext, testAgentNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 
 const mocks = vi.hoisted(() => ({ topology: vi.fn(), projection: vi.fn(async () => undefined) }));
@@ -22,10 +22,8 @@ vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => ({
   isAvailable: false, initialize: vi.fn(), cancelOperationForSource: vi.fn(),
 }) }));
 const ROOT = 'flat-team';
-const task = (id = 'fresh-verifier') => testTaskRecord({ taskId: `task-${id}`, delegatorAgentRunId: 'lead',
-  recipientAddress: '/verifier', target: { agentRunId: id }, description: `Verify ${id}` });
 const execution = (id = 'fresh-verifier') => ({ kind: 'task_agent' as const, address: '/verifier' as const,
-  agent_run_id: id, platform_agent_run_id: null, started_at: '2026-08-10T12:00:01.000Z', settled_at: null });
+  agent_run_id: id, platform_agent_run_id: null, delegator_agent_run_id: 'lead', started_at: '2026-08-10T12:00:01.000Z' });
 const makeTeam = () => buildTestTeamContext({ teamRunId: ROOT, coordinatorAddress: '/lead', focusedAgentRunId: 'lead',
   rootChildren: [testAgentNode('/lead', { agentRunId: 'lead' }), testAgentNode('/verifier', { agentRunId: 'configured-verifier' })],
 });
@@ -57,7 +55,7 @@ async function setup() {
     const tree = structuredClone(team.view.getExecutionTree());
     tree.root_team.task_executions = ids.map(execution);
     return { root_team_run_id: ROOT, base_change_sequence: base, execution_tree: tree,
-      tasks: ids.map(task), messages: [], agent_statuses: ['lead', 'configured-verifier', ...ids].map(id => ({ ...status(id), member_address: id === 'lead' ? '/lead' : '/verifier' })) };
+      messages: [], agent_statuses: ['lead', 'configured-verifier', ...ids].map(id => ({ ...status(id), member_address: id === 'lead' ? '/lead' : '/verifier' })) };
   };
   emit('CONNECTED', { session_id: 'initial', root_team_run_id: ROOT });
   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', snapshot());
@@ -74,7 +72,7 @@ async function setup() {
   const stop = watchEffect(() => {
     witnesses.push({ entries: team.view.listAgentContextEntries().map(e => e.agentRunId).sort(),
       tree: collectAgentExecutionLocations(team.view.getExecutionTree()).map(e => e.agentRunId).sort(),
-      tasks: team.view.listTaskHistoryRows().map(row => row.targetAgentRunId!).sort(), sequence: team.view.getChangeSequence() });
+      tasks: team.view.getExecutionTree().root_team.task_executions.map(e => e.kind === 'task_agent' ? e.agent_run_id : e.team_run_id).sort(), sequence: team.view.getChangeSequence() });
   }, { flush: 'sync' });
   const warn = vi.spyOn(console, 'warn');
   await wrapper.get('textarea').setValue('next unsent draft');
@@ -93,8 +91,7 @@ describe('strict flat Team publication with the selected shared composer mounted
     const { team, active, emit, recovery, ws, witnesses, stop, warn } = await setup();
     try {
       const lead = active.activeAgentContext!;
-      emit('TASK_DELEGATION_EVENT', { event_type: 'TASK_AGENT_ACTIVATED', change_sequence: 1,
-        parent_team_run_id: ROOT, task: task(), execution: execution() });
+      emit('TASK_EXECUTION_STARTED', { change_sequence: 1, parent_team_run_id: ROOT, execution: execution() });
       emit('AGENT_STATUS', { ...status('fresh-verifier', 'running'), change_sequence: 2 });
       expect(team.view.getChangeSequence()).toBe(2);
       expect(team.view.needsStreamRecovery()).toBe(false);
@@ -104,7 +101,7 @@ describe('strict flat Team publication with the selected shared composer mounted
       expect(active.activeAgentContext).toBe(lead);
       expect(lead.requirement).toBe('next unsent draft');
       expect(team.view.listNavigationRows().find(row => row.agentRunId === 'fresh-verifier'))
-        .toMatchObject({ kind: 'task_agent', currentStatus: AgentStatus.Running, task: { taskId: 'task-fresh-verifier' } });
+        .toMatchObject({ kind: 'task_agent', currentStatus: AgentStatus.Running, delegatedBy: expect.any(String) });
       emit('MEMBER_INPUT_MESSAGE', { change_sequence: 3, recipient_agent_run_id: 'fresh-verifier', message_id: 'input-1',
         dedupe_key: 'input-1', content: 'Exact task input', input_origin: 'inter_agent_delivery',
         received_at: '2026-08-10T12:00:02.000Z', context_file_paths: [], sender_agent_run_id: 'lead', parent_communication_message_id: 'communication-1' });
@@ -154,9 +151,8 @@ describe('strict flat Team publication with the selected shared composer mounted
             { ...status('configured-verifier'), member_address: '/verifier' },
           ],
         } } as any)
-        : team.view.applyMessage({ type: 'TASK_DELEGATION_EVENT', payload: {
-          event_type: 'TASK_AGENT_ACTIVATED', change_sequence: 1,
-          parent_team_run_id: 'different-team', task: task(), execution: execution(),
+        : team.view.applyMessage({ type: 'TASK_EXECUTION_STARTED', payload: {
+          change_sequence: 1, parent_team_run_id: 'different-team', execution: execution(),
         } } as any);
       expect(result.disposition).toBe('rejected');
       expect(team.view.getExecutionTree()).toBe(before);

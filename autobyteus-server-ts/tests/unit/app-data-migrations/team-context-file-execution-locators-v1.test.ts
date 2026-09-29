@@ -34,8 +34,8 @@ const setup = async () => {
   const configured = path.join(team, "configured"), task = path.join(team, "task");
   const tree = testExecutionTree({ rootTeamRunId: "team", children: [testAgentNode("/worker", { agentRunId: "configured" })], coordinatorAddress: "/worker" });
   await put(path.join(team, "team_run_execution_tree.json"), { ...tree, rootTeam: { ...tree.rootTeam, members: [...tree.rootTeam.members, testOrgAgentNode("/nested", "configured-nested")], taskExecutions: [
-    { address: "/worker", agentRunId: "task", platformAgentRunId: null, startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00:00:00.000Z" },
-    { address: "/nested", teamRunId: "nested", members: [{ address: "/nested/worker", agentRunId: "nested-agent", platformAgentRunId: null }], taskExecutions: [], startedAt: "2026-09-01T00:00:00.000Z", settledAt: null },
+    { address: "/worker", agentRunId: "task", platformAgentRunId: null, delegatorAgentRunId: "configured", startedAt: "2026-09-01T00:00:00.000Z" },
+    { address: "/nested", teamRunId: "nested", members: [{ address: "/nested/worker", agentRunId: "nested-agent", platformAgentRunId: null }], taskExecutions: [], delegatorAgentRunId: "configured", startedAt: "2026-09-01T00:00:00.000Z" },
   ] } });
   await put(path.join(team, "task_delegation_records.json"), {schemaVersion: 1, rootTeamRunId: "team", records: [
     {taskId: "t1", delegatorAgentRunId: "configured", recipientAddress: "/worker", taskExecution: {agentRunId: "task"}, description: "task", referenceFiles: [], status: "interrupted", createdAt: "2026-09-01T00:00:00.000Z", updates: [{interruptionId: "i1", reason: "stopped", createdAt: "2026-09-02T00:00:00.000Z"}]},

@@ -56,7 +56,7 @@ export const projectAgentOrgMessageIdentity = (
 ): CollaborationMessageMemberIdentity => {
   const agent = index.requireAgent(agentRunId)
   const common = { address: agent.address, label: memberAddressBasename(agent.address) }
-  return agent.task ? Object.freeze({ ...common, kind: 'task', taskId: agent.task.taskId,
-    hostRunId: agent.host.runId, executionRunId: agent.task.executionRunId })
+  return agent.delegation ? Object.freeze({ ...common, kind: 'delegated',
+    hostRunId: agent.host.runId, executionRunId: agent.delegation.executionRunId })
     : Object.freeze({ ...common, kind: 'configured' })
 }

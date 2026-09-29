@@ -18,7 +18,6 @@ const launch = (
   workspace_root_path: '/workspace',
 })
 const tree = (): TeamRunExecutionTreeDto => ({
-  schema_version: 2,
   created_at: '2026-08-25T00:00:00.000Z',
   archived_at: null,
   application_binding: null,

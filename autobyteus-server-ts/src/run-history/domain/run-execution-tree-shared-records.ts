@@ -27,12 +27,16 @@ export type ConfiguredTeamExecutionNode = Readonly<{
 
 export type ConfiguredExecutionNode = ConfiguredAgentExecutionNode | ConfiguredTeamExecutionNode;
 
+/**
+ * A delegated child Agent. Liveness (live / shut down) is runtime-only and never persisted.
+ * `delegatorAgentRunId` is written for every new child; children recorded before it existed have none.
+ */
 export type TaskAgentExecution = Readonly<{
   address: AgentTeamAddress;
   agentRunId: string;
   platformAgentRunId: string | null;
+  delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
-  settledAt: IsoTimestamp | null;
 }>;
 
 export type TaskTeamAgentExecution = Readonly<{
@@ -50,13 +54,14 @@ export type TaskTeamNestedTeamExecution = Readonly<{
 
 export type TaskTeamMemberExecution = TaskTeamAgentExecution | TaskTeamNestedTeamExecution;
 
+/** A delegated child Team. Liveness is runtime-only; `delegatorAgentRunId` as on `TaskAgentExecution`. */
 export type TaskTeamExecution = Readonly<{
   address: AgentTeamAddress;
   teamRunId: string;
   members: readonly TaskTeamMemberExecution[];
   taskExecutions: readonly TaskExecution[];
+  delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
-  settledAt: IsoTimestamp | null;
 }>;
 
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;

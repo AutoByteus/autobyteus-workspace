@@ -31,6 +31,10 @@ import {
   resolveStreamingContentFlushIntervalMs,
   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
 } from "../config/streaming-content-flush-interval-setting.js";
+import {
+  normalizeTaskExecutionIdleShutdownGraceForPersistence,
+  TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
+} from "../config/task-execution-idle-shutdown-setting.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 
 export {
@@ -173,6 +177,15 @@ export class ServerSettingsService {
       true,
       {
         normalizeForPersistence: normalizeStreamingContentFlushIntervalForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
+      "Milliseconds a delegated agent or team may stay quiet before it is shut down. A message to its run ID restores it with its conversation. Default: 600000 (10 minutes); allowed range 60000 to 86400000.",
+      true,
+      {
+        normalizeForPersistence: normalizeTaskExecutionIdleShutdownGraceForPersistence,
       },
     );
 

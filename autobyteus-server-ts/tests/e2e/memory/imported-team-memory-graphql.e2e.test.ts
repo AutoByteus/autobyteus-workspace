@@ -15,7 +15,6 @@ import { resetTeamRunHistoryCatalogState } from "../../../src/run-history/servic
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
-import { TaskDelegationRecordsV1Store } from "../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -70,7 +69,6 @@ describe("imported Team memory GraphQL e2e", () => {
         createdAt, children: [testAgentNode("/lead", { agentRunId, workspaceRootPath: "/workspace/imported" })],
       });
       expect((await treeStore.write(teamDir, tree)).outcome).toBe("committed");
-      await new TaskDelegationRecordsV1Store().write(teamDir, { schemaVersion: 1, rootTeamRunId: rootId, records: [] });
       await new TeamCommunicationV1Store().write(teamDir, { schemaVersion: 1, rootTeamRunId: rootId, messages: [] });
       const memberDir = path.join(teamDir, agentRunId);
       await fs.mkdir(memberDir, { recursive: true });

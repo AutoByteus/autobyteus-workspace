@@ -12,13 +12,10 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import { ActiveCollaborationRootDirectory, getActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
-import type { AgentOrgRunExecutionTreeFileV1 } from "../domain/agent-org-run-execution-tree.js";
+import type { AgentOrgRunExecutionTreeFile } from "../domain/agent-org-run-execution-tree.js";
 import { AgentOrgRun, type AgentOrgRunPackageSnapshot } from "../domain/agent-org-run.js";
-import { AgentOrgTaskDelegationRecordsV1Store } from "../persistence/agent-org-task-delegation-records-v1-store.js";
 import { AgentOrgCommunicationMessagesV1Store } from "../persistence/agent-org-communication-messages-v1-store.js";
-import type { AgentOrgTaskDelegationRecordsFileV1 } from "../persistence/agent-org-task-delegation-records-v1.js";
 import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
-import { validateAgentOrgTaskDelegationRecordsV1 } from "../persistence/agent-org-task-delegation-records-v1-schema.js";
 import { validateAgentOrgCommunicationMessagesV1 } from "../persistence/agent-org-communication-messages-v1-schema.js";
 import { AgentOrgStatePackageLoader } from "./agent-org-state-package-loader.js";
 import { validateAgentOrgStatePackage } from "./agent-org-state-package-validator.js";
@@ -32,14 +29,12 @@ export type AgentOrgRunManagerOptions = Readonly<{
   memoryDir: string;
   scopeBuilder: AgentOrgExecutionScopeBuilder;
   executionTreeStore?: AgentOrgRunExecutionTreeStore;
-  taskRecordsStore?: AgentOrgTaskDelegationRecordsV1Store;
   communicationStore?: AgentOrgCommunicationMessagesV1Store;
   tokenUsageRunStore?: Pick<TokenUsageRunStore, "assertAgentOrgRecordsReady">;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
 }>;
 
 export type AgentOrgCollaborationRecordsSnapshot = Readonly<{
-  tasks: AgentOrgTaskDelegationRecordsFileV1;
   messages: AgentOrgCommunicationMessagesFileV1;
 }>;
 
@@ -54,7 +49,6 @@ export class AgentOrgRunManager {
   private readonly layout: AgentMemoryLayout;
   private readonly scopeBuilder: AgentOrgExecutionScopeBuilder;
   private readonly executionTreeStore: AgentOrgRunExecutionTreeStore;
-  private readonly taskRecordsStore: AgentOrgTaskDelegationRecordsV1Store;
   private readonly communicationStore: AgentOrgCommunicationMessagesV1Store;
   private readonly packageCatalog: AgentOrgRunPackageCatalog;
   private readonly activeRootDirectory: ActiveCollaborationRootDirectory;
@@ -84,23 +78,16 @@ export class AgentOrgRunManager {
     this.scopeBuilder = options.scopeBuilder;
     this.tokenUsageRunStore = options.tokenUsageRunStore ?? new TokenUsageRunStore();
     this.executionTreeStore = options.executionTreeStore ?? new AgentOrgRunExecutionTreeStore();
-    this.taskRecordsStore = options.taskRecordsStore ?? new AgentOrgTaskDelegationRecordsV1Store();
     this.communicationStore = options.communicationStore ?? new AgentOrgCommunicationMessagesV1Store();
     this.packageCatalog = new AgentOrgRunPackageCatalog(options.memoryDir);
     this.activeRootDirectory = options.activeRootDirectory ?? getActiveCollaborationRootDirectory();
   }
 
-  create(tree: AgentOrgRunExecutionTreeFileV1): Promise<AgentOrgRun> {
+  create(tree: AgentOrgRunExecutionTreeFile): Promise<AgentOrgRun> {
     this.assertRootAdmissionOpen();
     const orgRunId = tree.rootOrg.orgRunId;
     const state = validateAgentOrgStatePackage({
       executionTree: tree,
-      taskRecords: validateAgentOrgTaskDelegationRecordsV1({
-        schemaVersion: 1,
-        subjectKind: "agent_org",
-        orgRunId,
-        records: [],
-      }, orgRunId),
       communicationMessages: validateAgentOrgCommunicationMessagesV1({
         schemaVersion: 1,
         subjectKind: "agent_org",
@@ -123,9 +110,8 @@ export class AgentOrgRunManager {
       }
       const loaded = await new AgentOrgStatePackageLoader({
         executionTree: this.executionTreeStore,
-        tasks: this.taskRecordsStore,
         messages: this.communicationStore,
-      }).loadAndRepair({ orgMemoryDir: this.layout.getOrgDirPath(orgRunId), orgRunId });
+      }).load({ orgMemoryDir: this.layout.getOrgDirPath(orgRunId), orgRunId });
       if (!loaded.loaded) throw new Error(`${loaded.code}: ${loaded.message}`);
       await this.tokenUsageRunStore.assertAgentOrgRecordsReady({
         orgRunId, agentRunIds: loaded.state.index.listAgents().map((agent) => agent.agentRunId),
@@ -141,19 +127,12 @@ export class AgentOrgRunManager {
   async getCollaborationRecordsSnapshot(orgRunIdInput: string): Promise<AgentOrgCollaborationRecordsSnapshot> {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     const active = this.getActive(orgRunId);
-    if (active) return Object.freeze({
-      tasks: active.getTaskRecordsSnapshot(),
-      messages: active.getCommunicationSnapshot(),
-    });
-    const orgDir = this.layout.getOrgDirPath(orgRunId);
-    const [tasks, messages] = await Promise.all([
-      this.taskRecordsStore.read(orgDir, orgRunId),
-      this.communicationStore.read(orgDir, orgRunId),
-    ]);
-    if (!tasks || !messages) {
+    if (active) return Object.freeze({ messages: active.getCommunicationSnapshot() });
+    const messages = await this.communicationStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
+    if (!messages) {
       throw new Error(`AgentOrg collaboration records for '${orgRunId}' were not found.`);
     }
-    return Object.freeze({ tasks, messages });
+    return Object.freeze({ messages });
   }
   listActiveOrgRunIds(): readonly string[] { return Object.freeze([...this.active.keys()].filter((id) => this.getActive(id))); }
 
@@ -185,18 +164,17 @@ export class AgentOrgRunManager {
         } finally { connection.close(); }
       }
       const dir = this.layout.getOrgDirPath(orgRunId);
-      const [tree, tasks, messages] = await Promise.all([
+      const [tree, messages] = await Promise.all([
         this.executionTreeStore.read(dir, orgRunId),
-        this.taskRecordsStore.read(dir, orgRunId),
         this.communicationStore.read(dir, orgRunId),
       ]);
-      if (!tree || !tasks || !messages) throw new Error(`AgentOrg '${orgRunId}' inspection package is unavailable.`);
-      const state = validateAgentOrgStatePackage({ executionTree: tree, taskRecords: tasks, communicationMessages: messages });
+      if (!tree || !messages) throw new Error(`AgentOrg '${orgRunId}' inspection package is unavailable.`);
+      const state = validateAgentOrgStatePackage({ executionTree: tree, communicationMessages: messages });
       // The current DTO carries statuses for live executions only. Inactive
       // inspection has none; retained contexts initialize as offline.
       const statuses = Object.freeze([]);
       return Object.freeze({ orgRunId, isActive: false, baseChangeSequence: 0,
-        snapshot: Object.freeze({ tree: state.executionTree, tasks: state.taskRecords,
+        snapshot: Object.freeze({ tree: state.executionTree,
           messages: state.communicationMessages, statuses }) });
     });
   }
@@ -214,9 +192,9 @@ export class AgentOrgRunManager {
   updateStoppedRunConfig(input: UpdateStoppedAgentOrgRunConfig): Promise<AgentOrgRunConfigResult> {
     const orgRunId = required(input.orgRunId, "orgRunId");
     return this.withTransition(orgRunId, async () => {
-      let tree: AgentOrgRunExecutionTreeFileV1 | null = null;
+      let tree: AgentOrgRunExecutionTreeFile | null = null;
       const result = (outcome: AgentOrgRunConfigResult["outcome"], message: string,
-        canonical: AgentOrgRunExecutionTreeFileV1 | null = tree,
+        canonical: AgentOrgRunExecutionTreeFile | null = tree,
         fieldErrors: AgentOrgRunConfigResult["fieldErrors"] = []): AgentOrgRunConfigResult => {
         const isActive = this.active.has(orgRunId);
         return Object.freeze({ success: outcome === "UPDATED" || outcome === "UNCHANGED", outcome, message,
@@ -324,7 +302,7 @@ export class AgentOrgRunManager {
     return tree;
   }
 
-  private configEditability(tree: AgentOrgRunExecutionTreeFileV1, isActive: boolean) {
+  private configEditability(tree: AgentOrgRunExecutionTreeFile, isActive: boolean) {
     if (tree.applicationBinding) {
       return Object.freeze({ editable: false, reason: "OWNERSHIP_UNAVAILABLE" as const });
     }
@@ -367,7 +345,6 @@ export class AgentOrgRunManager {
       orgRunId,
       orgMemoryDir: this.layout.getOrgDirPath(orgRunId),
       executionTreeStore: this.executionTreeStore,
-      taskRecordsStore: this.taskRecordsStore,
       communicationStore: this.communicationStore,
       enterPersistenceFailStop: () => run?.enterPersistenceFailStop(),
     });

@@ -13,8 +13,6 @@ import type { TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunLifecycleListener, TeamRunLifecycleSnapshot, TeamRunLifecycleUnsubscribe } from "../domain/team-run-lifecycle.js";
 import type { RootEventListener } from "./team-run-event-publisher.js";
 import { buildInitialTeamRunExecutionTree, buildTeamRunConfigFromExecutionTree } from "./team-run-execution-tree-builder.js";
-import { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-delegation-records-v1-store.js";
-import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
 import { TeamRunPackageCatalog } from "../../run-history/services/team-run-package-catalog.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
@@ -48,7 +46,6 @@ export type AgentTeamRunManagerOptions = Readonly<{
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   executionTreeStore?: TeamRunExecutionTreeStore;
-  taskRecordsStore?: TaskDelegationRecordsV1Store;
   communicationStore?: TeamCommunicationV1Store;
   activeRootDirectory?: ActiveCollaborationRootDirectory;
   modelSelectionValidator: RunModelSelectionValidator;
@@ -61,7 +58,6 @@ export class AgentTeamRunManager {
   private readonly factory: FlatTeamExecutionFactory;
   private readonly memberExecutionContextBuilder: MemberExecutionContextBuilder;
   private readonly executionTreeStore: TeamRunExecutionTreeStore;
-  private readonly taskRecordsStore: TaskDelegationRecordsV1Store;
   private readonly communicationStore: TeamCommunicationV1Store;
   private readonly packageCatalog: TeamRunPackageCatalog;
   private readonly taskExecutionIdentity: TaskExecutionIdentityCapabilities;
@@ -114,7 +110,6 @@ export class AgentTeamRunManager {
     this.memberExecutionContextBuilder = options.memberExecutionContextBuilder;
     this.taskExecutionIdentity = options.taskExecutionIdentity;
     this.executionTreeStore = options.executionTreeStore ?? new TeamRunExecutionTreeStore();
-    this.taskRecordsStore = options.taskRecordsStore ?? new TaskDelegationRecordsV1Store();
     this.communicationStore = options.communicationStore ?? new TeamCommunicationV1Store();
     this.modelSelectionValidator = options.modelSelectionValidator;
     this.activeRootDirectory = options.activeRootDirectory ?? getActiveCollaborationRootDirectory();
@@ -132,11 +127,6 @@ export class AgentTeamRunManager {
         config: input.config,
         teamDefinitionName: required(input.teamDefinitionName, "teamDefinitionName"),
       });
-      const tasks: TaskDelegationRecordsSnapshot = Object.freeze({
-        schemaVersion: 1,
-        rootTeamRunId,
-        records: Object.freeze([]),
-      });
       const messages: TeamCommunicationMessagesSnapshot = Object.freeze({
         schemaVersion: 1,
         rootTeamRunId,
@@ -146,7 +136,6 @@ export class AgentTeamRunManager {
       const root = await materializeTeamRoot({
         config: input.config,
         tree,
-        tasks,
         messages,
         teamMemoryDir,
         mode: "fresh",
@@ -178,15 +167,13 @@ export class AgentTeamRunManager {
       const teamMemoryDir = this.teamMemoryDir(rootTeamRunId);
       const loaded = await new TeamRunStatePackageLoader({
         executionTreeStore: this.executionTreeStore,
-        taskRecordsStore: this.taskRecordsStore,
         communicationStore: this.communicationStore,
-      }).loadAndRepair({ teamMemoryDir, rootTeamRunId });
+      }).load({ teamMemoryDir, rootTeamRunId });
       if (!loaded.loaded) throw new Error(`${loaded.code}: ${loaded.message}`);
       const config = buildTeamRunConfigFromExecutionTree(loaded.state.executionTree);
       const root = await materializeTeamRoot({
         config,
         tree: loaded.state.executionTree,
-        tasks: loaded.state.taskRecords,
         messages: loaded.state.communicationMessages,
         teamMemoryDir,
         mode: "restore",
@@ -400,7 +387,6 @@ export class AgentTeamRunManager {
       memberExecutionContextBuilder: this.memberExecutionContextBuilder,
       taskExecutionIdentity: this.taskExecutionIdentity,
       executionTreeStore: this.executionTreeStore,
-      taskRecordsStore: this.taskRecordsStore,
       communicationStore: this.communicationStore,
     } as const;
   }

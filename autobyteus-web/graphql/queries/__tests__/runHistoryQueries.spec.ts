@@ -2,7 +2,6 @@ import { describe, expect, it } from 'vitest';
 import {
   GetRunEventMonitorActiveTracePage,
   GetRunFileChanges,
-  GetTaskDelegationRecords,
   GetTeamCommunicationMessages,
   GetTeamMemberEventMonitorActiveTracePage,
   ListWorkspaceRunHistory,
@@ -73,26 +72,3 @@ describe('GetTeamCommunicationMessages query', () => {
   });
 });
 
-describe('GetTaskDelegationRecords query', () => {
-  it('requests durable exact delegator, recipient, target execution, updates, and references', () => {
-    const source = GetTaskDelegationRecords.loc?.source.body ?? '';
-
-    expect(source).toContain('getTaskDelegationRecords');
-    expect(source).toContain('taskId');
-    expect(source).toContain('status');
-    expect(source).toContain('delegatorAgentRunId');
-    expect(source).toContain('recipientAddress');
-    expect(source).toContain('targetAgentRunId');
-    expect(source).toContain('targetTeamRunId');
-    expect(source).toContain('updates');
-    expect(source).toContain('submissionId');
-    expect(source).toContain('reviewId');
-    expect(source).toContain('reviewedSubmissionId');
-    expect(source).toContain('referenceFiles');
-    expect(source).not.toContain('pendingSubmissionId');
-    expect(source).not.toContain('target {');
-    expect(source).not.toContain('ingress');
-    expect(source).not.toContain('coordinator');
-    expect(source).not.toContain('memberRouteKey');
-  });
-});

@@ -22,13 +22,14 @@ export type ConfiguredAgentExecutionDto = Readonly<{
     platform_agent_run_id: string | null;
     launch_configuration: AgentLaunchConfigurationDto;
 }>;
+/** A delegated child Agent; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
 export type TaskAgentExecutionDto = Readonly<{
     kind: "task_agent";
     address: string;
     agent_run_id: string;
     platform_agent_run_id: string | null;
+    delegator_agent_run_id: string | null;
     started_at: string;
-    settled_at: string | null;
 }>;
 export type TaskTeamAgentExecutionDto = Readonly<{
     kind: "task_team_agent";
@@ -44,14 +45,15 @@ export type TaskTeamNestedTeamExecutionDto = Readonly<{
     task_executions: readonly TaskExecutionDto[];
 }>;
 export type TaskTeamMemberExecutionDto = TaskTeamAgentExecutionDto | TaskTeamNestedTeamExecutionDto;
+/** A delegated child Team; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
 export type TaskTeamExecutionDto = Readonly<{
     kind: "task_team";
     address: string;
     team_run_id: string;
     members: readonly TaskTeamMemberExecutionDto[];
     task_executions: readonly TaskExecutionDto[];
+    delegator_agent_run_id: string | null;
     started_at: string;
-    settled_at: string | null;
 }>;
 export type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 export type ConfiguredTeamExecutionDto = Readonly<{
@@ -70,7 +72,6 @@ export type ConfiguredMemberExecutionDto = ConfiguredAgentExecutionDto | Configu
 export declare const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto>;
 export declare const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto>;
 export type TeamRunExecutionTreeDto = Readonly<{
-    schema_version: 2;
     created_at: string;
     archived_at: string | null;
     application_binding: Readonly<{

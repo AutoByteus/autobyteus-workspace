@@ -3,7 +3,6 @@ import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
 import type { TeamRunExecutionTreeDto } from '@autobyteus/team-stream-contracts';
-import type { CollaborationTaskHeadingPresentation } from '~/types/workspace/collaborationTaskPresentation';
 import type { AgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
 
@@ -192,7 +191,8 @@ export interface RunHistoryTransientExecutionRow extends RunHistoryTeamExecution
   kind: 'transient_execution';
   transientKind: 'task_agent' | 'task_team' | 'task_team_child';
   currentStatus: AgentStatus | string | null;
-  task: CollaborationTaskHeadingPresentation | null;
+  /** Display name of the AgentRun that started a delegated child row; null otherwise. */
+  delegatedBy: string | null;
 }
 
 export type RunHistoryTeamExecutionRow =
@@ -290,8 +290,4 @@ export interface ArchiveStoredAgentOrgRunMutationData {
     message: string;
     orgRunId: string | null;
   };
-}
-
-export interface GetTaskDelegationRecordsQueryData {
-  getTaskDelegationRecords: unknown[];
 }

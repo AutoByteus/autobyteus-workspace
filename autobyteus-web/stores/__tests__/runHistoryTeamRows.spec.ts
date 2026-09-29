@@ -5,7 +5,7 @@ import {
   testAgentContext,
   testAgentNode,
   testSubTeamNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 import { buildTeamRowsFromContext } from '../runHistoryTeamRows';
 
@@ -28,10 +28,7 @@ describe('runHistoryTeamRows current execution tree', () => {
           status: AgentStatus.Running, workspaceRootPath: '/workspace',
         }),
       }],
-      tasks: [testTaskRecord({
-        taskId: 'task-1', delegatorAgentRunId: 'solution_designer-run',
-        recipientAddress: '/implementation_engineer', target: { agentRunId: 'task-agent-run-1' },
-      })],
+      delegations: [testDelegation({ delegatorAgentRunId: 'solution_designer-run', recipientAddress: '/implementation_engineer', target: { agentRunId: 'task-agent-run-1' } })],
     });
 
     const rows = buildTeamRowsFromContext(team, 'summary', '2026-06-02T00:00:00.000Z', () => '/workspace');

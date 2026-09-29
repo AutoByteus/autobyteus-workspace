@@ -144,12 +144,13 @@ const writeExecutionTree = (input: {
   for (const entry of input.nested ?? []) {
     if (!rootAgents.some(agent => agent.address === entry.address)) rootAgents.push(testAgentNode(entry.address));
   }
+  const delegatorAgentRunId = rootAgents[0]!.agentRunId;
   const taskExecutions = [
-    ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunId: null,
-      startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00:00:00.000Z" })),
+    ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunId: null, delegatorAgentRunId,
+      startedAt: "2026-09-01T00:00:00.000Z" })),
     ...(input.nested ?? []).map(entry => ({ address: entry.address, teamRunId: entry.teamRunId,
       members: [{ address: entry.agentAddress, agentRunId: entry.agentRunId, platformAgentRunId: null }],
-      taskExecutions: [], startedAt: "2026-09-01T00:00:00.000Z", settledAt: null })),
+      taskExecutions: [], delegatorAgentRunId, startedAt: "2026-09-01T00:00:00.000Z" })),
   ] as typeof tree.rootTeam.taskExecutions;
   const teamDir = new AgentMemoryLayout(input.memoryDir).getTeamDirPath({
     rootTeamRunId: input.rootTeamRunId,
@@ -157,7 +158,7 @@ const writeExecutionTree = (input: {
   });
   fs.mkdirSync(teamDir, { recursive: true });
   fs.writeFileSync(path.join(teamDir, "team_run_execution_tree.json"), JSON.stringify({ ...tree, rootTeam: { ...tree.rootTeam, members: testExecutionTree({ rootTeamRunId: input.rootTeamRunId, coordinatorAddress: "/A", children: rootAgents }).rootTeam.members, taskExecutions } }), "utf8");
-  writeAttachmentSidecars(teamDir, "team", input.rootTeamRunId, rootAgents[0]!.agentRunId, taskExecutions);
+  writeAttachmentSidecars(teamDir, "team", input.rootTeamRunId);
 };
 
 describe("REST context-files routes", () => {

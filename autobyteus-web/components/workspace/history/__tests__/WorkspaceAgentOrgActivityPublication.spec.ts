@@ -72,7 +72,7 @@ beforeEach(() => {
       if (stopped && !stoppedInspectionAvailable) throw new Error('Stopped inspection unavailable')
       const view = taskBearingView()
       if (stopped) { view.is_active = false; view.agent_statuses = [] }
-      return { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
+      return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
     }
     if (variables?.agentRunId) return { data: { getAgentOrgMemberRunProjection: {
       agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
@@ -96,7 +96,7 @@ async function open(address: string) {
   const socket = Socket.instances[0]!
   socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'session' } })
   socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: {
-    root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: taskBearingView(),
+    root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: taskBearingView(),
   } })
   await vi.waitFor(() => expect(orgs.contextFor('org-run')?.phase).toBe('live'))
   await flushPromises()

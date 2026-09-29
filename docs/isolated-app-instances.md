@@ -4,6 +4,9 @@ This guide is for agents and humans who need a second, disposable AutoByteus des
 the one they use every day. Typical uses are recording tutorial videos, testing a source change in
 the real desktop app, and taking screenshots for documentation.
 
+To decide whether an isolated instance is the right test path for a change, see the workspace
+testing guideline [TESTING.md](../TESTING.md).
+
 The workflow uses two tools:
 
 - **`pnpm isolated-app`** (this repository) starts, lists, stops and restarts isolated instances.
@@ -25,7 +28,7 @@ profile (see the [packaging contract](../autobyteus-web/docs/electron_packaging.
 | Never reads or writes your production data | The data root must not overlap production paths. The embedded server receives only a system-baseline environment (home, locale, proxy, display, …), so production `AUTOBYTEUS_*`, database and provider settings from the launching shell never reach it. |
 | Works from an agent shell | The inherited `ELECTRON_RUN_AS_NODE` is removed for the launch |
 | No update checks, prompts or update errors | The instance answers update requests with a quiet `disabled` state |
-| Control endpoint on loopback only | Chromium remote debugging on `127.0.0.1:<control port>` (default **9333**) |
+| Control endpoint on loopback only | Chromium remote debugging on `127.0.0.1:<control port>` (a free port unless `--control-port` is given) |
 | Keeps rendering while covered by other windows | Started with `--disable-backgrounding-occluded-windows --disable-renderer-backgrounding` |
 | Main app unaffected | Separate ports, data and process group; `stop` ends only the instance's own process group |
 
@@ -69,7 +72,7 @@ Exit codes: `0` ok, `2` usage (`USAGE_ERROR`, `DATA_ROOT_INVALID`, `INSTANCE_ID_
 ### Start
 
 ```bash
-# Installed app (macOS default), control port 9333, auto-created data root
+# Installed app (macOS default), free control and server ports, auto-created data root
 pnpm --dir <repo> isolated-app start
 
 # A specific app: an .app bundle or an executable
@@ -80,7 +83,7 @@ pnpm --dir <repo> isolated-app start --from-worktree
 pnpm --dir <repo> isolated-app start --build
 
 # Options
-#   --control-port <n>   CDP control port (default 9333; start fails if it is busy)
+#   --control-port <n>   CDP control port (default: a free port; an explicit busy port fails)
 #   --server-port <n>    backend port (default: a free port)
 #   --data-root <path>   use an existing directory you own; it is never deleted
 #   --keep               keep the auto-created data root when the instance stops
@@ -92,23 +95,24 @@ there is no standard install location, so pass `--app` or use `--from-worktree`.
 output goes to stderr). A build failure launches nothing.
 
 `start` waits until the backend answers `/rest/health` and the main window is listed on the control
-port. Readiness takes a few seconds for the installed app and times out after 120 s. The result:
+port. Readiness takes a few seconds for the installed app and times out after 120 s. The result
+reports the ports that were chosen; keep `instanceId` and `controlPort` for all later steps:
 
 ```json
 {
-  "instanceId": "iso-9333-4049",
+  "instanceId": "iso-53817-4049",
   "pid": 69631,
   "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
   "backendUrl": "http://127.0.0.1:62342",
   "graphqlUrl": "http://127.0.0.1:62342/graphql",
-  "controlEndpoint": "http://127.0.0.1:9333",
-  "controlPort": 9333,
+  "controlEndpoint": "http://127.0.0.1:53817",
+  "controlPort": 53817,
   "serverPort": 62342,
   "dataRoot": "/private/var/folders/…/T/autobyteus-isolated-root-qNap5v",
   "ownsDataRoot": true,
   "keepDataRoot": false,
   "databaseUrl": "file:/private/var/folders/…/autobyteus-isolated-root-qNap5v/server-data/db/production.db",
-  "logPath": "/var/folders/…/T/autobyteus-isolated-app/iso-9333-4049.log"
+  "logPath": "/var/folders/…/T/autobyteus-isolated-app/iso-53817-4049.log"
 }
 ```
 
@@ -119,12 +123,12 @@ are removed, and the error message contains the last 40 log lines.
 
 ```bash
 pnpm --dir <repo> isolated-app list                    # records with "running": true|false
-pnpm --dir <repo> isolated-app stop [<instanceId>] [--keep]
-pnpm --dir <repo> isolated-app restart [<instanceId>]
+pnpm --dir <repo> isolated-app stop <instanceId> [--keep]
+pnpm --dir <repo> isolated-app restart <instanceId>
 ```
 
-The id may be omitted when exactly one instance is recorded. Several instances can run at once on
-different control ports.
+Pass the `instanceId` your `start` reported. The id may be omitted only when exactly one instance
+is recorded; when other people's instances may exist, always pass it.
 
 - `stop` checks that the recorded process is still this instance, closes its whole process group
   (graceful, then forced) and reports `wasRunning`, `forced`, `dataRootRemoved`, and whether both
@@ -137,9 +141,17 @@ different control ports.
 
 Records and logs live in `<OS temp dir>/autobyteus-isolated-app/`.
 
+### Parallel instances
+
+Several engineers, agents or worktrees can run instances at the same time. Each `start` without
+`--control-port` gets its own free control port (and server port), so parallel starts do not
+collide. `list` shows every recorded instance on the machine, not only yours. Use the `controlPort`
+and `instanceId` from your own `start` result, and never stop or restart an instance you did not
+start.
+
 ## Connect and control
 
-Point browser-automation at the control port and switch on attach-only. Attach-only never launches
+Point browser-automation at your instance's `controlPort` and switch on attach-only. Attach-only never launches
 a browser: if the instance is not running, commands fail with `BROWSER_UNAVAILABLE` (exit 3) naming
 the endpoint.
 
@@ -147,18 +159,19 @@ Agents (skill + CLI, the primary path) resolve `scripts/browser` from the browse
 `SKILL.md` and run it from their task workspace:
 
 ```bash
-env CHROME_REMOTE_DEBUGGING_PORT=9333 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "<browser launcher>" list-tabs
-env CHROME_REMOTE_DEBUGGING_PORT=9333 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "<browser launcher>" dom-snapshot --tab-id "$TAB_ID"
+env CHROME_REMOTE_DEBUGGING_PORT=<controlPort> BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "<browser launcher>" list-tabs
+env CHROME_REMOTE_DEBUGGING_PORT=<controlPort> BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "<browser launcher>" dom-snapshot --tab-id "$TAB_ID"
 ```
 
-MCP clients configure the server once with the same two variables:
+MCP clients configure the server with the same two variables. The configuration is fixed to one
+instance's port, so update it after each new `start` (a `restart` keeps the port):
 
 ```json
 {
   "mcpServers": {
     "browser": {
       "command": "/absolute/path/to/autobyteus-mcps/browser-automation/scripts/browser-mcp",
-      "env": { "CHROME_REMOTE_DEBUGGING_PORT": "9333", "BROWSER_AUTOMATION_ATTACH_ONLY": "1" }
+      "env": { "CHROME_REMOTE_DEBUGGING_PORT": "<controlPort>", "BROWSER_AUTOMATION_ATTACH_ONLY": "1" }
     }
   }
 }
@@ -190,6 +203,16 @@ with `NOT_FOUND`, `AMBIGUOUS` (with candidates), `OBSCURED` (matches covered, fo
 modal; `covering` names the cover), `TIMEOUT`, `NOT_EDITABLE` or `INVALID_TARGET`. The full API is in the browser-automation
 `SKILL.md`.
 
+### Page dialogs
+
+Some AutoByteus actions ask for confirmation with a native `confirm()` (for example removing a node).
+Pass the answer with the action: `run-script … --dialog accept` or `--dialog dismiss`.
+(`--prompt-text` answers a `prompt` in browsers; the Electron app has no `window.prompt()`.) Without it the dialog is dismissed so the app is not left blocked,
+and the command fails with `DIALOG_DECISION_REQUIRED` showing the question. Decide, then repeat
+the action with `--dialog`. `alert`s are closed and reported. A dialog left open (for example
+raised between commands) must be answered in the window. Until then commands fail with
+`PAGE_BLOCKED`. Details are in the browser-automation `SKILL.md`.
+
 ### Screenshots
 
 ```bash
@@ -214,8 +237,9 @@ click ripples and captions. No OS screen-recording permission is needed.
   `stop-recording` returns it with `end_reason: target_closed`.
 - If the agent run that started a recording is cancelled, the recording keeps going. Finish it
   from any later session with `stop-recording` for the same tab, or stop the instance.
-- `alert`/`confirm` dialogs raised during a recording stay open for the app or a person. While one
-  is open, other browser commands wait until it is answered.
+- A dialog raised by a command during a recording is handled by that command (see "Page dialogs").
+  One raised between commands stays open for the app or a person; until it is answered, commands
+  fail with `PAGE_BLOCKED`.
 - A second start on the same tab fails with `RECORDING_ALREADY_ACTIVE`, and a stop without a
   recording fails with `RECORDING_NOT_ACTIVE`. A missing `ffmpeg` fails at start with
   `RECORDING_DEPENDENCY_MISSING`.
@@ -255,7 +279,7 @@ An isolated instance starts empty.
   script -q /dev/null pnpm --dir <repo> secrets:import -- --source /absolute/path/to/keys.env --database-url "<databaseUrl>"
   # Linux
   script -qc "pnpm --dir <repo> secrets:import -- --source /absolute/path/to/keys.env --database-url '<databaseUrl>'" /dev/null
-  pnpm --dir <repo> isolated-app restart
+  pnpm --dir <repo> isolated-app restart <instanceId>
   ```
 
   `--dry-run` previews the import first. The lifecycle command never imports keys and never reads
@@ -265,7 +289,7 @@ An isolated instance starts empty.
 
 | Symptom | Cause and fix |
 | --- | --- |
-| `CONTROL_PORT_IN_USE` | Another instance (named in the message) or program uses the port. Stop it, or pass `--control-port` and use the same port for browser-automation. |
+| `CONTROL_PORT_IN_USE` | Only with an explicit `--control-port`: another instance (named in the message) or program uses that port. Omit `--control-port` to get a free port, or pass another port. Do not stop an instance you did not start. |
 | `APP_NOT_FOUND` | No installed app (or Linux). Pass `--app` or use `--from-worktree`/`--build`. |
 | `APP_ISOLATION_UNSUPPORTED` | The app build (named in the message) has no isolated-launch support: its resources lack a valid `isolated-launch.json`. Use `--from-worktree`/`--build`, or update the installed app to a release with isolated-launch support. |
 | `APPIMAGE_EXTRACTION_REQUIRED` | `--app` points at a packed AppImage. Run `<file>.AppImage --appimage-extract` in a directory you choose, then `start --app <that directory>/squashfs-root/autobyteus` (the extracted executable), or use `--from-worktree`/`--build`. |
@@ -273,7 +297,8 @@ An isolated instance starts empty.
 | `bad option: --remote-debugging-port` when launching by hand | The shell inherited `ELECTRON_RUN_AS_NODE=1`. `pnpm isolated-app` removes it; for manual launches use `env -u ELECTRON_RUN_AS_NODE …`. |
 | `BROWSER_UNAVAILABLE` from browser-automation | Nothing listens on the configured port: the instance stopped, or `CHROME_REMOTE_DEBUGGING_PORT` differs from `controlPort`. |
 | `TAB_NOT_FOUND` after `restart` | Tab ids change on restart; run `list-tabs` again. |
-| Browser command hangs | A page `alert`/`confirm` is open; answer it in the window. |
+| `PAGE_BLOCKED` from browser-automation | A page dialog is open (or a page hangs); answer it in the window, then retry. |
+| `DIALOG_DECISION_REQUIRED` | The action raised a `confirm`/`prompt`; repeat it with `--dialog accept` or `--dialog dismiss`. |
 | `STOP_UNCONFIRMED` | The process group did not end; the record is kept so `stop` can be retried. |
 
 ## Linux
@@ -311,6 +336,7 @@ Validation of this workflow is macOS-only; Linux is supported on a best-effort b
 
 ## Related documentation
 
+- [TESTING.md](../TESTING.md): the workspace testing guideline
 - [Electron packaging, `e2e` launch profile and server environment](../autobyteus-web/docs/electron_packaging.md#packaged-e2e-launch-profile)
 - [Packaged Electron E2E test launcher](../autobyteus-web/README.md#packaged-electron-e2e-launches)
 - [Secret management and `secrets:import`](../autobyteus-server-ts/docs/modules/secret_management.md)

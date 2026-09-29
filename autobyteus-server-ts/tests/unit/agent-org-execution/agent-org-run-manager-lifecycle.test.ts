@@ -38,6 +38,7 @@ const fakeRun = (orgRunId: string, onTerminated?: () => void): AgentOrgRun => {
       onTerminated?.();
       return { accepted: true, code: "TERMINATED", message: "stopped" };
     }),
+    hasAgentExecution: vi.fn(() => false),
     deliverExactAgentMessage: vi.fn(),
   };
   return run as unknown as AgentOrgRun;

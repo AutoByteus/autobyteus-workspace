@@ -1,0 +1,11 @@
+open_tab                        0.56s isError=False
+plain                           0.30s isError=False
+read_page                       0.27s isError=False
+undecided confirm               0.28s isError=True
+value after undecided           0.28s isError=False
+dismiss                         0.29s isError=False
+accept                          0.28s isError=False
+prompt text                     0.29s isError=False
+alert                           0.33s isError=False
+invalid                         0.00s isError=True
+close_tab                       0.30s isError=False

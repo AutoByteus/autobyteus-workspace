@@ -9,6 +9,7 @@
     :data-transient-kind="row.transientKind"
     :data-team-run-id="row.teamRunId"
     :data-member-address="row.memberAddress"
+    :data-agent-run-id="row.agentRunId ?? undefined"
     :data-tree-depth="row.depth"
     :title="identityLabel"
     :aria-label="accessibleLabel"
@@ -77,10 +78,10 @@
       <span class="min-w-0 flex-1" :class="{ 'font-semibold': row.memberKind === 'agent_team' }">
         <span class="block truncate">{{ row.displayName }}</span>
         <span
-          v-if="combinedTaskStatus"
-          class="mt-0.5 block truncate text-[0.6875rem] font-medium text-slate-600"
-          data-test="workspace-transient-task-status"
-        >{{ combinedTaskStatus }}</span>
+          v-if="startedByLabel"
+          class="mt-0.5 block truncate text-[0.6875rem] text-slate-500"
+          data-test="workspace-transient-started-by"
+        >{{ startedByLabel }}</span>
         <span
           v-if="inspectionAttempt?.state === 'loading'"
           class="mt-0.5 block text-[0.6875rem] font-medium text-indigo-700"
@@ -149,32 +150,25 @@ const roleLabel = computed(() => t(
 
 const status = computed(() => props.row.currentStatus || AgentStatus.Offline);
 const statusLabel = computed(() => t(`workspace.history.hierarchy.status.${status.value}`));
-const executionStatusLabel = computed(() => t(`workspace.task_monitor.execution.${status.value}`));
-const lifecycleStatusLabel = computed(() => props.row.task
-  ? t(`workspace.task_monitor.lifecycle.${props.row.task.displayStatus}`)
+const startedByLabel = computed(() => props.row.delegatedBy
+  ? t('workspace.members.started_by', { name: props.row.delegatedBy })
   : '');
-const combinedTaskStatus = computed(() => props.row.task && props.row.memberKind === 'agent'
-  ? t('workspace.task_monitor.combined_status', {
-    lifecycle: lifecycleStatusLabel.value,
-    execution: executionStatusLabel.value,
-  })
-  : lifecycleStatusLabel.value);
 const inspectionAttempt = computed(() => props.row.agentRunId
   ? runHistoryStore.getTeamMemberInspectionAttempt(props.row.teamRunId, props.row.agentRunId)
   : null);
 
 const identityLabel = computed(() => t('workspace.history.hierarchy.identity', {
   role: roleLabel.value,
-  name: props.row.task?.description || props.row.displayName,
+  name: props.row.displayName,
   address: props.row.memberAddress,
 }));
 
 const accessibleLabel = computed(() => t('workspace.history.hierarchy.tree_item', {
   role: roleLabel.value,
-  name: props.row.task?.description || props.row.displayName,
+  name: props.row.displayName,
   address: props.row.memberAddress,
   level: props.row.depth + 1,
-  status: combinedTaskStatus.value || statusLabel.value,
+  status: startedByLabel.value ? `${statusLabel.value}, ${startedByLabel.value}` : statusLabel.value,
 }));
 
 const disclosureLabel = computed(() => t(

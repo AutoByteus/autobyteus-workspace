@@ -1,7 +1,7 @@
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
+import { AgentOrgExecutionIndex } from "../../legacy/released-run-package-shapes/agent-org-execution-index-v1.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../../run-history/store/agent-org-run-execution-tree-schema.js";
+import { validateAgentOrgRunExecutionTreePayload } from "../../legacy/released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
 import { assertMigrationRootId, migrationPathExists, readMigrationJson, type HistoryCandidatePlan } from "./agent-org-history-candidate-plan.js";
 import {
   AgentOrgTokenAttributionDataRejection,

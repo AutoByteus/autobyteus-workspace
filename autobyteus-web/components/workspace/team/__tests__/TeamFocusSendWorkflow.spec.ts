@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { defineComponent, nextTick, type PropType } from 'vue';
+import { defineComponent, type PropType } from 'vue';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import CollaborationOverviewPanel from '~/components/workspace/collaboration/CollaborationOverviewPanel.vue';
@@ -13,24 +13,15 @@ import {
   buildTestTeamContext,
   testAgentNode,
   testSubTeamNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
-import { testCollaborationMessagesContextView, testCollaborationTasksContextView } from '~/test-support/teamWorkspaceContextView';
-import type { CollaborationTasksContextView } from '~/types/workspace/collaborationTasksContextView';
+import { testCollaborationMessagesContextView } from '~/test-support/teamWorkspaceContextView';
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView';
 
 const labels: Record<string, string> = {
   'agentInput.components.agentInput.AgentUserInputTextArea.type_a_message': 'Type a message...',
   'workspace.components.workspace.team.TeamOverviewPanel.messages': 'Messages',
   'workspace.components.workspace.team.TeamOverviewPanel.messages_count': 'Messages',
-  'workspace.components.workspace.team.TeamDelegatedTasksSection.tasks': 'Tasks',
-  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_singular': 'task',
-  'workspace.components.workspace.team.TeamDelegatedTasksSection.task_count_plural': 'tasks',
-  'workspace.components.workspace.team.TeamDelegatedTasksSection.empty': 'No delegated tasks yet',
-  'workspace.components.workspace.team.TeamDelegatedTasksSection.empty_detail': 'Delegated work appears here from saved task records.',
-  'workspace.components.workspace.team.TeamDelegatedTasksSection.focus': 'Focus',
-  'workspace.components.workspace.team.TeamDelegatedTasksSection.select_task': 'Select a task to read it.',
-  'workspace.components.workspace.team.TeamDelegatedTasksSection.waiting_activity_notice': 'Waiting for user action in Activity.',
   'workspace.components.workspace.team.AgentTeamEventMonitor.no_active_team_session': 'No active team session',
   'workspace.components.workspace.team.AgentTeamEventMonitor.select_a_team_member_from_the': 'Select a team member',
 };
@@ -38,11 +29,10 @@ const labels: Record<string, string> = {
 const WorkflowHarness = defineComponent({
   components: { CollaborationOverviewPanel, AgentTeamEventMonitor, AgentUserInputTextArea },
   props: {
-    tasks: { type: Object as PropType<CollaborationTasksContextView>, required: true },
     messages: { type: Object as PropType<CollaborationMessagesContextView>, required: true },
   },
   setup: () => ({ composerTarget: useComposerTarget() }),
-  template: '<div><CollaborationOverviewPanel :tasks="tasks" :messages="messages" /><AgentTeamEventMonitor /><AgentUserInputTextArea data-test="workflow-composer" :target="composerTarget" /></div>',
+  template: '<div><CollaborationOverviewPanel :messages="messages" /><AgentTeamEventMonitor /><AgentUserInputTextArea data-test="workflow-composer" :target="composerTarget" /></div>',
 });
 
 const CollaborationMessagesPanelStub = defineComponent({
@@ -57,16 +47,8 @@ const mountWorkflow = () => {
   const studentOne = testAgentNode('/StudentStudyGroup/student_one', { agentRunId: 'student-one-persistent-run' });
   const studentTwo = testAgentNode('/StudentStudyGroup/student_two', { agentRunId: 'student-two-persistent-run' });
   const tasks = [
-    testTaskRecord({
-      taskId: 'task_0001', delegatorAgentRunId: 'teacher-persistent-run',
-      recipientAddress: '/StudentStudyGroup/student_two', target: { agentRunId: 'student-two-task-run' },
-      description: 'Draft the implementation handoff.',
-    }),
-    testTaskRecord({
-      taskId: 'task_0002', delegatorAgentRunId: 'teacher-persistent-run',
-      recipientAddress: '/StudentStudyGroup', target: { teamRunId: 'study-group-task-run' },
-      description: 'Review the implementation as a team.',
-    }),
+    testDelegation({ delegatorAgentRunId: 'teacher-persistent-run', recipientAddress: '/StudentStudyGroup/student_two', target: { agentRunId: 'student-two-task-run' } }),
+    testDelegation({ delegatorAgentRunId: 'teacher-persistent-run', recipientAddress: '/StudentStudyGroup', target: { teamRunId: 'study-group-task-run' } }),
   ];
   const teamContext = buildTestTeamContext({
     teamRunId: 'classroom-root-run', teamDefinitionName: 'Nested Classroom Test Team',
@@ -76,7 +58,7 @@ const mountWorkflow = () => {
         teamRunId: 'study-group-persistent-run', coordinatorAddress: '/StudentStudyGroup/student_one',
       }),
     ],
-    coordinatorAddress: '/Teacher', focusedAgentRunId: 'teacher-persistent-run', tasks,
+    coordinatorAddress: '/Teacher', focusedAgentRunId: 'teacher-persistent-run', delegations: tasks,
   });
   useAgentTeamContextsStore().addTeamContext(teamContext);
   useAgentSelectionStore().selectRunWithoutShellNavigation('classroom-root-run', 'team');
@@ -84,14 +66,12 @@ const mountWorkflow = () => {
   const sendMessageSpy = vi.spyOn(teamRunStore, 'sendMessageToFocusedMember').mockResolvedValue(undefined);
   const wrapper = mount(WorkflowHarness, {
     props: {
-      tasks: testCollaborationTasksContextView(teamContext),
       messages: testCollaborationMessagesContextView(teamContext),
     },
     global: {
       stubs: {
         Icon: true,
         MarkdownRenderer: { props: ['content'], template: '<div data-test="markdown-renderer">{{ content }}</div>' },
-        TeamTaskReferenceViewer: { template: '<div data-test="task-reference-viewer" />' },
         CollaborationMessagesPanel: CollaborationMessagesPanelStub,
         AgentEventMonitor: {
           props: ['conversation', 'runId', 'agentName'],
@@ -104,26 +84,16 @@ const mountWorkflow = () => {
   return { wrapper, teamContext, sendMessageSpy };
 };
 
-const expandTasks = async (wrapper: ReturnType<typeof mount>) => {
-  const body = wrapper.get('[data-test="team-delegated-tasks-body"]');
-  if ((body.attributes('style') ?? '').includes('display: none')) {
-    await wrapper.get('[data-test="team-delegated-tasks-header"]').trigger('click');
-  }
-  await nextTick();
-};
-
-describe('Team Tasks focus and current AgentRun send workflow', () => {
+describe('Team Messages-only collaboration and current AgentRun send workflow', () => {
   beforeEach(() => vi.clearAllMocks());
 
-  it('selects task-Agent details without changing the exact focused send target', async () => {
+  it('shows no delegated-task section and keeps the exact focused send target', async () => {
     const { wrapper, teamContext, sendMessageSpy } = mountWorkflow();
-    await expandTasks(wrapper);
-    await wrapper.get('[data-test="team-delegated-task-agent-entry"] [data-test="team-delegated-task-summary-row"]').trigger('click');
     await flushPromises();
-    expect(teamContext.view.getFocusedAgentRunId()).toBe('teacher-persistent-run');
+    expect(wrapper.find('[data-test="team-delegated-tasks-header"]').exists()).toBe(false);
+    expect(wrapper.find('[data-test="team-delegated-task-agent-entry"]').exists()).toBe(false);
     expect(wrapper.get('[data-test="agent-event-monitor"]').attributes('data-run-id')).toBe('teacher-persistent-run');
     expect(wrapper.get('[data-test="team-communication-panel"]').attributes('data-focused-agent-run-id')).toBe('teacher-persistent-run');
-    expect(wrapper.get('[data-test="delegated-task-task-body"]').text()).toContain('Draft the implementation handoff.');
 
     const composer = wrapper.get('[data-test="workflow-composer"]');
     await composer.get('textarea').setValue('Please continue the coordinator work.');
@@ -134,14 +104,11 @@ describe('Team Tasks focus and current AgentRun send workflow', () => {
     expect(teamContext.view.getFocusedAgentRunId()).toBe('teacher-persistent-run');
   });
 
-  it('selects a task-Team summary without making its placement a send target', async () => {
+  it('focuses a delegated task Agent through the view and retargets the Messages perspective', async () => {
     const { wrapper, teamContext } = mountWorkflow();
-    await expandTasks(wrapper);
-    await wrapper.get('[data-test="team-delegated-task-team-entry"] [data-test="team-delegated-task-summary-row"]').trigger('click');
+    teamContext.view.focusAgent('student-two-task-run');
     await flushPromises();
-    expect(teamContext.view.getFocusedAgentRunId()).toBe('teacher-persistent-run');
-    expect(wrapper.get('[data-test="delegated-task-task-body"]').text()).toContain('Review the implementation as a team.');
-    expect(wrapper.find('[data-test="delegated-task-member-row"]').exists()).toBe(false);
-    expect(wrapper.find('[data-test="delegated-task-technical-details"]').exists()).toBe(false);
+    expect(teamContext.view.getFocusedAgentRunId()).toBe('student-two-task-run');
+    expect(wrapper.get('[data-test="agent-event-monitor"]').attributes('data-run-id')).toBe('student-two-task-run');
   });
 });

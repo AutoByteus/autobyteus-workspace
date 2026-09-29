@@ -1,0 +1,206 @@
+TP
+Test Planner - 34D1
+Idle
+You
+Below is the file TESTING.md from the root of the AutoByteus repository. Using only this document, write a short validation plan for each of these two changes, naming the exact commands you would run and quoting the TESTING.md section or rule that led you to each choice.
+
+Change 1: the search box on the Agents page now also matches an agent's role, implemented in a Vue component and its Pinia store.
+Change 2: the Electron main process now registers the app-update IPC handlers through a different controller class.
+
+----- TESTING.md -----
+# Testing AutoByteus
+
+This is the testing guideline for the AutoByteus workspace. Read it before
+planning validation for a change. It tells you which test layers exist, which
+commands run them, which path to choose for a given change, and the rules every
+test run must follow. Details live in the linked documents; this file is the
+map.
+
+## Test layers and commands
+
+Run commands from the repository root unless noted. `pnpm -C <dir>` runs a
+package's script from its own directory.
+
+| Layer | What it proves | Command |
+| --- | --- | --- |
+| Web unit and component tests | Nuxt renderer components, stores, utilities (colocated `__tests__`) | `pnpm -C autobyteus-web test:nuxt` |
+| Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
+| All web tests | Both of the above | `pnpm -C autobyteus-web test` |
+| Server tests | Backend unit, integration and E2E suites (Vitest) | `pnpm -C autobyteus-server-ts test` — one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
+| Core library tests | `autobyteus-ts` agent runtime, tools, LLM layer | `pnpm -C autobyteus-ts test` |
+| Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` (each package with a `test` script) |
+| Server E2E (deterministic) | Server E2E suite with its own test-owned database and runtime | `pnpm test:e2e` |
+| Real-provider E2E | Configured external providers, explicitly | `pnpm test:e2e:real:preflight`, then `pnpm test:e2e:real` |
+| Codex runtime live E2E | Codex App Server transport | `RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts test -- --run` |
+| Browser dev-path probes | Renderer journeys in headless Chrome | `pnpm -C autobyteus-web test:e2e:<name>` (scripts in `autobyteus-web/package.json`, sources in `autobyteus-web/tests/e2e/`) |
+| Packaged Electron harness | Packaged app launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
+| Isolated desktop instances | The real desktop app, driven like a user | `pnpm --silent isolated-app start --build` (then drive with the browser-automation skill; `pnpm --silent isolated-app stop`) |
+
+Notes:
+
+- **Real-provider credentials** live in the encrypted vault of the target
+  database. Provision them with the importer, never by editing `.env` files:
+  `pnpm secrets:import -- --source <file> --database-url file:<absolute db path>`
+  (answer the `IMPORT` prompt; agents without an interactive terminal can wrap
+  the command in `script -q /dev/null …` on macOS or `script -qc "…" /dev/null`
+  on Linux). Preflight reports what is configured; missing capabilities are
+  reported, never counted as passed. See
+  [Secret Management](autobyteus-server-ts/docs/modules/secret_management.md).
+- **Browser dev-path probes** document their prerequisites in the file header.
+  Most start their own Nuxt dev server against mocked backend routes; others
+  take a `--base-url` of a running frontend. For a real local stack use
+  `pnpm dev` (backend `http://127.0.0.1:8000`, frontend
+  `http://127.0.0.1:3000`); see
+  [Local full-stack development](README.md#local-full-stack-development).
+- **Isolated desktop instances** are full AutoByteus desktop apps with their
+  own ports and data folder. Start, control, screenshot, record and stop them as
+  described in [Isolated AutoByteus Instances](docs/isolated-app-instances.md).
+  Control them with the browser-automation skill
+  (`autobyteus_mcps/browser-automation`), using
+  `CHROME_REMOTE_DEBUGGING_PORT=<control port>` and
+  `BROWSER_AUTOMATION_ATTACH_ONLY=1`.
+
+## Choosing the path
+
+Start with the smallest layer that directly proves the change, then add the
+layer that closes the remaining confidence gap.
+
+| The change affects… | Prove it with… |
+| --- | --- |
+| Backend logic, APIs, persistence, runtimes | Server tests (+ `pnpm test:e2e` for API journeys) |
+| Core agent runtime or tools | `autobyteus-ts` tests (+ server tests for integration) |
+| Renderer UI, stores, client–server behavior that also runs in a browser | Web unit tests + a browser dev-path probe |
+| Desktop-shell behavior: Electron main process, preload/IPC, updater, windows, app lifecycle, embedded server startup, packaging | Electron main-process tests + an **isolated desktop instance** of a worktree build |
+| A full real-product journey a user would perform | An **isolated desktop instance** of a worktree build |
+| Behavior against real model or search providers | Real-provider E2E (preflight first), or an isolated instance with keys imported |
+| Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
+
+Browser probes are fast and headless; use them for web-equivalent behavior.
+An isolated desktop instance is slower (it needs an app build) but exercises the
+real desktop app; use it whenever desktop-shell behavior or the full product
+matters.
+
+## Rules
+
+1. **Test unreleased changes on a worktree build.** The installed app does not
+   contain your change. Use `pnpm --silent isolated-app start --build` (or
+   `--from-worktree` when that worktree's app is already built). Builds without
+   isolated-launch support are refused with `APP_ISOLATION_UNSUPPORTED`.
+2. **Never test against the user's running AutoByteus** or its data
+   (`~/.autobyteus`, the OS application-data folders). Only isolated instances,
+   test-owned databases and the development stack are test targets.
+3. **One control port per parallel instance.** The default is 9333; pass
+   `--control-port <n>` to a second instance and use the same port for the
+   browser-automation calls.
+4. **Credentials go through the importer** into the target database, then
+   `pnpm --silent isolated-app restart` for an isolated instance.
+5. **Stop what you started.** `pnpm --silent isolated-app stop` for instances,
+   `Ctrl+C` for `pnpm dev`. Leave other processes and data alone.
+6. **Assertions first.** Prove behavior with test assertions, API results and
+   DOM/state checks. Screenshots and recordings are supporting evidence, not
+   proof on their own.
+7. **Page dialogs are answered by the agent.** When an action may raise a
+   native page dialog (`confirm`, `prompt`, "Leave site?"), pass the decision
+   with it: `run-script … --dialog accept` or `--dialog dismiss`
+   (`--prompt-text` for prompts). Without a decision the command fails with
+   `DIALOG_DECISION_REQUIRED` and the dialog's message; re-run with your
+   decision. OS dialogs (file pickers) and dialogs left open in other tabs are
+   answered on screen — by the user, or on Linux by a computer-use agent. While
+   such a dialog is open, browser commands fail with `PAGE_BLOCKED` (within
+   about 8 s) until it is answered.
+8. **Linux:** use `--from-worktree`/`--build` or an extracted AppImage
+   (`--app <dir>/squashfs-root/autobyteus`), a real or virtual display, and
+   `ffmpeg` for recordings. See
+   [Isolated instances on Linux](docs/isolated-app-instances.md#linux).
+
+## Evidence and cleanup
+
+- Keep test artifacts (screenshots, recordings, logs) in the ticket or test
+  output folder, not in the repository root.
+- Record in the validation report which layers ran, the exact commands, and
+  anything not covered and why.
+- After a run, `pnpm --silent isolated-app list` should show no instances you
+  started.
+
+## Related documentation
+
+- [README: Packaged Electron API/E2E testing](README.md#packaged-electron-apie2e-testing)
+- [README: Local full-stack development](README.md#local-full-stack-development)
+- [README: Testing (Codex Runtime)](README.md#testing-codex-runtime)
+- [Frontend testing](autobyteus-web/README.md#testing) and
+  [packaged E2E launches](autobyteus-web/README.md#packaged-electron-e2e-launches)
+- [Server tests](autobyteus-server-ts/README.md#tests)
+- [Isolated AutoByteus Instances](docs/isolated-app-instances.md)
+- [Secret Management](autobyteus-server-ts/docs/modules/secret_management.md)
+
+TP
+Test Planner
+Validation Plan
+Change 1: Agents page search box also matches role (Vue component + Pinia store)
+
+Classification: This is renderer UI + store logic. Per the “Choosing the path” table:
+
+“Renderer UI, stores, client–server behavior that also runs in a browser | Web unit tests + a browser dev-path probe”
+
+Commands to run:
+
+pnpm -C autobyteus-web test:nuxt — justified by the layer table entry:
+
+“Web unit and component tests | Nuxt renderer components, stores, utilities (colocated __tests__) | pnpm -C autobyteus-web test:nuxt”
+
+This directly exercises the changed Vue component and its Pinia store, which is exactly what this layer proves.
+
+A browser dev-path probe for the Agents page search journey: pnpm -C autobyteus-web test:e2e:<name> (the relevant script under autobyteus-web/package.json, sourced from autobyteus-web/tests/e2e/) — justified by the same “Choosing the path” row above requiring a browser dev-path probe in addition to unit tests, and by the layer description:
+
+“Browser dev-path probes | Renderer journeys in headless Chrome | pnpm -C autobyteus-web test:e2e:<name> (scripts in autobyteus-web/package.json, sources in autobyteus-web/tests/e2e/)”
+
+Rule to follow while running these: Rule 6, “Assertions first”:
+
+“Prove behavior with test assertions, API results and DOM/state checks. Screenshots and recordings are supporting evidence, not proof on their own.”
+
+So the probe’s assertions should check the DOM/state for filtered results matching role, not just a screenshot.
+
+Not needed here: No isolated desktop instance is required, since this is not desktop-shell behavior — per the guidance: “Browser probes are fast and headless; use them for web-equivalent behavior. An isolated desktop instance is slower… use it whenever desktop-shell behavior or the full product matters.” This change is web-equivalent behavior only.
+
+Change 2: Electron main process registers app-update IPC handlers via a different controller class
+
+Classification: This is desktop-shell behavior (Electron main process, IPC, updater). Per the “Choosing the path” table:
+
+“Desktop-shell behavior: Electron main process, preload/IPC, updater, windows, app lifecycle, embedded server startup, packaging | Electron main-process tests + an isolated desktop instance of a worktree build”
+
+Commands to run:
+
+pnpm -C autobyteus-web test:electron — justified by the layer table entry:
+
+“Electron main-process tests | Electron main, preload, launch profile, server manager, updater | pnpm -C autobyteus-web test:electron”
+
+This is the exact layer described as covering “Electron main, preload, … updater,” which matches the app-update IPC handler change.
+
+An isolated desktop instance of a worktree build, since the installed app doesn’t contain the change:
+
+pnpm --silent isolated-app start --build
+Drive it via the browser-automation skill to exercise the update IPC path/UI.
+pnpm --silent isolated-app stop
+
+Justified by Rule 1:
+
+“Test unreleased changes on a worktree build. The installed app does not contain your change. Use pnpm --silent isolated-app start --build (or --from-worktree when that worktree’s app is already built).”
+
+And by the same “Choosing the path” row requiring “an isolated desktop instance of a worktree build” alongside Electron main-process tests for desktop-shell behavior.
+
+Rules to follow while running this:
+
+Rule 2:
+
+“Never test against the user’s running AutoByteus or its data (~/.autobyteus, the OS application-data folders). Only isolated instances, test-owned databases and the development stack are test targets.”
+So only the isolated instance is used, never the user’s real installed app.
+
+Rule 5, cleanup:
+
+“Stop what you started. pnpm --silent isolated-app stop for instances…”
+Run pnpm --silent isolated-app stop after driving the instance, and per “Evidence and cleanup”: “After a run, pnpm --silent isolated-app list should show no instances you started.”
+
+Rule 6, “Assertions first” applies again: prove the new controller class correctly registers/handles the app-update IPC via test assertions and state checks in both the main-process tests and the isolated-instance drive, not just via screenshots.
+
+Context Files (0)
+(drag, paste, or upload)

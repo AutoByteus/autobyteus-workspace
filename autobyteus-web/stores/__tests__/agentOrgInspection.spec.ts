@@ -18,7 +18,7 @@ const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection
 const inspection = (active = false) => {
   const view = taskBearingView(); view.is_active = active
   if (!active) view.agent_statuses = []
-  return { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
+  return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
 }
 beforeEach(() => { setActivePinia(createPinia()); mocks.instances.length = 0; mocks.query.mockReset() })
 afterEach(() => useAgentOrgContextsStore().releaseContext('org-run'))

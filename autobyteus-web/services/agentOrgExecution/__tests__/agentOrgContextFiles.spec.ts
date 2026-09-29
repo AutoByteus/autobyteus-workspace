@@ -76,7 +76,7 @@ async function open(id = 'agent-director', isActive = false) {
 async function ready() {
   const socket = Socket.instances.at(-1)!
   socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'session' } })
-  socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: { ...activeView, is_active: true, agent_statuses: taskBearingView().agent_statuses } } })
+  socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: { ...activeView, is_active: true, agent_statuses: taskBearingView().agent_statuses } } })
   await vi.waitFor(() => expect(store.contextFor('org-run')?.phase).toBe('live'))
   return socket
 }
@@ -87,7 +87,7 @@ beforeEach(() => {
   activeView = taskBearingView()
   mocks.mutate.mockResolvedValue({ data: { restoreAgentOrgRun: { success: true, agentOrgRunId: 'org-run' } } })
   mocks.query.mockImplementation(async ({ variables }: any) => !variables.agentRunId
-    ? { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: activeView } } }
+    ? { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: activeView } } }
     : { data: { getAgentOrgMemberRunProjection: { agentRunId: variables.agentRunId, memberAddress: variables.memberAddress, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } })
   mocks.post.mockImplementation(async (url: string, body: any) => {
     if (url === '/context-files/upload') {

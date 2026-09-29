@@ -39,13 +39,14 @@ export type ConfiguredAgentExecutionDto = Readonly<{
   launch_configuration: AgentLaunchConfigurationDto;
 }>;
 
+/** A delegated child Agent; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
 export type TaskAgentExecutionDto = Readonly<{
   kind: "task_agent";
   address: string;
   agent_run_id: string;
   platform_agent_run_id: string | null;
+  delegator_agent_run_id: string | null;
   started_at: string;
-  settled_at: string | null;
 }>;
 
 export type TaskTeamAgentExecutionDto = Readonly<{
@@ -65,14 +66,15 @@ export type TaskTeamNestedTeamExecutionDto = Readonly<{
 
 export type TaskTeamMemberExecutionDto = TaskTeamAgentExecutionDto | TaskTeamNestedTeamExecutionDto;
 
+/** A delegated child Team; `delegator_agent_run_id` is the AgentRun that started it (null when not recorded). */
 export type TaskTeamExecutionDto = Readonly<{
   kind: "task_team";
   address: string;
   team_run_id: string;
   members: readonly TaskTeamMemberExecutionDto[];
   task_executions: readonly TaskExecutionDto[];
+  delegator_agent_run_id: string | null;
   started_at: string;
-  settled_at: string | null;
 }>;
 
 export type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
@@ -110,8 +112,8 @@ const configuredAgentSchema: z.ZodType<ConfiguredAgentExecutionDto> = z.object({
 
 export const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto> = z.object({
   kind: z.literal("task_agent"), address: agentTeamAddressDtoSchema, agent_run_id: nonEmptyStringSchema,
-  platform_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
-  settled_at: nullableNonEmptyStringSchema,
+  platform_agent_run_id: nullableNonEmptyStringSchema, delegator_agent_run_id: nullableNonEmptyStringSchema,
+  started_at: nonEmptyStringSchema,
 }).strict();
 
 const taskTeamAgentSchema: z.ZodType<TaskTeamAgentExecutionDto> = z.object({
@@ -129,7 +131,7 @@ export const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto> = z.laz
   kind: z.literal("task_team"), address: agentTeamAddressDtoSchema, team_run_id: nonEmptyStringSchema,
   members: z.array(z.union([taskTeamAgentSchema, taskTeamNestedSchema])),
   task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
-  started_at: nonEmptyStringSchema, settled_at: nullableNonEmptyStringSchema,
+  delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
 }).strict());
 
 const configuredTeamSchema: z.ZodType<ConfiguredTeamExecutionDto> = z.lazy(() => z.object({
@@ -142,7 +144,6 @@ const configuredTeamSchema: z.ZodType<ConfiguredTeamExecutionDto> = z.lazy(() =>
 }).strict());
 
 export type TeamRunExecutionTreeDto = Readonly<{
-  schema_version: 2;
   created_at: string;
   archived_at: string | null;
   application_binding: Readonly<{ application_id: string; binding_id: string }> | null;
@@ -160,7 +161,7 @@ export type TeamRunExecutionTreeDto = Readonly<{
 }>;
 
 export const teamRunExecutionTreeDtoSchema: z.ZodType<TeamRunExecutionTreeDto> = z.object({
-  schema_version: z.literal(2), created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,
+  created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,
   application_binding: z.object({ application_id: nonEmptyStringSchema, binding_id: nonEmptyStringSchema }).strict().nullable(),
   handoffs: z.array(z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict()),
   root_team: z.object({

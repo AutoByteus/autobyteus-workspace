@@ -103,7 +103,7 @@ describe('RightSideTabs', () => {
         },
         CollaborationOverviewPanel: {
           name: 'CollaborationOverviewPanel',
-          props: ['messages', 'tasks'],
+          props: ['messages'],
           template: '<div class="collaboration-overview-stub" />',
         },
         TerminalPanel: {
@@ -216,7 +216,6 @@ describe('RightSideTabs', () => {
     activeWorkspaceTarget.value = {
       kind: 'agent_org_direct_agent',
       collaborationMessages: messages,
-      collaborationTasks: { rootKind: 'agent_org', rootRunId: 'org-run', focusedAgentRunId: 'direct' },
       context: { config: { workspaceId: null, workspaceMetadata: null } },
     };
     activeTab.value = 'teamMembers';
@@ -226,7 +225,7 @@ describe('RightSideTabs', () => {
 
     const overview = wrapper.getComponent({ name: 'CollaborationOverviewPanel' });
     expect(overview.props('messages')).toStrictEqual(messages);
-    expect(overview.props('tasks')).toMatchObject({ rootKind: 'agent_org', focusedAgentRunId: 'direct' });
+    expect(overview.props()).not.toHaveProperty('tasks');
   });
 
   it('registers the shared contextual default and routes tab-bar clicks as explicit choices', async () => {

@@ -112,9 +112,8 @@ it("uses the containing nested Team ID, never its root ID, for async and sync at
   const treePath = path.join(team, "team_run_execution_tree.json");
   const tree = JSON.parse(await fs.readFile(treePath, "utf8"));
   tree.rootTeam.members.push(testOrgAgentNode("/nested", "nested-placement"));
-  tree.rootTeam.taskExecutions = [{address: "/nested", teamRunId: "nested", members: [{address: "/nested/worker", agentRunId: "nested-worker", platformAgentRunId: null}], taskExecutions: [], startedAt: "2026-09-01T00:00:00.000Z", settledAt: null}];
+  tree.rootTeam.taskExecutions = [{address: "/nested", teamRunId: "nested", members: [{address: "/nested/worker", agentRunId: "nested-worker", platformAgentRunId: null}], taskExecutions: [], delegatorAgentRunId: "worker", startedAt: "2026-09-01T00:00:00.000Z"}];
   await put(treePath, tree);
-  await put(path.join(team, "task_delegation_records.json"), {schemaVersion: 1, rootTeamRunId: "team", records: [{taskId: "nested-task", delegatorAgentRunId: "worker", recipientAddress: "/nested", taskExecution: {teamRunId: "nested"}, description: "task", referenceFiles: [], status: "active", createdAt: "2026-09-01T00:00:00.000Z", updates: []}]});
   const nestedFile = path.join(team, "nested", "nested-worker", "context_files", filename);
   await put(nestedFile, "nested bytes");
   const owner = {kind: "team_member_final" as const, teamRunId: "nested", agentRunId: "nested-worker"};

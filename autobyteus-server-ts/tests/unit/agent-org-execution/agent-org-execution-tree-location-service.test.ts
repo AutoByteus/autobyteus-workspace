@@ -19,7 +19,6 @@ const createStoredOrg = async (memoryDir: string, orgRunId: string) => {
   const tree = testAgentOrgExecutionTree({ orgRunId, members: [direct, team] });
   const directory = new AgentMemoryLayout(memoryDir).getOrgDirPath(orgRunId);
   await new AgentOrgRunExecutionTreeStore().write(directory, tree);
-  await fs.writeFile(path.join(directory, "agent_org_task_delegation_records.json"), JSON.stringify({schemaVersion: 1, subjectKind: "agent_org", orgRunId, records: []}));
   await fs.writeFile(path.join(directory, "agent_org_communication_messages.json"), JSON.stringify({schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: []}));
   return { direct, member, team, tree };
 };
@@ -71,7 +70,7 @@ describe("AgentOrg and compound execution locations", () => {
   it("respects root-package admission for a root-scoped listing", async () => {
     const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "org-locations-")); directories.push(memoryDir);
     await createStoredOrg(memoryDir, "org-a");
-    await fs.unlink(path.join(memoryDir, "agent_orgs", "org-a", "agent_org_task_delegation_records.json"));
+    await fs.unlink(path.join(memoryDir, "agent_orgs", "org-a", "agent_org_communication_messages.json"));
     const readiness = new RootRunPackageReadinessIndex(memoryDir);
     await readiness.rebuild();
     try {

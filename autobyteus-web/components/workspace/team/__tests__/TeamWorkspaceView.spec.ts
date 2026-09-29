@@ -6,7 +6,7 @@ import {
   buildTestTeamContext,
   testAgentNode,
   testSubTeamNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 import { createPinia, setActivePinia } from 'pinia';
 import { markTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
@@ -105,27 +105,21 @@ describe('TeamWorkspaceView current aggregate', () => {
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Initializing);
   });
 
-  it('renders focused task lifecycle and execution status over an authoritative empty projection', () => {
+  it('renders a focused delegated Agent with its standard status and no task lifecycle', () => {
     state.activeTeamContext = buildTestTeamContext({
       teamRunId: 'team-1', teamDefinitionName: 'Class Room Simulation', teamDefinitionId: 'team-def-1',
       rootChildren: [buildAgent('/Student', 'Student', 'student-run', 'agent-student-def')],
       coordinatorAddress: '/Student', focusedAgentRunId: 'task-student-run',
-      tasks: [testTaskRecord({
-        taskId: 'task-1', delegatorAgentRunId: 'student-run', recipientAddress: '/Student',
-        target: { agentRunId: 'task-student-run' }, description: 'Solve the retained task exactly',
-      })],
+      delegations: [testDelegation({ delegatorAgentRunId: 'student-run', recipientAddress: '/Student', target: { agentRunId: 'task-student-run' } })],
     });
     state.activeTeamContext.view.getAgentContext('task-student-run').state.currentStatus = AgentStatus.Idle;
     markTeamMemberProjectionAuthoritative(state.activeTeamContext, 'task-student-run');
 
     const wrapper = mountComponent();
 
-    expect(wrapper.text()).toContain('Task');
-    expect(wrapper.text()).toContain('Solve the retained task exactly');
-    expect(wrapper.get('[data-test="team-workspace-task-status"]').text()).toBe('In progress · Idle');
+    expect(wrapper.find('[data-test="team-workspace-task-status"]').exists()).toBe(false);
     expect(wrapper.get('[data-test="header-status"]').text()).toBe(AgentStatus.Idle);
-    expect(wrapper.get('[data-test="team-task-authoritative-empty"]').text())
-      .toBe('No activity recorded for this task yet.');
+    expect(wrapper.find('[data-test="team-task-authoritative-empty"]').exists()).toBe(false);
   });
 
   it('renders persistent actionable guidance while the selected Team stream requires recovery', () => {

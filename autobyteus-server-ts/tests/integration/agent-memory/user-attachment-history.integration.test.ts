@@ -53,14 +53,14 @@ beforeEach(async () => {
   const team = testOrgTeamNode({ address: "/team", teamRunId: "team", coordinatorAddress: lead.address, members: [lead] });
   const tree = structuredClone(testAgentOrgExecutionTree({ orgRunId: "org", members: [direct, team] })) as any;
   tree.rootOrg.taskExecutions = [
-    { address: direct.address, agentRunId: "repeat", platformAgentRunId: null, startedAt: "2026-09-01T00:00:01.000Z", settledAt: "2026-09-01T00:00:02.000Z" },
-    { address: "/team", teamRunId: "task-team", members: [{ address: lead.address, agentRunId: "task-lead", platformAgentRunId: null }], taskExecutions: [], startedAt: "2026-09-01T00:00:01.000Z", settledAt: "2026-09-01T00:00:02.000Z" },
+    { address: direct.address, agentRunId: "repeat", platformAgentRunId: null, delegatorAgentRunId: "direct", startedAt: "2026-09-01T00:00:01.000Z" },
+    { address: "/team", teamRunId: "task-team", members: [{ address: lead.address, agentRunId: "task-lead", platformAgentRunId: null }], taskExecutions: [], delegatorAgentRunId: "direct", startedAt: "2026-09-01T00:00:01.000Z" },
   ];
   await new AgentOrgRunExecutionTreeStore().write(layout.getOrgDirPath("org"), tree);
   await new TeamRunExecutionTreeStore().write(layout.getTeamDirPath({ rootTeamRunId: "standalone-team", ancestorTeamRunIds: [] }),
     testExecutionTree({ rootTeamRunId: "standalone-team", coordinatorAddress: "/lead", children: [testAgentNode("/lead", { agentRunId: "standalone-lead" })] }));
-  writeAttachmentSidecars(layout.getOrgDirPath("org"), "org", "org", "direct", tree.rootOrg.taskExecutions);
-  writeAttachmentSidecars(layout.getTeamDirPath({rootTeamRunId: "standalone-team", ancestorTeamRunIds: []}), "team", "standalone-team", "standalone-lead");
+  writeAttachmentSidecars(layout.getOrgDirPath("org"), "org", "org");
+  writeAttachmentSidecars(layout.getTeamDirPath({rootTeamRunId: "standalone-team", ancestorTeamRunIds: []}), "team", "standalone-team");
   writeAttachmentAgentMetadata(memoryDir, "standalone");
   writeAttachmentAgentMetadata(memoryDir, "isolated");
   normalizer = new AgentRunProviderInputNormalizer(new ContextFileLocalPathResolver({

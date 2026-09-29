@@ -14,7 +14,12 @@ import { AtomicRunPackageFileCommitWriter } from '../../../src/run-history/store
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from '../../../src/run-history/services/root-run-package-readiness-index.js';
 import { AgentOrgExecutionTreeLocationService } from '../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
 import { ContextFileOwnerResolver } from '../../../src/context-files/services/context-file-owner-resolver.js';
-import { testAgentNode, testExecutionTree } from '../../fixtures/current-team-run-fixtures.js';
+import { testExecutionTree as testCurrentExecutionTree, testAgentNode } from "../../fixtures/current-team-run-fixtures.js";
+import { toReleasedTeamRunExecutionTreeV2 } from "../../fixtures/released-run-tree-fixtures.js";
+
+// Flat-family migration inputs are pre-delegator data: seed released Team tree V2 shapes.
+const testExecutionTree = (input: Parameters<typeof testCurrentExecutionTree>[0]) =>
+  toReleasedTeamRunExecutionTreeV2(testCurrentExecutionTree(input)) as unknown as ReturnType<typeof testCurrentExecutionTree>;
 import { testOrgTeamNode, testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
 
 const roots: string[] = [];

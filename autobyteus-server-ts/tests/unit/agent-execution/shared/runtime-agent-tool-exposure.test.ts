@@ -43,11 +43,7 @@ describe("runtime-agent-tool-exposure", () => {
     ]);
     expect(exposure.enabledBrowserToolNames).toEqual(["open_tab", "read_page"]);
     expect(exposure.enabledMediaToolNames).toEqual(["generate_image"]);
-    expect(exposure.enabledTaskDelegationToolNames).toEqual([
-      "delegate_task",
-      "submit_task_result",
-      "review_task_result",
-    ]);
+    expect(exposure.enabledTaskDelegationToolNames).toEqual(["delegate_task"]);
     expect(exposure.sendMessageToEnabled).toBe(true);
     expect(exposure.getHandoffRulesEnabled).toBe(false);
     expect(exposure.publishArtifactsEnabled).toBe(true);
@@ -65,7 +61,7 @@ describe("runtime-agent-tool-exposure", () => {
     );
   });
 
-  it("does not expose removed legacy task tools as task delegation tools", () => {
+  it("does not expose removed legacy task tools, including submit/review task results, as task delegation tools", () => {
     const exposure = buildRuntimeAgentToolExposure([
       "create_task",
       "create_tasks",
@@ -81,11 +77,7 @@ describe("runtime-agent-tool-exposure", () => {
       ["accept", "task"].join("_"),
     ]);
 
-    expect(exposure.enabledTaskDelegationToolNames).toEqual([
-      "delegate_task",
-      "submit_task_result",
-      "review_task_result",
-    ]);
+    expect(exposure.enabledTaskDelegationToolNames).toEqual(["delegate_task"]);
   });
 
   it("does not expose artifact publication for old singular-only configs", () => {

@@ -1,21 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 
-/** Minimal strict sidecars for attachment fixtures; no mocked admission or identity fallback. */
-export function writeAttachmentSidecars(directory: string, family: "team" | "org", id: string,
-  delegatorAgentRunId: string, tasks: readonly {
-    address: string; agentRunId?: string; teamRunId?: string; startedAt: string; settledAt: string | null;
-  }[] = []): void {
+/** Minimal strict communication sidecar for attachment fixtures; task-records files are not part of a current package. */
+export function writeAttachmentSidecars(directory: string, family: "team" | "org", id: string): void {
   fs.mkdirSync(directory, { recursive: true });
   const identity = family === "team" ? { rootTeamRunId: id } : { subjectKind: "agent_org", orgRunId: id };
-  const records = tasks.map((task, i) => ({ taskId: `attachment-task-${i}`, delegatorAgentRunId,
-    recipientAddress: task.address, taskExecution: task.agentRunId ? { agentRunId: task.agentRunId } : { teamRunId: task.teamRunId },
-    description: "Retained attachment test execution", referenceFiles: [], createdAt: task.startedAt,
-    status: task.settledAt ? "interrupted" : "active",
-    updates: task.settledAt ? [{ interruptionId: `attachment-stop-${i}`, reason: "Fixture stopped", createdAt: task.settledAt }] : [],
-  }));
-  fs.writeFileSync(path.join(directory, family === "team" ? "task_delegation_records.json" : "agent_org_task_delegation_records.json"),
-    JSON.stringify({ schemaVersion: 1, ...identity, records }));
   fs.writeFileSync(path.join(directory, family === "team" ? "team_communication_messages.json" : "agent_org_communication_messages.json"),
     JSON.stringify({ schemaVersion: 1, ...identity, messages: [] }));
 }

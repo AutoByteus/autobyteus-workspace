@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
-import { TaskDelegationRecordsV1Store } from "../../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import { TeamCommunicationV1Store } from "../../../../src/services/team-communication/team-communication-v1-store.js";
 import {
   resetTeamRunPackageCatalog,
@@ -19,7 +18,6 @@ const createPackage = (rootTeamRunId: string) => ({
     coordinatorAddress: "/coordinator",
     children: [testAgentNode("/coordinator", { agentRunId: `${rootTeamRunId}-coordinator` })],
   }),
-  taskRecords: { schemaVersion: 1 as const, rootTeamRunId, records: [] },
   communicationMessages: { schemaVersion: 1 as const, rootTeamRunId, messages: [] },
 });
 
@@ -42,7 +40,6 @@ describe("TeamRunPackageCatalog V2 current-only readiness", () => {
     const state = createPackage(rootTeamRunId);
     const teamMemoryDir = layout.getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(teamMemoryDir, state.executionTree);
-    await new TaskDelegationRecordsV1Store().write(teamMemoryDir, state.taskRecords);
     await new TeamCommunicationV1Store().write(teamMemoryDir, state.communicationMessages);
     return teamMemoryDir;
   };
@@ -52,7 +49,6 @@ describe("TeamRunPackageCatalog V2 current-only readiness", () => {
     const packageDir = await writePackage(rootTeamRunId);
     const authorityPaths = [
       path.join(packageDir, "team_run_execution_tree.json"),
-      path.join(packageDir, "task_delegation_records.json"),
       path.join(packageDir, "team_communication_messages.json"),
     ];
     const before = await Promise.all(authorityPaths.map(async (file) => ({
@@ -77,10 +73,10 @@ describe("TeamRunPackageCatalog V2 current-only readiness", () => {
     const validRoot = "b-valid-root";
     const invalidDir = await writePackage(invalidRoot);
     await writePackage(validRoot);
-    await fs.writeFile(path.join(invalidDir, "task_delegation_records.json"), JSON.stringify({
+    await fs.writeFile(path.join(invalidDir, "team_communication_messages.json"), JSON.stringify({
       schemaVersion: 1,
       rootTeamRunId: invalidRoot,
-      records: [],
+      messages: [],
       legacyFallback: true,
     }, null, 2));
 

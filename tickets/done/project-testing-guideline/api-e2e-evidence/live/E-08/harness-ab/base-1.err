@@ -1,0 +1,27 @@
+--- <Task pending name='Task-1' coro=<main() running at /Users/normy/autobyteus_org/autobyteus-worktrees/project-testing-guideline/tickets/in-progress/project-testing-guideline/api-e2e-evidence/scripts/stall_harness.py:50> wait_for=<Future pending cb=[Task.task_wakeup()]> cb=[_run_until_complete_cb() at /Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/asyncio/base_events.py:181, ProtocolCallback.__init__.<locals>.cb() at /private/tmp/abdlg-base/browser-automation/.venv/lib/python3.13/site-packages/playwright/_impl/_connection.py:228]>
+Stack for <Task pending name='Task-1' coro=<main() running at /Users/normy/autobyteus_org/autobyteus-worktrees/project-testing-guideline/tickets/in-progress/project-testing-guideline/api-e2e-evidence/scripts/stall_harness.py:50> wait_for=<Future pending cb=[Task.task_wakeup()]> cb=[_run_until_complete_cb() at /Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/asyncio/base_events.py:181, ProtocolCallback.__init__.<locals>.cb() at /private/tmp/abdlg-base/browser-automation/.venv/lib/python3.13/site-packages/playwright/_impl/_connection.py:228]> (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-testing-guideline/tickets/in-progress/project-testing-guideline/api-e2e-evidence/scripts/stall_harness.py", line 50, in main
+    await BrowserApplication().list_tabs()
+--- <Task pending name='Task-2' coro=<watchdog() running at /Users/normy/autobyteus_org/autobyteus-worktrees/project-testing-guideline/tickets/in-progress/project-testing-guideline/api-e2e-evidence/scripts/stall_harness.py:44>>
+Stack for <Task pending name='Task-2' coro=<watchdog() running at /Users/normy/autobyteus_org/autobyteus-worktrees/project-testing-guideline/tickets/in-progress/project-testing-guideline/api-e2e-evidence/scripts/stall_harness.py:44>> (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-testing-guideline/tickets/in-progress/project-testing-guideline/api-e2e-evidence/scripts/stall_harness.py", line 55, in <module>
+    asyncio.run(main())
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/asyncio/base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/asyncio/base_events.py", line 683, in run_forever
+    self._run_once()
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/asyncio/base_events.py", line 2050, in _run_once
+    handle._run()
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/asyncio/events.py", line 89, in _run
+    self._context.run(self._callback, *self._args)
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/project-testing-guideline/tickets/in-progress/project-testing-guideline/api-e2e-evidence/scripts/stall_harness.py", line 44, in watchdog
+    buf.write(f"--- {task!r}\n"); task.print_stack(file=buf)
+--- <Task pending name='Task-4' coro=<Connection.run() running at /private/tmp/abdlg-base/browser-automation/.venv/lib/python3.13/site-packages/playwright/_impl/_connection.py:312> wait_for=<Future pending cb=[Task.task_wakeup()]>>
+Stack for <Task pending name='Task-4' coro=<Connection.run() running at /private/tmp/abdlg-base/browser-automation/.venv/lib/python3.13/site-packages/playwright/_impl/_connection.py:312> wait_for=<Future pending cb=[Task.task_wakeup()]>> (most recent call last):
+  File "/private/tmp/abdlg-base/browser-automation/.venv/lib/python3.13/site-packages/playwright/_impl/_connection.py", line 312, in run
+    await self._transport.run()
+

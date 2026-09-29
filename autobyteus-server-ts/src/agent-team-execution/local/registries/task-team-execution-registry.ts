@@ -1,20 +1,21 @@
-import type { PrepareTaskTeamInput } from "../../domain/task-team-execution.js";
+import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../../domain/task-team-execution.js";
 import type { PreparedTaskExecution } from "../../domain/prepared-task-execution.js";
-import type { PreparedTaskSettlement } from "../../domain/prepared-task-settlement.js";
 import type { TeamRun } from "../../domain/team-run.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import type { TeamRunAgentTeamNode } from "../../domain/team-run-config.js";
 import type { TaskTeamExecutionFactory } from "../task-team-execution-factory.js";
 import type { FlatTeamExecutionContext } from "../flat-team-execution-context.js";
+import { isRunningTaskExecutionStatus } from "../../../agent-collaboration/execution/task/task-execution-running-work.js";
+import { TaskExecutionTeardownIndeterminateError } from "../../../agent-collaboration/execution/task/task-delegation-command.js";
 
 type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
 
-/** Direct task-Team mechanics for one TeamRun; root task policy stays outside. */
+/** Direct task-Team mechanics for one TeamRun; the root resource lifecycle policy stays outside. */
 export class TaskTeamExecutionRegistry {
   private readonly active = new Map<string, TeamRun>();
   private readonly reserved = new Set<string>();
   private readonly preparedTeamRuns = new Map<string, TeamRun>();
-  private readonly settling = new Set<string>();
+  private readonly shuttingDown = new Set<string>();
   private materializationOpen = true;
 
   constructor(private readonly options: {
@@ -26,6 +27,28 @@ export class TaskTeamExecutionRegistry {
   listPreparedTeamRuns(): readonly TeamRun[] { return Object.freeze([...this.preparedTeamRuns.values()]); }
   freezeMaterialization(): void { this.materializationOpen = false; }
   get(teamRunId: string): TeamRun | null { return this.active.get(teamRunId) ?? null; }
+  /** Task-execution open work: a task Team counts only while one of its agents is initializing or running. */
+  hasRunningWork(): boolean {
+    return this.listTeamRuns().some((run) =>
+      run.getLeafAgentStatusSnapshots().some((snapshot) => isRunningTaskExecutionStatus(snapshot.details.status)));
+  }
+
+  /** Re-creates one shut-down task Team in `restore` mode; members activate lazily on input. */
+  async restore(input: RestoreTaskTeamInput): Promise<TeamRun> {
+    if (!this.materializationOpen) throw new Error("Task Team materialization is closed for TeamRun termination.");
+    const teamRunId = input.teamNode.teamRunId.trim();
+    if (!teamRunId) throw new Error("Task Team restore requires one exact TeamRun ID.");
+    if (this.active.has(teamRunId) || this.reserved.has(teamRunId)) {
+      throw new Error(`Task TeamRun '${teamRunId}' is already active or reserved.`);
+    }
+    const run = await this.options.subTeamRunFactory.prepareRestoredTaskTeam({
+      handoffs: input.handoffs,
+      parentContext: this.options.teamContext,
+      teamNode: input.teamNode,
+    });
+    this.active.set(teamRunId, run);
+    return run;
+  }
 
   async prepare(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution> {
     if (!this.materializationOpen) throw new Error("Task Team materialization is closed for TeamRun termination.");
@@ -96,70 +119,35 @@ export class TaskTeamExecutionRegistry {
     };
   }
 
-  async prepareSettlement(taskId: string, teamRunId: string): Promise<PreparedTaskSettlement | null> {
+  /** Shuts the task Team down as a whole only when every agent and nested child in it is quiet. */
+  async tryShutDownIfQuiet(teamRunId: string): Promise<boolean> {
     const run = this.active.get(teamRunId);
-    if (!run) return null;
-    if (this.settling.has(teamRunId)) throw new Error(`Task TeamRun '${teamRunId}' is already preparing settlement.`);
-    this.settling.add(teamRunId);
-    let local;
+    if (!run || this.shuttingDown.has(teamRunId)) return false;
+    this.shuttingDown.add(teamRunId);
     try {
-      local = await run.tryPrepareTerminationIfQuiescent();
-    } catch (error) {
-      this.settling.delete(teamRunId);
-      throw error;
-    }
-    if (!local) {
-      this.settling.delete(teamRunId);
-      return null;
-    }
-    if (this.active.get(teamRunId) !== run) {
-      local.cancel();
-      this.settling.delete(teamRunId);
-      return null;
-    }
-
-    let state: "prepared" | "cancelled" | "committed" = "prepared";
-    let committed: ReturnType<PreparedTaskSettlement["commitAfterDurability"]> | null = null;
-    const prepared: PreparedTaskSettlement = Object.freeze({
-      taskId,
-      binding: Object.freeze({ kind: "team", address: run.context.teamNode.address, teamRunId, coordinatorAgentRunId: this.coordinatorAgentRunId(run) }),
-      cancelBeforeDurability: () => {
-        if (state !== "prepared") return;
-        state = "cancelled";
+      const local = await run.tryPrepareTerminationIfQuiescent();
+      if (!local) return false;
+      if (this.active.get(teamRunId) !== run) {
         local.cancel();
-        this.settling.delete(teamRunId);
-      },
-      commitAfterDurability: () => {
-        if (state === "cancelled") throw new Error(`Task TeamRun '${teamRunId}' settlement was cancelled.`);
-        if (committed) return committed;
-        if (this.active.get(teamRunId) !== run) throw new Error(`Task TeamRun '${teamRunId}' changed before settlement commit.`);
-        state = "committed";
-        this.active.delete(teamRunId);
-        this.settling.delete(teamRunId);
-        const localCommit = local.commit();
-        committed = Object.freeze({ finishLocalTeardown: () => localCommit.finish() });
-        return committed;
-      },
-    });
-    return prepared;
+        return false;
+      }
+      this.active.delete(teamRunId);
+      const result = await local.commit().finish().catch((cause: unknown) => {
+        throw new TaskExecutionTeardownIndeterminateError(teamRunId, `Task TeamRun '${teamRunId}' shutdown did not finish.`, { cause });
+      });
+      if (!result.accepted) {
+        throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' shutdown was rejected.`);
+      }
+      return true;
+    } finally {
+      this.shuttingDown.delete(teamRunId);
+    }
   }
 
   dispose(): void {
     this.active.clear();
     this.reserved.clear();
     this.preparedTeamRuns.clear();
-    this.settling.clear();
+    this.shuttingDown.clear();
   }
-
-  private coordinatorAgentRunId(run: TeamRun): string {
-    const node = run.context.teamNode;
-    const coordinator = node.children.find((child) =>
-      child.kind === "agent" && child.address === node.coordinatorAddress,
-    );
-    if (!coordinator || coordinator.kind !== "agent") {
-      throw new Error(`Task TeamRun '${run.teamRunId}' has no exact coordinator AgentRun.`);
-    }
-    return coordinator.agentRunId;
-  }
-
 }

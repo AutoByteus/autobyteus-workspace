@@ -35,7 +35,6 @@ describe('Agent Org ticket surface localization catalogs', () => {
       'workspace.agentOrg.history.stopped',
       'workspace.agentOrg.history.newRun',
       'workspace.agentOrg.history.executionHierarchy',
-      'workspace.agentOrg.history.taskLabel',
       'workspace.agentOrg.history.empty',
       'workspace.agentOrg.history.noWorkspace',
       'workspace.agentOrg.history.relativeNow',

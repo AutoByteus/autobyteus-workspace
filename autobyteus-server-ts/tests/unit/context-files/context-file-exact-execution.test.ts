@@ -20,11 +20,8 @@ it("finalizes and reads only the selected execution despite repeated address and
   await fs.mkdir(teamDir, { recursive: true });
   const tree = testExecutionTree({ rootTeamRunId: "team", children: [testAgentNode("/worker", { agentRunId: "configured" })], coordinatorAddress: "/worker" });
   await fs.writeFile(path.join(teamDir, "team_run_execution_tree.json"), JSON.stringify({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions: [
-    { address: "/worker", agentRunId: "task", platformAgentRunId: null, startedAt: "2026-09-01T00:00:00.000Z", settledAt: "2026-09-02T00:00:00.000Z" },
+    { address: "/worker", agentRunId: "task", platformAgentRunId: null, delegatorAgentRunId: "configured", startedAt: "2026-09-01T00:00:00.000Z" },
   ] } }));
-  await fs.writeFile(path.join(teamDir, "task_delegation_records.json"), JSON.stringify({schemaVersion: 1, rootTeamRunId: "team", records: [
-    {taskId: "task1", delegatorAgentRunId: "configured", recipientAddress: "/worker", taskExecution: {agentRunId: "task"}, description: "task", referenceFiles: [], status: "interrupted", createdAt: "2026-09-01T00:00:00.000Z", updates: [{interruptionId: "i1", reason: "stopped", createdAt: "2026-09-02T00:00:00.000Z"}]},
-  ]}));
   await fs.writeFile(path.join(teamDir, "team_communication_messages.json"), JSON.stringify({schemaVersion: 1, rootTeamRunId: "team", messages: []}));
   const layout = new ContextFileLayout({ appDataDir: root, memoryDir });
   const resolver = () => new ContextFileOwnerResolver({ memoryDir, locations: createStoredTeamRunExecutionTreeLocationService(memoryDir) });

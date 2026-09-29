@@ -1,0 +1,64 @@
+...................................                                      [100%]
+==================================== PASSES ====================================
+________ test_mcp_run_script_and_navigate_take_the_same_dialog_decision ________
+----------------------------- Captured stderr call -----------------------------
+----------------------------------------
+Exception occurred during processing of request from ('127.0.0.1', 59387)
+Traceback (most recent call last):
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/socketserver.py", line 697, in process_request_thread
+    self.finish_request(request, client_address)
+    ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/socketserver.py", line 362, in finish_request
+    self.RequestHandlerClass(request, client_address, self)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/socketserver.py", line 766, in __init__
+    self.handle()
+    ~~~~~~~~~~~^^
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/http/server.py", line 449, in handle
+    self.handle_one_request()
+    ~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/http/server.py", line 415, in handle_one_request
+    self.raw_requestline = self.rfile.readline(65537)
+                           ~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/normy/.local/share/uv/python/cpython-3.13.12-macos-aarch64-none/lib/python3.13/socket.py", line 719, in readinto
+    return self._sock.recv_into(b)
+           ~~~~~~~~~~~~~~~~~~~~^^^
+ConnectionResetError: [Errno 54] Connection reset by peer
+----------------------------------------
+=========================== short test summary info ============================
+PASSED tests/integration/test_cli_real_chrome.py::test_independent_cli_processes_operate_one_real_target_without_stray_or_global_close
+PASSED tests/integration/test_cli_real_chrome.py::test_real_content_dom_script_screenshot_and_workspace_artifacts
+PASSED tests/integration/test_cli_real_chrome.py::test_attach_ambiguity_external_close_stale_error_and_user_tab_survival
+PASSED tests/integration/test_cli_real_chrome.py::test_navigation_timeout_rolls_back_only_new_page
+PASSED tests/integration/test_dialogs_mcp_real_chrome.py::test_mcp_run_script_and_navigate_take_the_same_dialog_decision
+PASSED tests/integration/test_dialogs_real_chrome.py::test_confirm_with_a_decision_is_applied_and_reported
+PASSED tests/integration/test_dialogs_real_chrome.py::test_confirm_without_a_decision_is_dismissed_to_unblock_and_requires_one
+PASSED tests/integration/test_dialogs_real_chrome.py::test_prompt_uses_the_given_text_or_its_default_value
+PASSED tests/integration/test_dialogs_real_chrome.py::test_alert_is_closed_and_reported_without_a_decision
+PASSED tests/integration/test_dialogs_real_chrome.py::test_leave_page_dialog_follows_the_decision
+PASSED tests/integration/test_dialogs_real_chrome.py::test_navigate_and_open_tab_handle_a_dialog_raised_while_loading
+PASSED tests/integration/test_dialogs_real_chrome.py::test_dialogs_in_other_tabs_are_left_open_and_unreported
+PASSED tests/integration/test_dialogs_real_chrome.py::test_recorder_coexists_with_answered_dialogs
+PASSED tests/integration/test_launcher_black_box.py::test_launcher_readiness_branches_and_missing_bundle_are_exactly_once
+PASSED tests/integration/test_launcher_black_box.py::test_relocated_clean_bundle_first_health_and_help_from_unrelated_cwd
+PASSED tests/integration/test_launcher_black_box.py::test_connectivity_failure_is_one_cli_owned_error
+PASSED tests/integration/test_mcp_transports_real.py::test_production_stdio_mcp_launcher_inventory_real_operation_and_error
+PASSED tests/integration/test_mcp_transports_real.py::test_streamable_http_default_loopback_and_explicit_remote_warning
+PASSED tests/integration/test_mcp_transports_real.py::test_mcp_invalid_host_and_port_fail_before_server_start
+PASSED tests/integration/test_mcp_transports_real.py::test_stdio_mcp_recording_survives_concurrent_calls_and_stops_from_another_process
+PASSED tests/integration/test_mcp_transports_real.py::test_stdio_mcp_attach_only_reports_unavailable_and_never_launches_a_browser
+PASSED tests/integration/test_mcp_transports_real.py::test_stdio_mcp_page_dialogs_follow_the_agent_decision_and_are_reported
+PASSED tests/integration/test_page_blocked_real_chrome.py::test_open_page_dialog_reports_page_blocked_quickly_and_recovers_once_answered
+PASSED tests/integration/test_presentation_real_chrome.py::test_helper_is_installed_on_use_only_and_survives_reload
+PASSED tests/integration/test_presentation_real_chrome.py::test_helper_actions_by_selector_and_text
+PASSED tests/integration/test_presentation_real_chrome.py::test_helper_errors_are_structured_values
+PASSED tests/integration/test_presentation_real_chrome.py::test_presentation_overlays_are_transient_and_never_block
+PASSED tests/integration/test_presentation_real_chrome.py::test_targets_are_hit_tested_like_a_person_with_an_open_modal
+PASSED tests/integration/test_recording_real_chrome.py::test_recording_runs_in_background_across_other_cli_calls
+PASSED tests/integration/test_recording_real_chrome.py::test_recording_finalizes_itself_when_the_tab_closes
+PASSED tests/integration/test_recording_real_chrome.py::test_recording_start_errors
+PASSED tests/integration/test_recording_real_chrome.py::test_page_dialog_raised_while_recording_stays_open_and_operable
+PASSED tests/integration/test_runtime_real_chrome.py::test_production_owned_chrome_persists_for_later_cli_processes
+PASSED tests/integration/test_skill_contract.py::test_skill_resolves_only_its_relative_launcher_from_the_advertised_file
+PASSED tests/integration/test_skill_contract.py::test_bundle_and_package_publish_only_the_generic_entrypoints
+35 passed in 739.92s (0:12:19)

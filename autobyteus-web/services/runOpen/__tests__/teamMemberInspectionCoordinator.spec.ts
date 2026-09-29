@@ -1,7 +1,7 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { inspectMountedTeamMember } from '../teamMemberInspectionCoordinator';
-import { buildTestTeamContext, testAgentNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode, testDelegation } from '~/test-support/currentTeamTestFixtures';
 
 const mocks = vi.hoisted(() => ({
   mounted: null as any,
@@ -19,10 +19,7 @@ const team = () => buildTestTeamContext({
   coordinatorAddress: '/member-a',
   focusedAgentRunId: 'run-a',
   rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a' })],
-  tasks: [testTaskRecord({
-    taskId: 'task-1', delegatorAgentRunId: 'run-a', recipientAddress: '/member-a',
-    target: { agentRunId: 'task-run' },
-  })],
+  delegations: [testDelegation({ delegatorAgentRunId: 'run-a', recipientAddress: '/member-a', target: { agentRunId: 'task-run' } })],
 });
 
 describe('teamMemberInspectionCoordinator', () => {

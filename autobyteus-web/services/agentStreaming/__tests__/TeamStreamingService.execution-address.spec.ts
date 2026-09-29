@@ -3,7 +3,7 @@ import { TeamStreamingService } from '../TeamStreamingService';
 import {
   buildTestTeamContext,
   testAgentNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 const createHarness = (state = 'connected') => {
@@ -20,8 +20,8 @@ const createHarness = (state = 'connected') => {
   const team = buildTestTeamContext({
     teamRunId: 'team-1', coordinatorAddress: '/worker',
     rootChildren: [testAgentNode('/worker', { agentRunId: 'worker-run' })],
-    tasks: [testTaskRecord({
-      taskId: 'task-1', delegatorAgentRunId: 'worker-run', recipientAddress: '/worker',
+    delegations: [testDelegation({
+      delegatorAgentRunId: 'worker-run', recipientAddress: '/worker',
       target: { agentRunId: 'task-agent-run-1' },
     })],
   });
@@ -34,7 +34,6 @@ const createHarness = (state = 'connected') => {
       root_team_run_id: 'team-1',
       base_change_sequence: 0,
       execution_tree: team.view.getExecutionTree(),
-      tasks: team.view.listTaskHistoryRows().map((row) => row.task),
       messages: [],
       agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
         agent_run_id: entry.agentRunId,

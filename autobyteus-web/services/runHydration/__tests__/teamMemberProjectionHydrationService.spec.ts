@@ -3,7 +3,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { buildTestTeamContext, testAgentNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode, testDelegation } from '~/test-support/currentTeamTestFixtures';
 import { ensureAuthoritativeTeamMemberProjection } from '../teamMemberProjectionHydrationService';
 
 const { fetchProjection } = vi.hoisted(() => ({ fetchProjection: vi.fn() }));
@@ -27,10 +27,7 @@ const mountTaskTeam = () => {
     coordinatorAddress: '/member-a',
     focusedAgentRunId: TASK_RUN,
     rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a' })],
-    tasks: [testTaskRecord({
-      taskId: 'task-1', delegatorAgentRunId: 'run-a', recipientAddress: '/member-a',
-      target: { agentRunId: TASK_RUN }, description: 'Inspect retained task work',
-    })],
+    delegations: [testDelegation({ delegatorAgentRunId: 'run-a', recipientAddress: '/member-a', target: { agentRunId: TASK_RUN } })],
   });
   const contexts = useAgentTeamContextsStore();
   contexts.teams = new Map([[ROOT, team]]);

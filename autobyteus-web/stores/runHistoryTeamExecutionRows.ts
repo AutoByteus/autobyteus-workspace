@@ -99,7 +99,7 @@ export const buildRunHistoryTeamExecutionRows = (
       memberKind: execution.agentRunId ? 'agent' : 'agent_team',
       displayName: execution.displayName,
       currentStatus: execution.currentStatus,
-      task: execution.task,
+      delegatedBy: execution.delegatedBy,
       depth,
       hasChildren,
     };

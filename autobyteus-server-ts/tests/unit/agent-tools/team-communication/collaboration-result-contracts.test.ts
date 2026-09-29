@@ -60,23 +60,24 @@ describe("collaboration public result contracts", () => {
     })).toThrow();
   });
 
-  it("keeps delegate active and not-started outcomes strict and discriminated", () => {
+  it("keeps the delegate spawn and not-started outcomes strict and mutually exclusive", () => {
     expect(DelegateTaskResultSchema.parse({
+      target_agent_run_id: "fresh-task-ingress",
+    })).toEqual({ target_agent_run_id: "fresh-task-ingress" });
+    expect(DelegateTaskResultSchema.parse({
+      target_agent_run_id: null,
+      message: "Activation failed.",
+    })).toEqual({ target_agent_run_id: null, message: "Activation failed." });
+    expect(() => DelegateTaskResultSchema.parse({
+      target_agent_run_id: "fabricated-run",
+      message: "Activation failed.",
+    })).toThrow();
+    expect(() => DelegateTaskResultSchema.parse({
       task_id: "task-1",
       status: "active",
       target_agent_run_id: "fresh-task-ingress",
-    })).toMatchObject({ status: "active", target_agent_run_id: "fresh-task-ingress" });
-    expect(DelegateTaskResultSchema.parse({
-      task_id: "task-2",
-      status: "not_started",
-      message: "Activation failed.",
-    })).toMatchObject({ status: "not_started", message: "Activation failed." });
-    expect(() => DelegateTaskResultSchema.parse({
-      task_id: "task-2",
-      status: "not_started",
-      message: "Activation failed.",
-      target_agent_run_id: "fabricated-run",
     })).toThrow();
+    expect(() => DelegateTaskResultSchema.parse({ target_agent_run_id: null })).toThrow();
   });
 
   it.each(["2025-06-18", "2025-11-25"])(
@@ -97,7 +98,10 @@ describe("collaboration public result contracts", () => {
         DELEGATE_TASK_TOOL_NAME,
       ]);
       for (const tool of tools) {
-        expect(tool.outputSchema).toMatchObject({ type: "object", oneOf: expect.any(Array) });
+        expect(tool.outputSchema?.type).toBe("object");
+        const branches = (tool.outputSchema as { oneOf?: unknown[]; anyOf?: unknown[] }).oneOf
+          ?? (tool.outputSchema as { anyOf?: unknown[] }).anyOf;
+        expect(branches).toHaveLength(2);
         expect(() => ToolSchema.parse(tool)).not.toThrow();
       }
       const ajv = new Ajv2020({ strict: false });
@@ -116,15 +120,17 @@ describe("collaboration public result contracts", () => {
         target_agent_run_id: null,
       })).toBe(true);
       expect(ajv.validate(delegateSchema, {
-        task_id: "task-1",
-        status: "active",
         target_agent_run_id: "fresh-task-ingress",
       })).toBe(true);
       expect(ajv.validate(delegateSchema, {
-        task_id: "task-2",
-        status: "not_started",
+        target_agent_run_id: null,
         message: "Activation failed.",
       })).toBe(true);
+      expect(ajv.validate(delegateSchema, {
+        task_id: "task-1",
+        status: "active",
+        target_agent_run_id: "fresh-task-ingress",
+      })).toBe(false);
     },
   );
 

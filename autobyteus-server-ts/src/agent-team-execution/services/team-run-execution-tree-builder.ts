@@ -37,7 +37,6 @@ export const buildInitialTeamRunExecutionTree = (input: {
   teamDefinitionName: string;
   createdAt?: string;
 }): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
-  schemaVersion: 2,
   createdAt: input.createdAt ?? new Date().toISOString(),
   archivedAt: null,
   applicationBinding: input.config.applicationBinding,

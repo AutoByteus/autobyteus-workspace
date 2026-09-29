@@ -3,36 +3,20 @@ import type { ZodType } from "zod";
 import type {
   DelegateTaskInput,
   DelegateTaskResult,
-  ReviewTaskResultInput,
-  ReviewTaskResultResult,
-  SubmitTaskResultInput,
-  SubmitTaskResultResult,
-} from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
+} from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { DelegateTaskResultSchema } from "../../agent-team-execution/task-delegation/task-delegation-result-contract.js";
 import { DELEGATE_TASK_LLM_DESCRIPTION } from "../../agent-collaboration/domain/agent-team-collaboration-llm-contract.js";
 import {
   DELEGATE_TASK_TOOL_NAME,
-  REVIEW_TASK_RESULT_TOOL_NAME,
-  SUBMIT_TASK_RESULT_TOOL_NAME,
   type TaskDelegationToolContext,
   type TaskDelegationToolName,
 } from "./task-delegation-tool-contract.js";
-import {
-  parseDelegateTaskInput,
-  parseReviewTaskResultInput,
-  parseSubmitTaskResultInput,
-} from "./task-delegation-tool-input-parsers.js";
+import { parseDelegateTaskInput } from "./task-delegation-tool-input-parsers.js";
 import { buildTaskDelegationToolParameterSchema } from "./task-delegation-tool-parameter-schemas.js";
 import type { TaskDelegationToolService } from "./task-delegation-tool-service.js";
 
-type TaskDelegationToolParsedInput =
-  | DelegateTaskInput
-  | SubmitTaskResultInput
-  | ReviewTaskResultInput;
-type TaskDelegationToolExecutionResult =
-  | DelegateTaskResult
-  | SubmitTaskResultResult
-  | ReviewTaskResultResult;
+type TaskDelegationToolParsedInput = DelegateTaskInput;
+type TaskDelegationToolExecutionResult = DelegateTaskResult;
 
 export type TaskDelegationToolManifestEntry = {
   name: TaskDelegationToolName;
@@ -55,26 +39,8 @@ export const TASK_DELEGATION_TOOL_MANIFEST: TaskDelegationToolManifestEntry[] = 
     resultSchema: DelegateTaskResultSchema,
     parseInput: parseDelegateTaskInput,
     execute: async (service, context, input) => DelegateTaskResultSchema.parse(
-      await service.delegateTask(context, input as DelegateTaskInput),
+      await service.delegateTask(context, input),
     ),
-  },
-  {
-    name: SUBMIT_TASK_RESULT_TOOL_NAME,
-    description:
-      "Submit a reviewable result for the delegated task bound to the current task-agent or task-team ingress context. Provide a non-empty message and optional reference_files containing absolute local file paths only. The system records the submission, moves the task to awaiting_review, and notifies the task review owner.",
-    parameterSchema: buildTaskDelegationToolParameterSchema(SUBMIT_TASK_RESULT_TOOL_NAME),
-    parseInput: parseSubmitTaskResultInput,
-    execute: (service, context, input) =>
-      service.submitTaskResult(context, input as SubmitTaskResultInput),
-  },
-  {
-    name: REVIEW_TASK_RESULT_TOOL_NAME,
-    description:
-      "Review the latest pending result submission for a delegated task this execution owns for review. Use decision=accept to finalize and request safe settlement, or decision=request_revision with a non-empty task-result comment describing the needed revisions for the same task-agent or task-team execution instance. Optional reference_files must be absolute local file paths.",
-    parameterSchema: buildTaskDelegationToolParameterSchema(REVIEW_TASK_RESULT_TOOL_NAME),
-    parseInput: parseReviewTaskResultInput,
-    execute: (service, context, input) =>
-      service.reviewTaskResult(context, input as ReviewTaskResultInput),
   },
 ];
 

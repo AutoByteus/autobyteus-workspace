@@ -32,7 +32,7 @@ export const rootView = (active: boolean) => {
   return view
 }
 export const inspectionData = (active: boolean) => ({ getAgentOrgRunInspection: {
-  schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: rootView(active),
+  root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: rootView(active),
 } })
 export const historyData = (active: boolean) => ({ listCollaborationRootHistory: [{
   __typename: 'AgentOrgRootHistoryObject', root_subject_kind: 'agent_org', root_run_id: 'org-run',

@@ -1,0 +1,5 @@
+run_script dialogs-key-absent None text-has-dialogs: False
+read_page dialogs-key-absent None text-has-dialogs: False
+dom_snapshot dialogs-key-absent None text-has-dialogs: False
+screenshot dialogs-key-absent None text-has-dialogs: False
+navigate_to dialogs-key-present None text-has-dialogs: False

@@ -5,7 +5,7 @@ import {
   adoptAgentPlatformBindingInTree,
   replaceAgentPlatformBindingWithoutConversationInTree,
 } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
-import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../../src/agent-team-execution/task-delegation/task-execution-tree-projection.js";
+import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
   address,
@@ -69,7 +69,7 @@ describe("adoptAgentPlatformBindingInTree", () => {
       execution: projectTaskAgentExecution({
         address: address("/coordinator"),
         agentRunId: "task-worker-run",
-        startedAt: "2026-08-17T20:00:00.000Z",
+        delegatorAgentRunId: "run-coordinator", startedAt: "2026-08-17T20:00:00.000Z",
       }),
     });
     tree = addTaskExecutionToTree({
@@ -85,7 +85,7 @@ describe("adoptAgentPlatformBindingInTree", () => {
             runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           })],
         }),
-        startedAt: "2026-08-17T20:01:00.000Z",
+        delegatorAgentRunId: "run-coordinator", startedAt: "2026-08-17T20:01:00.000Z",
       }),
     });
 

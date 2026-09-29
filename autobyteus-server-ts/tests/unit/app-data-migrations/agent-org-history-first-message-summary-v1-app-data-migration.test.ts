@@ -6,7 +6,6 @@ import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/m
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentOrgExecutionIndex } from "../../../src/agent-org-execution/services/agent-org-execution-index.js";
 import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
-import { AgentOrgTaskDelegationRecordsV1Store } from "../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AGENT_ORG_FLAT_TEAM_FAMILIES_V1_MIGRATION_ID } from "../../../src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-flat-team-families-v1-app-data-migration.js";
 import {
@@ -46,8 +45,8 @@ const createPackage = async (options: { summary?: string; tie?: boolean; taskEvi
     address: worker.address,
     agentRunId: "worker-task-run",
     platformAgentRunId: null,
+    delegatorAgentRunId: worker.agentRunId,
     startedAt: "1970-01-01T00:00:40.000Z",
-    settledAt: null,
   } as const;
   const tree = options.taskEvidence
     ? { ...base, rootOrg: { ...base.rootOrg, taskExecutions: [taskExecution] } }
@@ -57,7 +56,8 @@ const createPackage = async (options: { summary?: string; tie?: boolean; taskEvi
   await fs.mkdir(orgDir, { recursive: true });
   await Promise.all([
     new AgentOrgRunExecutionTreeStore().write(orgDir, tree),
-    new AgentOrgTaskDelegationRecordsV1Store().write(orgDir, {
+    // Released records sidecar retained on disk after the delegator-tree migration.
+    fs.writeFile(path.join(orgDir, "agent_org_task_delegation_records.json"), JSON.stringify({
       schemaVersion: 1,
       subjectKind: "agent_org",
       orgRunId,
@@ -77,7 +77,7 @@ const createPackage = async (options: { summary?: string; tie?: boolean; taskEvi
         }],
         createdAt: taskExecution.startedAt,
       }] : [],
-    }),
+    })),
     new AgentOrgCommunicationMessagesV1Store().write(orgDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] }),
   ]);
   const indexStore = new AgentOrgRunHistoryIndexStore(memoryDir);

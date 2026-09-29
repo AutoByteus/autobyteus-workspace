@@ -1,5 +1,4 @@
 import type {
-  TaskDelegationRecordDto,
   TeamCommunicationMessageDto,
   TeamRunExecutionTreeDto,
   TeamStreamServerMessage,
@@ -8,7 +7,6 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import type { TeamTokenUsageDetails } from '~/types/tokenUsageMeter';
-import type { CollaborationTaskHeadingPresentation } from '~/types/workspace/collaborationTaskPresentation';
 
 export type TeamExecutionRowKind =
   | 'configured_team'
@@ -28,7 +26,8 @@ export interface TeamExecutionNavigationRow {
   readonly parentKey: string | null;
   readonly agentRunId: string | null;
   readonly teamRunId: string | null;
-  readonly task: CollaborationTaskHeadingPresentation | null;
+  /** Display name of the AgentRun that started a delegated child row; null for other rows. */
+  readonly delegatedBy: string | null;
   readonly currentStatus: AgentStatus | null;
   readonly focusable: boolean;
   readonly expandable: boolean;
@@ -47,19 +46,9 @@ export interface TeamAgentExecutionLocation {
   readonly containingTeamRunId: string;
 }
 
-export interface TeamTaskHistoryRow {
-  readonly task: TaskDelegationRecordDto;
-  readonly label: string;
-  readonly targetKind: 'agent' | 'agent_team';
-  readonly targetAgentRunId: string | null;
-  readonly targetTeamRunId: string | null;
-  readonly targetAddress: AgentTeamAddress;
-  readonly delegatorAgentRunId: string;
-}
-
 export type TeamAgentStreamMessage = Exclude<TeamStreamServerMessage,
   | { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' }
-  | { type: 'AGENT_COMMAND_ACK' | 'TASK_DELEGATION_EVENT' | 'TEAM_COMMUNICATION_MESSAGE' }>;
+  | { type: 'AGENT_COMMAND_ACK' | 'TASK_EXECUTION_STARTED' | 'TEAM_COMMUNICATION_MESSAGE' }>;
 
 export type TeamExecutionEffect =
   | Readonly<{ kind: 'dispatch_agent'; agentRunId: string; message: TeamAgentStreamMessage }>
@@ -78,7 +67,6 @@ export interface TeamExecutionViewSnapshotSeed {
   readonly rootTeamRunId: string;
   readonly baseChangeSequence: number;
   readonly executionTree: TeamRunExecutionTreeDto;
-  readonly tasks: readonly TaskDelegationRecordDto[];
   readonly messages: readonly TeamCommunicationMessageDto[];
   readonly rootActive: boolean;
 }

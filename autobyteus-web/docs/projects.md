@@ -9,8 +9,8 @@ registered filesystem workspaces, and a list of description-only **Project
 Tasks**.
 
 Project Tasks are user-authored work items. They are unrelated to the
-execution-internal delegated tasks of agent teams (`TaskDelegation*`), and no
-Project code imports that subsystem. There is no Project-scoped run launching
+execution-internal delegated children of agent teams (`delegate_task`), and
+no Project code imports that subsystem. There is no Project-scoped run launching
 and no user-facing Task status change: every Task is created as `TODO`, and
 status changes are reserved for a later agent-facing Task-admission flow.
 

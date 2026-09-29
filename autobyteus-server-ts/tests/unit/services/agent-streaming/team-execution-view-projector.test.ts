@@ -5,7 +5,6 @@ import { describe, expect, it } from "vitest";
 import { createTeamAgentExecutionBinding } from "../../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
 import { createTeamAgentStatusDetails, createTeamAgentStatusSnapshot } from "../../../../src/agent-team-execution/domain/team-agent-status.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
-import { validateTaskDelegationRecordsV1Payload } from "../../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../../src/services/team-communication/team-communication-v1-schema.js";
 import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "../../../../src/services/agent-streaming/team-execution-view-projector.js";
@@ -24,17 +23,14 @@ const recordsDir = path.resolve(
 );
 const json = (dir: string, name: string) => JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")) as unknown;
 const tree = validateTeamRunExecutionTreePayload(json(scenarioDir, "team_run_execution_tree.json"), "team-run-root");
-const tasks = validateTaskDelegationRecordsV1Payload(json(recordsDir, "task_delegation_records.json"), "team-run-root");
 const messages = validateTeamCommunicationMessagesV1Payload(json(recordsDir, "team_communication_messages.json"), "team-run-root");
-const task = tasks.records[1]!;
 const message = messages.messages[0]!;
 const root = {
   getExecutionTreeSnapshot: () => tree,
-  getTaskRecordsSnapshot: () => tasks,
 };
 
 describe("Team execution view strict projection", () => {
-  it("projects one atomic initial V1 execution/task/message/status snapshot", () => {
+  it("projects one atomic initial execution/message/status snapshot with delegators and no task records", () => {
     const status = createTeamAgentStatusSnapshot({
       execution: createTeamAgentExecutionBinding({
         root: createTeamRootExecutionIdentity("team-run-root"),
@@ -44,7 +40,7 @@ describe("Team execution view strict projection", () => {
       details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
     });
     const projected = projectTeamExecutionViewSnapshot("team-run-root", {
-      tree, tasks, messages, statuses: [status],
+      tree, messages, statuses: [status],
     }, 17);
 
     expect(projected).toMatchObject({
@@ -58,6 +54,7 @@ describe("Team execution view strict projection", () => {
             task_executions: [{
               kind: "task_team",
               team_run_id: "task-team-run-qa-001",
+              delegator_agent_run_id: "agent-run-product-manager",
               members: expect.arrayContaining([expect.objectContaining({
                 kind: "task_team_member",
                 team_run_id: "task-team-run-automation-001",
@@ -65,10 +62,6 @@ describe("Team execution view strict projection", () => {
             }],
           },
         },
-        tasks: expect.arrayContaining([expect.objectContaining({
-          task_id: "task-011",
-          task_execution: { agent_run_id: "nested-task-agent-run-001" },
-        })]),
         messages: [expect.objectContaining({
           sender_agent_run_id: "nested-task-agent-run-001",
           receiver_agent_run_id: "task-team-agent-run-qa-lead-001",
@@ -184,35 +177,28 @@ describe("Team execution view strict projection", () => {
     const projected = projectSequencedTeamRunEvent(root as never, {
       changeSequence: 19,
       event: {
-        eventSourceType: TeamRunEventSourceType.TASK_DELEGATION,
-        taskExecution: task.taskExecution,
+        eventSourceType: TeamRunEventSourceType.TASK_EXECUTION,
+        taskExecution: { agentRunId: "nested-task-agent-run-001" },
         payload: {
-          eventType: "TASK_DELEGATION_ACTIVATED",
-          details: {
-            taskId: task.taskId,
-            delegatorAgentRunId: task.delegatorAgentRunId,
-            recipientAddress: task.recipientAddress,
-            taskExecution: task.taskExecution,
-            description: task.description,
-            referenceFiles: task.referenceFiles,
-            createdAt: task.createdAt,
-          },
+          eventType: "TASK_EXECUTION_STARTED",
+          details: { parentTeamRunId: "task-team-run-automation-001" },
         },
       },
     });
     expect(projected).toMatchObject({
-      type: "TASK_DELEGATION_EVENT",
+      type: "TASK_EXECUTION_STARTED",
       payload: {
-        event_type: "TASK_AGENT_ACTIVATED",
         change_sequence: 19,
         parent_team_run_id: "task-team-run-automation-001",
         execution: {
           kind: "task_agent",
           address: "/qa/automation/tester",
           agent_run_id: "nested-task-agent-run-001",
+          delegator_agent_run_id: "task-team-agent-run-qa-lead-001",
         },
       },
     });
+    expect((projected as { payload: object }).payload).not.toHaveProperty("task");
   });
 
   it("projects exact same-root communication and recipient input correlation", () => {

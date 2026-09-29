@@ -23,7 +23,6 @@ import type {
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { buildConversationFromProjection } from './runProjectionConversation';
 import { buildActivitiesFromProjection } from './runProjectionActivityHydration';
-import { fetchTaskDelegationRecordsForTeam } from './taskDelegationHydrationService';
 import { fetchTeamCommunicationForTeam } from './teamCommunicationHydrationService';
 import { createTeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
 import {
@@ -233,8 +232,7 @@ const hydrateCurrentTeamRunContext = async (
   if (raw.isActive && !input.ensureWorkspaceByRootPath) {
     throw new Error(`Active Team '${input.teamRunId}' requires workspace activation.`);
   }
-  const [tasks, messages, workspaces] = await Promise.all([
-    fetchTaskDelegationRecordsForTeam({ client, teamRunId: input.teamRunId }),
+  const [messages, workspaces] = await Promise.all([
     fetchTeamCommunicationForTeam({ client, teamRunId: input.teamRunId }),
     resolveWorkspaces({
       tree,
@@ -285,7 +283,6 @@ const hydrateCurrentTeamRunContext = async (
     rootTeamRunId: input.teamRunId,
     rootActive: raw.isActive,
     executionTree: tree,
-    tasks,
     messages,
     configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: workspaces }),
     initialFocusedAgentRunId,

@@ -88,7 +88,6 @@ import {
   buildTestTeamContext,
   testAgentNode,
   testSubTeamNode,
-  testTaskRecord,
 } from '~/test-support/currentTeamTestFixtures';
 
 const composerTarget = useComposerTarget();
@@ -174,20 +173,6 @@ const richStableTeamNode = testSubTeamNode('/ReviewTeam', [richReviewerNode], {
   teamRunId: 'review-team-run',
   coordinatorAddress: '/ReviewTeam/reviewer',
 });
-const richTaskAgent = testTaskRecord({
-  taskId: 'task_0001',
-  delegatorAgentRunId: richWorkerContext.state.runId,
-  recipientAddress: '/worker',
-  target: { agentRunId: richTaskContext.state.runId },
-  description: 'Hidden task detail',
-});
-const richTaskTeam = testTaskRecord({
-  taskId: 'task_0002',
-  delegatorAgentRunId: richWorkerContext.state.runId,
-  recipientAddress: '/ReviewTeam',
-  target: { teamRunId: 'rich-task-team-run' },
-  description: 'Hidden nested task detail',
-});
 const richTeam = buildTestTeamContext({
   teamRunId: 'team-0',
   teamDefinitionId: 'contention-team',
@@ -200,11 +185,10 @@ const richTeam = buildTestTeamContext({
     workspaceMetadata: workspaceMetadata(0),
   },
   rootChildren: [richWorkerNode, richStableTeamNode],
-  tasks: [richTaskAgent, richTaskTeam],
   taskExecutions: [
     {
       kind: 'task_agent', address: '/worker', agent_run_id: richTaskContext.state.runId,
-      platform_agent_run_id: null, started_at: now, settled_at: null,
+      platform_agent_run_id: null, delegator_agent_run_id: richWorkerContext.state.runId, started_at: now,
     },
     {
       kind: 'task_team', address: '/ReviewTeam', team_run_id: 'rich-task-team-run',
@@ -212,7 +196,7 @@ const richTeam = buildTestTeamContext({
         kind: 'task_team_agent', address: '/ReviewTeam/reviewer',
         agent_run_id: richTaskTeamChildContext.state.runId, platform_agent_run_id: null,
       }],
-      task_executions: [], started_at: now, settled_at: null,
+      task_executions: [], delegator_agent_run_id: richWorkerContext.state.runId, started_at: now,
     },
   ],
   contexts: [

@@ -18,7 +18,7 @@ vi.mock("../../../src/run-history/services/agent-org-run-package-catalog.js", ()
 }));
 vi.mock("../../../src/agent-org-execution/services/agent-org-state-package-loader.js", () => ({
   AgentOrgStatePackageLoader: class {
-    async loadAndRepair(input: { orgRunId: string }) {
+    async load(input: { orgRunId: string }) {
       return { loaded: true, state: {
         executionTree: { rootOrg: { orgRunId: input.orgRunId } },
         index: { listAgents: () => [] },
@@ -40,7 +40,7 @@ const stuckCapableRun = (orgRunId: string, onTerminated?: () => void, terminateR
     rootIdentity: createAgentOrgRootExecutionIdentity(orgRunId),
     isActive: () => active,
     stick: () => { active = false; },
-    deliverExactAgentMessage: vi.fn(),
+    hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
     terminate: vi.fn(async () => {
       active = false;
       const result = terminateResults.shift() ?? { accepted: true };

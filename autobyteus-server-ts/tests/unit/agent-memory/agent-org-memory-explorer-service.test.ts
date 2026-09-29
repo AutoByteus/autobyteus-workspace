@@ -7,10 +7,8 @@ import { AgentOrgRootMemorySource } from "../../../src/agent-memory/services/age
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentOrgExecutionTreeLocationService } from "../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
-import type { TaskDelegationRecordV1, TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-delegation-record-v1.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-execution/domain/agent-org-run-execution-tree.js";
 import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
-import { AgentOrgTaskDelegationRecordsV1Store } from "../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js";
 import { resetCollaborationRunHistoryCatalogState } from "../../../src/run-history/services/collaboration-run-history-catalog-core.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
@@ -24,18 +22,6 @@ const touch = async (filePath: string, mtime: number) => {
   const at = new Date(mtime);
   await fs.utimes(filePath, at, at);
 };
-
-const activeTask = (taskId: string, delegatorAgentRunId: string, recipientAddress: string, taskExecution: TaskExecutionReference, createdAt: string): TaskDelegationRecordV1 => ({
-  taskId,
-  delegatorAgentRunId,
-  recipientAddress: assertAgentTeamAddress(recipientAddress),
-  taskExecution,
-  description: `task ${taskId}`,
-  referenceFiles: [],
-  status: "active",
-  updates: [],
-  createdAt,
-});
 
 /**
  * `/ceo`; configured team `/engineering` with `/engineering/solution_designer`. With tasks: a delegated `/ceo`
@@ -59,7 +45,7 @@ const orgTree = (orgRunId: string, orgDefinitionId: string, withTasks: boolean):
     rootOrg: {
       ...base.rootOrg,
       taskExecutions: [
-        { address: assertAgentTeamAddress("/ceo"), agentRunId: `${orgRunId}-task-ceo`, platformAgentRunId: null, startedAt: "2026-09-01T00:01:00.000Z", settledAt: null },
+        { address: assertAgentTeamAddress("/ceo"), agentRunId: `${orgRunId}-task-ceo`, platformAgentRunId: null, delegatorAgentRunId: `${orgRunId}-ceo`, startedAt: "2026-09-01T00:01:00.000Z" },
         {
           address: assertAgentTeamAddress("/engineering"),
           teamRunId: `${orgRunId}-engineering-task`,
@@ -73,8 +59,8 @@ const orgTree = (orgRunId: string, orgDefinitionId: string, withTasks: boolean):
             },
           ],
           taskExecutions: [],
+          delegatorAgentRunId: `${orgRunId}-ceo`,
           startedAt: "2026-09-01T00:02:00.000Z",
-          settledAt: null,
         },
       ],
     },
@@ -89,10 +75,6 @@ describe("AgentOrgMemoryExplorerService", () => {
     const tree = orgTree(orgRunId, orgDefinitionId, withTasks);
     const packageDir = layout.getOrgDirPath(orgRunId);
     await new AgentOrgRunExecutionTreeStore().write(packageDir, tree);
-    const records = tree.rootOrg.taskExecutions.map((execution, index) =>
-      activeTask(`${orgRunId}-task-${index}`, `${orgRunId}-ceo`, execution.address,
-        "teamRunId" in execution ? { teamRunId: execution.teamRunId } : { agentRunId: execution.agentRunId }, execution.startedAt));
-    await new AgentOrgTaskDelegationRecordsV1Store().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, records });
     await new AgentOrgCommunicationMessagesV1Store().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] });
   };
 

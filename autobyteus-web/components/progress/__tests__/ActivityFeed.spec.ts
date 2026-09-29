@@ -211,21 +211,4 @@ describe('ActivityFeed', () => {
 
     wrapper.unmount();
   });
-
-  it('uses exact task true-empty wording only after projection authority is established', () => {
-    activities.value = [];
-    authoritative.value = true;
-    activeTeamContext.value = {
-      view: {
-        getFocusedNavigationRow: () => ({ agentRunId: 'run-1', task: { taskId: 'task-1' } }),
-      },
-    };
-
-    const wrapper = mount(ActivityFeed, {
-      global: { mocks: { $t: (key: string) => key === 'workspace.task_monitor.empty'
-        ? 'No activity recorded for this task yet.' : key } },
-    });
-
-    expect(wrapper.text()).toContain('No activity recorded for this task yet.');
-  });
 });

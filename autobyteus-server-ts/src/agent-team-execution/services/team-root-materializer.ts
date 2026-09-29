@@ -10,9 +10,7 @@ import type { TeamRunConfig } from "../domain/team-run-config.js";
 import { TeamRunContext } from "../domain/team-run-context.js";
 import type { TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
-import { TaskDelegationError } from "../task-delegation/task-delegation-record.js";
-import type { TaskDelegationRecordsSnapshot } from "../task-delegation/task-delegation-record-v1.js";
-import type { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-delegation-records-v1-store.js";
+import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
 import type { MemberExecutionContextBuilder } from "./member-team-context-builder.js";
 import { createTeamFlatExecutionCallbacks } from "./team-flat-execution-callbacks.js";
@@ -22,7 +20,6 @@ import { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinato
 export type TeamRootMaterializationInput = Readonly<{
   config: TeamRunConfig;
   tree: TeamRunExecutionTreeSnapshot;
-  tasks: TaskDelegationRecordsSnapshot;
   messages: TeamCommunicationMessagesSnapshot;
   teamMemoryDir: string;
   mode: ConfiguredMemberActivationMode;
@@ -31,7 +28,6 @@ export type TeamRootMaterializationInput = Readonly<{
   memberExecutionContextBuilder: MemberExecutionContextBuilder;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   executionTreeStore: TeamRunExecutionTreeStore;
-  taskRecordsStore: TaskDelegationRecordsV1Store;
   communicationStore: TeamCommunicationV1Store;
   onTerminated: (root: RootTeamRun) => void;
 }>;
@@ -55,15 +51,13 @@ export const materializeTeamRoot = async (
   let root: RootTeamRun | null = null;
   const requireActiveRoot = (): RootTeamRun => {
     if (!root?.isActive()) {
-      throw new TaskDelegationError("TEAM_RUN_NOT_ACTIVE", "Root TeamRun is not active.");
+      throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "Root TeamRun is not active.");
     }
     return root;
   };
   const taskCommands: MemberTaskCommandCapability = Object.freeze({
     root: rootIdentity,
     delegateTask: (caller, command) => requireActiveRoot().delegateTask({ identity: caller }, command),
-    submitTaskResult: (caller, command) => requireActiveRoot().submitTaskResult({ identity: caller }, command),
-    reviewTaskResult: (caller, command) => requireActiveRoot().reviewTaskResult({ identity: caller }, command),
   });
   const callbacks = createTeamFlatExecutionCallbacks({
     teamContext: new TeamRunContext({
@@ -98,14 +92,12 @@ export const materializeTeamRoot = async (
   try {
     if (input.persistInitialPackage) {
       await requireCommitted(input.executionTreeStore.write(input.teamMemoryDir, tree), "execution tree");
-      await requireCommitted(input.taskRecordsStore.write(input.teamMemoryDir, input.tasks), "task records");
       await requireCommitted(input.communicationStore.write(input.teamMemoryDir, input.messages), "communication messages");
     }
     const persistence = new TeamRunPersistenceCoordinator({
       rootTeamRunId: tree.rootTeam.teamRunId,
       teamMemoryDir: input.teamMemoryDir,
       executionTreeStore: input.executionTreeStore,
-      taskRecordsStore: input.taskRecordsStore,
       communicationStore: input.communicationStore,
       enterPersistenceFailStop: () => root?.enterPersistenceFailStop(),
     });
@@ -113,7 +105,6 @@ export const materializeTeamRoot = async (
       rootRun: prepared.teamRun,
       config: input.config,
       tree,
-      tasks: input.tasks,
       messages: input.messages,
       persistence,
       publisher,

@@ -8,7 +8,8 @@ description-only **Project Tasks**. Also owns the per-node `ENABLE_PROJECTS`
 visibility capability.
 
 Project Tasks are user-authored work items. They are separate from the
-execution-internal delegated tasks of agent teams (`TaskDelegation*`):
+execution-internal delegated children of agent teams (`delegate_task`, task
+executions):
 `projects/**` imports no delegated-task or agent-execution code, and those
 subsystems import nothing from `projects/**`.
 

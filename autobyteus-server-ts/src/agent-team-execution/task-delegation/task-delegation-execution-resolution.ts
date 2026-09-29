@@ -1,16 +1,5 @@
-import type { PreparedTaskExecution, TaskExecutionBinding } from "../domain/prepared-task-execution.js";
+import type { PreparedTaskExecution } from "../domain/prepared-task-execution.js";
 import type { TeamRunAgentTeamNode, TeamRunNode } from "../domain/team-run-config.js";
-import type { TaskExecutionReference } from "./task-delegation-record-v1.js";
-
-export const taskErrorMessage = (error: unknown): string =>
-  error instanceof Error ? error.message : String(error);
-
-export const sameTaskExecutionBinding = (
-  reference: TaskExecutionReference,
-  binding: TaskExecutionBinding,
-): boolean => binding.kind === "agent"
-  ? "agentRunId" in reference && reference.agentRunId === binding.agentRunId
-  : "teamRunId" in reference && reference.teamRunId === binding.teamRunId;
 
 export const findTaskConfigNode = (
   root: TeamRunAgentTeamNode,

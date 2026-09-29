@@ -1,7 +1,7 @@
 import { toJsonString } from "../json-utils.js";
 import {
   TaskDelegationError,
-} from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
+} from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskDelegationToolErrorPayload } from "./task-delegation-tool-contract.js";
 import { isCollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 

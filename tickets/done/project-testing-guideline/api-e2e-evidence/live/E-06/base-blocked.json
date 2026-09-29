@@ -1,0 +1,1 @@
+{"schema_version":"1","ok":false,"command":"list-tabs","error":{"code":"BROWSER_UNAVAILABLE","message":"Chrome is unavailable at the configured CDP endpoint.","retryable":true}}

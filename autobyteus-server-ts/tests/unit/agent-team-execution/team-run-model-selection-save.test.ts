@@ -15,7 +15,7 @@ const harness = (physicalOutcome = 'committed', readback = 'ok', runtimeKind = '
   let saved: any = testExecutionTree({ rootTeamRunId: 'root', coordinatorAddress: '/member', children: [testAgentNode('/member', { platformAgentRunId: 'retained-provider-id' })] });
   saved = structuredClone(saved);
   saved.rootTeam.taskExecutions = [{ address: '/task-run', agentRunId: 'retained-task', platformAgentRunId: 'platform-task',
-    startedAt: '2026-09-01T00:00:00Z', settledAt: '2026-09-01T00:01:00Z' }];
+    delegatorAgentRunId: 'run-member', startedAt: '2026-09-01T00:00:00Z' }];
   const root = saved.rootTeam.defaultLaunchConfiguration;
   root.runtimeKind = runtimeKind; root.llmModelIdentifier = 'small'; root.workspaceRootPath = '/workspace'; root.llmConfig = null;
   const member = saved.rootTeam.members[0].launchConfiguration;

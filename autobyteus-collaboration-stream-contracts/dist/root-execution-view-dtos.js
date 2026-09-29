@@ -7,44 +7,41 @@ const addCorrelationIssue = (context, message) => {
 const positiveSequence = z.number().int().positive();
 export const AgentTeamRootExecutionViewDtoSchema = z.object({
     root_subject_kind: z.literal("agent_team"), root_run_id: nonEmptyStringSchema,
-    schema_version: z.literal(2), root_team: z.record(z.string(), z.unknown()),
+    root_team: z.record(z.string(), z.unknown()),
 }).strict();
 export const AgentOrgRootExecutionViewDtoSchema = z.object({
     root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema,
-    schema_version: z.literal(1), root_org: agentOrgExecutionViewDtoSchema,
+    root_org: agentOrgExecutionViewDtoSchema,
 }).strict();
 export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kind", [
     AgentTeamRootExecutionViewDtoSchema, AgentOrgRootExecutionViewDtoSchema,
 ]).superRefine((value, context) => {
     if (value.root_subject_kind !== "agent_org")
         return;
-    const correlated = [value.root_org.execution_tree.rootOrg.orgRunId, value.root_org.task_records.orgRunId, value.root_org.communication_messages.orgRunId];
+    const correlated = [value.root_org.execution_tree.rootOrg.orgRunId, value.root_org.communication_messages.orgRunId];
     if (correlated.some((id) => id !== value.root_run_id))
         addCorrelationIssue(context, "AgentOrg snapshot root correlation mismatch.");
     const addressesByRunId = new Map();
     const addressesByTeamRunId = new Map();
     const configuredAgentAddresses = new Set();
     const configuredTeamAddresses = new Set();
-    const taskAgentAddressesByRunId = new Map();
-    const taskTeamAddressesByRunId = new Map();
-    const liveAgentRunIds = new Set();
+    // In an active root every tree agent reports a status (shut-down children report `offline`).
+    const statusRequiredAgentRunIds = new Set();
     const addConfiguredAddress = (address, kind) => {
         if (configuredAgentAddresses.has(address) || configuredTeamAddresses.has(address)) {
             addCorrelationIssue(context, `AgentOrg configured address '${address}' is duplicated.`);
         }
         (kind === "Agent" ? configuredAgentAddresses : configuredTeamAddresses).add(address);
     };
-    const addAgent = (agent, live, scope) => {
+    const addAgent = (agent, active, scope) => {
         const addressForRun = addressesByRunId.get(agent.agentRunId);
         if (addressForRun !== undefined)
             addCorrelationIssue(context, `AgentOrg AgentRun identity '${agent.agentRunId}' is duplicated.`);
         addressesByRunId.set(agent.agentRunId, agent.address);
         if (scope === "configured")
             addConfiguredAddress(agent.address, "Agent");
-        if (scope === "task_execution")
-            taskAgentAddressesByRunId.set(agent.agentRunId, agent.address);
-        if (live)
-            liveAgentRunIds.add(agent.agentRunId);
+        if (active)
+            statusRequiredAgentRunIds.add(agent.agentRunId);
     };
     const addTeam = (team, scope) => {
         if (addressesByTeamRunId.has(team.teamRunId))
@@ -52,18 +49,15 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
         addressesByTeamRunId.set(team.teamRunId, team.address);
         if (scope === "configured")
             addConfiguredAddress(team.address, "Team");
-        if (scope === "task_execution")
-            taskTeamAddressesByRunId.set(team.teamRunId, team.address);
     };
-    const taskIdentities = (tasks, ancestorLive) => {
+    const taskIdentities = (tasks, active) => {
         for (const task of tasks) {
-            const live = ancestorLive && task.settledAt === null;
             if ("agentRunId" in task)
-                addAgent(task, live, "task_execution");
+                addAgent(task, active, "task_execution");
             else {
                 addTeam(task, "task_execution");
-                memberIdentities(task.members, live, "task_member");
-                taskIdentities(task.taskExecutions, live);
+                memberIdentities(task.members, active, "task_member");
+                taskIdentities(task.taskExecutions, active);
             }
         }
     };
@@ -89,21 +83,6 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
         }
     }
     taskIdentities(value.root_org.execution_tree.rootOrg.taskExecutions, rootLive);
-    for (const task of value.root_org.task_records.records) {
-        const executionRunId = "agentRunId" in task.taskExecution ? task.taskExecution.agentRunId : task.taskExecution.teamRunId;
-        if (!addressesByRunId.has(task.delegatorAgentRunId)) {
-            addCorrelationIssue(context, `AgentOrg task '${task.taskId}' delegator identity mismatch.`);
-        }
-        const executionAddress = "agentRunId" in task.taskExecution
-            ? taskAgentAddressesByRunId.get(executionRunId)
-            : taskTeamAddressesByRunId.get(executionRunId);
-        const configuredRecipientMatches = "agentRunId" in task.taskExecution
-            ? configuredAgentAddresses.has(task.recipientAddress)
-            : configuredTeamAddresses.has(task.recipientAddress);
-        if (!configuredRecipientMatches || executionAddress !== task.recipientAddress) {
-            addCorrelationIssue(context, `AgentOrg task '${task.taskId}' execution identity mismatch.`);
-        }
-    }
     for (const message of value.root_org.communication_messages.messages) {
         if (!addressesByRunId.has(message.senderAgentRunId) || !addressesByRunId.has(message.receiverAgentRunId)) {
             addCorrelationIssue(context, `AgentOrg communication message '${message.messageId}' identity mismatch.`);
@@ -114,13 +93,13 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
         if (statusRunIds.has(status.agent_run_id))
             addCorrelationIssue(context, `AgentOrg status for AgentRun '${status.agent_run_id}' is duplicated.`);
         statusRunIds.add(status.agent_run_id);
-        if (addressesByRunId.get(status.agent_run_id) !== status.member_address || !liveAgentRunIds.has(status.agent_run_id)) {
+        if (addressesByRunId.get(status.agent_run_id) !== status.member_address || !statusRequiredAgentRunIds.has(status.agent_run_id)) {
             addCorrelationIssue(context, "AgentOrg status identity mismatch.");
         }
     }
-    for (const liveAgentRunId of liveAgentRunIds) {
-        if (!statusRunIds.has(liveAgentRunId))
-            addCorrelationIssue(context, `AgentOrg live AgentRun '${liveAgentRunId}' has no status record.`);
+    for (const agentRunId of statusRequiredAgentRunIds) {
+        if (!statusRunIds.has(agentRunId))
+            addCorrelationIssue(context, `AgentOrg AgentRun '${agentRunId}' has no status record.`);
     }
 });
 export const RootExecutionEventDtoSchema = z.discriminatedUnion("root_subject_kind", [

@@ -17,8 +17,8 @@ export type RootConfiguredAgentOrgExecutionNode = Readonly<{
   taskExecutions: readonly TaskExecution[];
 }>;
 
-export type AgentOrgRunExecutionTreeFileV1 = Readonly<{
-  schemaVersion: 1;
+/** Persisted AgentOrgRun execution tree: read tolerantly, written exactly, no version field (REQ-018). */
+export type AgentOrgRunExecutionTreeFile = Readonly<{
   subjectKind: "agent_org";
   createdAt: IsoTimestamp;
   archivedAt: IsoTimestamp | null;
@@ -27,4 +27,4 @@ export type AgentOrgRunExecutionTreeFileV1 = Readonly<{
   rootOrg: RootConfiguredAgentOrgExecutionNode;
 }>;
 
-export type AgentOrgRunExecutionTreeSnapshot = AgentOrgRunExecutionTreeFileV1;
+export type AgentOrgRunExecutionTreeSnapshot = AgentOrgRunExecutionTreeFile;

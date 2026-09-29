@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { parseArgs, runCli } from '../cli.mjs'
+import { parseArgs, runCli, USAGE } from '../cli.mjs'
 import { notFoundError } from '../isolatedAppErrors.mjs'
 
 test('relative paths resolve against INIT_CWD and are rejected without it', () => {
@@ -19,6 +19,12 @@ test('options are validated per command', () => {
   assert.throws(() => parseArgs(['start', '--control-port', 'abc'], {}), { code: 'USAGE_ERROR' })
   assert.throws(() => parseArgs(['start', 'extra'], {}), { code: 'USAGE_ERROR' })
   assert.throws(() => parseArgs(['start', '--frobnicate'], {}), { code: 'USAGE_ERROR' })
+})
+
+test('start has no default control port in the parser or usage text', () => {
+  assert.deepEqual(parseArgs(['start'], {}).options, {})
+  assert.ok(!USAGE.includes('9333'))
+  assert.match(USAGE, /\[--control-port <n>\]/)
 })
 
 test('runCli prints one schema-v1 JSON value and maps error categories to exit codes', async () => {

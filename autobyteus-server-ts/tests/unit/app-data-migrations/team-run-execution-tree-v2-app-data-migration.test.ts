@@ -170,7 +170,8 @@ describe("TeamRunExecutionTreeV2AppDataMigration", () => {
     await catalog.rebuild();
     expect(catalog.listAdmittedRootIds()).toEqual([]);
     expect(catalog.getDiagnostics().get("classroom-run")).toContain(
-      "rootTeam.members[1] has unsupported or missing field(s)",
+      // The released recursive V2 tree is structurally not a current flat Team tree (no version check needed).
+      "rootTeam.members[1] is missing required field(s)",
     );
     await expect(migration.execute()).resolves.toMatchObject({
       status: "SUCCEEDED",

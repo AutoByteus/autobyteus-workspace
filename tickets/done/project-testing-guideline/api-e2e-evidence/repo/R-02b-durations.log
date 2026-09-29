@@ -1,0 +1,41 @@
+...................................                                      [100%]
+============================== slowest durations ===============================
+192.69s call     tests/integration/test_mcp_transports_real.py::test_stdio_mcp_page_dialogs_follow_the_agent_decision_and_are_reported
+21.74s call     tests/integration/test_mcp_transports_real.py::test_stdio_mcp_recording_survives_concurrent_calls_and_stops_from_another_process
+20.25s call     tests/integration/test_launcher_black_box.py::test_connectivity_failure_is_one_cli_owned_error
+17.27s call     tests/integration/test_page_blocked_real_chrome.py::test_open_page_dialog_reports_page_blocked_quickly_and_recovers_once_answered
+15.15s call     tests/integration/test_mcp_transports_real.py::test_streamable_http_default_loopback_and_explicit_remote_warning
+9.35s call     tests/integration/test_recording_real_chrome.py::test_recording_runs_in_background_across_other_cli_calls
+8.71s call     tests/integration/test_mcp_transports_real.py::test_production_stdio_mcp_launcher_inventory_real_operation_and_error
+8.64s call     tests/integration/test_dialogs_real_chrome.py::test_dialogs_in_other_tabs_are_left_open_and_unreported
+8.31s call     tests/integration/test_recording_real_chrome.py::test_recording_start_errors
+6.82s call     tests/integration/test_presentation_real_chrome.py::test_helper_is_installed_on_use_only_and_survives_reload
+6.37s call     tests/integration/test_cli_real_chrome.py::test_real_content_dom_script_screenshot_and_workspace_artifacts
+5.78s call     tests/integration/test_recording_real_chrome.py::test_page_dialog_raised_while_recording_stays_open_and_operable
+5.00s call     tests/integration/test_recording_real_chrome.py::test_recording_finalizes_itself_when_the_tab_closes
+4.82s call     tests/integration/test_dialogs_real_chrome.py::test_leave_page_dialog_follows_the_decision
+4.69s call     tests/integration/test_presentation_real_chrome.py::test_presentation_overlays_are_transient_and_never_block
+4.43s call     tests/integration/test_runtime_real_chrome.py::test_production_owned_chrome_persists_for_later_cli_processes
+4.24s call     tests/integration/test_launcher_black_box.py::test_relocated_clean_bundle_first_health_and_help_from_unrelated_cwd
+3.81s call     tests/integration/test_dialogs_real_chrome.py::test_navigate_and_open_tab_handle_a_dialog_raised_while_loading
+3.35s call     tests/integration/test_cli_real_chrome.py::test_independent_cli_processes_operate_one_real_target_without_stray_or_global_close
+2.80s call     tests/integration/test_cli_real_chrome.py::test_attach_ambiguity_external_close_stale_error_and_user_tab_survival
+2.63s call     tests/integration/test_dialogs_real_chrome.py::test_recorder_coexists_with_answered_dialogs
+2.45s call     tests/integration/test_presentation_real_chrome.py::test_targets_are_hit_tested_like_a_person_with_an_open_modal
+2.40s call     tests/integration/test_presentation_real_chrome.py::test_helper_errors_are_structured_values
+1.65s call     tests/integration/test_dialogs_real_chrome.py::test_prompt_uses_the_given_text_or_its_default_value
+1.62s call     tests/integration/test_presentation_real_chrome.py::test_helper_actions_by_selector_and_text
+1.62s call     tests/integration/test_dialogs_mcp_real_chrome.py::test_mcp_run_script_and_navigate_take_the_same_dialog_decision
+1.51s call     tests/integration/test_dialogs_real_chrome.py::test_confirm_with_a_decision_is_applied_and_reported
+1.49s call     tests/integration/test_dialogs_real_chrome.py::test_confirm_without_a_decision_is_dismissed_to_unblock_and_requires_one
+1.04s call     tests/integration/test_dialogs_real_chrome.py::test_alert_is_closed_and_reported_without_a_decision
+0.94s call     tests/integration/test_mcp_transports_real.py::test_mcp_invalid_host_and_port_fail_before_server_start
+0.66s call     tests/integration/test_cli_real_chrome.py::test_navigation_timeout_rolls_back_only_new_page
+0.63s setup    tests/integration/test_cli_real_chrome.py::test_independent_cli_processes_operate_one_real_target_without_stray_or_global_close
+0.52s call     tests/integration/test_mcp_transports_real.py::test_stdio_mcp_attach_only_reports_unavailable_and_never_launches_a_browser
+0.43s call     tests/integration/test_launcher_black_box.py::test_launcher_readiness_branches_and_missing_bundle_are_exactly_once
+0.41s teardown tests/integration/test_skill_contract.py::test_bundle_and_package_publish_only_the_generic_entrypoints
+0.01s call     tests/integration/test_skill_contract.py::test_bundle_and_package_publish_only_the_generic_entrypoints
+
+(69 durations < 0.005s hidden.  Use -vv to show these durations.)
+exit 0

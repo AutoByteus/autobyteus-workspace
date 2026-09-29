@@ -32,8 +32,8 @@ const configuredAgentSchema = z.object({
 }).strict();
 export const taskAgentExecutionDtoSchema = z.object({
     kind: z.literal("task_agent"), address: agentTeamAddressDtoSchema, agent_run_id: nonEmptyStringSchema,
-    platform_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
-    settled_at: nullableNonEmptyStringSchema,
+    platform_agent_run_id: nullableNonEmptyStringSchema, delegator_agent_run_id: nullableNonEmptyStringSchema,
+    started_at: nonEmptyStringSchema,
 }).strict();
 const taskTeamAgentSchema = z.object({
     kind: z.literal("task_team_agent"), address: agentTeamAddressDtoSchema,
@@ -48,7 +48,7 @@ export const taskTeamExecutionDtoSchema = z.lazy(() => z.object({
     kind: z.literal("task_team"), address: agentTeamAddressDtoSchema, team_run_id: nonEmptyStringSchema,
     members: z.array(z.union([taskTeamAgentSchema, taskTeamNestedSchema])),
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
-    started_at: nonEmptyStringSchema, settled_at: nullableNonEmptyStringSchema,
+    delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
 }).strict());
 const configuredTeamSchema = z.lazy(() => z.object({
     kind: z.literal("configured_team"), address: agentTeamAddressDtoSchema,
@@ -59,7 +59,7 @@ const configuredTeamSchema = z.lazy(() => z.object({
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
 }).strict());
 export const teamRunExecutionTreeDtoSchema = z.object({
-    schema_version: z.literal(2), created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,
+    created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,
     application_binding: z.object({ application_id: nonEmptyStringSchema, binding_id: nonEmptyStringSchema }).strict().nullable(),
     handoffs: z.array(z.object({ from: nonEmptyStringSchema, to: nonEmptyStringSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict()),
     root_team: z.object({

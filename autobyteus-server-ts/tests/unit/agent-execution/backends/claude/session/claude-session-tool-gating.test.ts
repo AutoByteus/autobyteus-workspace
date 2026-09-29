@@ -58,8 +58,6 @@ const createSession = (requestedToolNames: string[] = [], input: {
     "generate_image",
     "generate_speech",
     "delegate_task",
-    "submit_task_result",
-    "review_task_result",
     "publish_artifacts",
     "db_query",
     "read_application_state",
@@ -419,7 +417,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
   });
 
-  it("combines intrinsic Team tools with configured task-result tools", async () => {
+  it("combines intrinsic Team tools and ignores removed configured task-result tools", async () => {
     const { submit, openStreamingSession } = createSession(
       [
         "delegate_task",
@@ -440,8 +438,6 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         agentToolsMcpDescriptor: expect.objectContaining({
           enabledTools: [
             "delegate_task",
-            "submit_task_result",
-            "review_task_result",
             "get_handoff_rules",
             "send_message_to",
           ],
@@ -451,15 +447,11 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         systemPrompt: expect.stringContaining(
-          "Use `delegate_task` to assign a new bounded unit of work",
+          "Use `delegate_task` to start a fresh instance of a mounted Agent or AgentTeam",
         ),
         allowedTools: [
           "delegate_task",
           "mcp__autobyteus_agent_tools__delegate_task",
-          "submit_task_result",
-          "mcp__autobyteus_agent_tools__submit_task_result",
-          "review_task_result",
-          "mcp__autobyteus_agent_tools__review_task_result",
           "get_handoff_rules",
           "mcp__autobyteus_agent_tools__get_handoff_rules",
           "send_message_to",

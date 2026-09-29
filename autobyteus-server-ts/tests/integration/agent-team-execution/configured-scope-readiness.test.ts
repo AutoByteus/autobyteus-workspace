@@ -13,11 +13,9 @@ import { buildInitialTeamRunExecutionTree } from '../../../src/agent-team-execut
 import { AgentOrgExecutionScopeBuilder } from '../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js';
 import { AgentOrgRunPersistenceCoordinator } from '../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js';
 import { validateAgentOrgStatePackage } from '../../../src/agent-org-execution/services/agent-org-state-package-validator.js';
-import { AgentOrgTaskDelegationRecordsV1Store } from '../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js';
 import { AgentOrgCommunicationMessagesV1Store } from '../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js';
 import { AgentOrgRunExecutionTreeStore } from '../../../src/run-history/store/agent-org-run-execution-tree-store.js';
 import { TeamRunExecutionTreeStore } from '../../../src/run-history/store/team-run-execution-tree-store.js';
-import { TaskDelegationRecordsV1Store } from '../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js';
 import { TeamCommunicationV1Store } from '../../../src/services/team-communication/team-communication-v1-store.js';
 import { createTaskExecutionIdentityCapabilities } from '../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js';
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
@@ -83,10 +81,9 @@ const org = async (f: ReturnType<typeof fixture>) => {
     testOrgTeamNode({ address: '/team', teamRunId: 'mounted', coordinatorAddress: '/team/lead',
       members: [direct('/team/lead', 'lead'), direct('/team/unused', 'unused')] })] });
   const state = validateAgentOrgStatePackage({ executionTree: tree,
-    taskRecords: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-lazy', records: [] },
     communicationMessages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-lazy', messages: [] } });
   const persistence = new AgentOrgRunPersistenceCoordinator({ orgRunId: 'org-lazy', orgMemoryDir: f.dir,
-    executionTreeStore: new AgentOrgRunExecutionTreeStore(), taskRecordsStore: new AgentOrgTaskDelegationRecordsV1Store(),
+    executionTreeStore: new AgentOrgRunExecutionTreeStore(),
     communicationStore: new AgentOrgCommunicationMessagesV1Store(), enterPersistenceFailStop: vi.fn() });
   return new AgentOrgExecutionScopeBuilder({ ...f.dependencies, flatTeamExecutionFactory: f.factory,
     taskExecutionIdentity: tasks, orgDefinitions: { getDefinitionById: async () => null }, teamDefinitions: { getDefinitionById: async () => null },
@@ -97,10 +94,10 @@ const team = async (f: ReturnType<typeof fixture>, mode: 'fresh' | 'restore') =>
   const config = testTeamRunConfig({ rootTeamRunId: 'team-lazy', coordinatorAddress: '/lead', children:
     ['lead', 'unused'].map(id => testAgentNode(`/${id}`, { agentRunId: id, runtimeKind: RuntimeKind.CODEX_APP_SERVER })) });
   return materializeTeamRoot({ config, tree: buildInitialTeamRunExecutionTree({ config, teamDefinitionName: 'Lazy Team', createdAt: '2026-09-13T00:00:00.000Z' }),
-    tasks: { schemaVersion: 1, rootTeamRunId: 'team-lazy', records: [] }, messages: { schemaVersion: 1, rootTeamRunId: 'team-lazy', messages: [] },
+    messages: { schemaVersion: 1, rootTeamRunId: 'team-lazy', messages: [] },
     mode, persistInitialPackage: true, teamMemoryDir: f.dir, factory: f.factory,
     memberExecutionContextBuilder: new MemberExecutionContextBuilder({ getDefinitionById: async () => null } as never),
-    taskExecutionIdentity: tasks, executionTreeStore: new TeamRunExecutionTreeStore(), taskRecordsStore: new TaskDelegationRecordsV1Store(),
+    taskExecutionIdentity: tasks, executionTreeStore: new TeamRunExecutionTreeStore(),
     communicationStore: new TeamCommunicationV1Store(), onTerminated: vi.fn(),
   });
 };

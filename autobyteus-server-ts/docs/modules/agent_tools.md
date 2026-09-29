@@ -49,9 +49,8 @@ valid non-null `MemberTeamContext`, it then automatically unions exactly:
 This automatic trio is required by the AgentTeam Addressing/Collaboration and
 delegation contract and applies even when the agent definition omitted those
 names. Standalone runs receive no automatic Team tools and preserve their
-explicitly configured set. Browser, media, publishing, configured MCP-origin,
-and the other task lifecycle tools remain explicitly selected and
-availability-gated.
+explicitly configured set. Browser, media, publishing, and configured
+MCP-origin tools remain explicitly selected and availability-gated.
 
 The native AutoByteus backend owns an additional runtime-derived baseline. For
 ordinary native standalone or team runs, it prepends exactly `run_bash`,
@@ -100,11 +99,13 @@ send-message wrappers/handlers.
   routes through root Team placement/delivery, and is the path that creates Team
   Communication projection and message-owned `reference_files`. An AgentTeam
   address targets its mounted configured coordinator ingress.
-- `target_agent_run_id` for an exact currently active `AgentRun.runId`. This
-  selector routes through `AgentRunManager.getActiveRun(...)`, rejects inactive,
-  unknown, preallocated-only, recoverable-only, or lazy-startable-only ids, posts
-  direct input to the active target run, and emits a direct `INTER_AGENT_MESSAGE`
-  without Team Communication projection fields.
+- `target_agent_run_id` for an exact `AgentRun.runId`. A target in the
+  sender's own collaboration root is delivered through that root, which wakes a
+  shut-down delegated child first and records ordinary root communication. Any
+  other target routes through `AgentRunManager.getActiveRun(...)`, rejects
+  inactive, unknown, preallocated-only, recoverable-only, or lazy-startable-only
+  ids, posts direct input to the active target run, and emits a direct
+  `INTER_AGENT_MESSAGE` without Team Communication projection fields.
 
 Explicitly configured standalone runs can use `target_agent_run_id` without team context.
 They cannot use `recipient_address` unless the run is actually executing as a team
@@ -176,95 +177,78 @@ See
 [Agent Tools MCP Server](./agent_tools_mcp_server.md) for the route, lifecycle,
 security, and adapter contract.
 
-## Server-Owned Task Delegation Tools
+## Server-Owned Task Delegation Tool
 
-The server owns the first-party bounded task-delegation surface for team runs:
+The server owns one first-party delegation tool for collaboration roots (Team
+and Org):
 
 - `delegate_task`
-- `submit_task_result`
-- `review_task_result`
 
-Canonical contracts, schemas, parsing, result serialization, team-run binding,
-and service lookup live under `src/agent-tools/task-delegation`. The model-facing
-surface is intentionally smaller than the legacy native task-plan tools:
-`create_task`, `create_tasks`, `assign_task_to`, `get_my_tasks`,
-`get_task_plan_status`, and the old local task-plan `update_task_status` are not
-part of the delegation workflow.
+Canonical contracts, schemas, parsing, result serialization, root binding, and
+service lookup live under `src/agent-tools/task-delegation`. Delegation is a
+pure spawn; there is no task record, status, submission, or review. The retired
+`submit_task_result` and `review_task_result` tools are not exposed on any
+runtime, and legacy configured names for them (and for the old native task-plan
+tools `create_task`, `create_tasks`, `assign_task_to`, `get_my_tasks`,
+`get_task_plan_status`, `update_task_status`) are ignored.
 
 Runtime projection is explicit and uses the same manifest/service boundary:
 
-- Mixed AutoByteus standalone member/task-agent runs may receive thin
-  server-owned local wrappers for the canonical delegation and acceptance tools
-  when included in effective exposure, and they strip the legacy
-  task-management tool names from mixed team contexts.
-- Codex App Server and Claude Agent SDK receive effective task-delegation tools
-  through the unified `autobyteus_agent_tools` Agent Tools MCP descriptor.
-  The old Codex task-delegation `dynamicTools` path and the old Claude
-  `autobyteus_team` MCP server path are not retained for these migrated tools.
+- Mixed AutoByteus standalone member/task-agent runs may receive a thin
+  server-owned local wrapper for `delegate_task` when included in effective
+  exposure, and they strip the legacy task-management tool names from mixed
+  team contexts.
+- Codex App Server and Claude Agent SDK receive `delegate_task` through the
+  unified `autobyteus_agent_tools` Agent Tools MCP descriptor. The old Codex
+  task-delegation `dynamicTools` path and the old Claude `autobyteus_team` MCP
+  server path are not retained.
 - A valid team context automatically exposes `delegate_task` even when omitted
-  from the agent definition. `submit_task_result` and `review_task_result`
-  remain explicitly configured and context/availability-gated. This layer must
-  not add provider `tool_choice` policy, forced-tool dampening, or
-  framework-driven auto-acceptance to compensate for model/prompt behavior.
+  from the agent definition. This layer must not add provider `tool_choice`
+  policy or forced-tool dampening to compensate for model/prompt behavior.
 
-All task-delegation tool calls must be bound to an active team run and current
-member identity. `delegate_task` resolves required canonical absolute non-root
-`recipient_address` through the same logical placement authority as
-`send_message_to`, then
-applies task-owned eligibility before reserving a task id. The resolved target
-must be a direct Agent or AgentTeam child of the caller's immediate Team; self,
-deeper, and cross-branch placements are rejected for task activation even though
-deeper/cross-branch addresses can be valid for ordinary messaging. There is no
-caller-supplied target kind, flat-name lookup, or compatibility input.
+Every `delegate_task` call must be bound to an active collaboration root and
+the current member identity. It resolves the required canonical absolute
+non-root `recipient_address` through the same logical placement authority as
+`send_message_to`; an Agent cannot delegate to its own logical placement. There
+is no caller-supplied target kind, flat-name lookup, or compatibility input.
 
-After successful placement and eligibility validation, `delegate_task` creates
-one internal delegation ledger record from ready-to-run
-task-centered `description` content (objective, context, constraints, done
-conditions, expected output, and reference guidance), and optional
-`reference_files` work-packet inputs. Member targets start one task-agent
-instance; team targets start one task-scoped child team run whose ingress
-coordinator receives the work packet while the logical team remains the
-accountable task owner. Multiple independent tasks and sequential follow-up work
-are delegated through additional `delegate_task` calls. Bound task-agents and
-task-team ingress contexts submit reviewable output with `submit_task_result`;
-the tool accepts only `message` and optional `reference_files` because the task
-is inferred from the caller's bound execution context.
+`delegate_task` takes ready-to-run `description` content (objective, context,
+constraints, done conditions, expected output, and reference guidance) and
+optional `reference_files`. Member targets start one task-agent instance; team
+targets start one task-scoped child team run whose coordinator receives the
+work packet. The work packet (delegator address and AgentRun ID, description,
+reference files) is the child's first message. Multiple independent pieces of
+work are delegated through additional `delegate_task` calls.
+
+The result is a strict union, also published as the MCP output schema
+(`anyOf`):
+
+```text
+{ target_agent_run_id: "<child ingress AgentRun ID>" }
+{ target_agent_run_id: null, message: "<why nothing started>" }
+```
+
+Input errors (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`) and a root that is
+not admitting (`ROOT_RUN_NOT_ACTIVE`) are tool errors raised before anything is
+prepared. The original logical `recipient_address` remains the mounted
+definition, not an alias for the child.
 
 The two collaboration modes are intentionally not interchangeable.
-`send_message_to` contacts an already existing mounted Agent execution or
-mounted AgentTeam coordinator and creates no task. `delegate_task` spawns one
-fresh independently tracked task execution and delivers the complete task packet
-as the creation/assignment call. The same work packet must not be resent through
-`send_message_to`.
+`send_message_to` contacts an existing execution and creates nothing.
+`delegate_task` starts a fresh child and delivers the complete work packet as
+the creation call; the same packet must not be resent through
+`send_message_to`. After delegation, parent and child communicate only through
+`send_message_to` with run IDs, in both directions. A child that stays quiet is
+shut down after the grace period and a same-root message to its run ID restores
+it with its conversation (see
+[Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle)).
 
-Successful `delegate_task` returns
-`{task_id,status:"active",target_agent_run_id}`, where
-`target_agent_run_id` is the fresh task Agent or fresh task Team coordinator
-ingress. A `not_started` result returns `{task_id,status:"not_started",message}`
-and omits `target_agent_run_id` because no contactable task execution exists.
-The original logical `recipient_address` remains the mounted definition, not an
-alias for the fresh task execution. Genuinely new clarification can target the
-returned exact active run; formal output and review still use
-`submit_task_result` and `review_task_result`.
-
-`reference_files` on `delegate_task`, `submit_task_result`, and
-`review_task_result` are explicit absolute local filesystem paths only. Callers
-should pass full paths returned by file-writing tools or resolve local files
-with `realpath` before invoking the tools. Relative paths, URLs/protocol-shaped
-values, and relative or route-template path segments are rejected before task
-record, submission, or review persistence; no workspace-relative compatibility
-resolver or historical migration runs for task references. Accepted task
-reference rows keep the normalized absolute path in `referenceFiles[].path`, and
-new `referenceId` values are route-safe opaque identities rather than embedded
-file paths.
-
-The task review owner reviews the latest pending submission with
-`review_task_result`, using `decision="accept"` to finalize or
-`decision="request_revision"` plus a task-result `comment` for revision
-instructions. `send_message_to` remains available for ordinary
-communication/handoffs only; it is not task result/review/acceptance. Message
-and task calls share address parsing and placement, but task delegation adds the
-direct/current-Team eligibility rule before activation.
+`reference_files` on `delegate_task` must be normalized absolute local paths of
+existing files. Callers should pass full paths returned by file-writing tools or
+resolve local files with `realpath` before invoking the tool. Relative paths,
+URLs/protocol-shaped values, `..` segments, directories, and missing files are
+rejected with `INVALID_REFERENCE_FILE` before anything is prepared; no
+workspace-relative compatibility resolver runs.
 
 ## Server-Owned Media Tools
 

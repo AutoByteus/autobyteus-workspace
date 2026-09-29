@@ -37,8 +37,4 @@ export async function registerAgentOrgReferenceRoutes(
     "/agent-org-runs/:orgRunId/communication/messages/:messageId/references/:referenceId/content",
     (request, reply) => send(reply, () => content.resolveCommunication(request.params)),
   );
-  app.get<{ Params: { orgRunId: string; taskId: string; referenceId: string } }>(
-    "/agent-org-runs/:orgRunId/task-delegations/:taskId/references/:referenceId/content",
-    (request, reply) => send(reply, () => content.resolveTask(request.params)),
-  );
 }

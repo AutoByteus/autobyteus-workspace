@@ -68,7 +68,6 @@ const createHarness = () => {
       activeRoot = {
         teamRunId,
         getExecutionTreeSnapshot: () => ({
-          schemaVersion: 2,
           createdAt: "2026-08-15T00:00:00.000Z",
           archivedAt: null,
           applicationBinding: null,
@@ -170,7 +169,7 @@ describe("TeamRunService current flat Team V2 integration", () => {
     });
   });
 
-  it("creates one rooted mixed-runtime flat plan and records the current V2 execution tree", async () => {
+  it("creates one rooted mixed-runtime flat plan and records the current V3 execution tree", async () => {
     const { service, manager, catalog, workspaceManager } = createHarness();
     const root = await service.createTeamRun({
       teamDefinitionId: "classroom-team",
@@ -213,7 +212,6 @@ describe("TeamRunService current flat Team V2 integration", () => {
     expect(workspaceManager.ensureWorkspaceByRootPath).toHaveBeenCalledWith("/tmp/classroom-workspace");
     expect(catalog.recordTeamRunCreated).toHaveBeenCalledWith({
       tree: expect.objectContaining({
-        schemaVersion: 2,
         rootTeam: expect.objectContaining({
           address: "/",
           teamRunId: "classroom-root-run",
@@ -222,7 +220,7 @@ describe("TeamRunService current flat Team V2 integration", () => {
       }),
       summary: "",
     });
-    expect(JSON.stringify(catalog.recordTeamRunCreated.mock.calls[0])).not.toContain("schemaVersion\":3");
+    expect(JSON.stringify(catalog.recordTeamRunCreated.mock.calls[0])).not.toContain("schemaVersion");
   });
 
   it("restores only through the strict manager package reader and refreshes the catalog from its current V2 tree", async () => {
@@ -233,7 +231,6 @@ describe("TeamRunService current flat Team V2 integration", () => {
     expect(manager.restoreTeamRun).toHaveBeenCalledWith("restored-classroom-run");
     expect(catalog.recordTeamRunRestored).toHaveBeenCalledWith({
       tree: expect.objectContaining({
-        schemaVersion: 2,
         rootTeam: expect.objectContaining({
           address: "/",
           teamRunId: "restored-classroom-run",

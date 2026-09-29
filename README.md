@@ -335,13 +335,21 @@ take screenshots and record MP4 video:
 ```bash
 pnpm isolated-app start            # installed app; --from-worktree / --build for this worktree
 pnpm isolated-app list
-pnpm isolated-app stop
+pnpm isolated-app stop <instanceId>
 ```
 
+`start` picks free ports and reports `instanceId` and `controlPort`; pass that
+`controlPort` to browser-automation and that `instanceId` to `stop`/`restart`,
+so several worktrees can run instances in parallel.
+
+For when to use an isolated instance in validation, see [TESTING.md](TESTING.md).
 See the [isolated app instances guide](docs/isolated-app-instances.md) and the
 agent skill [`skills/autobyteus-isolated-app`](skills/autobyteus-isolated-app/SKILL.md).
 
 ## Packaged Electron API/E2E testing
+
+How this workspace is tested, and which path to choose for a change, is summarized in
+[TESTING.md](TESTING.md).
 
 After the root [`Setup`](#setup), run packaged Electron checks from the frontend
 project. The thin launcher builds the current host package by default, selects a
@@ -449,6 +457,8 @@ capabilities explicitly; they must not be represented as passed. See the
 server README for server-specific test and credential details.
 
 ## Testing (Codex Runtime)
+
+See [TESTING.md](TESTING.md) for the complete testing guideline.
 
 For Codex-related tickets, run backend tests with Codex live transport enabled.
 Without this env var, Codex live E2E suites are skipped.
