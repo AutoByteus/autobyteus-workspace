@@ -926,6 +926,20 @@ before signalling, and deletes only the data roots it created. The control
 port exists only for instances started this way; production launches never
 open one. See [isolated app instances](../../docs/isolated-app-instances.md).
 
+Every desktop build ships the isolated-launch capability marker
+`build/isolated-launch/isolated-launch.json` (`{"isolatedLaunchContract": 1}`)
+via `extraResources` to `<resources>/isolated-launch.json`. That is
+`Contents/Resources/` on macOS and `resources/` in Linux unpacked output and
+inside the AppImage. `start` and `restart` read it before any port, data-root or
+spawn work and refuse builds without a contract of at least 1
+(`APP_ISOLATION_UNSUPPORTED`). A packed AppImage is detected by suffix or its
+type-2 magic without being executed and must be extracted first
+(`APPIMAGE_EXTRACTION_REQUIRED`). Bump the contract only when the isolated
+server-environment or updates-disabled contract changes incompatibly
+(`build/scripts/isolatedLaunchMarker.ts`,
+`scripts/electron-launch/appExecutable.mjs`). The E2E harness does not check
+the marker.
+
 Cleanup is process-identity based. The adapter first requests graceful shutdown,
 then confirms the entire owned process group/tree and may target only that same
 tree if escalation is needed. A preparation-owned temporary root is removed

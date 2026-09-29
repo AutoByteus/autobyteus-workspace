@@ -13,8 +13,10 @@ import { createInstanceRegistry } from '../instanceRegistry.mjs'
 function lifecycleFixture(t, overrides = {}) {
   const base = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'isolated-lifecycle-test-')))
   t.after(() => fs.rmSync(base, { recursive: true, force: true }))
-  const appPath = path.join(base, 'AutoByteus')
+  const appPath = path.join(base, 'app', 'AutoByteus')
+  fs.mkdirSync(path.join(base, 'app', 'resources'), { recursive: true })
   fs.writeFileSync(appPath, '')
+  fs.writeFileSync(path.join(base, 'app', 'resources', 'isolated-launch.json'), '{"isolatedLaunchContract": 1}')
   const tmpDir = path.join(base, 'tmp')
   fs.mkdirSync(tmpDir)
   const registry = createInstanceRegistry({ dir: path.join(base, 'registry') })
@@ -29,6 +31,7 @@ function lifecycleFixture(t, overrides = {}) {
   const lifecycle = createInstanceLifecycle({
     registry,
     tmpDir,
+    webRoot: path.join(base, 'web'),
     platform: 'darwin',
     sourceEnv: { HOME: '/home/tester', ELECTRON_RUN_AS_NODE: '1', AUTOBYTEUS_MEMORY_DIR: '/prod/memory' },
     readinessTimeoutMs: 50,
@@ -66,7 +69,7 @@ test('start launches detached with the isolated overlay, records the instance an
 
   assert.equal(result.controlPort, DEFAULT_CONTROL_PORT)
   assert.match(result.instanceId, /^iso-9333-[0-9a-f]{4}$/)
-  assert.equal(result.executablePath, appPath)
+  assert.equal(result.executablePath, fs.realpathSync(appPath))
   assert.equal(result.controlEndpoint, 'http://127.0.0.1:9333')
   assert.equal(result.backendUrl, `http://127.0.0.1:${result.serverPort}`)
   assert.equal(result.graphqlUrl, `${result.backendUrl}/graphql`)
@@ -216,4 +219,57 @@ test('--build builds the worktree before resolving its executable', async (t) =>
   const { lifecycle, state } = lifecycleFixture(t)
   await assert.rejects(lifecycle.start({ build: true }), { code: 'APP_NOT_FOUND' })
   assert.equal(state.built, true)
+})
+
+test('start refuses an app without isolated-launch support before any port, root or spawn work', async (t) => {
+  const { lifecycle, state, base, tmpDir } = lifecycleFixture(t)
+  const oldApp = path.join(base, 'old', 'AutoByteus')
+  fs.mkdirSync(path.dirname(oldApp))
+  fs.writeFileSync(oldApp, '')
+  state.busyPorts.add(9333)
+
+  await assert.rejects(lifecycle.start({ app: oldApp }), (error) => (
+    error.code === 'APP_ISOLATION_UNSUPPORTED'
+    && error.category === 'environment'
+    && error.message.includes(fs.realpathSync(oldApp))
+    && error.message.includes('--from-worktree')
+  ))
+  assert.equal(state.spawned.length, 0)
+  assert.deepEqual(fs.readdirSync(tmpDir), [])
+})
+
+test('start refuses a packed AppImage with extraction guidance as a usage error', async (t) => {
+  const { lifecycle, state, base } = lifecycleFixture(t)
+  const appImage = path.join(base, 'AutoByteus-linux.AppImage')
+  fs.writeFileSync(appImage, '')
+
+  await assert.rejects(lifecycle.start({ app: appImage }), (error) => (
+    error.code === 'APPIMAGE_EXTRACTION_REQUIRED'
+    && error.category === 'usage'
+    && error.message.includes('--appimage-extract')
+    && error.message.includes('squashfs-root')
+  ))
+  assert.equal(state.spawned.length, 0)
+})
+
+test('restart re-checks isolated-launch support and leaves the instance running when refused', async (t) => {
+  const { lifecycle, state, appPath } = lifecycleFixture(t)
+  const started = await lifecycle.start({ app: appPath })
+  fs.rmSync(path.join(path.dirname(appPath), 'resources', 'isolated-launch.json'))
+
+  await assert.rejects(lifecycle.restart({}), { code: 'APP_ISOLATION_UNSUPPORTED' })
+  assert.deepEqual(state.closed, [])
+  assert.ok(state.running.has(started.pid))
+})
+
+test('--from-worktree launches the worktree build when it carries the marker', async (t) => {
+  const { lifecycle, base } = lifecycleFixture(t)
+  const contents = path.join(base, 'web', 'electron-dist', `mac-${process.arch}`, 'AutoByteus.app', 'Contents')
+  fs.mkdirSync(path.join(contents, 'MacOS'), { recursive: true })
+  fs.mkdirSync(path.join(contents, 'Resources'), { recursive: true })
+  fs.writeFileSync(path.join(contents, 'MacOS', 'AutoByteus'), '')
+  fs.writeFileSync(path.join(contents, 'Resources', 'isolated-launch.json'), '{"isolatedLaunchContract": 1}')
+
+  const started = await lifecycle.start({ fromWorktree: true })
+  assert.equal(started.executablePath, fs.realpathSync(path.join(contents, 'MacOS', 'AutoByteus')))
 })

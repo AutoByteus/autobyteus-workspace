@@ -27,10 +27,11 @@ Every command prints one JSON value: `{"schemaVersion":1,"ok":true,"command":"â€
    `--app <path to .app or executable>`, `--from-worktree` (this worktree's packaged build), or
    `--build` (build it first; several minutes). Keep from the result: `instanceId`, `controlPort`
    (default 9333), `databaseUrl`, `logPath`.
-   - The installed app isolates its server settings and hides update toasts only if its release
-     includes this feature (1.4.91-beta.5 and earlier do not). Older installs inherit your shell's
-     AutoByteus settings. In that case use `--from-worktree`/`--build` when running inside
-     AutoByteus.
+   - Only builds with isolated-launch support can be started (a marker the command checks first).
+     Older builds, including installed 1.4.91-beta.5 and earlier, fail with
+     `APP_ISOLATION_UNSUPPORTED`; then use `--from-worktree`/`--build`. On Linux, a packed
+     AppImage fails with `APPIMAGE_EXTRACTION_REQUIRED`: extract it with
+     `<file>.AppImage --appimage-extract` and pass `--app <dir>/squashfs-root/autobyteus`.
 2. **Control.** Run the browser-automation launcher with the instance's control port and
    attach-only mode, for example
    `env CHROME_REMOTE_DEBUGGING_PORT=9333 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "<browser launcher>" list-tabs`.
@@ -60,6 +61,12 @@ omitted when exactly one instance is recorded.
 - `CONTROL_PORT_IN_USE`: another instance (named in the message) or program holds the port. Stop
   it, or start with `--control-port <n>` and use the same port for browser-automation.
 - `APP_NOT_FOUND`: pass `--app` or use `--from-worktree`/`--build`. Linux has no default install.
+- `APP_ISOLATION_UNSUPPORTED`: the app build cannot be launched isolated; use
+  `--from-worktree`/`--build` or ask the user to update the app. Never work around it by launching
+  the app yourself.
+- `APPIMAGE_EXTRACTION_REQUIRED`: follow the extraction steps in the message.
+- Linux sandbox errors in the log: tell the user; the remedies are OS-level and theirs to choose
+  (see the guide's Linux section). Never add `--no-sandbox`.
 - `APP_EXITED_BEFORE_READY`, `READINESS_TIMEOUT`: read the log lines in the message. Nothing
   is left running.
 - `INSTANCE_ID_REQUIRED`: several instances exist; pass one of the listed ids.

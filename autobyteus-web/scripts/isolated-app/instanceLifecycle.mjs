@@ -5,7 +5,10 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import {
   AppExecutableNotFoundError,
+  AppImageExtractionRequiredError,
+  AppIsolationUnsupportedError,
   discoverWorktreeExecutable,
+  readIsolatedLaunchContract,
   resolveExplicitExecutable,
   resolveInstalledExecutable,
 } from '../electron-launch/appExecutable.mjs'
@@ -98,6 +101,7 @@ export function createInstanceLifecycle({
   const createGroupController = processDeps.createProcessGroupController ?? createPosixProcessGroupController
   const portAvailable = processDeps.isPortAvailable ?? isPortAvailable
   const build = processDeps.runBuild ?? runBuild
+  const isolationGate = processDeps.readIsolatedLaunchContract ?? readIsolatedLaunchContract
 
   if (platform === 'win32') {
     throw environmentError('UNSUPPORTED_PLATFORM', 'Isolated app lifecycle supports macOS and Linux only')
@@ -119,6 +123,19 @@ export function createInstanceLifecycle({
         ? 'AutoByteus.app is not installed in /Applications or ~/Applications; pass --app <path> or --from-worktree'
         : 'No installed AutoByteus location is standard on this platform; pass --app <path> or --from-worktree',
     )
+  }
+
+  /** Refuse app builds that cannot honor an isolated launch (before any port, root or spawn work). */
+  async function assertIsolatedLaunchSupported(executablePath) {
+    try {
+      await isolationGate(executablePath)
+    } catch (error) {
+      if (error instanceof AppImageExtractionRequiredError) throw usageError(error.code, error.message)
+      if (error instanceof AppIsolationUnsupportedError) {
+        throw environmentError(error.code, error.message, { executablePath })
+      }
+      throw error
+    }
   }
 
   async function assertControlPortFree(controlPort) {
@@ -252,8 +269,6 @@ export function createInstanceLifecycle({
     } catch (error) {
       throw usageError('USAGE_ERROR', describeError(error))
     }
-    await assertControlPortFree(controlPort)
-
     if (options.build) {
       await build({ webRoot, platform, sourceEnv })
     }
@@ -261,6 +276,8 @@ export function createInstanceLifecycle({
       app: options.app,
       fromWorktree: options.fromWorktree || options.build,
     })
+    await assertIsolatedLaunchSupported(executablePath)
+    await assertControlPortFree(controlPort)
     const serverPort = await selectServerPort(options.serverPort, controlPort)
     const ownsDataRoot = !options.dataRoot
     const dataRoot = ownsDataRoot ? createAutoDataRoot() : resolveCallerDataRoot(options.dataRoot)
@@ -348,6 +365,8 @@ export function createInstanceLifecycle({
   async function restart({ instanceId } = {}) {
     const id = registry.resolveId(instanceId)
     const record = registry.read(id)
+    // Checked before stopping: a refused app leaves the running instance untouched.
+    await assertIsolatedLaunchSupported(record.executablePath)
     await endInstanceProcess(record)
     await waitForPortsReleased([record.controlPort, record.serverPort])
     for (const [code, port] of [['CONTROL_PORT_IN_USE', record.controlPort], ['SERVER_PORT_IN_USE', record.serverPort]]) {

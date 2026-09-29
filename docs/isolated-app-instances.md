@@ -29,21 +29,24 @@ profile (see the [packaging contract](../autobyteus-web/docs/electron_packaging.
 | Keeps rendering while covered by other windows | Started with `--disable-backgrounding-occluded-windows --disable-renderer-backgrounding` |
 | Main app unaffected | Separate ports, data and process group; `stop` ends only the instance's own process group |
 
-> **App version.** The server-environment isolation and the quiet update state are implemented
-> inside the desktop app. They apply to builds that contain this change: a worktree build
-> (`--from-worktree`/`--build`), and installed releases published after this change is merged
-> (1.4.91-beta.5 and earlier do not include it).
-> An older installed app still starts isolated (own port and data root), but its server inherits
-> the launching shell's AutoByteus settings and it shows an "Update failed" toast. From an agent
-> shell inside AutoByteus, use a worktree build until your installed app is updated.
+> **Isolated-launch support.** The server-environment isolation and the quiet update state are
+> implemented inside the desktop app, so only builds that carry them can be launched isolated.
+> Such builds ship a marker, `isolated-launch.json`, in their resources. `pnpm isolated-app start`
+> and `restart` check it before doing anything else and refuse other builds with
+> `APP_ISOLATION_UNSUPPORTED`. Supported builds are a worktree build (`--from-worktree`/`--build`)
+> and installed releases published after this change (1.4.91-beta.5 and earlier are refused).
+> An app binary cannot be isolated after the fact: launching an older build by hand with the
+> `e2e` variables is outside what the product controls, and its server would inherit the
+> launching shell's settings.
 
 ## Prerequisites
 
 - macOS or Linux with a graphical session (Linux: a real or virtual X11/Wayland display). Windows
   is not supported.
 - This repository checked out with `pnpm install` done (Node.js 22, pnpm 10).
-- The installed AutoByteus app (macOS: `/Applications` or `~/Applications`), an explicit app path,
-  or a packaged worktree build.
+- An AutoByteus build with isolated-launch support: the first release after this change, installed
+  (macOS: `/Applications` or `~/Applications`) or given with `--app`, or a packaged worktree build
+  (`--from-worktree`/`--build`). Linux AppImage releases must be extracted first (see "Linux").
 - For control, screenshots and recording: the `autobyteus-mcps` browser-automation skill, `uv`
   (the launcher prepares its environment on first use) and, for recording, `ffmpeg` on `PATH`.
 
@@ -57,9 +60,10 @@ command prints one JSON value on stdout:
 { "schemaVersion": 1, "ok": false, "command": "start", "error": { "code": "CONTROL_PORT_IN_USE", "message": "…" } }
 ```
 
-Exit codes: `0` ok, `2` usage (`USAGE_ERROR`, `DATA_ROOT_INVALID`, `INSTANCE_ID_REQUIRED`),
-`3` environment (`APP_NOT_FOUND`, `CONTROL_PORT_IN_USE`, `SERVER_PORT_IN_USE`, `BUILD_FAILED`,
-`APP_LAUNCH_FAILED`, `UNSUPPORTED_PLATFORM`), `4` `INSTANCE_NOT_FOUND`, `5` operation failure
+Exit codes: `0` ok, `2` usage (`USAGE_ERROR`, `DATA_ROOT_INVALID`, `INSTANCE_ID_REQUIRED`,
+`APPIMAGE_EXTRACTION_REQUIRED`), `3` environment (`APP_NOT_FOUND`, `APP_ISOLATION_UNSUPPORTED`,
+`CONTROL_PORT_IN_USE`, `SERVER_PORT_IN_USE`, `BUILD_FAILED`, `APP_LAUNCH_FAILED`,
+`UNSUPPORTED_PLATFORM`), `4` `INSTANCE_NOT_FOUND`, `5` operation failure
 (`READINESS_TIMEOUT`, `APP_EXITED_BEFORE_READY`, `STOP_UNCONFIRMED`).
 
 ### Start
@@ -263,13 +267,35 @@ An isolated instance starts empty.
 | --- | --- |
 | `CONTROL_PORT_IN_USE` | Another instance (named in the message) or program uses the port. Stop it, or pass `--control-port` and use the same port for browser-automation. |
 | `APP_NOT_FOUND` | No installed app (or Linux). Pass `--app` or use `--from-worktree`/`--build`. |
+| `APP_ISOLATION_UNSUPPORTED` | The app build (named in the message) has no isolated-launch support: its resources lack a valid `isolated-launch.json`. Use `--from-worktree`/`--build`, or update the installed app to a release with isolated-launch support. |
+| `APPIMAGE_EXTRACTION_REQUIRED` | `--app` points at a packed AppImage. Run `<file>.AppImage --appimage-extract` in a directory you choose, then `start --app <that directory>/squashfs-root/autobyteus` (the extracted executable), or use `--from-worktree`/`--build`. |
 | `APP_EXITED_BEFORE_READY` / `READINESS_TIMEOUT` | Read the log lines in the message or `logPath`. A rejected `--data-root` (overlapping production paths, symlink, missing) is reported there. |
 | `bad option: --remote-debugging-port` when launching by hand | The shell inherited `ELECTRON_RUN_AS_NODE=1`. `pnpm isolated-app` removes it; for manual launches use `env -u ELECTRON_RUN_AS_NODE …`. |
-| Instance shows production agents or settings | The installed app predates the isolated server environment (see "App version"). Use `--from-worktree`. |
 | `BROWSER_UNAVAILABLE` from browser-automation | Nothing listens on the configured port: the instance stopped, or `CHROME_REMOTE_DEBUGGING_PORT` differs from `controlPort`. |
 | `TAB_NOT_FOUND` after `restart` | Tab ids change on restart; run `list-tabs` again. |
 | Browser command hangs | A page `alert`/`confirm` is open; answer it in the window. |
 | `STOP_UNCONFIRMED` | The process group did not end; the record is kept so `stop` can be retried. |
+
+## Linux
+
+Validation of this workflow is macOS-only; Linux is supported on a best-effort basis.
+
+- Release builds ship as an AppImage, which must be extracted before an isolated launch:
+  `./AutoByteus_linux-x64-<version>.AppImage --appimage-extract` creates `squashfs-root/`. Then
+  run `pnpm --dir <repo> isolated-app start --app <dir>/squashfs-root/autobyteus`. A worktree
+  build (`--from-worktree`/`--build`) uses the unpacked output directly.
+- A graphical session is required (a real or virtual X11/Wayland display).
+- **Chromium sandbox.** Directly launched unpacked or extracted builds use Chromium's sandbox. On
+  distributions that restrict unprivileged user namespaces (for example recent Ubuntu with
+  AppArmor), the app can fail at startup with a sandbox error in the log. `pnpm isolated-app`
+  never disables the sandbox (no `--no-sandbox`, no argument pass-through). The fix is an
+  OS-level choice that **you decide**:
+  - allow unprivileged user namespaces, e.g. `sudo sysctl -w kernel.apparmor_restrict_unprivileged_userns=0`
+    (or `kernel.unprivileged_userns_clone=1` on kernels that use it), or add an AppArmor profile
+    that grants `userns` to the AutoByteus executable; or
+  - make the bundled sandbox helper setuid root:
+    `sudo chown root:root <dir>/chrome-sandbox && sudo chmod 4755 <dir>/chrome-sandbox`
+    (`<dir>` is the directory containing the executable).
 
 ## Limitations
 
