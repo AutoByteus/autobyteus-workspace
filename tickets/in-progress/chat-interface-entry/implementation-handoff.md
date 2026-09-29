@@ -4,7 +4,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: independent architecture review was selected. It passed ARCH-REV-003 (IR-001), ARCH-REV-005 (SR-009, IR-002), ARCH-REV-006 (SR-010, IR-003) and ARCH-REV-008 (SR-012, IR-004). IR-004 completes the D-16 delta, so `get_handoff_rules` routes it to code review (Large/High).
+- Upstream review applicability and handoff-rule result: independent architecture review was selected. It passed ARCH-REV-003 (IR-001), ARCH-REV-005 (SR-009, IR-002), ARCH-REV-006 (SR-010, IR-003), ARCH-REV-008 (SR-012, IR-004) and ARCH-REV-010 (SR-014, IR-005). IR-005 completes the D-17 delta, so `get_handoff_rules` routes it to code review (Large/High).
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/requirements-doc.md` (SR-003)
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/investigation-notes.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/solution-revision-record.md` (SR-003, SR-004, SR-007, SR-008, SR-009, SR-010)
@@ -21,7 +21,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/implementation-revision-record.md`
-- Current implementation revision ID: `IR-004` (IR-003: D-14 marker; IR-002: CR-002 and D-15; IR-001: baseline)
+- Current implementation revision ID: `IR-005` (IR-004: D-16 labels; IR-003: D-14 marker; IR-002: CR-002 and D-15; IR-001: baseline)
 - Related solution revision IDs: SR-003, SR-004, SR-007, SR-008, SR-009, SR-010
 - Related architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004, ARCH-REV-005, ARCH-REV-006
 - Related code-review revision IDs: CRR-001, CRR-002
@@ -40,9 +40,23 @@ Commits (in design change-sequence order):
 | `360de94a9` | 5 | Skill-request instruction codec, `requestedSkillNames`, message chips |
 | `797d49d6a` | 6–9 | Chat draft/launch/routing, Chat components and pages, removals, localization, docs |
 | `717603e61` | — | Ticket package (IR-001) |
+| `1f5fd8004` | IR-005 | D-17 (R3): chat run view = product agent run view in the workspace frame; `AgentWorkspaceView` restored; `DraftRunConfigEditor`; `/` skill tagging in the product box; shared right-panel state; contextual default tab rule; removals of the Chat run view and persisted footer |
 | `9d65adf6e` | IR-004 | D-16 Chat model labels (UVF-001): the shared label policy via `toChatModelOption`, Recommended-first order, one search predicate, label + badge + secondary rows; `existingRunChoiceLabelInput` and `compareRecommendedFirstBy` moved into the shared utils |
 | `5f11d52f6` | IR-003 | D-14 activation-pending marker (SR-010): mark/clear in `agentRunStore`, `onSendMessageCommandAck`, reconcile skip + clear on active snapshot, SR-008 guard removed; R-2 workspace request generation; web execution doc |
 | `da1033860` | IR-002 | CR-002 footer thinking source; D-14 `submissionPending` reconcile guard; D-15 request strength (Rule 1, Rule 2 A/B, IC-1, IC-2) across Codex/Claude/ACP-Grok/AGY; `workspace-skill-links.ts` split; server skills doc |
+
+### IR-005 outcome
+
+- **D-17 (R3, SR-013/SR-014; UVF-002) is implemented.** After the first message a chat is the product agent run view in the workspace frame.
+  - `/chat?id` renders `WorkspaceAdaptiveLayout` with `AgentWorkspaceView` restored, and its geometry equals the Team view.
+  - The header shows the run-summary title, status, ⚙ and ＋; ＋ opens a preset New chat.
+  - The product box offers `/` skill tags through an optional `skillTagging` capability (standalone only).
+  - ⚙ uses `ExistingRunConfigEditor` for persisted runs, and the new local `DraftRunConfigEditor` for `temp-*` drafts (no server call).
+- **Tabs and panel.** `useRightPanel` is one shared, default-open preference again. `useRightSideTabs` owns the contextual default tab rule (AR-010): a strip click opens exactly that tab, and reopening a run keeps its tab.
+- **Removed:** the Chat run view and header, the persisted model footer, the persisted menu modes, and the chat panel scope. D-16 labels remain for the New chat menu; the run settings editor keeps `existingRunChoiceLabelInput`.
+- **Local fix within D-17 (VIS-017):** `ExistingRunConfigEditor` shows the known workspace for a run reopened with a history-derived workspace id.
+- **Evidence:** live checks A to K pass (`implementation-evidence/README.md` § D-17), covering VIS-015, 016, 017, 018, 019, 026 and 027, the frame geometry, the tab rules, the shared collapsed state, AC-009 Save → resume, both draft ⚙ paths, `/`, ＋ and narrow.
+- **For API/E2E:** `tests/e2e/chat-entry-live-probe.mjs` (theirs) targets the removed `chat-run-view` / `chat-run-status` / `chat-runtime-fixed-note` selectors.
 
 ### IR-004 outcome
 

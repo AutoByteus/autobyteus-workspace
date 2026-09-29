@@ -80,3 +80,27 @@ What each case asserts:
 - **V-C:** a second configured run with a different source fails with `…is being materialized from…`.
 - **V-D:** with a user-owned folder at the skill path, the Daily Assistant starts and `skipped-workspace-owned` is logged. The folder is untouched. The configured run fails with `…already exists as a directory` (AGY: `AGY_SKILL_NAME_COLLISION`).
 - **V-E:** after every run terminates, the link is gone. This held for every Rule 2 case, and in V-B the weak holder was released first.
+
+## D-17 — the chat run view in the workspace frame (IR-005)
+
+Script: `ir5-run-view-check.mjs`, run against the dev environment (`pnpm dev`; web :3000, backend :8000, data root `.autobyteus/development`). It uses real Chrome at 1440×900 (and 390×844 for K), real Codex, and the historical Article Writing Team run for the Team comparisons. Results and screenshots are in three folders:
+
+- **`ir5-run-view/`** holds the first full pass.
+  - Its D, E and F results are superseded. D and E navigated with full page reloads, and F used the wrong strip selector (`-surface`, which attribute fall-through replaces).
+  - The script now navigates in-app through the Vue router.
+- **`ir5-run-view-tabs/`** holds D, E and F rerun with in-app navigation.
+- **`ir5-run-view-g/`** holds G rerun after the stopped-run workspace fix, with a unique reply marker.
+
+| Check | Result |
+| --- | --- |
+| A — VIS-015 frame | Pass. The header runs to x=988 and is 57px tall; the right panel starts at x=990, top 0, full height; the tab bar's bottom sits at 57. The chat title is the first message. There is no Chat footer; ⚙ and ＋ are present. |
+| B — `/` in the run-view box, VIS-016 | Pass. `/` lists skills and Enter adds a chip. The sent message shows the chip, and the tooltip gives the exact text sent. |
+| C — ⚙ while live, VIS-026 | Pass. Model and thinking are disabled, the "Stop this run before changing model settings." note shows, Save is disabled, and the label is "OpenAI / GPT-5.5 (default reasoning: medium)". |
+| D — geometry and default tabs | Pass. Chat and Team geometry are identical: center 323–988, header 57, panel 990–1440, handle 986–990. Team opens on Team members; chat (Files) → Team opens Team members; Team → chat opens Activity. |
+| E — reopening keeps the tab | Pass. Artifacts is kept after Agents → back to the same chat. |
+| F — strip → exact tab, VIS-018; shared collapsed state | Pass. In Chat, Files, Terminal and Artifacts each open exactly that tab. In Team, Files and Terminal do. Collapsing in Chat leaves Team collapsed, and reopening in Team leaves Chat open. |
+| G — Offline ⚙, VIS-017 and VIS-019; AC-009 | Pass. The stopped note shows. The known workspace is shown (after the fix). Save selects `gpt-6-astra`, and the resumed run is active on `gpt-6-astra`. |
+| H — ＋ | Pass. It routes to `/chat`, with a New chat preset (Temp workspace). |
+| I — ⚙ on a failed first send (`temp-*`) | Pass. `DraftRunConfigEditor` changes the model to `gpt-5.6-luna`, and the send uses it. No run-config calls happen between ⚙ and send; the only GraphQL read is the pre-existing Skill Improvement capability query. |
+| J — ⚙ on a catalog "Run agent" draft | Pass. The model changes to `gpt-5.6-luna` and the send uses it. No GraphQL calls happen between ⚙ and send. |
+| K — narrow 390×844, VIS-027 | Pass. Left and right product strips show, the title is visible, and mic/send sit inside the box. |

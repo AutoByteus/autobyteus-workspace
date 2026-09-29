@@ -10,6 +10,7 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
 | IR-002 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-005 pass (after API-REV-001 and CRR-002) | CR-002 (F-01), CR-003 (F-02), CR-004 (F-03), AR-008, IC-1, IC-2 | `Local Fix` (CR-002) + design execution (D-15) + `Design Impact` (D-14) | SR-008, SR-009; ARCH-REV-004, ARCH-REV-005; CRR-001, CRR-002; API-REV-001; DR N/A | CR-002 and D-15 complete and validated; D-14 guard implemented but shown insufficient → Design Impact to solution designer |
 | IR-003 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-006 pass (SR-010) | CR-003 (F-02), IR-002 D-14 Design Impact, R-2 (optional) | Design execution (revised D-14) | SR-010; ARCH-REV-006; CRR-002; API-REV-001; DR N/A | D-14 activation-pending marker implemented; stale first-send and Offline-resume reproductions fail without it and pass with it; resend ×14 with 0 losses; R-2 included |
 | IR-004 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-008 pass (SR-012; user verification UVF-001, DR-002) | UVF-001 | Design execution (D-16; delta Small/Low, package Large/High) | SR-011, SR-012; ARCH-REV-008; CRR-003; API-REV N/A; DR-002 | Chat model labels follow the shared policy; V-L1 to V-L5 pass |
+| IR-005 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-010 pass (SR-013/SR-014; UVF-002) | UVF-002 (R3), AR-010, AR-011 | Design execution (D-17; delta Medium web-only, package Large/High) | SR-013, SR-014; ARCH-REV-010; CRR-005; API-REV N/A; DR N/A | Chat run view is the product agent run view in the workspace frame; draft ⚙ editor; `/` in the product box; shared panel state and contextual-tab rule; removals; live checks A–K pass |
 
 ## Revision Entries
 
@@ -205,4 +206,66 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
 - Remaining limitations or risks:
   - Two-line rows make the model lists taller; the lists already scroll.
   - Browser screenshots were not captured; the checks inspected the DOM directly.
+
+### IR-005 — D-17: the chat run view is the product agent run view (R3)
+
+- Triggering role, report path, and round: architecture_reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-handoff.md`, ARCH-REV-010 (pass on SR-014). Origin: user verification UVF-002 (`solution-designer-result-uvf-002.md`), with the R3 UI decisions recorded as DEC-016.
+- Triggering finding IDs: UVF-002, AR-010 (strip → exact tab), AR-011 (`temp-*` draft settings).
+- Classification: design execution of D-17. The delta is Medium and web-only; the package stays Large/High.
+- Prior authoritative result: IR-004 (`9d65adf6e`, `e9f2ce399`), plus delivery's later base merges up to `66304f510`.
+- Current authoritative result: commit `1f5fd8004`.
+- Related solution revision IDs: SR-013, SR-014
+- Related architecture-review revision IDs: ARCH-REV-010
+- Related code-review revision IDs: CRR-005
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A (delivery artifacts through DR-005 are unchanged)
+- Why this implementation revision is recorded: implementation of D-17.
+- Approved behavior or requirement IDs affected:
+  - REQ-011 R3, REQ-012, REQ-013, REQ-016 and REQ-018;
+  - AC-009, AC-010, AC-011, AC-015 and AC-018;
+  - UIS-008, UIS-009 and UIS-013; UXJ-007 and UXJ-009.
+- Implementation delta:
+  - **Frame.**
+    - `pages/chat.vue` renders `WorkspaceAdaptiveLayout` for `/chat?id`. It shares a new `useWorkspaceFileContentVisible` with `pages/workspace.vue`.
+    - `WorkspaceAdaptiveLayout` restores the standalone branches (`showSelectedRunConfig`, `AgentWorkspaceView`).
+    - `AgentWorkspaceView.vue` is restored (with its i18n key). ＋ calls `startNewChat({ agentDefinitionId, workspaceRootPath })` and routes to `/chat`; ⚙ calls `showConfig`. It supplies `skillTagging`.
+  - **Header.** `AgentWorkspaceSurface` titles standalone targets with the new `useStandaloneRunTitle` (first message, else history summary, ≤42 characters; the full text goes in `title`). Org targets keep their titles.
+  - **⚙.** `RunConfigPanel` gains a draft branch: a selected standalone `temp-*` id renders the new `DraftRunConfigEditor.vue`. That is an `AgentRunConfigForm` bound to `context.config`, with the workspace locked; it makes no `existingRunConfigStore` calls, and the back arrow does not clear that store.
+  - **Box.**
+    - `AgentUserInputForm`, `AgentUserInputTextArea` and `AgentEventMonitor` take an optional `skillTagging` capability.
+    - It is backed by the new `useSkillTagMenu` (the `/` trigger, `ChatSkillMenu`, keyboard handling) and the new `SkillTagChips.vue`, which is also used by `ChatComposer`.
+    - With the capability, a tag or an attachment makes a sendable draft, and only the Context Files area clips, so the menu can open above the box.
+  - **Right panel.** `useRightPanel` returns to one shared `isRightPanelVisible = ref(true)`. The scope, `setActiveRightPanelScope` and the `WorkspaceToolShell` `scope` prop are removed.
+  - **Tabs.**
+    - `useRightSideTabs` owns `contextualScopeKey`, `lastAppliedScopeKey`, a pending explicit tab and a mounted-host count, plus `selectTabExplicitly` and `useContextualDefaultTab`.
+    - `RightSideTabs` uses them, and its `visibleTabs` watcher is now immediate.
+    - `RightSidebarStrip` clicks go through `selectTabExplicitly`.
+  - **Removals.**
+    - `ChatRunView.vue`, `ChatRunHeader.vue`, `chatRunModelControls.ts` and its spec. The draft-only `chatDraftModelControls.ts` is used by `ChatNewSurface`.
+    - `ChatModelMenu` `fixed` / `lockedReason` / `retry-fixed`, and `ChatThinkingControl` `lockedReason`.
+    - The `useChatModelCatalog` `runChoice` branch, `filterOptions` and `catalogModelFor`.
+    - Ten `chat.header.*` / `chat.footer.*` / locked-aria / `runtimeFixed` keys, in en and zh-CN.
+  - **Local fix within D-17** (VIS-017 fidelity): `ExistingRunConfigEditor` resolves a history-derived workspace id to the known workspace with the same root, via `workspaceStore.findWorkspaceInfoByRootPath`, so a reopened stopped run shows "Temp Workspace (Default)" rather than an empty selector.
+  - **Docs:** `autobyteus-web/docs/chat.md` (Run View), `workspace_layout.md`, `agent_execution_architecture.md`.
+- Tests:
+  - New:
+    - `AgentWorkspaceView.spec.ts` (4 tests);
+    - `AgentUserInputForm.skillTagging.spec.ts` (3);
+    - `useRightSideTabs.contextualDefault.spec.ts` (4);
+    - `ExistingRunConfigEditor.workspace.spec.ts` (2; the first fails without the fix);
+    - a `RunConfigPanel.spec.ts` draft-branch test.
+  - Updated:
+    - `RightSideTabs.spec.ts`, `RightSidebarStrip.spec.ts` and `useRightPanel.spec.ts`;
+    - `WorkspaceAdaptiveLayout.spec.ts` (the IR-001 hunks reverse-applied, and the source check updated);
+    - `pages/__tests__/chat.spec.ts` and `useChatModelCatalog.spec.ts`.
+- Local validation and result:
+  - `pnpm test:nuxt run` with `LANG=en_US.UTF-8`: 3369 passed. The only failing files are the 4 baseline ones.
+  - vue-tsc: no errors in the changed files. The guards pass.
+  - The live checks A to K pass (see `implementation-evidence/README.md` § D-17).
+- Next recipient or routing: code reviewer (Large/High), via `get_handoff_rules`.
+- Remaining limitations or risks:
+  - The API/E2E-owned `autobyteus-web/tests/e2e/chat-entry-live-probe.mjs` targets the removed `chat-run-view`, `chat-run-status` and `chat-runtime-fixed-note` selectors and needs updating.
+  - For a reopened run whose conversation starts at a Codex compaction boundary, while history is not loaded (narrow view, tree not mounted), the title falls back to the product "Agent - XXXX".
+  - After a draft's first send promotes its id, or when switching between chats, the tab re-defaults to Activity. This is an accepted consequence.
+  - The draft editor shows the product's "workspace is fixed for existing runs" wording.
 

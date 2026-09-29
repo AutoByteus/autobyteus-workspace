@@ -1,0 +1,123 @@
+{
+  "startedAt": "2026-09-29T09:16:36.004Z",
+  "checks": {
+    "D0": {
+      "title": "Open the chat under test (when run with --run-id)",
+      "details": {
+        "tab": "progress"
+      }
+    },
+    "D": {
+      "title": "Tabs: chat (Files) → Team opens Team members; Team → chat opens a visible tab; frame geometry equals Team",
+      "details": {
+        "teamTab": "teamMembers",
+        "chatTabAfterTeam": "progress",
+        "chatGeometry": {
+          "centerPane": {
+            "top": 0,
+            "left": 323,
+            "right": 988,
+            "bottom": 900,
+            "height": 900,
+            "width": 665
+          },
+          "header": {
+            "top": 0,
+            "left": 323,
+            "right": 988,
+            "bottom": 57,
+            "height": 57,
+            "width": 665
+          },
+          "rightPanel": {
+            "top": 0,
+            "left": 990,
+            "right": 1440,
+            "bottom": 900,
+            "height": 900,
+            "width": 450
+          },
+          "tabList": {
+            "top": 8,
+            "left": 990,
+            "right": 1398,
+            "bottom": 57,
+            "height": 49,
+            "width": 408
+          },
+          "resizeHandle": {
+            "top": 0,
+            "left": 986,
+            "right": 990,
+            "bottom": 900,
+            "height": 900,
+            "width": 4
+          }
+        },
+        "teamGeometry": {
+          "centerPane": {
+            "top": 0,
+            "left": 323,
+            "right": 988,
+            "bottom": 900,
+            "height": 900,
+            "width": 665
+          },
+          "header": {
+            "top": 0,
+            "left": 323,
+            "right": 988,
+            "bottom": 57,
+            "height": 57,
+            "width": 665
+          },
+          "rightPanel": {
+            "top": 0,
+            "left": 990,
+            "right": 1440,
+            "bottom": 900,
+            "height": 900,
+            "width": 450
+          },
+          "tabList": {
+            "top": 8,
+            "left": 990,
+            "right": 1398,
+            "bottom": 57,
+            "height": 49,
+            "width": 408
+          },
+          "resizeHandle": {
+            "top": 0,
+            "left": 986,
+            "right": 990,
+            "bottom": 900,
+            "height": 900,
+            "width": 4
+          }
+        }
+      }
+    },
+    "E": {
+      "title": "Reopening the same run keeps its tab",
+      "details": {
+        "tab": "artifacts"
+      }
+    },
+    "F": {
+      "title": "Strip Files/Terminal open exactly those tabs in Chat and Team; collapsed state shared (VIS-018)",
+      "details": {
+        "chatCollapsed": true,
+        "chatFiles": "files",
+        "chatTerminal": "terminal",
+        "chatArtifacts": "artifacts",
+        "teamStartsCollapsed": true,
+        "teamFiles": "files",
+        "teamTerminal": "terminal",
+        "chatOpenAfterTeamReopened": true
+      }
+    }
+  },
+  "pageErrors": [],
+  "completedAt": "2026-09-29T09:22:43.826Z"
+}
