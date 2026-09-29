@@ -325,6 +325,22 @@ pnpm --filter autobyteus-web build
 pnpm --filter autobyteus-server-ts build
 ```
 
+## Isolated app instances (agents, tutorials, screenshots, video)
+
+Agents and developers can start a disposable AutoByteus desktop instance beside
+the main app. It has its own ports and data, never touches production data, and
+has no update checks. They can drive it like a person with a visible cursor,
+take screenshots and record MP4 video:
+
+```bash
+pnpm isolated-app start            # installed app; --from-worktree / --build for this worktree
+pnpm isolated-app list
+pnpm isolated-app stop
+```
+
+See the [isolated app instances guide](docs/isolated-app-instances.md) and the
+agent skill [`skills/autobyteus-isolated-app`](skills/autobyteus-isolated-app/SKILL.md).
+
 ## Packaged Electron API/E2E testing
 
 After the root [`Setup`](#setup), run packaged Electron checks from the frontend
@@ -361,12 +377,13 @@ pnpm test:e2e:electron:isolation \
 ```
 
 Do not insert a standalone `--` after either package-script name; these thin
-CLIs receive their options directly. If a macOS/Linux automation shell has
-inherited `ELECTRON_RUN_AS_NODE=1`, clear it for the real GUI launch, for
-example `env -u ELECTRON_RUN_AS_NODE pnpm test:e2e:electron --adapter direct`.
-The launcher preserves the rest of the caller environment and overlays only
-the three documented isolation variables; it does not introduce API-key,
-provider, search, Codex, or other credential assumptions.
+CLIs receive their options directly. The launcher removes an inherited
+`ELECTRON_RUN_AS_NODE`, preserves the rest of the caller environment for the
+desktop process and overlays the three documented isolation variables. The
+isolated app's embedded server receives only a system-baseline environment, so
+production AutoByteus, database and provider settings from the caller never
+reach it. Provision credentials into the isolated database with
+`pnpm secrets:import`.
 
 See the frontend [packaged Electron E2E guide](autobyteus-web/README.md#packaged-electron-e2e-launches)
 and the [canonical launch/ownership contract](autobyteus-web/docs/electron_packaging.md#packaged-e2e-launch-profile)
