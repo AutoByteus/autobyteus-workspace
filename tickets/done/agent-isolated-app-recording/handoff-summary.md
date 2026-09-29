@@ -4,6 +4,12 @@
 
 - Delivery state: **User verified (2026-09-29, "finalize and release the meta beta thanks.", read as a new beta).** The ticket is archived and finalized into `personal` (workspace) and `main` (mcps), and a new beta is released. See `release-deployment-report.md` for the final state.
 - Evidence MP4s: kept (the default; the user raised no objection).
+- **Final state (DR-002):**
+  - workspace `personal@c84b57739`: the ticket fast-forwarded plus the `1.4.91-beta.6` release commit;
+  - mcps `main@6b39562`: a `--no-ff` merge;
+  - `v1.4.91-beta.6` published as a pre-release: 4/4 workflows green, and the published macOS arm64 build carries `isolated-launch.json`;
+  - Docker `:beta` is now beta.6;
+  - ticket worktrees and local branches are removed.
 - Classification: `task_size=Large`, `architectural_risk=High`. Route: reviewed (Solution Designer → Architecture Review → Implementation → Code Review → API/E2E → test-code review → Delivery).
 - Review chain:
   - Architecture: ARCH-REV-005 Pass (SR-012).
@@ -53,7 +59,7 @@
   - R-07 `isolated-app-lifecycle-probe`: LC-001..LC-006 passed against the worktree build, with the production snapshot unchanged and no instances left running.
   - mcps R-04 unit: 138 passed.
 
-## Please Verify
+## Verification Steps Given To The User
 
 From the workspace worktree, with a packaged worktree build (`autobyteus-web/electron-dist/mac-arm64/AutoByteus.app` exists; or use `--build`):
 
@@ -85,7 +91,7 @@ Reply with explicit verification (for example "verified") to proceed. Please als
 
 ## Artifacts
 
-(`…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording`)
+(`…` = `tickets/done/agent-isolated-app-recording` on `personal`)
 
 - Upstream: `…/requirements-doc.md`, `…/investigation-notes.md`, `…/solution-revision-record.md`, `…/design-spec.md`, `…/handoff-architecture-design-complete.md`, `…/design-review-report.md`, `…/architecture-review-revision-record.md`
 - Implementation: `…/implementation-handoff.md`, `…/implementation-revision-record.md`
