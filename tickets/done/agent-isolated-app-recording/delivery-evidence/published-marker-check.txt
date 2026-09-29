@@ -1,0 +1,4 @@
+       34  09-29-2026 04:46   AutoByteus.app/Contents/Resources/isolated-launch.json
+{
+  "isolatedLaunchContract": 1
+}

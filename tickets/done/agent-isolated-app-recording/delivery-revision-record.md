@@ -7,6 +7,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | code_reviewer handoff after CRR-002 Pass | N/A | Integrated, checked, docs synced; awaiting user verification | docs-sync-report.md, release-notes.md, handoff-summary.md, release-deployment-report.md, delivery-evidence/ |
+| DR-002 | User verification + new beta request (2026-09-29) | DR-001 | Delivery Completed: finalized, `v1.4.91-beta.6` released, cleaned up | release-deployment-report.md, handoff-summary.md, delivery-evidence/ (release) |
 
 ## Revision Entries
 
@@ -29,3 +30,30 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 - Why this baseline or delivery revision was recorded: first completed delivery-stage result (integration + docs sync + handoff).
 - Next recipient/action: the user verifies. Then finalization proceeds per `handoff-summary.md` § Finalization Plan.
 - Remaining blockers, rollback concerns, or untested scope: no blockers. Linux is not validated (user decision). OBS-2, OBS-1 and CR-C-07 are follow-up candidates.
+
+### DR-002 — Finalization, beta.6 release and cleanup
+
+- Delivery round and trigger: user message on 2026-09-29, "finalize and release the meta beta thanks.", read as verification plus a new-beta request. MP4 evidence kept (the default).
+- Triggering upstream report, verification, or evidence: the user verification above; DR-001 handoff.
+- Prior authoritative result: DR-001 (integrated and checked; awaiting verification).
+- Current authoritative result: `Delivery Completed`.
+  - Targets had not advanced since verification. The ticket was archived (`002d30d35`) and the ticket branches pushed.
+  - Workspace `personal` fast-forwarded to `002d30d35`, plus release commit `c84b57739` and tag `v1.4.91-beta.6`.
+  - mcps `main` merged `--no-ff` to `6b39562`.
+  - Release workflows 4/4 succeeded. The GitHub pre-release has 17 assets. Docker `:beta` is `sha256:f1ab14c7…`, and `:latest` is unchanged.
+  - The published macOS arm64 zip contains `isolated-launch.json`.
+  - Ticket worktrees and local branches are removed.
+- Docs sync report: `docs-sync-report.md` (unchanged from DR-001)
+- Handoff summary: `handoff-summary.md` (final state added)
+- Release/publication/deployment report: `release-deployment-report.md` (final)
+- Integration and post-integration verification: DR-001 checks remain valid. No re-integration was needed.
+- User verification/finalization state: verified; finalized; released; cleaned up. The finalization worktree is removed after this record is pushed.
+- Terminal return to `/solution_designer`: `Sent` (immediately after this record is pushed)
+- Terminal return message/reference: `send_message_to` → `/solution_designer`, `Delivery Completed`
+- Why this baseline or delivery revision was recorded: completion of all delivery gates.
+- Next recipient/action: `/solution_designer` verifies the receipt.
+- Remaining blockers, rollback concerns, or untested scope:
+  - No blockers.
+  - Linux is unvalidated (user decision; the user validates it after release).
+  - Follow-up candidates: OBS-2, OBS-1, CR-C-07.
+  - Rollback: see the report.
