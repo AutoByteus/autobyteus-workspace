@@ -25,6 +25,7 @@ vi.mock('~/stores/chatDraftStore', () => ({ useChatDraftStore: () => ({ startNew
 import ChatPage from '../chat.vue'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 
 const buildContext = (runId: string) => new AgentContext({
   agentDefinitionId: 'a', agentDefinitionName: 'A', llmModelIdentifier: 'm', runtimeKind: 'autobyteus',
@@ -110,4 +111,54 @@ describe('pages/chat.vue', () => {
     expect(wrapper.find('[data-test="stub-frame"]').exists()).toBe(true)
     expect(useAgentSelectionStore().selectedRunId).toBe('run-3')
   })
+
+  describe('run settings (⚙) belong to their run (CR-005)', () => {
+    it('shows the conversation of a new chat sent after ⚙ was left open on another chat', async () => {
+      const contexts = useAgentContextsStore()
+      const center = useWorkspaceCenterViewStore()
+      contexts.runs.set('run-a', buildContext('run-a'))
+      routing.route.query = { id: 'run-a' }
+      mountPage()
+      await flushPromises()
+      center.showConfig()
+      await flushPromises()
+
+      // Pencil → New chat (no id), then the first send lands on the new run.
+      routing.route.query = {}
+      await flushPromises()
+      contexts.registerDraftRun(buildContext('temp-p'))
+      routing.route.query = { id: 'temp-p' }
+      await flushPromises()
+
+      expect(center.isConfigMode).toBe(false)
+    })
+
+    it('keeps a draft’s settings open across its temp → permanent promotion', async () => {
+      const contexts = useAgentContextsStore()
+      const center = useWorkspaceCenterViewStore()
+      contexts.registerDraftRun(buildContext('temp-d'))
+      routing.route.query = { id: 'temp-d' }
+      mountPage()
+      await flushPromises()
+      center.showConfig()
+      await flushPromises()
+
+      contexts.promoteTemporaryId('temp-d', 'run-d')
+      await flushPromises()
+
+      expect(routing.replace).toHaveBeenCalledWith({ path: '/chat', query: { id: 'run-d' } })
+      expect(center.isConfigMode).toBe(true)
+    })
+
+    it('shows the conversation when Chat mounts while settings are open for another run', async () => {
+      useWorkspaceCenterViewStore().showConfig()
+      useAgentContextsStore().runs.set('run-b', buildContext('run-b'))
+      routing.route.query = { id: 'run-b' }
+      mountPage()
+      await flushPromises()
+
+      expect(useWorkspaceCenterViewStore().isConfigMode).toBe(false)
+    })
+  })
 })
+

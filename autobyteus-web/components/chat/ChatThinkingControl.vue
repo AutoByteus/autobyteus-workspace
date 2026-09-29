@@ -67,7 +67,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue'
 import { Icon } from '@iconify/vue'
-import { useChatPopover } from '~/composables/chat/useChatPopover'
+import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
 import { useLocalization } from '~/composables/useLocalization'
 import { applyThinkingToggle, getThinkingParamKeys, getThinkingToggleOwnedParamKeys } from '~/utils/llmThinkingConfigAdapter'
 import { resolveEffectiveConfigValue, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
@@ -86,7 +86,7 @@ const { t } = useLocalization()
 const rootRef = ref<HTMLElement | null>(null)
 const triggerRef = ref<HTMLElement | null>(null)
 const menuRef = ref<HTMLElement | null>(null)
-const popover = useChatPopover(rootRef, triggerRef, 240)
+const popover = useAnchoredPopover(rootRef, triggerRef, 240)
 
 type ThinkingOption = { value: unknown; label: string }
 type ThinkingParameter = {

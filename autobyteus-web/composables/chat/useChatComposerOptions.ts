@@ -2,7 +2,8 @@ import { computed, onMounted, type Ref } from 'vue'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useAgentTeamDefinitionStore } from '~/stores/agentTeamDefinitionStore'
 import { useSkillStore } from '~/stores/skillStore'
-import { initialsFor, type ChatSkillOption, type ChatTargetOption } from '~/components/chat/chatComposerMenus'
+import { initialsFor, type ChatTargetOption } from '~/components/chat/chatComposerMenus'
+import type { SkillTagOption } from '~/utils/skills/skillTagMenu'
 import { DEFAULT_CHAT_AGENT_DEFINITION_ID } from '~/utils/chat/chatDefaults'
 import { useLocalization } from '~/composables/useLocalization'
 
@@ -30,7 +31,7 @@ export function useChatComposerOptions(agentDefinitionId: Ref<string | null>) {
 
   const skillsAllInstalled = computed(() => agentDefinition.value?.skillScope === 'ALL_INSTALLED')
 
-  const skillOptions = computed<ChatSkillOption[]>(() => {
+  const skillOptions = computed<SkillTagOption[]>(() => {
     const definition = agentDefinition.value
     if (!definition) return []
     if (definition.skillScope === 'ALL_INSTALLED') {

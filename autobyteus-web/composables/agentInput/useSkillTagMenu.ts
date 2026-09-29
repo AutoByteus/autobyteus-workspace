@@ -1,6 +1,6 @@
 import { computed, nextTick, ref, watch, type Ref } from 'vue'
-import { detectMenuTrigger, rankSkills, type ChatSkillOption } from '~/components/chat/chatComposerMenus'
-import { useChatPopover } from '~/composables/chat/useChatPopover'
+import { detectMenuTrigger, rankSkills, type SkillTagOption } from '~/utils/skills/skillTagMenu'
+import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
 import type { AgentContext } from '~/types/agent/AgentContext'
 
 /**
@@ -9,7 +9,7 @@ import type { AgentContext } from '~/types/agent/AgentContext'
  */
 export interface SkillTaggingCapability {
   /** The run agent's effective skills. */
-  skills: ChatSkillOption[]
+  skills: SkillTagOption[]
   /** The agent uses every installed skill (ALL_INSTALLED). */
   allInstalled: boolean
   placeholder: string
@@ -27,7 +27,7 @@ export function useSkillTagMenu(options: {
   /** Writes the requirement text (keeps the caller's local mirror in sync). */
   setText: (text: string) => void
 }) {
-  const popover = useChatPopover(options.rootRef, options.textareaRef, 300)
+  const popover = useAnchoredPopover(options.rootRef, options.textareaRef, 300)
   const query = ref('')
   const start = ref(-1)
   const highlight = ref(0)

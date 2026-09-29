@@ -62,7 +62,8 @@ import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue
 import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue'
 import ChatMessageInput from '~/components/chat/ChatMessageInput.vue'
 import SkillTagChips from '~/components/chat/SkillTagChips.vue'
-import type { ChatSkillOption, ChatTargetOption } from '~/components/chat/chatComposerMenus'
+import type { ChatTargetOption } from '~/components/chat/chatComposerMenus'
+import type { SkillTagOption } from '~/utils/skills/skillTagMenu'
 import type { ComposerTarget } from '~/composables/agentInput/useComposerTarget'
 import type { ChatTarget } from '~/stores/chatDraftStore'
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore'
@@ -73,7 +74,7 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 const props = withDefaults(defineProps<{
   target: ComposerTarget | null
   placeholder: string
-  skillOptions: ChatSkillOption[] | null
+  skillOptions: SkillTagOption[] | null
   skillsAllInstalled?: boolean
   targetOptions?: ChatTargetOption[] | null
   /** The first send of a New chat is in flight. */

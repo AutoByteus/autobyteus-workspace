@@ -3,10 +3,11 @@ import { nextTick, onBeforeUnmount, onMounted, ref, type Ref } from 'vue'
 const NARROW_MAX_WIDTH_PX = 640
 
 /**
- * Popover behavior for the Chat menus: toggling, outside-click and Escape dismissal with focus
- * return, above/below placement with a bounded height, and the narrow (bottom sheet) breakpoint.
+ * Anchored popover behavior shared by the Chat menus and the message box's `/` skill menu:
+ * toggling, outside-click and Escape dismissal with focus return, above/below placement with a
+ * bounded height, and the narrow (bottom sheet) breakpoint.
  */
-export function useChatPopover(
+export function useAnchoredPopover(
   rootRef: Ref<HTMLElement | null>,
   triggerRef: Ref<HTMLElement | null>,
   preferredHeight = 460,

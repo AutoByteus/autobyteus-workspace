@@ -168,7 +168,7 @@ import { Icon } from '@iconify/vue'
 import ChatModelList from '~/components/chat/ChatModelList.vue'
 import ChatModelOptionLabel from '~/components/chat/ChatModelOptionLabel.vue'
 import { chatModelOptionFullText as optionFullText } from '~/components/chat/chatModelOptionText'
-import { useChatPopover } from '~/composables/chat/useChatPopover'
+import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
 import { useChatModelCatalog, type ChatModelOption } from '~/composables/chat/useChatModelCatalog'
 import type { ChatModelSelection } from '~/stores/chatDraftStore'
 import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
@@ -189,7 +189,7 @@ const rootRef = ref<HTMLElement | null>(null)
 const triggerRef = ref<HTMLElement | null>(null)
 const menuRef = ref<HTMLElement | null>(null)
 const searchRef = ref<HTMLInputElement | null>(null)
-const popover = useChatPopover(rootRef, triggerRef, 360)
+const popover = useAnchoredPopover(rootRef, triggerRef, 360)
 const query = ref('')
 const submenuRuntime = ref<string | null>(null)
 const flyoutSide = ref<'left' | 'right'>('right')

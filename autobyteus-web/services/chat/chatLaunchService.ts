@@ -10,6 +10,7 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useChatDraftStore, type ChatDraft, type ChatDraftWorkspace } from '~/stores/chatDraftStore'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { useWorkspaceStore } from '~/stores/workspace'
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import {
   ensureRunHistoryWorkspaceByRootPath,
   resolveRunHistoryWorkspaceMetadataByRootPath,
@@ -156,6 +157,8 @@ export const launchTeamChat = async (
   const chatDraftStore = useChatDraftStore()
   const selectionStore = useAgentSelectionStore()
   const teamRunConfigStore = useTeamRunConfigStore()
+  // The Team view opens on the new team's conversation, never on settings left open for another run.
+  useWorkspaceCenterViewStore().showChat()
   const teamDefinitionId = draft.target.teamDefinitionId
   const definition = useAgentTeamDefinitionStore().agentTeamDefinitions.find((team) => team.id === teamDefinitionId)
   if (!definition) throw new Error(t('chat.launch.teamUnavailable'))

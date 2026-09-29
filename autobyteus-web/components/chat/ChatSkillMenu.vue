@@ -47,12 +47,12 @@
 
 <script setup lang="ts">
 import { Icon } from '@iconify/vue'
-import type { ChatSkillOption } from '~/components/chat/chatComposerMenus'
+import type { SkillTagOption } from '~/utils/skills/skillTagMenu'
 
 defineProps<{
   listId: string
   query: string
-  skills: ChatSkillOption[]
+  skills: SkillTagOption[]
   hasAnySkills: boolean
   selected: readonly string[]
   highlight: number

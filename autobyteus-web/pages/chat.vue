@@ -34,6 +34,7 @@ import { useChatRouteRunSync } from '~/composables/chat/useChatRouteRunSync'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
 import { useChatDraftStore } from '~/stores/chatDraftStore'
+import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import { buildAgentRunChatRoute, openWorkspaceExecutionLink } from '~/services/workspace/workspaceNavigationService'
 import { isTemporaryRunId } from '~/utils/chat/chatDefaults'
 
@@ -86,6 +87,20 @@ const ensureRunOpen = async (runId: string | null) => {
 }
 
 watch(routeRunId, (runId) => { void ensureRunOpen(runId) }, { immediate: true })
+
+// Run settings (⚙) belong to the run they were opened for. The center view mode is global, so when
+// Chat displays any other run (a new chat, another chat, or settings left open elsewhere) it shows
+// that run's conversation. Promotion (temp → permanent) keeps the same context object, so the
+// settings of a draft stay open across its first send.
+const workspaceCenterViewStore = useWorkspaceCenterViewStore()
+let settingsContext: object | null = null
+watch(() => workspaceCenterViewStore.isConfigMode, (configMode) => {
+  settingsContext = configMode ? displayedContext.value : null
+})
+watch(displayedContext, (context) => {
+  if (!context || !workspaceCenterViewStore.isConfigMode) return
+  if (context !== settingsContext) workspaceCenterViewStore.showChat()
+}, { immediate: true })
 
 // A displayed run that disappears (for example, deleted from the Workspaces tree) is re-resolved.
 // A promoted context keeps its object but carries the new id; useChatRouteRunSync moves the route.

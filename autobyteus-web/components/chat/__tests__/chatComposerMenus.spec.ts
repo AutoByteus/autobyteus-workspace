@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { detectMenuTrigger, filterTargets, rankSkills } from '../chatComposerMenus'
+import { filterTargets } from '../chatComposerMenus'
+import { detectMenuTrigger, rankSkills } from '~/utils/skills/skillTagMenu'
 
 describe('chatComposerMenus', () => {
   it('ranks skills by name prefix, then name contains, then description', () => {

@@ -121,7 +121,7 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue'
 import { Icon } from '@iconify/vue'
-import { useChatPopover } from '~/composables/chat/useChatPopover'
+import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
 import { useWorkspaceStore } from '~/stores/workspace'
 import type { ChatDraftWorkspace } from '~/stores/chatDraftStore'
 import { isAbsoluteFolderPath } from '~/utils/chat/chatDefaults'
@@ -136,7 +136,7 @@ const rootRef = ref<HTMLElement | null>(null)
 const triggerRef = ref<HTMLElement | null>(null)
 const listRef = ref<HTMLElement | null>(null)
 const pathRef = ref<HTMLInputElement | null>(null)
-const popover = useChatPopover(rootRef, triggerRef, 420)
+const popover = useAnchoredPopover(rootRef, triggerRef, 420)
 const adding = ref(false)
 const path = ref('')
 const error = ref('')

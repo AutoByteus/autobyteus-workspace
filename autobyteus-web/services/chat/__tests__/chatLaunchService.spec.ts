@@ -15,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   removeDraft: vi.fn(),
   sendToFocusedMember: vi.fn(),
   resolveWorkspace: vi.fn(),
+  showChat: vi.fn(),
 }))
 
 vi.mock('~/stores/chatDraftStore', () => ({
@@ -85,6 +86,9 @@ vi.mock('~/stores/runtimeAvailabilityStore', () => ({
 }))
 vi.mock('~/stores/workspace', () => ({
   useWorkspaceStore: () => ({ workspaces: {}, workspaceMetadataById: {} }),
+}))
+vi.mock('~/stores/workspaceCenterViewStore', () => ({
+  useWorkspaceCenterViewStore: () => ({ showChat: mocks.showChat }),
 }))
 vi.mock('~/stores/runHistoryLoadActions', () => ({
   ensureRunHistoryWorkspaceByRootPath: (rootPath: string) => mocks.resolveWorkspace(rootPath),
@@ -222,6 +226,8 @@ describe('chatLaunchService', () => {
       attachmentDraftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
     })
     expect(mocks.events).toEqual(['starting', 'select-team-draft:team-draft-1', 'team-send', 'navigate:/workspace', 'reset-draft'])
+    // The Team view opens on the conversation, not on settings left open for another run (CR-005).
+    expect(mocks.showChat).toHaveBeenCalled()
   })
 
   it('stays on New chat when the team launch throws before any message is recorded', async () => {

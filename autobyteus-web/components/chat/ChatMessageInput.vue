@@ -59,15 +59,9 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import ChatSkillMenu from '~/components/chat/ChatSkillMenu.vue'
 import ChatTargetMenu from '~/components/chat/ChatTargetMenu.vue'
-import {
-  detectMenuTrigger,
-  filterTargets,
-  rankSkills,
-  toChatTarget,
-  type ChatSkillOption,
-  type ChatTargetOption,
-} from '~/components/chat/chatComposerMenus'
-import { useChatPopover } from '~/composables/chat/useChatPopover'
+import { filterTargets, toChatTarget, type ChatTargetOption } from '~/components/chat/chatComposerMenus'
+import { detectMenuTrigger, rankSkills, type SkillTagOption } from '~/utils/skills/skillTagMenu'
+import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
 import { useComposerFilePathDrop } from '~/composables/agentInput/useComposerFilePathDrop'
 import type { ChatTarget } from '~/stores/chatDraftStore'
 import type { AgentContext } from '~/types/agent/AgentContext'
@@ -81,7 +75,7 @@ const props = defineProps<{
   placeholder: string
   disabled?: boolean
   /** The addressed agent's skills; null when `/` is not offered (team target). */
-  skillOptions: ChatSkillOption[] | null
+  skillOptions: SkillTagOption[] | null
   skillsAllInstalled: boolean
   /** Agents and teams for `@`; null when addressing is not offered (after the first message). */
   targetOptions: ChatTargetOption[] | null
@@ -98,7 +92,7 @@ const listId = `chat-menu-${useId()}`
 const rootRef = ref<HTMLElement | null>(null)
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
 const height = ref(MIN_HEIGHT)
-const popover = useChatPopover(rootRef, textareaRef, 300)
+const popover = useAnchoredPopover(rootRef, textareaRef, 300)
 const menuKind = ref<'skill' | 'target'>('skill')
 const triggerQuery = ref('')
 const triggerStart = ref(-1)
