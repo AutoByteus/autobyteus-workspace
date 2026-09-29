@@ -6,7 +6,7 @@ The latest docs sync report, handoff summary, and release/publication/deployment
 
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
-| DR-001 | `api_e2e_engineer` direct-route delivery handoff (API-REV-001 Pass) | N/A | Merged `origin/personal@50c05b45f` (`b72dbea87`), checked, docs synced (`641bacc03`), local build prepared; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/` |
+| DR-001 | `api_e2e_engineer` direct-route delivery handoff (API-REV-001 Pass) | N/A | Merged `origin/personal@50c05b45f` (`b72dbea87`), checked, docs synced (`641bacc03`), user verified, finalized into `personal` (`b0afadfa6`), no release, cleanup done → `Delivery Completed` | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/` |
 
 ## Revision Entries
 
@@ -21,14 +21,17 @@ The latest docs sync report, handoff summary, and release/publication/deployment
   - Focused vitest 57/57.
   - Docs sync `641bacc03`.
   - Local macOS test build prepared.
-  - Waiting for user verification.
-- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable/tickets/done/chat-composer-polish/docs-sync-report.md`
-- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable/tickets/done/chat-composer-polish/handoff-summary.md`
-- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable/tickets/done/chat-composer-polish/release-deployment-report.md`
+  - User verified on 2026-09-29 ("The task is done. lets finalize").
+  - Archived and committed `dd99be91c`, pushed the ticket branch, merged into `personal` as `b0afadfa6` and pushed.
+  - Release: `Not required` (not requested).
+  - The worktree and local branch were removed; the remote branch was kept.
+- Docs sync report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-polish/docs-sync-report.md`
+- Handoff summary: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-polish/handoff-summary.md`
+- Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-polish/release-deployment-report.md`
 - Integration and post-integration verification: `Merge`, Passed (`delivery-evidence/post-integration-focused-vitest.log`).
-- User verification/finalization state: verification pending; finalization not started.
-- Terminal return to `/solution_designer`: `Not yet eligible`
-- Terminal message/reference: —
-- Why this baseline or delivery revision was recorded: the first completed delivery-stage result (the verification hold).
-- Next recipient/action: the user verifies the local build, then finalization into `personal` and a release if requested.
+- User verification/finalization state: verified; finalization `Completed`.
+- Terminal return to `/solution_designer`: `Sent`
+- Terminal message/reference: `Delivery Completed` via `send_message_to` to `/solution_designer`
+- Why this baseline or delivery revision was recorded: the first and completed delivery-stage result.
+- Next recipient/action: `/solution_designer` verifies the terminal package.
 - Remaining blockers, rollback concerns, or untested scope: AC-002 and AC-003 have unit-level proof only. AC-009's offset is the user's judgment.

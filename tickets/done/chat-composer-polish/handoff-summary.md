@@ -6,7 +6,7 @@
 - Classification (preserved): `task_size=Medium`, `architectural_risk=Low`, route `Direct`. Architecture, source and test-code review: `N/A — not applicable`.
 - Validation: API/E2E API-REV-001 Pass (95%, no category below 90%). Browser probe T01–T07 all pass.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable`
-- Ticket branch: `codex/thinking-selector-auto-enable` at `641bacc03` (see `release-deployment-report.md` for final push/merge state)
+- Ticket branch: `codex/thinking-selector-auto-enable` at `641bacc03` → archived at `dd99be91c`, pushed, and merged into `personal` as `b0afadfa6` (pushed). The worktree and local branch were removed; the remote branch was kept.
 - Finalization target: `personal` (remote `origin`)
 
 ## Integrated State For Verification

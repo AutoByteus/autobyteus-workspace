@@ -7,9 +7,9 @@
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable/tickets/done/chat-composer-polish/handoff-summary.md`
+- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-polish/handoff-summary.md`
 - Handoff summary status: `Updated`
-- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable/tickets/done/chat-composer-polish/delivery-revision-record.md`
+- Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-polish/delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
 - Notes: verified by the user on 2026-09-29; finalization into `personal`.
 
@@ -39,14 +39,14 @@
 
 ## Docs Sync Result
 
-- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable/tickets/done/chat-composer-polish/docs-sync-report.md`
+- Docs sync artifact: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-polish/docs-sync-report.md`
 - Docs sync result: `Updated`
 - Docs updated: `autobyteus-web/docs/chat.md`, `autobyteus-web/docs/settings.md` (commit `641bacc03`)
 
 ## Ticket State Transition
 
 - Ticket moved to `tickets/done/chat-composer-polish`: `Yes`
-- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable/tickets/done/chat-composer-polish` (in the repo: `tickets/done/chat-composer-polish/`)
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-polish` (in the repo: `tickets/done/chat-composer-polish/`)
 
 ## Version / Tag / Release Commit
 
@@ -56,17 +56,17 @@
 
 - Bootstrap context source: `investigation-notes.md` Bootstrap and `design-spec.md` (finalization target `personal`)
 - Ticket branch: `codex/thinking-selector-auto-enable`
-- Ticket branch commit result: pending
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`, `dd99be91c` (archive plus delivery records), after `641bacc03` (docs sync)
+- Ticket branch push result: `Completed`, `origin/codex/thinking-selector-auto-enable` @ `dd99be91c`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: pending
-- Delivery-owned edits protected before re-integration: pending
-- Re-integration before final merge result: pending
-- Target branch update result: pending
-- Merge into target result: pending
-- Push target branch result: pending
-- Repository finalization status: pending (waiting for verification)
+- Target advanced after verification / acceptance: `No` (re-fetched: `origin/personal@50c05b45f`, already contained in the ticket branch)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. The shared checkout `personal` was fast-forwarded with `git pull --ff-only` (already up to date at `50c05b45f`).
+- Merge into target result: `Completed`, `--no-ff` merge `b0afadfa6`, no conflicts. The merge tree is identical to the ticket tip `dd99be91c`.
+- Push target branch result: `Completed`, `origin/personal` `50c05b45f..b0afadfa6`
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -79,14 +79,14 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable`
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
+- Worktree cleanup result: `Completed`. The worktree held only ignored/untracked build output (node_modules, dist, .nuxt, electron-dist with the verification build, SDK dist).
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. `codex/thinking-selector-auto-enable` was deleted after verifying it is an ancestor of `origin/personal`.
+- Remote branch cleanup result: `Not required` (the remote ticket branch is kept, matching the team convention)
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable/tickets/done/chat-composer-polish/release-notes.md`
+- Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-polish/release-notes.md`
 - Archived release notes artifact used for release/publication: — (no release). Archived at `tickets/done/chat-composer-polish/release-notes.md`.
 - Release notes status: `Updated`
 
@@ -110,10 +110,10 @@
 ## Final Status
 
 - Explicit user testing/verification complete: `Yes`
-- Repository finalization complete: `No`
+- Repository finalization complete: `Yes`
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: `None` (waiting for verification)
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: —
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes` (see `delivery-revision-record.md` DR-001)
+- Terminal message/reference: `Delivery Completed` message to `/solution_designer` via `send_message_to`
