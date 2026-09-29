@@ -1,0 +1,1 @@
+{"schema_version":"1","ok":true,"command":"list-tabs","result":{"tabs":[{"tab_id":"34961CFA0DD54D6CDF789CF0012BE0DB","url":"about:blank","title":""},{"tab_id":"350D5D9DDA4A9684E320A492E2A61F8E","url":"http://127.0.0.1:18765/confirm-on-load.html","title":"Confirm on load"},{"tab_id":"37D498CEAEC8DA4A6A7D30E03F0F9CB6","url":"http://127.0.0.1:18765/index.html","title":"Plain"}]}}

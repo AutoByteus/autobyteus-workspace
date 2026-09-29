@@ -1,0 +1,1 @@
+{"schema_version":"1","ok":true,"command":"navigate","result":{"tab_id":"350D5D9DDA4A9684E320A492E2A61F8E","url":"http://127.0.0.1:18765/confirm-on-load.html","ok":true,"status":200,"dialogs":[{"tab_id":"350D5D9DDA4A9684E320A492E2A61F8E","type":"confirm","message":"Continue loading?","default_value":"","outcome":"accepted","decided_by":"agent"}]}}

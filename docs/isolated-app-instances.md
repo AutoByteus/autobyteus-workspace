@@ -4,6 +4,9 @@ This guide is for agents and humans who need a second, disposable AutoByteus des
 the one they use every day. Typical uses are recording tutorial videos, testing a source change in
 the real desktop app, and taking screenshots for documentation.
 
+To decide whether an isolated instance is the right test path for a change, see the workspace
+testing guideline [TESTING.md](../TESTING.md).
+
 The workflow uses two tools:
 
 - **`pnpm isolated-app`** (this repository) starts, lists, stops and restarts isolated instances.
@@ -200,6 +203,16 @@ with `NOT_FOUND`, `AMBIGUOUS` (with candidates), `OBSCURED` (matches covered, fo
 modal; `covering` names the cover), `TIMEOUT`, `NOT_EDITABLE` or `INVALID_TARGET`. The full API is in the browser-automation
 `SKILL.md`.
 
+### Page dialogs
+
+Some AutoByteus actions ask for confirmation with a native `confirm()` (for example removing a node).
+Pass the answer with the action: `run-script … --dialog accept` or `--dialog dismiss`.
+(`--prompt-text` answers a `prompt` in browsers; the Electron app has no `window.prompt()`.) Without it the dialog is dismissed so the app is not left blocked,
+and the command fails with `DIALOG_DECISION_REQUIRED` showing the question. Decide, then repeat
+the action with `--dialog`. `alert`s are closed and reported. A dialog left open (for example
+raised between commands) must be answered in the window. Until then commands fail with
+`PAGE_BLOCKED`. Details are in the browser-automation `SKILL.md`.
+
 ### Screenshots
 
 ```bash
@@ -224,8 +237,9 @@ click ripples and captions. No OS screen-recording permission is needed.
   `stop-recording` returns it with `end_reason: target_closed`.
 - If the agent run that started a recording is cancelled, the recording keeps going. Finish it
   from any later session with `stop-recording` for the same tab, or stop the instance.
-- `alert`/`confirm` dialogs raised during a recording stay open for the app or a person. While one
-  is open, other browser commands wait until it is answered.
+- A dialog raised by a command during a recording is handled by that command (see "Page dialogs").
+  One raised between commands stays open for the app or a person; until it is answered, commands
+  fail with `PAGE_BLOCKED`.
 - A second start on the same tab fails with `RECORDING_ALREADY_ACTIVE`, and a stop without a
   recording fails with `RECORDING_NOT_ACTIVE`. A missing `ffmpeg` fails at start with
   `RECORDING_DEPENDENCY_MISSING`.
@@ -283,7 +297,8 @@ An isolated instance starts empty.
 | `bad option: --remote-debugging-port` when launching by hand | The shell inherited `ELECTRON_RUN_AS_NODE=1`. `pnpm isolated-app` removes it; for manual launches use `env -u ELECTRON_RUN_AS_NODE …`. |
 | `BROWSER_UNAVAILABLE` from browser-automation | Nothing listens on the configured port: the instance stopped, or `CHROME_REMOTE_DEBUGGING_PORT` differs from `controlPort`. |
 | `TAB_NOT_FOUND` after `restart` | Tab ids change on restart; run `list-tabs` again. |
-| Browser command hangs | A page `alert`/`confirm` is open; answer it in the window. |
+| `PAGE_BLOCKED` from browser-automation | A page dialog is open (or a page hangs); answer it in the window, then retry. |
+| `DIALOG_DECISION_REQUIRED` | The action raised a `confirm`/`prompt`; repeat it with `--dialog accept` or `--dialog dismiss`. |
 | `STOP_UNCONFIRMED` | The process group did not end; the record is kept so `stop` can be retried. |
 
 ## Linux
@@ -321,6 +336,7 @@ Validation of this workflow is macOS-only; Linux is supported on a best-effort b
 
 ## Related documentation
 
+- [TESTING.md](../TESTING.md): the workspace testing guideline
 - [Electron packaging, `e2e` launch profile and server environment](../autobyteus-web/docs/electron_packaging.md#packaged-e2e-launch-profile)
 - [Packaged Electron E2E test launcher](../autobyteus-web/README.md#packaged-electron-e2e-launches)
 - [Secret management and `secrets:import`](../autobyteus-server-ts/docs/modules/secret_management.md)

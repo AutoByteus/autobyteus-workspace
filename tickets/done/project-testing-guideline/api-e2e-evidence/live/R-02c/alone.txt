@@ -1,0 +1,1 @@
+4.64s call     tests/integration/test_mcp_transports_real.py::test_stdio_mcp_page_dialogs_follow_the_agent_decision_and_are_reported

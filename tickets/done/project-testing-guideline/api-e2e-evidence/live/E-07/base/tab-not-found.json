@@ -1,0 +1,1 @@
+{"schema_version":"1","ok":false,"command":"read-page","error":{"code":"TAB_NOT_FOUND","message":"The requested tab is closed or unavailable.","retryable":true,"details":{"tab_id":"NOT-A-TAB"}}}
