@@ -9,6 +9,7 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
 | IR-001 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-003 pass | N/A | `Initial Baseline` | SR-003, SR-004 (R2 UI supplement), SR-007; ARCH-REV-003; CRR N/A; API-REV N/A; DR N/A | Implemented per design D-01..D-13; ready for code review |
 | IR-002 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-005 pass (after API-REV-001 and CRR-002) | CR-002 (F-01), CR-003 (F-02), CR-004 (F-03), AR-008, IC-1, IC-2 | `Local Fix` (CR-002) + design execution (D-15) + `Design Impact` (D-14) | SR-008, SR-009; ARCH-REV-004, ARCH-REV-005; CRR-001, CRR-002; API-REV-001; DR N/A | CR-002 and D-15 complete and validated; D-14 guard implemented but shown insufficient → Design Impact to solution designer |
 | IR-003 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-006 pass (SR-010) | CR-003 (F-02), IR-002 D-14 Design Impact, R-2 (optional) | Design execution (revised D-14) | SR-010; ARCH-REV-006; CRR-002; API-REV-001; DR N/A | D-14 activation-pending marker implemented; stale first-send and Offline-resume reproductions fail without it and pass with it; resend ×14 with 0 losses; R-2 included |
+| IR-004 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-008 pass (SR-012; user verification UVF-001, DR-002) | UVF-001 | Design execution (D-16; delta Small/Low, package Large/High) | SR-011, SR-012; ARCH-REV-008; CRR-003; API-REV N/A; DR-002 | Chat model labels follow the shared policy; V-L1 to V-L5 pass |
 
 ## Revision Entries
 
@@ -153,4 +154,55 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
 - Next recipient or routing: code reviewer, via `get_handoff_rules`.
 - Remaining limitations or risks:
   - The marker has no timeout. It lasts until an active snapshot, a failure, a rejected ack, or terminate/close. If a send is accepted but the server never activates the run, that run is not torn down by reconcile until one of those happens (for example terminate or close).
+
+### IR-004 — D-16 Chat model labels (UVF-001)
+
+- Triggering role, report path, and round: architecture_reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-handoff.md`, ARCH-REV-008 (pass on SR-012). Origin: user verification finding `user-verification-finding-001.md`, recorded under DR-002.
+- Triggering finding IDs: UVF-001. Requirements: REQ-021, AC-018, DEC-015.
+- Classification: design execution of D-16. The delta is Small/Low; the package stays Large/High.
+- Prior authoritative result: IR-003 (`5f11d52f6`, `e5eac067d`), merged with `origin/personal` by delivery (`7aa53519b`, `4b440e719`).
+- Current authoritative result: commit `9d65adf6e`.
+- Related solution revision IDs: SR-011, SR-012
+- Related architecture-review revision IDs: ARCH-REV-008
+- Related code-review revision IDs: CRR-003
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: DR-002
+- Why this implementation revision is recorded: implementation of D-16.
+- Approved behavior or requirement IDs affected: REQ-021, AC-018 (V-L1 to V-L5), and the BEH-003 model menu.
+- Implementation delta:
+  - **Option builder** (`composables/chat/useChatModelCatalog.ts`).
+    - `ChatModelOption` is now `{ runtimeKind, llmModelIdentifier, label, secondary, recommended, providerName, displayName, canonicalName }`. The identifier-only `name` / `title` fields are gone.
+    - `toChatModelOption(...)` is the single builder. It prefers the catalog record, then `existingRunChoiceLabelInput(runChoice)`, then the bare identifier.
+    - `orderChatModelOptions` puts Recommended first for Claude Agent SDK only.
+    - `matchesModelQuery` is the one search predicate, used by both `search` and `filterOptions`.
+    - `catalogModelFor` looks up a runtime catalog record; `modelGroups` and `modelLabel` use the builder.
+  - **Persisted runs** (`components/chat/chatRunModelControls.ts`): the fixed list is built with `toChatModelOption`, passing the catalog record and the run choice, and ordered with `orderChatModelOptions`. The persisted `modelLabel` uses `label`.
+  - **Shared utilities.**
+    - `utils/modelSelectionLabel.ts`: the new `existingRunChoiceLabelInput`, moved from the local `choiceLabel` in `RuntimeModelConfigFields.vue` (now imported there; the local copy is removed), plus an exported `ModelSelectionLabelModel`.
+    - `utils/modelSelectionOptions.ts`: the new generic `compareRecommendedFirstBy`, which `buildModelSelectionGroups` now uses.
+  - **Presentation.**
+    - The new `ChatModelOptionLabel.vue` renders the label and the Recommended badge (the `SearchableGroupedSelect` classes) on one truncated line, with `secondary` as a gray truncated line.
+    - The new `chatModelOptionText.ts` gives the full text for `title` / `aria-label`.
+    - `ChatModelList.vue` and the `ChatModelMenu.vue` search rows use both. The inline fixed-list predicate in `ChatModelMenu.vue` is removed.
+    - A new `chat.model.recommended` key in en/zh-CN, with the same copy as the launch form.
+  - **Docs:** `autobyteus-web/docs/chat.md`, section "Model labels".
+- Tests:
+  - New `composables/chat/__tests__/useChatModelCatalog.spec.ts` (5 tests): V-L1, V-L3 and V-L4 labels; search on display and canonical names; the builder's fallbacks; row rendering.
+  - `chatRunModelControls.spec.ts`: 2 V-L2 fixed-list tests (the choice fallback, and preferring the catalog record); the mock now keeps the real builder.
+  - `modelSelectionLabel.spec.ts` / `modelSelectionOptions.spec.ts`: the moved mapping and the generic comparator.
+  - `RuntimeModelConfigFields.spec.ts`: a V-L5 regression test with real Claude names. It passes both before and after the move.
+- Local validation and result:
+  - `pnpm test:nuxt run` with `LANG=en_US.UTF-8`: 3347 passed. The only failing files are the 4 baseline ones.
+  - Under this session's current `LANG=de_DE.UTF-8`, the merged-in `TokenUsageMeterPanel.spec.ts` also fails on locale number formatting. That file is from `origin/personal` and is unrelated to this change.
+  - vue-tsc: no errors in the changed files. The guards pass.
+  - Live (dev env, the real catalog; server rebuilt on the merged branch):
+    - **V-L1:** New chat on Claude Agent SDK lists `claude-opus-5-5` first, with "Opus 5.5 · For complex work and everyday tasks" and Recommended. After selecting it, the trigger shows `claude-opus-5-5`.
+    - **V-L2:** a persisted Claude chat (Offline, reopened after terminate) shows the same fixed list, Recommended first, and the trigger shows its model's canonical name. Searching "Opus 5.5" finds `opus`.
+    - **V-L3:** the Codex trigger shows "GPT-5.6-Sol (default reasoning: low)" on one 28 px line.
+    - **V-L4:** AutoByteus rows show identifiers.
+    - **V-L5:** gear editor labels are unchanged (the regression test above).
+- Next recipient or routing: code reviewer (the package is Large/High), via `get_handoff_rules`.
+- Remaining limitations or risks:
+  - Two-line rows make the model lists taller; the lists already scroll.
+  - Browser screenshots were not captured; the checks inspected the DOM directly.
 

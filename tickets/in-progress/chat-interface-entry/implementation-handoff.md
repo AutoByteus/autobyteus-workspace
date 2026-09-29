@@ -4,7 +4,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: independent architecture review was selected. It passed ARCH-REV-003 (IR-001), ARCH-REV-005 (SR-009, IR-002) and ARCH-REV-006 (SR-010, IR-003). IR-003 completes the package, so `get_handoff_rules` routes it to code review (Large/High).
+- Upstream review applicability and handoff-rule result: independent architecture review was selected. It passed ARCH-REV-003 (IR-001), ARCH-REV-005 (SR-009, IR-002), ARCH-REV-006 (SR-010, IR-003) and ARCH-REV-008 (SR-012, IR-004). IR-004 completes the D-16 delta, so `get_handoff_rules` routes it to code review (Large/High).
 - Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/requirements-doc.md` (SR-003)
 - Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/investigation-notes.md`
 - Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/solution-revision-record.md` (SR-003, SR-004, SR-007, SR-008, SR-009, SR-010)
@@ -21,7 +21,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003` (IR-002: CR-002 and D-15; IR-001: baseline)
+- Current implementation revision ID: `IR-004` (IR-003: D-14 marker; IR-002: CR-002 and D-15; IR-001: baseline)
 - Related solution revision IDs: SR-003, SR-004, SR-007, SR-008, SR-009, SR-010
 - Related architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004, ARCH-REV-005, ARCH-REV-006
 - Related code-review revision IDs: CRR-001, CRR-002
@@ -40,8 +40,20 @@ Commits (in design change-sequence order):
 | `360de94a9` | 5 | Skill-request instruction codec, `requestedSkillNames`, message chips |
 | `797d49d6a` | 6–9 | Chat draft/launch/routing, Chat components and pages, removals, localization, docs |
 | `717603e61` | — | Ticket package (IR-001) |
+| `9d65adf6e` | IR-004 | D-16 Chat model labels (UVF-001): the shared label policy via `toChatModelOption`, Recommended-first order, one search predicate, label + badge + secondary rows; `existingRunChoiceLabelInput` and `compareRecommendedFirstBy` moved into the shared utils |
 | `5f11d52f6` | IR-003 | D-14 activation-pending marker (SR-010): mark/clear in `agentRunStore`, `onSendMessageCommandAck`, reconcile skip + clear on active snapshot, SR-008 guard removed; R-2 workspace request generation; web execution doc |
 | `da1033860` | IR-002 | CR-002 footer thinking source; D-14 `submissionPending` reconcile guard; D-15 request strength (Rule 1, Rule 2 A/B, IC-1, IC-2) across Codex/Claude/ACP-Grok/AGY; `workspace-skill-links.ts` split; server skills doc |
+
+### IR-004 outcome
+
+- **D-16 / UVF-001 (REQ-021, AC-018, DEC-015) is implemented.** Chat's model rows, search, footer trigger and persisted fixed list now name models exactly as the launch form does:
+  - Claude Agent SDK: the canonical name, then "display name · description", with Recommended first.
+  - Codex and the other non-AutoByteus runtimes: the display name.
+  - AutoByteus: the identifier.
+- The selection identity (`llmModelIdentifier`), D-08 and D-12 are unchanged.
+- The gear editor now imports the moved `existingRunChoiceLabelInput`; its labels are unchanged (V-L5).
+- V-L1 to V-L4 were verified live against the real catalog; V-L5 is covered by a regression test. See IR-004 in the revision record.
+- Test note: under the session's current `LANG=de_DE`, the merged-in `TokenUsageMeterPanel.spec.ts` fails on locale number formatting. It passes under `en_US`, is unrelated to this change, and came in with `origin/personal`.
 
 ### IR-003 outcome
 
