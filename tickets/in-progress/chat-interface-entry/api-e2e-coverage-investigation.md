@@ -15,9 +15,9 @@
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-revision-record.md`
 - Delivery Revision Record: N/A — not a delivery re-entry
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/api-e2e-revision-record.md` (created after the first completed result)
-- Current API/E2E Revision ID: `API-REV-002` (round 2); prior `API-REV-001` (Fail)
+- Current API/E2E Revision ID: `API-REV-003` (round 3); prior `API-REV-002` (Pass), `API-REV-001` (Fail)
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/api-e2e-test-case-ledger.md`
-- Current Investigation Round: 2
+- Current Investigation Round: 3 (round 2 below kept for history)
 - Trigger: `code_reviewer` CRR-003 Pass (IR-002 `da1033860`, IR-003 `5f11d52f6`; SR-010 D-14, D-15)
 - Prior Investigation Reviewed: round 1 (API-REV-001 Fail: F-01, F-02, F-03)
 - Latest Authoritative Investigation: this file, round 2
@@ -241,6 +241,18 @@ Scored after rows 1–6 (repository suites + real-catalog probe), before live br
 - Kept rather than duplicated: the implementer's `d14`/`d15` probes stay implementation evidence. Their deterministic stale injection and bootstrap-only V-C matrix complement the durable UI probe; I reran them independently.
 - Regression: all of C01–C13 again. Packaged Electron is not re-run: `git diff 797d49d6a..HEAD` shows no change to built-in agents, `electron/`, `pages/`, `layouts/` or `build/`, so the round-1 packaged evidence still applies.
 - Results: see the ledger (Seq 34–45) and the execution report. Every repository and live check passed.
+
+## Round 3 Delta (API-REV-003)
+
+- Trigger: `code_reviewer` CRR-005 Pass. IR-004 `9d65adf6e` (D-16, REQ-021 / AC-018 / DEC-015 from UVF-001), on delivery's merge of `origin/personal` (`7aa53519b`) and the C-12 fix (`4b440e719`).
+- Changed boundary: web only. Chat model labels (rows, search, footer trigger, persisted fixed list) now come from the shared launch-form policy; `existingRunChoiceLabelInput` moves to `utils/modelSelectionLabel.ts` (gear editor); `compareRecommendedFirstBy` is shared.
+- No prior failures open (API-REV-002 Pass). Scope: prove AC-018 (V-L1..V-L5), re-run the whole probe on the merged HEAD (the merge was never validated live by API/E2E), and rerun the repository suites.
+- Durable coverage decisions:
+  - Update: `chat-entry-live-probe.mjs` needs an exact option-row selector, because `[data-test^="chat-model-option-"]` now also matches the new `chat-model-option-label|secondary|recommended` children. C04 now compares the trigger with the chosen row's policy label instead of the identifier.
+  - Add: C16 — AC-018 with an independent oracle that recomputes label/secondary/recommended from the GraphQL runtime catalog (the launch-form policy), plus launch-form order/badge parity, search, the Offline persisted fixed list, the fresh New chat trigger and 390×844.
+  - Reuse: repository fixture probe `existing-run-model-config-probe.mjs` for the gear editor (V-L5), plus `RuntimeModelConfigFields.spec.ts` in the web suite for the moved label mapping.
+- Packaged Electron not re-run: no shell, seeding or packaging code changed.
+- Results: ledger Seq 46–54; execution report round 3.
 
 ## Investigation Decision
 

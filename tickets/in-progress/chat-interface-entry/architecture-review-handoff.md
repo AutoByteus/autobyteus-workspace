@@ -156,3 +156,22 @@ Source: Implementation Engineer IR-002, `implementation-handoff.md`, `implementa
 | New D-14 | An `agentRunStore` `activationPendingRunIds` marker. **Set** before connecting, for first sends (after promotion) and for Offline/Error resumes. **Cleared** when a snapshot lists the run as active or should-connect (server-confirmed; the server projects `COMMAND_OVERLAY initializing` / `ACTIVE_RUNTIME` once SEND_MESSAGE is received), on a handled failure/cancel, on a rejected SEND_MESSAGE ack (new `onSendMessageCommandAck` callback), or on terminate/close. It is never cleared by live status events. Reconcile skips marked runs. The SR-008 `submissionPending` guard is removed |
 | Rejected alternatives | (a) change the clearing of `submissionPending`: this has a UI and team/org blast radius. (c) server snapshots marking prepared runs should-connect: this has cross-window and cross-client hydration side effects |
 | Validation | The probe `--scenario stale` must fail without the marker and pass with it, for a first send and an Offline resume. Unit tests for each clear path. A 14× resend probe |
+
+
+## SR-011 — Requirement Gap from user verification (UVF-001) — review request
+
+- Source: Delivery Engineer DR-002, `user-verification-finding-001.md`, `delivery-revision-record.md`. Delivery is blocked at user verification; nothing has been pushed or merged.
+- User-approved delta (2026-09-29): REQ-021 / AC-018 / DEC-015. The Chat model menu, search, the persisted-run list and the footer trigger reuse the shared launch-form label policy (`utils/modelSelectionLabel.ts`, the recommended-first order from `modelSelectionOptions.ts`); single line with a tooltip; search also matches the canonical name, display name and description.
+- Design: **D-16** in `design-spec.md`, plus the File Mapping row and "SR-011 Resolution". The delta is Small / Low (web-only, existing owner, reused utilities); the package stays Large / High.
+- Evidence: `useChatModelCatalog.ts` L61–L71 and L99; `delivery-evidence/catalog-claude_agent_sdk.json`, `catalog-codex_app_server.json`.
+
+
+## SR-012 — D-16 completion for ARCH-REV-007 AR-009 — re-review request
+
+| Needed (AR-009) | Resolution in `design-spec.md` D-16 |
+| --- | --- |
+| 1. Persisted fixed list and label | `chatRunModelControls.ts` builds both through `useChatModelCatalog.toChatModelOption`, and it is added to the File Mapping |
+| 2. Choice → shared label input | Catalog record first: `(runtimeKind, id)` from the run runtime's catalog, loaded by the CR-002 ensure, with every field including `providerType`. Otherwise the shared `existingRunChoiceLabelInput(choice)`, the gear editor's existing mapping moved from `RuntimeModelConfigFields.vue` L218–L219 into `utils/modelSelectionLabel.ts`, with no `providerType`. The output equals the launch form (catalog rows) or the gear editor (choices absent from the catalog). Recommended = catalog `selectionPresentation.recommended`, else `choice.recommended` |
+| 3. One search predicate | `useChatModelCatalog.matchesModelQuery` / `filterOptions` for both the cross-runtime search and the fixed list; the inline predicate in `ChatModelMenu.vue` is removed |
+| 4. Validation | V-L2: a persisted Claude SDK chat whose fixed list and trigger show `claude-opus-5-5` · "Opus 5.5" · Recommended first, found by searching `Opus 5.5` (plus V-L1 and V-L3 to V-L5) |
+| Comparator note | `compareRecommendedFirstBy<T>(labelOf)` is exported generically from `modelSelectionOptions.ts` and used by `buildModelSelectionGroups` and both Chat paths |

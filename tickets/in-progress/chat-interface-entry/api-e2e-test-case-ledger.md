@@ -74,9 +74,26 @@ Evidence folder: `api-e2e-evidence/round2/`. Prior failures rechecked first (F-0
 | 44 | CE-15 | R2 | Completed | Visual compare: C05 vs VIS-015; round-1 screenshots vs VIS-010, VIS-013, VIS-017 (menus unchanged since) | Normative content matches | VIS-015 now shows locked model + locked thinking; VIS-010/013/017 normative items match. Missing icons (check, search, arrow) in early screenshots = runtime Iconify fetch latency (existing app-wide pattern; code renders `heroicons:check`/`arrow-right`) | Pass | `round2/probe-codex/C05-live-locked-footer.png` | — |
 | 45 | — | R2 | Completed | Cleanup check | No leftovers | No `/tmp/chat-entry*`, no owned temp roots or probe processes; user app pid 99100 on :29695 | Done | — | — |
 
+### Round 3 (API-REV-003) — HEAD `e9f2ce399` (IR-004 `9d65adf6e`, D-16; on delivery's merge `7aa53519b` + `4b440e719`)
+
+Evidence folder: `api-e2e-evidence/round3/`.
+
+| Seq | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence | Next Action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 46 | CE-01/02/03 | R3 | Completed | Server build + targeted suites; web suite under `LANG=en_US.UTF-8`; Electron suite (merged HEAD) | In-scope pass | Server 811 passed + same 7 baseline; web 3347 passed + same 4 baseline files; Electron 177 passed | Pass | `round3/server-*.log`, `round3/web-*.log` | — |
+| 47 | — | R3 | Completed | Probe maintenance: option-row selector `MODEL_ROW` (the prefix `chat-model-option-` now also matches the new label/secondary/recommended children); `pickModel` returns the row label; C04 compares the trigger with the policy label and records the settle time; new C16 (AC-018) with an independent label oracle from the GraphQL catalog | — | `node --check` ok | — | `chat-entry-live-probe.mjs` | Run |
+| 48 | C16 (V-L1..V-L5) | R3 | Completed | `--cases C16` (3 runs while refining) | Labels follow the launch-form policy everywhere | Claude rows = canonical labels + "display · description" + Recommended, recommended first (`opus` → `claude-opus-5-5`, "Opus 5.5 · …", Recommended); Codex = display names; AutoByteus = identifiers; row count = catalog; all rows single-line; search `opus-5-5`, `Opus 5.5`, `opus`, `gpt-6` find the expected models; trigger label = row label, title = full text; Offline reopened Claude chat: trigger + fixed list follow the policy, recommended first, fixed-list search `Opus 5.5` finds it; launch form Claude list identical in order and badges (10/10); 390×844 no overflow | Pass | `round3/probe-c16*/` | Observation O-1 |
+| 49 | C16 | R3 | Checkpoint | Fresh New chat with last-used Claude `opus` | Trigger shows `claude-opus-5-5` | First paint shows the identifier `opus`; settles to `claude-opus-5-5` after ~3.0 s (wide) / ~2.0 s (390 px) once the Claude catalog loads | Pass (steady state) — O-1 transient | `round3/probe-c16c/` | Report as non-blocking observation |
+| 50 | CE-05..CE-16 | R3 | Completed | Full probe `--repeat C07=5` (Codex, merged HEAD) | All pass | All pass except C04 (probe compared the trigger 1 s after load, before the label settled); C07 5/5; C16 Pass | Pass except C04 (probe timing) | `round3/probe-codex/` | Fix C04 wait |
+| 51 | C03/C04 | R3 | Completed | `--cases C03,C04` Codex after the C04 settle-wait change | Trigger = display name | `GPT-5.5 (default reasoning: medium) · Codex`; first seen `gpt-5.5`, settled after 617 ms | Pass | `round3/probe-c04/` | — |
+| 52 | V-L5 | R3 | Completed | `tests/e2e/existing-run-model-config-probe.mjs` (repository fixture probe for the gear editor) | Gear editor journeys unchanged | Scenarios API-E2E-004-A..F Pass; fixture page removed | Pass | `round3/existing-run-model-config/` | Labels in the gear editor are asserted by `RuntimeModelConfigFields.spec.ts` (web suite) |
+| 53 | C01/C03/C04 | R3 | Completed | `--runtime claude_agent_sdk` and `--runtime grok_build` | Trigger = policy label | Claude `claude-opus-5-5 · Claude SDK` (first `opus`, 1580 ms); Grok `Grok 4.7 · Grok Build` (first `grok-4.7`, 1735 ms) | Pass | `round3/probe-claude/`, `round3/probe-grok/` | — |
+| 54 | — | R3 | Completed | Cleanup check | No leftovers | No owned roots or probe processes; the user's app is running (pid now 60384 — restarted by the user, not by this validation) | Done | — | — |
+
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: Seq 45 (round 2 complete)
+- Last durably recorded event: Seq 54 (round 3 complete)
+- Round 2 last event: Seq 45
 - Round 1 last event: Seq 33
 - Last completed case and result: durable probe run (C05 Fail = F-01)
 - Cases still running, interrupted, or not started: none

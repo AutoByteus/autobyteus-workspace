@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | code_reviewer / `code-review-report.md` CRR-001 / round 1 | SR-003, SR-004, SR-007; ARCH-REV-003; IR-001; CRR-001 | N/A | Fail / 88% |
 | API-REV-002 | code_reviewer / `code-review-report.md` CRR-003 / round 2 | SR-010; ARCH-REV-006; IR-002, IR-003; CRR-002, CRR-003 | Fail / 88% | Pass / 95% |
+| API-REV-003 | code_reviewer / `code-review-report.md` CRR-005 / round 3 | SR-011, SR-012; ARCH-REV-008; IR-004; CRR-005; DR-002 (UVF-001) | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -54,3 +55,25 @@ None.
 - New or remaining failure IDs: none
 - Recommended recipient: `/software_engineering_team/code_reviewer` (proportional test-code review)
 - Remaining risks: voice dictation not automatable; the D-14 marker has no timeout (design-approved); the Windows re-point fallback is unit-only; not every VIS reference compared pixel-wise
+
+### API-REV-003 — D-16 Chat model labels validated live; merged HEAD regression green
+
+- Triggering role, report path, and round: `code_reviewer`, `code-review-report.md` CRR-005 (Pass), round 3
+- Triggering finding or scenario IDs: UVF-001 / DR-002 → REQ-021, AC-018, DEC-015, D-16 (V-L1..V-L5)
+- Related revision IDs: SR-011, SR-012, ARCH-REV-008, IR-004 (`9d65adf6e`), CRR-005; delivery merge `7aa53519b`, C-12 fix `4b440e719`
+- Why recorded: validation of the D-16 rework and of the merged HEAD
+- Coverage changes: `chat-entry-live-probe.mjs` — exact option-row selector (`MODEL_ROW`), `pickModel` returns the row label, C04 compares the trigger with the policy label (with settle timing), new C16 (AC-018 with an independent catalog oracle, launch-form parity, search, fixed list, fresh trigger, 390×844)
+- Scenarios: C16 new; C01–C16 re-run on Codex (C07 ×5); C01/C03/C04 on Claude and Grok; repository gear-editor probe re-run
+- Commands / environment delta: server rebuilt on the merged HEAD; web suite under `LANG=en_US.UTF-8`
+
+#### Prior Failure Resolution
+
+None — no prior failure was open (API-REV-002 Pass).
+
+- Canonical artifacts updated: investigation (round 3 delta), execution report ("Round 3" section), ledger (Seq 46–54)
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none
+- Observation: O-1 — a fresh New chat trigger shows the identifier for ~0.6–3 s until the runtime catalog loads (non-blocking)
+- Recommended recipient: `/software_engineering_team/code_reviewer` (proportional test-code review)
+- Remaining risks: O-1; voice dictation not automatable; the D-14 marker has no timeout (approved); the Windows re-point fallback is unit-only

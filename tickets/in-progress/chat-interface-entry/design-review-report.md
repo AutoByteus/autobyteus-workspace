@@ -16,17 +16,19 @@
     - `api-e2e-execution-coverage-report.md` (API-REV-001)
     - `api-e2e-evidence/real-catalog-all-installed.json`
     - `implementation-handoff.md`
-- Relevant Solution Revision IDs: SR-003, SR-004, SR-009, SR-010
+- Relevant Solution Revision IDs: SR-003, SR-004, SR-010, SR-011 (REQ-021 / AC-018 / DEC-015, user-approved 2026-09-29), SR-012
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-006`
-- Current Review Round: `6`
+- Current Architecture Review Revision ID: `ARCH-REV-008`
+- Current Review Round: `8`
+- Trigger (round 8): SR-012, the D-16 revision for ARCH-REV-007 AR-009.
+- Trigger (round 7): SR-011 D-16 (Chat model labels), from user-verification Requirement Gap UVF-001 (Delivery DR-002). REQ-021 / AC-018 / DEC-015 were approved by the user on 2026-09-29. The delta is Small/Low; the package stays Large/High.
 - Trigger (round 6): Implementation Engineer IR-002 returned `Design Impact` on D-14. The closer is confirmed as `reconcileDiscoveredActiveRuns` ← `fetchRunHistoryTree`, and the `submissionPending` premise is disproved (AF-33). The Solution Designer revised D-14 in SR-010.
 - Earlier trigger (round 4): the Solution Designer's post-implementation design revision SR-008. Its source is Code Reviewer CRR-002 (the API/E2E failure-origin review of API-REV-001):
   - CR-004: Design Impact, which fired the RSK-003 trigger.
   - CR-003: Unclear, reclassified by the designer as a Missing Invariant.
   - CR-002: Local Fix.
-- Prior Review Round Reviewed: Round 5 / ARCH-REV-005 (Pass, SR-009)
-- Latest Authoritative Round: 6
+- Prior Review Round Reviewed: Round 7 / ARCH-REV-007 (Fail, AR-009)
+- Latest Authoritative Round: 8
 - Current-State Evidence Basis: the implemented branch `codex/chat-interface-entry` (IR-001 commits through `717603e61`, plus uncommitted API/E2E tests). Read in round 4:
   - Server:
     - `agent-execution/backends/antigravity/capsule/agy-configured-skill-materializer.ts` L125–L170: materializes into the capsule, probes the workspace `.agents/skills`, and has a case-insensitive intra-set name check.
@@ -285,6 +287,45 @@ MP-001 to MP-007 are unchanged from earlier rounds. See ARCH-REV-001 to ARCH-REV
 - Reachability: `Unclear` / rare, and the consequence is limited.
 - Review consequence: residual note only; no machinery required.
 
+## Round 7 — D-16 Review (SR-011)
+
+- Basis: REQ-021 / AC-018 / DEC-015 are user-approved; this is a new approved behavior, not reviewer-invented. The delta is classified Small/Low within a Large/High package, and a review is appropriate because the package is on the independent-review route.
+- Evidence read in round 7:
+  - `utils/modelSelectionLabel.ts`: `getModelSelectionOptionLabel` / `…Description` take a `ModelSelectionLabelModel` (`modelIdentifier`, `name`, `canonicalName`, `description`, `providerType`).
+  - `utils/modelSelectionOptions.ts` L10: `compareRecommendedFirst` is private and typed on `SelectItem` (`recommended`, `name`).
+  - `composables/chat/useChatModelCatalog.ts` L60–L110: the catalog rows and the cross-runtime `search`.
+  - `components/chat/chatRunModelControls.ts` L92–L125: `fixedModels` and the persisted-mode `modelLabel` are built from `existingRunConfigStore.modelOptionsByAddress['/']` (`ExistingRunModelChoice`), with `name: choice.llmModelIdentifier`.
+  - `components/chat/ChatModelMenu.vue` L289–L294: a second, inline search filter for the `fixed` list.
+  - `types/agent/ExistingRunModelConfigDraft.ts`: `ExistingRunModelChoice` has `llmModelIdentifier`, `displayName`, `canonicalName`, `description` and `recommended`, but no `providerType`.
+- Verdict on D-16:
+  - The direction is sound. It reuses the shared label policy, has one owner, cleanly removes the identifier-only shape, keeps the stored identity unchanged, and keeps the single-line rule with a tooltip.
+  - The coverage is incomplete (AR-009).
+
+### MP-015 — Persisted-run model menu and footer label after D-16
+
+- Related approved requirement: REQ-021 / AC-018 ("the persisted-run runtime-fixed list" and "the footer trigger" use the shared policy; search matches the canonical and display names).
+- Initiating basis kind: `User`. Open a persisted chat on Claude Agent SDK from the tree → the chat view → open the footer model menu (Offline: the runtime-fixed list; live: the locked trigger label).
+- Forward path:
+  - `ChatRunView` → `useChatRunModelControls` (persisted mode, D-08) → `fixedModels` is built from `ExistingRunModelChoice` with `name = llmModelIdentifier`, and `modelLabel` returns `match.name`.
+  - → `ChatModelMenu :fixed` → `ChatModelList` rows, plus the inline `fixed` search filter (`model.name`, `title`, `providerName`).
+  - D-16 changes only `useChatModelCatalog`, `ChatModelMenu` and the comparator. The file mapping does not include `chatRunModelControls.ts`.
+- Consequence: after the D-16 change, a persisted Claude SDK chat would still show `opus` in the fixed list and on the trigger. Searching `Opus 5.5` or `claude-opus-5-5` in the fixed list would miss. This is the exact UVF-001 symptom on the persisted path, and it fails AC-018.
+- Reachability: `Reachable`; this is the normal SCN-007 / UXJ-007 journey.
+- Review consequence: AR-009.
+
+## Round 8 — D-16 Re-review (SR-012)
+
+- Evidence verified: the existing gear-editor mapping `choiceLabel` (`components/launch-config/RuntimeModelConfigFields.vue` L218–L219) is `{ modelIdentifier, name: displayName, canonicalName, description }` and is used with the shared label functions (L223–L237). SR-012 moves it into `utils/modelSelectionLabel.ts` as `existingRunChoiceLabelInput` rather than copying it.
+- Verdict: `Pass`.
+  - **One owner.** `useChatModelCatalog.toChatModelOption` is the single Chat option builder for the catalog rows, search, the draft footer, and the persisted fixed list and `modelLabel` (through `chatRunModelControls.ts`). This closes MP-015.
+  - **Label input.** The catalog record comes first; it carries `providerType`, and the CR-002 ensure loads it for persisted runs. The shared existing-run mapping is the fallback for models absent from the catalog. Persisted rows therefore match the launch form whenever the catalog knows the model, and otherwise match the gear editor, which is the same output the product already shows for such models.
+  - **Recommended flag.** It comes from the catalog `selectionPresentation`, falling back to `choice.recommended`.
+  - **Search.** One predicate (`matchesModelQuery`, via `search` / `filterOptions`) serves both lists, and the inline copy in `ChatModelMenu.vue` is removed.
+  - **Order.** The generic `compareRecommendedFirstBy<T>` is exported and used by `buildModelSelectionGroups` and both Chat paths; nothing is duplicated.
+  - **Removals are explicit:** the identifier-only `name` / `title` fields, the inline predicate, and the local `choiceLabel`.
+  - **Validation.** V-L1 to V-L5 cover AC-018 on both paths and the gear-editor regression (V-L5).
+- Residual (non-blocking): while a persisted run's catalog is still loading, rows use the fallback mapping and may relabel once the catalog arrives, which is reactive. For AutoByteus OpenAI-compatible and Qwen models absent from the catalog, the fallback shows the identifier, as the gear editor does today.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None
@@ -295,18 +336,7 @@ None
 
 ## Findings
 
-None open. The D-14 revision (SR-010) passes; see ARCH-REV-006. AR-001 to AR-005, AR-007 and AR-008 stay resolved. IC-1 and IC-2 were honored in IR-002, where V-B and V-E pass on Claude, Codex and Grok.
-
-### Binding implementation constraints (not design findings; derived from the current code the design extends)
-
-- **IC-1 — Holder release after a re-point (D-15 Direction B, V-E).**
-  - Today `releaseMaterializedSkill` returns early when `entry.descriptor !== descriptor`, and `removeOwnedLink` unlinks only when the link target equals the releasing descriptor's `sourceRootPath`.
-  - After a re-point, the weak holders' descriptors are stale. Implement release against the registry entry: per-holder strength, decrementing the matching count, and removing the link when both counts reach zero, checked against the entry's current source.
-  - Descriptor identity and a descriptor's original source must not gate release. Otherwise links leak and V-E fails.
-- **IC-2 — Re-point on Windows.**
-  - The desktop app also builds for Windows. Renaming a temporary directory link over an existing one is not guaranteed to replace it there.
-  - Where rename-over is not supported, perform the re-point as unlink + symlink inside the registry's exclusive phase. The registry serialization is the invariant; a momentary absence of the link is acceptable.
-  - Cover this in the materializer unit tests with a simulated rename failure.
+None open. AR-009 is resolved in SR-012 (ARCH-REV-008). AR-001 to AR-005, AR-007 and AR-008 stay resolved. D-14 (SR-010) stays passed.
 
 ## Classification
 
@@ -330,11 +360,7 @@ N/A. Pass.
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`
-  - MP-011 is resolved by the SR-010 marker.
-  - MP-012 and MP-013 are minor and give recommendations only.
-  - MP-014 is a residual.
+- Material-Premise Gate: `Pass`. MP-015 is resolved by the single option builder and search predicate.
 - Notes:
-  - SR-010 D-14 is ready for implementation.
-  - D-15 and CR-002 are unchanged and already validated (IR-002).
-  - Implementation must run the `stale` probe for both the first send and an Offline resume, add a unit test per clear path, and run the 14× resend probe. If a close remains, return `Unclear` with the stack.
+  - SR-012 D-16 is ready for implementation (web only): `toChatModelOption`, `existingRunChoiceLabelInput`, `compareRecommendedFirstBy`, `matchesModelQuery` / `filterOptions`, and V-L1 to V-L5.
+  - D-14 (SR-010), D-15 and CR-002 are unchanged.

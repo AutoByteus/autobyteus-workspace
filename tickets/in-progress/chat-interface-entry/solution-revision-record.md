@@ -14,6 +14,8 @@
 | SR-008 | Design | Code Reviewer CRR-002 (API/E2E failure origin for API-REV-001) | CR-004, CR-003, CR-002 | Design Ready (SR-007), ARCH-REV-003 Pass | Design Ready; Architecture Design Complete (Large/High) | REQ-007, AC-002, REQ-003, REQ-011 (UXJ-007) | Routed to architecture review |
 | SR-009 | Design | ARCH-REV-004 (Fail, Design Impact) | AR-008 (MP-008, MP-009) | Design Ready (SR-008) | Design Ready; Architecture Design Complete (Large/High) | REQ-007/AC-002, REQ-017/AC-014, REQ-004 | Returned to architecture review (ARCH-REV-005) |
 | SR-010 | Design | Implementation Engineer IR-002 Design Impact on D-14 | CR-003 / RSK-007 (AF-30 premise disproved) | Design Ready (SR-009), ARCH-REV-005 Pass | Design Ready; Architecture Design Complete (Large/High) | REQ-003/AC-002, REQ-011/AC-009 | Routed to architecture review |
+| SR-011 | Mixed | Delivery Engineer DR-002, user verification UVF-001 | UVF-001 | Approved (SR-003) | Approved (delta); design D-16 Ready | BEH-003; REQ-021 / AC-018 / DEC-015 | Routed to architecture review |
+| SR-012 | Design | ARCH-REV-007 (Fail, Design Impact) | AR-009 (MP-015) | Design Ready (SR-011) | Design Ready; Architecture Design Complete (package Large/High; delta Small/Low) | REQ-021 / AC-018 | Returned to architecture review (ARCH-REV-008) |
 
 ## Revision Entries
 
@@ -254,3 +256,50 @@
   - **R-2:** the workspace branch of `fetchRunHistoryTree` lacks the org branch's request-generation guard. Out-of-order snapshots can cause a transient, self-healing Offline flicker after a send. No message is lost. Pre-existing.
   - **MP-014:** the marker can outlive a very short activation, until terminate or close. Residual and accepted.
 - Also deferred earlier: R-1 (ARCH-REV-005, weak co-holder instead of skip).
+
+### SR-011 — Requirement Gap from user verification: Chat model labels (in progress)
+
+- Phase and classification: Requirements — Requirement Gap
+- Triggering input: Delivery Engineer DR-002 (run `delivery_engineer_15de3e05868b476d9013e7a631a6ef83`), `user-verification-finding-001.md`
+  - The user tested the local build and found the Chat model menu "not as intuitive" as the launch form (e.g. a bare `opus`).
+- Evidence (verified by Solution Designer 2026-09-29):
+  - `useChatModelCatalog.ts` labels rows with `modelIdentifier` (L66–L68), and its search haystack (L99) omits `canonicalName`.
+  - The shared policy in `utils/modelSelectionLabel.ts` / `modelSelectionOptions.ts` is used by the launch form.
+  - The Claude SDK catalog has `opus` → `claude-opus-5-5` "Opus 5.5", recommended.
+  - No model is missing.
+- Prior status: requirements Approved (SR-003), design SR-010 (ARCH-REV-006 Pass), delivery at user verification (blocked)
+- Current status: requirements delta `Ready for Approval`; design affected area Needs Revision (Chat model menu labeling only)
+- IDs affected: BEH-003; proposed REQ-021, AC-018, DEC-015
+- Intended behavior changed: Yes (new labeling requirement). User approval is required before the design revision.
+- Next action: user decision on DEC-015, then design revision + routing
+
+#### SR-011 completion
+
+- User approval: 2026-09-29, "approve" for DEC-015 as recommended (shared label policy; single line with a tooltip; extended search). The user confirmed "lets go" after a before/after explanation.
+- Design: D-16 was added to `design-spec.md`, together with a File Mapping row and an "SR-011 Resolution" section.
+- Delta classification: Small / Low. The cumulative package stays Large / High.
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer`, per the Large/High package rule. See `architecture-review-handoff.md` (SR-011 section).
+- Next: architecture review → implementation (D-16, plus IR-003 D-14 if still open) → source review → API/E2E → delivery refresh and a rebuild for user re-verification.
+
+### SR-012 — D-16 completed for the persisted-run path (ARCH-REV-007)
+
+- Phase and classification: Design — Design Impact
+- Triggering input: ARCH-REV-007 AR-009 (MP-015)
+  - `chatRunModelControls.ts` L92–L125 builds the fixed list and label from `ExistingRunModelChoice` with `name: choice.llmModelIdentifier`.
+  - `ChatModelMenu.vue` L289–L294 has an inline search.
+  - `ExistingRunModelChoice` lacks `providerType`.
+- Evidence checked by Solution Designer: `components/launch-config/RuntimeModelConfigFields.vue` L212–L240 already maps a choice to a shared label input (`choiceLabel`) for the gear editor.
+- Decision:
+  - `useChatModelCatalog.toChatModelOption` is the single Chat option builder. Its label input is the catalog record first (full fields, loaded for persisted runs by CR-002), else the shared `existingRunChoiceLabelInput` (moved from `RuntimeModelConfigFields`).
+  - One search predicate, `matchesModelQuery` / `filterOptions`.
+  - A generic `compareRecommendedFirstBy` export.
+  - Validation V-L1 to V-L5.
+- Intended behavior changed: No (realizes the approved REQ-021)
+- Approval impact: none
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` (the package is Large/High) — see `architecture-review-handoff.md` (SR-012 section)
+
+#### Review outcome for SR-012 (informational)
+
+- 2026-09-29: Architecture Reviewer ARCH-REV-008 — **Pass**. Basis: SR-012, with approved SR-003/SR-004/SR-011. AR-009 is resolved. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`.
+- The reviewer handed the package to `/software_engineering_team/implementation_engineer`. Solution Designer did not duplicate the handoff.
+- Accepted non-blocking residual: while a persisted run's catalog is still loading, its rows use the fallback mapping and may relabel once the catalog arrives.

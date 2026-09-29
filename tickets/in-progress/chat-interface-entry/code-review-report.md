@@ -2,31 +2,31 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`. This is round 3 and the latest authoritative round. It covers IR-002 and IR-003.
-  - The round-1 sections below (basis, scenario gate, structural checks, size audit, legacy verdict) still hold for the unchanged IR-001 code.
-  - The "Round 3 Review (IR-002 / IR-003)" section records the delta and re-validates the areas that changed.
-  - The history of round 2 (the failure-origin review) is in CRR-002.
-- Requirements Doc Reviewed As Context: `requirements-doc.md`. The SR-003 intended behavior is unchanged.
-- Investigation Notes Reviewed As Context: `investigation-notes.md`, including AF-33 (the D-14 closer stack).
-- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-008, SR-009, SR-010).
-- Design Spec Reviewed As Context: `design-spec.md` at SR-010 (D-01..D-15; D-14 revised in SR-010; D-15 validation cases V-A..V-E).
-- Supplemental Task Artifacts Reviewed As Context: R2 `ui-ux-spec.md` (UXJ-007 lock presentation).
-- Relevant Solution Revision IDs: SR-003, SR-004, SR-007, SR-008, SR-009, SR-010
-- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-006 Pass)
+- Review Entry Point: `Implementation Review`. This is round 4 and the latest authoritative round. It covers IR-004 (D-16, Chat model labels).
+  - The round-1 sections (basis, scenario gate, structural checks, size audit, legacy verdict) still hold for the unchanged IR-001 code.
+  - The "Round 3 Review (IR-002 / IR-003)" section still holds for D-14 and D-15.
+  - The "Round 4 Review (IR-004 / D-16)" section records this delta.
+- Requirements Doc Reviewed As Context: `requirements-doc.md`. The SR-003 baseline plus the SR-011 delta (REQ-021, AC-018, DEC-015; user-approved 2026-09-29).
+- Investigation Notes Reviewed As Context: `investigation-notes.md`
+- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (through SR-012)
+- Design Spec Reviewed As Context: `design-spec.md` at SR-012 (D-16, including the AR-009 persisted-run path)
+- Supplemental Task Artifacts Reviewed As Context: R2 `ui-ux-spec.md` ("model names never wrap"); `user-verification-finding-001.md` (UVF-001)
+- Relevant Solution Revision IDs: SR-011, SR-012 (earlier: SR-003..SR-010)
+- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-008 Pass)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-003, ARCH-REV-004, ARCH-REV-005, ARCH-REV-006
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md`, with `implementation-evidence/README.md`
+- Relevant Architecture Review Revision IDs: ARCH-REV-007, ARCH-REV-008
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-002, IR-003 (IR-001 is the baseline)
+- Relevant Implementation Revision IDs: IR-004 (IR-001..IR-003 are the baseline)
+- Delivery Revision Record Reviewed As Context: `delivery-revision-record.md` (DR-002: UVF-001 routed upstream)
+- Relevant Delivery Revision IDs: DR-002
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
-- Current Review Round: 3
-- Trigger: implementation_engineer handoff for IR-002 and IR-003, addressing CRR-002 findings CR-002, CR-003 and CR-004.
-- Prior Review Round Reviewed: round 2 (CRR-002, failure-origin Fail) and round 1 (CRR-001, Pass)
-- Latest Authoritative Round: 3
-- API/E2E context: `api-e2e-execution-coverage-report.md`, API-REV-001 (triggering evidence for round 2)
-- Delivery Revision Record: N/A — not applicable
-- Failing Scenario IDs / Commands / Evidence: N/A for this entry point. The round-2 failure context is in CRR-002.
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: 4
+- Trigger: implementation_engineer handoff for IR-004 (D-16), after the user verification finding UVF-001 (DR-002).
+- Prior Review Round Reviewed: round 3 (CRR-003 Pass) and the test review CRR-004 (Pass)
+- Latest Authoritative Round: 4
+- Failing Scenario IDs / Commands / Evidence: N/A for this entry point.
 
 ## Routing Classification Review
 
@@ -249,9 +249,53 @@ No new or reclassified premises.
 | C-11 | Direction A skips when the holder's acquisition later ends `absent`, so the weak run gets no copy | D-15 A | Concurrent weak and different-source acquisitions of a `reconcile-discoverable` request | Narrow timing | Code L170–L173 | Reject | Contrived timing; no independent supported workflow |
 | C-12 | After merging the advanced `origin/personal`, the upstream `tests/e2e/runtime/agy-native-image-codex-skill.e2e.test.ts` needs `skillRequestStrength` to type-check | Engineering contract (build) | Finalization merge | Compile error in one upstream test only | Implementation handoff note | Promote (delivery note, non-blocking) | Delivery must add the argument when merging; runtime is unaffected |
 
+## Round 4 Review (IR-004 / D-16)
+
+### Scope
+
+- Code commit `9d65adf6e` (web only; 17 files, +382/−48). The ticket commit `e9f2ce399` was read as context.
+- Delivery had already merged `origin/personal` (`7aa53519b`) and applied the C-12 fix (`4b440e719`). Neither is part of this delta.
+- The uncommitted docs edits owned by delivery and the upstream ticket files are out of scope.
+- Classification: the delta is Small/Low, and the package stays Large/High (confirmed).
+
+### Basis
+
+- Behavior: REQ-021 and AC-018 (BEH-003, SCN-002).
+- Scenario: a Supported Normal Scenario, confirmed by the user through UVF-001 (bare `opus` next to the launch form's `claude-opus-5-5 · Opus 5.5 · Recommended`).
+- Design: D-16 at SR-012.
+
+### D-16 Trace
+
+| D-16 Rule | Implementation Evidence | Status |
+| --- | --- | --- |
+| One option builder for both paths (AR-009) | `useChatModelCatalog.toChatModelOption` is the only producer of `{ label, secondary, recommended }`. It prefers the catalog record, then `existingRunChoiceLabelInput(runChoice)`. It is used by `modelGroups` (the catalog, search, and the draft footer through `findModel` → `modelLabel`) and by `chatRunModelControls` `fixedModels`, whose persisted `modelLabel` reads `match.label`. | Confirmed |
+| Shared label policy with no Chat-specific logic | `label` = `getModelSelectionOptionLabel`, `secondary` = `getModelSelectionOptionDescription` (`utils/modelSelectionLabel.ts`). `recommended` comes from `selectionPresentation.recommended` or `runChoice.recommended`. | Confirmed |
+| Shared mapping moved; the local copy is removed | `existingRunChoiceLabelInput` is exported from `modelSelectionLabel.ts`. `RuntimeModelConfigFields.vue` imports it, and the local `choiceLabel` is gone. V-L5 has a regression test. | Confirmed |
+| Shared order with no duplicate comparator | `compareRecommendedFirstBy<T>(labelOf)` is exported. `buildModelSelectionGroups` uses it via `compareRecommendedFirst`, and Chat via `orderChatModelOptions`. It applies to Claude Agent SDK only, per group, on both paths. | Confirmed |
+| One search predicate | `matchesModelQuery` (identifier, label, display name, canonical name, secondary, provider, runtime) serves `search` and `filterOptions`. The inline predicate in `ChatModelMenu.vue` is removed. | Confirmed |
+| One-line truncation plus full text | `ChatModelOptionLabel.vue` truncates the label with the badge on one line, and the secondary on its own truncated line. `chatModelOptionFullText` supplies `title` and `aria-label` for rows and search results. The trigger is `max-w-[20rem]` with truncated spans, its title is `label · runtime`, and a locked trigger keeps the UXJ-007 lock tooltip (the label stays in `aria-label`). | Confirmed |
+| Badge reuses the launch-form style | The same `SearchableGroupedSelect` badge classes, with the new `chat.model.recommended` key (en, zh-CN). | Confirmed |
+| Removals | `ChatModelOption.name` and `.title` are gone, with no identifier-as-label residue (grep). The inline predicate and the local `choiceLabel` are removed. | Confirmed |
+| Unchanged | Selection identity (`llmModelIdentifier`), the D-08 lock, D-12 last-used, the menu structure, and launch-form and gear-editor output. | Confirmed |
+
+### Round 4 Candidate Gate
+
+| Candidate ID | Observation | Scenario / Contract | Disposition | Reason |
+| --- | --- | --- | --- | --- |
+| C-13 | A locked trigger's `title` shows the lock reason rather than the full model label | UXJ-007 (lock tooltip required) | Reject | The spec requires this tooltip. The full label remains in `aria-label` and is visible unless truncated. |
+| C-14 | The `{ modelIdentifier }` fallback, used when neither a catalog record nor a run choice is given | D-16 | Reject | Not reachable: both call sites always pass one of them. |
+| C-15 | `findModel` and `modelCount` rebuild and sort the groups on each call | DS-006 | Reject | Trivial list sizes (10–20 models); no evidenced cost. |
+
+### Validation
+
+- The reviewer reran the targeted suites under `LANG=en_US.UTF-8`: 14 files, 74 tests, all passed. These include `useChatModelCatalog.spec.ts`, the V-L2 tests in `chatRunModelControls.spec.ts`, and the `modelSelectionLabel`, `modelSelectionOptions`, `RuntimeModelConfigFields` (V-L5) and `agentTeams` specs.
+- Implementer evidence: live V-L1..V-L4 against the real catalog; the full suite shows the 4 baseline files; vue-tsc and the guards are clean.
+- Size: `useChatModelCatalog.ts` has 167 effective lines, `chatRunModelControls.ts` 183, and `ChatModelMenu.vue` 312 (it shrank).
+- The `TokenUsageMeterPanel.spec.ts` failure under `de_DE` comes from the merged `origin/personal`. It is locale-dependent and unrelated.
+
 ## Review Scorecard (Mandatory)
 
-- Overall score: 9.3 / 10 (93 / 100). This is a simple average, shown for trend only. Rows marked (R3) were re-validated this round; the others carry forward from round 1.
+- Overall score: 9.3 / 10 (93 / 100). This is a simple average, shown for trend only. Rows marked (R3) were re-validated in round 3. Round 4 (D-16) re-validated priorities 3, 5, 7, 8 and 10: the shared builder, comparator and predicate remove the divergent Chat labelling without new duplication, so no score changes.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
@@ -268,12 +312,8 @@ No new or reclassified premises.
 
 ## Findings
 
-- CR-001 (Low): resolved by API/E2E. The uncommitted change is verified in the later proportional test review.
-- CR-002 (F-01): resolved (IR-002).
-- CR-003 (F-02): resolved (IR-002 and IR-003, D-14 per SR-010).
-- CR-004 (F-03): resolved (IR-002, D-15).
-- New blocking findings: none.
-- Non-blocking delivery note (C-12): when merging `origin/personal`, add `skillRequestStrength` to the `createAgyRunCapsule` call in the upstream `tests/e2e/runtime/agy-native-image-codex-skill.e2e.test.ts`.
+- CR-001..CR-004: resolved (see CRR-002..CRR-004).
+- Round 4: no findings. C-13..C-15 were rejected.
 
 ## Classification
 
@@ -281,24 +321,24 @@ No new or reclassified premises.
 
 ## Recommended Recipient
 
-- `/software_engineering_team/api_e2e_engineer`, per the handoff rules. After that: API/E2E reruns, then the proportional test-code review (CR-001 and the probe script).
+- `/software_engineering_team/api_e2e_engineer`, per the handoff rules. After that: the proportional test-code review if durable tests change, then delivery (user verification of UVF-001).
 
 ## Residual Risks
 
 - RSK-006 (accepted): the Codex reload tooltip may include the context-file reference section.
-- The D-14 marker has no timeout (C-08, design-approved).
-- The `replaceOwnedLink` Windows unlink + link fallback is unit-tested only.
+- The D-14 marker has no timeout (design-approved).
+- The Windows re-point fallback is unit-tested only.
 - The hand-applied `generated/graphql.ts` delta should be reconciled by a future codegen run.
-- The merge-time test type fix (C-12).
 - Voice dictation is not automatable.
+- The `TokenUsageMeterPanel.spec.ts` failure under non-English locales comes from upstream `origin/personal`, not from this ticket.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 3)
-- Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass`. C-08..C-11 were rejected; C-12 is a non-blocking delivery note.
+- Review Entry Point: `Implementation Review` (round 4, IR-004 / D-16)
+- Supported Product Scenario Gate: `Pass` (SCN-002; UVF-001 user-confirmed)
+- Material-Premise Gate: `Pass` (C-13..C-15 rejected)
 - Score Summary: 9.3/10, with every category at 9.2 or above.
 - Failure Origin: N/A
 - Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: CR-002, CR-003 and CR-004 are resolved. CR-001 is pending the proportional test review.
+- Notes: D-16 is implemented as designed. Chat model labels, order, badge and search now use the launch form's shared policy on both the catalog path and the persisted-run path.

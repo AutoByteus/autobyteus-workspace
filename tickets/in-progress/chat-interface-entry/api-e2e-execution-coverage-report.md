@@ -19,11 +19,11 @@
 - API/E2E Test-Case Ledger: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/api-e2e-revision-record.md`
 - Evidence: `…/api-e2e-evidence/` (round 1) and `…/api-e2e-evidence/round2/` (this round)
-- Current API/E2E Revision ID: `API-REV-002`
-- Current Execution Round: 2
-- Trigger: `code_reviewer` CRR-003 Pass; code at `e5eac067d` (IR-002 `da1033860`, IR-003 `5f11d52f6`)
-- Prior Round Reviewed: round 1 (API-REV-001, Fail 88%: F-01, F-02, F-03)
-- Latest Authoritative Round: 2
+- Current API/E2E Revision ID: `API-REV-003`
+- Current Execution Round: 3
+- Trigger: `code_reviewer` CRR-005 Pass; code at `e9f2ce399` (IR-004 `9d65adf6e`, D-16) on delivery's merge `7aa53519b` + `4b440e719`
+- Prior Round Reviewed: round 2 (API-REV-002, Pass 95%); round 1 (API-REV-001, Fail 88%)
+- Latest Authoritative Round: 3 (the "Round 3" section below; earlier sections describe round 2 and remain valid for the unchanged scope, re-run on the merged HEAD in round 3)
 
 ## Routing Classification
 
@@ -194,7 +194,56 @@ None.
 
 `/software_engineering_team/code_reviewer` — proportional test-code review.
 
-## Latest Authoritative Result
+## Round 3 (API-REV-003) — D-16 Chat model labels, merged HEAD
+
+### Evidence Matrix
+
+| Scenario | Behavior / Req / AC | Surface | Evidence Type | Result | Evidence |
+| --- | --- | --- | --- | --- | --- |
+| Repository suites | all | vitest (server targeted, web under `LANG=en_US.UTF-8`, Electron) | Durable | Pass (server 811 + 7 baseline; web 3347 + 4 baseline files; Electron 177) | `round3/*.log` |
+| C16 V-L1 | AC-018 Claude rows | Chrome + real Claude catalog | Durable/Live | Pass: `opus` → `claude-opus-5-5`, secondary "Opus 5.5 · For complex work and everyday tasks", Recommended, listed first; all 10 rows match the oracle | `round3/probe-c16*/` |
+| C16 V-L2 | AC-018 persisted Offline chat | Chrome + Claude run, terminate, reload | Durable/Live | Pass: trigger `claude-opus-5-5`; fixed list follows the policy, recommended first; fixed-list search `Opus 5.5` finds it | `C16-claude-offline-fixed.png` |
+| C16 V-L3 | AC-018 Codex | Chrome + Codex catalog | Durable/Live | Pass: display names (`GPT-5.5 (default reasoning: medium)` …), one line, title = full text | `C16-narrow-codex-labels.png` |
+| C16 V-L4 | AC-018 AutoByteus | Chrome + AutoByteus catalog | Durable/Live | Pass: identifiers (OPENAI_COMPATIBLE/QWEN display names per the shared rule) | evidence JSON |
+| C16 search | AC-018 | Chrome | Durable/Live | Pass: `opus-5-5`, `Opus 5.5`, `opus`, `gpt-6` (all 6 Codex gpt-6 models) | evidence JSON |
+| C16 V-L5 parity | AC-018, REQ-017 | Chrome: Agents → Run form (Claude SDK) vs Chat | Durable/Live | Pass: identical labels, badges and order (10/10) | evidence JSON |
+| Gear editor V-L5 | AC-018, REQ-017 | Repository fixture probe `existing-run-model-config-probe.mjs` + `RuntimeModelConfigFields.spec.ts` | Durable | Pass (API-E2E-004-A..F) | `round3/existing-run-model-config/` |
+| C16 narrow | AC-018, QR-003 | Chrome 390×844 | Durable/Browser | Pass: no overflow, rows single-line | `C16-narrow-codex-labels.png` |
+| C04 trigger | AC-016 + AC-018 | Chrome on Codex, Claude, Grok | Durable/Live | Pass: `GPT-5.5 (default reasoning: medium) · Codex`, `claude-opus-5-5 · Claude SDK`, `Grok 4.7 · Grok Build` | `round3/probe-*` |
+| Full regression C01–C16 (C07 ×5) | all prior ACs | Chrome + Codex on merged HEAD | Durable/Live | Pass (C04 re-run after the probe's settle-wait fix) | `round3/probe-codex/`, `round3/probe-c04/` |
+
+### Observation O-1 (non-blocking)
+
+On a fresh New chat the footer trigger first shows the raw identifier of the last-used model, then switches to the policy label when that runtime's catalog arrives: Codex `gpt-5.5` → display name after ~0.6 s, Grok ~1.7 s, Claude `opus` → `claude-opus-5-5` after ~1.6–3.0 s (~2.0 s at 390 px). The steady state meets AC-018; the transient is a catalog-loading fallback (D-16 prefers the catalog record "when present"). It is the same bare `opus` UVF-001 reported, but only for the first seconds after a fresh load. Recorded for the reviewer/designer; not classified as a failure.
+
+### Scorecard (round 3)
+
+| Category | Final | Note |
+| --- | --- | --- |
+| Requirement and acceptance-criteria proof | 96% | AC-018 V-L1..V-L5 proven live against an independent oracle; prior ACs re-run on merged HEAD |
+| Changed-boundary execution directness | 97% | Real catalogs, real UI, launch-form parity |
+| Cross-boundary integration realism | 97% | Codex, Claude, Grok live; AutoByteus catalog |
+| Environment / fixture fidelity | 95% | Sanitized owned envs; real runtime catalogs |
+| Failure / lifecycle | 94% | Unchanged from round 2 (C07 ×5 re-run on merged HEAD) |
+| User surface / browser / desktop | 93% | O-1 transient; packaged app evidence from round 1 (shell unchanged) |
+| Durable regression quality | 96% | C16 added; C04/selector maintained |
+
+- Overall final confidence: **95%**. No category below 90%. Every critical AC directly proven.
+
+### Durable Coverage Changed (round 3)
+
+- `autobyteus-web/tests/e2e/chat-entry-live-probe.mjs` — `MODEL_ROW` exact option-row selector; `pickModel` returns the row label; C04 trigger check uses the policy label with a settle wait and records timing; new C16 (AC-018).
+- No other test file changed this round. Removed paths: none.
+
+### Cleanup
+
+No owned roots or probe processes remain. The user's app was not touched (it is running with a new pid after a user restart).
+
+### Round 3 Result
+
+- Result: `Pass`; final confidence 95%; broader validation `Required` — executed (browser + live runtimes); recommended recipient `code_reviewer` for proportional test-code review of the probe changes.
+
+## Latest Authoritative Result (round 2 — superseded by the Round 3 Result above)
 
 - Result: `Pass`
 - Final validation confidence: 95%

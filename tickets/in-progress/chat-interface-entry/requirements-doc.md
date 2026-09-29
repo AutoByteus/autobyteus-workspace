@@ -2,7 +2,7 @@
 
 ## Document Status
 
-- Status: `Approved`
+- Status: `Approved` (SR-003 baseline + SR-011 delta REQ-021 / AC-018 / DEC-015, approved by the user 2026-09-29: "approve", confirmed "lets go")
 - Current solution revision ID: `SR-006` (editorial cleanup only since SR-003/SR-004; no intended-behavior change)
 - Package identifier: `chat-interface-entry`
 - Request / ticket: User request 2026-09-28 — Chat entry ("New chat") above Agents with easy runtime/model selection; Product ticket `chat-interface-entry` (prototype repository)
@@ -102,6 +102,7 @@
 | REQ-018 | Visible design, copy and states match the approved R2 UI/UX spec and visual references (VIS-020 superseded) except explicitly illustrative content; responsive behavior at 390px per spec. | All UI | High | Approved supplement | ui-ux-spec.md R2 |
 | REQ-019 | A New chat preselects the last-used runtime + model (one value remembered on this device); if none, Daily Assistant's default launch config; otherwise the runtime default. | BEH-003 | Medium | DEC-011 | User 2026-09-28 |
 | REQ-020 | When the application starts (desktop, `/`), the user lands on the Chat screen (New chat); Agents remains reachable from navigation. | BEH-001 | Medium | OPEN-002 | — |
+| REQ-021 (SR-011) | The Chat model menu (rows, search results, the persisted-run runtime-fixed list) and the footer trigger label models with the same shared policy as the agent/team launch form. Claude Agent SDK: canonical model name as the label, display name + description as secondary text, a Recommended badge, recommended models first. Codex and other non-AutoByteus runtimes: the display name. AutoByteus: the identifier. Long labels stay on one line, truncated with the full text on hover. Search matches the identifier, canonical name, display name, description, provider and runtime. | BEH-003 | High | User verification UVF-001: bare `opus` is not intuitive next to the launch form's `claude-opus-5-5 · Opus 5.5 · Recommended` | UVF-001, DEC-015 |
 
 ## Acceptance Criteria
 
@@ -124,6 +125,7 @@
 | AC-015 | REQ-018 | All | Visual comparison at 1440×900 and 390×844 | Matches VIS-001–VIS-025 except illustrative content | — | Visual verification |
 | AC-016 | REQ-019 | SCN-002 | Pick Codex/gpt-5.5, send; later (after app restart) open New chat | New chat preselects Codex/gpt-5.5 | First run: Daily Assistant default launch config or runtime default | UI test |
 | AC-017 | REQ-020 | SCN-001 | Launch app at `/` | Chat New chat screen is shown (not the Agents list) | — | UI test |
+| AC-018 | REQ-021 | SCN-002 | Open the Chat model menu on Claude Agent SDK and on Codex; search `opus-5-5`, `Opus 5.5`, `gpt-6` | Claude SDK rows show `claude-opus-5-5` with "Opus 5.5 · …" secondary text and a Recommended badge, listed first; Codex rows show display names; the trigger shows the same label, truncated with a tooltip; search finds the model by canonical name, display name or identifier | AutoByteus rows still show identifiers | UI test + user verification |
 
 ## Relevant Scenarios And Journeys
 
@@ -210,6 +212,7 @@
 | DEC-010 (OPEN-003) | Daily Assistant provisioning and "all skills" | REQ-007 | User decision 2026-09-28: internal agent in the platform Built-in agent package, sees all installed skills, visible and configurable like any agent | User | Resolved |
 | DEC-013 | Unified message box in team/org run views? | REQ-013 | User decision 2026-09-28: no — team-member/org-member views unchanged; model via existing gear editor. UXJ-010/UIS-010/VIS-020 out of scope (user: no Product request needed for the unchanged part) | User | Resolved |
 | DEC-014 | Chat box attachment area and styling | REQ-013 | User decision 2026-09-28: Chat box looks like the existing box and reuses the Context Files area; Chat only adds features. Supersedes chip/thumbnail attachments in VIS-001/VIS-011 | User | Resolved |
+| DEC-015 (UVF-001) | Chat model labels | REQ-021 | Proposed: (1) reuse the shared launch-form label policy; (2) one line, truncated with a hover tooltip for long names, both in rows and the trigger; (3) search also matches the canonical name, display name and description | User | Resolved — approved 2026-09-29 as recommended |
 | DEC-011 (OPEN-004) | Recent list and persistence | REQ-005, REQ-019 | User decision 2026-09-28: no Recent list; New chat starts with last-used runtime+model (one value on this device). Supersedes VIS-002/VIS-022 Recent section | User | Resolved |
 | DEC-012 (OPEN-005) | Skill instruction wording | REQ-008 | User decision 2026-09-28: accept "Use the <skill> skill for this request." / "Use these skills for this request: a, b." in front of the user text. User expects it to be synthesized server-side; placement (client vs server) decided in architecture, meaning unchanged | User | Resolved |
 

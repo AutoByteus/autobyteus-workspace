@@ -123,14 +123,17 @@ const newChat = async (page) => {
   await page.locator(sel('chat-new')).waitFor({ timeout: 120000 })
   await delay(1000)
 }
+// Model option rows only (the row's children carry `chat-model-option-label|secondary|recommended`).
+const MODEL_ROW = 'button[role="menuitemradio"][data-test^="chat-model-option-"]'
 const pickModel = async (page, runtimeKind, model) => {
   await page.locator(sel('chat-model-trigger')).click()
   await page.locator(sel(`chat-runtime-${runtimeKind}`)).click()
-  await page.locator('[data-test^="chat-model-option-"]').first().waitFor({ timeout: 120000 })
-  const models = await page.locator('[data-test^="chat-model-option-"]').evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')))
+  await page.locator(MODEL_ROW).first().waitFor({ timeout: 120000 })
+  const models = await page.locator(MODEL_ROW).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('chat-model-option-', '')))
   const chosen = model && models.includes(model) ? model : models[0]
+  const label = await page.locator(`${sel(`chat-model-option-${chosen}`)} ${sel('chat-model-option-label')}`).innerText()
   await page.locator(sel(`chat-model-option-${chosen}`)).click()
-  return { chosen, models }
+  return { chosen, models, label }
 }
 const openFolder = async (page, folder) => {
   await page.locator(sel('chat-workspace-trigger')).click()
@@ -143,7 +146,7 @@ const routeRunId = (page) => new URL(page.url()).searchParams.get('id')
 const runConfig = async (runId) => (await gql('query($runId:String!){getAgentRunResumeConfig(runId:$runId){isActive metadataConfig{llmModelIdentifier llmConfig runtimeKind autoExecuteTools workspaceRootPath} modelConfigEditability{editable reason}}}', { runId })).getAgentRunResumeConfig
 const listDir = async (dir) => (await fs.readdir(dir).catch(() => [])).sort()
 
-const state = { model: null, models: [], taggedRunId: null }
+const state = { model: null, modelLabel: null, models: [], taggedRunId: null }
 const cases = []
 const defineCase = (id, title, fn) => cases.push({ id, title, fn })
 
@@ -182,7 +185,7 @@ defineCase('C03', 'Menus: model search/runtime rows, thinking, / skills (bundled
   await page.locator(sel('chat-model-search-empty')).waitFor({ timeout: 120000 })
   await page.keyboard.press('Escape')
   const picked = await pickModel(page, runtime, preferredModel)
-  state.model = picked.chosen; state.models = picked.models
+  state.model = picked.chosen; state.models = picked.models; state.modelLabel = picked.label
   const input = composerInput(page)
   await input.click(); await input.type('/')
   await page.locator(sel('chat-skill-menu')).waitFor()
@@ -231,9 +234,15 @@ defineCase('C04', 'Send with two skill tags: D-13 permanent URL, server content,
   const chips = await page.locator(sel('skill-request-chips')).first().innerText()
   assert(/\/probe-alpha/.test(chips) && /\/probe-bundled/.test(chips), 'Chips missing after reload', chips)
   await newChat(page)
+  // The trigger shows the shared-policy label (D-16), not the raw identifier. On a fresh page the
+  // identifier shows until the runtime catalog arrives; record how long that takes.
+  const triggerLabel = async () => (await page.locator(sel('chat-model-trigger')).innerText()).split('\n')[0]
+  const labelStarted = Date.now()
+  const firstSeen = await triggerLabel()
+  const settled = await waitFor('last-used trigger label', async () => (await triggerLabel()) === state.modelLabel, 20000, 100).then(() => Date.now() - labelStarted).catch(() => null)
   const trigger = await page.locator(sel('chat-model-trigger')).innerText()
-  assert(trigger.split('\n')[0] === state.model, 'Last-used model not preselected', trigger)
-  return { runId, exposure, summary, preselected: trigger.replace('\n', ' · ') }
+  assert(settled !== null, 'Last-used model not preselected with its policy label', { trigger, expected: state.modelLabel })
+  return { runId, exposure, summary, preselected: trigger.replace('\n', ' · '), triggerFirstSeen: firstSeen, triggerSettledAfterMs: settled }
 })
 
 defineCase('C05', 'Live run footer: model and thinking locked (REQ-011, UIS-004, VIS-015)', async (page) => {
@@ -499,6 +508,171 @@ defineCase('C15', 'D-15 Rule 2: configured launch re-points a weak-held link (V-
   await terminate(strong)
   await waitFor('link removal', async () => !(await fs.lstat(link).then(() => true).catch(() => false)), 30000)
   return { weak1, strong, weak2 }
+})
+
+// D-16 / AC-018: an independent oracle of the shared launch-form label policy, computed from the
+// runtime catalog (GraphQL), compared with the Chat rows, the footer trigger, search, the
+// persisted-run fixed list and the launch form itself. Needs Claude Agent SDK and Codex installed.
+const expectedModelOption = (m, runtimeKind) => {
+  const name = m.name?.trim() || null
+  const description = m.description?.trim() || null
+  let label
+  if (runtimeKind === 'claude_agent_sdk') label = m.canonicalName?.trim() || m.modelIdentifier
+  else if ((m.providerType === 'OPENAI_COMPATIBLE' || m.providerType === 'QWEN') && name) label = name
+  else if (runtimeKind === 'autobyteus') label = m.modelIdentifier
+  else label = name || m.modelIdentifier
+  const secondary = runtimeKind === 'claude_agent_sdk'
+    ? [name && name !== label ? name : null, description].filter(Boolean).join(' · ') || null
+    : description
+  return { label, secondary, recommended: m.selectionPresentation?.recommended === true }
+}
+const catalogFor = async (runtimeKind) => (await gql('query($r:String){providerModelCatalogSnapshots(runtimeKind:$r){llmModels{modelIdentifier name description canonicalName providerType selectionPresentation{recommended}}}}', { r: runtimeKind }))
+  .providerModelCatalogSnapshots.flatMap((s) => s.llmModels)
+const readModelRows = (page, scope) => page.locator(`${scope} ${MODEL_ROW}`).evaluateAll((els) => els.map((e) => ({
+  id: e.getAttribute('data-test').replace('chat-model-option-', ''),
+  label: e.querySelector('[data-test="chat-model-option-label"]')?.textContent.trim() ?? null,
+  secondary: e.querySelector('[data-test="chat-model-option-secondary"]')?.textContent.trim() || null,
+  recommended: Boolean(e.querySelector('[data-test="chat-model-option-recommended"]')),
+  singleLine: getComputedStyle(e.querySelector('[data-test="chat-model-option-label"]')).whiteSpace === 'nowrap',
+  title: e.getAttribute('title'),
+})))
+const rowMismatches = (rows, catalog, runtimeKind) => rows.flatMap((row) => {
+  const model = catalog.find((m) => m.modelIdentifier === row.id)
+  if (!model) return [{ id: row.id, problem: 'not in catalog' }]
+  const exp = expectedModelOption(model, runtimeKind)
+  const problems = []
+  if (row.label !== exp.label) problems.push(`label ${row.label} ≠ ${exp.label}`)
+  if (row.secondary !== exp.secondary) problems.push(`secondary ${row.secondary} ≠ ${exp.secondary}`)
+  if (row.recommended !== exp.recommended) problems.push(`recommended ${row.recommended} ≠ ${exp.recommended}`)
+  if (!row.singleLine) problems.push('label wraps')
+  return problems.length ? [{ id: row.id, problems }] : []
+})
+const recommendedFirst = (rows) => rows.findIndex((r) => !r.recommended) === -1
+  || rows.slice(rows.findIndex((r) => !r.recommended)).every((r) => !r.recommended)
+const openRuntimeRows = async (page, runtimeKind) => {
+  if (!(await page.locator(sel('chat-model-menu')).isVisible().catch(() => false))) await page.locator(sel('chat-model-trigger')).click()
+  await page.locator(sel(`chat-runtime-${runtimeKind}`)).click()
+  const scope = sel(`chat-model-list-${runtimeKind}`)
+  await page.locator(`${scope} ${MODEL_ROW}`).first().waitFor({ timeout: 120000 })
+  return readModelRows(page, scope)
+}
+const searchIds = async (page, query) => {
+  await page.locator(sel('chat-model-search')).fill(query)
+  await delay(600)
+  await page.waitForFunction(() => !/Searching all runtimes/.test(document.querySelector('[data-test="chat-model-menu"]')?.innerText ?? ''), null, { timeout: 120000 }).catch(() => {})
+  return page.locator('[data-test^="chat-model-search-option-"], ' + MODEL_ROW).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace(/^chat-model-(search-)?option-/, '')))
+}
+
+defineCase('C16', 'D-16 / AC-018: Chat model labels follow the launch-form policy (rows, trigger, search, fixed list, launch-form parity, 390×844)', async (page, context) => {
+  const result = {}
+  await newChat(page)
+  // V-L1 / V-L3 / V-L4: rows per runtime match the oracle.
+  for (const runtimeKind of ['claude_agent_sdk', 'codex_app_server', 'autobyteus']) {
+    const rows = await openRuntimeRows(page, runtimeKind)
+    const catalog = await catalogFor(runtimeKind)
+    const mismatches = rowMismatches(rows, catalog, runtimeKind)
+    assert(mismatches.length === 0, `${runtimeKind} rows do not follow the shared label policy`, mismatches.slice(0, 5))
+    assert(rows.length === catalog.length, `${runtimeKind} rows ≠ catalog`, { rows: rows.length, catalog: catalog.length })
+    if (runtimeKind === 'claude_agent_sdk') assert(recommendedFirst(rows), 'Claude SDK recommended rows are not listed first', rows.map((r) => `${r.label}${r.recommended ? '*' : ''}`))
+    result[runtimeKind] = rows.slice(0, 4).map((r) => ({ id: r.id, label: r.label, secondary: r.secondary, recommended: r.recommended }))
+  }
+  await page.keyboard.press('Escape')
+  const claudeRows = await openRuntimeRows(page, 'claude_agent_sdk')
+  const pick = claudeRows.find((r) => r.recommended) ?? claudeRows.find((r) => r.label !== r.id) ?? claudeRows[0]
+  const claudeCatalog = await catalogFor('claude_agent_sdk')
+  const pickModelRecord = claudeCatalog.find((m) => m.modelIdentifier === pick.id)
+  // Search by canonical name, display name and identifier (and `gpt-6` across runtimes).
+  const searches = {}
+  for (const q of [pick.label.slice(-8), pickModelRecord?.name, pick.id].filter(Boolean)) {
+    searches[q] = await searchIds(page, q)
+    assert(searches[q].includes(pick.id), `Search "${q}" does not find ${pick.id}`, searches[q])
+  }
+  const codexWithGpt6 = (await catalogFor('codex_app_server')).filter((m) => /gpt-6/i.test(`${m.modelIdentifier} ${m.name}`)).map((m) => m.modelIdentifier)
+  if (codexWithGpt6.length) {
+    searches['gpt-6'] = await searchIds(page, 'gpt-6')
+    assert(codexWithGpt6.every((id) => searches['gpt-6'].includes(id)), 'Search "gpt-6" misses Codex models', { found: searches['gpt-6'], expected: codexWithGpt6 })
+  }
+  await page.locator(sel('chat-model-search')).fill('')
+  await page.locator(sel(`chat-model-option-${pick.id}`)).click()
+  // Trigger: same label, one line, full text in the title.
+  const trigger = page.locator(sel('chat-model-trigger'))
+  const triggerLabel = (await trigger.innerText()).split('\n')[0]
+  assert(triggerLabel === pick.label, 'Trigger label differs from the row label', { triggerLabel, row: pick.label })
+  assert((await trigger.getAttribute('title'))?.startsWith(`${pick.label} · `), 'Trigger title lacks the full label', await trigger.getAttribute('title'))
+  await page.screenshot({ path: path.join(outDir, 'C16-claude-trigger.png') })
+  // V-L2: a persisted Claude chat, Offline and reopened after reload: the fixed list and trigger use the same labels.
+  await composerInput(page).fill('Reply with exactly LABEL-OK and nothing else.')
+  await page.locator(sel('chat-primary-action')).first().click()
+  await page.waitForURL((u) => /\/chat\?id=/.test(u.toString()) && !/id=temp-/.test(u.toString()), { timeout: 180000 })
+  const claudeRun = routeRunId(page)
+  await waitForReply(page, 'LABEL-OK')
+  await terminate(claudeRun)
+  await page.reload({ waitUntil: 'domcontentloaded' })
+  await page.waitForFunction(() => /Offline/.test(document.querySelector('[data-test="chat-run-status"]')?.innerText ?? ''), null, { timeout: 60000 })
+  await delay(2000)
+  assert((await trigger.innerText()).split('\n')[0] === pick.label, 'Persisted trigger label differs', await trigger.innerText())
+  await trigger.click()
+  await page.locator(sel('chat-runtime-fixed-note')).waitFor({ timeout: 60000 })
+  const fixedRows = await readModelRows(page, sel('chat-model-menu'))
+  const fixedMismatches = rowMismatches(fixedRows, claudeCatalog, 'claude_agent_sdk')
+  assert(fixedMismatches.length === 0, 'Runtime-fixed rows do not follow the shared label policy', fixedMismatches.slice(0, 5))
+  assert(recommendedFirst(fixedRows), 'Runtime-fixed rows are not recommended-first', fixedRows.map((r) => r.label))
+  if (pickModelRecord?.name) {
+    const fixedSearch = await searchIds(page, pickModelRecord.name)
+    assert(fixedSearch.includes(pick.id), `Fixed-list search "${pickModelRecord.name}" misses ${pick.id}`, fixedSearch)
+  }
+  await page.keyboard.press('Escape')
+  await page.screenshot({ path: path.join(outDir, 'C16-claude-offline-fixed.png') })
+  // A fresh New chat preselects the last-used Claude model (REQ-019): its trigger shows the policy label too.
+  await newChat(page)
+  const freshTriggerLabel = async () => (await page.locator(sel('chat-model-trigger')).innerText()).split('\n')[0]
+  const freshStarted = Date.now()
+  const firstSeenLabel = await freshTriggerLabel()
+  const settled = await waitFor('fresh New chat trigger label', async () => (await freshTriggerLabel()) === pick.label, 20000, 100).catch(() => false)
+  result.freshTrigger = { firstSeenLabel, settledAfterMs: settled ? Date.now() - freshStarted : null }
+  await page.screenshot({ path: path.join(outDir, 'C16-fresh-new-chat-trigger.png') })
+  assert(settled, 'Fresh New chat trigger shows the identifier instead of the policy label for the last-used model', { trigger: await freshTriggerLabel(), expected: pick.label })
+  // V-L5: the launch form shows the same labels, badges and order for Claude Agent SDK.
+  await page.goto(`${frontUrl}/agents`, { waitUntil: 'domcontentloaded' })
+  await page.getByText('Probe Legacy', { exact: true }).first().waitFor({ timeout: 120000 })
+  const card = page.locator('div,article,li').filter({ has: page.getByText('Probe Legacy', { exact: true }) }).filter({ has: page.getByRole('button', { name: /^Run/ }) }).last()
+  await card.getByRole('button', { name: /^Run/ }).first().click()
+  await page.locator('main select').first().waitFor({ timeout: 60000 })
+  await page.locator('main select').first().selectOption('claude_agent_sdk')
+  await delay(1500)
+  await page.getByText('Select a model', { exact: true }).first().click()
+  await page.locator('[role="option"]').first().waitFor({ timeout: 60000 })
+  const formRows = await page.locator('[role="option"]').evaluateAll((els) => els.map((li) => ({
+    label: li.querySelector('span.block.truncate')?.textContent.trim() ?? null,
+    recommended: Boolean(li.querySelector('[data-test="select-item-recommended"]')),
+  })))
+  const chatOrder = claudeRows.map((r) => `${r.label}${r.recommended ? ' [R]' : ''}`)
+  const formOrder = formRows.map((r) => `${r.label}${r.recommended ? ' [R]' : ''}`)
+  assert(JSON.stringify(chatOrder) === JSON.stringify(formOrder), 'Chat and launch form differ for Claude Agent SDK', { chatOrder, formOrder })
+  await page.keyboard.press('Escape')
+  // 390×844: the Claude drill-in stays in the viewport, rows single-line, no horizontal overflow.
+  const narrow = await context.newPage()
+  await narrow.setViewportSize({ width: 390, height: 844 })
+  try {
+    await narrow.goto(`${frontUrl}/chat`, { waitUntil: 'domcontentloaded' })
+    await narrow.locator(sel('chat-new')).waitFor({ timeout: 120000 })
+    const narrowStarted = Date.now()
+    result.narrowFirstSeen = (await narrow.locator(sel('chat-model-trigger')).innerText()).split('\n')[0]
+    const narrowTrigger = await waitFor('narrow trigger label', async () => ((await narrow.locator(sel('chat-model-trigger')).innerText()).split('\n')[0] === pick.label ? pick.label : null), 20000)
+      .catch(async () => (await narrow.locator(sel('chat-model-trigger')).innerText()).split('\n')[0])
+    result.narrowSettledAfterMs = narrowTrigger === pick.label ? Date.now() - narrowStarted : null
+    assert(narrowTrigger === pick.label, 'Narrow New chat trigger label differs from the policy label', { narrowTrigger, expected: pick.label })
+    await narrow.locator(sel('chat-model-trigger')).click()
+    await narrow.locator(sel('chat-runtime-codex_app_server')).click()
+    await narrow.locator(`${sel('chat-model-list-codex_app_server')} ${MODEL_ROW}`).first().waitFor({ timeout: 120000 })
+    const narrowRows = await readModelRows(narrow, sel('chat-model-list-codex_app_server'))
+    const overflow = await narrow.evaluate(() => document.scrollingElement.scrollWidth - window.innerWidth)
+    const box = await narrow.locator(sel('chat-model-menu')).boundingBox()
+    assert(overflow === 0 && box.x >= 0 && box.x + box.width <= 390, 'Narrow model menu overflows', { overflow, box })
+    assert(narrowRows.every((r) => r.singleLine), 'Narrow rows wrap')
+    await narrow.screenshot({ path: path.join(outDir, 'C16-narrow-codex-labels.png') })
+  } finally { await narrow.close() }
+  return { ...result, picked: pick, searches: Object.fromEntries(Object.entries(searches).map(([k, v]) => [k, v.length])), fixedRows: fixedRows.length, launchFormParity: formOrder.length }
 })
 
 defineCase('C13', 'Daily Assistant restart lifecycle: user edit preserved; deleted config restored from the template', async () => {

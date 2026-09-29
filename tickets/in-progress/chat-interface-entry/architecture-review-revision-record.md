@@ -12,6 +12,8 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-004 | Round 4: SR-008 post-implementation revision (CRR-002) | SR-008 | Pass | Fail (Design Impact) | AR-008 (new, High) |
 | ARCH-REV-005 | Round 5: SR-009 re-review | SR-009 | Fail (Design Impact) | Pass | AR-008 resolved; IC-1 and IC-2 implementation constraints |
 | ARCH-REV-006 | Round 6: SR-010 D-14 revision (after IR-002 Design Impact) | SR-010 | Pass | Pass | None; R-2 recommendation, MP-014 residual |
+| ARCH-REV-007 | Round 7: SR-011 D-16 Chat model labels (UVF-001) | SR-011 | Pass | Fail (Design Impact) | AR-009 (new, Medium) |
+| ARCH-REV-008 | Round 8: SR-012 D-16 re-review | SR-012 | Fail (Design Impact) | Pass | AR-009 resolved |
 
 ## Revision Entries
 
@@ -192,3 +194,53 @@ None
   - R-2 (a generation guard for the workspace history branch).
   - MP-014 (the marker lifetime for a very short activation).
   - R-1 (weak co-holder).
+
+### ARCH-REV-007 — SR-011 D-16 review: shared label policy accepted; persisted-run path not covered
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 7, triggered by the Solution Designer's SR-011 after the user-verification Requirement Gap UVF-001 (Delivery DR-002). REQ-021 / AC-018 / DEC-015 were user-approved on 2026-09-29.
+- Triggering role, report path, and finding IDs: Delivery, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/user-verification-finding-001.md`.
+- Relevant solution revision IDs: SR-011
+- Prior authoritative decision: Pass (ARCH-REV-006)
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - The D-16 direction is accepted: shared `modelSelectionLabel` functions, recommended-first order, single-line truncation with a tooltip, an extended search, and the identifier-only shape removed.
+  - AR-009: the persisted-run runtime-fixed list and the persisted trigger label are built in `chatRunModelControls.ts` from `ExistingRunModelChoice`, which lacks `providerType` and the shared model shape. They are filtered by a separate inline search in `ChatModelMenu.vue`, and neither is in D-16 or its file mapping.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-005, AR-007, AR-008 | Resolved | Still resolved | — | SR-011 touches only the model labels |
+
+- New or remaining finding IDs: AR-009 (Medium)
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty: R-1, R-2 and MP-014, as before.
+
+### ARCH-REV-008 — SR-012 D-16 re-review: persisted path covered; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 8, triggered by the Solution Designer's SR-012 re-review request for ARCH-REV-007 AR-009.
+- Triggering role, report path, and finding IDs: Solution Designer; ARCH-REV-007 AR-009.
+- Relevant solution revision IDs: SR-012
+- Prior authoritative decision: Fail (Design Impact)
+- Current authoritative decision: Pass
+- What changed:
+  - `toChatModelOption` is the single Chat option builder, with the catalog record first and the shared `existingRunChoiceLabelInput` (moved from `RuntimeModelConfigFields.vue`) as the fallback.
+  - One search predicate serves both lists.
+  - The comparator `compareRecommendedFirstBy<T>` is exported generically.
+  - `chatRunModelControls.ts` and `RuntimeModelConfigFields.vue` are mapped, and V-L1 to V-L5 are added.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-009 | Open (Medium) | Resolved | SR-012 D-16, File Mapping, V-L2 | The persisted fixed list and label use the same builder and predicate; the existing gear-editor mapping (L218–L219) is reused, not copied |
+
+- New or remaining finding IDs: None
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary); `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty:
+  - Relabeling while the catalog loads (reactive).
+  - R-1, R-2 and MP-014, as before.

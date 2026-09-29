@@ -10,6 +10,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 / API-REV-001 Fail | Pass | Fail (Design Impact + Unclear + Local Fix) | CR-001 (resolved by API/E2E), CR-002, CR-003, CR-004 |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 / IR-002 + IR-003 handoff | Fail (CRR-002) | Pass | CR-002, CR-003, CR-004 resolved; CR-001 pending test review |
 | CRR-004 | `api-e2e-test-review-report.md` | Proportional test-code review, round 1 / API-REV-002 Pass | Pass (CRR-003) | Pass | CR-001 verified resolved; advisories A-1..A-3 (non-blocking) |
+| CRR-005 | `code-review-report.md` | Implementation Review, round 4 / IR-004 (D-16, UVF-001) | Pass (CRR-003/CRR-004) | Pass | None new |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code review, round 2 / API-REV-003 Pass | Pass (CRR-004/CRR-005) | Pass | None; advisories A-1..A-4; observation O-1 forwarded |
 
 ## Revision Entries
 
@@ -143,3 +145,63 @@ None
   - Delivery note C-12 (the merge-time AGY e2e test argument).
   - Voice dictation is not automatable.
   - The Windows re-point fallback is unit-tested only.
+
+### CRR-005 — Round 4 implementation review (IR-004, D-16 Chat model labels): Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md`. See the "Round 4 Review (IR-004 / D-16)" section.
+- Review entry point and round: Implementation Review, round 4.
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer, `implementation-handoff.md` (IR-004). The origin is user verification finding UVF-001 (`user-verification-finding-001.md`, DR-002).
+- Relevant solution revision IDs: SR-011, SR-012
+- Relevant architecture-review revision IDs: ARCH-REV-007, ARCH-REV-008
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-002 (prior pass; a rerun is needed for D-16)
+- Relevant delivery revision IDs: DR-002
+- Prior authoritative result: Pass (CRR-003 source review; CRR-004 test review)
+- Current authoritative result: Pass, 9.3/10.
+- What changed in the review result and why: D-16 is verified.
+  - One builder, `toChatModelOption` (catalog record first, then `existingRunChoiceLabelInput`), serves the catalog rows, search, the footer trigger and the persisted fixed list.
+  - The shared `modelSelectionLabel` policy, with the mapping moved and its local copy removed.
+  - The shared `compareRecommendedFirstBy` comparator.
+  - One search predicate, `matchesModelQuery`.
+  - Single-line truncation with the full text in `title` and `aria-label`.
+  - The launch-form badge style.
+  - The reviewer reran 14 files (74 tests); all passed.
+- Supported product scenario / material-premise basis changes: SCN-002 is extended by REQ-021/AC-018 (user-approved). C-13..C-15 were rejected.
+
+#### Prior Finding Resolution
+
+None. No findings were open after CRR-004.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: None. The delta is Small/Low, and the package stays Large/High.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`
+- Remaining risks or uncertainty: the locale-dependent upstream spec (`TokenUsageMeterPanel.spec.ts`) is unrelated to this ticket.
+
+### CRR-006 — Proportional API/E2E test-code review, round 2 (D-16 probe update): Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/api-e2e-test-review-report.md`. See the "Round 2 Delta" section and the latest result.
+- Review entry point and round: Successful API/E2E test-code review, round 2.
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer, `api-e2e-execution-coverage-report.md` (API-REV-003, Pass, 95%); AC-018 / V-L1..V-L5.
+- Relevant solution revision IDs: SR-011, SR-012
+- Relevant architecture-review revision IDs: ARCH-REV-008
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-002
+- Prior authoritative result: Pass (CRR-004 test review; CRR-005 source review)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The probe update was reviewed: `MODEL_ROW`, the C04 policy-label trigger check, and the new C16.
+  - C16's independent oracle matches the shared label policy rule for rule and is cross-checked against the launch form (V-L5).
+  - `node --check` passes.
+- Supported product scenario / material-premise basis changes: SCN-002 is extended by REQ-021/AC-018 (user-approved).
+
+#### Prior Finding Resolution
+
+None. There were no open test-review findings; advisories A-1..A-3 are carried forward and A-4 was added.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: N/A.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - O-1: the fresh New chat trigger shows the raw identifier for about 0.6–3 s before the policy label. It is implementation behavior outside the approved requirement's scope; it goes to delivery for UVF-001 re-verification.
+  - The probe update is uncommitted.

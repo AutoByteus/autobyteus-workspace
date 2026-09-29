@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-010`. D-14 was revised after the IR-002 implementation evidence; D-15 and CR-002 are implemented and unchanged. Earlier: `SR-009` (ARCH-REV-005 Pass) and `SR-008`. This revision addresses the API/E2E failure-origin review CRR-002 (CR-004 Design Impact, CR-003 Unclear, and the sequencing of the CR-002 local fix). SR-007 addressed ARCH-REV-002 and passed ARCH-REV-003.
+- Current solution revision ID: `SR-012`. D-16 was completed for the persisted-run path (ARCH-REV-007 AR-009). Earlier: `SR-011` (D-16 added, REQ-021 user-approved 2026-09-29) and `SR-010` (ARCH-REV-006 Pass).
 - Approved requirements baseline and user-approval reference:
   - Baseline: `requirements-doc.md` `SR-003`.
   - User approval: 2026-09-28 in the Solution Designer conversation.
@@ -239,6 +239,49 @@ Constraints to respect:
     - Repair of materializer-owned symlinks (`repaired`, `removed-and-skipped`).
     - AGY per-run capsule copies, which are not shared between runs, so Rule 2 does not arise for AGY.
   - **Presentation note (accepted):** when a workspace or held copy is used, `/` still shows the installed skill's description.
+- - **D-16 — Chat model labels reuse the shared model-selection label policy (REQ-021 / AC-018 / DEC-015, SR-011).**
+  - **Owner:** `composables/chat/useChatModelCatalog.ts` builds its rows from the shared `utils/modelSelectionLabel.ts` functions and the same recommended-first rule as `utils/modelSelectionOptions.ts` `buildModelSelectionGroups`. There is no Chat-specific label logic.
+    - `label` = `getModelSelectionOptionLabel(model, runtimeKind)`: the canonical name for Claude Agent SDK, the display name for Codex and other non-AutoByteus runtimes, the identifier for AutoByteus.
+    - `secondary` = `getModelSelectionOptionDescription(model, runtimeKind)`.
+    - `recommended` = `model.selectionPresentation?.recommended === true`.
+    - Rows are ordered recommended-first for Claude Agent SDK only, via a shared comparator exported from `modelSelectionOptions.ts` (the existing `compareRecommendedFirst`, exported, not duplicated).
+  - **Consumers:**
+    - `ChatModelMenu` rows, search results and the runtime-fixed list for persisted runs render `label` plus the Recommended badge on one line, and `secondary` as a gray second line.
+    - The footer trigger `modelLabel` uses `label` and keeps the runtime badge beside it.
+    - Rows and the trigger stay single-line: truncate with an ellipsis and expose the full `label` (and `secondary` for rows) as `title` / aria-label. This keeps the R2 "model names never wrap" rule.
+  - **Search:** the haystack = identifier + label + `model.name` + `canonicalName` + description + provider + runtime label, and every term must match.
+  - **One option builder for both paths (AR-009).** `useChatModelCatalog` owns `toChatModelOption({ runtimeKind, llmModelIdentifier, providerName, catalogModel, runChoice })`. It is the only place Chat builds `{ label, secondary, recommended }`.
+    - **Label input**, in precedence order:
+      1. The runtime catalog record for `(runtimeKind, llmModelIdentifier)` when present. It carries every field the shared policy reads, including `providerType`. For persisted runs this catalog is loaded by the CR-002 ensure.
+      2. Otherwise, `existingRunChoiceLabelInput(choice)` — the existing gear-editor mapping `{ modelIdentifier, name: displayName, canonicalName, description }`, which has no `providerType`. This is for historical or current-only models absent from the catalog.
+      - Both paths produce exactly what the launch form (catalog rows) or the gear editor (existing-run rows) shows for the same model.
+    - **Recommended:** `catalogModel.selectionPresentation.recommended` when a catalog record exists, else `runChoice.recommended`.
+    - **Where it is used:**
+      - Catalog rows: `modelGroups`, search, and the New chat / draft footer.
+      - The persisted-run fixed list and persisted `modelLabel` in `components/chat/chatRunModelControls.ts` (previously built with `name: choice.llmModelIdentifier`, L92–L125).
+    - **Shared mapping:** `existingRunChoiceLabelInput` moves from the local `choiceLabel` in `components/launch-config/RuntimeModelConfigFields.vue` (L218–L219) into `utils/modelSelectionLabel.ts`. The gear editor imports it; the local copy is removed.
+  - **Order:** `utils/modelSelectionOptions.ts` exports `compareRecommendedFirst` in a generic form, `compareRecommendedFirstBy<T>(labelOf: (item: T) => string)`, for items with `recommended?: boolean`. `buildModelSelectionGroups` and both Chat paths use it (Claude Agent SDK only), so there is no duplicate comparator.
+  - **Search — one predicate owned by `useChatModelCatalog`:**
+    - `matchesModelQuery(option, terms)` checks the identifier, label, display name, canonical name, secondary/description, provider and runtime label.
+    - `search(query, runtimeKinds)` uses it for cross-runtime search, and `filterOptions(query, options)` for the persisted fixed list.
+    - The inline predicate in `ChatModelMenu.vue` (L289–L294) is removed.
+  - **Removals:**
+    - The identifier-only `name` / `title` fields in `ChatModelOption` become `label` / `secondary` / `recommended`, in both the catalog and fixed-list paths.
+    - The inline fixed-list search predicate is removed.
+    - The local `choiceLabel` in `RuntimeModelConfigFields.vue` is removed.
+    - Nothing keeps the old identifier-as-label shape.
+  - **Unchanged:**
+    - Menu structure, states and the lock behavior (D-08).
+    - Selection identity: the stored value is still `llmModelIdentifier`.
+    - The last-used preference (D-12).
+    - Launch-form and gear-editor output (same functions).
+  - **Recommended badge style:** reuse the launch form's `SearchableGroupedSelect` badge styling (same classes and copy), adapted to the menu row.
+  - **Validation (AC-018):**
+    - **V-L1:** New chat on Claude Agent SDK → rows show `claude-opus-5-5` + "Opus 5.5 · …" + Recommended, listed first, and the trigger shows the same.
+    - **V-L2:** persisted Claude SDK chat (Offline, reopened) → the fixed list and trigger show the same, Recommended first, and searching `Opus 5.5` finds it.
+    - **V-L3:** Codex rows show display names.
+    - **V-L4:** AutoByteus rows show identifiers.
+    - **V-L5:** the gear editor's labels are unchanged (regression).
 - - **D-12 — Last-used model.** One device-local value records the runtime and model. It is used as the New chat default, then the Daily Assistant default launch config, then the runtime default.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
@@ -606,6 +649,7 @@ Web (`autobyteus-web/`):
 | `stores/agentContextsStore.ts` | Modify | Registration | `registerDraftRun` |
 | `stores/agentRunStore.ts`, `types/agent/AgentContext.ts`, `services/runSubmission/localUserSubmission.ts`, `stores/activeContextStore.ts` | Modify | Send | Compose instruction; `initialSummary` = user text (tags-only fallback: the instruction); `requestedSkillNames`; clear on submission; `hasDraft` counts tags |
 | `stores/agentTeamRunStore.ts` | Modify | Team send | `attachmentDraftOwner` option |
+| `composables/chat/useChatModelCatalog.ts` (`toChatModelOption`, `matchesModelQuery`, `filterOptions`), `components/chat/chatRunModelControls.ts` (fixed list + persisted `modelLabel` via `toChatModelOption`), `components/chat/ChatModelMenu.vue` (+ footer trigger; inline predicate removed), `utils/modelSelectionOptions.ts` (export `compareRecommendedFirstBy`), `utils/modelSelectionLabel.ts` (+ `existingRunChoiceLabelInput`), `components/launch-config/RuntimeModelConfigFields.vue` (uses the shared mapping; local `choiceLabel` removed) | Modify | D-16 labels (SR-012) | One option builder and one search predicate for the catalog and persisted paths; shared order; truncation + tooltip; tests V-L1 to V-L5 |
 | `stores/runHistoryLoadActions.ts` | Modify | Reconcile (D-14, SR-010) | Skip contexts where `agentRunStore.isActivationPending(runId)`; clear the marker for runs in the active set. Remove the SR-008 `submissionPending` guard |
 | `stores/agentRunStore.ts` (D-14) | Modify | Activation marker | `activationPendingRunIds` + mark/clear/is; set before connecting for first sends (after promotion) and Offline/Error resumes; clear on failure/cancel, a rejected ack, or terminate/close |
 | `services/agentStreaming/AgentStreamingService.ts` | Modify | Send ack callback | `onSendMessageCommandAck(ack)` option, mirroring `onInterruptCommandResult` |
@@ -754,6 +798,15 @@ Presentation (`components/chat`) → chat domain (`chatDraftStore`, `chatLaunchS
 | ARCH-REV-004 AR-008 (High) | Design Impact | D-15 Rule 2: weak/strong request strength in the shared registry. (A) A weak request skips a skill held by another run with a different source. (B) A strong request re-points a link held only by weak holders (atomic) and never fails because of an ALL_INSTALLED run; strong vs strong stays fail-fast. ACP/Grok `.grok/skills` added. Example and validation cases V-A to V-E added | D-15, File Mapping, Examples, Guidance |
 | CR-003 / F-02 | Missing Invariant (pre-existing; closer confirmed by the IR-002 stack) | SR-010 D-14: an `agentRunStore` activation-pending marker, set before connecting for first sends and Offline resumes, and cleared by an active snapshot, a failure, a rejected ack or terminate. Reconcile skips marked runs. The SR-008 `submissionPending` guard is replaced | D-14, File Mapping |
 | CR-002 / F-01 | Local Fix (implementation), sequenced in this package | Persisted-mode footer loads the run's runtime schema source | File Mapping |
+
+## SR-011 Resolution (user verification UVF-001)
+
+| Finding | Classification | Resolution |
+| --- | --- | --- |
+| UVF-001 (DR-002): the Chat model menu labels are less intuitive than the launch form's (bare `opus`) | Requirement Gap. Approved as REQ-021/AC-018/DEC-015 | D-16: reuse the shared label policy, single-line truncation with a tooltip, extended search |
+| ARCH-REV-007 AR-009 (MP-015): the persisted-run fixed list and label bypass `useChatModelCatalog` | Design Impact | SR-012: `toChatModelOption` with catalog-record-first label input and the shared `existingRunChoiceLabelInput` otherwise; one search predicate; generic comparator; `chatRunModelControls.ts` and `RuntimeModelConfigFields.vue` added to the mapping; V-L2 added |
+
+Delta classification: `Small` / `Low`. The change is web-only, inside the existing chat catalog owner, and reuses existing utilities, with no contract or persistence change. The cumulative package stays Large / High.
 
 ## Guidance For Implementation
 
