@@ -91,3 +91,30 @@ See the API/E2E evidence in `/Users/normy/autobyteus_org/autobyteus-worktrees/is
 ## Rollback Criteria
 
 If parallel default starts collide or the attach path breaks, revert `affe11bdf` on `personal` and `f400434` on mcps `main`. Explicit `--control-port 9333` continues to work as a workaround without a revert.
+
+## Final State (recorded after finalization)
+
+- superrepo:
+  - Ticket branch: `codex/isolated-app-parallel-control-ports` — `affe11bdf` (feature) + `4606ce5bf` (ticket archive); pushed to `origin/codex/isolated-app-parallel-control-ports`.
+  - Finalization target: `origin/personal` — target not advanced after verification (`f2924a2b0`); fast-forward push `f2924a2b0..4606ce5bf  HEAD -> personal`: `Completed`.
+  - This final-state record was committed afterwards on `personal` directly.
+- autobyteus_mcps: `origin/main` `0b210ab..291188d` (fast-forward): `Completed`.
+- Repository finalization status: `Completed` for both repositories.
+
+## Post-Finalization Cleanup
+
+- Superrepo worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/isolated-app-parallel-control-ports`: removed and pruned (`Completed`); local branch deleted (`Completed`).
+- mcps worktree `/Users/normy/autobyteus_org/autobyteus_mcps-isolated-app-parallel-control-ports`: removed and pruned (`Completed`); local branch deleted (`Completed`).
+- Remote ticket branches kept on origin in both repos (`Not required`).
+- Superrepo main checkout `personal` fast-forwarded to `4606ce5bf` (untracked files untouched). The mcps main checkout `/Users/normy/autobyteus_org/autobyteus_mcps` (local `main` @ `6b39562`, with unrelated uncommitted user changes) was deliberately not touched.
+- Isolated-app instances, temp roots and the 9333 holder were already cleaned up by API/E2E. The stale registry record `iso-9333-b35d` belongs to another worktree and was left alone.
+
+## Final Status
+
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes` (via `send_message_to`, after this record)

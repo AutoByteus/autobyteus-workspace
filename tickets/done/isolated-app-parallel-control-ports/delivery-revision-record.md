@@ -19,7 +19,7 @@
 - Release/publication/deployment report: `/Users/normy/autobyteus_org/autobyteus-worktrees/isolated-app-parallel-control-ports/tickets/done/isolated-app-parallel-control-ports/release-deployment-report.md`
 - Integration and post-integration verification: superrepo already current; mcps merged `origin/main` @ `0b210ab` (`291188d`), content-verified.
 - User verification/finalization state: verified by the user; finalization completed (see release-deployment-report Final State).
-- Terminal return to `/solution_designer`: see release-deployment-report Final Status.
+- Terminal return to `/solution_designer`: `Sent` (after the final-state commit).
 - Why this baseline was recorded: initial delivery baseline.
 - Next recipient/action: `/solution_designer` terminal return.
 - Remaining blockers, rollback concerns, or untested scope: none blocking. Untested: Linux. The accepted pick-to-bind window remains. There is a pre-existing `stop forced:true` grace-boundary behavior (follow-up candidate).
