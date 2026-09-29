@@ -39,6 +39,19 @@ export class TaskTeamExecutionFactory {
     });
   }
 
+  /** Re-creates a shut-down task Team from its persisted identities; members resume their conversations. */
+  async prepareRestoredTaskTeam(input: {
+    handoffs: readonly CollaborationHandoff[];
+    parentContext: TeamRunContext<FlatTeamExecutionContext>;
+    teamNode: TeamRunAgentTeamNode;
+  }): Promise<TeamRun> {
+    return this.materialize({
+      ...input,
+      applicationBinding: null,
+      configuredMemberActivationMode: "restore",
+    });
+  }
+
   private async materialize(input: {
     parentContext: TeamRunContext<FlatTeamExecutionContext>;
     handoffs: readonly CollaborationHandoff[];

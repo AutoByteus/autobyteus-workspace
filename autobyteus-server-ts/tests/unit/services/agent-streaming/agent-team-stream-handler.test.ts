@@ -4,7 +4,6 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentSessionManager } from "../../../../src/services/agent-streaming/agent-session-manager.js";
 import { AgentTeamStreamHandler } from "../../../../src/services/agent-streaming/agent-team-stream-handler.js";
-import { validateTaskDelegationRecordsV1Payload } from "../../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-schema.js";
 import { validateTeamRunExecutionTreePayload } from "../../../../src/run-history/store/team-run-execution-tree-schema.js";
 import { validateTeamCommunicationMessagesV1Payload } from "../../../../src/services/team-communication/team-communication-v1-schema.js";
 import { TeamRunEventSourceType } from "../../../../src/agent-team-execution/domain/team-run-event.js";
@@ -21,7 +20,6 @@ const recordsDir = path.resolve(
 );
 const json = (dir: string, name: string) => JSON.parse(fs.readFileSync(path.join(dir, name), "utf8")) as unknown;
 const tree = validateTeamRunExecutionTreePayload(json(scenarioDir, "team_run_execution_tree.json"), "team-run-root");
-const tasks = validateTaskDelegationRecordsV1Payload(json(recordsDir, "task_delegation_records.json"), "team-run-root");
 const messages = validateTeamCommunicationMessagesV1Payload(json(recordsDir, "team_communication_messages.json"), "team-run-root");
 
 const sent = (connection: { send: ReturnType<typeof vi.fn> }) =>
@@ -40,14 +38,13 @@ const createHarness = (input: {
   const root = {
     teamRunId: "team-run-root",
     openPackageSnapshotConnection: vi.fn(async () => ({
-      snapshot: { tree, tasks, messages, statuses: [] },
+      snapshot: { tree, messages, statuses: [] },
       baseChangeSequence: 31,
       subscribe: vi.fn((listener: (event: unknown) => void) => { eventListener = listener; return vi.fn(); }),
       close: closeSnapshot,
     })),
     executeAgentCommand,
     getExecutionTreeSnapshot: () => tree,
-    getTaskRecordsSnapshot: () => tasks,
   };
   const teamRunService = {
     resolveActiveTeamRun: vi.fn(async () => root),
@@ -73,7 +70,7 @@ afterEach(async () => {
 });
 
 describe("AgentTeamStreamHandler current root stream", () => {
-  it("connects with one atomic V1 snapshot before lifecycle changes", async () => {
+  it("connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes", async () => {
     const harness = createHarness();
     const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
     expect(sessionId).toEqual(expect.any(String));
@@ -89,10 +86,10 @@ describe("AgentTeamStreamHandler current root stream", () => {
       payload: {
         root_team_run_id: "team-run-root",
         base_change_sequence: 31,
-        tasks: expect.arrayContaining([expect.objectContaining({ task_id: "task-011" })]),
         messages: [expect.objectContaining({ message_id: "message-010" })],
       },
     });
+    expect(output[1]!.payload).not.toHaveProperty("tasks");
   });
 
   it("streams strict live status N and the following Agent event N+1 after the snapshot barrier", async () => {

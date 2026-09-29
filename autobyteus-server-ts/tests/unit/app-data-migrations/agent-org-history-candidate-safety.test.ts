@@ -6,7 +6,12 @@ import { buildCurrentTokenUsagePayload } from "../../helpers/token-usage-run-rec
 import { AtomicRunPackageFileCommitWriter } from "../../../src/run-history/store/atomic-run-package-file-commit-writer.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
-import { testExecutionTree, testAgentNode } from "../../fixtures/current-team-run-fixtures.js";
+import { testExecutionTree as testCurrentExecutionTree, testAgentNode } from "../../fixtures/current-team-run-fixtures.js";
+import { toReleasedTeamRunExecutionTreeV2 } from "../../fixtures/released-run-tree-fixtures.js";
+
+// Flat-family migration inputs are pre-delegator data: seed released Team tree V2 shapes.
+const testExecutionTree = (input: Parameters<typeof testCurrentExecutionTree>[0]) =>
+  toReleasedTeamRunExecutionTreeV2(testCurrentExecutionTree(input)) as unknown as ReturnType<typeof testCurrentExecutionTree>;
 
 const fixtures: Awaited<ReturnType<typeof createOrgMigrationFixture>>[] = [];
 const fixture = async () => { const e = await createOrgMigrationFixture(); fixtures.push(e); return e; };

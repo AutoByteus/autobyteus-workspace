@@ -1,10 +1,9 @@
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
-import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
+import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { getParentAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { MemberCollaborationContext, MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { createAgentOrgRootExecutionIdentity, createRootExecutionPhysicalScope } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
-import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
 import { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
@@ -53,8 +52,6 @@ export class AgentOrgExecutionScopeBuilder {
     const taskCommands: MemberTaskCommandCapability = Object.freeze({
       root,
       delegateTask: (caller, command) => this.requireActive(run).delegateTask({ identity: caller }, command),
-      submitTaskResult: (caller, command) => this.requireActive(run).submitTaskResult({ identity: caller }, command),
-      reviewTaskResult: (caller, command) => this.requireActive(run).reviewTaskResult({ identity: caller }, command),
     });
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
       buildMemberExecutionContext: async ({ identity }) => new MemberExecutionContext({
@@ -138,12 +135,11 @@ export class AgentOrgExecutionScopeBuilder {
       const state = input.state;
       const tree = state.executionTree;
       if (input.persistInitialPackage) {
-        await input.persistence.commitInitial({ tree, tasks: state.taskRecords, messages: state.communicationMessages });
+        await input.persistence.commitInitial({ tree, messages: state.communicationMessages });
       }
       run = new AgentOrgRun({
         root,
         tree,
-        tasks: state.taskRecords,
         messages: state.communicationMessages,
         rootAgents,
         teams,
@@ -151,6 +147,8 @@ export class AgentOrgExecutionScopeBuilder {
         persistence: input.persistence,
         publisher,
         taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
+        memoryLocator: this.dependencies.memoryLocator,
+        activityInspector: this.dependencies.activityInspector,
         onTerminated: input.onTerminated,
       });
       for (const plan of plans) plan.commitAfterDurability();
@@ -166,7 +164,7 @@ export class AgentOrgExecutionScopeBuilder {
   }
 
   private requireActive(run: AgentOrgRun | null): AgentOrgRun {
-    if (!run?.isActive()) throw new TaskDelegationError("AGENT_ORG_RUN_NOT_ACTIVE", "AgentOrg is not active.");
+    if (!run?.isActive()) throw new TaskDelegationError("ROOT_RUN_NOT_ACTIVE", "AgentOrg is not active.");
     return run;
   }
   private async resolveFreshInstruction(state: ValidatedAgentOrgStatePackage, address: string): Promise<string | null> {

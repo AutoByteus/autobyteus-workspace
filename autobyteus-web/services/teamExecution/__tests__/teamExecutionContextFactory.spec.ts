@@ -20,7 +20,6 @@ const launch = (overrides: Partial<AgentLaunchConfigurationDto> = {}): AgentLaun
 })
 
 const tree = (): TeamRunExecutionTreeDto => ({
-  schema_version: 2,
   created_at: '2026-08-24T12:00:00.000Z',
   archived_at: null,
   application_binding: null,

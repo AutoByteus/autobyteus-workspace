@@ -41,7 +41,7 @@ const setup = () => {
   const emit = (type: string, payload: any) => { const wire = JSON.stringify({ type, payload }); parseTeamStreamServerMessage(wire); callbacks.get('onMessage')!(wire) }
   const ready = () => {
     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
-    emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0, execution_tree: team.view.getExecutionTree(), tasks: [], messages: [], agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null })) })
+    emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0, execution_tree: team.view.getExecutionTree(), messages: [], agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null })) })
   }
   ready()
   const lead = seed('lead'), worker = seed('worker')
@@ -134,7 +134,6 @@ it('BEH-003: later normal Send restores, hydrates and admits exact input without
         { kind: 'system_instruction', activityId: `${variables.agentRunId}-system`, content: `Instructions for ${variables.agentRunId}`, ts: 1 },
         { kind: 'tool', invocationId: `${variables.agentRunId}-invocation`, toolName: 'send_message_to', status: 'success', arguments: { message: `message-${variables.agentRunId}` }, result: `delivered-${variables.agentRunId}`, ts: 2 },
       ], hasEarlierActiveTraceEvents: false } } }
-    if (name === 'GetTaskDelegationRecords') return { data: { getTaskDelegationRecords: [] } }
     if (name === 'GetTeamCommunicationMessages') return { data: { getTeamCommunicationMessages: [] } }
     return { data: {} }
   })

@@ -177,7 +177,7 @@ describe('explicit selection through actual history/Pinia/hydration/focus/AppLef
     const socket = OrgTestSocket.instances[0];
     const view = rootView(true);
     socket.emit({ type: 'CONNECTED', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', session_id: 'publication' } });
-    socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', schema_version: 1, root_org: view } });
+    socket.emit({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } });
     await vi.waitFor(() => expect(apollo.pending('GetAgentOrgMemberRunProjection').length).toBeGreaterThan(0));
     apollo.pending('GetAgentOrgMemberRunProjection').forEach(r => r.respond(memberData(r.operation.variables, 'published')));
     await vi.waitFor(() => expect(s.orgs.contextFor('org-run')?.phase).toBe('live'));

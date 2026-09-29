@@ -120,8 +120,7 @@
             <div v-if="identityOpen" :id="identityId" class="mt-2 space-y-1 break-all rounded bg-gray-50 p-2 text-xs text-gray-600" data-test="message-identity-detail">
               <p>{{ t('workspace.collaboration.identity.address') }}: {{ selectedMessage.counterpart.address }}</p>
               <p>{{ t('workspace.collaboration.identity.agentRun') }}: {{ selectedMessage.counterpartAgentRunId }}</p>
-              <template v-if="selectedMessage.counterpart.kind === 'task'">
-                <p>{{ t('workspace.collaboration.identity.task') }}: {{ selectedMessage.counterpart.taskId }}</p>
+              <template v-if="selectedMessage.counterpart.kind === 'delegated'">
                 <p>{{ t('workspace.collaboration.identity.hostRun') }}: {{ selectedMessage.counterpart.hostRunId }}</p>
                 <p>{{ t('workspace.collaboration.identity.executionRun') }}: {{ selectedMessage.counterpart.executionRunId }}</p>
               </template>

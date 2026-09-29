@@ -4,7 +4,7 @@ import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamM
 import {
   buildTestTeamContext,
   testAgentNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 import {
   applyRunNavigationEffectToProjection,
@@ -56,13 +56,7 @@ const buildTeamContext = (
     focusedAgentRunId: stableAgentRunId(teamRunId),
     rootChildren: [worker],
     workspaceRootPath,
-    tasks: [testTaskRecord({
-      taskId: 'task_0001',
-      delegatorAgentRunId: stableAgentRunId(teamRunId),
-      recipientAddress: '/worker',
-      target: { agentRunId: taskAgentRunId(teamRunId) },
-      description: 'Right-pane-only detail',
-    })],
+    delegations: [testDelegation({ delegatorAgentRunId: stableAgentRunId(teamRunId), recipientAddress: '/worker', target: { agentRunId: taskAgentRunId(teamRunId) } })],
   });
   team.view.getAgentContext(taskAgentRunId(teamRunId))!.state.currentStatus = taskStatus;
   expect(team.view.focusAgent(taskAgentRunId(teamRunId)).disposition).toBe('applied');
@@ -97,13 +91,7 @@ const buildHistoricalProjection = () => {
     displayName: 'Worker',
     agentRunId: stableAgentRunId(teamRunId),
   });
-  const taskRecord = testTaskRecord({
-    taskId: 'settled-task',
-    delegatorAgentRunId: worker.agentRunId,
-    recipientAddress: worker.address,
-    target: { agentRunId: taskAgentRunId(teamRunId) },
-    status: 'interrupted',
-  });
+  const taskRecord = testDelegation({ delegatorAgentRunId: worker.agentRunId, recipientAddress: worker.address, target: { agentRunId: taskAgentRunId(teamRunId) } });
   const context = buildTestTeamContext({
     teamRunId,
     teamDefinitionId: `${teamRunId}-definition`,
@@ -113,10 +101,10 @@ const buildHistoricalProjection = () => {
     rootChildren: [worker],
     workspaceRootPath: '/historical-workspace',
     isActive: false,
-    tasks: [taskRecord],
+    delegations: [taskRecord],
     taskExecutions: [{
       kind: 'task_agent', address: worker.address, agent_run_id: taskAgentRunId(teamRunId),
-      platform_agent_run_id: null, started_at: timestamp, settled_at: '2026-07-01T10:05:00.000Z',
+      platform_agent_run_id: null, delegator_agent_run_id: worker.agentRunId, started_at: timestamp,
     }],
   });
   return buildRunHistoryNavigationProjection({

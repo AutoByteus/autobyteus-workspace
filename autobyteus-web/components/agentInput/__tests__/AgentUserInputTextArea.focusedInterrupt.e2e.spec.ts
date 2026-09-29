@@ -178,7 +178,6 @@ describe('focused team member interrupt UI-to-WebSocket e2e', () => {
       root_team_run_id: 'team-1',
       base_change_sequence: 0,
       execution_tree: teamContext.view.getExecutionTree(),
-      tasks: [],
       messages: [],
       agent_statuses: teamContext.view.listAgentContextEntries().map((entry) => ({
         agent_run_id: entry.agentRunId,

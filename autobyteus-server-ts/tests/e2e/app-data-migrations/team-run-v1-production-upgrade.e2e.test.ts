@@ -899,7 +899,6 @@ const exerciseHistoryAndNewWork = async (
     teamRunId: historicalTeamRunId,
     isActive: false,
     executionTree: {
-      schema_version: 2,
       root_team: {
         address: "/",
         default_launch_configuration: {

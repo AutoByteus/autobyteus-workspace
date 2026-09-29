@@ -289,45 +289,6 @@ export const GetTeamCommunicationMessages = gql`
 
 
 
-export const GetTaskDelegationRecords = gql`
-  query GetTaskDelegationRecords($teamRunId: String!) {
-    getTaskDelegationRecords(teamRunId: $teamRunId) {
-      taskId
-      delegatorAgentRunId
-      recipientAddress
-      targetAgentRunId
-      targetTeamRunId
-      status
-      description
-      referenceFiles {
-        referenceId
-        path
-        type
-        createdAt
-        updatedAt
-      }
-      updates {
-        kind
-        submissionId
-        reviewId
-        interruptionId
-        reviewedSubmissionId
-        decision
-        content
-        referenceFiles {
-          referenceId
-          path
-          type
-          createdAt
-          updatedAt
-        }
-        createdAt
-      }
-      createdAt
-    }
-  }
-`;
-
 export const GetAgentRunResumeConfig = gql`
   query GetAgentRunResumeConfig($runId: String!) {
     getAgentRunResumeConfig(runId: $runId) {

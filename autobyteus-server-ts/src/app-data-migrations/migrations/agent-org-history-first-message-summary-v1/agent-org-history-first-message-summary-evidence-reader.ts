@@ -11,7 +11,7 @@ import { createCollaborationMemberExecutionIdentity } from "../../../agent-colla
 import { buildRootCommunicationInputMessage } from "../../../agent-collaboration/execution/communication/root-communication-runtime-builder.js";
 import type { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
 import type { AgentOrgCommunicationMessagesFileV1 } from "../../../agent-org-execution/persistence/agent-org-communication-messages-v1.js";
-import type { AgentOrgTaskDelegationRecordsFileV1 } from "../../../agent-org-execution/persistence/agent-org-task-delegation-records-v1.js";
+import type { AgentOrgTaskDelegationRecordsFileV1 } from "../../legacy/released-run-package-shapes/agent-org-task-delegation-records-v1.js";
 import type { AgentOrgInternalDeliveryEvidence } from "./agent-org-history-first-message-summary-classifier.js";
 
 export const buildAgentOrgInternalDeliveryEvidence = (current: Readonly<{

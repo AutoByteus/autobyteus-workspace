@@ -15,6 +15,8 @@ export const taskTeamNode = (id: string) => testAgentTeamNode({
 export const observeConfiguredHandles = (activationFailure?: Error) => {
   const build = (input: Parameters<ConfiguredAgentExecutionFactory["create"]>[0]) => {
     let status: AgentApiStatus = "offline";
+    /** Whether the handle's AgentRun is active (AR-005 liveness); a shutdown clears only the run. */
+    let runActive = true;
     const snapshot = () => createCollaborationAgentStatusSnapshot({ execution: input.identity, status });
     const emit = (next: AgentApiStatus) => {
       status = next;
@@ -22,6 +24,7 @@ export const observeConfiguredHandles = (activationFailure?: Error) => {
     };
     const finish = vi.fn(async () => {
       status = "offline";
+      runActive = false;
       input.callbacks.publishAgentEvent(input.identity, { kind: "agent_run", event: {
         eventType: AgentRunEventType.AGENT_STATUS, runId: input.identity.agentRunId,
         payload: { status: "offline" }, statusHint: "IDLE",
@@ -34,19 +37,26 @@ export const observeConfiguredHandles = (activationFailure?: Error) => {
     const handle = {
       identity: input.identity,
       physicalScope: input.physicalScope,
-      isActive: () => true,
-      hasOpenExecutionWork: () => status === "running" || status === "initializing",
+      isActive: () => runActive,
+      getOrCreateAgentRun: vi.fn(async () => { if (!runActive) { runActive = true; emit("idle"); } return {}; }),
+      // Mirrors ConfiguredAgentExecutionHandle: an errored configured Agent still holds open work.
+      hasOpenExecutionWork: () => status === "running" || status === "initializing" || status === "error",
       getStatusSnapshot: snapshot,
       prepareConfiguredActivation: vi.fn(async () => {
         emit("initializing");
         if (activationFailure) throw activationFailure;
         return {
           stagedPlatformBindings: [], stagedNoConversationBindingReplacements: [],
-          commitAfterDurability: () => emit("idle"),
+          commitAfterDurability: () => { runActive = true; emit("idle"); },
           abort: async () => emit("offline"),
         };
       }),
       postMessage: vi.fn(async () => { emit("running"); return { accepted: true as const }; }),
+      reserveInput: vi.fn(async () => ({ reserved: true as const, reservation: {
+        agentRunId: input.identity.agentRunId,
+        cancel: vi.fn(),
+        commit: vi.fn(() => { emit("running"); return { release: vi.fn() }; }),
+      } })),
       tryPrepareTerminationIfQuiescent: vi.fn(async () => status === "running" || status === "initializing" ? null : prepare()),
       prepareTermination: vi.fn(async () => prepare()),
       terminate: finish,

@@ -152,7 +152,8 @@ export class AgentOrgExecutionTreeLocationService {
       groupPath: Object.freeze(groupPath),
       memoryDir: this.layout.getRootedAgentRunDirPath(scope, agentRunId),
       tree,
-      isActive: isActive && index.isLiveAgent(agentRunId),
+      // A shut-down child of an active root stays addressable: input wakes it.
+      isActive,
     });
   }
   private async lookupRootIds(input: AgentLookup, activeOnly: boolean): Promise<string[]> {

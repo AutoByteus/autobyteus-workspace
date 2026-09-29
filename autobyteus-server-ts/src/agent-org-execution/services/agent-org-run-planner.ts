@@ -5,7 +5,7 @@ import { CollaborationLaunchConfigurationResolver, type PlacementLaunchOverride 
 import { AgentOrgDefinitionResolver, type AgentOrgDefinitionLookup } from "../../agent-org-definition/services/agent-org-definition-resolver.js";
 import type { AgentOrgDefinition } from "../../agent-org-definition/domain/agent-org-definition.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import type { AgentOrgRunExecutionTreeFileV1 } from "../domain/agent-org-run-execution-tree.js";
+import type { AgentOrgRunExecutionTreeFile } from "../domain/agent-org-run-execution-tree.js";
 import type { ConfiguredExecutionNode } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../run-history/store/agent-org-run-execution-tree-schema.js";
 import type { ResolvedAgentOrgDefinition } from "../../agent-collaboration/definition/resolved-collaboration-topology.js";
@@ -50,7 +50,7 @@ export class AgentOrgRunPlanner {
     agentOverrides?: readonly PlacementLaunchOverride[] | null;
     applicationBinding?: { applicationId: string; bindingId: string } | null;
     createdAt?: string;
-  }): Promise<AgentOrgRunExecutionTreeFileV1> {
+  }): Promise<AgentOrgRunExecutionTreeFile> {
     const { topology, launch } = await this.resolveConfiguration(input);
     const members: ConfiguredExecutionNode[] = [];
     for (const member of topology.members) {
@@ -73,7 +73,7 @@ export class AgentOrgRunPlanner {
         defaultLaunchConfiguration: launch.teams.get(address)!, members: configuredAgents, taskExecutions: [] });
     }
     return validateAgentOrgRunExecutionTreePayload({
-      schemaVersion: 1, subjectKind: "agent_org", createdAt: input.createdAt ?? new Date().toISOString(), archivedAt: null,
+      subjectKind: "agent_org", createdAt: input.createdAt ?? new Date().toISOString(), archivedAt: null,
       applicationBinding: input.applicationBinding ?? null,
       handoffs: new CollaborationHandoffCompiler().compileOrg(topology),
       rootOrg: { address: "/", orgDefinitionId: input.definition.id, orgDefinitionName: input.definition.name,

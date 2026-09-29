@@ -173,7 +173,6 @@ const launch = (effort = 'low') => ({
   workspace_root_path: '/workspace/browser-probe',
 })
 const teamTree = {
-  schema_version: 2,
   created_at: '2026-08-25T00:00:00.000Z',
   archived_at: null,
   application_binding: null,

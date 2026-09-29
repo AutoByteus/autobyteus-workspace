@@ -139,14 +139,6 @@ export const testMemberTaskCommandCapability = (
     if (!root) throw new Error("Test task command capability has no RootTeamRun.");
     return root.delegateTask({ identity: caller }, input);
   },
-  submitTaskResult: async (caller, input) => {
-    if (!root) throw new Error("Test task command capability has no RootTeamRun.");
-    return root.submitTaskResult({ identity: caller }, input);
-  },
-  reviewTaskResult: async (caller, input) => {
-    if (!root) throw new Error("Test task command capability has no RootTeamRun.");
-    return root.reviewTaskResult({ identity: caller }, input);
-  },
 });
 
 export const address = (value: string): AgentTeamAddress => assertAgentTeamAddress(value);

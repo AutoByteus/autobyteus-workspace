@@ -24,7 +24,7 @@ class Socket {
   close() { this.readyState = 3; this.onclose?.() }
   emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
 }
-const envelope = (active: boolean) => ({ schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: { ...taskBearingView(), is_active: active, ...(!active ? { agent_statuses: [], base_change_sequence: 0 } : {}) } })
+const envelope = (active: boolean) => ({ root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: { ...taskBearingView(), is_active: active, ...(!active ? { agent_statuses: [], base_change_sequence: 0 } : {}) } })
 const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection: { ...variables,
   conversation: [{ kind: 'message', role: 'assistant', content: 'Retained conversation', ts: 1 }],
   activities: [{ kind: 'system_instruction', activityId: `${variables.agentRunId}-system`, content: `System ${variables.agentRunId}`, ts: 1 },

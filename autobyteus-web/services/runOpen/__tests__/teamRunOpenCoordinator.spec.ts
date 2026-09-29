@@ -4,7 +4,7 @@ import { openTeamRun, reopenTeamRunAfterStreamLoss } from '~/services/runOpen/te
 import {
   buildTestTeamContext,
   testAgentNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures'
 
 const {
@@ -80,7 +80,7 @@ const ROOT = 'team-1'
 const makeTeam = (input: {
   focus?: string
   active?: boolean
-  tasks?: ReturnType<typeof testTaskRecord>[]
+  delegations?: ReturnType<typeof testDelegation>[]
   taskExecutions?: TaskExecutionDto[]
 } = {}) => buildTestTeamContext({
   teamRunId: ROOT,
@@ -93,7 +93,7 @@ const makeTeam = (input: {
     testAgentNode('/member-b', { displayName: 'Member B', agentRunId: 'run-b' }),
   ],
   isActive: input.active ?? true,
-  tasks: input.tasks,
+  delegations: input.delegations,
   taskExecutions: input.taskExecutions,
 })
 
@@ -151,12 +151,7 @@ describe('openTeamRun current exact execution identity', () => {
   it('preserves an exact requested task-Agent focus present in the hydrated execution state', async () => {
     const hydrated = makeTeam({
       focus: 'task-agent-run-1',
-      tasks: [testTaskRecord({
-        taskId: 'task-1',
-        delegatorAgentRunId: 'run-a',
-        recipientAddress: '/member-b',
-        target: { agentRunId: 'task-agent-run-1' },
-      })],
+      delegations: [testDelegation({ delegatorAgentRunId: 'run-a', recipientAddress: '/member-b', target: { agentRunId: 'task-agent-run-1' } })],
     })
     getTeamContextByIdMock.mockReturnValue(null)
     hydrateLiveTeamRunContextMock.mockResolvedValue(hydration(hydrated))
@@ -173,22 +168,13 @@ describe('openTeamRun current exact execution identity', () => {
     expect(result.disposition === 'committed' && result.focusedAgentRunId).toBe('task-agent-run-1')
   })
 
-  it('opens an exact settled task Agent through the normal inactive historical path', async () => {
-    const record = testTaskRecord({
-      taskId: 'settled-task-1',
-      delegatorAgentRunId: 'run-a',
-      recipientAddress: '/member-b',
-      target: { agentRunId: 'settled-task-agent-run-1' },
-      status: 'interrupted',
-    })
+  it('opens an exact shut-down task Agent through the normal inactive historical path', async () => {
     const hydrated = makeTeam({
       focus: 'settled-task-agent-run-1',
       active: false,
-      tasks: [record],
       taskExecutions: [{
         kind: 'task_agent', address: '/member-b', agent_run_id: 'settled-task-agent-run-1',
-        platform_agent_run_id: null, started_at: '2026-08-14T12:00:00.000Z',
-        settled_at: '2026-08-14T12:05:00.000Z',
+        platform_agent_run_id: null, delegator_agent_run_id: 'run-a', started_at: '2026-08-14T12:00:00.000Z',
       }],
     })
     getTeamContextByIdMock.mockReturnValue(null)
@@ -297,19 +283,17 @@ describe('openTeamRun current exact execution identity', () => {
     expect(result).toMatchObject({ focusedAgentRunId: 'run-b', focusedMemberAddress: '/member-b' })
   })
 
-  it('preserves exact settled task inspection when replacing a failed active-root stream', async () => {
-    const record = testTaskRecord({ taskId: 'retained', delegatorAgentRunId: 'run-a', recipientAddress: '/member-b',
-      target: { agentRunId: 'retained-task' }, status: 'accepted' })
-    const candidate = makeTeam({ focus: 'retained-task', active: true, tasks: [record], taskExecutions: [{
+  it('preserves an exact shut-down delegated focus when replacing a failed active-root stream', async () => {
+    const candidate = makeTeam({ focus: 'retained-task', active: true, taskExecutions: [{
       kind: 'task_agent', address: '/member-b', agent_run_id: 'retained-task', platform_agent_run_id: null,
-      started_at: '2026-09-01T00:02:00.000Z', settled_at: '2026-09-01T00:05:00.000Z',
+      delegator_agent_run_id: 'run-a', started_at: '2026-09-01T00:02:00.000Z',
     }] })
     getTeamContextByIdMock.mockReturnValue(makeTeam())
     hydrateTeamRunContextForStreamRecoveryMock.mockResolvedValue({ ...hydration(candidate), expectedBaseChangeSequence: 12 })
     await expect(reopenTeamRunAfterStreamLoss({ teamRunId: ROOT, agentRunId: 'retained-task',
       resolveWorkspaceMetadataByRootPath: vi.fn() })).resolves.toMatchObject({ focusedAgentRunId: 'retained-task' })
-    expect(candidate.view.getFocusedAgentAccess()).toBe('read_only')
-    expect(candidate.view.listNavigationRows().some(row => row.agentRunId === 'retained-task')).toBe(false)
+    expect(candidate.view.getFocusedAgentAccess()).toBe('live')
+    expect(candidate.view.listNavigationRows().some(row => row.agentRunId === 'retained-task')).toBe(true)
     expect(candidate.view.isRootTeamActive()).toBe(true)
     expect(replaceFailedTeamStreamMock).toHaveBeenCalledTimes(1)
   })

@@ -5,18 +5,16 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
-import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../src/agent-execution/input/agent-run-input-contract.js";
+import type { AgentRunInputReservationResult } from "../../../src/agent-execution/input/agent-run-input-contract.js";
 import { AgentRunIdentityAllocator } from "../../../src/agent-execution/services/agent-run-identity-allocator.js";
-import type { AgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import type { TeamRunBackend } from "../../../src/agent-team-execution/backends/team-run-backend.js";
 import { FlatAgentExecutionContext, FlatTeamExecutionContext } from "../../../src/agent-team-execution/local/flat-team-execution-context.js";
-import type { PreparedLocalExecutionTermination } from "../../../src/agent-team-execution/domain/prepared-local-execution-termination.js";
+import type { PreparedLocalExecutionTermination } from "../../../src/agent-collaboration/execution/domain/prepared-local-execution-termination.js";
 import type { PreparedTaskExecution } from "../../../src/agent-team-execution/domain/prepared-task-execution.js";
-import type { PreparedTaskSettlement } from "../../../src/agent-team-execution/domain/prepared-task-settlement.js";
 import { RootTeamRun } from "../../../src/agent-team-execution/domain/root-team-run.js";
 import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
-import type { PrepareTaskAgentInput } from "../../../src/agent-team-execution/domain/task-agent-execution.js";
-import type { PrepareTaskTeamInput } from "../../../src/agent-team-execution/domain/task-team-execution.js";
+import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../../src/agent-team-execution/domain/task-agent-execution.js";
+import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../../../src/agent-team-execution/domain/task-team-execution.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import {
   createRootExecutionPhysicalScope,
@@ -25,23 +23,26 @@ import {
   type RootExecutionPhysicalScope,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { MemberTaskCommandCapability } from "../../../src/agent-collaboration/execution/task/member-task-command-capability.js";
+import type { TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
+import type { TaskExecutionIdleTimers } from "../../../src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { TeamMemberExecutionCommand } from "../../../src/agent-team-execution/domain/team-member-execution-command.js";
 import { TeamRun } from "../../../src/agent-team-execution/domain/team-run.js";
 import type { TeamRunAgentTeamNode, TeamRunConfig } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { TeamRunContext } from "../../../src/agent-team-execution/domain/team-run-context.js";
+import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
+import { createTeamAgentStatusDetails } from "../../../src/agent-team-execution/domain/team-agent-status.js";
+import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { TeamRunEventPublisher } from "../../../src/agent-team-execution/services/team-run-event-publisher.js";
 import { TeamRunPersistenceCoordinator } from "../../../src/agent-team-execution/services/team-run-persistence-coordinator.js";
-import { TaskDelegationRecordsV1Store, getTaskDelegationRecordsV1Path } from "../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import {
   DELEGATE_TASK_TOOL_NAME,
-  REVIEW_TASK_RESULT_TOOL_NAME,
-  SUBMIT_TASK_RESULT_TOOL_NAME,
   TASK_DELEGATION_TOOL_NAME_LIST,
 } from "../../../src/agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { getTaskDelegationToolManifestEntry } from "../../../src/agent-tools/task-delegation/task-delegation-tool-manifest.js";
 import { TaskDelegationToolService } from "../../../src/agent-tools/task-delegation/task-delegation-tool-service.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
+import { getTeamRunExecutionTreePath } from "../../../src/run-history/store/team-run-execution-tree-path.js";
 import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
@@ -66,12 +67,13 @@ class PreparedTask implements PreparedTaskExecution {
   readonly stagedPlatformBindings = Object.freeze([]);
   readonly releaseWork = vi.fn();
   readonly abort = vi.fn(async () => undefined);
-  private state: "open" | "sealed" | "committed" | "aborted" = "open";
+  private state: "open" | "sealed" | "committed" = "open";
 
   constructor(input: {
     binding: PreparedTaskExecution["binding"];
     preparedTeamRuns?: readonly TeamRun[];
-  }) {
+    onCommit(): void;
+  }, private readonly onCommit = input.onCommit) {
     this.binding = input.binding;
     this.preparedTeamRuns = Object.freeze([...(input.preparedTeamRuns ?? [])]);
   }
@@ -84,17 +86,23 @@ class PreparedTask implements PreparedTaskExecution {
   commitAfterDurability() {
     if (this.state !== "sealed") throw new Error("Task preparation was not sealed.");
     this.state = "committed";
+    this.onCommit();
     return Object.freeze({ releaseWork: this.releaseWork });
   }
 }
 
+/** Local backend double: tracks which direct task Agents are live; the root lifecycle stays real. */
 class TestTeamBackend implements TeamRunBackend {
   readonly teamBackendKind = TeamBackendKind.MIXED;
   readonly runtimeContext: FlatTeamExecutionContext;
   readonly context: TeamRunContext<FlatTeamExecutionContext>;
   readonly preparedAgents: PrepareTaskAgentInput[] = [];
   readonly preparedTeams: PrepareTaskTeamInput[] = [];
+  readonly restoredAgents: RestoreTaskAgentInput[] = [];
+  readonly reservations: string[] = [];
   readonly commands: Array<{ agentRunId: string; command: TeamMemberExecutionCommand }> = [];
+  readonly liveTaskAgents = new Set<string>();
+  readonly shutDownAgents: string[] = [];
   readonly children = new Map<string, TestTeamBackend>();
   active = true;
 
@@ -122,27 +130,15 @@ class TestTeamBackend implements TeamRunBackend {
     });
   }
 
-  get rootTeamRunId(): string { return this.physicalScope.root.rootRunId; }
   get teamRunId(): string { return this.teamNode.teamRunId; }
   getRuntimeContext(): FlatTeamExecutionContext { return this.runtimeContext; }
   isActive(): boolean { return this.active; }
+  isTerminated(): boolean { return !this.active; }
   getLeafAgentStatusSnapshots() { return []; }
   hasOpenExecutionWork(): boolean { return false; }
-  async getOrCreateConfiguredChildTeam(teamRunId: string): Promise<TeamRun> {
-    const existing = this.children.get(teamRunId);
-    if (existing) return new TeamRun(existing.context, existing);
-    const node = this.teamNode.children.find((child) => child.kind === "agent_team" && child.teamRunId === teamRunId);
-    if (!node || node.kind !== "agent_team") throw new Error(`Configured child TeamRun '${teamRunId}' was not found.`);
-    const child = new TestTeamBackend(
-      createChildPhysicalScope(this.physicalScope, node.teamRunId),
-      node,
-      this.config,
-    );
-    this.children.set(teamRunId, child);
-    return new TeamRun(child.context, child);
-  }
-  async reserveDirectAgentInput(): Promise<AgentRunInputReservationResult> {
-    return { accepted: false, code: "NOT_REQUIRED", message: "Reservation is outside this integration scenario." };
+  async reserveDirectAgentInput(agentRunId: string): Promise<AgentRunInputReservationResult> {
+    this.reservations.push(agentRunId);
+    return { reserved: true, reservation: { agentRunId, cancel: vi.fn(), commit: vi.fn(() => ({ release: vi.fn() })) } };
   }
   async deliverToDirectAgent(agentRunId: string, message: AgentInputUserMessage): Promise<AgentOperationResult> {
     return this.executeDirectAgentCommand(agentRunId, { kind: "post_message", message });
@@ -155,6 +151,7 @@ class TestTeamBackend implements TeamRunBackend {
     this.preparedAgents.push(input);
     return new PreparedTask({
       binding: Object.freeze({ kind: "agent", address: input.address, agentRunId: input.agentRunId }),
+      onCommit: () => this.liveTaskAgents.add(input.agentRunId),
     });
   }
   async prepareTaskTeam(input: PrepareTaskTeamInput): Promise<PreparedTaskExecution> {
@@ -177,38 +174,62 @@ class TestTeamBackend implements TeamRunBackend {
         coordinatorAgentRunId: coordinator.agentRunId,
       }),
       preparedTeamRuns: [new TeamRun(taskBackend.context, taskBackend)],
+      onCommit: () => undefined,
     });
   }
-  async prepareDirectTaskSettlement(): Promise<PreparedTaskSettlement | null> { return null; }
+  restoreTaskAgent(input: RestoreTaskAgentInput): void {
+    this.restoredAgents.push(input);
+    this.liveTaskAgents.add(input.agentRunId);
+  }
+  async restoreTaskTeam(_input: RestoreTaskTeamInput): Promise<TeamRun> {
+    throw new Error("Task Team restore is outside this integration scenario.");
+  }
+  hasLiveDirectTaskExecution(reference: TaskExecutionReference): boolean {
+    return "agentRunId" in reference ? this.liveTaskAgents.has(reference.agentRunId) : this.children.has(reference.teamRunId);
+  }
+  async tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference): Promise<boolean> {
+    if (!("agentRunId" in reference) || !this.liveTaskAgents.has(reference.agentRunId)) return false;
+    this.liveTaskAgents.delete(reference.agentRunId);
+    this.shutDownAgents.push(reference.agentRunId);
+    return true;
+  }
   async prepareTermination(): Promise<PreparedLocalExecutionTermination> {
     return Object.freeze({
       cancel: () => undefined,
       commit: () => Object.freeze({ finish: () => this.terminate() }),
     });
   }
+  async tryPrepareTerminationIfQuiescent(): Promise<PreparedLocalExecutionTermination | null> {
+    return this.prepareTermination();
+  }
+  freezeForRootTermination() {
+    return Object.freeze({
+      fenceAgentRunsForRootShutdown: async () => ({ accepted: true as const }),
+      finish: () => this.terminate(),
+    });
+  }
   async terminate(): Promise<AgentOperationResult> { this.active = false; return { accepted: true }; }
 }
 
-const config = () => {
-  return testTeamRunConfig({
-    rootTeamRunId,
-    rootTeamDefinitionId: "task-delegation-integration-team",
-    coordinatorAddress: "/coordinator",
-    children: [
-      testAgentNode("/coordinator", {
-        agentRunId: "run-coordinator",
-        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-      }),
-      testAgentNode("/worker", {
-        agentRunId: "run-worker",
-        runtimeKind: RuntimeKind.AUTOBYTEUS,
-      }),
-      testAgentNode("/reviewer", {
-        agentRunId: "run-reviewer",
-        runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
-      }),
-    ],
-  });
+const config = () => testTeamRunConfig({
+  rootTeamRunId,
+  rootTeamDefinitionId: "task-delegation-integration-team",
+  coordinatorAddress: "/coordinator",
+  children: [
+    testAgentNode("/coordinator", { agentRunId: "run-coordinator", runtimeKind: RuntimeKind.CODEX_APP_SERVER }),
+    testAgentNode("/worker", { agentRunId: "run-worker", runtimeKind: RuntimeKind.AUTOBYTEUS }),
+    testAgentNode("/reviewer", { agentRunId: "run-reviewer", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK }),
+  ],
+});
+
+const manualTimers = () => {
+  const pending = new Map<number, () => void>();
+  let next = 0;
+  const timers: TaskExecutionIdleTimers = {
+    setTimeout: (callback) => { const id = ++next; pending.set(id, callback); return id; },
+    clearTimeout: (handle) => { pending.delete(handle as number); },
+  };
+  return { timers, pendingCount: () => pending.size, fireAll: () => { const due = [...pending.values()]; pending.clear(); due.forEach((fire) => fire()); } };
 };
 
 const createHarness = async () => {
@@ -216,67 +237,62 @@ const createHarness = async () => {
   tempDirs.push(memoryDir);
   AgentRunIdentityAllocator.getInstance({
     memoryDir,
-    agentDefinitionService: {
-      getAgentDefinitionById: async (id: string) => ({ id, name: id }) as never,
-    },
+    agentDefinitionService: { getAgentDefinitionById: async (id: string) => ({ id, name: id }) as never },
     agentRunManager: { hasActiveRun: () => false },
     agentRunMetadataService: { readMetadata: async () => null },
     teamRunExecutionTreeLocationService: { containsRunId: async () => false },
   });
   const currentConfig = config();
   const tree = buildInitialTeamRunExecutionTree({ config: currentConfig, teamDefinitionName: "Task Integration Team" });
-  const tasks = Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, records: Object.freeze([]) });
   const messages = Object.freeze({ schemaVersion: 1 as const, rootTeamRunId, messages: Object.freeze([]) });
   const rootDir = new AgentMemoryLayout(memoryDir).getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
   const treeStore = new TeamRunExecutionTreeStore();
-  const taskStore = new TaskDelegationRecordsV1Store();
   const communicationStore = new TeamCommunicationV1Store();
-  await Promise.all([
-    treeStore.write(rootDir, tree),
-    taskStore.write(rootDir, tasks),
-    communicationStore.write(rootDir, messages),
-  ]);
+  await Promise.all([treeStore.write(rootDir, tree), communicationStore.write(rootDir, messages)]);
   const backend = new TestTeamBackend(
-    createRootExecutionPhysicalScope({
-      root: createTeamRootExecutionIdentity(rootTeamRunId),
-      ancestorTeamRunIds: [],
-    }),
+    createRootExecutionPhysicalScope({ root: createTeamRootExecutionIdentity(rootTeamRunId), ancestorTeamRunIds: [] }),
     currentConfig.rootTeam,
     currentConfig,
   );
-  const publisher = new TeamRunEventPublisher();
+  const publisher = new TeamRunEventPublisher<TeamRunEvent>();
+  const clock = manualTimers();
+  const inspect = vi.fn(() => ({ kind: "present" as const }));
   let allocatedTaskAgentOrdinal = 0;
   let root: RootTeamRun | null = null;
   const persistence = new TeamRunPersistenceCoordinator({
     rootTeamRunId,
     teamMemoryDir: rootDir,
     executionTreeStore: treeStore,
-    taskRecordsStore: taskStore,
     communicationStore,
     enterPersistenceFailStop: () => root?.enterPersistenceFailStop(),
   });
   root = new RootTeamRun({
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({
-      allocateForAgentDefinition: async (agentDefinitionId) =>
-        `task-${agentDefinitionId}-${++allocatedTaskAgentOrdinal}`,
+      allocateForAgentDefinition: async (agentDefinitionId) => `task-${agentDefinitionId}-${++allocatedTaskAgentOrdinal}`,
     }),
     rootRun: new TeamRun(backend.context, backend),
     config: currentConfig,
     tree,
-    tasks,
     messages,
     persistence,
     publisher,
+    activityInspector: { inspect } as never,
+    taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
   });
-  const rootIdentity = createTeamRootExecutionIdentity(rootTeamRunId);
   const commands: MemberTaskCommandCapability = Object.freeze({
-    root: rootIdentity,
+    root: createTeamRootExecutionIdentity(rootTeamRunId),
     delegateTask: (caller, command) => root!.delegateTask({ identity: caller }, command),
-    submitTaskResult: (caller, command) => root!.submitTaskResult({ identity: caller }, command),
-    reviewTaskResult: (caller, command) => root!.reviewTaskResult({ identity: caller }, command),
   });
-  const service = new TaskDelegationToolService();
-  return { memoryDir, rootDir, root, commands, service, backend };
+  const emitStatus = (memberAddress: string, agentRunId: string, status: "idle" | "running") => publisher.publish({
+    eventSourceType: TeamRunEventSourceType.AGENT,
+    execution: createTeamAgentExecutionBinding({ root: createTeamRootExecutionIdentity(rootTeamRunId), memberAddress, agentRunId }),
+    payload: { eventType: "AGENT_STATUS", statusHint: status, details: createTeamAgentStatusDetails({ status }) },
+  } as TeamRunEvent);
+  const lifecycle = (root as unknown as { taskExecutions: { drain(): Promise<void> } }).taskExecutions;
+  const drain = async () => {
+    for (let i = 0; i < 3; i += 1) { await new Promise<void>((resolve) => setImmediate(resolve)); await lifecycle.drain(); }
+  };
+  return { memoryDir, rootDir, root, commands, service: new TaskDelegationToolService(), backend, clock, inspect, emitStatus, drain };
 };
 
 afterEach(async () => {
@@ -294,185 +310,164 @@ const context = (
   commands,
 });
 
-const execute = async (
+const delegate = async (
   service: TaskDelegationToolService,
-  name: typeof TASK_DELEGATION_TOOL_NAME_LIST[number],
   toolContext: ReturnType<typeof context>,
   raw: Record<string, unknown>,
 ) => {
-  const entry = getTaskDelegationToolManifestEntry(name);
+  const entry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME);
   return entry.execute(service, toolContext, entry.parseInput(raw) as never);
 };
 
-describe("current universal task-delegation tool lifecycle integration", () => {
-  it("persists delegate -> submit -> request revision -> resubmit -> accept through the three public tools", async () => {
+describe("current delegate_task lifecycle integration (pure spawn, idle shutdown, wake-on-message)", () => {
+  it("spawns a fresh task Agent through the only public tool and persists the delegator in one tree write", async () => {
     const harness = await createHarness();
     const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
-    const created = await execute(harness.service, DELEGATE_TASK_TOOL_NAME, coordinator, {
+    const created = await delegate(harness.service, coordinator, {
       recipient_address: "/worker",
       description: "Solve the assigned classroom exercise and return evidence.",
       reference_files: [],
     });
-    expect(created).toMatchObject({ status: "active", target_agent_run_id: expect.any(String) });
-    const taskId = (created as { task_id: string }).task_id;
+    expect(created).toEqual({ target_agent_run_id: expect.any(String) });
     const taskAgentRunId = (created as { target_agent_run_id: string }).target_agent_run_id;
     expect(harness.backend.preparedAgents[0]).toMatchObject({
-      taskId,
       address: "/worker",
       agentRunId: taskAgentRunId,
-      message: expect.objectContaining({
-        content: expect.stringContaining("Task delegator AgentRun ID: run-coordinator"),
-      }),
+      message: expect.objectContaining({ content: expect.stringContaining("Task delegator AgentRun ID: run-coordinator") }),
     });
-    expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions[0]).toMatchObject({
+    expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([expect.objectContaining({
       address: "/worker",
       agentRunId: taskAgentRunId,
-      settledAt: null,
-    });
-
-    const assignee = context(harness.commands, "/worker", taskAgentRunId);
-    await expect(execute(harness.service, SUBMIT_TASK_RESULT_TOOL_NAME, assignee, {
-      message: "Initial result.", reference_files: [],
-    })).resolves.toMatchObject({ task_id: taskId, status: "awaiting_review" });
-    await expect(execute(harness.service, REVIEW_TASK_RESULT_TOOL_NAME, coordinator, {
-      task_id: taskId, decision: "request_revision", comment: "Add the verification step.", reference_files: [],
-    })).resolves.toMatchObject({ task_id: taskId, status: "active" });
-    await expect(execute(harness.service, SUBMIT_TASK_RESULT_TOOL_NAME, assignee, {
-      message: "Revised result with verification.", reference_files: [],
-    })).resolves.toMatchObject({ task_id: taskId, status: "awaiting_review" });
-    await expect(execute(harness.service, REVIEW_TASK_RESULT_TOOL_NAME, coordinator, {
-      task_id: taskId, decision: "accept", comment: null, reference_files: [],
-    })).resolves.toMatchObject({ task_id: taskId, status: "accepted" });
-
-    const records = harness.root.getTaskRecordsSnapshot().records;
-    expect(records).toHaveLength(1);
-    expect(records[0]).toMatchObject({
-      taskId,
       delegatorAgentRunId: "run-coordinator",
-      recipientAddress: "/worker",
-      taskExecution: { agentRunId: taskAgentRunId },
-      status: "accepted",
-      updates: [
-        expect.objectContaining({ message: "Initial result." }),
-        expect.objectContaining({ decision: "request_revision", comment: "Add the verification step." }),
-        expect.objectContaining({ message: "Revised result with verification." }),
-        expect.objectContaining({ decision: "accept" }),
-      ],
+    })]);
+    const persisted = JSON.parse(await fs.readFile(getTeamRunExecutionTreePath(harness.rootDir), "utf8"));
+    expect(persisted).not.toHaveProperty("schemaVersion");
+    expect(persisted.rootTeam.taskExecutions[0]).toMatchObject({ agentRunId: taskAgentRunId, delegatorAgentRunId: "run-coordinator" });
+    expect(persisted.rootTeam.taskExecutions[0]).not.toHaveProperty("settledAt");
+    expect(await fs.readdir(harness.rootDir)).not.toContain("task_delegation_records.json");
+    expect(TASK_DELEGATION_TOOL_NAME_LIST).toEqual(["delegate_task"]);
+  });
+
+  it("shuts an idle delegated Agent down after the grace period and restores it when a message arrives", async () => {
+    const harness = await createHarness();
+    const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
+    const { target_agent_run_id: child } = await delegate(harness.service, coordinator, {
+      recipient_address: "/worker", description: "Do the work.", reference_files: [],
+    }) as { target_agent_run_id: string };
+    await harness.drain();
+    harness.emitStatus("/worker", child, "idle");
+    expect(harness.clock.pendingCount()).toBe(1);
+    harness.emitStatus("/worker", child, "running");
+    expect(harness.clock.pendingCount()).toBe(0);
+    harness.emitStatus("/worker", child, "idle");
+    harness.clock.fireAll();
+    await harness.drain();
+    expect(harness.backend.shutDownAgents).toEqual([child]);
+    expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions.map((task) => "agentRunId" in task ? task.agentRunId : null)).toEqual([child]);
+    expect(harness.root.hasAgentExecution(child)).toBe(true);
+
+    const delivered = await harness.root.deliverExactAgentMessage({
+      sender: { kind: "agent", identity: coordinator.identity, displayName: "coordinator" } as never,
+      targetAgentRunId: child,
+      content: "One follow-up question.",
     });
-    const persisted = JSON.parse(await fs.readFile(getTaskDelegationRecordsV1Path(harness.rootDir), "utf8"));
-    expect(persisted.records[0]).toMatchObject({ taskId, status: "accepted" });
-    expect(TASK_DELEGATION_TOOL_NAME_LIST).toEqual([
-      "delegate_task", "submit_task_result", "review_task_result",
-    ]);
+    expect(delivered).toMatchObject({ accepted: true });
+    expect(harness.inspect).toHaveBeenCalledWith(expect.objectContaining({ agentRunId: child }));
+    expect(harness.backend.restoredAgents).toEqual([expect.objectContaining({ address: "/worker", agentRunId: child })]);
+    expect(harness.backend.reservations).toContain(child);
+    await harness.drain();
+    // Release after delivery re-arms the idle timer for the restored child.
+    expect(harness.clock.pendingCount()).toBe(1);
+  });
+
+  it("rejects wake with TASK_EXECUTION_CONTEXT_UNAVAILABLE when the saved conversation is missing", async () => {
+    const harness = await createHarness();
+    const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
+    const { target_agent_run_id: child } = await delegate(harness.service, coordinator, {
+      recipient_address: "/worker", description: "Do the work.", reference_files: [],
+    }) as { target_agent_run_id: string };
+    await harness.drain();
+    harness.emitStatus("/worker", child, "idle");
+    harness.clock.fireAll();
+    await harness.drain();
+    harness.inspect.mockReturnValue({ kind: "absent" } as never);
+
+    await expect(harness.root.deliverExactAgentMessage({
+      sender: { kind: "agent", identity: coordinator.identity, displayName: "coordinator" } as never,
+      targetAgentRunId: child,
+      content: "Anyone there?",
+    })).resolves.toMatchObject({ accepted: false, code: "TASK_EXECUTION_CONTEXT_UNAVAILABLE" });
+    expect(harness.backend.restoredAgents).toEqual([]);
   });
 
   it("keeps identical general and application identities bound to their own root capabilities", async () => {
     const general = await createHarness();
     const application = await createHarness();
-    const generalCoordinator = context(general.commands, "/coordinator", "run-coordinator");
-    const applicationCoordinator = context(application.commands, "/coordinator", "run-coordinator");
-
-    await execute(application.service, DELEGATE_TASK_TOOL_NAME, applicationCoordinator, {
-      recipient_address: "/worker",
-      description: "Application-scoped task.",
-      reference_files: [],
+    await delegate(application.service, context(application.commands, "/coordinator", "run-coordinator"), {
+      recipient_address: "/worker", description: "Application-scoped task.", reference_files: [],
     });
-    expect(application.root.getTaskRecordsSnapshot().records).toHaveLength(1);
-    expect(general.root.getTaskRecordsSnapshot().records).toEqual([]);
-
-    await execute(general.service, DELEGATE_TASK_TOOL_NAME, generalCoordinator, {
-      recipient_address: "/worker",
-      description: "General-scoped task.",
-      reference_files: [],
+    expect(application.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toHaveLength(1);
+    expect(general.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
+    await delegate(general.service, context(general.commands, "/coordinator", "run-coordinator"), {
+      recipient_address: "/worker", description: "General-scoped task.", reference_files: [],
     });
-    expect(general.root.getTaskRecordsSnapshot().records).toHaveLength(1);
-    expect(application.root.getTaskRecordsSnapshot().records).toHaveLength(1);
+    expect(general.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toHaveLength(1);
+    expect(application.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toHaveLength(1);
     expect(general.backend.preparedAgents).toHaveLength(1);
     expect(application.backend.preparedAgents).toHaveLength(1);
   });
 
-  it("lets a fresh task Agent delegate a nested sibling task and preserves exact review ownership", async () => {
+  it("lets a fresh task Agent delegate a nested sibling and records it as the exact delegator", async () => {
     const harness = await createHarness();
-    const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
-    const parent = await execute(harness.service, DELEGATE_TASK_TOOL_NAME, coordinator, {
+    const parent = await delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator"), {
       recipient_address: "/worker", description: "Parent task", reference_files: [],
-    }) as { task_id: string; target_agent_run_id: string };
-    const parentContext = context(harness.commands, "/worker", parent.target_agent_run_id);
-    const child = await execute(harness.service, DELEGATE_TASK_TOOL_NAME, parentContext, {
+    }) as { target_agent_run_id: string };
+    const child = await delegate(harness.service, context(harness.commands, "/worker", parent.target_agent_run_id), {
       recipient_address: "/reviewer", description: "Review the parent work", reference_files: [],
-    }) as { task_id: string; target_agent_run_id: string };
-
-    await execute(harness.service, SUBMIT_TASK_RESULT_TOOL_NAME, context(harness.commands, "/reviewer", child.target_agent_run_id), {
-      message: "Child review complete.", reference_files: [],
-    });
-    await expect(execute(harness.service, REVIEW_TASK_RESULT_TOOL_NAME, parentContext, {
-      task_id: child.task_id, decision: "accept", comment: null, reference_files: [],
-    })).resolves.toMatchObject({ task_id: child.task_id, status: "accepted" });
-    await expect(execute(harness.service, REVIEW_TASK_RESULT_TOOL_NAME, coordinator, {
-      task_id: child.task_id, decision: "accept", comment: null, reference_files: [],
-    })).rejects.toMatchObject({ code: "DELEGATOR_NOT_AUTHORIZED" });
-
-    expect(harness.root.getTaskRecordsSnapshot().records.find((record) => record.taskId === child.task_id)).toMatchObject({
-      delegatorAgentRunId: parent.target_agent_run_id,
-      recipientAddress: "/reviewer",
-      taskExecution: { agentRunId: child.target_agent_run_id },
-      status: "accepted",
-    });
+    }) as { target_agent_run_id: string };
+    expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([
+      expect.objectContaining({ agentRunId: parent.target_agent_run_id, delegatorAgentRunId: "run-coordinator" }),
+      expect.objectContaining({ agentRunId: child.target_agent_run_id, address: "/reviewer", delegatorAgentRunId: parent.target_agent_run_id }),
+    ]);
   });
 
   it("fails closed for a retired configured-Team recipient in a flat Team root", async () => {
     const harness = await createHarness();
-    await expect(execute(harness.service, DELEGATE_TASK_TOOL_NAME, context(harness.commands, "/coordinator", "run-coordinator"), {
+    await expect(delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator"), {
       recipient_address: "/design_team", description: "Coordinate a design exercise", reference_files: [],
     })).rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
-    expect(harness.root.getTaskRecordsSnapshot().records).toEqual([]);
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
   });
 
   it("rejects self, root, missing, noncanonical, traversal, foreign, and relative targets before mutation", async () => {
     const harness = await createHarness();
     const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
-    for (const recipient_address of [
-      "/coordinator",
-      "/",
-      "/missing",
-      "worker",
-      "./worker",
-      "/worker/child",
-    ]) {
-      await expect(execute(harness.service, DELEGATE_TASK_TOOL_NAME, coordinator, {
-        recipient_address,
-        description: "must reject",
-        reference_files: [],
+    for (const recipient_address of ["/coordinator", "/", "/missing", "worker", "./worker", "/worker/child"]) {
+      await expect(delegate(harness.service, coordinator, {
+        recipient_address, description: "must reject", reference_files: [],
       })).rejects.toBeTruthy();
     }
-    await expect(execute(harness.service, DELEGATE_TASK_TOOL_NAME, context(harness.commands, "/coordinator", "run-coordinator", "foreign-root"), {
+    await expect(delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator", "foreign-root"), {
       recipient_address: "/worker", description: "foreign", reference_files: [],
     })).rejects.toMatchObject({ code: "COLLABORATION_CONTEXT_REQUIRED" });
-    expect(harness.root.getTaskRecordsSnapshot().records).toEqual([]);
     expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
     expect(harness.backend.preparedAgents).toEqual([]);
     expect(harness.backend.preparedTeams).toEqual([]);
   });
 
-  it("validates absolute reference files before preparation and persists the exact accepted path", async () => {
+  it("validates absolute reference files before preparation and delivers the exact path in the work packet", async () => {
     const harness = await createHarness();
     const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
-    await expect(execute(harness.service, DELEGATE_TASK_TOOL_NAME, coordinator, {
-      recipient_address: "/worker",
-      description: "Read the reference",
-      reference_files: ["relative.txt"],
+    await expect(delegate(harness.service, coordinator, {
+      recipient_address: "/worker", description: "Read the reference", reference_files: ["relative.txt"],
     })).rejects.toBeTruthy();
     expect(harness.backend.preparedAgents).toEqual([]);
 
     const referencePath = path.join(harness.memoryDir, "classroom-problem.txt");
     await fs.writeFile(referencePath, "classroom evidence", "utf8");
-    const created = await execute(harness.service, DELEGATE_TASK_TOOL_NAME, coordinator, {
-      recipient_address: "/worker",
-      description: "Read the absolute reference",
-      reference_files: [referencePath],
-    }) as { task_id: string };
-    expect(harness.root.getTaskRecordsSnapshot().records.find((record) => record.taskId === created.task_id)?.referenceFiles)
-      .toEqual([referencePath]);
+    await delegate(harness.service, coordinator, {
+      recipient_address: "/worker", description: "Read the absolute reference", reference_files: [referencePath],
+    });
+    expect(harness.backend.preparedAgents[0]!.message.content).toContain(referencePath);
   });
 });

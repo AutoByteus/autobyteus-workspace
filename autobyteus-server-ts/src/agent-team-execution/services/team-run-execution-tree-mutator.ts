@@ -76,46 +76,6 @@ export const addTaskExecutionToTree = (input: {
   },
 );
 
-export const settleTaskExecutionInTree = (input: {
-  tree: TeamRunExecutionTreeSnapshot;
-  taskExecutionRunId: string;
-  settledAt: string;
-}): TeamRunExecutionTreeSnapshot => {
-  let found = false;
-  const settleTask = (task: TaskExecution): TaskExecution => {
-    const matches = "agentRunId" in task
-      ? task.agentRunId === input.taskExecutionRunId
-      : task.teamRunId === input.taskExecutionRunId;
-    if (matches) {
-      if (found) throw new Error(`Task execution '${input.taskExecutionRunId}' is duplicated.`);
-      found = true;
-      return { ...task, settledAt: input.settledAt };
-    }
-    if (!("teamRunId" in task)) return task;
-    return {
-      ...task,
-      members: task.members.map(settleMember),
-      taskExecutions: task.taskExecutions.map(settleTask),
-    };
-  };
-  const settleMember = (member: TaskTeamMemberExecution): TaskTeamMemberExecution =>
-    "agentRunId" in member ? member : {
-      ...member,
-      members: member.members.map(settleMember),
-      taskExecutions: member.taskExecutions.map(settleTask),
-    };
-  const next = {
-    ...input.tree,
-    rootTeam: {
-      ...input.tree.rootTeam,
-      members: input.tree.rootTeam.members,
-      taskExecutions: input.tree.rootTeam.taskExecutions.map(settleTask),
-    },
-  };
-  if (!found) throw new Error(`Task execution '${input.taskExecutionRunId}' was not found.`);
-  return validateTeamRunExecutionTreePayload(next, input.tree.rootTeam.teamRunId);
-};
-
 type AgentExecutionNode = ConfiguredAgentExecutionNode | TaskAgentExecution | TaskTeamAgentExecution;
 
 export type TeamAgentPlatformBindingMutation = Readonly<{

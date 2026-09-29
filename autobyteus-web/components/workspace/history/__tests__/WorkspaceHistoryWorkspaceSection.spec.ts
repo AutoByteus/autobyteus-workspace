@@ -15,7 +15,7 @@ import {
   buildTestTeamContext,
   testAgentNode,
   testSubTeamNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 vi.mock('@iconify/vue', () => ({ Icon: {props: ['icon'], template: '<span :data-icon="icon" />'} }));
@@ -78,7 +78,6 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
       isActive: true,
       summary: 'Deliver current package',
       executionTree: {
-        schemaVersion: 1,
         subjectKind: 'agent_org',
         createdAt: '2026-09-03T00:00:00.000Z',
         archivedAt: null,
@@ -123,13 +122,7 @@ const mountSubject = (options: {
     coordinatorAddress: '/worker',
     focusedAgentRunId: 'task-agent-run-1',
     workspaceRootPath: '/ws/a',
-    tasks: [testTaskRecord({
-      taskId: 'task_0001',
-      delegatorAgentRunId: worker.agentRunId!,
-      recipientAddress: '/worker',
-      target: { agentRunId: 'task-agent-run-1' },
-      description: 'Solve current task',
-    })],
+    delegations: [testDelegation({ delegatorAgentRunId: worker.agentRunId!, recipientAddress: '/worker', target: { agentRunId: 'task-agent-run-1' } })],
   });
   if (!options.liveContext) {
     liveContext.view.getAgentContext('task-agent-run-1')!.state.currentStatus = AgentStatus.Running;
@@ -351,7 +344,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
       role: 'treeitem',
       'aria-level': '1',
       'aria-selected': 'true',
-      title: 'Temporary task agent · Solve current task · /worker',
+      title: 'Temporary task agent · worker · /worker',
     });
     await taskRow.trigger('keydown', { key: 'Enter' });
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
@@ -363,10 +356,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     const liveContext = buildTestTeamContext({
       teamRunId: 'team-run-1', coordinatorAddress: '/worker',
       rootChildren: [testAgentNode('/worker', { agentRunId: 'worker-run' })],
-      tasks: ['first', 'second'].map((id) => testTaskRecord({
-        taskId: id, delegatorAgentRunId: 'worker-run', recipientAddress: '/worker',
-        target: { agentRunId: `${id}-run` }, description: `${id} task`,
-      })),
+      delegations: ['first', 'second'].map((id) => testDelegation({ delegatorAgentRunId: 'worker-run', recipientAddress: '/worker', target: { agentRunId: `${id}-run` } })),
     });
     const { wrapper, actions, state } = mountSubject({ liveContext });
     const taskRows = () => wrapper.findAll('[data-test="workspace-team-transient-execution-row"]');
@@ -432,11 +422,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
         }),
       ],
       coordinatorAddress: '/worker', focusedAgentRunId: 'worker-run',
-      tasks: [testTaskRecord({
-        taskId: 'task_0002', delegatorAgentRunId: 'worker-run', recipientAddress: '/study_group',
-        target: { teamRunId: 'task-team-run-1' }, description: 'Review design',
-        referenceFiles: ['/tmp/design-spec.md'],
-      })],
+      delegations: [testDelegation({ delegatorAgentRunId: 'worker-run', recipientAddress: '/study_group', target: { teamRunId: 'task-team-run-1' } })],
     });
     const taskChildRunId = 'task-team-run-1:reviewer-run';
     liveContext.view.getAgentContext(taskChildRunId)!.state.currentStatus = AgentStatus.Running;
@@ -457,8 +443,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/study_group/reviewer', agentRunId: taskChildRunId,
     }, 'workspace:/ws/a');
-    expect(wrapper.text()).toContain('Task: Review design');
-    expect(wrapper.text()).not.toContain('/tmp/design-spec.md');
+    expect(wrapper.text()).toContain('Started by worker');
   });
 
   it('removes transient execution rows when the exact live projection disappears', async () => {

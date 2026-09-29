@@ -16,12 +16,18 @@ export type AgentOrgHistoryAgentRow = Readonly<{
 export type AgentOrgHistoryTeamRow = Readonly<{
   key: string; kind: 'team'; address: string; teamRunId: string; status: AgentStatus; depth: number
 }>
+/**
+ * Delegated rows carry who started them (REQ-013): the delegator's address when it resolves
+ * in the tree, otherwise its AgentRun ID. Task-Team members carry none (the Team row does).
+ */
+export type AgentOrgHistoryDelegator = Readonly<{ agentRunId: string; address: string | null }>
 export type AgentOrgHistoryTaskAgentRow = Readonly<{
   key: string; kind: 'task_agent'; taskKind: 'direct' | 'team_member'; address: string
-  agentRunId: string; status: AgentStatus; depth: number
+  agentRunId: string; status: AgentStatus; depth: number; delegatedBy: AgentOrgHistoryDelegator | null
 }>
 export type AgentOrgHistoryTaskTeamRow = Readonly<{
   key: string; kind: 'task_team'; address: string; teamRunId: string; depth: number; coordinatorAgentRunId: string; coordinatorAddress: string
+  delegatedBy: AgentOrgHistoryDelegator | null
 }>
 export type AgentOrgHistoryRow =
   | AgentOrgHistoryAgentRow
@@ -40,7 +46,34 @@ type StatusSource = Readonly<{
   authority: TeamStatusAuthority
   coordinatorFor(team: TaskTeamNode): Readonly<{ agentRunId: string; address: string }>
   statusForAgentRunId(agentRunId: string): AgentStatus | string | null | undefined
+  /** Null when the child was recorded before its delegator was stored (no starter shown). */
+  delegatorFor(delegatorAgentRunId: string | undefined): AgentOrgHistoryDelegator | null
 }>
+
+const collectAgentAddresses = (tree: AgentOrgRunHistoryItem['executionTree']): ReadonlyMap<string, string> => {
+  const addresses = new Map<string, string>()
+  const visitTaskMembers = (members: readonly AgentOrgTaskTeamMember[]) => {
+    for (const member of members) {
+      if ('agentRunId' in member) addresses.set(member.agentRunId, member.address)
+      else { visitTaskMembers(member.members); visitTasks(member.taskExecutions) }
+    }
+  }
+  const visitTasks = (tasks: readonly AgentOrgTaskExecutionNode[]) => {
+    for (const task of tasks) {
+      if ('agentRunId' in task) addresses.set(task.agentRunId, task.address)
+      else { visitTaskMembers(task.members); visitTasks(task.taskExecutions) }
+    }
+  }
+  for (const member of tree.rootOrg.members) {
+    if ('agentRunId' in member) addresses.set(member.agentRunId, member.address)
+    else {
+      member.members.forEach((agent) => addresses.set(agent.agentRunId, agent.address))
+      visitTasks(member.taskExecutions)
+    }
+  }
+  visitTasks(tree.rootOrg.taskExecutions)
+  return addresses
+}
 
 const statusSource = (
   run: AgentOrgRunHistoryItem,
@@ -53,8 +86,13 @@ const statusSource = (
     && context.isActive
     && context.phase === 'live',
   )
+  const addresses = collectAgentAddresses(context?.executionTree ?? run.executionTree)
   return {
     authority: live ? 'live' : 'historical',
+    delegatorFor: (delegatorAgentRunId) => delegatorAgentRunId === undefined ? null : Object.freeze({
+      agentRunId: delegatorAgentRunId,
+      address: addresses.get(delegatorAgentRunId) ?? null,
+    }),
     coordinatorFor: (team) => {
       const source = (context?.executionTree ?? run.executionTree).rootOrg.members.find((member) =>
         'teamRunId' in member && member.address === team.address)
@@ -83,6 +121,8 @@ const flattenTaskTeam = (team: TaskTeamNode, depth: number, source: StatusSource
     teamRunId: team.teamRunId,
     coordinatorAgentRunId: coordinator.agentRunId, coordinatorAddress: coordinator.address,
     depth,
+    // A nested Team inside a task Team is not itself delegated; only the outer task Team row names its starter.
+    delegatedBy: 'delegatorAgentRunId' in team ? source.delegatorFor(team.delegatorAgentRunId) : null,
   }]
   for (const member of team.members) {
     if (isAgentOrgTaskAgentNode(member)) {
@@ -94,6 +134,7 @@ const flattenTaskTeam = (team: TaskTeamNode, depth: number, source: StatusSource
         agentRunId: member.agentRunId,
         status: exactAgentStatus(source, member.agentRunId),
         depth: depth + 1,
+        delegatedBy: null,
       })
     } else rows.push(...flattenTaskTeam(member, depth + 1, source))
   }
@@ -105,7 +146,7 @@ const flattenTask = (
   task: AgentOrgTaskExecutionNode,
   depth: number,
   source: StatusSource,
-): AgentOrgHistoryRow[] => task.settledAt !== null ? [] : isAgentOrgTaskAgentNode(task)
+): AgentOrgHistoryRow[] => isAgentOrgTaskAgentNode(task)
   ? [{
       key: `task-agent:${task.agentRunId}`,
       kind: 'task_agent',
@@ -114,6 +155,7 @@ const flattenTask = (
       agentRunId: task.agentRunId,
       status: exactAgentStatus(source, task.agentRunId),
       depth,
+      delegatedBy: source.delegatorFor(task.delegatorAgentRunId),
     }]
   : flattenTaskTeam(task, depth, source)
 

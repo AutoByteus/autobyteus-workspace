@@ -2,21 +2,10 @@ import { z } from "zod";
 
 const NonBlankTaskResultStringSchema = z.string().trim().min(1);
 
-const ActiveDelegateTaskResultSchema = z.strictObject({
-  task_id: NonBlankTaskResultStringSchema,
-  status: z.literal("active"),
-  target_agent_run_id: NonBlankTaskResultStringSchema,
-});
-
-const NotStartedDelegateTaskResultSchema = z.strictObject({
-  task_id: NonBlankTaskResultStringSchema,
-  status: z.literal("not_started"),
-  message: NonBlankTaskResultStringSchema,
-});
-
-export const DelegateTaskResultSchema = z.discriminatedUnion("status", [
-  ActiveDelegateTaskResultSchema,
-  NotStartedDelegateTaskResultSchema,
+/** A spawn result: the new child ingress, or null with the reason nothing was started. */
+export const DelegateTaskResultSchema = z.union([
+  z.strictObject({ target_agent_run_id: NonBlankTaskResultStringSchema }),
+  z.strictObject({ target_agent_run_id: z.null(), message: NonBlankTaskResultStringSchema }),
 ]);
 
 export type DelegateTaskResult = z.infer<typeof DelegateTaskResultSchema>;

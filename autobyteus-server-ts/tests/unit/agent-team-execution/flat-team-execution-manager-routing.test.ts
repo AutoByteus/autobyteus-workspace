@@ -19,25 +19,35 @@ const codeReviewerAddress = address("/code_reviewer");
 const solutionDesignerRunId = "team-1::solution_designer";
 const codeReviewerRunId = "team-1::code_reviewer";
 
-const createFakeAgentRun = (runId: string) => ({
-  runId,
-  isActive: () => true,
-  getPlatformAgentRunId: () => null,
-  getStatusSnapshot: () => ({ status: "idle" }),
-  subscribeToEvents: vi.fn(() => () => undefined),
-  postUserMessage: vi.fn(async () => ({ accepted: true as const })),
-  reserveUserMessage: vi.fn(async () => ({
-    reserved: true as const,
-    commit: vi.fn(async () => ({ accepted: true as const })),
-    cancel: vi.fn(),
-  })),
-  approveToolInvocation: vi.fn(async () => ({ accepted: true as const })),
-  interrupt: vi.fn(async () => ({ accepted: true as const })),
-  prepareTermination: vi.fn(async () => ({
-    cancel: vi.fn(),
-    commit: vi.fn(() => ({ finish: vi.fn(async () => ({ accepted: true as const })) })),
-  })),
-});
+const createFakeAgentRun = (runId: string, statusOf: (runId: string) => string = () => "idle") => {
+  const listeners = new Set<(event: unknown) => void>();
+  return {
+    runId,
+    isActive: () => true,
+    getPlatformAgentRunId: () => null,
+    getStatusSnapshot: () => ({ status: statusOf(runId) }),
+    subscribeToEvents: vi.fn((listener: (event: unknown) => void) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    }),
+    /** Publishes the run's current status the way a real AgentRun does after each transition. */
+    emitStatus: () => listeners.forEach((listener) => listener({
+      eventType: "AGENT_STATUS", runId, payload: { status: statusOf(runId) },
+    })),
+    postUserMessage: vi.fn(async () => ({ accepted: true as const })),
+    reserveUserMessage: vi.fn(async () => ({
+      reserved: true as const,
+      commit: vi.fn(async () => ({ accepted: true as const })),
+      cancel: vi.fn(),
+    })),
+    approveToolInvocation: vi.fn(async () => ({ accepted: true as const })),
+    interrupt: vi.fn(async () => ({ accepted: true as const })),
+    prepareTermination: vi.fn(async () => ({
+      cancel: vi.fn(),
+      commit: vi.fn(() => ({ finish: vi.fn(async () => ({ accepted: true as const })) })),
+    })),
+  };
+};
 
 const createMixedManager = () => {
   const solutionNode = testAgentNode(solutionDesignerAddress, {
@@ -73,8 +83,9 @@ const createMixedManager = () => {
     }),
   });
   const runs = new Map<string, ReturnType<typeof createFakeAgentRun>>();
+  const statuses = new Map<string, string>();
   const prepareNewAgentRun = vi.fn(async ({ config, runId }) => {
-    const run = createFakeAgentRun(runId);
+    const run = createFakeAgentRun(runId, (id) => statuses.get(id) ?? "idle");
     runs.set(runId, run);
     return {
       runId,
@@ -104,7 +115,7 @@ const createMixedManager = () => {
     },
     workspaceManager: { ensureWorkspaceByRootPath: vi.fn() },
   });
-  return { manager, runs, reviewerNode };
+  return { manager, runs, statuses, reviewerNode };
 };
 
 describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
@@ -154,6 +165,41 @@ describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
 
     expect(runs.get(taskAgentRunId)?.interrupt).toHaveBeenCalledOnce();
     expect(runs.has(codeReviewerRunId)).toBe(false);
+  });
+
+  it("counts a task Agent as open work only while running, so an errored child leaves the root with no open work (AC-015)", async () => {
+    const { manager, runs, statuses, reviewerNode } = createMixedManager();
+    await manager.executeDirectAgentCommand(codeReviewerRunId, {
+      kind: "post_message", message: new AgentInputUserMessage("configured work"),
+    });
+    const taskAgentRunId = "task-code-reviewer-run-errored";
+    const prepared = await manager.prepareTaskAgent({
+      address: reviewerNode.address,
+      agentRunId: taskAgentRunId,
+      sourceNode: reviewerNode,
+      message: new AgentInputUserMessage("start delegated review"),
+    });
+    prepared.sealForCommit();
+    prepared.commitAfterDurability().releaseWork();
+    await vi.waitFor(() => expect(runs.get(taskAgentRunId)?.postUserMessage).toHaveBeenCalledOnce());
+
+    const setStatus = (agentRunId: string, status: string) => {
+      statuses.set(agentRunId, status);
+      runs.get(agentRunId)!.emitStatus();
+    };
+    setStatus(codeReviewerRunId, "idle");
+    setStatus(taskAgentRunId, "running");
+    expect(manager.hasOpenExecutionWork()).toBe(true);
+    setStatus(taskAgentRunId, "error");
+    expect(manager.hasOpenExecutionWork()).toBe(false);
+    setStatus(taskAgentRunId, "idle");
+    expect(manager.hasOpenExecutionWork()).toBe(false);
+
+    // Configured members keep their own predicate: an errored configured member stays open work.
+    setStatus(codeReviewerRunId, "error");
+    expect(manager.hasOpenExecutionWork()).toBe(true);
+    setStatus(codeReviewerRunId, "idle");
+    expect(manager.hasOpenExecutionWork()).toBe(false);
   });
 
   it("cancels recursive task-Team descendants all-or-none when one remains busy", async () => {

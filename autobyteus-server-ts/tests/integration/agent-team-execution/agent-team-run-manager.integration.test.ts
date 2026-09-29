@@ -178,7 +178,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     [[RuntimeKind.CODEX_APP_SERVER]],
     [[RuntimeKind.CLAUDE_AGENT_SDK]],
     [[RuntimeKind.AUTOBYTEUS, RuntimeKind.CODEX_APP_SERVER, RuntimeKind.CLAUDE_AGENT_SDK]],
-  ] as const)("creates exactly one admitted root and the three-file current package for %j", async (runtimeKinds) => {
+  ] as const)("creates exactly one admitted root and the two-file current package (tree V3 + messages) for %j", async (runtimeKinds) => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
       initializeTaskIdentityAllocator(memoryDir),
@@ -213,20 +213,13 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
       rootTeamRunId: run.teamRunId,
       ancestorTeamRunIds: [],
     });
-    await expect(fs.readdir(rootDir)).resolves.toEqual(expect.arrayContaining([
-      "team_run_execution_tree.json",
-      "task_delegation_records.json",
-      "team_communication_messages.json",
-    ]));
     const entries = (await fs.readdir(rootDir)).filter((name) => name.endsWith(".json"));
     expect(entries.sort()).toEqual([
-      "task_delegation_records.json",
       "team_communication_messages.json",
       "team_run_execution_tree.json",
     ]);
     const tree = JSON.parse(await fs.readFile(path.join(rootDir, "team_run_execution_tree.json"), "utf8"));
     expect(tree).toMatchObject({
-      schemaVersion: 2,
       rootTeam: {
         address: "/",
         teamRunId: run.teamRunId,
@@ -266,7 +259,7 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     expect(beforeBackendReturn).toHaveBeenCalledOnce();
   });
 
-  it("restores the strict three-file package and rebuilds runtime context from current tree identity", async () => {
+  it("restores the strict current package (tree V3 + messages) and rebuilds runtime context from current tree identity", async () => {
     const memoryDir = await createMemoryDir();
     const taskExecutionIdentity = createTaskExecutionIdentityCapabilities(
       initializeTaskIdentityAllocator(memoryDir),
@@ -284,17 +277,11 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
     const restored = await restoredManager.restoreTeamRun(config.rootTeam.teamRunId);
 
     expect(restored.getExecutionTreeSnapshot()).toMatchObject({
-      schemaVersion: 2,
       rootTeam: {
         address: "/",
         teamRunId: config.rootTeam.teamRunId,
         defaultLaunchConfiguration: config.rootTeam.defaultLaunchConfiguration,
       },
-    });
-    expect(restored.getTaskRecordsSnapshot()).toEqual({
-      schemaVersion: 1,
-      rootTeamRunId: config.rootTeam.teamRunId,
-      records: [],
     });
     expect(restored.getCommunicationSnapshot()).toEqual({
       schemaVersion: 1,

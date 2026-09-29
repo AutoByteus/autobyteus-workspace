@@ -19,7 +19,7 @@ async function seedTeam(root: string, id: string, uri?: string) {
   const directory = path.join(root, "memory", "agent_teams", id);
   await put(path.join(directory, "team_run_execution_tree.json"), testExecutionTree({ rootTeamRunId: id,
     coordinatorAddress: "/worker", children: [testAgentNode("/worker", { agentRunId: `${id}-agent` })] }));
-  writeAttachmentSidecars(directory, "team", id, `${id}-agent`);
+  writeAttachmentSidecars(directory, "team", id);
   await put(path.join(directory, `${id}-agent`, "context_files", "ctx_file__notes.txt"), `${id} original bytes`);
   if (uri) await put(path.join(directory, `${id}-agent`, "raw_traces_active.jsonl"),
     JSON.stringify({ id: "historical", trace_type: "user", content: "Retained history", media: { images: [uri] } }) + "\n");

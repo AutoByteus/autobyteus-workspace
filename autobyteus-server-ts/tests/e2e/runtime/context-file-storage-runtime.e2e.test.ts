@@ -135,14 +135,8 @@ run("Context-file built-process runtime and upgrade", () => {
     const treePath = path.join(teamDir, "team_run_execution_tree.json");
     const tree = await readJson(treePath);
     const timestamp = "2026-09-01T00:00:00.000Z";
-    tree.rootTeam.taskExecutions.push({ address: "/worker", agentRunId: "retained-task", platformAgentRunId: null, startedAt: timestamp, settledAt: timestamp });
+    tree.rootTeam.taskExecutions.push({ address: "/worker", agentRunId: "retained-task", platformAgentRunId: null, delegatorAgentRunId: owner.runId, startedAt: timestamp });
     await writeJson(treePath, tree);
-    const taskPath = path.join(teamDir, "task_delegation_records.json");
-    const tasks = await readJson(taskPath);
-    tasks.records.push({ taskId: "retained-task-record", delegatorAgentRunId: owner.runId, recipientAddress: "/worker",
-      taskExecution: { agentRunId: "retained-task" }, description: "Retained task fixture", referenceFiles: [], status: "interrupted",
-      updates: [{ interruptionId: "interrupted", reason: "Completed fixture lifecycle", createdAt: timestamp }], createdAt: timestamp });
-    await writeJson(taskPath, tasks);
     const otherDir = path.join(teamDir, "retained-task", "context_files"); await fs.mkdir(otherDir, { recursive: true });
     for (const file of files) await fs.writeFile(path.join(otherDir, file.storedFilename), `other execution ${file.displayName}`);
     const tracePath = path.join(agentDir, "raw_traces_active.jsonl");

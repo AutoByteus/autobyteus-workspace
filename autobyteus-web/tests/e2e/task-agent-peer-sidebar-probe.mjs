@@ -239,8 +239,8 @@ try {
   evidence.browserEvents = [];
 
   const worker = page.locator('[role="treeitem"][data-row-kind="stable_member"][data-member-address="/Worker"]');
-  const taskA = page.getByRole('treeitem', { name: /Review launch notes/ });
-  const taskB = page.getByRole('treeitem', { name: /Check documentation and release readiness/ });
+  const taskA = page.locator('[role="treeitem"][data-agent-run-id="peer-task-a"]');
+  const taskB = page.locator('[role="treeitem"][data-agent-run-id="peer-task-b"]');
   const outer = page.locator('[data-test="workspace-team-row-peer-root"]');
   const selectedConversation = async (id) => {
     await waitFor(`exact ${id} focus`, async () => (await state(page)).focus === id);
@@ -253,7 +253,7 @@ try {
     assert(await worker.getAttribute('aria-level') === '1', 'Worker depth wrong');
     assert(await taskA.getAttribute('aria-level') === '1' && await taskB.getAttribute('aria-level') === '1', 'Tasks are not peers');
     assert(await worker.getAttribute('aria-expanded') === null, 'Worker has phantom disclosure');
-    assert((await taskA.getAttribute('aria-label')).includes('In progress · Offline'), 'Live task lifecycle/runtime status changed');
+    assert((await taskA.getAttribute('aria-label')).includes('Started by'), 'Delegated row lost its delegator line');
     const layout = await Promise.all([worker, taskA, taskB].map(row => row.evaluate(el => ({
       x: el.getBoundingClientRect().x, padding: getComputedStyle(el).paddingLeft, label: el.getAttribute('aria-label'),
     }))));
@@ -290,7 +290,7 @@ try {
   });
 
   await scenario('PEER-002', 'Task-Team containment and actual ancestor auto-reveal; outer collapse preserves peers', async () => {
-    const nested = page.getByRole('treeitem', { name: /Nested task Agent proof/ });
+    const nested = page.locator('[role="treeitem"][data-agent-run-id="peer-nested-task"]');
     assert(await nested.count() === 0, 'Task-Team descendant escaped collapsed actual containers');
     await page.evaluate(() => window.__peerSidebarProbe.revealNested());
     await nested.waitFor({ state: 'visible' });
@@ -316,13 +316,13 @@ try {
     return { final: await state(page) };
   });
 
-  await scenario('PEER-003', 'Retained settled task reload uses exact conversation; no-task list unchanged', async () => {
+  await scenario('PEER-003', 'Retained delegated execution reload uses exact conversation; no-delegation list unchanged', async () => {
     await page.goto(`${baseUrl}${routePath}?mode=retained`, { waitUntil: 'domcontentloaded' });
     await taskA.waitFor({ state: 'visible' });
     await taskB.waitFor({ state: 'visible' });
     assert((await state(page)).mode === 'retained', 'Retained mode not loaded');
     assert(await taskA.getAttribute('aria-level') === '1', 'Retained peer depth changed');
-    assert((await taskA.getAttribute('aria-label')).includes('Accepted · Offline'), 'Retained task lifecycle/runtime status changed');
+    assert(/\boffline\b/i.test(await taskA.getAttribute('aria-label')), 'Retained delegated row is not offline', { label: await taskA.getAttribute('aria-label') });
     await taskA.click();
     await selectedConversation('peer-task-a');
     await screenshot('retained-selected');

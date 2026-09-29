@@ -174,7 +174,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     const org = contexts.value[id]
     const agent = org?.index.agents.get(agentRunId)
     if (!org || !agent || operations.value[id] || submissions.has(keyFor(id, agentRunId))) return 'read_only'
-    if (org.phase === 'historical' && !org.isActive && !agent.task) return 'continuable'
+    if (org.phase === 'historical' && !org.isActive && !agent.delegation) return 'continuable'
     if (org.phase === 'live' && org.isActive && agent.live && services.get(id)?.isReady()) return 'live'
     return 'read_only'
   }

@@ -92,7 +92,7 @@ const materializeMigrationTeam = (
 
 export type PlannedTeamRunV1Package = Readonly<{
   executionTree: import("./team-run-execution-tree-v1-types.js").TeamRunExecutionTreeSnapshot;
-  taskRecords: import("../../../agent-team-execution/task-delegation/task-delegation-record-v1.js").TaskDelegationRecordsSnapshot;
+  taskRecords: import("../../legacy/released-run-package-shapes/team-task-delegation-record-v1.js").TaskDelegationRecordsSnapshot;
   communicationMessages: import("../../../services/team-communication/team-communication-v1-types.js").TeamCommunicationMessagesSnapshot;
 }>;
 

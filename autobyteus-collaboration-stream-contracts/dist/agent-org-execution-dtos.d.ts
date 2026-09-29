@@ -17,8 +17,9 @@ type TaskAgentExecutionDto = Readonly<{
     address: string;
     agentRunId: string;
     platformAgentRunId: string | null;
+    /** Absent for children recorded before the delegator was stored. */
+    delegatorAgentRunId?: string;
     startedAt: string;
-    settledAt: string | null;
 }>;
 type TaskTeamAgentExecutionDto = Readonly<{
     address: string;
@@ -37,12 +38,12 @@ type TaskTeamExecutionDto = Readonly<{
     teamRunId: string;
     members: readonly TaskTeamMemberExecutionDto[];
     taskExecutions: readonly TaskExecutionDto[];
+    /** Absent for children recorded before the delegator was stored. */
+    delegatorAgentRunId?: string;
     startedAt: string;
-    settledAt: string | null;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
-    schemaVersion: z.ZodLiteral<1>;
     subjectKind: z.ZodLiteral<"agent_org">;
     createdAt: z.ZodString;
     archivedAt: z.ZodNullable<z.ZodString>;
@@ -143,89 +144,6 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
         taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
     }, z.core.$strict>;
 }, z.core.$strict>;
-export declare const agentOrgTaskRecordDtoSchema: z.ZodObject<{
-    taskId: z.ZodString;
-    delegatorAgentRunId: z.ZodString;
-    recipientAddress: z.ZodString;
-    taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-        agentRunId: z.ZodString;
-    }, z.core.$strict>, z.ZodObject<{
-        teamRunId: z.ZodString;
-    }, z.core.$strict>]>;
-    description: z.ZodString;
-    referenceFiles: z.ZodArray<z.ZodString>;
-    status: z.ZodEnum<{
-        active: "active";
-        awaiting_review: "awaiting_review";
-        accepted: "accepted";
-        interrupted: "interrupted";
-    }>;
-    updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-        submissionId: z.ZodString;
-        message: z.ZodString;
-        referenceFiles: z.ZodArray<z.ZodString>;
-        createdAt: z.ZodString;
-    }, z.core.$strict>, z.ZodObject<{
-        reviewId: z.ZodString;
-        reviewedSubmissionId: z.ZodString;
-        decision: z.ZodEnum<{
-            accept: "accept";
-            request_revision: "request_revision";
-        }>;
-        comment: z.ZodNullable<z.ZodString>;
-        referenceFiles: z.ZodArray<z.ZodString>;
-        createdAt: z.ZodString;
-    }, z.core.$strict>, z.ZodObject<{
-        interruptionId: z.ZodString;
-        reason: z.ZodString;
-        createdAt: z.ZodString;
-    }, z.core.$strict>]>>;
-    createdAt: z.ZodString;
-}, z.core.$strict>;
-export declare const agentOrgTaskRecordsDtoSchema: z.ZodObject<{
-    schemaVersion: z.ZodLiteral<1>;
-    subjectKind: z.ZodLiteral<"agent_org">;
-    orgRunId: z.ZodString;
-    records: z.ZodArray<z.ZodObject<{
-        taskId: z.ZodString;
-        delegatorAgentRunId: z.ZodString;
-        recipientAddress: z.ZodString;
-        taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-            agentRunId: z.ZodString;
-        }, z.core.$strict>, z.ZodObject<{
-            teamRunId: z.ZodString;
-        }, z.core.$strict>]>;
-        description: z.ZodString;
-        referenceFiles: z.ZodArray<z.ZodString>;
-        status: z.ZodEnum<{
-            active: "active";
-            awaiting_review: "awaiting_review";
-            accepted: "accepted";
-            interrupted: "interrupted";
-        }>;
-        updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-            submissionId: z.ZodString;
-            message: z.ZodString;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>, z.ZodObject<{
-            reviewId: z.ZodString;
-            reviewedSubmissionId: z.ZodString;
-            decision: z.ZodEnum<{
-                accept: "accept";
-                request_revision: "request_revision";
-            }>;
-            comment: z.ZodNullable<z.ZodString>;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>, z.ZodObject<{
-            interruptionId: z.ZodString;
-            reason: z.ZodString;
-            createdAt: z.ZodString;
-        }, z.core.$strict>]>>;
-        createdAt: z.ZodString;
-    }, z.core.$strict>>;
-}, z.core.$strict>;
 export declare const agentOrgCommunicationMessageDtoSchema: z.ZodObject<{
     messageId: z.ZodString;
     senderAgentRunId: z.ZodString;
@@ -268,7 +186,6 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
     base_change_sequence: z.ZodNumber;
     is_active: z.ZodBoolean;
     execution_tree: z.ZodObject<{
-        schemaVersion: z.ZodLiteral<1>;
         subjectKind: z.ZodLiteral<"agent_org">;
         createdAt: z.ZodString;
         archivedAt: z.ZodNullable<z.ZodString>;
@@ -369,50 +286,6 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
             taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
         }, z.core.$strict>;
     }, z.core.$strict>;
-    task_records: z.ZodObject<{
-        schemaVersion: z.ZodLiteral<1>;
-        subjectKind: z.ZodLiteral<"agent_org">;
-        orgRunId: z.ZodString;
-        records: z.ZodArray<z.ZodObject<{
-            taskId: z.ZodString;
-            delegatorAgentRunId: z.ZodString;
-            recipientAddress: z.ZodString;
-            taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                agentRunId: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                teamRunId: z.ZodString;
-            }, z.core.$strict>]>;
-            description: z.ZodString;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            status: z.ZodEnum<{
-                active: "active";
-                awaiting_review: "awaiting_review";
-                accepted: "accepted";
-                interrupted: "interrupted";
-            }>;
-            updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                submissionId: z.ZodString;
-                message: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                reviewId: z.ZodString;
-                reviewedSubmissionId: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                interruptionId: z.ZodString;
-                reason: z.ZodString;
-                createdAt: z.ZodString;
-            }, z.core.$strict>]>>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>>;
-    }, z.core.$strict>;
     communication_messages: z.ZodObject<{
         schemaVersion: z.ZodLiteral<1>;
         subjectKind: z.ZodLiteral<"agent_org">;
@@ -449,190 +322,13 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
     agent_run_id: z.ZodString;
     message: z.ZodType<import("@autobyteus/agent-presentation-contracts").AgentPresentationMessage, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").AgentPresentationMessage, unknown>>;
 }, z.core.$strict>, z.ZodObject<{
-    kind: z.ZodLiteral<"task">;
-    event: z.ZodUnion<readonly [z.ZodObject<{
-        kind: z.ZodLiteral<"activated">;
-        task: z.ZodObject<{
-            taskId: z.ZodString;
-            delegatorAgentRunId: z.ZodString;
-            recipientAddress: z.ZodString;
-            taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                agentRunId: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                teamRunId: z.ZodString;
-            }, z.core.$strict>]>;
-            description: z.ZodString;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            status: z.ZodEnum<{
-                active: "active";
-                awaiting_review: "awaiting_review";
-                accepted: "accepted";
-                interrupted: "interrupted";
-            }>;
-            updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                submissionId: z.ZodString;
-                message: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                reviewId: z.ZodString;
-                reviewedSubmissionId: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                interruptionId: z.ZodString;
-                reason: z.ZodString;
-                createdAt: z.ZodString;
-            }, z.core.$strict>]>>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        kind: z.ZodLiteral<"submitted">;
-        task: z.ZodObject<{
-            taskId: z.ZodString;
-            delegatorAgentRunId: z.ZodString;
-            recipientAddress: z.ZodString;
-            taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                agentRunId: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                teamRunId: z.ZodString;
-            }, z.core.$strict>]>;
-            description: z.ZodString;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            status: z.ZodEnum<{
-                active: "active";
-                awaiting_review: "awaiting_review";
-                accepted: "accepted";
-                interrupted: "interrupted";
-            }>;
-            updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                submissionId: z.ZodString;
-                message: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                reviewId: z.ZodString;
-                reviewedSubmissionId: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                interruptionId: z.ZodString;
-                reason: z.ZodString;
-                createdAt: z.ZodString;
-            }, z.core.$strict>]>>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>;
-        submission: z.ZodObject<{
-            submissionId: z.ZodString;
-            message: z.ZodString;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        kind: z.ZodLiteral<"reviewed">;
-        task: z.ZodObject<{
-            taskId: z.ZodString;
-            delegatorAgentRunId: z.ZodString;
-            recipientAddress: z.ZodString;
-            taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                agentRunId: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                teamRunId: z.ZodString;
-            }, z.core.$strict>]>;
-            description: z.ZodString;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            status: z.ZodEnum<{
-                active: "active";
-                awaiting_review: "awaiting_review";
-                accepted: "accepted";
-                interrupted: "interrupted";
-            }>;
-            updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                submissionId: z.ZodString;
-                message: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                reviewId: z.ZodString;
-                reviewedSubmissionId: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                interruptionId: z.ZodString;
-                reason: z.ZodString;
-                createdAt: z.ZodString;
-            }, z.core.$strict>]>>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>;
-        review: z.ZodObject<{
-            reviewId: z.ZodString;
-            reviewedSubmissionId: z.ZodString;
-            decision: z.ZodEnum<{
-                accept: "accept";
-                request_revision: "request_revision";
-            }>;
-            comment: z.ZodNullable<z.ZodString>;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>;
-    }, z.core.$strict>, z.ZodObject<{
-        kind: z.ZodLiteral<"settled">;
-        task: z.ZodObject<{
-            taskId: z.ZodString;
-            delegatorAgentRunId: z.ZodString;
-            recipientAddress: z.ZodString;
-            taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                agentRunId: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                teamRunId: z.ZodString;
-            }, z.core.$strict>]>;
-            description: z.ZodString;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            status: z.ZodEnum<{
-                active: "active";
-                awaiting_review: "awaiting_review";
-                accepted: "accepted";
-                interrupted: "interrupted";
-            }>;
-            updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                submissionId: z.ZodString;
-                message: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                reviewId: z.ZodString;
-                reviewedSubmissionId: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>, z.ZodObject<{
-                interruptionId: z.ZodString;
-                reason: z.ZodString;
-                createdAt: z.ZodString;
-            }, z.core.$strict>]>>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>;
-        settledAt: z.ZodString;
-    }, z.core.$strict>]>;
+    kind: z.ZodLiteral<"task_execution_started">;
+    host_kind: z.ZodEnum<{
+        root: "root";
+        team: "team";
+    }>;
+    host_run_id: z.ZodString;
+    execution: z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>;
 }, z.core.$strict>, z.ZodObject<{
     kind: z.ZodLiteral<"communication">;
     message: z.ZodObject<{
@@ -648,7 +344,6 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
 export type AgentOrgExecutionTreeDto = Readonly<z.infer<typeof agentOrgExecutionTreeDtoSchema>>;
 export type AgentOrgExecutionViewDto = Readonly<z.infer<typeof agentOrgExecutionViewDtoSchema>>;
 export type AgentOrgExecutionEventDto = Readonly<z.infer<typeof agentOrgExecutionEventDtoSchema>>;
-export type AgentOrgTaskRecordDto = Readonly<z.infer<typeof agentOrgTaskRecordDtoSchema>>;
 export type AgentOrgCommunicationMessageDto = Readonly<z.infer<typeof agentOrgCommunicationMessageDtoSchema>>;
 export {};
 //# sourceMappingURL=agent-org-execution-dtos.d.ts.map

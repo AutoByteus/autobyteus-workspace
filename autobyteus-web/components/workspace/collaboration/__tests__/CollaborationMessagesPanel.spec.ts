@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import CollaborationMessagesPanel from '../CollaborationMessagesPanel.vue';
-import { buildTestTeamContext, testAgentNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode, testDelegation } from '~/test-support/currentTeamTestFixtures';
 import { testCollaborationMessagesContextView } from '~/test-support/teamWorkspaceContextView';
 
 const labels: Record<string, string> = {
@@ -23,10 +23,7 @@ const team = buildTestTeamContext({
     testAgentNode('/focused', { agentRunId: 'focused-run' }),
     testAgentNode('/reviewer', { agentRunId: 'reviewer-run' }),
   ],
-  tasks: [testTaskRecord({
-    taskId: 'task-1', delegatorAgentRunId: 'focused-run', recipientAddress: '/reviewer',
-    target: { agentRunId: 'task-reviewer-run' },
-  })],
+  delegations: [testDelegation({ delegatorAgentRunId: 'focused-run', recipientAddress: '/reviewer', target: { agentRunId: 'task-reviewer-run' } })],
   messages: [
     { message_id: 'message-sent', sender_agent_run_id: 'focused-run', receiver_agent_run_id: 'reviewer-run', content: 'Please review the handoff.', message_type: 'handoff', created_at: '2026-04-12T10:00:00.000Z', reference_files: [reference] },
     { message_id: 'message-received', sender_agent_run_id: 'task-reviewer-run', receiver_agent_run_id: 'focused-run', content: 'The task review is complete.', message_type: 'assignment', created_at: '2026-04-12T10:01:00.000Z', reference_files: [] },
@@ -78,7 +75,7 @@ describe('CollaborationMessagesPanel current AgentRun perspective', () => {
   });
 });
 
-it('keeps identity out of the list and reveals exact task provenance only on demand in the right detail', async () => {
+it('keeps identity out of the list and reveals exact delegated provenance only on demand in the right detail', async () => {
   const wrapper = mountSubject();
   const list = wrapper.get('[data-test="team-communication-left-list"]');
   expect(list.find('[data-test="message-identity-toggle"]').exists()).toBe(false);
@@ -92,7 +89,6 @@ it('keeps identity out of the list and reveals exact task provenance only on dem
   expect(detail.attributes('id')).toBe(button.attributes('aria-controls'));
   expect(detail.text()).toContain('/reviewer');
   expect(detail.text()).toContain('task-reviewer-run');
-  expect(detail.text()).toContain('task-1');
   expect(detail.text()).toContain('team-1');
   await wrapper.get('[data-test="team-communication-reference-row"]').trigger('click');
   expect(wrapper.find('[data-test="message-identity-detail"]').exists()).toBe(false);

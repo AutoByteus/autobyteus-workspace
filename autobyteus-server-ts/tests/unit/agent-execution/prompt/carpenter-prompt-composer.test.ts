@@ -94,8 +94,9 @@ describe("composeNativeAutoByteusPrompt", () => {
     expect(prompt).not.toContain("## Team Runtime");
     expect(prompt).not.toContain("recipient_name");
     expect(prompt).not.toContain("You can message:");
-    expect(prompt).toContain("submit_task_result");
-    expect(prompt).toContain("review_task_result");
+    expect(prompt).toContain("delegate_task");
+    expect(prompt).not.toContain("submit_task_result");
+    expect(prompt).not.toContain("review_task_result");
   });
 
   it("omits blank optional identity and team bodies", () => {

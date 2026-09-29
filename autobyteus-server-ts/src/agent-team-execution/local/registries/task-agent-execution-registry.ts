@@ -2,26 +2,28 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
 import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
-import type { PrepareTaskAgentInput } from "../../domain/task-agent-execution.js";
+import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../../domain/task-agent-execution.js";
 import type { PreparedTaskExecution } from "../../domain/prepared-task-execution.js";
-import type { PreparedTaskSettlement } from "../../domain/prepared-task-settlement.js";
 import type { TeamRunContext } from "../../domain/team-run-context.js";
 import { FlatAgentExecutionContext, type FlatTeamExecutionContext } from "../flat-team-execution-context.js";
 import { FlatTeamAgentExecutionHandle } from "../flat-team-agent-execution-handle.js";
+import { createTeamAgentStatusSnapshot, type TeamAgentStatusSnapshot } from "../../domain/team-agent-status.js";
 import type { RootedAgentMemoryLocator } from "../../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
 import type { FlatTeamExecutionCallbacks } from "../flat-team-execution-callbacks.js";
 import { TaskAgentDurabilityEventGate } from "../../../agent-collaboration/execution/services/task-agent-durability-event-gate.js";
+import { isRunningTaskExecutionStatus } from "../../../agent-collaboration/execution/task/task-execution-running-work.js";
+import { TaskExecutionTeardownIndeterminateError } from "../../../agent-collaboration/execution/task/task-delegation-command.js";
 
 type PreparedState = "preparing" | "sealed" | "committed" | "aborted";
-/** Direct task-Agent mechanics for one TeamRun; task policy remains root-owned. */
+/** Direct task-Agent mechanics for one TeamRun; the resource lifecycle policy remains root-owned. */
 export class TaskAgentExecutionRegistry {
   private readonly active = new Map<string, FlatTeamAgentExecutionHandle>();
   private readonly reserved = new Set<string>();
   private readonly preparedHandles = new Map<string, FlatTeamAgentExecutionHandle>();
   private readonly eventGates = new Map<string, TaskAgentDurabilityEventGate>();
-  private readonly settling = new Set<string>();
+  private readonly shuttingDown = new Set<string>();
   private materializationOpen = true;
 
   constructor(private readonly options: {
@@ -37,6 +39,61 @@ export class TaskAgentExecutionRegistry {
   listPreparedHandles(): readonly FlatTeamAgentExecutionHandle[] { return Object.freeze([...this.preparedHandles.values()]); }
   freezeMaterialization(): void { this.materializationOpen = false; }
   get(agentRunId: string): FlatTeamAgentExecutionHandle | null { return this.active.get(agentRunId) ?? null; }
+  /**
+   * AR-005 liveness: a task Agent is live only while its registered handle's AgentRun is
+   * active. A retained handle whose run was shut down or died is not live.
+   */
+  isLive(agentRunId: string): boolean { return this.active.get(agentRunId)?.isActive() ?? false; }
+  /** Task-execution open work: only a live, initializing or running task Agent counts. */
+  hasRunningWork(): boolean {
+    return [...this.active].some(([agentRunId, handle]) => this.isLive(agentRunId)
+      && handle.getLeafAgentStatusSnapshots().some((snapshot) => isRunningTaskExecutionStatus(snapshot.details.status)));
+  }
+  /** Status leaves: a non-live task Agent always reports `offline`. */
+  getLeafAgentStatusSnapshots(): readonly TeamAgentStatusSnapshot[] {
+    return [...this.active].flatMap(([agentRunId, handle]) => this.isLive(agentRunId)
+      ? handle.getLeafAgentStatusSnapshots()
+      : handle.getLeafAgentStatusSnapshots().map((snapshot) => createTeamAgentStatusSnapshot({
+          execution: snapshot.execution,
+          details: { status: "offline", trigger: null, toolName: null, errorMessage: null, errorDetails: null },
+        })));
+  }
+
+  /**
+   * Wakes one shut-down task Agent inside a live lease: registers a `restore`-mode handle
+   * when none exists (after a root reopen), then activates its AgentRun so the chain is
+   * live before any input is reserved. A retained handle (idle shutdown within a live
+   * root) re-activates in `restore` mode, continuing the persisted conversation.
+   */
+  async restore(input: RestoreTaskAgentInput): Promise<void> {
+    if (!this.materializationOpen) throw new Error("Task Agent materialization is closed for TeamRun termination.");
+    const runId = input.agentRunId.trim();
+    if (!runId || input.address !== input.sourceNode.address) {
+      throw new Error("Task Agent restore requires one exact configured placement and AgentRun ID.");
+    }
+    if (this.reserved.has(runId)) throw new Error(`Task AgentRun '${runId}' is reserved.`);
+    let handle = this.active.get(runId);
+    if (!handle) {
+      handle = new FlatTeamAgentExecutionHandle({
+        teamContext: this.options.teamContext,
+        context: new FlatAgentExecutionContext({
+          address: input.address,
+          agentRunId: runId,
+          runtimeKind: input.sourceNode.runtimeKind,
+          platformAgentRunId: input.platformAgentRunId,
+        }),
+        config: Object.freeze({ ...input.sourceNode, agentRunId: runId, platformAgentRunId: input.platformAgentRunId }),
+        activationMode: "restore",
+        agentRunManager: this.options.agentRunManager,
+        memoryLocator: this.options.memoryLocator,
+        activityInspector: this.options.activityInspector,
+        workspaceManager: this.options.workspaceManager,
+        callbacks: this.options.callbacks,
+      });
+      this.active.set(runId, handle);
+    }
+    await handle.getOrCreateAgentRun();
+  }
 
   async prepare(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution> {
     if (!this.materializationOpen) throw new Error("Task Agent materialization is closed for TeamRun termination.");
@@ -128,6 +185,10 @@ export class TaskAgentExecutionRegistry {
   async executeCommand(agentRunId: string, command: import("../../domain/team-member-execution-command.js").TeamMemberExecutionCommand): Promise<AgentOperationResult> {
     const handle = this.active.get(agentRunId);
     if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `Task AgentRun '${agentRunId}' is not active.` };
+    // AR-005: never let approve/interrupt re-activate a shut-down run through the handle.
+    if (command.kind !== "post_message" && !this.isLive(agentRunId)) {
+      return { accepted: false, code: "RUN_NOT_ACTIVE", message: `Task AgentRun '${agentRunId}' is shut down.` };
+    }
     switch (command.kind) {
       case "post_message": return handle.postMessage(command.message);
       case "approve_tool": return handle.approveToolInvocation(command.invocationId, command.approved, command.reason);
@@ -135,52 +196,31 @@ export class TaskAgentExecutionRegistry {
     }
   }
 
-  async prepareSettlement(taskId: string, agentRunId: string): Promise<PreparedTaskSettlement | null> {
+  /**
+   * Shuts the task Agent down only when it is quiet (no active turn, queued input or
+   * pending command). The handle stays registered; only its AgentRun is terminated.
+   */
+  async tryShutDownIfQuiet(agentRunId: string): Promise<boolean> {
     const handle = this.active.get(agentRunId);
-    if (!handle) return null;
-    if (this.settling.has(agentRunId)) throw new Error(`Task AgentRun '${agentRunId}' is already preparing settlement.`);
-    this.settling.add(agentRunId);
-    let local;
+    if (!handle || !this.isLive(agentRunId) || this.shuttingDown.has(agentRunId)) return false;
+    this.shuttingDown.add(agentRunId);
     try {
-      local = await handle.tryPrepareTerminationIfQuiescent();
-    } catch (error) {
-      this.settling.delete(agentRunId);
-      throw error;
-    }
-    if (!local) {
-      this.settling.delete(agentRunId);
-      return null;
-    }
-    if (this.active.get(agentRunId) !== handle) {
-      local.cancel();
-      this.settling.delete(agentRunId);
-      return null;
-    }
-
-    let state: "prepared" | "cancelled" | "committed" = "prepared";
-    let committed: ReturnType<PreparedTaskSettlement["commitAfterDurability"]> | null = null;
-    const prepared: PreparedTaskSettlement = Object.freeze({
-      taskId,
-      binding: Object.freeze({ kind: "agent", address: handle.context.address, agentRunId }),
-      cancelBeforeDurability: () => {
-        if (state !== "prepared") return;
-        state = "cancelled";
+      const local = await handle.tryPrepareTerminationIfQuiescent();
+      if (!local) return false;
+      if (this.active.get(agentRunId) !== handle) {
         local.cancel();
-        this.settling.delete(agentRunId);
-      },
-      commitAfterDurability: () => {
-        if (state === "cancelled") throw new Error(`Task AgentRun '${agentRunId}' settlement was cancelled.`);
-        if (committed) return committed;
-        if (this.active.get(agentRunId) !== handle) throw new Error(`Task AgentRun '${agentRunId}' changed before settlement commit.`);
-        state = "committed";
-        this.active.delete(agentRunId);
-        this.settling.delete(agentRunId);
-        const localCommit = local.commit();
-        committed = Object.freeze({ finishLocalTeardown: () => localCommit.finish() });
-        return committed;
-      },
-    });
-    return prepared;
+        return false;
+      }
+      const result = await local.commit().finish().catch((cause: unknown) => {
+        throw new TaskExecutionTeardownIndeterminateError(agentRunId, `Task AgentRun '${agentRunId}' shutdown did not finish.`, { cause });
+      });
+      if (!result.accepted) {
+        throw new TaskExecutionTeardownIndeterminateError(agentRunId, result.message ?? `Task AgentRun '${agentRunId}' shutdown was rejected.`);
+      }
+      return true;
+    } finally {
+      this.shuttingDown.delete(agentRunId);
+    }
   }
 
   dispose(): void {
@@ -191,6 +231,6 @@ export class TaskAgentExecutionRegistry {
     this.reserved.clear();
     this.preparedHandles.clear();
     this.eventGates.clear();
-    this.settling.clear();
+    this.shuttingDown.clear();
   }
 }

@@ -8,13 +8,10 @@ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
-import type { TaskDelegationRecordV1, TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-delegation-record-v1.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
-import { AgentOrgTaskDelegationRecordsV1Store } from "../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-store.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../../src/agent-org-execution/domain/agent-org-run-execution-tree.js";
 import type { TeamRunExecutionTreeSnapshot } from "../../../src/agent-team-execution/domain/team-run-execution-tree.js";
-import { TaskDelegationRecordsV1Store } from "../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import { resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { resetTeamRunHistoryCatalogState } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
@@ -41,26 +38,11 @@ const writeJsonl = (filePath: string, records: unknown[], mtimeIso: string) => {
 const semantic = (runDir: string, fact: string, mtimeIso: string) =>
   writeJsonl(path.join(runDir, "semantic.jsonl"), [{ id: fact, fact }], mtimeIso);
 
-const activeTask = (taskId: string, delegatorAgentRunId: string, recipientAddress: string, taskExecution: TaskExecutionReference, createdAt: string): TaskDelegationRecordV1 => ({
-  taskId,
-  delegatorAgentRunId,
-  recipientAddress: assertAgentTeamAddress(recipientAddress),
-  taskExecution,
-  description: `task ${taskId}`,
-  referenceFiles: [],
-  status: "active",
-  updates: [],
-  createdAt,
-});
-
 const writeTeamRoot = async (memoryRoot: string, tree: TeamRunExecutionTreeSnapshot, options: { sidecars?: boolean } = {}) => {
   const rootTeamRunId = tree.rootTeam.teamRunId;
   const packageDir = new AgentMemoryLayout(memoryRoot).getTeamDirPath({ rootTeamRunId, ancestorTeamRunIds: [] });
   await new TeamRunExecutionTreeStore().write(packageDir, tree);
   if (options.sidecars === false) return packageDir;
-  const records = tree.rootTeam.taskExecutions.map((execution, index) =>
-    activeTask(`${rootTeamRunId}-task-${index}`, `${rootTeamRunId}-writer`, execution.address, { agentRunId: (execution as { agentRunId: string }).agentRunId }, execution.startedAt));
-  await new TaskDelegationRecordsV1Store().write(packageDir, { schemaVersion: 1, rootTeamRunId, records });
   await new TeamCommunicationV1Store().write(packageDir, { schemaVersion: 1, rootTeamRunId, messages: [] });
   return packageDir;
 };
@@ -69,10 +51,6 @@ const writeOrgRoot = async (memoryRoot: string, tree: AgentOrgRunExecutionTreeSn
   const orgRunId = tree.rootOrg.orgRunId;
   const packageDir = new AgentMemoryLayout(memoryRoot).getOrgDirPath(orgRunId);
   await new AgentOrgRunExecutionTreeStore().write(packageDir, tree);
-  const records = tree.rootOrg.taskExecutions.map((execution, index) =>
-    activeTask(`${orgRunId}-task-${index}`, `${orgRunId}-ceo`, execution.address,
-      "teamRunId" in execution ? { teamRunId: execution.teamRunId } : { agentRunId: execution.agentRunId }, execution.startedAt));
-  await new AgentOrgTaskDelegationRecordsV1Store().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, records });
   await new AgentOrgCommunicationMessagesV1Store().write(packageDir, { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] });
   return packageDir;
 };
@@ -95,8 +73,8 @@ const writingTeamTree = (rootTeamRunId: string, createdAt: string): TeamRunExecu
         address: address("/writer"),
         agentRunId: `${rootTeamRunId}-task-writer`,
         platformAgentRunId: null,
+        delegatorAgentRunId: `${rootTeamRunId}-writer`,
         startedAt: createdAt,
-        settledAt: null,
       }],
     },
   };
@@ -122,14 +100,14 @@ const orgTree = (orgRunId: string, orgDefinitionId: string): AgentOrgRunExecutio
     rootOrg: {
       ...base.rootOrg,
       taskExecutions: [
-        { address: assertAgentTeamAddress("/ceo"), agentRunId: `${orgRunId}-task-ceo`, platformAgentRunId: null, startedAt: "2026-09-01T00:01:00.000Z", settledAt: null },
+        { address: assertAgentTeamAddress("/ceo"), agentRunId: `${orgRunId}-task-ceo`, platformAgentRunId: null, delegatorAgentRunId: `${orgRunId}-ceo`, startedAt: "2026-09-01T00:01:00.000Z" },
         {
           address: assertAgentTeamAddress("/engineering"),
           teamRunId: `${orgRunId}-engineering-task`,
           members: [{ address: assertAgentTeamAddress("/engineering/solution_designer"), agentRunId: `${orgRunId}-task-team-designer`, platformAgentRunId: null }],
           taskExecutions: [],
+          delegatorAgentRunId: `${orgRunId}-ceo`,
           startedAt: "2026-09-01T00:02:00.000Z",
-          settledAt: null,
         },
       ],
     },

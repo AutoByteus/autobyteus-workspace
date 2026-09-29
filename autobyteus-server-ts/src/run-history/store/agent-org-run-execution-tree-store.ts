@@ -1,5 +1,5 @@
 import fs from "node:fs/promises";
-import type { AgentOrgRunExecutionTreeFileV1 } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
+import type { AgentOrgRunExecutionTreeFile } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
 import {
   getAgentOrgRunFileCommitWriter,
   type AgentOrgRunFileCommitWriter,
@@ -16,7 +16,7 @@ export class AgentOrgRunExecutionTreeStore {
     private readonly writer: AgentOrgRunFileCommitWriter = getAgentOrgRunFileCommitWriter(),
   ) {}
 
-  async read(orgMemoryDir: string, orgRunId: string): Promise<AgentOrgRunExecutionTreeFileV1 | null> {
+  async read(orgMemoryDir: string, orgRunId: string): Promise<AgentOrgRunExecutionTreeFile | null> {
     try {
       const value = JSON.parse(
         await fs.readFile(getAgentOrgRunExecutionTreePath(orgMemoryDir), "utf8"),
@@ -30,7 +30,7 @@ export class AgentOrgRunExecutionTreeStore {
 
   async write(
     orgMemoryDir: string,
-    tree: AgentOrgRunExecutionTreeFileV1,
+    tree: AgentOrgRunExecutionTreeFile,
   ): Promise<RunPackageFileWriteResult> {
     const normalized = validateAgentOrgRunExecutionTreePayload(tree, tree.rootOrg.orgRunId);
     return this.writer.write(getAgentOrgRunExecutionTreePath(orgMemoryDir), normalized);

@@ -1,46 +1,19 @@
 import type { TeamAgentExecutionBinding } from "./team-agent-execution-binding.js";
 import type { TeamAgentEvent } from "./team-agent-event.js";
-import type { TaskExecutionReference } from "../task-delegation/task-delegation-record-v1.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { TeamCommunicationMessageV1 } from "../../services/team-communication/team-communication-v1-types.js";
 
 export enum TeamRunEventSourceType {
   AGENT = "AGENT",
-  TASK_DELEGATION = "TASK_DELEGATION",
+  TASK_EXECUTION = "TASK_EXECUTION",
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
 }
 
-export type TeamRunTaskDelegationEvent =
-  | Readonly<{
-      eventType: "TASK_DELEGATION_ACTIVATED";
-      details: Readonly<{
-        taskId: string;
-        delegatorAgentRunId: string;
-        recipientAddress: string;
-        taskExecution: TaskExecutionReference;
-        description: string;
-        referenceFiles: readonly string[];
-        createdAt: string;
-      }>;
-    }>
-  | Readonly<{
-      eventType: "TASK_DELEGATION_RESULT_SUBMITTED";
-      details: Readonly<{ taskId: string; submissionId: string; submittedAt: string }>;
-    }>
-  | Readonly<{
-      eventType: "TASK_DELEGATION_RESULT_REVIEWED";
-      details: Readonly<{
-        taskId: string;
-        reviewId: string;
-        reviewedSubmissionId: string;
-        decision: "accept" | "request_revision";
-        reviewedAt: string;
-      }>;
-    }>
-  | Readonly<{
-      eventType: "TASK_DELEGATION_SETTLED";
-      details: Readonly<{ taskId: string; settledAt: string }>;
-    }>;
+export type TeamRunTaskExecutionEvent = Readonly<{
+  eventType: "TASK_EXECUTION_STARTED";
+  details: Readonly<{ parentTeamRunId: string }>;
+}>;
 
 export type TeamRunMemberInputOrigin = "user_message" | "inter_agent_delivery";
 export type TeamRunMemberInputContextFile = Readonly<{ path: string; type: string | null }>;
@@ -63,9 +36,9 @@ export type TeamRunEvent =
       payload: TeamAgentEvent;
     }>
   | Readonly<{
-      eventSourceType: TeamRunEventSourceType.TASK_DELEGATION;
+      eventSourceType: TeamRunEventSourceType.TASK_EXECUTION;
       taskExecution: TaskExecutionReference;
-      payload: TeamRunTaskDelegationEvent;
+      payload: TeamRunTaskExecutionEvent;
     }>
   | Readonly<{
       eventSourceType: TeamRunEventSourceType.COMMUNICATION;

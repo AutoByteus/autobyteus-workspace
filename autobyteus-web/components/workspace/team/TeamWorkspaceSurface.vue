@@ -12,11 +12,8 @@
           />
           <span v-else>{{ initials }}</span>
         </div>
-        <CollaborationTaskHeading v-if="focusedTask" :name="memberName" :agent-run-id="target.context.state.runId" :task="focusedTask" :status="target.context.state.currentStatus" />
-        <template v-else>
-          <h4 class="truncate text-base font-medium text-gray-800" :title="memberName">{{ memberName }}</h4>
-          <AgentStatusDisplay :status="target.context.state.currentStatus" />
-        </template>
+        <h4 class="truncate text-base font-medium text-gray-800" :title="memberName">{{ memberName }}</h4>
+        <AgentStatusDisplay :status="target.context.state.currentStatus" />
       </div>
       <WorkspaceHeaderActions
         v-if="showHeaderActions"
@@ -44,19 +41,12 @@
           <SkillImprovementComposerCta :target="skillTarget" />
         </template>
       </AgentEventMonitor>
-      <div
-        v-if="showAuthoritativeTaskEmpty"
-        class="pointer-events-none absolute inset-x-4 top-1/2 z-10 -translate-y-1/2 rounded-lg border border-dashed border-slate-300 bg-white/95 px-4 py-5 text-center text-sm text-slate-600 shadow-sm"
-        role="status"
-        data-test="team-task-authoritative-empty"
-      >{{ t('workspace.task_monitor.empty') }}</div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import CollaborationTaskHeading from '~/components/workspace/collaboration/CollaborationTaskHeading.vue'
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
 import AgentEventMonitor from '~/components/workspace/agent/AgentEventMonitor.vue'
 import AgentStatusDisplay from '~/components/workspace/agent/AgentStatusDisplay.vue'
@@ -65,8 +55,6 @@ import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceReco
 import SkillImprovementComposerCta from '~/components/workspace/skill-improvement/SkillImprovementComposerCta.vue'
 import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
-import { useAgentActivityStore } from '~/stores/agentActivityStore'
-import { useLocalization } from '~/composables/useLocalization'
 
 type TeamTarget = Extract<ActiveAgentWorkspaceTarget,
   { kind: 'standalone_team_member' | 'agent_org_team_member' | 'agent_org_task_team_member' }>
@@ -78,8 +66,6 @@ const props = withDefaults(defineProps<{
 defineEmits<{ (event: 'new-team'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()
-const activityStore = useAgentActivityStore()
-const { t } = useLocalization()
 const avatarFailed = ref(false)
 const memberName = computed(() => props.target.context.config.agentDefinitionName
   || props.target.team.focusedMemberAddress.split('/').at(-1)?.replace(/[_-]+/g, ' ')
@@ -90,14 +76,6 @@ const avatarUrl = computed(() => props.target.context.config.agentAvatarUrl?.tri
   || definitions.getAgentDefinitionById(props.target.context.config.agentDefinitionId)?.avatarUrl?.trim()
   || '')
 const showAvatar = computed(() => Boolean(avatarUrl.value) && !avatarFailed.value)
-const focusedTask = computed(() => props.target.team.focusedTaskPresentation())
-const showAuthoritativeTaskEmpty = computed(() => Boolean(
-  focusedTask.value
-  && props.target.team.isFocusedProjectionAuthoritative()
-  && props.target.context.state.conversation.messages.length === 0
-  && props.target.context.state.hasEarlierActiveTraceEvents !== true
-  && activityStore.getActivities(props.target.context.state.runId).length === 0,
-))
 const senderNameByAgentRunId = computed(() => Object.freeze(Object.fromEntries(Object.entries(
   props.target.collaborationMessages.memberIdentityByAgentRunId(),
 ).map(([agentRunId, identity]) => [agentRunId, identity.label]))))

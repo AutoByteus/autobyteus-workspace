@@ -1,4 +1,4 @@
-import { agentIdsInTaskTeam } from '~/utils/teamDelegatedTaskEntries';
+import { findContainingTaskExecutionRunId } from '~/services/teamExecution/teamExecutionTreeSelectors';
 import type { TeamCommunicationMessageDto } from '@autobyteus/team-stream-contracts';
 import type { TeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
 import type {
@@ -52,11 +52,10 @@ export const projectTeamCommunicationMemberIdentity = (
 ): CollaborationMessageMemberIdentity => {
   const address = view.getMemberAddress(agentRunId);
   if (!address) throw new Error(`Team communication participant '${agentRunId}' is unavailable.`);
-  const assigned = view.listTaskHistoryRows().find((task) => task.targetAgentRunId === agentRunId
-    || (task.targetTeamRunId && agentIdsInTaskTeam(view.getExecutionTree(), task.targetTeamRunId).has(agentRunId)));
+  const executionRunId = findContainingTaskExecutionRunId(view.getExecutionTree(), agentRunId);
   const common = { address, label: memberAddressBasename(address) };
-  return assigned ? { ...common, kind: 'task', taskId: assigned.task.task_id,
+  return executionRunId ? { ...common, kind: 'delegated',
     hostRunId: view.getAgentExecutionLocation(agentRunId)!.containingTeamRunId,
-    executionRunId: (assigned.targetAgentRunId ?? assigned.targetTeamRunId)! }
+    executionRunId }
     : { ...common, kind: 'configured' };
 };

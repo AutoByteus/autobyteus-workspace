@@ -7,7 +7,7 @@ import { AgentMemoryLocationService } from "../../../src/agent-memory/services/a
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
-import { projectTaskTeamExecution } from "../../../src/agent-team-execution/task-delegation/task-execution-tree-projection.js";
+import { projectTaskTeamExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { TeamRunExecutionTreeLocationService } from "../../../src/run-history/services/team-run-execution-tree-location-service.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
@@ -24,8 +24,8 @@ const withTaskAgent = (tree: TeamRunExecutionTreeSnapshot): TeamRunExecutionTree
       address: address("/writer"),
       agentRunId: "task-writer-run",
       platformAgentRunId: null,
+      delegatorAgentRunId: "writer-run",
       startedAt: "2026-08-15T00:01:00.000Z",
-      settledAt: null,
     }],
   },
 });
@@ -53,7 +53,7 @@ describe("AgentMemoryLocationService current V1 tree", () => {
           teamRunId: "review-team-run",
           children: [testAgentNode("/ReviewSquad/reviewer", { agentRunId: "reviewer-run" })],
         }),
-        startedAt: "2026-08-15T00:02:00.000Z",
+        delegatorAgentRunId: "writer-run", startedAt: "2026-08-15T00:02:00.000Z",
       }),
     });
     await new TeamRunExecutionTreeStore().write(

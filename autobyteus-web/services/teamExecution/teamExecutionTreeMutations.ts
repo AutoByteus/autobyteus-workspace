@@ -82,31 +82,3 @@ export const insertTaskExecution = (input: {
   if (!inserted) throw new Error(`Task execution parent TeamRun '${input.parentTeamRunId}' is missing.`);
   return teamRunExecutionTreeDtoSchema.parse(candidate);
 };
-
-export const settleTaskExecution = (input: {
-  tree: TeamRunExecutionTreeDto;
-  execution: Readonly<{ agent_run_id: string } | { team_run_id: string }>;
-  settledAt: string;
-}): TeamRunExecutionTreeDto => {
-  const candidate = structuredClone(input.tree) as TeamRunExecutionTreeDto;
-  const expectedId = 'agent_run_id' in input.execution
-    ? input.execution.agent_run_id
-    : input.execution.team_run_id;
-  let matches = 0;
-  visitTeams(candidate.root_team as unknown as MutableTeam, (team) => {
-    team.task_executions.forEach((execution, index) => {
-      const runId = execution.kind === 'task_agent' ? execution.agent_run_id : execution.team_run_id;
-      if (runId !== expectedId) return;
-      team.task_executions.splice(index, 1, {
-        ...execution,
-        settled_at: input.settledAt,
-      });
-      matches += 1;
-    });
-    return false;
-  });
-  if (matches !== 1) {
-    throw new Error(`Task execution '${expectedId}' resolved ${matches} times in the Team execution tree.`);
-  }
-  return teamRunExecutionTreeDtoSchema.parse(candidate);
-};

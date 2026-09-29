@@ -34,7 +34,7 @@ vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStor
 const wrappers: ReturnType<typeof mount>[] = []
 let fixture: ReturnType<typeof seedFixture>
 const deferred = () => { let resolve!: (v: any) => void; const promise = new Promise<any>(r => resolve = r); return { promise, resolve } }
-const envelope = (view: typeof fixture.view) => ({ data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: view.execution_tree.rootOrg.orgRunId, root_org: view } } })
+const envelope = (view: typeof fixture.view) => ({ data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: view.execution_tree.rootOrg.orgRunId, root_org: view } } })
 const panel = () => { const w = mount(Panel); wrappers.push(w); return w }
 const disabled = (w: ReturnType<typeof mount>) => w.get('[data-test="run-agent-org"]').attributes('disabled') !== undefined
 beforeEach(() => {

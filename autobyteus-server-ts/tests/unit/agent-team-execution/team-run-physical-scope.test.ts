@@ -8,7 +8,7 @@ import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-b
 import { TeamExecutionIndex } from "../../../src/agent-team-execution/services/team-execution-index.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
-import { projectTaskTeamExecution } from "../../../src/agent-team-execution/task-delegation/task-execution-tree-projection.js";
+import { projectTaskTeamExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree, testTeamRunConfig } from "../../fixtures/current-team-run-fixtures.js";
 
 describe("TeamRunPhysicalScope", () => {
@@ -88,7 +88,7 @@ describe("TeamExecutionIndex physical scope", () => {
       ownerTeamRunId: "root-run",
       execution: {
         address: address("/lead"), agentRunId: "task-agent", platformAgentRunId: null,
-        startedAt: "2026-08-23T00:00:00.000Z", settledAt: null,
+        delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:00:00.000Z",
       },
     });
     withTasks = addTaskExecutionToTree({
@@ -99,7 +99,7 @@ describe("TeamExecutionIndex physical scope", () => {
           address: "/task-team", coordinatorAddress: "/task-team/worker", teamRunId: "task-team-run",
           children: [testAgentNode("/task-team/worker", { agentRunId: "task-team-agent" })],
         }),
-        startedAt: "2026-08-23T00:01:00.000Z",
+        delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:01:00.000Z",
       }),
     });
     withTasks = addTaskExecutionToTree({
@@ -110,7 +110,7 @@ describe("TeamExecutionIndex physical scope", () => {
           address: "/task-team/deep", coordinatorAddress: "/task-team/deep/worker", teamRunId: "deep-run",
           children: [testAgentNode("/task-team/deep/worker", { agentRunId: "deep-agent" })],
         }),
-        startedAt: "2026-08-23T00:02:00.000Z",
+        delegatorAgentRunId: "root-agent", startedAt: "2026-08-23T00:02:00.000Z",
       }),
     });
     const index = new TeamExecutionIndex(withTasks);

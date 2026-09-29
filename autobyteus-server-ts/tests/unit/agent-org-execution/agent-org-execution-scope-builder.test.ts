@@ -8,7 +8,6 @@ import { AgentRunActivationCandidate } from "../../../src/agent-execution/servic
 import { AgentOrgExecutionScopeBuilder } from "../../../src/agent-org-execution/services/agent-org-execution-scope-builder.js";
 import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import { validateAgentOrgStatePackage } from "../../../src/agent-org-execution/services/agent-org-state-package-validator.js";
-import { validateAgentOrgTaskDelegationRecordsV1 } from "../../../src/agent-org-execution/persistence/agent-org-task-delegation-records-v1-schema.js";
 import { validateAgentOrgCommunicationMessagesV1 } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-schema.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
@@ -37,12 +36,6 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
     });
     const state = validateAgentOrgStatePackage({
       executionTree,
-      taskRecords: validateAgentOrgTaskDelegationRecordsV1({
-        schemaVersion: 1,
-        subjectKind: "agent_org",
-        orgRunId,
-        records: [],
-      }, orgRunId),
       communicationMessages: validateAgentOrgCommunicationMessagesV1({
         schemaVersion: 1,
         subjectKind: "agent_org",
@@ -86,7 +79,6 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
       orgRunId,
       orgMemoryDir,
       executionTreeStore: { write } as never,
-      taskRecordsStore: {} as never,
       communicationStore: {} as never,
       enterPersistenceFailStop: vi.fn(),
     });

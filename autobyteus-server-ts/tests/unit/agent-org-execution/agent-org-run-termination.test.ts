@@ -53,12 +53,6 @@ describe("AgentOrgRun termination stabilization", () => {
         orgRunId,
         members: [testOrgAgentNode("/lead", "lead-run")],
       }),
-      tasks: Object.freeze({
-        schemaVersion: 1,
-        subjectKind: "agent_org",
-        orgRunId,
-        records: Object.freeze([]),
-      }),
       messages: Object.freeze({
         schemaVersion: 1,
         subjectKind: "agent_org",
@@ -73,10 +67,10 @@ describe("AgentOrgRun termination stabilization", () => {
       taskExecutionIdentity: {} as never,
     });
     run.activate();
-    const taskEngine = (run as never as {
-      taskEngine: { shutdownAndSettle(reason: string): Promise<void> };
-    }).taskEngine;
-    vi.spyOn(taskEngine, "shutdownAndSettle").mockImplementation(async () => {
+    const taskExecutions = (run as never as {
+      taskExecutions: { drain(): Promise<void> };
+    }).taskExecutions;
+    vi.spyOn(taskExecutions, "drain").mockImplementation(async () => {
       order.push("task-drain");
     });
 
@@ -111,7 +105,6 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
     const run = new AgentOrgRun({
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree: testAgentOrgExecutionTree({ orgRunId, members: [testOrgAgentNode("/lead", "lead-run")] }),
-      tasks: Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId, records: Object.freeze([]) }),
       messages: Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: Object.freeze([]) }),
       rootAgents: { listHandles: vi.fn(() => []), freezeForRootTermination: vi.fn(() => [handle]) } as never,
       teams: { list: vi.fn(() => []), freezeForRootTermination: vi.fn(() => []) } as never,
@@ -122,13 +115,12 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
       onTerminated,
     });
     run.activate();
-    const taskEngine = (run as never as {
-      taskEngine: { shutdownAndSettle(reason: string): Promise<void>; drain(): Promise<void>; enterRootFailStop(): void };
-    }).taskEngine;
-    const shutdownAndSettle = vi.spyOn(taskEngine, "shutdownAndSettle").mockResolvedValue(undefined);
-    const drain = vi.spyOn(taskEngine, "drain").mockResolvedValue(undefined);
-    vi.spyOn(taskEngine, "enterRootFailStop").mockImplementation(() => undefined);
-    return { run, handle, onTerminated, shutdownAndSettle, drain };
+    const taskExecutions = (run as never as {
+      taskExecutions: { drain(): Promise<void>; enterRootFailStop(): void };
+    }).taskExecutions;
+    const drain = vi.spyOn(taskExecutions, "drain").mockResolvedValue(undefined);
+    vi.spyOn(taskExecutions, "enterRootFailStop").mockImplementation(() => undefined);
+    return { run, handle, onTerminated, drain };
   };
 
   it("retries a termination whose local finish rejected (dead member) instead of replaying the failure", async () => {
@@ -171,8 +163,8 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
     await vi.waitFor(() => expect((f.run as never as { termination: unknown }).termination).toBeNull());
 
     await expect(f.run.terminate()).resolves.toEqual({ accepted: true });
+    // Delegated-child shutdown is runtime-only: both attempts drain the lifecycle queue; nothing settles.
     expect(f.drain).toHaveBeenCalledTimes(2);
-    expect(f.shutdownAndSettle).not.toHaveBeenCalled();
     expect(f.onTerminated).toHaveBeenCalledOnce();
   });
 });

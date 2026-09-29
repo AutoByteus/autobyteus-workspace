@@ -51,7 +51,8 @@ for (const placement of placements) describe(`${placement} configured first work
     expect(f.root.getCommunicationSnapshot().messages[0]).toMatchObject({
       senderAgentRunId: f.ids[1], receiverAgentRunId: f.ids[0], referenceFiles, content: "Review this note",
     });
-    expect(f.root.getTaskRecordsSnapshot().records).toEqual([]);
+    const tree = f.root.getExecutionTreeSnapshot() as { rootTeam?: { taskExecutions: unknown[] }; rootOrg?: { taskExecutions: unknown[] } };
+    expect((tree.rootTeam ?? tree.rootOrg)!.taskExecutions).toEqual([]);
   });
 
   it("preserves fresh zero-work laziness and targeted first input", async () => {

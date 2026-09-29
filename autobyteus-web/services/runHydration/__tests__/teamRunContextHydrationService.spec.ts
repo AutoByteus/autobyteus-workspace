@@ -4,24 +4,19 @@ import {
   hydrateLiveTeamRunContext,
   hydrateTeamRunContextForStreamRecovery,
 } from '../teamRunContextHydrationService';
-import { buildTestTeamContext, testAgentNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
 
 const {
   queryMock,
   fetchTeamCommunicationMock,
-  fetchTaskDelegationsMock,
 } = vi.hoisted(() => ({
   queryMock: vi.fn(),
   fetchTeamCommunicationMock: vi.fn(),
-  fetchTaskDelegationsMock: vi.fn(),
 }));
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: queryMock }) }));
 vi.mock('../teamCommunicationHydrationService', () => ({
   fetchTeamCommunicationForTeam: fetchTeamCommunicationMock,
-}));
-vi.mock('../taskDelegationHydrationService', () => ({
-  fetchTaskDelegationRecordsForTeam: fetchTaskDelegationsMock,
 }));
 const tree = buildTestTeamContext({
   teamRunId: 'team-live-recovery',
@@ -43,7 +38,6 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    fetchTaskDelegationsMock.mockResolvedValue([]);
     fetchTeamCommunicationMock.mockResolvedValue([]);
   });
 
@@ -78,14 +72,11 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     ]);
   });
 
-  it.each([true, false])('hydrates exact retained inspection under active=%s without using the live row list', async isActive => {
+  it.each([true, false])('hydrates a delegated execution as a standard navigable row under active=%s', async isActive => {
     const retainedTree = structuredClone(tree);
     retainedTree.root_team.task_executions.push({ kind: 'task_agent', address: '/member-a',
-      agent_run_id: 'retained-task', platform_agent_run_id: null, started_at: retainedTree.created_at,
-      settled_at: '2026-09-01T00:05:00.000Z' });
-    const record = testTaskRecord({ taskId: 'retained', delegatorAgentRunId: 'run-a', recipientAddress: '/member-a',
-      target: { agentRunId: 'retained-task' }, status: 'accepted' });
-    fetchTaskDelegationsMock.mockResolvedValue([record]);
+      agent_run_id: 'retained-task', platform_agent_run_id: null, delegator_agent_run_id: 'run-a',
+      started_at: retainedTree.created_at });
     queryMock.mockImplementation(async ({ variables }) => variables.agentRunId
       ? { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
       : { data: { getTeamRunResumeConfig: { teamRunId: 'team-live-recovery', isActive, executionTree: retainedTree } } });
@@ -93,10 +84,10 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
       resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null), ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null) });
     const view = result.hydratedContext.view;
     expect(result.focusedAgentRunId).toBe('retained-task');
-    expect(view.getFocusedAgentAccess()).toBe('read_only');
     expect(view.isRootTeamActive()).toBe(isActive);
-    expect(view.getFocusedNavigationRow()?.task?.taskId).toBe('retained');
-    if (isActive) expect(view.listNavigationRows().some(row => row.agentRunId === 'retained-task')).toBe(false);
+    expect(view.getFocusedNavigationRow()).toMatchObject({ kind: 'task_agent', agentRunId: 'retained-task', focusable: true });
+    expect(view.getFocusedNavigationRow()?.delegatedBy).toBeTruthy();
+    expect(view.listNavigationRows().some(row => row.agentRunId === 'retained-task')).toBe(true);
   });
 
   it('fails fast when the exact requested AgentRun projection is missing', async () => {

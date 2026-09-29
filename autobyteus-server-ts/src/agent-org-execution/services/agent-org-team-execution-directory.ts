@@ -6,7 +6,8 @@ import type { TeamRun } from "../../agent-team-execution/domain/team-run.js";
 import type { TeamRunAgentTeamNode } from "../../agent-team-execution/domain/team-run-config.js";
 import type { PrepareTaskTeamInput } from "../../agent-team-execution/domain/task-team-execution.js";
 import type { PreparedTaskExecution } from "../../agent-team-execution/domain/prepared-task-execution.js";
-import type { PreparedTaskSettlement } from "../../agent-team-execution/domain/prepared-task-settlement.js";
+import { TaskExecutionTeardownIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
+import { isRunningTaskExecutionStatus } from "../../agent-collaboration/execution/task/task-execution-running-work.js";
 import type { ConfiguredMemberActivationMode } from "../../agent-team-execution/local/flat-team-execution-context.js";
 import type { FrozenTeamRunTerminationScope } from "../../agent-team-execution/domain/frozen-team-run-termination-scope.js";
 
@@ -19,6 +20,8 @@ export type AgentOrgTeamRegistrationReservation = Readonly<{
 export class AgentOrgTeamExecutionDirectory {
   private readonly active = new Map<string, TeamRun>();
   private readonly reserved = new Set<string>();
+  private readonly taskTeamRunIds = new Set<string>();
+  private readonly shuttingDown = new Set<string>();
   private materializationOpen = true;
 
   constructor(private readonly factory: FlatTeamExecutionFactory) {}
@@ -31,7 +34,33 @@ export class AgentOrgTeamExecutionDirectory {
     }
     return Object.freeze([...this.active.values()].map((run) => run.freezeForRootTermination()));
   }
-  get(teamRunId: string): TeamRun | null { return this.active.get(teamRunId) ?? null; }
+  get(teamRunId: string): TeamRun | null {
+    const run = this.active.get(teamRunId);
+    return run?.isActive() ? run : null;
+  }
+  /**
+   * Configured Teams keep their predicate (their task children already apply the
+   * running-work predicate); a task Team holds open work only while one of its
+   * agents is initializing or running.
+   */
+  hasOpenExecutionWork(): boolean {
+    return [...this.active].some(([teamRunId, run]) => this.taskTeamRunIds.has(teamRunId)
+      ? run.getLeafAgentStatusSnapshots().some((snapshot) => isRunningTaskExecutionStatus(snapshot.details.status))
+      : run.hasOpenExecutionWork());
+  }
+  /** Removes TeamRuns terminated by a quiet shutdown of their task execution. */
+  unregisterTerminated(): void {
+    for (const [teamRunId, run] of this.active) {
+      if (!run.isTerminated()) continue;
+      this.active.delete(teamRunId);
+      this.taskTeamRunIds.delete(teamRunId);
+    }
+  }
+  /** Registers a task TeamRun restored inside a hosting TeamRun (flat identity lookup only). */
+  registerRestoredTaskTeam(run: TeamRun): void {
+    this.reserveIds([run.teamRunId]);
+    this.commitRuns([run], true);
+  }
   require(teamRunId: string): TeamRun {
     const run = this.get(teamRunId);
     if (!run) throw new Error(`AgentOrg TeamRun '${teamRunId}' is not active.`);
@@ -82,7 +111,7 @@ export class AgentOrgTeamExecutionDirectory {
     return Object.freeze({
       commit: () => {
         if (state !== "reserved") throw new Error("AgentOrg task TeamRun reservation is not committable.");
-        this.commitRuns(runs);
+        this.commitRuns(runs, true);
         state = "committed";
       },
       cancel: () => {
@@ -153,38 +182,58 @@ export class AgentOrgTeamExecutionDirectory {
     });
   }
 
-  async prepareSettlement(taskId: string, teamRunId: string): Promise<PreparedTaskSettlement | null> {
+  /** Re-creates one shut-down Org-root task Team in `restore` mode; members activate lazily on input. */
+  async restoreRootTaskTeam(input: Readonly<{
+    teamNode: TeamRunAgentTeamNode;
+    handoffs: PrepareTaskTeamInput["handoffs"];
+    physicalScope: RootExecutionPhysicalScope;
+    callbacks: FlatTeamExecutionCallbacks;
+  }>): Promise<TeamRun> {
+    this.reserveIds([input.teamNode.teamRunId]);
+    let prepared: PreparedFlatTeamExecution;
+    try {
+      prepared = await this.factory.materialize({
+        physicalScope: input.physicalScope,
+        teamNode: input.teamNode,
+        handoffs: input.handoffs,
+        applicationBinding: null,
+        activationMode: "restore",
+        callbacks: input.callbacks,
+        prepareConfiguredAgents: false,
+      });
+    } catch (error) {
+      this.releaseIds([input.teamNode.teamRunId]);
+      throw error;
+    }
+    prepared.commitAfterDurability();
+    this.commitRuns([prepared.teamRun], true);
+    return prepared.teamRun;
+  }
+
+  /** Shuts one Org-root task Team down as a whole only when it is quiet. */
+  async tryShutDownRootTaskTeamIfQuiet(teamRunId: string): Promise<boolean> {
     const run = this.active.get(teamRunId);
-    if (!run) return null;
-    const local = await run.tryPrepareTerminationIfQuiescent();
-    if (!local) return null;
-    if (this.active.get(teamRunId) !== run) {
-      local.cancel();
-      return null;
-    }
-    const node = run.context.teamNode;
-    const coordinator = node.children.find((child) => child.kind === "agent" && child.address === node.coordinatorAddress);
-    if (!coordinator || coordinator.kind !== "agent") {
-      local.cancel();
-      throw new Error(`Task TeamRun '${teamRunId}' has no exact coordinator.`);
-    }
-    let state: "prepared" | "cancelled" | "committed" = "prepared";
-    return Object.freeze({
-      taskId,
-      binding: Object.freeze({ kind: "team", address: node.address, teamRunId, coordinatorAgentRunId: coordinator.agentRunId }),
-      cancelBeforeDurability: () => {
-        if (state !== "prepared") return;
-        state = "cancelled";
+    if (!run || !this.taskTeamRunIds.has(teamRunId) || this.shuttingDown.has(teamRunId)) return false;
+    this.shuttingDown.add(teamRunId);
+    try {
+      const local = await run.tryPrepareTerminationIfQuiescent();
+      if (!local) return false;
+      if (this.active.get(teamRunId) !== run) {
         local.cancel();
-      },
-      commitAfterDurability: () => {
-        if (state !== "prepared" || this.active.get(teamRunId) !== run) throw new Error(`Task TeamRun '${teamRunId}' changed before settlement.`);
-        state = "committed";
-        this.active.delete(teamRunId);
-        const commit = local.commit();
-        return Object.freeze({ finishLocalTeardown: () => commit.finish() });
-      },
-    });
+        return false;
+      }
+      this.active.delete(teamRunId);
+      this.taskTeamRunIds.delete(teamRunId);
+      const result = await local.commit().finish().catch((cause: unknown) => {
+        throw new TaskExecutionTeardownIndeterminateError(teamRunId, `Task TeamRun '${teamRunId}' shutdown did not finish.`, { cause });
+      });
+      if (!result.accepted) {
+        throw new TaskExecutionTeardownIndeterminateError(teamRunId, result.message ?? `Task TeamRun '${teamRunId}' shutdown was rejected.`);
+      }
+      return true;
+    } finally {
+      this.shuttingDown.delete(teamRunId);
+    }
   }
 
   private reserveIds(ids: readonly string[]): void {
@@ -194,10 +243,11 @@ export class AgentOrgTeamExecutionDirectory {
     ids.forEach((id) => this.reserved.add(id));
   }
   private releaseIds(ids: readonly string[]): void { ids.forEach((id) => this.reserved.delete(id)); }
-  private commitRuns(runs: readonly TeamRun[]): void {
+  private commitRuns(runs: readonly TeamRun[], taskTeams = false): void {
     for (const run of runs) {
       if (!this.reserved.delete(run.teamRunId)) throw new Error(`AgentOrg TeamRun '${run.teamRunId}' is not reserved.`);
       this.active.set(run.teamRunId, run);
+      if (taskTeams) this.taskTeamRunIds.add(run.teamRunId);
     }
   }
 }

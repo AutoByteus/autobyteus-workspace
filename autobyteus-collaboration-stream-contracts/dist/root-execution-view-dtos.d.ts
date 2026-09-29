@@ -2,18 +2,15 @@ import { z } from "zod";
 export declare const AgentTeamRootExecutionViewDtoSchema: z.ZodObject<{
     root_subject_kind: z.ZodLiteral<"agent_team">;
     root_run_id: z.ZodString;
-    schema_version: z.ZodLiteral<2>;
     root_team: z.ZodRecord<z.ZodString, z.ZodUnknown>;
 }, z.core.$strict>;
 export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
     root_subject_kind: z.ZodLiteral<"agent_org">;
     root_run_id: z.ZodString;
-    schema_version: z.ZodLiteral<1>;
     root_org: z.ZodObject<{
         base_change_sequence: z.ZodNumber;
         is_active: z.ZodBoolean;
         execution_tree: z.ZodObject<{
-            schemaVersion: z.ZodLiteral<1>;
             subjectKind: z.ZodLiteral<"agent_org">;
             createdAt: z.ZodString;
             archivedAt: z.ZodNullable<z.ZodString>;
@@ -113,8 +110,8 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -134,25 +131,25 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                                 address: string;
                                 agentRunId: string;
                                 platformAgentRunId: string | null;
+                                delegatorAgentRunId?: string;
                                 startedAt: string;
-                                settledAt: string | null;
                             }> | Readonly</*elided*/ any>)[];
                         }>)[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly</*elided*/ any>)[];
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -172,27 +169,27 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                                 address: string;
                                 agentRunId: string;
                                 platformAgentRunId: string | null;
+                                delegatorAgentRunId?: string;
                                 startedAt: string;
-                                settledAt: string | null;
                             }> | Readonly</*elided*/ any>)[];
                         }>)[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly</*elided*/ any>)[];
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }>, unknown>>>;
                 }, z.core.$strict>]>>;
                 taskExecutions: z.ZodArray<z.ZodType<Readonly<{
                     address: string;
                     agentRunId: string;
                     platformAgentRunId: string | null;
+                    delegatorAgentRunId?: string;
                     startedAt: string;
-                    settledAt: string | null;
                 }> | Readonly<{
                     address: string;
                     teamRunId: string;
@@ -212,25 +209,25 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly</*elided*/ any>)[];
                     }>)[];
                     taskExecutions: readonly (Readonly<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }> | Readonly</*elided*/ any>)[];
+                    delegatorAgentRunId?: string;
                     startedAt: string;
-                    settledAt: string | null;
                 }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                     address: string;
                     agentRunId: string;
                     platformAgentRunId: string | null;
+                    delegatorAgentRunId?: string;
                     startedAt: string;
-                    settledAt: string | null;
                 }> | Readonly<{
                     address: string;
                     teamRunId: string;
@@ -250,65 +247,21 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly</*elided*/ any>)[];
                     }>)[];
                     taskExecutions: readonly (Readonly<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }> | Readonly</*elided*/ any>)[];
+                    delegatorAgentRunId?: string;
                     startedAt: string;
-                    settledAt: string | null;
                 }>, unknown>>>;
             }, z.core.$strict>;
-        }, z.core.$strict>;
-        task_records: z.ZodObject<{
-            schemaVersion: z.ZodLiteral<1>;
-            subjectKind: z.ZodLiteral<"agent_org">;
-            orgRunId: z.ZodString;
-            records: z.ZodArray<z.ZodObject<{
-                taskId: z.ZodString;
-                delegatorAgentRunId: z.ZodString;
-                recipientAddress: z.ZodString;
-                taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                    agentRunId: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    teamRunId: z.ZodString;
-                }, z.core.$strict>]>;
-                description: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                status: z.ZodEnum<{
-                    active: "active";
-                    awaiting_review: "awaiting_review";
-                    accepted: "accepted";
-                    interrupted: "interrupted";
-                }>;
-                updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                    submissionId: z.ZodString;
-                    message: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    reviewId: z.ZodString;
-                    reviewedSubmissionId: z.ZodString;
-                    decision: z.ZodEnum<{
-                        accept: "accept";
-                        request_revision: "request_revision";
-                    }>;
-                    comment: z.ZodNullable<z.ZodString>;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    interruptionId: z.ZodString;
-                    reason: z.ZodString;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>]>>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>>;
         }, z.core.$strict>;
         communication_messages: z.ZodObject<{
             schemaVersion: z.ZodLiteral<1>;
@@ -344,17 +297,14 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
 export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
     root_subject_kind: z.ZodLiteral<"agent_team">;
     root_run_id: z.ZodString;
-    schema_version: z.ZodLiteral<2>;
     root_team: z.ZodRecord<z.ZodString, z.ZodUnknown>;
 }, z.core.$strict>, z.ZodObject<{
     root_subject_kind: z.ZodLiteral<"agent_org">;
     root_run_id: z.ZodString;
-    schema_version: z.ZodLiteral<1>;
     root_org: z.ZodObject<{
         base_change_sequence: z.ZodNumber;
         is_active: z.ZodBoolean;
         execution_tree: z.ZodObject<{
-            schemaVersion: z.ZodLiteral<1>;
             subjectKind: z.ZodLiteral<"agent_org">;
             createdAt: z.ZodString;
             archivedAt: z.ZodNullable<z.ZodString>;
@@ -454,8 +404,8 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -475,25 +425,25 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                                 address: string;
                                 agentRunId: string;
                                 platformAgentRunId: string | null;
+                                delegatorAgentRunId?: string;
                                 startedAt: string;
-                                settledAt: string | null;
                             }> | Readonly</*elided*/ any>)[];
                         }>)[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly</*elided*/ any>)[];
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -513,27 +463,27 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                                 address: string;
                                 agentRunId: string;
                                 platformAgentRunId: string | null;
+                                delegatorAgentRunId?: string;
                                 startedAt: string;
-                                settledAt: string | null;
                             }> | Readonly</*elided*/ any>)[];
                         }>)[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly</*elided*/ any>)[];
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }>, unknown>>>;
                 }, z.core.$strict>]>>;
                 taskExecutions: z.ZodArray<z.ZodType<Readonly<{
                     address: string;
                     agentRunId: string;
                     platformAgentRunId: string | null;
+                    delegatorAgentRunId?: string;
                     startedAt: string;
-                    settledAt: string | null;
                 }> | Readonly<{
                     address: string;
                     teamRunId: string;
@@ -553,25 +503,25 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly</*elided*/ any>)[];
                     }>)[];
                     taskExecutions: readonly (Readonly<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }> | Readonly</*elided*/ any>)[];
+                    delegatorAgentRunId?: string;
                     startedAt: string;
-                    settledAt: string | null;
                 }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                     address: string;
                     agentRunId: string;
                     platformAgentRunId: string | null;
+                    delegatorAgentRunId?: string;
                     startedAt: string;
-                    settledAt: string | null;
                 }> | Readonly<{
                     address: string;
                     teamRunId: string;
@@ -591,65 +541,21 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly</*elided*/ any>)[];
                     }>)[];
                     taskExecutions: readonly (Readonly<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }> | Readonly</*elided*/ any>)[];
+                    delegatorAgentRunId?: string;
                     startedAt: string;
-                    settledAt: string | null;
                 }>, unknown>>>;
             }, z.core.$strict>;
-        }, z.core.$strict>;
-        task_records: z.ZodObject<{
-            schemaVersion: z.ZodLiteral<1>;
-            subjectKind: z.ZodLiteral<"agent_org">;
-            orgRunId: z.ZodString;
-            records: z.ZodArray<z.ZodObject<{
-                taskId: z.ZodString;
-                delegatorAgentRunId: z.ZodString;
-                recipientAddress: z.ZodString;
-                taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                    agentRunId: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    teamRunId: z.ZodString;
-                }, z.core.$strict>]>;
-                description: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                status: z.ZodEnum<{
-                    active: "active";
-                    awaiting_review: "awaiting_review";
-                    accepted: "accepted";
-                    interrupted: "interrupted";
-                }>;
-                updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                    submissionId: z.ZodString;
-                    message: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    reviewId: z.ZodString;
-                    reviewedSubmissionId: z.ZodString;
-                    decision: z.ZodEnum<{
-                        accept: "accept";
-                        request_revision: "request_revision";
-                    }>;
-                    comment: z.ZodNullable<z.ZodString>;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    interruptionId: z.ZodString;
-                    reason: z.ZodString;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>]>>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>>;
         }, z.core.$strict>;
         communication_messages: z.ZodObject<{
             schemaVersion: z.ZodLiteral<1>;
@@ -697,190 +603,89 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
         agent_run_id: z.ZodString;
         message: z.ZodType<import("@autobyteus/agent-presentation-contracts").AgentPresentationMessage, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").AgentPresentationMessage, unknown>>;
     }, z.core.$strict>, z.ZodObject<{
-        kind: z.ZodLiteral<"task">;
-        event: z.ZodUnion<readonly [z.ZodObject<{
-            kind: z.ZodLiteral<"activated">;
-            task: z.ZodObject<{
-                taskId: z.ZodString;
-                delegatorAgentRunId: z.ZodString;
-                recipientAddress: z.ZodString;
-                taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                    agentRunId: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    teamRunId: z.ZodString;
-                }, z.core.$strict>]>;
-                description: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                status: z.ZodEnum<{
-                    active: "active";
-                    awaiting_review: "awaiting_review";
-                    accepted: "accepted";
-                    interrupted: "interrupted";
-                }>;
-                updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                    submissionId: z.ZodString;
-                    message: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    reviewId: z.ZodString;
-                    reviewedSubmissionId: z.ZodString;
-                    decision: z.ZodEnum<{
-                        accept: "accept";
-                        request_revision: "request_revision";
-                    }>;
-                    comment: z.ZodNullable<z.ZodString>;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    interruptionId: z.ZodString;
-                    reason: z.ZodString;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>]>>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"submitted">;
-            task: z.ZodObject<{
-                taskId: z.ZodString;
-                delegatorAgentRunId: z.ZodString;
-                recipientAddress: z.ZodString;
-                taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                    agentRunId: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    teamRunId: z.ZodString;
-                }, z.core.$strict>]>;
-                description: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                status: z.ZodEnum<{
-                    active: "active";
-                    awaiting_review: "awaiting_review";
-                    accepted: "accepted";
-                    interrupted: "interrupted";
-                }>;
-                updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                    submissionId: z.ZodString;
-                    message: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    reviewId: z.ZodString;
-                    reviewedSubmissionId: z.ZodString;
-                    decision: z.ZodEnum<{
-                        accept: "accept";
-                        request_revision: "request_revision";
-                    }>;
-                    comment: z.ZodNullable<z.ZodString>;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    interruptionId: z.ZodString;
-                    reason: z.ZodString;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>]>>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>;
-            submission: z.ZodObject<{
-                submissionId: z.ZodString;
-                message: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"reviewed">;
-            task: z.ZodObject<{
-                taskId: z.ZodString;
-                delegatorAgentRunId: z.ZodString;
-                recipientAddress: z.ZodString;
-                taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                    agentRunId: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    teamRunId: z.ZodString;
-                }, z.core.$strict>]>;
-                description: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                status: z.ZodEnum<{
-                    active: "active";
-                    awaiting_review: "awaiting_review";
-                    accepted: "accepted";
-                    interrupted: "interrupted";
-                }>;
-                updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                    submissionId: z.ZodString;
-                    message: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    reviewId: z.ZodString;
-                    reviewedSubmissionId: z.ZodString;
-                    decision: z.ZodEnum<{
-                        accept: "accept";
-                        request_revision: "request_revision";
-                    }>;
-                    comment: z.ZodNullable<z.ZodString>;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    interruptionId: z.ZodString;
-                    reason: z.ZodString;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>]>>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>;
-            review: z.ZodObject<{
-                reviewId: z.ZodString;
-                reviewedSubmissionId: z.ZodString;
-                decision: z.ZodEnum<{
-                    accept: "accept";
-                    request_revision: "request_revision";
-                }>;
-                comment: z.ZodNullable<z.ZodString>;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>;
-        }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"settled">;
-            task: z.ZodObject<{
-                taskId: z.ZodString;
-                delegatorAgentRunId: z.ZodString;
-                recipientAddress: z.ZodString;
-                taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                    agentRunId: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    teamRunId: z.ZodString;
-                }, z.core.$strict>]>;
-                description: z.ZodString;
-                referenceFiles: z.ZodArray<z.ZodString>;
-                status: z.ZodEnum<{
-                    active: "active";
-                    awaiting_review: "awaiting_review";
-                    accepted: "accepted";
-                    interrupted: "interrupted";
-                }>;
-                updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                    submissionId: z.ZodString;
-                    message: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    reviewId: z.ZodString;
-                    reviewedSubmissionId: z.ZodString;
-                    decision: z.ZodEnum<{
-                        accept: "accept";
-                        request_revision: "request_revision";
-                    }>;
-                    comment: z.ZodNullable<z.ZodString>;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>, z.ZodObject<{
-                    interruptionId: z.ZodString;
-                    reason: z.ZodString;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>]>>;
-                createdAt: z.ZodString;
-            }, z.core.$strict>;
-            settledAt: z.ZodString;
-        }, z.core.$strict>]>;
+        kind: z.ZodLiteral<"task_execution_started">;
+        host_kind: z.ZodEnum<{
+            root: "root";
+            team: "team";
+        }>;
+        host_run_id: z.ZodString;
+        execution: z.ZodType<Readonly<{
+            address: string;
+            agentRunId: string;
+            platformAgentRunId: string | null;
+            delegatorAgentRunId?: string;
+            startedAt: string;
+        }> | Readonly<{
+            address: string;
+            teamRunId: string;
+            members: readonly (Readonly<{
+                address: string;
+                agentRunId: string;
+                platformAgentRunId: string | null;
+            }> | Readonly<{
+                address: string;
+                teamRunId: string;
+                members: readonly (Readonly<{
+                    address: string;
+                    agentRunId: string;
+                    platformAgentRunId: string | null;
+                }> | Readonly</*elided*/ any>)[];
+                taskExecutions: readonly (Readonly<{
+                    address: string;
+                    agentRunId: string;
+                    platformAgentRunId: string | null;
+                    delegatorAgentRunId?: string;
+                    startedAt: string;
+                }> | Readonly</*elided*/ any>)[];
+            }>)[];
+            taskExecutions: readonly (Readonly<{
+                address: string;
+                agentRunId: string;
+                platformAgentRunId: string | null;
+                delegatorAgentRunId?: string;
+                startedAt: string;
+            }> | Readonly</*elided*/ any>)[];
+            delegatorAgentRunId?: string;
+            startedAt: string;
+        }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+            address: string;
+            agentRunId: string;
+            platformAgentRunId: string | null;
+            delegatorAgentRunId?: string;
+            startedAt: string;
+        }> | Readonly<{
+            address: string;
+            teamRunId: string;
+            members: readonly (Readonly<{
+                address: string;
+                agentRunId: string;
+                platformAgentRunId: string | null;
+            }> | Readonly<{
+                address: string;
+                teamRunId: string;
+                members: readonly (Readonly<{
+                    address: string;
+                    agentRunId: string;
+                    platformAgentRunId: string | null;
+                }> | Readonly</*elided*/ any>)[];
+                taskExecutions: readonly (Readonly<{
+                    address: string;
+                    agentRunId: string;
+                    platformAgentRunId: string | null;
+                    delegatorAgentRunId?: string;
+                    startedAt: string;
+                }> | Readonly</*elided*/ any>)[];
+            }>)[];
+            taskExecutions: readonly (Readonly<{
+                address: string;
+                agentRunId: string;
+                platformAgentRunId: string | null;
+                delegatorAgentRunId?: string;
+                startedAt: string;
+            }> | Readonly</*elided*/ any>)[];
+            delegatorAgentRunId?: string;
+            startedAt: string;
+        }>, unknown>>;
     }, z.core.$strict>, z.ZodObject<{
         kind: z.ZodLiteral<"communication">;
         message: z.ZodObject<{
@@ -909,17 +714,14 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
     payload: z.ZodDiscriminatedUnion<[z.ZodObject<{
         root_subject_kind: z.ZodLiteral<"agent_team">;
         root_run_id: z.ZodString;
-        schema_version: z.ZodLiteral<2>;
         root_team: z.ZodRecord<z.ZodString, z.ZodUnknown>;
     }, z.core.$strict>, z.ZodObject<{
         root_subject_kind: z.ZodLiteral<"agent_org">;
         root_run_id: z.ZodString;
-        schema_version: z.ZodLiteral<1>;
         root_org: z.ZodObject<{
             base_change_sequence: z.ZodNumber;
             is_active: z.ZodBoolean;
             execution_tree: z.ZodObject<{
-                schemaVersion: z.ZodLiteral<1>;
                 subjectKind: z.ZodLiteral<"agent_org">;
                 createdAt: z.ZodString;
                 archivedAt: z.ZodNullable<z.ZodString>;
@@ -1019,8 +821,8 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly<{
                             address: string;
                             teamRunId: string;
@@ -1040,25 +842,25 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                                     address: string;
                                     agentRunId: string;
                                     platformAgentRunId: string | null;
+                                    delegatorAgentRunId?: string;
                                     startedAt: string;
-                                    settledAt: string | null;
                                 }> | Readonly</*elided*/ any>)[];
                             }>)[];
                             taskExecutions: readonly (Readonly<{
                                 address: string;
                                 agentRunId: string;
                                 platformAgentRunId: string | null;
+                                delegatorAgentRunId?: string;
                                 startedAt: string;
-                                settledAt: string | null;
                             }> | Readonly</*elided*/ any>)[];
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly<{
                             address: string;
                             teamRunId: string;
@@ -1078,27 +880,27 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                                     address: string;
                                     agentRunId: string;
                                     platformAgentRunId: string | null;
+                                    delegatorAgentRunId?: string;
                                     startedAt: string;
-                                    settledAt: string | null;
                                 }> | Readonly</*elided*/ any>)[];
                             }>)[];
                             taskExecutions: readonly (Readonly<{
                                 address: string;
                                 agentRunId: string;
                                 platformAgentRunId: string | null;
+                                delegatorAgentRunId?: string;
                                 startedAt: string;
-                                settledAt: string | null;
                             }> | Readonly</*elided*/ any>)[];
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }>, unknown>>>;
                     }, z.core.$strict>]>>;
                     taskExecutions: z.ZodArray<z.ZodType<Readonly<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -1118,25 +920,25 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                                 address: string;
                                 agentRunId: string;
                                 platformAgentRunId: string | null;
+                                delegatorAgentRunId?: string;
                                 startedAt: string;
-                                settledAt: string | null;
                             }> | Readonly</*elided*/ any>)[];
                         }>)[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly</*elided*/ any>)[];
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                         address: string;
                         agentRunId: string;
                         platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }> | Readonly<{
                         address: string;
                         teamRunId: string;
@@ -1156,65 +958,21 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                                 address: string;
                                 agentRunId: string;
                                 platformAgentRunId: string | null;
+                                delegatorAgentRunId?: string;
                                 startedAt: string;
-                                settledAt: string | null;
                             }> | Readonly</*elided*/ any>)[];
                         }>)[];
                         taskExecutions: readonly (Readonly<{
                             address: string;
                             agentRunId: string;
                             platformAgentRunId: string | null;
+                            delegatorAgentRunId?: string;
                             startedAt: string;
-                            settledAt: string | null;
                         }> | Readonly</*elided*/ any>)[];
+                        delegatorAgentRunId?: string;
                         startedAt: string;
-                        settledAt: string | null;
                     }>, unknown>>>;
                 }, z.core.$strict>;
-            }, z.core.$strict>;
-            task_records: z.ZodObject<{
-                schemaVersion: z.ZodLiteral<1>;
-                subjectKind: z.ZodLiteral<"agent_org">;
-                orgRunId: z.ZodString;
-                records: z.ZodArray<z.ZodObject<{
-                    taskId: z.ZodString;
-                    delegatorAgentRunId: z.ZodString;
-                    recipientAddress: z.ZodString;
-                    taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                        agentRunId: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        teamRunId: z.ZodString;
-                    }, z.core.$strict>]>;
-                    description: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    status: z.ZodEnum<{
-                        active: "active";
-                        awaiting_review: "awaiting_review";
-                        accepted: "accepted";
-                        interrupted: "interrupted";
-                    }>;
-                    updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                        submissionId: z.ZodString;
-                        message: z.ZodString;
-                        referenceFiles: z.ZodArray<z.ZodString>;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        reviewId: z.ZodString;
-                        reviewedSubmissionId: z.ZodString;
-                        decision: z.ZodEnum<{
-                            accept: "accept";
-                            request_revision: "request_revision";
-                        }>;
-                        comment: z.ZodNullable<z.ZodString>;
-                        referenceFiles: z.ZodArray<z.ZodString>;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        interruptionId: z.ZodString;
-                        reason: z.ZodString;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>]>>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>>;
             }, z.core.$strict>;
             communication_messages: z.ZodObject<{
                 schemaVersion: z.ZodLiteral<1>;
@@ -1264,190 +1022,89 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
             agent_run_id: z.ZodString;
             message: z.ZodType<import("@autobyteus/agent-presentation-contracts").AgentPresentationMessage, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").AgentPresentationMessage, unknown>>;
         }, z.core.$strict>, z.ZodObject<{
-            kind: z.ZodLiteral<"task">;
-            event: z.ZodUnion<readonly [z.ZodObject<{
-                kind: z.ZodLiteral<"activated">;
-                task: z.ZodObject<{
-                    taskId: z.ZodString;
-                    delegatorAgentRunId: z.ZodString;
-                    recipientAddress: z.ZodString;
-                    taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                        agentRunId: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        teamRunId: z.ZodString;
-                    }, z.core.$strict>]>;
-                    description: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    status: z.ZodEnum<{
-                        active: "active";
-                        awaiting_review: "awaiting_review";
-                        accepted: "accepted";
-                        interrupted: "interrupted";
-                    }>;
-                    updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                        submissionId: z.ZodString;
-                        message: z.ZodString;
-                        referenceFiles: z.ZodArray<z.ZodString>;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        reviewId: z.ZodString;
-                        reviewedSubmissionId: z.ZodString;
-                        decision: z.ZodEnum<{
-                            accept: "accept";
-                            request_revision: "request_revision";
-                        }>;
-                        comment: z.ZodNullable<z.ZodString>;
-                        referenceFiles: z.ZodArray<z.ZodString>;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        interruptionId: z.ZodString;
-                        reason: z.ZodString;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>]>>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"submitted">;
-                task: z.ZodObject<{
-                    taskId: z.ZodString;
-                    delegatorAgentRunId: z.ZodString;
-                    recipientAddress: z.ZodString;
-                    taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                        agentRunId: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        teamRunId: z.ZodString;
-                    }, z.core.$strict>]>;
-                    description: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    status: z.ZodEnum<{
-                        active: "active";
-                        awaiting_review: "awaiting_review";
-                        accepted: "accepted";
-                        interrupted: "interrupted";
-                    }>;
-                    updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                        submissionId: z.ZodString;
-                        message: z.ZodString;
-                        referenceFiles: z.ZodArray<z.ZodString>;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        reviewId: z.ZodString;
-                        reviewedSubmissionId: z.ZodString;
-                        decision: z.ZodEnum<{
-                            accept: "accept";
-                            request_revision: "request_revision";
-                        }>;
-                        comment: z.ZodNullable<z.ZodString>;
-                        referenceFiles: z.ZodArray<z.ZodString>;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        interruptionId: z.ZodString;
-                        reason: z.ZodString;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>]>>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>;
-                submission: z.ZodObject<{
-                    submissionId: z.ZodString;
-                    message: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"reviewed">;
-                task: z.ZodObject<{
-                    taskId: z.ZodString;
-                    delegatorAgentRunId: z.ZodString;
-                    recipientAddress: z.ZodString;
-                    taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                        agentRunId: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        teamRunId: z.ZodString;
-                    }, z.core.$strict>]>;
-                    description: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    status: z.ZodEnum<{
-                        active: "active";
-                        awaiting_review: "awaiting_review";
-                        accepted: "accepted";
-                        interrupted: "interrupted";
-                    }>;
-                    updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                        submissionId: z.ZodString;
-                        message: z.ZodString;
-                        referenceFiles: z.ZodArray<z.ZodString>;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        reviewId: z.ZodString;
-                        reviewedSubmissionId: z.ZodString;
-                        decision: z.ZodEnum<{
-                            accept: "accept";
-                            request_revision: "request_revision";
-                        }>;
-                        comment: z.ZodNullable<z.ZodString>;
-                        referenceFiles: z.ZodArray<z.ZodString>;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        interruptionId: z.ZodString;
-                        reason: z.ZodString;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>]>>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>;
-                review: z.ZodObject<{
-                    reviewId: z.ZodString;
-                    reviewedSubmissionId: z.ZodString;
-                    decision: z.ZodEnum<{
-                        accept: "accept";
-                        request_revision: "request_revision";
-                    }>;
-                    comment: z.ZodNullable<z.ZodString>;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>;
-            }, z.core.$strict>, z.ZodObject<{
-                kind: z.ZodLiteral<"settled">;
-                task: z.ZodObject<{
-                    taskId: z.ZodString;
-                    delegatorAgentRunId: z.ZodString;
-                    recipientAddress: z.ZodString;
-                    taskExecution: z.ZodUnion<readonly [z.ZodObject<{
-                        agentRunId: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        teamRunId: z.ZodString;
-                    }, z.core.$strict>]>;
-                    description: z.ZodString;
-                    referenceFiles: z.ZodArray<z.ZodString>;
-                    status: z.ZodEnum<{
-                        active: "active";
-                        awaiting_review: "awaiting_review";
-                        accepted: "accepted";
-                        interrupted: "interrupted";
-                    }>;
-                    updates: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
-                        submissionId: z.ZodString;
-                        message: z.ZodString;
-                        referenceFiles: z.ZodArray<z.ZodString>;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        reviewId: z.ZodString;
-                        reviewedSubmissionId: z.ZodString;
-                        decision: z.ZodEnum<{
-                            accept: "accept";
-                            request_revision: "request_revision";
-                        }>;
-                        comment: z.ZodNullable<z.ZodString>;
-                        referenceFiles: z.ZodArray<z.ZodString>;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>, z.ZodObject<{
-                        interruptionId: z.ZodString;
-                        reason: z.ZodString;
-                        createdAt: z.ZodString;
-                    }, z.core.$strict>]>>;
-                    createdAt: z.ZodString;
-                }, z.core.$strict>;
-                settledAt: z.ZodString;
-            }, z.core.$strict>]>;
+            kind: z.ZodLiteral<"task_execution_started">;
+            host_kind: z.ZodEnum<{
+                root: "root";
+                team: "team";
+            }>;
+            host_run_id: z.ZodString;
+            execution: z.ZodType<Readonly<{
+                address: string;
+                agentRunId: string;
+                platformAgentRunId: string | null;
+                delegatorAgentRunId?: string;
+                startedAt: string;
+            }> | Readonly<{
+                address: string;
+                teamRunId: string;
+                members: readonly (Readonly<{
+                    address: string;
+                    agentRunId: string;
+                    platformAgentRunId: string | null;
+                }> | Readonly<{
+                    address: string;
+                    teamRunId: string;
+                    members: readonly (Readonly<{
+                        address: string;
+                        agentRunId: string;
+                        platformAgentRunId: string | null;
+                    }> | Readonly</*elided*/ any>)[];
+                    taskExecutions: readonly (Readonly<{
+                        address: string;
+                        agentRunId: string;
+                        platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
+                        startedAt: string;
+                    }> | Readonly</*elided*/ any>)[];
+                }>)[];
+                taskExecutions: readonly (Readonly<{
+                    address: string;
+                    agentRunId: string;
+                    platformAgentRunId: string | null;
+                    delegatorAgentRunId?: string;
+                    startedAt: string;
+                }> | Readonly</*elided*/ any>)[];
+                delegatorAgentRunId?: string;
+                startedAt: string;
+            }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+                address: string;
+                agentRunId: string;
+                platformAgentRunId: string | null;
+                delegatorAgentRunId?: string;
+                startedAt: string;
+            }> | Readonly<{
+                address: string;
+                teamRunId: string;
+                members: readonly (Readonly<{
+                    address: string;
+                    agentRunId: string;
+                    platformAgentRunId: string | null;
+                }> | Readonly<{
+                    address: string;
+                    teamRunId: string;
+                    members: readonly (Readonly<{
+                        address: string;
+                        agentRunId: string;
+                        platformAgentRunId: string | null;
+                    }> | Readonly</*elided*/ any>)[];
+                    taskExecutions: readonly (Readonly<{
+                        address: string;
+                        agentRunId: string;
+                        platformAgentRunId: string | null;
+                        delegatorAgentRunId?: string;
+                        startedAt: string;
+                    }> | Readonly</*elided*/ any>)[];
+                }>)[];
+                taskExecutions: readonly (Readonly<{
+                    address: string;
+                    agentRunId: string;
+                    platformAgentRunId: string | null;
+                    delegatorAgentRunId?: string;
+                    startedAt: string;
+                }> | Readonly</*elided*/ any>)[];
+                delegatorAgentRunId?: string;
+                startedAt: string;
+            }>, unknown>>;
         }, z.core.$strict>, z.ZodObject<{
             kind: z.ZodLiteral<"communication">;
             message: z.ZodObject<{

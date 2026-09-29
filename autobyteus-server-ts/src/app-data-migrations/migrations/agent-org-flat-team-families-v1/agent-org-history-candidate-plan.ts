@@ -1,9 +1,9 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
-import { validateTeamRunExecutionTreePayload } from "../../../run-history/store/team-run-execution-tree-schema.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../../run-history/store/agent-org-run-execution-tree-schema.js";
+import { AgentOrgExecutionIndex } from "../../legacy/released-run-package-shapes/agent-org-execution-index-v1.js";
+import { validateTeamRunExecutionTreePayload } from "../../legacy/released-run-package-shapes/team-run-execution-tree-v2-schema.js";
+import { validateAgentOrgRunExecutionTreePayload } from "../../legacy/released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
 import { getTeamRunExecutionTreePath } from "../../../run-history/store/team-run-execution-tree-path.js";
 import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
 import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-history-index-store.js";

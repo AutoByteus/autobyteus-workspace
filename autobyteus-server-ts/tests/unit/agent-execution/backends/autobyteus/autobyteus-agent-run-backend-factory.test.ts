@@ -662,12 +662,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     const taskCommands = Object.freeze({
       root: createTeamRootExecutionIdentity("team-1"),
       delegateTask: vi.fn(async () => ({
-        task_id: "task_0008",
-        status: "active" as const,
         target_agent_run_id: "run-reviewer",
       })),
-      submitTaskResult: vi.fn(async () => ({ accepted: true as const })),
-      reviewTaskResult: vi.fn(async () => ({ accepted: true as const })),
     });
     const memberExecutionContext = testMemberExecutionContext({
       rootTeamRunId: "team-1",
@@ -685,8 +681,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
             description: "Coordinates work.",
             toolNames: [
               "send_message_to",
-              "submit_task_result",
-              "review_task_result",
+              "delegate_task",
             ],
           }),
         ),

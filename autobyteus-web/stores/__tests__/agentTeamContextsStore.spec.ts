@@ -7,7 +7,7 @@ import {
   testAgentContext,
   testAgentNode,
   testSubTeamNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 const {
@@ -111,10 +111,7 @@ describe('agentTeamContextsStore current Team execution view', () => {
         testAgentNode('/coordinator', { agentRunId: 'coordinator-run' }),
         testAgentNode('/worker', { agentRunId: 'worker-run' }),
       ],
-      tasks: [testTaskRecord({
-        taskId: 'task-1', delegatorAgentRunId: 'coordinator-run',
-        recipientAddress: '/worker', target: { agentRunId: 'task-agent-run-1' },
-      })],
+      delegations: [testDelegation({ delegatorAgentRunId: 'coordinator-run', recipientAddress: '/worker', target: { agentRunId: 'task-agent-run-1' } })],
     });
     store.addTeamContext(team);
 

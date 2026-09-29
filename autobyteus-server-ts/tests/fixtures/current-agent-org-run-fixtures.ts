@@ -47,7 +47,6 @@ export const testAgentOrgExecutionTree = (input: {
   orgDefinitionId?: string
   orgDefinitionName?: string
 }): AgentOrgRunExecutionTreeSnapshot => validateAgentOrgRunExecutionTreePayload({
-  schemaVersion: 1,
   subjectKind: "agent_org",
   createdAt: "2026-09-01T00:00:00.000Z",
   archivedAt: null,

@@ -1,11 +1,9 @@
-import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
+import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
 import type { AgentOrgCommunicationMessagesV1Store } from "../persistence/agent-org-communication-messages-v1-store.js";
-import type { AgentOrgTaskDelegationRecordsFileV1 } from "../persistence/agent-org-task-delegation-records-v1.js";
-import type { AgentOrgTaskDelegationRecordsV1Store } from "../persistence/agent-org-task-delegation-records-v1-store.js";
 
 export class AgentOrgPersistenceFailStoppedError extends Error {
   constructor(readonly orgRunId: string) {
@@ -14,7 +12,7 @@ export class AgentOrgPersistenceFailStoppedError extends Error {
   }
 }
 
-/** Serializes the exact Org tree/task/message authorities for one AgentOrg root. */
+/** Serializes the exact Org tree/message authorities for one AgentOrg root. */
 export class AgentOrgRunPersistenceCoordinator {
   private tail: Promise<void> = Promise.resolve();
   private failStopped = false;
@@ -23,21 +21,18 @@ export class AgentOrgRunPersistenceCoordinator {
     orgRunId: string;
     orgMemoryDir: string;
     executionTreeStore: AgentOrgRunExecutionTreeStore;
-    taskRecordsStore: AgentOrgTaskDelegationRecordsV1Store;
     communicationStore: AgentOrgCommunicationMessagesV1Store;
     enterPersistenceFailStop(error: Error): void;
   }>) {}
 
   commitInitial(input: Readonly<{
     tree: AgentOrgRunExecutionTreeSnapshot;
-    tasks: AgentOrgTaskDelegationRecordsFileV1;
     messages: AgentOrgCommunicationMessagesFileV1;
   }>): Promise<void> {
     return this.withLock(async () => {
       // The tree is the package's primary current-family authority. Publish it
       // last so a pre-rename sidecar failure cannot expose a tree with a missing
       // correlated authority.
-      await this.requireCommitted(await this.options.taskRecordsStore.write(this.options.orgMemoryDir, input.tasks));
       await this.requireCommitted(await this.options.communicationStore.write(this.options.orgMemoryDir, input.messages));
       await this.requireCommitted(await this.options.executionTreeStore.write(this.options.orgMemoryDir, input.tree));
     });
@@ -65,16 +60,20 @@ export class AgentOrgRunPersistenceCoordinator {
     });
   }
 
+  /** Task-execution activation is one execution-tree write (execution + delegator). */
   commitTaskActivation(input: Readonly<{
-    prepareAgainstCurrent(): Readonly<{
-      nextTree: AgentOrgRunExecutionTreeSnapshot;
-      nextTasks: AgentOrgTaskDelegationRecordsFileV1;
-    }>;
+    prepareAgainstCurrent(): Readonly<{ nextTree: AgentOrgRunExecutionTreeSnapshot }>;
     commitAfterDurability(): void;
     abortBeforeDurability(): Promise<void>;
   }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; message: string }>> {
     return this.withLock(async () => {
-      const prepared = input.prepareAgainstCurrent();
+      let prepared: ReturnType<typeof input.prepareAgainstCurrent>;
+      try {
+        prepared = input.prepareAgainstCurrent();
+      } catch (error) {
+        await input.abortBeforeDurability();
+        throw error;
+      }
       const tree = await this.options.executionTreeStore.write(this.options.orgMemoryDir, prepared.nextTree);
       if (tree.outcome === "not_renamed") {
         await input.abortBeforeDurability();
@@ -82,33 +81,11 @@ export class AgentOrgRunPersistenceCoordinator {
       }
       if (tree.outcome === "renamed_finalization_indeterminate") {
         this.latch(tree);
+        await input.abortBeforeDurability();
         throw this.indeterminate(tree);
       }
-      const tasks = await this.options.taskRecordsStore.write(this.options.orgMemoryDir, prepared.nextTasks);
-      if (tasks.outcome === "not_renamed") {
-        await input.abortBeforeDurability();
-        this.failStopped = true;
-        const error = new Error(`AgentOrg task sidecar write failed after execution-tree commit: ${tasks.cause.message}`);
-        this.options.enterPersistenceFailStop(error);
-        throw error;
-      }
-      if (tasks.outcome === "renamed_finalization_indeterminate") {
-        this.latch(tasks);
-        throw this.indeterminate(tasks);
-      }
-      this.finalizeAfterDurability("task_records", input.commitAfterDurability);
+      this.finalizeAfterDurability("execution_tree", input.commitAfterDurability);
       return { committed: true };
-    });
-  }
-
-  commitTaskRecords(input: Readonly<{
-    nextTasks: AgentOrgTaskDelegationRecordsFileV1;
-    commitAfterDurability(): void;
-  }>): Promise<void> {
-    return this.withLock(async () => {
-      const result = await this.options.taskRecordsStore.write(this.options.orgMemoryDir, input.nextTasks);
-      await this.requireCommitted(result);
-      this.finalizeAfterDurability("task_records", input.commitAfterDurability);
     });
   }
 

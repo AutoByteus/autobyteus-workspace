@@ -106,7 +106,7 @@ for (const previouslyMounted of [false, true]) {
       if (variables.agentRunId) return { data: { getAgentOrgMemberRunProjection: { ...variables,
         conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
       if (name === 'GetFileContent') return { data: { fileContent: `editable-${variables.workspaceId}` } }
-      return { data: { getAgentOrgRunInspection: { schema_version: 1, root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
+      return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
     })
     io.mutate.mockImplementation(async ({ variables }: any) => {
       if (variables.input?.rootPath) return pendingRegistration

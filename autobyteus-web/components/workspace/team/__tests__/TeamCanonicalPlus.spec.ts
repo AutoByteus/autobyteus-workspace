@@ -19,7 +19,6 @@ import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamT
 const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn() }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
 vi.mock('~/services/runHydration/teamCommunicationHydrationService', () => ({ fetchTeamCommunicationForTeam: vi.fn().mockResolvedValue([]) }))
-vi.mock('~/services/runHydration/taskDelegationHydrationService', () => ({ fetchTaskDelegationRecordsForTeam: vi.fn().mockResolvedValue([]) }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: () => ({
   availabilities: [{ runtimeKind: 'autobyteus', enabled: true }], fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]), availabilityByKind: () => ({ enabled: true }), isRuntimeEnabled: () => true, runtimeReason: () => null,
 }) }))

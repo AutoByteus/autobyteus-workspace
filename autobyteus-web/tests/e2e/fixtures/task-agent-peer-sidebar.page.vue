@@ -23,7 +23,7 @@ import { useWorkspaceHistorySelectionActions } from '~/composables/useWorkspaceH
 import { useWorkspaceHistoryTreeState } from '~/composables/useWorkspaceHistoryTreeState';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { TeamMemberTreeRow } from '~/stores/runHistoryTypes';
-import { buildTestTeamContext, testAgentNode, testSubTeamNode, testTaskRecord } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode, testSubTeamNode } from '~/test-support/currentTeamTestFixtures';
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 definePageMeta({ layout: false });
@@ -41,17 +41,6 @@ const empty = mode === 'empty';
 const narrow = ref(false);
 const noop = () => {};
 const started = '2026-09-26T08:00:00.000Z';
-const settled = retained ? '2026-09-26T08:10:00.000Z' : null;
-const tasks = empty ? [] : [
-  testTaskRecord({ taskId: 'peer-a', delegatorAgentRunId: REVIEWER, recipientAddress: '/Worker',
-    target: { agentRunId: TASK_A }, description: 'Review launch notes', status: retained ? 'accepted' : 'active' }),
-  testTaskRecord({ taskId: 'peer-b', delegatorAgentRunId: REVIEWER, recipientAddress: '/Worker',
-    target: { agentRunId: TASK_B }, description: 'Check documentation and release readiness', status: retained ? 'accepted' : 'active' }),
-  testTaskRecord({ taskId: 'peer-team', delegatorAgentRunId: REVIEWER, recipientAddress: '/Research',
-    target: { teamRunId: TEAM }, description: 'Research task Team', status: retained ? 'accepted' : 'active' }),
-  testTaskRecord({ taskId: 'peer-nested', delegatorAgentRunId: MEMBER, recipientAddress: '/Research/Analyst',
-    target: { agentRunId: NESTED }, description: 'Nested task Agent proof', status: retained ? 'accepted' : 'active' }),
-];
 const context = buildTestTeamContext({
   teamRunId: ROOT, teamDefinitionId: 'peer-definition', teamDefinitionName: 'Peer Team',
   coordinatorAddress: '/Reviewer', focusedAgentRunId: REVIEWER, workspaceRootPath: '/peer-fixture',
@@ -61,14 +50,13 @@ const context = buildTestTeamContext({
     // Existing retained configured-Team shape; not new nested-Team product scope.
     ...(empty ? [] : [testSubTeamNode('/Research', [testAgentNode('/Research/Analyst', { agentRunId: 'peer-configured-analyst' })],
       { teamRunId: 'peer-configured-research', coordinatorAddress: '/Research/Analyst' })])],
-  tasks,
   taskExecutions: empty ? [] : [
     ...[TASK_A, TASK_B].map(agent_run_id => ({ kind: 'task_agent' as const, address: '/Worker' as const,
-      agent_run_id, platform_agent_run_id: null, started_at: started, settled_at: settled })),
-    { kind: 'task_team', address: '/Research', team_run_id: TEAM, started_at: started, settled_at: settled,
+      agent_run_id, platform_agent_run_id: null, delegator_agent_run_id: REVIEWER, started_at: started })),
+    { kind: 'task_team', address: '/Research', team_run_id: TEAM, delegator_agent_run_id: REVIEWER, started_at: started,
       members: [{ kind: 'task_team_agent', address: '/Research/Analyst', agent_run_id: MEMBER, platform_agent_run_id: null }],
       task_executions: [{ kind: 'task_agent', address: '/Research/Analyst', agent_run_id: NESTED,
-        platform_agent_run_id: null, started_at: started, settled_at: settled }] },
+        platform_agent_run_id: null, delegator_agent_run_id: MEMBER, started_at: started }] },
   ],
 });
 const teamStore = useAgentTeamContextsStore();

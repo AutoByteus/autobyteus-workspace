@@ -1,6 +1,6 @@
 import { getParentAgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import { normalizeCollaborationHandoffs } from "../../../agent-collaboration/domain/collaboration-handoff.js";
-import type { ConfiguredExecutionNode } from "../../../run-history/domain/run-execution-tree-shared-records.js";
+import type { ConfiguredExecutionNode } from "../../legacy/released-run-package-shapes/run-execution-tree-shared-records-v2.js";
 import {
   assertExactKeys,
   canonicalNonRootAddress,
@@ -15,7 +15,7 @@ import {
   validateConfiguredTeam,
   validateLaunchConfiguration,
   validateTaskExecution,
-} from "../../../run-history/store/run-execution-tree-shared-record-schemas.js";
+} from "../../legacy/released-run-package-shapes/run-execution-tree-shared-record-schemas-v2.js";
 
 /** Exact migration-only decoder for the released recursive Team Run V2 predecessor. */
 export type ReleasedTeamRunV2 = Readonly<{

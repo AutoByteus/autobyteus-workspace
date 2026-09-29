@@ -5,8 +5,8 @@ export type CollaborationMessageMemberIdentity = Readonly<{
   address: AgentTeamAddress
   label: string
 }> & (Readonly<{ kind: 'configured' }> | Readonly<{
-  kind: 'task'
-  taskId: string
+  /** A participant inside a delegated child (task Agent or task Team). */
+  kind: 'delegated'
   hostRunId: string
   executionRunId: string
 }>)

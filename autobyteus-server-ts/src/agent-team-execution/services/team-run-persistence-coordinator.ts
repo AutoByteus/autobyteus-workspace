@@ -1,19 +1,16 @@
 import type { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
-import type { TaskDelegationRecordsV1Store } from "../task-delegation/records/task-delegation-records-v1-store.js";
 import type { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type {
+  ExecutionTreeCommitResult,
   PreparedExecutionTreeMutation,
-  PreparedTaskMutationCommit,
-  PreparedTaskSettlementCommit,
+  PreparedTaskActivationMutation,
   PreparedTeamMessageAppend,
-  TaskMutationCommitResult,
-  TaskSettlementCommitResult,
   TeamMessageCommitResult,
   TeamRunFileRole,
 } from "./team-run-persistence-contract.js";
 import { TeamRunPersistenceFailStoppedError } from "./team-run-persistence-contract.js";
-import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-lifecycle-command.js";
+import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 
 export type TeamRunPersistenceFailStop = (input: {
   file: RunPackageFileWriteResult & { outcome: "renamed_finalization_indeterminate" };
@@ -31,55 +28,23 @@ export class TeamRunPersistenceCoordinator {
     rootTeamRunId: string;
     teamMemoryDir: string;
     executionTreeStore: TeamRunExecutionTreeStore;
-    taskRecordsStore: TaskDelegationRecordsV1Store;
     communicationStore: TeamCommunicationV1Store;
     enterPersistenceFailStop: TeamRunPersistenceFailStop;
   }) {}
 
-  commitTaskMutation(command: PreparedTaskMutationCommit): Promise<TaskMutationCommitResult> {
-    return this.withRootLock(() => this.commitTaskMutationLocked(command));
+  commitTaskActivation(command: PreparedTaskActivationMutation): Promise<ExecutionTreeCommitResult> {
+    return this.withRootLock(() => this.commitTaskActivationLocked(command));
   }
 
   enterRootFailStop(): void {
     this.failStopped = true;
   }
 
-  commitTaskSettlement(command: PreparedTaskSettlementCommit): Promise<TaskSettlementCommitResult> {
-    return this.withRootLock(async () => {
-      let prepared: ReturnType<PreparedTaskSettlementCommit["prepareAgainstCurrent"]>;
-      try {
-        prepared = command.prepareAgainstCurrent();
-      } catch (error) {
-        command.settlement.cancelBeforeDurability();
-        throw error;
-      }
-      const result = await this.options.executionTreeStore.write(
-        this.options.teamMemoryDir,
-        prepared.nextTree,
-      );
-      if (result.outcome === "not_renamed") {
-        command.settlement.cancelBeforeDurability();
-        return { outcome: "not_committed", cause: result.cause };
-      }
-      if (result.outcome === "renamed_finalization_indeterminate") {
-        this.latchPersistenceFailStop(result);
-        return {
-          outcome: "finalization_indeterminate",
-          file: "execution_tree",
-          stage: result.stage,
-        };
-      }
-      const settlement = this.finalizeAfterDurability("execution_tree", () => command.settlement.commitAfterDurability());
-      this.finalizeAfterDurability("execution_tree", () => prepared.commitTreeAndEvent(settlement));
-      return { outcome: "committed", settlement };
-    });
-  }
-
   commitReservedMessageAppend(plan: PreparedTeamMessageAppend): Promise<TeamMessageCommitResult> {
     return this.withRootLock(() => this.commitReservedMessageAppendLocked(plan));
   }
 
-  commitExecutionTreeMutation(plan: PreparedExecutionTreeMutation): Promise<TaskMutationCommitResult> {
+  commitExecutionTreeMutation(plan: PreparedExecutionTreeMutation): Promise<ExecutionTreeCommitResult> {
     return this.withRootLock(async () => {
       const change = plan.prepareAgainstCurrent();
       if (!change.requiresWrite) {
@@ -92,12 +57,7 @@ export class TeamRunPersistenceCoordinator {
       );
       if (result.outcome === "not_renamed") {
         change.cancelBeforeDurability();
-        return {
-          outcome: "not_committed",
-          failedFile: result.file,
-          treeOrphanMayExist: false,
-          cause: result.cause,
-        };
+        return { outcome: "not_committed", cause: result.cause };
       }
       if (result.outcome === "renamed_finalization_indeterminate") {
         this.latchPersistenceFailStop(result);
@@ -116,65 +76,29 @@ export class TeamRunPersistenceCoordinator {
     return this.tail;
   }
 
-  private async commitTaskMutationLocked(
-    command: PreparedTaskMutationCommit,
-  ): Promise<TaskMutationCommitResult> {
-    let activationPlan: ReturnType<Extract<PreparedTaskMutationCommit, { kind: "activation" }>["prepareAgainstCurrent"]> | null = null;
-    if (command.kind === "activation") {
-      command.activation.assertCommitReady();
-      try {
-        activationPlan = command.prepareAgainstCurrent();
-      } catch (error) {
-        await command.activation.abortBeforeCommit();
-        throw error;
-      }
+  private async commitTaskActivationLocked(
+    command: PreparedTaskActivationMutation,
+  ): Promise<ExecutionTreeCommitResult> {
+    command.activation.assertCommitReady();
+    let plan: ReturnType<PreparedTaskActivationMutation["prepareAgainstCurrent"]>;
+    try {
+      plan = command.prepareAgainstCurrent();
+    } catch (error) {
+      await command.activation.abortBeforeCommit();
+      throw error;
     }
-    if (command.kind === "activation") {
-      const treeResult = await this.options.executionTreeStore.write(
-        this.options.teamMemoryDir,
-        activationPlan!.nextTree,
-      );
-      const treeFailure = await this.handleTaskFileFailure(command, treeResult, false);
-      if (treeFailure) return treeFailure;
-    }
-    const taskResult = await this.options.taskRecordsStore.write(
-      this.options.teamMemoryDir,
-      command.kind === "activation" ? activationPlan!.nextTasks : command.nextTasks,
-    );
-    const taskFailure = await this.handleTaskFileFailure(
-      command,
-      taskResult,
-      command.kind === "activation",
-    );
-    if (taskFailure) return taskFailure;
-
-    if (command.kind === "activation") {
-      this.finalizeAfterDurability("task_records", () => command.activation.commitAfterDurability());
-    } else {
-      this.finalizeAfterDurability("task_records", () => command.commitAfterDurability());
-    }
-    return { outcome: "committed" };
-  }
-
-  private async handleTaskFileFailure(
-    command: PreparedTaskMutationCommit,
-    result: RunPackageFileWriteResult<TeamRunFileRole>,
-    treeOrphanMayExist: boolean,
-  ): Promise<TaskMutationCommitResult | null> {
-    if (result.outcome === "committed") return null;
+    const result = await this.options.executionTreeStore.write(this.options.teamMemoryDir, plan.nextTree);
     if (result.outcome === "renamed_finalization_indeterminate") {
       this.latchPersistenceFailStop(result);
-      if (command.kind === "activation") await command.activation.abortBeforeCommit();
+      await command.activation.abortBeforeCommit();
       return { outcome: "finalization_indeterminate", file: result.file, stage: result.stage };
     }
-    if (command.kind === "activation") await command.activation.abortBeforeCommit();
-    else command.cancelBeforeDurability();
-    return {
-      outcome: "not_committed",
-      failedFile: result.file,
-      treeOrphanMayExist,
-      cause: result.cause,
-    };
+    if (result.outcome === "not_renamed") {
+      await command.activation.abortBeforeCommit();
+      return { outcome: "not_committed", cause: result.cause };
+    }
+    this.finalizeAfterDurability("execution_tree", () => command.activation.commitAfterDurability());
+    return { outcome: "committed" };
   }
 
   private async commitReservedMessageAppendLocked(

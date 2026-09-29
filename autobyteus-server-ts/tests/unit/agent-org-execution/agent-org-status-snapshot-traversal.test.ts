@@ -14,31 +14,30 @@ import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "..
 
 const orgRunId = "org-status-traversal";
 const startedAt = "2026-09-06T00:00:01.000Z";
-const settledAt = "2026-09-06T00:00:02.000Z";
 
 const taskTeam = (
   teamRunId: string,
   agentRunId: string,
   taskExecutions: readonly TaskTeamExecution[] = [],
-  settled: string | null = null,
+  delegatorAgentRunId = "direct-agent",
 ): TaskTeamExecution => ({
   address: "/target" as const,
   teamRunId,
   members: [{ address: "/target/lead" as const, agentRunId, platformAgentRunId: null }],
   taskExecutions,
+  delegatorAgentRunId,
   startedAt,
-  settledAt: settled,
 });
 
 const fixture = (): AgentOrgRunExecutionTreeSnapshot => {
   const direct = testOrgAgentNode("/director", "direct-agent");
   const mountedLead = testOrgAgentNode("/mounted/lead", "mounted-agent");
   const targetLead = testOrgAgentNode("/target/lead", "target-agent");
-  const mountedNested = taskTeam("mounted-nested-team", "mounted-nested-agent");
-  const mountedTask = taskTeam("mounted-task-team", "mounted-task-agent", [mountedNested]);
-  const rootNested = taskTeam("root-nested-team", "root-nested-agent");
+  const mountedNested = taskTeam("mounted-nested-team", "mounted-nested-agent", [], "mounted-task-agent");
+  const mountedTask = taskTeam("mounted-task-team", "mounted-task-agent", [mountedNested], "mounted-agent");
+  const rootNested = taskTeam("root-nested-team", "root-nested-agent", [], "root-team-agent");
   const rootTask = taskTeam("root-task-team", "root-team-agent", [rootNested]);
-  const settledRootTask = taskTeam("settled-root-team", "settled-root-agent", [], settledAt);
+  const shutDownRootTask = taskTeam("shut-down-root-team", "shut-down-root-agent");
   const mounted = {
     ...testOrgTeamNode({
       address: "/mounted",
@@ -63,9 +62,9 @@ const fixture = (): AgentOrgRunExecutionTreeSnapshot => {
         address: "/director",
         agentRunId: "root-task-agent",
         platformAgentRunId: null,
+        delegatorAgentRunId: "direct-agent",
         startedAt,
-        settledAt: null,
-      }, rootTask, settledRootTask],
+      }, rootTask, shutDownRootTask],
     },
   }, orgRunId);
 };
@@ -91,6 +90,8 @@ const buildRun = () => {
       { getStatusSnapshot: () => status("/director", "direct-agent") },
       { getStatusSnapshot: () => status("/director", "root-task-agent") },
     ]),
+    getStatusSnapshots: vi.fn(() => [status("/director", "direct-agent"), status("/director", "root-task-agent")]),
+    isTaskLive: vi.fn(() => true),
   };
   const runs = new Map<string, ReturnType<typeof teamRun>>([
     ["mounted-configured-team", teamRun([
@@ -113,6 +114,7 @@ const buildRun = () => {
   }]));
   const teams = {
     list: vi.fn(() => [...runs.values()]),
+    get: vi.fn((teamRunId: string) => runs.get(teamRunId) ?? null),
     require: vi.fn((teamRunId: string) => {
       const run = runs.get(teamRunId);
       if (!run) throw new Error(`missing TeamRun '${teamRunId}'`);
@@ -125,7 +127,6 @@ const buildRun = () => {
   const run = new AgentOrgRun({
     root: createAgentOrgRootExecutionIdentity(orgRunId),
     tree,
-    tasks: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, records: [] },
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },
     rootAgents: rootAgents as never,
     teams: teams as never,
@@ -174,7 +175,7 @@ describe("AgentOrg status snapshot traversal", () => {
           taskExecutions: [
             { agentRunId: "root-task-agent" },
             { teamRunId: "root-task-team", taskExecutions: [{ teamRunId: "root-nested-team" }] },
-            { teamRunId: "settled-root-team", settledAt },
+            { teamRunId: "shut-down-root-team", delegatorAgentRunId: "direct-agent" },
           ],
         },
       });
@@ -188,7 +189,10 @@ describe("AgentOrg status snapshot traversal", () => {
         "target-agent",
         "root-team-agent",
         "root-nested-agent",
+        "shut-down-root-agent",
       ]);
+      expect(snapshot.payload.root_org!.agent_statuses.find((entry) => entry.agent_run_id === "shut-down-root-agent"))
+        .toMatchObject({ member_address: "/target/lead", status: "offline" });
       expect(new Set(ids).size).toBe(ids.length);
     }
     expect(test.teams.require.mock.calls.map(([id]) => id)).toEqual([
@@ -201,11 +205,13 @@ describe("AgentOrg status snapshot traversal", () => {
     expect(test.runs.get("root-nested-team")!.getLeafAgentStatusSnapshots).not.toHaveBeenCalled();
   });
 
-  it("does not require a durably settled and locally removed root task Team", () => {
+  it("reports a shut-down root task Team as offline without requiring a live TeamRun", () => {
     const test = buildRun();
 
-    expect(() => test.run.getAgentStatusSnapshots()).not.toThrow();
-    expect(test.teams.require).not.toHaveBeenCalledWith("settled-root-team");
+    const statuses = test.run.getAgentStatusSnapshots();
+    expect(test.teams.require).not.toHaveBeenCalledWith("shut-down-root-team");
+    expect(statuses.filter((entry) => entry.execution.agentRunId === "shut-down-root-agent")
+      .map((entry) => entry.details.status)).toEqual(["offline"]);
   });
 
   it("keeps the flat registered Team scope authoritative for frozen root shutdown", async () => {

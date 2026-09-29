@@ -11,13 +11,10 @@ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-
 import { resetTeamRunHistoryCatalogState } from "../../../src/run-history/services/team-run-history-catalog-service.js";
 import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
-import { TaskDelegationRecordsV1Store } from "../../../src/agent-team-execution/task-delegation/records/task-delegation-records-v1-store.js";
 import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
 import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 import { addTaskExecutionToTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
-import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../../src/agent-team-execution/task-delegation/task-execution-tree-projection.js";
-import type { TaskDelegationRecordV1, TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-delegation-record-v1.js";
-import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
+import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { address, testAgentNode, testAgentTeamNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const STORED_ONLY_MANAGER = { getManagedTeamRun: () => null, listManagedTeamRunIds: () => [] };
@@ -30,8 +27,8 @@ const withTaskInstance = (tree: TeamRunExecutionTreeSnapshot, agentRunId: string
       address: address("/Teacher"),
       agentRunId,
       platformAgentRunId: null,
+      delegatorAgentRunId: "teacher-run",
       startedAt: "2026-08-15T00:01:00.000Z",
-      settledAt: null,
     }],
   },
 });
@@ -79,9 +76,6 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
       });
       const packageDir = layout.getTeamDirPath({ rootTeamRunId: runId, ancestorTeamRunIds: [] });
       await store.write(packageDir, tree);
-      await new TaskDelegationRecordsV1Store().write(packageDir, {
-        schemaVersion: 1, rootTeamRunId: runId, records: [],
-      });
       await new TeamCommunicationV1Store().write(packageDir, {
         schemaVersion: 1, rootTeamRunId: runId, messages: [],
       });
@@ -265,18 +259,6 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
   });
 });
 
-const activeTask = (taskId: string, recipientAddress: string, taskExecution: TaskExecutionReference, createdAt: string): TaskDelegationRecordV1 => ({
-  taskId,
-  delegatorAgentRunId: "structure-writer-run",
-  recipientAddress: assertAgentTeamAddress(recipientAddress),
-  taskExecution,
-  description: `task ${taskId}`,
-  referenceFiles: [],
-  status: "active",
-  updates: [],
-  createdAt,
-});
-
 describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
   let memoryDir: string;
   const teamDir = (...parts: string[]) => path.join(memoryDir, "agent_teams", "structure-root", ...parts);
@@ -297,7 +279,7 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
     const withTaskAgent = addTaskExecutionToTree({
       tree: base,
       ownerTeamRunId: "structure-root",
-      execution: projectTaskAgentExecution({ address: address("/writer"), agentRunId: "task-writer-run", startedAt: "2026-08-15T00:01:00.000Z" }),
+      execution: projectTaskAgentExecution({ address: address("/writer"), agentRunId: "task-writer-run", delegatorAgentRunId: "structure-writer-run", startedAt: "2026-08-15T00:01:00.000Z" }),
     });
     const tree = addTaskExecutionToTree({
       tree: withTaskAgent,
@@ -318,19 +300,11 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
             }),
           ],
         }),
-        startedAt: "2026-08-15T00:02:00.000Z",
+        delegatorAgentRunId: "structure-writer-run", startedAt: "2026-08-15T00:02:00.000Z",
       }),
     });
     const packageDir = layout.getTeamDirPath({ rootTeamRunId: "structure-root", ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(packageDir, tree);
-    await new TaskDelegationRecordsV1Store().write(packageDir, {
-      schemaVersion: 1,
-      rootTeamRunId: "structure-root",
-      records: [
-        activeTask("task-1", "/writer", { agentRunId: "task-writer-run" }, "2026-08-15T00:01:00.000Z"),
-        activeTask("task-2", "/reviewer", { teamRunId: "review-team-run" }, "2026-08-15T00:02:00.000Z"),
-      ],
-    });
     await new TeamCommunicationV1Store().write(packageDir, { schemaVersion: 1, rootTeamRunId: "structure-root", messages: [] });
     await touch(teamDir("structure-writer-run", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
     await touch(teamDir("task-writer-run", "semantic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));

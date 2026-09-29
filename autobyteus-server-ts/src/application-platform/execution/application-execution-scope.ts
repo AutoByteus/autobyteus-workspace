@@ -1,7 +1,5 @@
-import {
-  isConfiguredAgentExecution,
-  type ConfiguredExecutionNode,
-} from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import type { ConfiguredExecutionNode } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import { isConfiguredAgentExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type {
   ApplicationAgentExecution,
   ApplicationAgentLaunchResult,

@@ -31,7 +31,6 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
       isActive: true,
       summary: 'Deliver current package',
       executionTree: {
-        schemaVersion: 1,
         subjectKind: 'agent_org',
         createdAt: '2026-09-03T00:00:00.000Z',
         archivedAt: null,

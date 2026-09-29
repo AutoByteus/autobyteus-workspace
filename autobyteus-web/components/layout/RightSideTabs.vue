@@ -42,7 +42,6 @@
         <CollaborationOverviewPanel
           v-if="activeMessagesView"
           :messages="activeMessagesView"
-          :tasks="activeTasksView!"
         />
       </div>
       <div
@@ -113,10 +112,6 @@ const activeWorkspaceId = computed(() => {
   return id ?? undefined;
 });
 const activeWorkspaceMetadata = computed(() => activeContextStore.activeWorkspaceTarget?.context.config.workspaceMetadata ?? null);
-const activeTasksView = computed(() => {
-  const target = activeContextStore.activeWorkspaceTarget;
-  return target && 'collaborationTasks' in target ? target.collaborationTasks : null;
-});
 const activeMessagesView = computed(() => {
   const target = activeContextStore.activeWorkspaceTarget;
   return target && 'collaborationMessages' in target ? target.collaborationMessages : null;

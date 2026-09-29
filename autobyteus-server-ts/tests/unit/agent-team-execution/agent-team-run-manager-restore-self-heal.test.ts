@@ -16,8 +16,8 @@ vi.mock("../../../src/run-history/services/team-run-package-catalog.js", () => (
 }));
 vi.mock("../../../src/run-history/services/team-run-state-package-loader.js", () => ({
   TeamRunStatePackageLoader: class {
-    async loadAndRepair() {
-      return { loaded: true, state: { executionTree: {}, taskRecords: {}, communicationMessages: {} } };
+    async load() {
+      return { loaded: true, state: { executionTree: {}, communicationMessages: {} } };
     }
   },
 }));
@@ -28,7 +28,7 @@ vi.mock("../../../src/agent-team-execution/services/team-run-execution-tree-buil
 vi.mock("../../../src/agent-team-execution/services/team-root-materializer.js", () => ({
   materializeTeamRoot: vi.fn(async () => {
     const root = {
-      teamRunId: "team-stuck", isActive: () => true, deliverExactAgentMessage: vi.fn(),
+      teamRunId: "team-stuck", isActive: () => true, hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
       terminate: vi.fn(async () => ({ accepted: true })),
     };
     materialized.push(root);
@@ -54,7 +54,7 @@ const stuckRoot = (terminate: () => Promise<{ accepted: boolean; code?: string; 
   const root = {
     teamRunId: "team-stuck",
     isActive: () => active,
-    deliverExactAgentMessage: vi.fn(),
+    hasAgentExecution: vi.fn(() => false), deliverExactAgentMessage: vi.fn(),
     terminate: vi.fn(terminate),
   };
   return { root: root as unknown as RootTeamRun, raw: root, stick: () => { active = false; } };

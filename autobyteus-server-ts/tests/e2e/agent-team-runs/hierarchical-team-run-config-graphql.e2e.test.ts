@@ -362,7 +362,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
       "team_run_execution_tree.json",
     );
     const tree = JSON.parse(fs.readFileSync(treePath, "utf8")) as any;
-    expect(tree.schemaVersion).toBe(2);
+    expect(tree).not.toHaveProperty("schemaVersion");
     assertExactConfigurationTree(tree.rootTeam, "persisted", expectedConfigurationTree);
 
     const activeResume = await resumeConfig(first.serverUrl, teamRunId);

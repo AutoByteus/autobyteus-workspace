@@ -16,8 +16,7 @@ export class TaskTeamRunIdentityFactory {
     }
   }
 
-  async create(input: { source: TeamRunAgentTeamNode; taskId: string }): Promise<TaskTeamMaterialization> {
-    if (!input.taskId.trim()) throw new Error("taskId is required.");
+  async create(input: { source: TeamRunAgentTeamNode }): Promise<TaskTeamMaterialization> {
     return Object.freeze({ teamNode: await this.materializeTeam(input.source) });
   }
 

@@ -11,9 +11,9 @@ import type {
 import type {
   ConfiguredAgentExecutionNode,
   TaskExecution,
-} from "../../agent-team-execution/domain/team-run-execution-tree.js";
+} from "../legacy/released-run-package-shapes/team-run-execution-tree-v2.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
+import { validateTeamRunExecutionTreePayload } from "../legacy/released-run-package-shapes/team-run-execution-tree-v2-schema.js";
 import { getTeamRunExecutionTreePath } from "../../run-history/store/team-run-execution-tree-path.js";
 import {
   getAtomicRunPackageFileCommitWriter,

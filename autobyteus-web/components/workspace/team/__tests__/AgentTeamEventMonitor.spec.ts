@@ -6,7 +6,7 @@ import {
   testAgentContext,
   testAgentNode,
   testSubTeamNode,
-  testTaskRecord,
+  testDelegation,
 } from '~/test-support/currentTeamTestFixtures';
 
 const { state, teamContextsStoreMock, activityStoreMock, authorityMock } = vi.hoisted(() => {
@@ -87,10 +87,7 @@ describe('AgentTeamEventMonitor exact AgentRun focus', () => {
         testAgentNode('/Professor', { agentRunId: 'professor-run', agentDefinitionId: 'agent-professor-def' }),
         testSubTeamNode('/sub-team', [testAgentNode('/sub-team/Student', { agentRunId: 'student-run' })], { coordinatorAddress: '/sub-team/Student' }),
       ],
-      tasks: [testTaskRecord({
-        taskId: 'task-1', delegatorAgentRunId: 'professor-run', recipientAddress: '/sub-team/Student',
-        target: { agentRunId: 'task-student-run' }, description: 'Dedicated student work.',
-      })],
+      delegations: [testDelegation({ delegatorAgentRunId: 'professor-run', recipientAddress: '/sub-team/Student', target: { agentRunId: 'task-student-run' } })],
       contexts: [{ agentRunId: 'task-student-run', context: testAgentContext({
         runId: 'task-student-run', displayName: 'Student', messages: [{
           type: 'user', text: 'Dedicated task packet', timestamp: new Date('2026-08-15T00:00:00.000Z'),
@@ -103,25 +100,5 @@ describe('AgentTeamEventMonitor exact AgentRun focus', () => {
     const monitor = mountSubject().findComponent({ name: 'AgentEventMonitor' });
     expect(monitor.props('runId')).toBe('task-student-run');
     expect((monitor.props('conversation') as any).messages[0].text).toBe('Dedicated task packet');
-  });
-
-  it('shows true-empty wording only for an authoritative exact task projection', () => {
-    state.activeTeamContext = buildTestTeamContext({
-      teamRunId: 'team-1', coordinatorAddress: '/Professor', focusedAgentRunId: 'empty-task-run',
-      rootChildren: [testAgentNode('/Professor', { agentRunId: 'professor-run' })],
-      tasks: [testTaskRecord({
-        taskId: 'empty-task', delegatorAgentRunId: 'professor-run', recipientAddress: '/Professor',
-        target: { agentRunId: 'empty-task-run' },
-      })],
-    });
-    authorityMock.mockReturnValue(true);
-
-    const wrapper = mountSubject();
-
-    expect(wrapper.get('[data-test="team-task-authoritative-empty"]').text())
-      .toBe('No activity recorded for this task yet.');
-    expect(wrapper.text()).not.toContain(
-      'workspace.components.workspace.team.AgentTeamEventMonitor.select_a_team_member_from_the',
-    );
   });
 });

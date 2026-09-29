@@ -2,17 +2,15 @@ import { z } from "zod";
 import { teamAgentErrorPayloadSchema, teamAgentPayloadSchemas, teamInterruptCommandAckPayloadSchema, } from "./team-agent-message-dtos.js";
 import { teamCommunicationMessagePayloadSchema, teamMemberInputMessagePayloadSchema, } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
-import { teamTaskDelegationPayloadSchema } from "./team-task-message-dtos.js";
+import { teamTaskExecutionStartedPayloadSchema } from "./team-task-execution-message-dtos.js";
 import { readonlyParsed } from "./schema-helpers.js";
 import { teamAgentStatusDtoSchema, teamRunExecutionTreeDtoSchema, } from "./team-execution-view-dtos.js";
-import { taskDelegationRecordDtoSchema } from "./team-task-message-dtos.js";
 import { teamCommunicationMessageDtoSchema } from "./team-collaboration-message-dtos.js";
 const message = (type, payload) => z.object({ type: z.literal(type), payload }).strict();
 export const teamExecutionViewSnapshotPayloadSchema = z.object({
     root_team_run_id: z.string().trim().min(1),
     base_change_sequence: z.number().int().nonnegative(),
     execution_tree: teamRunExecutionTreeDtoSchema,
-    tasks: z.array(taskDelegationRecordDtoSchema),
     messages: z.array(teamCommunicationMessageDtoSchema),
     agent_statuses: z.array(teamAgentStatusDtoSchema),
 }).strict();
@@ -44,7 +42,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
     z.object({ type: z.literal("TEAM_RUN_LIFECYCLE"), payload: teamRunLifecyclePayloadSchema }).strict(),
     z.object({ type: z.literal("TEAM_EXECUTION_VIEW_SNAPSHOT"), payload: teamExecutionViewSnapshotPayloadSchema }).strict(),
     z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamInterruptCommandAckPayloadSchema }).strict(),
-    z.object({ type: z.literal("TASK_DELEGATION_EVENT"), payload: teamTaskDelegationPayloadSchema }).strict(),
+    z.object({ type: z.literal("TASK_EXECUTION_STARTED"), payload: teamTaskExecutionStartedPayloadSchema }).strict(),
     z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
     z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
     z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),

@@ -12,21 +12,21 @@ describe("AgentOrgRun command execution kind", () => {
     const lead = testOrgAgentNode("/team/lead", "lead-run");
     const team = testOrgTeamNode({ address: "/team", teamRunId: "team-run", coordinatorAddress: lead.address, members: [lead] });
     const base = testAgentOrgExecutionTree({ orgRunId, members: [direct, team] });
-    const task = { address: direct.address, agentRunId: "task-run", platformAgentRunId: null, startedAt: "2026-09-05T00:00:01.000Z", settledAt: null } as const;
+    const task = { address: direct.address, agentRunId: "task-run", platformAgentRunId: null, delegatorAgentRunId: direct.agentRunId, startedAt: "2026-09-05T00:00:01.000Z" } as const;
     const tree = { ...base, rootOrg: { ...base.rootOrg, taskExecutions: [task] } };
     const rootCommand = vi.fn(async () => ({ accepted: true as const }));
+    const live = new Set([direct.agentRunId, "task-run"]);
     const teamCommand = vi.fn(async () => ({ accepted: true as const }));
     const run = new AgentOrgRun({
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree,
-      tasks: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, records: [{
-        taskId: "task-1", delegatorAgentRunId: direct.agentRunId, recipientAddress: direct.address,
-        taskExecution: { agentRunId: task.agentRunId }, description: "Task", referenceFiles: [],
-        status: "active", updates: [], createdAt: task.startedAt,
-      }] },
       messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },
-      rootAgents: { executeCommand: rootCommand, listHandles: () => [] } as never,
-      teams: { require: () => ({ executeDirectAgentCommand: teamCommand }), list: () => [] } as never,
+      rootAgents: { executeCommand: rootCommand, listHandles: () => [], get: (id: string) => live.has(id) ? {} : null, isTaskLive: (id: string) => live.has(id) } as never,
+      teams: {
+        require: () => ({ executeDirectAgentCommand: teamCommand, hasLiveDirectTaskExecution: () => true, isActive: () => true }),
+        get: () => ({ executeDirectAgentCommand: teamCommand, hasLiveDirectTaskExecution: () => true, isActive: () => true }),
+        list: () => [],
+      } as never,
       callbacks: {} as never,
       persistence: {} as never,
       publisher: new RootEventPublisher<AgentOrgRunEvent>(),
@@ -41,6 +41,10 @@ describe("AgentOrgRun command execution kind", () => {
     await expect(run.executeAgentCommandWithExecutionKind(task.agentRunId, command))
       .resolves.toMatchObject({ result: { accepted: true }, executionKind: "task" });
     await expect(run.executeAgentCommand(direct.agentRunId, command)).resolves.toEqual({ accepted: true });
+    expect(rootCommand).toHaveBeenCalledTimes(3);
+    live.delete("task-run");
+    await expect(run.executeAgentCommandWithExecutionKind(task.agentRunId, command))
+      .resolves.toMatchObject({ result: { accepted: false, code: "RUN_NOT_ACTIVE" }, executionKind: "task" });
     expect(rootCommand).toHaveBeenCalledTimes(3);
     expect(teamCommand).toHaveBeenCalledTimes(1);
   });

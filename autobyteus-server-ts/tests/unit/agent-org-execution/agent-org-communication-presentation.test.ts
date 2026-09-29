@@ -14,7 +14,6 @@ type ReservedAgentInput = Extract<AgentRunInputReservationResult, { reserved: tr
 
 const createSubject = (options: Readonly<{
   persistence?: (orgRunId: string) => AgentOrgRunPersistenceCoordinator;
-  settledTask?: boolean;
 }> = {}) => {
   const orgRunId = "org-communication";
   const root = createAgentOrgRootExecutionIdentity(orgRunId);
@@ -42,15 +41,15 @@ const createSubject = (options: Readonly<{
     address: direct.address,
     agentRunId: "task-one-run",
     platformAgentRunId: null,
+    delegatorAgentRunId: "direct-run",
     startedAt: "2026-09-06T00:00:00.000Z",
-    settledAt: options.settledTask ? "2026-09-06T00:01:00.000Z" : null,
   } as const;
   const secondTask = {
     address: mounted.address,
     agentRunId: "task-two-run",
     platformAgentRunId: null,
+    delegatorAgentRunId: "direct-run",
     startedAt: "2026-09-06T00:00:01.000Z",
-    settledAt: null,
   } as const;
   const taskTeamMember = {
     address: mounted.address,
@@ -67,8 +66,8 @@ const createSubject = (options: Readonly<{
     teamRunId: "task-team-run",
     members: [taskTeamMember, secondTaskTeamMember],
     taskExecutions: [],
+    delegatorAgentRunId: "direct-run",
     startedAt: "2026-09-06T00:00:02.000Z",
-    settledAt: null,
   } as const;
   const tree = {
     ...base,
@@ -103,13 +102,14 @@ const createSubject = (options: Readonly<{
   const run = new AgentOrgRun({
     root,
     tree,
-    tasks: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, records: [] },
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId, messages: [] },
     rootAgents: {
       get: vi.fn(() => ({})),
       isActive: vi.fn(() => true),
       reserveInput: reserveRootAgentInput,
       listHandles: vi.fn(() => []),
+      getStatusSnapshots: vi.fn(() => []),
+      isTaskLive: vi.fn(() => true),
     } as never,
     teams: {
       get: vi.fn(() => ({ isActive: () => true })),
@@ -312,7 +312,6 @@ describe("AgentOrg committed communication presentation", () => {
         orgRunId,
         orgMemoryDir: "/memory/org-communication",
         executionTreeStore: {} as never,
-        taskRecordsStore: {} as never,
         communicationStore: {
           write: vi.fn(async () => ({ outcome: "committed" as const, file: "communication_messages" })),
         } as never,
@@ -348,12 +347,12 @@ describe("AgentOrg committed communication presentation", () => {
 });
 
 
-it("correlates a committed receiver presentation against retained rather than live-only task identity", async () => {
+it("correlates a committed receiver presentation against the retained tree identity rather than runtime liveness", async () => {
   const { AgentInputUserMessage } = await import("autobyteus-ts/agent/message/agent-input-user-message.js");
-  const subject = createSubject({ settledTask: true });
+  const subject = createSubject();
   const message = { messageId: "committed-before-settlement", senderAgentRunId: "direct-run", receiverAgentRunId: "task-one-run",
     content: "Accepted work", messageType: "agent_message", referenceFiles: [], createdAt: "2026-09-06T00:00:59.000Z" };
-  // Exercise only the post-commit callback, not a new admission to a settled task.
+  // Exercise only the post-commit callback, not a new admission (which would wake a shut-down child).
   const committed = subject.run as unknown as { presentCommittedCommunication(message: unknown, receiverInput: unknown): void };
   expect(() => committed.presentCommittedCommunication(message, new AgentInputUserMessage("Accepted work"))).not.toThrow();
   expect(subject.events).toHaveLength(1);

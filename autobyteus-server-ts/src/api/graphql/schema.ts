@@ -25,7 +25,6 @@ import { MemorySyncResolver } from './types/memory-sync.js';
 import { RunHistoryResolver } from './types/run-history.js';
 import { RunFileChangesResolver } from './types/run-file-changes.js';
 import { TeamCommunicationResolver } from './types/team-communication.js';
-import { TaskDelegationResolver } from './types/task-delegation.js';
 import { TeamRunHistoryResolver } from './types/team-run-history.js';
 import { RuntimeAvailabilityResolver } from './types/runtime-availability.js';
 import { AgentPackageResolver } from './types/agent-packages.js';
@@ -69,7 +68,6 @@ export async function buildGraphqlSchema() {
       RunHistoryResolver,
       RunFileChangesResolver,
       TeamCommunicationResolver,
-      TaskDelegationResolver,
       TeamRunHistoryResolver,
       RuntimeAvailabilityResolver,
       AgentPackageResolver,

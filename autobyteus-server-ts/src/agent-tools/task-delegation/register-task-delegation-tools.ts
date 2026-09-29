@@ -1,13 +1,9 @@
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { TASK_DELEGATION_TOOL_NAME_LIST } from "./task-delegation-tool-contract.js";
 import { registerDelegateTaskTool } from "./delegate-task.js";
-import { registerReviewTaskResultTool } from "./review-task-result.js";
-import { registerSubmitTaskResultTool } from "./submit-task-result.js";
 
 export function registerTaskDelegationTools(): void {
   registerDelegateTaskTool();
-  registerSubmitTaskResultTool();
-  registerReviewTaskResultTool();
 }
 
 export function unregisterTaskDelegationTools(): void {

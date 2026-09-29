@@ -7,7 +7,6 @@ export const seedFixture = (runId = 'org-run') => {
   view.agent_statuses = []
   const root = view.execution_tree.rootOrg
   root.orgRunId = runId
-  view.task_records.orgRunId = runId
   view.communication_messages.orgRunId = runId
   const launch = { ...root.defaultLaunchConfiguration, workspaceRootPath: '/source/root', llmModelIdentifier: 'root-model', llmConfig: { budget: 0, enabled: false } }
   root.defaultLaunchConfiguration = launch

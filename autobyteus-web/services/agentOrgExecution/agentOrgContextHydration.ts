@@ -168,7 +168,6 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
   isCurrent?(): boolean
 }>): Promise<{ context: AgentOrgExecutionContext; commitActivities(): void }> => {
   if (input.view.execution_tree.rootOrg.orgRunId !== input.orgRunId
-    || input.view.task_records.orgRunId !== input.orgRunId
     || input.view.communication_messages.orgRunId !== input.orgRunId) {
     throw new Error(`AgentOrg snapshot correlation mismatch for '${input.orgRunId}'.`)
   }

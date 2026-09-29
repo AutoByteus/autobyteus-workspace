@@ -72,46 +72,6 @@ export const addAgentOrgTaskExecution = (input: {
   }, input.tree.rootOrg.orgRunId);
 };
 
-export const settleAgentOrgTaskExecution = (input: {
-  tree: AgentOrgRunExecutionTreeSnapshot;
-  taskExecutionRunId: string;
-  settledAt: string;
-}): AgentOrgRunExecutionTreeSnapshot => {
-  let found = false;
-  const task = (value: TaskExecution): TaskExecution => {
-    const matches = ("agentRunId" in value ? value.agentRunId : value.teamRunId) === input.taskExecutionRunId;
-    if (matches) {
-      if (found) throw new Error(`Task execution '${input.taskExecutionRunId}' is duplicated.`);
-      found = true;
-      return { ...value, settledAt: input.settledAt };
-    }
-    return "agentRunId" in value ? value : {
-      ...value,
-      members: value.members.map(member),
-      taskExecutions: value.taskExecutions.map(task),
-    };
-  };
-  const member = (value: TaskTeamMemberExecution): TaskTeamMemberExecution => "agentRunId" in value ? value : {
-    ...value,
-    members: value.members.map(member),
-    taskExecutions: value.taskExecutions.map(task),
-  };
-  const configured = (value: ConfiguredExecutionNode): ConfiguredExecutionNode => "agentRunId" in value ? value : {
-    ...value,
-    taskExecutions: value.taskExecutions.map(task),
-  };
-  const next = {
-    ...input.tree,
-    rootOrg: {
-      ...input.tree.rootOrg,
-      members: input.tree.rootOrg.members.map(configured),
-      taskExecutions: input.tree.rootOrg.taskExecutions.map(task),
-    },
-  };
-  if (!found) throw new Error(`Task execution '${input.taskExecutionRunId}' was not found.`);
-  return validateAgentOrgRunExecutionTreePayload(next, input.tree.rootOrg.orgRunId);
-};
-
 type AgentNode = ConfiguredAgentExecutionNode | TaskAgentExecution | TaskTeamAgentExecution;
 export const adoptAgentOrgPlatformBinding = (input: {
   tree: AgentOrgRunExecutionTreeSnapshot;

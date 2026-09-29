@@ -1,8 +1,9 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentRunInputOptions } from "../../agent-execution/input/agent-run-input-contract.js";
 import { TeamBackendKind } from "../domain/team-backend-kind.js";
-import type { PrepareTaskAgentInput } from "../domain/task-agent-execution.js";
-import type { PrepareTaskTeamInput } from "../domain/task-team-execution.js";
+import type { PrepareTaskAgentInput, RestoreTaskAgentInput } from "../domain/task-agent-execution.js";
+import type { PrepareTaskTeamInput, RestoreTaskTeamInput } from "../domain/task-team-execution.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { TeamMemberExecutionCommand } from "../domain/team-member-execution-command.js";
 import type { TeamRunBackend } from "../backends/team-run-backend.js";
 import type { FlatTeamExecutionManager } from "./flat-team-execution-manager.js";
@@ -33,8 +34,11 @@ export class FlatTeamRunBackend implements TeamRunBackend {
   }
   prepareTaskAgent(input: PrepareTaskAgentInput) { return this.manager.prepareTaskAgent(input); }
   prepareTaskTeam(input: PrepareTaskTeamInput) { return this.manager.prepareTaskTeam(input); }
-  prepareDirectTaskSettlement(taskId: string, binding: { agentRunId: string } | { teamRunId: string }) {
-    return this.manager.prepareDirectTaskSettlement(taskId, binding);
+  restoreTaskAgent(input: RestoreTaskAgentInput) { return this.manager.restoreTaskAgent(input); }
+  restoreTaskTeam(input: RestoreTaskTeamInput) { return this.manager.restoreTaskTeam(input); }
+  hasLiveDirectTaskExecution(reference: TaskExecutionReference) { return this.manager.hasLiveDirectTaskExecution(reference); }
+  tryShutDownDirectTaskExecutionIfQuiet(reference: TaskExecutionReference) {
+    return this.manager.tryShutDownDirectTaskExecutionIfQuiet(reference);
   }
   prepareTermination() { return this.manager.prepareTermination(); }
   tryPrepareTerminationIfQuiescent() { return this.manager.tryPrepareTerminationIfQuiescent(); }

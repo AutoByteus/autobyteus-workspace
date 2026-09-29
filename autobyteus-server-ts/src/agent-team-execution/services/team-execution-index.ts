@@ -10,7 +10,7 @@ import type {
   TaskTeamNestedTeamExecution,
   TeamRunExecutionTreeSnapshot,
 } from "../domain/team-run-execution-tree.js";
-import type { TaskExecutionReference } from "../task-delegation/task-delegation-record-v1.js";
+import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import {
   createRootExecutionPhysicalScope,
   createTeamRootExecutionIdentity,
@@ -149,17 +149,26 @@ export class TeamExecutionIndex {
     });
   }
 
-  isLiveAgent(agentRunId: string): boolean {
+  /**
+   * Task executions containing the agent: the agent's own execution when it is
+   * a task Agent, then each enclosing task Team outward. Empty for agents outside
+   * any task execution (for example configured members of the root).
+   */
+  listTaskExecutionChainForAgent(agentRunId: string): readonly IndexedTaskExecution[] {
     const agent = this.getAgent(agentRunId);
-    if (!agent) return false;
-    return this.listTeamAncestorsDeepestFirst(agent.containingTeamRunId).every((team) =>
-      !("settledAt" in team.source) || team.source.settledAt === null) &&
-      (!("settledAt" in agent.source) || agent.source.settledAt === null);
+    if (!agent) return Object.freeze([]);
+    const chain: IndexedTaskExecution[] = [];
+    if (agent.executionKind === "task") chain.push(this.requireTaskExecution(agent.agentRunId));
+    for (const team of this.listTeamAncestorsDeepestFirst(agent.containingTeamRunId)) {
+      if (team.executionKind === "task") chain.push(this.requireTaskExecution(team.teamRunId));
+    }
+    return Object.freeze(chain);
   }
 
-  isLiveTeam(teamRunId: string): boolean {
-    return this.listTeamAncestorsDeepestFirst(teamRunId).every((team) =>
-      !("settledAt" in team.source) || team.source.settledAt === null);
+  private requireTaskExecution(runId: string): IndexedTaskExecution {
+    const execution = this.taskExecutionsByRunId.get(runId);
+    if (!execution) throw new Error(`Task execution '${runId}' is not in root '${this.rootTeamRunId}'.`);
+    return execution;
   }
 
   private visitConfiguredRoot(team: RootConfiguredTeamExecutionNode): void {
