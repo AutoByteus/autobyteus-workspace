@@ -2,7 +2,7 @@
 
 - Result classification: `Architecture Design Complete`
 - Package identifier: `runtime-stop-cleanup-and-org-recovery`
-- Current solution revision: `SR-003` (revision for ARCH-REV-001 round 1; SR-002 was the first reviewed basis)
+- Current solution revision: `SR-004` (requirements; AC-B1 alternate clarified). The authoritative design is `SR-003` (unchanged).
 - From: Solution Designer (`/solution_designer`), 2026-09-29
 - Classification: `task_size=Medium`, `architectural_risk=High`
 - Route applied (via `get_handoff_rules`): independent architecture review → `/architecture_reviewer` (rule: Large or High risk). Prior review artifacts: `design-review-report.md` and `architecture-review-revision-record.md` (ARCH-REV-001 round 1, Fail / Design Impact, basis SR-001 and SR-002).
@@ -46,6 +46,13 @@
 - R-1..R-8 are folded into D-A1, D-B1, D-B2, D-B3, Risks, Change Sequence and tests. See `design-spec.md` and `solution-revision-record.md` SR-003.
 - Requirements are unchanged; no renewed approval is needed.
 
+## SR-004 Revision (response to CRR-002 / CR-001)
+
+- Origin: API/E2E F-API-B1-ALT. A second Terminate on an already-stopped Org/Team returns `success:false` "…not found.", while the literal AC-B1 alternate said "no-op success". The code reviewer classified this as Design Impact with a contributing Requirement Gap.
+- Decision (user-approved 2026-09-29, "Accept your suggestion."): option (b). AC-B1 now reads: "Retrying Terminate after a failed or stuck attempt completes the stop. Terminate on an already-stopped Org/Team changes nothing and causes no harm; its existing response is kept."
+- There is no design or production code change. Downstream, only the API/E2E durable test assertion for the second Terminate follows the clarified AC, then goes to test-code review, and the flow continues. All other live results (API-REV-001) stand.
+- Uncommitted API/E2E durable tests in the worktree: `autobyteus-server-ts/tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts`, updated `agy-background-task-live.e2e.test.ts`.
+
 ## Evidence Highlights
 
 - L1 (beta.5): after a member crash, Org Terminate fails "not the current published run". Registered = true, inspection active = false. Retry fails identically, and restore fails "already active".
@@ -63,7 +70,7 @@
 ## Open Risks
 
 - Hard-killed app leaves AGY and daemons (existing limitation).
-- Team frozen scope may also cache failures; implementation to confirm and align.
+- Team frozen scope failure caching: resolved (R-8; only `fencing` was cached and is now cleared on failure).
 
 ## Next Expected Action
 

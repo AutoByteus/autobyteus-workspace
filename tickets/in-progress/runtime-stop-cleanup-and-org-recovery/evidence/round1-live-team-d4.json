@@ -1,0 +1,57 @@
+{
+  "case": "LIVE-TEAM-D4",
+  "model": "gemini-3.8-flash-high",
+  "teamRunId": "agy_recovery_pair_b4b39808_2f37_469f_acca_1b1950_f7d8b2bde12a4ca997b9296d86bd43d4",
+  "alpha": "agy_recovery_alpha_b4b39808_2f37_469f_acca_1b195_3b3711a945d345af9a5e75a119c9c944",
+  "beta": "agy_recovery_beta_b4b39808_2f37_469f_acca_1b1950_448c18943f2344d583325f99c7d68157",
+  "port": 61192,
+  "betaAgy": [
+    {
+      "pid": 7614,
+      "command": "agy --new-project --agent autobyteus-b0f9dae444a6247c --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-ccMU2V/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    }
+  ],
+  "crashed": {
+    "pid": 7222,
+    "command": "agy --new-project --agent autobyteus-b0035a4ff232c046 --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-ccMU2V/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+  },
+  "teamActiveAfterCrash": true,
+  "terminate": {
+    "success": true,
+    "message": "Agent team run terminated successfully."
+  },
+  "daemonClosedAfterTeamTerminateMs": 1,
+  "teamActiveAfterTerminate": false,
+  "secondTerminate": {
+    "success": false,
+    "message": "Agent team run not found."
+  },
+  "restore": {
+    "success": true,
+    "message": "Agent team run restored successfully.",
+    "teamRunId": "agy_recovery_pair_b4b39808_2f37_469f_acca_1b1950_f7d8b2bde12a4ca997b9296d86bd43d4"
+  },
+  "recall": {
+    "end": "TURN_COMPLETED",
+    "endPayload": {
+      "turn_id": "fe594298-bdc2-43bd-a4ae-6bb456240790",
+      "reason": null,
+      "change_sequence": 15,
+      "agent_run_id": "agy_recovery_alpha_b4b39808_2f37_469f_acca_1b195_3b3711a945d345af9a5e75a119c9c944"
+    },
+    "text": "CODE-A-845223b3\n"
+  },
+  "terminateRestoreRace": {
+    "terminate": {
+      "success": true,
+      "message": "Agent team run terminated successfully."
+    },
+    "restore": {
+      "success": true,
+      "message": "Agent team run restored successfully.",
+      "teamRunId": "agy_recovery_pair_b4b39808_2f37_469f_acca_1b1950_f7d8b2bde12a4ca997b9296d86bd43d4"
+    },
+    "activeAfter": true
+  },
+  "result": "Pass"
+}

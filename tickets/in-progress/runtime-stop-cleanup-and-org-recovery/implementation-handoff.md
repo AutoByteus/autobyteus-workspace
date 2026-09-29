@@ -19,13 +19,13 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: no-change confirmation after SR-004)
 - Implementation revision record: `.../implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`
-- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`
-- Related code-review / API-E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Current implementation revision ID: `IR-002` (code unchanged since IR-001, commit `299875113`)
+- Related solution revision IDs: `SR-001`, `SR-002`, `SR-003`, `SR-004` (AC-B1 alternate clarified; no code change)
+- Related architecture-review revision IDs: `ARCH-REV-001`, `ARCH-REV-002`, `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (CR-001, resolved upstream by SR-004); API/E2E: F-API-B1-ALT; delivery: `N/A`
+- Triggering finding IDs: CR-001 / F-API-B1-ALT (IR-002)
 
 Summary:
 
@@ -62,6 +62,12 @@ Summary:
   - `docs/modules/antigravity_cli_runtime.md`: the F-API-001 "known limitation / future fix" paragraph is replaced with the implemented behavior and the documented limits.
   - `docs/modules/agent_team_execution.md`: per-attempt mode, stale member in Stop, retry and restore self-heal.
   - `docs/modules/agent_orgs.md`: Stop with dead members, retry, restore self-heal, crashed-member resume.
+
+## SR-004 Confirmation (IR-002)
+
+SR-004 clarifies the AC-B1 alternate. A Terminate retried after a failed or stuck attempt completes the stop (D-B3/D-B4). A Terminate on an already-stopped Org/Team changes nothing and keeps its existing `success:false` / "…not found." response. This implementation never changed that response: the manager `terminate`/`terminateTeamRun` paths and the GraphQL resolvers are untouched by `299875113`, and the live evidence shows the preserved response. **No production or unit-test change is required.**
+
+The only remaining work is downstream. The durable live assertions for the second Terminate in LIVE-ORG-B1, LIVE-ORG-R7 and LIVE-TEAM-D4 must expect an unchanged state plus the existing "not found" response, and then go through test-code review (ARCH-REV-003 N-4).
 
 ## Routing Classification (Mandatory)
 

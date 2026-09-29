@@ -2,18 +2,18 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/tickets/in-progress/runtime-stop-cleanup-and-org-recovery/requirements-doc.md` (SR-001, Approved 2026-09-29; unchanged)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/tickets/in-progress/runtime-stop-cleanup-and-org-recovery/requirements-doc.md` (SR-001 amended by SR-004; the AC-B1 alternate clarification was approved by the user on 2026-09-29)
 - Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/tickets/in-progress/runtime-stop-cleanup-and-org-recovery/investigation-notes.md`
 - Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/tickets/in-progress/runtime-stop-cleanup-and-org-recovery/solution-revision-record.md`
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/tickets/in-progress/runtime-stop-cleanup-and-org-recovery/design-spec.md` (SR-003, status Ready)
-- Supplemental Task Artifacts Reviewed: `probes/gql.sh`, `probes/org-send.mjs`, `probes/create-nested-classroom-agy-org.json`, `predecessor-delivery-receipt-verification.md`, `handoff-architecture-design-complete.md` (updated for SR-003)
-- Relevant Solution Revision IDs: SR-001, SR-002, SR-003
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/tickets/in-progress/runtime-stop-cleanup-and-org-recovery/design-spec.md` (SR-003 decisions unchanged, plus the SR-004 note)
+- Supplemental Task Artifacts Reviewed: `probes/*`, `predecessor-delivery-receipt-verification.md`, `handoff-architecture-design-complete.md` (SR-004 section). Triggering downstream evidence: `code-review-report.md` (CRR-002 / CR-001), `evidence/live-org-b1.json`, `evidence/live-team-d4.json`
+- Relevant Solution Revision IDs: SR-001, SR-002, SR-003, SR-004
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/tickets/in-progress/runtime-stop-cleanup-and-org-recovery/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: 2
-- Trigger: Revised Architecture Design Complete from `/solution_designer` (SR-003), answering ARCH-REV-001
-- Prior Review Round Reviewed: 1 (ARCH-REV-001, Fail / Design Impact: AR-001, AR-002)
-- Latest Authoritative Round: 2
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: 3
+- Trigger: Revised package from `/solution_designer` (SR-004, a requirements-only clarification of the AC-B1 alternate), after code review CRR-002 / CR-001 (API/E2E F-API-B1-ALT)
+- Prior Review Round Reviewed: 2 (ARCH-REV-002, Pass)
+- Latest Authoritative Round: 3
 - Current-State Evidence Basis: Round-1 code evidence is still valid. The worktree is unchanged apart from the ticket folder (base `5d6179797`). Round 2 re-checked the revised D-B3/D-B4 against `team-run-service.ts` (`restoreTeamRun`, `resolveActiveTeamRun`, `resolveManagedTeamRun`), `agent-team-run-manager.ts` (`restoreTeamRun`, `terminateTeamRun`), `agent-org-run.ts` (`terminate`, `terminateOnce`, `enterFailStop`), `root-team-run.ts` (`failStopped`), and `flat-team-execution-manager.ts` (`createFrozenTerminationScope`).
 
 ## Routing Classification Review
@@ -28,17 +28,32 @@
 
 - Overall Basis Status: `Confirmed`
 - Approved requirements / intended behavior understood: Yes (unchanged since round 1)
-- Relevant existing behavior and evidence confirmed: Yes. The round-1 confirmation still holds. For round 2, `TeamRunService.restoreTeamRun` is confirmed as the only product restore entry for Teams (GraphQL `restoreAgentTeamRun`). `resolveActiveTeamRun` and `resolveManagedTeamRun` serve the stream handler and application scope, not restore.
+- Relevant existing behavior and evidence confirmed: Yes. The round-1 confirmation still holds. Round 3 checked the already-stopped Terminate path:
+  - `AgentOrgRunManager.terminate` (`if (!run) return false;`) and `AgentTeamRunManager.terminateTeamRun` (`if (!root) return false;`) have no side effects for an unregistered root.
+  - `AgentOrgRunService.terminate` / `TeamRunService.terminateTeamRun` record history only on `true`.
+  - The resolvers `agent-org-run.ts` `terminateAgentOrgRun` and `agent-team-run.ts` `terminateAgentTeamRun` map `false` to `success:false` "…not found.".
+  - Live evidence (`live-org-b1.json`, `live-team-d4.json`) matches.
+
+  Also from round 2: For round 2, `TeamRunService.restoreTeamRun` is confirmed as the only product restore entry for Teams (GraphQL `restoreAgentTeamRun`). `resolveActiveTeamRun` and `resolveManagedTeamRun` serve the stream handler and application scope, not restore.
 - Scope guardrail confirmed: Yes
-- Approved change, preserved behavior, and outside scope understood: Yes. SR-003 changes design only; intended behavior is unchanged, so no renewed approval is needed.
+- Approved change, preserved behavior, and outside scope understood: Yes. SR-004 clarifies the AC-B1 alternate with user approval (option (b)): a retry after a failed or stuck attempt completes the stop, and Terminate on an already-stopped root keeps its existing response. The approved intent is unchanged. Option (a), an idempotent-success contract, was rejected, so no GraphQL, service or manager change is required.
 - Every prospective blocking `Design Impact` finding is traceable to an approved requirement, acceptance criterion, or preserved-behavior ID: `Yes` (no blocking findings remain)
 - Remaining material ambiguity, if any: None
+- AC alternate-column mapping (added in round 3; CR-001 found this was missing in round 2). Every AC, including its alternate, now maps to a design decision or to confirmed unchanged behavior:
+  - AC-A1/A2 → D-A1.
+  - AC-A3 → preserved (a normal turn end never calls `stop()`).
+  - AC-B1 main → D-B1/D-B3.
+  - AC-B1 alternate, retry after a failed or stuck attempt → D-B3 (the failed attempt and scope promises are cleared, and the root stays registered, so `terminate` re-runs) plus D-B4 (restore self-heal).
+  - AC-B1 alternate, already-stopped root → confirmed unchanged behavior (no state change; response `success:false` "…not found." preserved).
+  - AC-B2 → D-B2/D-B4.
+  - AC-B3 → D-B2.
+  - AC-B4 → preserved healthy paths.
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-A1 | User | Pass | Pass | Pass (R-1..R-3 folded into D-A1 and the example) | Confirmed | None |
 | BEH-A2 | System | Pass | Pass | Pass | Confirmed | None |
-| BEH-B1 | User | Pass (Org and Team roots) | Pass | Pass. S-B3 now reaches the manager for Teams (AR-001 resolved); the retry keeps the fail-stop origin (AR-002 resolved). | Confirmed | None |
+| BEH-B1 | User | Pass (Org and Team roots; AC-B1 alternate per SR-004) | Pass | Pass. S-B3 reaches the manager for Teams (AR-001 resolved); the retry keeps the fail-stop origin (AR-002 resolved); an already-stopped Terminate stays unchanged (SR-004). | Confirmed | None |
 | BEH-B2 | User | Pass | Pass | Pass (R-4: both publication sites) | Confirmed | None |
 
 ## Supplemental Artifact Coherence Verdict
@@ -199,7 +214,7 @@ None.
 
 ## Review Decision
 
-`Pass`
+`Pass` (round 3: SR-004 requirements clarification; design SR-003 unchanged)
 
 ## Findings
 
@@ -209,6 +224,7 @@ Non-blocking implementation notes:
 
 - N-1: Change Sequence step 2 still says "confirm the Team frozen scope's caching and align if needed". D-B3/R-8 now settle this: clear `fencing` on failure only, because `finishing` already clears. Follow D-B3.
 - N-2: The escalation trigger says "restore-after-stuck needs changes beyond the manager transition". The `TeamRunService` guard removal is outside the manager, but it is the reviewed, intended change, not an escalation.
+- N-4 (SR-004): There is no production change. Only the API/E2E durable assertions for the second Terminate (LIVE-ORG-B1, LIVE-ORG-R7, LIVE-TEAM-D4) must follow the clarified AC-B1: expect an unchanged state and the existing `success:false` "…not found." response, not a success. Two lines of `handoff-architecture-design-complete.md` are stale and cosmetic: the "Current solution revision" line mixes SR-003/SR-004 wording, and "Open Risks: Team frozen scope may also cache failures" was already resolved by R-8. Neither is blocking.
 - N-3: With the service pre-guard removed, `tokenUsageReadiness.assertExistingRunRestoreReady()` in `TeamRunService.restoreTeamRun` now runs before the manager's "already managed" rejection of a still-active Team. This is harmless; keep its current order.
 
 ## Classification
@@ -233,4 +249,4 @@ N/A (Pass)
 
 - Review Decision: `Pass`
 - Material-Premise Gate: `Pass`
-- Notes: Ready for implementation per the SR-003 design spec, with notes N-1..N-3.
+- Notes: The SR-003 design stands. The SR-004 clarification is coherent with it, with no design or production change. Downstream, only the API/E2E durable assertion and test-code review are needed (N-4).

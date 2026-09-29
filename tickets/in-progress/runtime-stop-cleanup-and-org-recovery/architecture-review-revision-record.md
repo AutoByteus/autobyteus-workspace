@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (SR-002) | SR-001, SR-002 | N/A | Fail (Design Impact) | AR-001, AR-002 |
 | ARCH-REV-002 | Round 2 / Revised Architecture Design Complete (SR-003) | SR-001, SR-002, SR-003 | Fail (Design Impact) | Pass | AR-001, AR-002 (resolved) |
+| ARCH-REV-003 | Round 3 / SR-004 requirements clarification (CRR-002 / CR-001) | SR-001..SR-004 | Pass | Pass | None new (CR-001 addressed upstream) |
 
 ## Revision Entries
 
@@ -57,3 +58,34 @@ None
 - Material classification changes: None (Medium / High)
 - Recommended recipient: `/implementation_engineer` (primary); informational pass to `/solution_designer`
 - Remaining risks or uncertainty: See the report's Residual Risks section.
+
+### ARCH-REV-003 — SR-004 AC-B1 alternate clarification: coherent with SR-003; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/tickets/in-progress/runtime-stop-cleanup-and-org-recovery/design-review-report.md`
+- Review round and trigger: Round 3. The trigger is the revised package from `/solution_designer` (SR-004, requirements-only), after `/code_reviewer` CRR-002 / CR-001 (API/E2E F-API-B1-ALT).
+- Triggering role, report path, and finding IDs: `/code_reviewer`, `code-review-report.md`, CR-001; `/solution_designer`, `handoff-architecture-design-complete.md` (SR-004 section)
+- Relevant solution revision IDs: SR-001..SR-004
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - Verified the user-approved SR-004 AC-B1 alternate, option (b):
+    - Retry after a failed or stuck attempt → D-B3 plus D-B4.
+    - Already-stopped root → unchanged manager, service and resolver behavior. There is no side effect, and the existing `success:false` "…not found." response is preserved.
+  - Confirmed against source and live evidence.
+  - D-A1 and D-B1..D-B4 are unchanged, and "GraphQL/WebSocket/web: No change" remains correct.
+  - Added an AC alternate-column mapping to the basis section.
+  - Added note N-4.
+- Review-gap acknowledgment: in ARCH-REV-002 I marked BEH-B1 `Confirmed` without mapping the AC-B1 "Alternate / Failure" column to a design decision or to confirmed unchanged behavior, which is the same gap CR-001 records for code review. The basis check now covers alternate columns explicitly.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Resolved (ARCH-REV-002) | Resolved (unchanged) | SR-003 | Design unchanged in SR-004 |
+| AR-002 | Resolved (ARCH-REV-002) | Resolved (unchanged) | SR-003 | Design unchanged in SR-004 |
+| CR-001 (code review; tracked here for architecture coverage) | Open downstream | Addressed at requirements/design level | SR-004 | The AC-B1 alternate is now approved as a retry that completes the stop plus the preserved existing response for an already-stopped root. It maps to D-B3/D-B4 and to verified unchanged code, `agent-org-run-manager.ts` `terminate` / `agent-team-run-manager.ts` `terminateTeamRun` → resolvers. Final closure belongs to code review after the API/E2E assertion update. |
+
+- New or remaining finding IDs: None (non-blocking notes N-1..N-4)
+- Material classification changes: None (Medium / High)
+- Recommended recipient: `/implementation_engineer` (primary, per the handoff rules; no production change is required); informational pass to `/solution_designer`
+- Remaining risks or uncertainty: Unchanged; see the report's Residual Risks section.

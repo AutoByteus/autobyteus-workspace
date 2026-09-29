@@ -8,6 +8,10 @@
 - Design status: `Ready`
 - Canonical investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/tickets/in-progress/runtime-stop-cleanup-and-org-recovery/investigation-notes.md`
 
+## SR-004 Note
+
+AC-B1's alternate column is clarified (requirements SR-004, user-approved). Terminate on an already-stopped Org/Team keeps its existing response (`success:false`, "…not found."). No design decision changes: D-A1 and D-B1..D-B4 stand as reviewed in ARCH-REV-002, and the Interface Boundary Mapping ("GraphQL / WebSocket / web: No change") remains correct.
+
 ## Current-State Read
 
 **A — AGY background processes.** `AgyStreamProcess` is the single owner of the AGY child. `stop()` sends `SIGTERM` to AGY only. AGY puts each background command in its own session/process group, so those groups survive AGY and are reparented to PID 1 (F-API-001). Every AutoByteus-initiated stop (user Stop via `AgyAgentRunBackend.interrupt`, `terminate`, dispatch failure, listener failure, and stream/protocol `fail()`) funnels into `AgyStreamProcess.stop()`. App/server shutdown reaches it through the run/Team/Org `stopAll*` paths → `terminate`.

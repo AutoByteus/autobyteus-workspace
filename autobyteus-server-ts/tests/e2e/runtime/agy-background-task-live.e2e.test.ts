@@ -42,6 +42,18 @@ const waitListening = async (port: number, expected: boolean, ms: number) => {
   while (Date.now() < deadline && await listening(port) !== expected) await wait(250);
   return listening(port);
 };
+/** pid/ppid/pgid of the process listening on the port, to prove the daemon runs in its own background group. */
+const portOwner = (port: number) => {
+  const pid = spawnSync("lsof", ["-ti", `tcp:${port}`, "-sTCP:LISTEN"], { encoding: "utf8" }).stdout.split(/\s+/).find(Boolean);
+  if (!pid) return null;
+  const [ppid, pgid] = spawnSync("ps", ["-o", "ppid=,pgid=", "-p", pid], { encoding: "utf8" }).stdout.trim().split(/\s+/).map(Number);
+  return { pid: Number(pid), ppid, pgid };
+};
+/** Time until the port stops listening (AC-A1/A2 "within a few seconds"). */
+const msUntilClosed = async (port: number, ms: number) => {
+  const started = Date.now();
+  return await waitListening(port, false, ms) ? null : Date.now() - started;
+};
 /** Last-resort cleanup of the daemon this test asked AGY to start on its private port. */
 const killPortOwner = (port: number) => {
   const pids = spawnSync("lsof", ["-ti", `tcp:${port}`, "-sTCP:LISTEN"], { encoding: "utf8" }).stdout.split(/\s+/).filter(Boolean);
@@ -146,7 +158,7 @@ suite("real AGY background tasks keep the AutoByteus turn alive", () => {
         `terminal events for ${command(start) || String(start.payload["tool_name"])}`).toHaveLength(1);
   };
 
-  it("SCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean", async () => {
+  it("SCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon", async () => {
     const port = await freePort(); ports.push(port);
     const run = await openRun();
     const evidence: Record<string, unknown> = { case: "LIVE-BG-001", runId: run.runId, port, model: MODEL };
@@ -177,7 +189,10 @@ suite("real AGY background tasks keep the AutoByteus turn alive", () => {
           ?.payload["result"]).toMatchObject({ provider_state: "DONE" });
       }
       expectNoDanglingTools(turn);
-      expect((await fs.readFile(path.join(run.workspace, "done.txt"), "utf8")).trim()).toBe("OK");
+      // The write step ran after the daemon (its file location depends on the model's chosen tool/cwd).
+      const write = turn.find((m) => m.type === "TOOL_EXECUTION_STARTED" && JSON.stringify(args(m)).includes("done.txt"));
+      expect(write, "a step writing done.txt").toBeDefined();
+      expect(turn.some((m) => m.type === "TOOL_EXECUTION_SUCCEEDED" && m.payload["invocation_id"] === write!.payload["invocation_id"])).toBe(true);
       expect(await waitListening(port, true, 5_000)).toBe(true);
 
       // Quiet window: the daemon keeps running, AGY sends nothing outside a turn, the run stays usable.
@@ -202,10 +217,12 @@ suite("real AGY background tasks keep the AutoByteus turn alive", () => {
       expect(evidence.historyDaemonRow).toMatchObject({ kind: "tool_call", toolName: "run_command", toolResult: BACKGROUND_RESULT });
       expect(history.activities.find((row) => row["invocationId"] === daemonId)).toMatchObject({ status: "success", result: BACKGROUND_RESULT });
 
-      // Terminate ends the run. AGY 1.2.12 leaves its backgrounded daemon running after SIGTERM (it is reparented),
-      // which is outside this package's approved scope; record it as evidence and let afterAll clean up the port owner.
+      // AC-A2: Terminate stops AGY together with its background process groups; the daemon's port is freed.
+      evidence.daemonOwnerBeforeTerminate = portOwner(port);
       expect(await terminate(run.runId)).toBe(true);
-      evidence.daemonListeningAfterTerminate = await waitListening(port, false, 15_000);
+      evidence.daemonClosedAfterTerminateMs = await msUntilClosed(port, 15_000);
+      expect(evidence.daemonClosedAfterTerminateMs, "daemon still listening after terminate").not.toBeNull();
+      expect(evidence.daemonClosedAfterTerminateMs as number).toBeLessThanOrEqual(5_000);
       evidence.result = "Pass";
     } catch (error) {
       evidence.result = "Fail"; evidence.error = String(error); throw error;
@@ -243,7 +260,7 @@ suite("real AGY background tasks keep the AutoByteus turn alive", () => {
     }
   }, 600_000);
 
-  it("Stop during a turn with a running daemon interrupts the turn and never closes the daemon as a background success", async () => {
+  it("Stop during a turn with a backgrounded daemon interrupts the turn, stops the daemon and never closes it as a background success", async () => {
     const port = await freePort(); ports.push(port);
     const run = await openRun();
     const evidence: Record<string, unknown> = { case: "LIVE-BG-003", runId: run.runId, port, model: MODEL };
@@ -256,6 +273,9 @@ suite("real AGY background tasks keep the AutoByteus turn alive", () => {
       while (Date.now() < deadline && !(daemonStart() && await listening(port))) await wait(500);
       expect(daemonStart()).toBeDefined();
       expect(await listening(port)).toBe(true);
+      // Stop only after AGY has backgrounded the daemon (well past WaitMsBeforeAsync), the case that used to leak.
+      await wait(10_000);
+      evidence.daemonOwnerBeforeStop = portOwner(port);
       expect(run.messages.slice(from).some((m) => m.type === "TURN_COMPLETED")).toBe(false);
       const commandId = `interrupt-${randomUUID()}`;
       run.socket.send(JSON.stringify({ type: "INTERRUPT_GENERATION", payload: { command_id: commandId } }));
@@ -269,8 +289,10 @@ suite("real AGY background tasks keep the AutoByteus turn alive", () => {
       const daemonId = daemonStart()!.payload["invocation_id"];
       expect(turn.some((m) => m.type === "TOOL_EXECUTION_SUCCEEDED" && m.payload["invocation_id"] === daemonId)).toBe(false);
       expect(turn.some((m) => m.type === "ERROR" && m.payload["code"] === "AGY_PROCESS_ERROR")).toBe(false);
-      // Evidence only: whether the daemon survives depends on whether AGY had already backgrounded it (see SCN-001 note).
-      evidence.daemonListeningAfterStop = await waitListening(port, false, 15_000);
+      // AC-A1: Stop stops AGY together with its background process groups; the daemon's port is freed.
+      evidence.daemonClosedAfterStopMs = await msUntilClosed(port, 15_000);
+      expect(evidence.daemonClosedAfterStopMs, "daemon still listening after Stop").not.toBeNull();
+      expect(evidence.daemonClosedAfterStopMs as number).toBeLessThanOrEqual(5_000);
       const history = await projection(run.runId);
       evidence.historyDaemonActivity = history.activities.find((row) => row["invocationId"] === daemonId) ?? null;
       expect((evidence.historyDaemonActivity as Record<string, unknown> | null)?.["status"]).not.toBe("success");

@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | User request via `/api_e2e_engineer` (F-API-001) + user instruction to include Org termination fix; live probes L1/L2 | F-API-001 | N/A | Ready for Approval → Approved (2026-09-29) | BEH-A1, A2, B1, B2; REQ-A1..A3, B1..B4 | Approved with option A and DEC-001..006 resolved |
 | SR-002 | Mixed | User approval of SR-001 + architecture investigation | N/A | Requirements Approved; design N/A | Requirements Approved; Design Ready | all SR-001 IDs | Architecture Design Complete (Medium / High) |
+| SR-004 | Requirements | CRR-002 / CR-001 (F-API-B1-ALT); user approval 2026-09-29 | CR-001 | Requirements Approved (SR-001), design Ready (SR-003) | Requirements Approved (SR-004); design unchanged | AC-B1 (alternate column) | AC clarified; no code change |
 | SR-003 | Design | ARCH-REV-001 round 1 (Fail, Design Impact) | AR-001, AR-002, R-1..R-8 | Design Ready (SR-002), review Fail | Design Ready (revised) | REQ-B1, REQ-B4 (Teams via DEC-004), REQ-B1 (fail-stop retry); REQ-A1 (R-1..R-3), REQ-B3 (R-4) | Architecture Design Complete (Medium / High), re-review |
 
 ## Revision Entries
@@ -63,3 +64,21 @@
 ### Review notification (informational; not a solution round)
 
 - 2026-09-29: `/architecture_reviewer` ARCH-REV-002 (round 2) **Pass** on SR-003. AR-001 and AR-002 resolved; R-1..R-8 folded; non-blocking implementation notes N-1..N-3 in `design-review-report.md`. The reviewer delivered the cumulative package to `/implementation_engineer`. The Solution Designer does not forward it again.
+
+### SR-004 — AC-B1 alternate clarification (approved)
+
+- Phase and classification: Requirements; `Requirement Gap` (contributing) with `Design Impact` origin per CRR-002
+- Triggering report: `/code_reviewer` CRR-002, finding CR-001; API/E2E F-API-B1-ALT (LIVE-ORG-B1, LIVE-ORG-R7, LIVE-TEAM-D4, 2 runs each)
+- Evidence: `evidence/live-org-b1.json`, `evidence/live-team-d4.json`: secondTerminate → `{success:false, "…not found."}`; resolvers `agent-org-run.ts:254` and `agent-team-run.ts:215` map a manager `false` to "not found".
+- Prior status: requirements Approved (SR-001), design Ready (SR-003), review Pass (ARCH-REV-002)
+- Current status: requirements `Approved` (SR-004); design unchanged (SR-003 remains authoritative; option (b) needs no design change)
+- Proposed: option (b) (clarify AC; no code change); alternative (a) (idempotent terminate contract)
+- Approval impact: renewed approval received from the user on 2026-09-29: "Accept your suggestion." (option (b), recommended). Earlier the user said "What is your suggestion? I think you always give me really reasonable suggestions."
+- Intended behavior changed: `No` (the AC wording now matches the approved intent and the preserved existing response)
+- Downstream impact: no production code change. The API/E2E durable test assertion for the second Terminate (LIVE-ORG-B1, LIVE-ORG-R7, LIVE-TEAM-D4) must follow the clarified AC-B1; then run test-code review and continue towards delivery.
+- Classification: unchanged (`Medium` / `High`)
+- Handoff: per rules (revised package, High → `/architecture_reviewer`); see `handoff-architecture-design-complete.md` SR-004 section
+
+### Review notification (informational; not a solution round)
+
+- 2026-09-29: `/architecture_reviewer` ARCH-REV-003 (round 3) **Pass** on SR-004. The design SR-003 stands, and there is no production change. N-4 (two stale handoff lines) is corrected in `handoff-architecture-design-complete.md`. The reviewer delivered the package to `/implementation_engineer`. The Solution Designer does not forward it again.

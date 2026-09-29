@@ -1,0 +1,109 @@
+{
+  "case": "LIVE-ORG-R7",
+  "model": "gemini-3.8-flash-high",
+  "orgRunId": "agy_recovery_org_c5be641a_367e_4d3a_9ae9_1f0c5d89d497_6b607d8f3f154367bc18fc0baf1a3c32",
+  "directorRunId": "agy_recovery_director_c5be641a_367e_4d3a_9ae9_1f_8fb7cd94d1f54aafb80f052164c028a1",
+  "workerRunId": "agy_recovery_worker_c5be641a_367e_4d3a_9ae9_1f0c_d99c0b2f448340739f8705838b51ee6d",
+  "directorStop": {
+    "toolStarted": true,
+    "agyBeforeStop": [
+      {
+        "pid": 39459,
+        "command": "agy --new-project --agent autobyteus-1a9598c115625c7e --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-TB52mk/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+      }
+    ],
+    "stopAck": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_c5be641a_367e_4d3a_9ae9_1f0c5d89d497_6b607d8f3f154367bc18fc0baf1a3c32",
+      "command_id": "02c2e58f-ed66-4e04-aad4-8584ff5a5d9b",
+      "command_type": "INTERRUPT_GENERATION",
+      "target_agent_run_id": "agy_recovery_director_c5be641a_367e_4d3a_9ae9_1f_8fb7cd94d1f54aafb80f052164c028a1",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_INTERRUPTED",
+    "agyGone": true
+  },
+  "stateAfterDirectorStop": {
+    "configIsActive": true,
+    "inspectionIsActive": true
+  },
+  "directorRecall": {
+    "ack": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_c5be641a_367e_4d3a_9ae9_1f0c5d89d497_6b607d8f3f154367bc18fc0baf1a3c32",
+      "command_id": "ddb7203c-c139-4116-9447-e7c9bd17e0af",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "agy_recovery_director_c5be641a_367e_4d3a_9ae9_1f_8fb7cd94d1f54aafb80f052164c028a1",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_COMPLETED",
+    "text": "CODE-SD-019f87e0",
+    "start": 48
+  },
+  "workerStop": {
+    "toolStarted": true,
+    "agyBeforeStop": [
+      {
+        "pid": 39512,
+        "command": "agy --new-project --agent autobyteus-6f0ddd76931c6cab --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-TB52mk/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+      }
+    ],
+    "stopAck": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_c5be641a_367e_4d3a_9ae9_1f0c5d89d497_6b607d8f3f154367bc18fc0baf1a3c32",
+      "command_id": "284c6556-5be0-46e2-824d-52aa08a2d9e0",
+      "command_type": "INTERRUPT_GENERATION",
+      "target_agent_run_id": "agy_recovery_worker_c5be641a_367e_4d3a_9ae9_1f0c_d99c0b2f448340739f8705838b51ee6d",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_INTERRUPTED",
+    "agyGone": true
+  },
+  "stateAfterWorkerStop": {
+    "configIsActive": true,
+    "inspectionIsActive": true
+  },
+  "terminate": {
+    "success": true,
+    "message": "Agent organization run terminated successfully."
+  },
+  "stateAfterTerminate": {
+    "configIsActive": false,
+    "inspectionIsActive": false
+  },
+  "secondTerminate": {
+    "success": false,
+    "message": "Agent organization run not found."
+  },
+  "stateAfterSecondTerminate": {
+    "configIsActive": false,
+    "inspectionIsActive": false
+  },
+  "restore": {
+    "success": true,
+    "message": "Agent organization run restored successfully.",
+    "agentOrgRunId": "agy_recovery_org_c5be641a_367e_4d3a_9ae9_1f0c5d89d497_6b607d8f3f154367bc18fc0baf1a3c32"
+  },
+  "workerRecall": {
+    "ack": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_c5be641a_367e_4d3a_9ae9_1f0c5d89d497_6b607d8f3f154367bc18fc0baf1a3c32",
+      "command_id": "8b641f5b-55c1-4f22-a14d-b55130cca637",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "agy_recovery_worker_c5be641a_367e_4d3a_9ae9_1f0c_d99c0b2f448340739f8705838b51ee6d",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_COMPLETED",
+    "text": "CODE-SW-70dd7dd5\n",
+    "start": 3
+  },
+  "result": "Pass"
+}

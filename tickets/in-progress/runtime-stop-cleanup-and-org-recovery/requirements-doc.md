@@ -3,14 +3,19 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-004`
 - Package identifier: `runtime-stop-cleanup-and-org-recovery`
 - Request / ticket: (A) stop AGY-started background processes when the AGY runtime is stopped (F-API-001); (B) fix Agent Org termination/recovery when a member runtime has died
 - Requirements owner: Solution Designer (`/solution_designer`)
 - Date: 2026-09-29
 - Approval state and reference: Approved by the user on 2026-09-29 in the Solution Designer conversation. After the option A/B clarification the user replied: "I want to have a reasonable fix, meaning that if we add a lot of turns into some kind of process management system, then that wouldn't. But if the fix is reasonable, I'm fine. it will make our product better." This approves option A (the basic AGY background cleanup, without crash handling) together with the Org recovery scope and the recommended DEC-004 and DEC-006. The user was told these recommendations were adopted and invited to object.
-- Exact approved requirements baseline / solution revision: SR-001 (this document, with the DEC resolutions below)
+- Exact approved requirements baseline / solution revision: SR-001 (with DEC resolutions), amended by SR-004 (AC-B1 alternate clarification, option (b)). The user approved it on 2026-09-29: "Accept your suggestion." This followed the recommendation of option (b).
 - Behavior-defining supplements and their approved versions: N/A — none
+
+## Revision SR-004 (approved 2026-09-29)
+
+- Trigger: code review CRR-002 / CR-001 (API/E2E F-API-B1-ALT). A second Terminate on an already-stopped Org/Team returns `success:false` "…not found." and changes nothing.
+- Decision: option (b). The AC-B1 alternate is clarified; no behavior or code change. The existing response for Terminate on an already-stopped root is preserved (consistent with AC-B4). Option (a) (idempotent success contract) was rejected. Rewording the "not found" message is a possible cosmetic follow-up and out of scope.
 
 ## Problem And Desired Outcome
 
@@ -86,7 +91,7 @@
 | AC-A1 | REQ-A1 | SCN-A1 | AGY run with a backgrounded daemon (e.g. `python3 -m http.server`); user Stop mid-turn | AGY process and daemon both gone; port free within a few seconds | — | Live AGY e2e (existing `agy-background-task-live.e2e.test.ts` assertions become pass/fail) |
 | AC-A2 | REQ-A1 | SCN-A1 | Same, idle run; Terminate (run, Team, Org) and app/server shutdown | Daemon gone | — | Live e2e + unit (process-tree stop owner with fake process table) |
 | AC-A3 | REQ-A2 | SCN-A1 | Turn ends normally with daemon running | Daemon still running; card shows background state | — | Existing live case unchanged |
-| AC-B1 | REQ-B1, REQ-B4 | SCN-B1 | Org with a crashed AGY member; Terminate | `success:true`; Org no longer registered; inspection and config agree inactive | Second Terminate is a harmless no-op success | Probe L1 automated (fake runtime crash) + live |
+| AC-B1 | REQ-B1, REQ-B4 | SCN-B1 | Org with a crashed AGY member; Terminate | `success:true`; Org no longer registered; inspection and config agree inactive | Retrying Terminate after a failed or stuck attempt completes the stop. Terminate on an already-stopped Org/Team changes nothing and causes no harm; its existing response (`success:false`, "…not found.") is kept (SR-004) | Probe L1 automated (fake runtime crash) + live |
 | AC-B2 | REQ-B2 | SCN-B1 | After AC-B1, send a message to any member | Org restores; member conversation continues (AGY resumes by conversation id) | — | Integration/live |
 | AC-B3 | REQ-B3 | SCN-B2 | Active Org, crashed member; send message to that member | Accepted; member resumes its conversation; other members untouched | — | Probe L2 automated + live |
 | AC-B4 | REQ-B1..B3 | SCN-B1, SCN-B2 | Healthy Org create/message/terminate/restore | Unchanged | — | Existing suites green |
