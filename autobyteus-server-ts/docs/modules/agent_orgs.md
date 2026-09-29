@@ -242,6 +242,16 @@ failure inferred from a controlled notification rejection.
   root shutdown contract, terminates the entire materialized scope, and retains
   durable history. Restore uses stored run identities and provider bindings,
   not mutable current definitions.
+- Stop succeeds even when a member's runtime already died, because a member the
+  AgentRunManager no longer publishes counts as already terminated. A failed or
+  unaccepted termination attempt is not cached, so a retry re-runs it. A retry
+  of a fail-stop termination keeps the fail-stop settlement. Restore of an Org
+  that is still registered but no longer active completes its termination first
+  and then restores it. If termination still fails, restore reports
+  `AGENT_ORG_STOP_INCOMPLETE`, never "already active".
+- A message to a member whose runtime died while the Org stays active
+  re-activates that member in `restore` mode. The member continues its persisted
+  provider conversation, and other members are unaffected.
 
 ## Persistence And History
 

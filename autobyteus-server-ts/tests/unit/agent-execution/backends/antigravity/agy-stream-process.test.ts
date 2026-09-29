@@ -11,6 +11,9 @@ class FakeChild extends EventEmitter {
     write: (line: string, callback: (error?: Error | null) => void) => { this.written.push(line); callback(null); return true; },
   };
   readonly kill = vi.fn(() => true);
+  readonly pid = 4242;
+  exitCode: number | null = null;
+  signalCode: NodeJS.Signals | null = null;
   /** Deliver stdout synchronously so fake timers do not need to drive stream I/O. */
   emitLine(message: unknown): void { this.stdout.emit("data", `${JSON.stringify(message)}\n`); }
 }
@@ -18,6 +21,11 @@ class FakeChild extends EventEmitter {
 const children = vi.hoisted(() => [] as unknown[]);
 vi.mock("node:child_process", () => ({
   spawn: vi.fn(() => { const child = new FakeChild(); children.push(child); return child; }),
+}));
+const groups = vi.hoisted(() => ({ list: vi.fn((): number[] => []), signal: vi.fn() }));
+vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-background-process-groups.js", () => ({
+  listAgyBackgroundProcessGroups: groups.list,
+  signalProcessGroups: groups.signal,
 }));
 
 import { AgyStreamProcess } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-process.js";
@@ -41,7 +49,7 @@ const startProcess = async () => {
 };
 
 describe("AgyStreamProcess turn liveness", () => {
-  beforeEach(() => { children.length = 0; vi.useFakeTimers(); });
+  beforeEach(() => { children.length = 0; groups.list.mockReset().mockReturnValue([]); groups.signal.mockReset(); vi.useFakeTimers(); });
   afterEach(() => { vi.useRealTimers(); });
 
   it("keeps a silent turn alive past five minutes and completes it on the later result", async () => {
@@ -78,5 +86,62 @@ describe("AgyStreamProcess turn liveness", () => {
     await vi.advanceTimersByTimeAsync(60_000);
     await rejection;
     expect((children.at(-1) as FakeChild).kill).toHaveBeenCalledWith("SIGTERM");
+  });
+});
+
+describe("AgyStreamProcess stop cleans up AGY background process groups", () => {
+  beforeEach(() => { children.length = 0; groups.list.mockReset().mockReturnValue([]); groups.signal.mockReset(); vi.useFakeTimers(); });
+  afterEach(() => { vi.useRealTimers(); });
+
+  it("SIGTERMs AGY's background groups before AGY, then SIGKILLs the same groups after a short delay", async () => {
+    const run = await startProcess();
+    groups.list.mockReturnValue([300, 400]);
+
+    run.process.stop();
+
+    expect(groups.list).toHaveBeenCalledWith(4242);
+    expect(groups.signal).toHaveBeenCalledWith([300, 400], "SIGTERM");
+    expect(run.child.kill).toHaveBeenCalledWith("SIGTERM");
+    expect(groups.signal.mock.invocationCallOrder[0]).toBeLessThan(run.child.kill.mock.invocationCallOrder[0]!);
+    expect(groups.signal).toHaveBeenCalledTimes(1);
+    await vi.advanceTimersByTimeAsync(1_500);
+    expect(groups.signal).toHaveBeenLastCalledWith([300, 400], "SIGKILL");
+    run.process.stop();
+    expect(groups.list).toHaveBeenCalledTimes(1);
+  });
+
+  it("does not look for groups when AGY already exited on its own, but still reports the failure", async () => {
+    const run = await startProcess();
+    run.child.exitCode = 1;
+    run.child.emit("close", 1, null);
+
+    expect(run.closes).toHaveLength(1);
+    expect(groups.list).not.toHaveBeenCalled();
+    expect(groups.signal).not.toHaveBeenCalled();
+  });
+
+  it("cleans up groups when AutoByteus stops a live AGY after a stream protocol failure", async () => {
+    const run = await startProcess();
+    groups.list.mockReturnValue([300]);
+    run.child.stdout.emit("data", "not json\n");
+
+    expect(run.closes).toHaveLength(1);
+    expect(groups.signal).toHaveBeenCalledWith([300], "SIGTERM");
+    expect(run.child.kill).toHaveBeenCalledWith("SIGTERM");
+  });
+
+  it("still stops AGY when listing groups fails, and schedules no SIGKILL sweep", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const run = await startProcess();
+      groups.list.mockImplementation(() => { throw new Error("ps timed out"); });
+
+      run.process.stop();
+
+      expect(run.child.kill).toHaveBeenCalledWith("SIGTERM");
+      expect(warn).toHaveBeenCalledWith("AGY_BACKGROUND_GROUP_STOP_FAILED", "ps timed out");
+      await vi.advanceTimersByTimeAsync(5_000);
+      expect(groups.signal).not.toHaveBeenCalled();
+    } finally { warn.mockRestore(); }
   });
 });

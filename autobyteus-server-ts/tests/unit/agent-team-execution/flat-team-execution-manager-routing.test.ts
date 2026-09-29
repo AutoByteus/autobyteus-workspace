@@ -192,6 +192,32 @@ describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
     expect(cancelOrder).toEqual(["first-attempt", "second-retry", "first-retry"]);
   });
 
+  it("re-runs a frozen-scope fence that was not accepted (e.g. a dead member) on the next attempt", async () => {
+    const { manager } = createMixedManager();
+    const handle = {
+      fenceForRootShutdown: vi.fn<() => Promise<{ accepted: boolean; code?: string }>>()
+        .mockResolvedValueOnce({ accepted: false, code: "NOT_FENCED" })
+        .mockResolvedValue({ accepted: true }),
+      terminate: vi.fn(async () => ({ accepted: true as const })),
+    };
+    const internals = manager as never as {
+      configured: { listHandles(): readonly unknown[] };
+      taskAgents: { listHandles(): readonly unknown[]; listPreparedHandles(): readonly unknown[] };
+      taskTeams: { listTeamRuns(): readonly unknown[]; listPreparedTeamRuns(): readonly unknown[] };
+    };
+    vi.spyOn(internals.configured, "listHandles").mockReturnValue([]);
+    vi.spyOn(internals.taskAgents, "listHandles").mockReturnValue([handle]);
+    vi.spyOn(internals.taskAgents, "listPreparedHandles").mockReturnValue([]);
+    vi.spyOn(internals.taskTeams, "listTeamRuns").mockReturnValue([]);
+    vi.spyOn(internals.taskTeams, "listPreparedTeamRuns").mockReturnValue([]);
+
+    const scope = manager.freezeForRootTermination();
+    await expect(scope.fenceAgentRunsForRootShutdown()).resolves.toMatchObject({ accepted: false });
+    await expect(scope.fenceAgentRunsForRootShutdown()).resolves.toEqual({ accepted: true });
+    await expect(scope.fenceAgentRunsForRootShutdown()).resolves.toEqual({ accepted: true });
+    expect(handle.fenceForRootShutdown).toHaveBeenCalledTimes(2);
+  });
+
   it("freezes the complete active, prepared, and recursive task scope once", async () => {
     const { manager } = createMixedManager();
     const fenced: string[] = [];

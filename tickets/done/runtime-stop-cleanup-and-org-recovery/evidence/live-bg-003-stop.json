@@ -1,0 +1,120 @@
+{
+  "case": "LIVE-BG-003",
+  "runId": "agy_background_live_985fed83_1948_45e9_9a2d_b2a8_019b8cbb56b64e5989dee1f55b18dbdc",
+  "port": 60060,
+  "model": "gemini-3.8-flash-high",
+  "daemonOwnerBeforeStop": {
+    "pid": 69784,
+    "ppid": 69459,
+    "pgid": 69784
+  },
+  "turn": [
+    {
+      "at_ms": 8,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 8,
+      "type": "AGENT_COMMAND_ACK",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 8,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 8,
+      "type": "TURN_STARTED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 3439,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-4e976a3e-cf0b-4cf3-b19f-ca8d8c6cc431-2",
+      "command": "python3 -m http.server 60060 --bind 127.0.0.1",
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 14295,
+      "type": "TURN_INTERRUPTED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 14295,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 14295,
+      "type": "AGENT_COMMAND_ACK",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    }
+  ],
+  "ack": {
+    "command_type": "INTERRUPT_GENERATION",
+    "command_id": "interrupt-761512db-9ffe-4f0d-9135-fb027e355ee8",
+    "target": {
+      "target_kind": "standalone_run",
+      "run_id": "agy_background_live_985fed83_1948_45e9_9a2d_b2a8_019b8cbb56b64e5989dee1f55b18dbdc"
+    },
+    "state": "accepted"
+  },
+  "daemonClosedAfterStopMs": 0,
+  "historyDaemonActivity": {
+    "kind": "tool",
+    "invocationId": "agy-tool-4e976a3e-cf0b-4cf3-b19f-ca8d8c6cc431-2",
+    "toolName": "run_command",
+    "type": "tool_call",
+    "status": "error",
+    "contextText": "run_command",
+    "arguments": {
+      "CommandLine": "python3 -m http.server 60060 --bind 127.0.0.1"
+    },
+    "logs": [],
+    "result": null,
+    "error": "Tool execution interrupted.",
+    "ts": 1790656739.571,
+    "detailLevel": "source_limited"
+  },
+  "result": "Pass"
+}

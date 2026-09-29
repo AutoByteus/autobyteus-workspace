@@ -169,6 +169,7 @@ export class AgentTeamRunManager {
     this.assertRootAdmissionOpen();
     const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
     return this.withRootTransition(rootTeamRunId, async () => {
+      await this.completeStoppingRoot(rootTeamRunId);
       if (this.hasManagedTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already managed.`);
       await this.packageCatalog.awaitReady();
       if (!this.packageCatalog.isAdmitted(rootTeamRunId)) {
@@ -442,6 +443,22 @@ export class AgentTeamRunManager {
       throw error;
     }
     this.notify({ teamRunId: root.teamRunId, isActive: true });
+  }
+
+  /**
+   * A managed root that is no longer active (terminating or fail-stopped) finishes its termination here,
+   * so restore never dead-ends on "already managed". Runs inside the caller's root transition.
+   */
+  private async completeStoppingRoot(rootTeamRunId: string): Promise<void> {
+    const root = this.managedRoots.get(rootTeamRunId);
+    if (!root || root.isActive()) return;
+    let result;
+    try { result = await root.terminate(); }
+    catch (error) { result = { accepted: false, message: error instanceof Error ? error.message : String(error) }; }
+    if (!result.accepted) {
+      throw new Error(`TEAM_RUN_STOP_INCOMPLETE: ${result.message ?? result.code ?? `TeamRun '${rootTeamRunId}' did not finish stopping.`}`);
+    }
+    this.unregister(rootTeamRunId, root);
   }
 
   private unregister(rootTeamRunId: string, expected: RootTeamRun): boolean {

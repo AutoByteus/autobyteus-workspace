@@ -1,0 +1,64 @@
+{
+  "case": "LIVE-ORG-B3+A2",
+  "model": "gemini-3.8-flash-high",
+  "orgRunId": "agy_recovery_org_c5be641a_367e_4d3a_9ae9_1f0c5d89d497_a0d4fba3c4454e7bb8969129476f507e",
+  "directorRunId": "agy_recovery_director_c5be641a_367e_4d3a_9ae9_1f_fa77004dd590492987c3b77445d6c14f",
+  "workerRunId": "agy_recovery_worker_c5be641a_367e_4d3a_9ae9_1f0c_35a3e08b17204624af5707d51084379e",
+  "port": 62032,
+  "directorAgyBefore": [
+    {
+      "pid": 39186,
+      "command": "agy --new-project --agent autobyteus-6e4a8b104ab412dc --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-TB52mk/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    }
+  ],
+  "crashed": {
+    "pid": 39153,
+    "command": "agy --new-project --agent autobyteus-947fbe0ade7facad --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-TB52mk/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+  },
+  "stateAfterCrash": {
+    "configIsActive": true,
+    "inspectionIsActive": true
+  },
+  "recall": {
+    "ack": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_c5be641a_367e_4d3a_9ae9_1f0c5d89d497_a0d4fba3c4454e7bb8969129476f507e",
+      "command_id": "1d63a6ba-1a3d-496b-89a4-34ec707d5a46",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "agy_recovery_worker_c5be641a_367e_4d3a_9ae9_1f0c_35a3e08b17204624af5707d51084379e",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_COMPLETED",
+    "text": "CODE-W-2430d14f",
+    "start": 37
+  },
+  "resumedAgy": [
+    {
+      "pid": 39278,
+      "command": "agy --conversation 0f735f56-cd10-4de9-a86f-f022e958ee0a --agent autobyteus-947fbe0ade7facad --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-TB52mk/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+    }
+  ],
+  "daemonTurn": {
+    "ack": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_c5be641a_367e_4d3a_9ae9_1f0c5d89d497_a0d4fba3c4454e7bb8969129476f507e",
+      "command_id": "950451f0-2cd8-4120-84df-10079ef76e43",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "agy_recovery_director_c5be641a_367e_4d3a_9ae9_1f_fa77004dd590492987c3b77445d6c14f",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_COMPLETED",
+    "text": "DAEMON_STARTED\n",
+    "start": 53
+  },
+  "terminate": {
+    "success": true,
+    "message": "Agent organization run terminated successfully."
+  },
+  "daemonClosedAfterOrgTerminateMs": 1,
+  "result": "Pass"
+}

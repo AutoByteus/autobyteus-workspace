@@ -115,6 +115,7 @@ export class AgentOrgRunManager {
     this.assertRootAdmissionOpen();
     const orgRunId = required(orgRunIdInput, "orgRunId");
     return this.withTransition(orgRunId, async () => {
+      await this.completeStoppingRun(orgRunId);
       this.assertNotActive(orgRunId);
       await this.packageCatalog.awaitReady();
       if (!this.packageCatalog.isAdmitted(orgRunId)) {
@@ -403,6 +404,22 @@ export class AgentOrgRunManager {
     this.active.delete(orgRunId);
     this.activeRootDirectory.unregister(createAgentOrgRootExecutionIdentity(orgRunId), expected);
     return true;
+  }
+  /**
+   * A registered Org that is no longer active (terminating or fail-stopped) finishes its termination
+   * here, so restore never dead-ends on "already active". Runs inside the caller's transition and calls
+   * the Org directly, never the transition-wrapped `terminate`.
+   */
+  private async completeStoppingRun(orgRunId: string): Promise<void> {
+    const run = this.active.get(orgRunId);
+    if (!run || run.isActive()) return;
+    let result;
+    try { result = await run.terminate(); }
+    catch (error) { result = { accepted: false, message: error instanceof Error ? error.message : String(error) }; }
+    if (!result.accepted) {
+      throw new Error(`AGENT_ORG_STOP_INCOMPLETE: ${result.message ?? result.code ?? `AgentOrg '${orgRunId}' did not finish stopping.`}`);
+    }
+    this.unregister(orgRunId, run);
   }
   private assertNotActive(orgRunId: string): void {
     if (this.active.has(orgRunId)) throw new Error(`AgentOrg '${orgRunId}' is already active.`);

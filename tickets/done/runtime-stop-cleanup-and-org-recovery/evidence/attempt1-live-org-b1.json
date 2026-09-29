@@ -1,0 +1,44 @@
+{
+  "case": "LIVE-ORG-B1",
+  "model": "gemini-3.8-flash-high",
+  "orgRunId": "agy_recovery_org_2ab39f9a_2b2e_4d8b_b12a_621022dd494a_7ffca96fc27d4a9b964bf34307a0b07f",
+  "directorRunId": "agy_recovery_director_2ab39f9a_2b2e_4d8b_b12a_62_cceb1b9c062147608043f64454703b8c",
+  "workerRunId": "agy_recovery_worker_2ab39f9a_2b2e_4d8b_b12a_6210_5a572499d3a2401e90c3215b26ec4b81",
+  "remember": {
+    "ack": {
+      "root_subject_kind": "agent_org",
+      "root_run_id": "agy_recovery_org_2ab39f9a_2b2e_4d8b_b12a_621022dd494a_7ffca96fc27d4a9b964bf34307a0b07f",
+      "command_id": "4476df08-90b6-4c90-b2da-eb3e59af7556",
+      "command_type": "SEND_MESSAGE",
+      "target_agent_run_id": "agy_recovery_director_2ab39f9a_2b2e_4d8b_b12a_62_cceb1b9c062147608043f64454703b8c",
+      "state": "accepted",
+      "code": null,
+      "message": null
+    },
+    "turnEnd": "TURN_COMPLETED",
+    "text": "OK\n",
+    "start": 3
+  },
+  "crashed": {
+    "pid": 83127,
+    "command": "agy --new-project --agent autobyteus-1d495480d2deafa9 --add-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-recovery-live-lbZVGD/workspace --model gemini-3.8-flash-high --input-format stream-json --output-format stream-json --dangerously-skip-permissions"
+  },
+  "stateAfterCrash": {
+    "configIsActive": true,
+    "inspectionIsActive": true
+  },
+  "terminate": {
+    "success": true,
+    "message": "Agent organization run terminated successfully."
+  },
+  "stateAfterTerminate": {
+    "configIsActive": false,
+    "inspectionIsActive": false
+  },
+  "secondTerminate": {
+    "success": false,
+    "message": "Agent organization run not found."
+  },
+  "result": "Fail",
+  "error": "AssertionError: Agent organization run not found.: expected false to be true // Object.is equality"
+}

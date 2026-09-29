@@ -59,6 +59,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private readonly operationGate: AgentOrgOperationGate;
   private readonly retiringAgentEvents = new Map<string, CollaborationMemberExecutionIdentity>();
   private termination: Promise<AgentOperationResult> | null = null;
+  /** Fail-stop origin outlives a failed termination attempt, so a retry keeps the fail-stop settlement. */
+  private failStopped = false;
   private frozenTerminationScope: FrozenAgentOrgTerminationScope | null = null;
 
   constructor(private readonly options: Readonly<{
@@ -287,13 +289,18 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   terminate(): Promise<AgentOperationResult> {
     if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
     if (this.termination) return this.termination;
-    const wasFailStopped = this.lifecycle === "fail_stop";
     this.lifecycle = "terminating";
     this.communication.closeAdmission();
     this.taskEngine.closeExternalAdmission();
     void this.operationGate.closeAndDrain();
-    const attempt = this.terminateOnce(wasFailStopped);
+    const attempt = this.terminateOnce(this.failStopped);
     this.termination = attempt;
+    // A failed or unaccepted attempt must not block a later Terminate or restore self-heal.
+    void attempt.then((result) => {
+      if (!result.accepted && this.termination === attempt) this.termination = null;
+    }, () => {
+      if (this.termination === attempt) this.termination = null;
+    });
     return attempt;
   }
 
@@ -469,7 +476,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     }
   }
   private enterFailStop(): void {
-    if (this.lifecycle === "terminated" || this.lifecycle === "fail_stop") return;
+    if (this.lifecycle === "terminated" || this.failStopped) return;
+    this.failStopped = true;
     this.lifecycle = "fail_stop";
     this.options.persistence.enterRootFailStop();
     this.taskEngine.enterRootFailStop();

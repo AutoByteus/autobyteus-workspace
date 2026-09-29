@@ -181,7 +181,7 @@ export class TeamRunService {
 
   async restoreTeamRun(teamRunId: string): Promise<RootTeamRun> {
     const normalized = required(teamRunId, "teamRunId");
-    if (this.manager.hasManagedTeamRun(normalized)) throw new Error(`Team run '${normalized}' is already managed and cannot be restored.`);
+    // The manager decides "already managed" versus completing a stopping root inside its transition.
     this.tokenUsageReadiness.assertExistingRunRestoreReady();
     const root = await this.manager.restoreTeamRun(normalized);
     try {

@@ -1,0 +1,329 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:65490) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/runtime-stop-cleanup-and-org-recovery/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-29T04:38:08.382Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mRegistered required tool unit: Task Delegation Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mSuccessfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mRegistered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mAgent definition cache populated with 50 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mPopulating agent definition cache for the first time...
+[2026-09-29T04:38:08.866Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39m[2026-09-29T04:38:08.874Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mAgent definition cache populated with 50 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mIn-memory cache: Added new agent definition with ID agy-background-live-985fed83-1948-45e9-9a2d-b2a852dbdaad.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mAgent Definition created successfully with ID: agy-background-live-985fed83-1948-45e9-9a2d-b2a852dbdaad
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mSCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/workspace-pWs86y
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/workspace-pWs86y.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mSCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon
+[22m[39mCreated and registered workspace ID: agent_ws_2592868ccf4cae28c81797b1f460b6525dc48c038e5e81618d599c576934f603
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mSCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/workspace-pWs86y
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/workspace-pWs86y.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mSCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon
+[22m[39mReusing registered workspace ID: agent_ws_2592868ccf4cae28c81797b1f460b6525dc48c038e5e81618d599c576934f603
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mSCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon
+[22m[39mPublished antigravity_cli agent run 'agy_background_live_985fed83_1948_45e9_9a2d_b2a8_92a4049a39744eee929a86b87101670f'.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mSCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon
+[22m[39mAgent websocket attached for run agy_background_live_985fed83_1948_45e9_9a2d_b2a8_92a4049a39744eee929a86b87101670f
+Created agent session 506862f0-e50c-458a-89b8-3c817be7186a for run agy_background_live_985fed83_1948_45e9_9a2d_b2a8_92a4049a39744eee929a86b87101670f
+Agent WebSocket connected: session=506862f0-e50c-458a-89b8-3c817be7186a, run=agy_background_live_985fed83_1948_45e9_9a2d_b2a8_92a4049a39744eee929a86b87101670f
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mSCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mStop during a turn with a backgrounded daemon interrupts the turn, stops the daemon and never closes it as a background success
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/workspace-H67oCE
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/workspace-H67oCE.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mStop during a turn with a backgrounded daemon interrupts the turn, stops the daemon and never closes it as a background success
+[22m[39mCreated and registered workspace ID: agent_ws_5f91fc1786771053234c210825ad6a16e62ff24f63f36512e3b64cd6170d721b
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mStop during a turn with a backgrounded daemon interrupts the turn, stops the daemon and never closes it as a background success
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/workspace-H67oCE
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/workspace-H67oCE.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mStop during a turn with a backgrounded daemon interrupts the turn, stops the daemon and never closes it as a background success
+[22m[39mReusing registered workspace ID: agent_ws_5f91fc1786771053234c210825ad6a16e62ff24f63f36512e3b64cd6170d721b
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mStop during a turn with a backgrounded daemon interrupts the turn, stops the daemon and never closes it as a background success
+[22m[39mPublished antigravity_cli agent run 'agy_background_live_985fed83_1948_45e9_9a2d_b2a8_019b8cbb56b64e5989dee1f55b18dbdc'.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive[2m > [22m[2mStop during a turn with a backgrounded daemon interrupts the turn, stops the daemon and never closes it as a background success
+[22m[39mAgent websocket attached for run agy_background_live_985fed83_1948_45e9_9a2d_b2a8_019b8cbb56b64e5989dee1f55b18dbdc
+Created agent session 0ad717af-3f21-483b-a520-a23380864996 for run agy_background_live_985fed83_1948_45e9_9a2d_b2a8_019b8cbb56b64e5989dee1f55b18dbdc
+Agent WebSocket connected: session=0ad717af-3f21-483b-a520-a23380864996, run=agy_background_live_985fed83_1948_45e9_9a2d_b2a8_019b8cbb56b64e5989dee1f55b18dbdc
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mClosed agent session 506862f0-e50c-458a-89b8-3c817be7186a
+Agent WebSocket disconnected: 506862f0-e50c-458a-89b8-3c817be7186a
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mClosed agent session 0ad717af-3f21-483b-a520-a23380864996
+Agent WebSocket disconnected: 0ad717af-3f21-483b-a520-a23380864996
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mIn-memory cache: Removed agent definition with ID agy-background-live-985fed83-1948-45e9-9a2d-b2a852dbdaad.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22m[2mreal AGY background tasks keep the AutoByteus turn alive
+[22m[39mAgent Definition with ID agy-background-live-985fed83-1948-45e9-9a2d-b2a852dbdaad deleted successfully.
+
+ [31m❯[39m tests/e2e/runtime/agy-background-task-live.e2e.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m1 failed[39m[2m | [22m[33m1 skipped[39m[2m)[22m[33m 52710[2mms[22m[39m
+[31m     [31m×[31m SCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon[39m[33m 31743[2mms[22m[39m
+     [2m[90m↓[39m[22m SCN-002: a non-daemon background task running longer than five minutes keeps the silent turn alive until it completes
+     [33m[2m✓[22m[39m Stop during a turn with a backgrounded daemon interrupts the turn, stops the daemon and never closes it as a background success [33m 19845[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agy-background-task-live.e2e.test.ts[2m > [22mreal AGY background tasks keep the AutoByteus turn alive[2m > [22mSCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon
+[31m[1mError[22m: ENOENT: no such file or directory, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-live-2QuiMl/workspace-pWs86y/done.txt'[39m
+[36m [2m❯[22m tests/e2e/runtime/agy-background-task-live.e2e.test.ts:[2m192:15[22m[39m
+    [90m190| [39m      }
+    [90m191| [39m      [34mexpectNoDanglingTools[39m(turn)[33m;[39m
+    [90m192| [39m      expect((await fs.readFile(path.join(run.workspace, "done.txt"), …
+    [90m   | [39m              [31m^[39m
+    [90m193| [39m      [34mexpect[39m([35mawait[39m [34mwaitListening[39m(port[33m,[39m [35mtrue[39m[33m,[39m [34m5_000[39m))[33m.[39m[34mtoBe[39m([35mtrue[39m)[33m;[39m
+    [90m194| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (3)[39m
+[2m   Start at [22m 06:38:01
+[2m   Duration [22m 59.78s[2m (transform 4.68s, setup 16ms, import 6.57s, tests 52.71s, environment 0ms)[22m
+
+EXIT=1

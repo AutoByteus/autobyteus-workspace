@@ -106,9 +106,15 @@ type TeamExecutionAddress = Readonly<{
 Root create versus restore intent is explicit process-local materialization
 state. `AgentTeamRunManager` passes it through `FlatTeamExecutionFactory` and
 the configured-Agent registry; handles do not infer a restored native run from
-`platformAgentRunId`. Before a candidate is built, a handle canonicalizes and
-reactivates the persisted workspace through
-`WorkspaceManager.ensureWorkspaceByRootPath(...)`.
+`platformAgentRunId`. That intent governs a handle's first activation only.
+After the handle has published an AgentRun once, any later re-activation plans
+as `restore`, for example a message to a member whose runtime died. The planner
+receives the mode per attempt. A crashed external member therefore continues its
+persisted provider conversation, and a native member restores its context. A
+failed first activation keeps the original mode.
+
+Before a candidate is built, a handle canonicalizes and reactivates the
+persisted workspace through `WorkspaceManager.ensureWorkspaceByRootPath(...)`.
 
 Each configured Agent handle owns one readiness attempt. Concurrent commands
 join that attempt. `AgentRunManager` returns a private activation candidate that
@@ -311,13 +317,23 @@ The root lifecycle and stored-history lifecycle are intentionally separate:
    rejected finish retains its active run/session, while an accepted finish is
    not visible as success until exact-current removal and resource/session
    cleanup complete. The member handle disposes only after that accepted
-   managed finish and owns no parallel Agent Tools cleanup path. Stop retains
-   the V2 package, catalog row, task/communication history, context, and resume
-   identity.
+   managed finish and owns no parallel Agent Tools cleanup path. A member whose
+   runtime already died is no longer published by `AgentRunManager`. Its
+   resources were released on inactive discovery, so its handle treats the root
+   fence and termination as already complete. The root still fences the handle
+   first, so shutdown never re-activates it. Stop retains the V2 package,
+   catalog row, task/communication history, context, and resume identity.
 3. The root remains managed and the lifecycle/history projection remains
    `isActive: true` until that whole scope reaches accepted terminal completion
    and the manager unregisters the exact root. A failed Stop retains the same
-   managed root and history for retry; it does not make Delete available.
+   managed root and history for retry; it does not make Delete available. A
+   failed attempt, including a failed frozen-scope fence or finish, is never
+   cached, so a retry re-runs it. Restore of a root that is still managed but no
+   longer active (stopping or fail-stopped) first completes that root's
+   termination inside the restore transition, then restores it. If termination
+   still fails, restore reports `TEAM_RUN_STOP_INCOMPLETE` instead of "already
+   managed". `TeamRunService.restoreTeamRun` has no separate pre-guard; the
+   manager decides.
 4. Only the later terminal-inactive `READY` history row exposes **Archive** and
    **Delete**. Delete is a new user decision with permanent-deletion
    confirmation; Stop never opens that confirmation and never invokes Delete.
