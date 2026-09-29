@@ -200,6 +200,39 @@ describe("WorkspaceSkillMaterializer request strength (D-15)", () => {
     });
   });
 
+  describe("Rule 3: an unresolved request meets a link held by other runs", () => {
+    const unresolved = (materializer: WorkspaceSkillMaterializer, workspace: string, name: string, runId: string) =>
+      materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace,
+        requests: [{ kind: "reconcile-unresolved", name }], skillAccessMode: SkillAccessMode.PRELOADED_ONLY, requestStrength: "configured" })
+
+    it("skips without joining a link held only by all-installed runs (V-F unit)", async () => {
+      const { installed } = await sameNamePair()
+      const workspace = await tempDir("skill-strength-ws-")
+      const warn = vi.fn()
+      const materializer = new WorkspaceSkillMaterializer(profile, { logger: { warn } })
+      const weak = await acquire(materializer, workspace, installed, "all_installed", "chat-1")
+
+      await expect(unresolved(materializer, workspace, installed.name, "team-member-1")).resolves.toEqual([])
+      expect(dispositions(warn)).toEqual(["skipped-unresolved-held-by-weak"])
+      expect(String(warn.mock.calls[0]![0])).toContain(`previousTarget='${path.resolve(installed.rootPath)}'`)
+      const link = linkPath(workspace, installed.name)
+      expect(await linkTarget(link)).toBe(path.resolve(installed.rootPath))
+
+      // It did not join: the link goes with the last weak holder.
+      await materializer.cleanupMaterializedWorkspaceSkills(weak)
+      expect(await isAbsent(link)).toBe(true)
+    })
+
+    it("still fails fast next to a configured holder", async () => {
+      const { configured } = await sameNamePair()
+      const workspace = await tempDir("skill-strength-ws-")
+      const materializer = new WorkspaceSkillMaterializer(profile, { logger: { warn: vi.fn() } })
+      await acquire(materializer, workspace, configured, "configured", "agent-1")
+
+      await expect(unresolved(materializer, workspace, configured.name, "agent-2")).rejects.toThrow(/Workspace skill path collision/)
+    })
+  })
+
   describe("IC-1: release after a re-point (V-E)", () => {
     it.each([["weak first"], ["configured first"]])("removes the link and empties the registry once every holder released (%s)", async (order) => {
       const { configured, installed } = await sameNamePair();

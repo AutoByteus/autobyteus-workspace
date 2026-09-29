@@ -7,6 +7,7 @@ const mocks = vi.hoisted(() => ({
   enabledRuntimes: new Set<string>(['autobyteus', 'codex_app_server']),
   modelsByRuntime: {} as Record<string, string[]>,
   workspacesByRoot: {} as Record<string, { workspaceId: string }>,
+  schemas: {} as Record<string, unknown>,
 }))
 
 vi.mock('~/stores/agentDefinitionStore', () => ({
@@ -32,12 +33,14 @@ vi.mock('~/stores/llmProviderConfig', () => ({
   useLLMProviderConfigStore: () => ({
     fetchProvidersWithModels: vi.fn(async () => undefined),
     models: (runtimeKind: string) => mocks.modelsByRuntime[runtimeKind] ?? [],
+    modelConfigSchemaByIdentifier: (runtimeKind: string, id: string) => mocks.schemas[`${runtimeKind}/${id}`] ?? null,
   }),
 }))
 
 import { useChatDraftStore } from '../chatDraftStore'
 import { useAgentContextsStore } from '../agentContextsStore'
 import { writeChatLastModel } from '~/utils/chat/chatLastModelPreference'
+import { applyModelConfigSchemaDefaults } from '~/utils/llmConfigSchema'
 
 describe('chatDraftStore', () => {
   beforeEach(() => {
@@ -50,6 +53,7 @@ describe('chatDraftStore', () => {
     mocks.enabledRuntimes = new Set(['autobyteus', 'codex_app_server'])
     mocks.modelsByRuntime = { autobyteus: ['gpt-5.5', 'claude-sonnet-5'], codex_app_server: ['gpt-5.5-codex'] }
     mocks.workspacesByRoot = {}
+    mocks.schemas = {}
   })
 
   it('starts an unregistered Daily Assistant draft in the temp workspace with Auto-approve', async () => {
@@ -140,4 +144,56 @@ describe('chatDraftStore', () => {
     expect(store.draft!.target).toEqual({ kind: 'team', teamDefinitionId: 'team-1' })
     expect(store.draft!.context.requestedSkillNames).toEqual([])
   })
+
+  describe('explicit model config (D-18, IC-3)', () => {
+    const codexSchema = { reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'], default: 'medium' } }
+    const claudeSchema = {
+      temperature: { type: 'number', default: 0.7 },
+      max_tokens: { type: 'integer' },
+      thinking_enabled: { type: 'boolean', default: false },
+      thinking_budget_tokens: { type: 'integer', default: 1024 },
+    }
+
+    it('records a thinking-only schema’s default thinking explicitly, never null or {}', async () => {
+      mocks.schemas['codex_app_server/gpt-5.5-codex'] = codexSchema
+      const store = useChatDraftStore()
+      const draft = store.startNewChat()
+      store.setModel({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5-codex' })
+      await flushPromises()
+      expect(draft.context.config.llmConfig).toEqual({ reasoning_effort: 'medium' })
+    })
+
+    it('records the launch form’s non-thinking defaults plus the schema’s default thinking', async () => {
+      mocks.schemas['autobyteus/claude-sonnet-5'] = claudeSchema
+      const store = useChatDraftStore()
+      const draft = store.startNewChat()
+      store.setModel({ runtimeKind: 'autobyteus', llmModelIdentifier: 'claude-sonnet-5' })
+      await flushPromises()
+
+      const recorded = draft.context.config.llmConfig!
+      const launchForm = applyModelConfigSchemaDefaults(claudeSchema as any, null)!
+      // Non-thinking keys equal the launch form; thinking keys equal the schema defaults.
+      expect({ temperature: recorded.temperature }).toEqual(launchForm)
+      expect(recorded.thinking_enabled).toBe(false)
+      expect(recorded).not.toHaveProperty('thinking_budget_tokens')
+    })
+
+    it('records the default resolution’s model config too, keeping a preset’s own thinking', async () => {
+      mocks.schemas['autobyteus/claude-sonnet-5'] = claudeSchema
+      mocks.definitions[0]!.defaultLaunchConfig = { runtimeKind: 'autobyteus', llmModelIdentifier: 'claude-sonnet-5',
+        llmConfig: { thinking_enabled: true, thinking_budget_tokens: 4096 } }
+      const draft = useChatDraftStore().startNewChat()
+      await flushPromises()
+      expect(draft.context.config.llmConfig).toEqual({ temperature: 0.7, thinking_enabled: true, thinking_budget_tokens: 4096 })
+    })
+
+    it('keeps null for a model without a config schema', async () => {
+      const store = useChatDraftStore()
+      const draft = store.startNewChat()
+      store.setModel({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5-codex' })
+      await flushPromises()
+      expect(draft.context.config.llmConfig).toBeNull()
+    })
+  })
 })
+

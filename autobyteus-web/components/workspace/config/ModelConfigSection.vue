@@ -77,7 +77,7 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
-import { sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
+import { applyModelConfigSchemaDefaults, sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
 import {
   projectHistoricalModelConfigFields,
   type HistoricalModelConfigControlField,
@@ -86,7 +86,6 @@ import {
 import {
   applyThinkingToggle,
   getThinkingControlState,
-  getThinkingParamKeys,
   getThinkingToggleOwnedParamKeys,
 } from '~/utils/llmThinkingConfigAdapter';
 import ModelConfigBasic from './ModelConfigBasic.vue';
@@ -257,26 +256,8 @@ const applyDefaultsIfNeeded = () => {
   if (!hasSchema.value) return;
   if (!props.applyDefaults) return;
 
-  const nextConfig: Record<string, unknown> = { ...(props.modelConfig ?? {}) };
-  let changed = false;
-  const thinkingKeys = new Set(getThinkingParamKeys(props.schema ?? null));
-
-  for (const [key, paramSchema] of Object.entries(props.schema ?? {})) {
-    if (thinkingKeys.has(key)) continue;
-    if (nextConfig[key] === undefined && paramSchema.default !== undefined) {
-      nextConfig[key] = paramSchema.default;
-      changed = true;
-    }
-  }
-
-  if (props.modelConfig?.thinking_enabled === true && props.schema?.thinking_budget_tokens?.default !== undefined) {
-    if (nextConfig.thinking_budget_tokens === undefined) {
-      nextConfig.thinking_budget_tokens = props.schema.thinking_budget_tokens.default;
-      changed = true;
-    }
-  }
-
-  if (changed && !configsEqual(nextConfig, props.modelConfig ?? null)) {
+  const nextConfig = applyModelConfigSchemaDefaults(props.schema ?? null, props.modelConfig ?? null);
+  if (!configsEqual(nextConfig, props.modelConfig ?? null)) {
     emitConfig(nextConfig, true);
   }
 };

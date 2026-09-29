@@ -55,7 +55,8 @@ type AcquisitionTarget = {
 };
 
 type Disposition = "repaired" | "removed-and-skipped" | "skipped"
-  | "skipped-workspace-owned" | "skipped-held-by-other-run" | "yielded-to-configured";
+  | "skipped-workspace-owned" | "skipped-held-by-other-run" | "yielded-to-configured"
+  | "skipped-unresolved-held-by-weak";
 
 const defaultLogger = { warn: (...args: unknown[]) => console.warn(...args) };
 
@@ -362,6 +363,13 @@ export class WorkspaceSkillMaterializer {
       if (existing?.phase === "acquiring") {
         await existing.readiness.catch(() => null);
         continue;
+      }
+      // Rule 3 (D-15): the path is held only by all-installed runs. An unresolved name is not
+      // provided to this run anyway; leave the weak holders' link alone (no join, no re-point).
+      if (existing?.phase === "ready" && existing.holders.size > 0 && strongHolderCount(existing.holders) === 0) {
+        this.warnDisposition({ runId, request: { skill: { name: skillName } }, materializedRootPath, sourceRootPath: null },
+          existing.sourceRootPath, "skipped-unresolved-held-by-weak");
+        return null;
       }
       return this.reconcileUnavailable(runId, skillName, materializedRootPath, null);
     }

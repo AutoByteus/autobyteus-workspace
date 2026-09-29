@@ -11,6 +11,8 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { normalizeDefaultLaunchConfig } from '~/types/launch/defaultLaunchConfig'
 import { readChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { DEFAULT_CHAT_AGENT_DEFINITION_ID, TEMP_WORKSPACE_ID } from '~/utils/chat/chatDefaults'
+import { applyModelConfigSchemaDefaults, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
+import { getDefaultThinkingConfig, getThinkingParamKeys } from '~/utils/llmThinkingConfigAdapter'
 
 /** Who a New chat is addressed to. */
 export type ChatTarget =
@@ -35,6 +37,25 @@ export interface ChatDraft {
 export interface ChatModelSelection {
   runtimeKind: string
   llmModelIdentifier: string
+}
+
+/**
+ * The model config a New chat records for a model (D-18, IC-3): the launch form's non-thinking
+ * schema defaults plus the model's default thinking parameters, written explicitly, over any
+ * preset config (a definition's default launch config keeps its own values). A model without a
+ * config schema records `null`.
+ */
+export const explicitChatModelConfig = (
+  schema: UiModelConfigSchema | null,
+  preset: Record<string, unknown> | null = null,
+): Record<string, unknown> | null => {
+  if (!schema || Object.keys(schema).length === 0) return preset
+  const next: Record<string, unknown> = { ...(applyModelConfigSchemaDefaults(schema, preset) ?? {}) }
+  // A preset that already chose thinking keeps its choice; otherwise record the default thinking.
+  if (!getThinkingParamKeys(schema).some((key) => next[key] !== undefined)) {
+    Object.assign(next, getDefaultThinkingConfig(schema))
+  }
+  return Object.keys(next).length > 0 ? next : preset
 }
 
 let chatDraftSequence = 0
@@ -187,8 +208,10 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
     if (!current) return
     current.context.config.runtimeKind = selection.runtimeKind
     current.context.config.llmModelIdentifier = selection.llmModelIdentifier
-    // Choosing a model applies that model's default thinking.
-    current.context.config.llmConfig = llmConfig
+    // Choosing a model applies that model's defaults, recorded explicitly so the run's settings
+    // show them (not "Not recorded").
+    const schema = useLLMProviderConfigStore().modelConfigSchemaByIdentifier(selection.runtimeKind, selection.llmModelIdentifier)
+    current.context.config.llmConfig = explicitChatModelConfig(schema, llmConfig)
   }
 
   /** An explicit model choice from the model menu. */

@@ -303,3 +303,24 @@ export const getThinkingParamKeys = (
 export const getThinkingToggleOwnedParamKeys = (
   schema: UiModelConfigSchema | null,
 ): string[] => getThinkingControlState(schema, null).toggleOwnedKeys;
+
+/**
+ * The model's default thinking parameters, written explicitly: each thinking key the schema
+ * declares at its effective default (what the thinking control shows for an empty config). A
+ * Claude budget is only written with thinking on, and a typed effort only with thinking enabled,
+ * as `applyThinkingToggle` does.
+ */
+export const getDefaultThinkingConfig = (
+  schema: UiModelConfigSchema | null,
+): ThinkingConfig => {
+  const next: ThinkingConfig = {};
+  for (const key of getThinkingParamKeys(schema)) {
+    const value = effectiveValue(schema, null, key);
+    if (value !== undefined) next[key] = value;
+  }
+  const provider = detectThinkingProvider(schema);
+  if (provider === 'claude' && next.thinking_enabled !== true) removeKey(next, 'thinking_budget_tokens');
+  if (provider === 'typed' && next.thinking_type !== 'enabled') removeKey(next, 'reasoning_effort');
+  return next;
+};
+

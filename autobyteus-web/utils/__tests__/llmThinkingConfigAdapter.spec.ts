@@ -166,3 +166,18 @@ describe('llmThinkingConfigAdapter', () => {
     });
   });
 });
+
+describe('getDefaultThinkingConfig (D-18: default thinking written explicitly)', () => {
+  it('writes each thinking key at its schema default, following the toggle rules', async () => {
+    const { getDefaultThinkingConfig } = await import('../llmThinkingConfigAdapter')
+    expect(getDefaultThinkingConfig({ reasoning_effort: { type: 'string', enum: ['low', 'medium'], default: 'medium' } }))
+      .toEqual({ reasoning_effort: 'medium' })
+    expect(getDefaultThinkingConfig({ thinking_enabled: { type: 'boolean', default: false }, thinking_budget_tokens: { type: 'integer', default: 1024 } }))
+      .toEqual({ thinking_enabled: false })
+    expect(getDefaultThinkingConfig({ thinking_enabled: { type: 'boolean', default: true }, thinking_budget_tokens: { type: 'integer', default: 1024 } }))
+      .toEqual({ thinking_enabled: true, thinking_budget_tokens: 1024 })
+    expect(getDefaultThinkingConfig({ thinking_type: { type: 'string', enum: ['enabled', 'disabled'], default: 'disabled' }, reasoning_effort: { type: 'string', enum: ['low', 'high'], default: 'high' } }))
+      .toEqual({ thinking_type: 'disabled' })
+    expect(getDefaultThinkingConfig({ temperature: { type: 'number', default: 1 } })).toEqual({})
+  })
+})

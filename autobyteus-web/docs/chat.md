@@ -30,6 +30,16 @@ model (`autobyteus.chat.lastModel`), the Daily Assistant default launch config,
 then the first model of the AutoByteus runtime. `startNewChat(preset)` resets
 the draft; the left panel pencil, the tree `+` and catalog Run actions use it.
 
+Every draft model set records an explicit `llmConfig` (`explicitChatModelConfig`):
+the model schema's non-thinking defaults through
+`applyModelConfigSchemaDefaults` (`utils/llmConfigSchema.ts`, the same function
+the launch form's `ModelConfigSection` uses), plus the default thinking state
+from `getDefaultThinkingConfig` (`utils/llmThinkingConfigAdapter.ts`) unless
+the preset already carries thinking keys. A model with a schema is never
+recorded as `{}` or `null`, so the live ⚙ shows the values the run started
+with; a model without a schema keeps `null`. The team quick path copies the
+same value to its root config.
+
 The composer (`ChatComposer.vue`) works on a `ComposerTarget`
 (`composables/agentInput/useComposerTarget.ts`). The New chat target has
 `access: 'draft'` and dispatches send to the agent or team launch path; a run

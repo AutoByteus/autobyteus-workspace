@@ -242,11 +242,18 @@ read `skillScope` themselves.
     are merged into the entry and `yielded-to-configured` is logged with their
     run ids. A configured source that is unavailable leaves the weak holders
     untouched.
+- **Rule 3 — an unresolved name whose path is held only by weak runs.** A
+  configured name without a current source (an `unresolved` binding) is not
+  provided to its run. When its path is a `ready` entry held only by
+  `all_installed` holders, the materializer leaves the link alone (no join,
+  no re-point) and logs `skipped-unresolved-held-by-weak` with the holder
+  source. A strong holder, or a user-owned or foreign path, keeps the path
+  collision error; `acquiring` and `releasing` entries are waited for first.
 - **Release** is keyed by each holder's registration, never by descriptor
   identity or the descriptor's original source. The link is removed once no
   holder remains, and only while it still points at the entry's current source.
 
-AGY run capsules copy skills per run, so Rule 2 does not arise there.
+AGY run capsules copy skills per run, so Rules 2 and 3 do not arise there.
 
 ### Access modes and historical context
 

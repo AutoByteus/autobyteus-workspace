@@ -1,3 +1,6 @@
+// `llmThinkingConfigAdapter` imports this module too; neither calls the other at load time.
+import { getThinkingParamKeys } from '~/utils/llmThinkingConfigAdapter';
+
 type RawParameterSchema = {
   parameters?: Array<{
     name?: string;
@@ -273,3 +276,36 @@ export const sanitizeModelConfigAgainstSchema = (
 
   return Object.keys(sanitized).length > 0 ? sanitized : null;
 };
+
+/**
+ * The non-thinking schema defaults the launch form records for a model: every schema key without
+ * a value takes its default, except the thinking keys (the thinking control owns them). A Claude
+ * thinking budget default is added when thinking is enabled. Pure; returns `config` unchanged when
+ * there is nothing to add (D-18; used by `ModelConfigSection` and the Chat draft).
+ */
+export const applyModelConfigSchemaDefaults = (
+  schema: UiModelConfigSchema | null | undefined,
+  config: Record<string, unknown> | null | undefined,
+): Record<string, unknown> | null => {
+  if (!schema || Object.keys(schema).length === 0) return config ?? null;
+  const nextConfig: Record<string, unknown> = { ...(config ?? {}) };
+  let changed = false;
+  const thinkingKeys = new Set(getThinkingParamKeys(schema));
+
+  for (const [key, paramSchema] of Object.entries(schema)) {
+    if (thinkingKeys.has(key)) continue;
+    if (nextConfig[key] === undefined && paramSchema.default !== undefined) {
+      nextConfig[key] = paramSchema.default;
+      changed = true;
+    }
+  }
+
+  if (config?.thinking_enabled === true && schema.thinking_budget_tokens?.default !== undefined
+    && nextConfig.thinking_budget_tokens === undefined) {
+    nextConfig.thinking_budget_tokens = schema.thinking_budget_tokens.default;
+    changed = true;
+  }
+
+  return changed ? nextConfig : config ?? null;
+};
+
