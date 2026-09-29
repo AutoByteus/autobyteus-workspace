@@ -108,3 +108,18 @@ The broad regression run was not repeated. The integrated base commit touches on
 
 - Before finalization: discard the ticket branch or worktree.
 - After finalization: revert the merge commit on `personal`. This is frontend-only, with no data or API impact.
+
+## Final State (2026-09-29)
+
+| Item | Value |
+| --- | --- |
+| Validated checkpoint | `ba29e2035` |
+| Base integration merge | `98d5daa5f` (`origin/personal@0bd7975be`) |
+| Final ticket commit (archive + docs sync + delivery records) | `8e435b98f` |
+| Ticket branch push | `origin/codex/task-team-row-collapse-chevron` pushed at `8e435b98f` |
+| `personal` update | local `personal` fast-forwarded `cd4ad898b` → `0bd7975be` → `8e435b98f` |
+| `personal` push | `origin/personal` `0bd7975be..8e435b98f` |
+| Release / tag / deployment | Not required (user instruction) |
+| Worktree cleanup | `/Users/normy/autobyteus_org/autobyteus-worktrees/task-team-row-collapse-chevron` removed; `git worktree prune` run |
+| Branch cleanup | local `codex/task-team-row-collapse-chevron` deleted; remote branch deleted |
+| Post-finalization record | This section is committed on `personal` as a follow-up delivery-record commit |
