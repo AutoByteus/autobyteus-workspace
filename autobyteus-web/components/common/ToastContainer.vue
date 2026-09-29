@@ -1,5 +1,7 @@
 <template>
-  <div class="fixed top-5 right-5 z-[100] w-full max-w-sm">
+  <div class="fixed top-5 right-5 z-[10000] w-full max-w-sm" data-testid="toast-container">
+    <!-- Toasts are transient, top-most notifications: the layer sits above every dialog overlay
+         (up to 9999), so a notice raised from inside a dialog stays readable (CR-010). -->
     <transition-group name="toast" tag="div" class="space-y-3">
       <div 
         v-for="toast in toasts" 
