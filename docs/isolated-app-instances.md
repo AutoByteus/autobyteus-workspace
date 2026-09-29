@@ -31,7 +31,8 @@ profile (see the [packaging contract](../autobyteus-web/docs/electron_packaging.
 
 > **App version.** The server-environment isolation and the quiet update state are implemented
 > inside the desktop app. They apply to builds that contain this change: a worktree build
-> (`--from-worktree`/`--build`) today, and installed releases newer than 1.4.91-beta.4.
+> (`--from-worktree`/`--build`), and installed releases published after this change is merged
+> (1.4.91-beta.5 and earlier do not include it).
 > An older installed app still starts isolated (own port and data root), but its server inherits
 > the launching shell's AutoByteus settings and it shows an "Update failed" toast. From an agent
 > shell inside AutoByteus, use a worktree build until your installed app is updated.

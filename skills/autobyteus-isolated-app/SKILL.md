@@ -27,9 +27,10 @@ Every command prints one JSON value: `{"schemaVersion":1,"ok":true,"command":"â€
    `--app <path to .app or executable>`, `--from-worktree` (this worktree's packaged build), or
    `--build` (build it first; several minutes). Keep from the result: `instanceId`, `controlPort`
    (default 9333), `databaseUrl`, `logPath`.
-   - The installed app gets full isolation of its server settings and no update toasts only if it
-     is newer than 1.4.91-beta.4. Older installs inherit your shell's AutoByteus settings. In that
-     case use `--from-worktree`/`--build` when running inside AutoByteus.
+   - The installed app isolates its server settings and hides update toasts only if its release
+     includes this feature (1.4.91-beta.5 and earlier do not). Older installs inherit your shell's
+     AutoByteus settings. In that case use `--from-worktree`/`--build` when running inside
+     AutoByteus.
 2. **Control.** Run the browser-automation launcher with the instance's control port and
    attach-only mode, for example
    `env CHROME_REMOTE_DEBUGGING_PORT=9333 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash "<browser launcher>" list-tabs`.
