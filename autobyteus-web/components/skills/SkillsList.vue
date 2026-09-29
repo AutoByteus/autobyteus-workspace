@@ -26,6 +26,8 @@
       </div>
     </div>
 
+    <SkillNameIssuesBanner />
+
     <div v-if="reloadSuccessMessage" class="success-alert">{{ reloadSuccessMessage }}</div>
     <div v-if="reloadErrorMessage && !blockingError" class="error-alert">{{ reloadErrorMessage }}</div>
 
@@ -148,6 +150,8 @@ import { useSkillStore } from '~/stores/skillStore'
 import { Icon } from '@iconify/vue'
 import SkillCard from './SkillCard.vue'
 import SkillSourcesModal from './SkillSourcesModal.vue'
+import SkillNameIssuesBanner from './SkillNameIssuesBanner.vue'
+import { useSkillNamesStore } from '~/stores/skillNamesStore'
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue'
 import type { Skill } from '~/types/skill'
 
@@ -158,6 +162,7 @@ const emit = defineEmits<{
 }>()
 
 const skillStore = useSkillStore()
+const skillNames = useSkillNamesStore()
 const { skills, loading, reloading, error } = storeToRefs(skillStore)
 
 const showCreateDialog = ref(false)
@@ -187,7 +192,10 @@ const filteredSkills = computed(() => {
 const blockingError = computed(() => Boolean(error.value && skills.value.length === 0))
 
 onMounted(async () => {
-  await skillStore.fetchAllSkills()
+  await Promise.all([
+    skillStore.fetchAllSkills(),
+    skillNames.fetchIssues().catch((e) => console.error('Failed to load skill name issues:', e)),
+  ])
 })
 
 async function handleReloadCatalog() {
@@ -196,6 +204,7 @@ async function handleReloadCatalog() {
 
   try {
     await skillStore.reloadSkillCatalog()
+    await skillNames.fetchIssues().catch((e) => console.error('Failed to load skill name issues:', e))
     reloadSuccessMessage.value = t('skills.components.skills.SkillsList.reload_success')
   } catch (e) {
     reloadErrorMessage.value = t('skills.components.skills.SkillsList.reload_error')
@@ -207,11 +216,12 @@ async function handleCreateSkill() {
   if (!newSkill.value.name) return
   
   try {
-    await skillStore.createSkill({
+    // A duplicate name opens the conflict pop-up and keeps this dialog open for a rename (D-19).
+    await skillNames.runWithSkillNameChecks(() => skillStore.createSkill({
       name: newSkill.value.name,
       description: newSkill.value.description,
       content: newSkill.value.content,
-    })
+    }))
     showCreateDialog.value = false
     newSkill.value = { name: '', description: '', content: '' }
   } catch (e) {

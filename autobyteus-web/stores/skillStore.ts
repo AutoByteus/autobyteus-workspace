@@ -17,6 +17,7 @@ import {
 import { RELOAD_SKILL_CATALOG } from '~/graphql/skillSources'
 import { useSkillSourcesStore } from '~/stores/skillSourcesStore'
 import type { Skill, CreateSkillInput, UpdateSkillInput, DeleteSkillResult } from '~/types/skill'
+import { readSkillNameConflictError, toSkillNameConflict } from '~/utils/skills/skillNames'
 
 export const useSkillStore = defineStore('skill', () => {
 
@@ -185,7 +186,7 @@ export const useSkillStore = defineStore('skill', () => {
       })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map((e) => e.message).join(', '))
+        throw readSkillNameConflictError(errors) ?? new Error(errors.map((e: { message: string }) => e.message).join(', '))
       }
 
       if (data?.createSkill) {
@@ -194,6 +195,9 @@ export const useSkillStore = defineStore('skill', () => {
       }
       throw new Error('Failed to create skill: No data returned')
     } catch (e: any) {
+      // A duplicate name is shown by the conflict dialog, not as a store error (D-19).
+      const conflict = toSkillNameConflict(e)
+      if (conflict) throw conflict
       error.value = e.message
       throw e
     } finally {

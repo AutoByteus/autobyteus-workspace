@@ -46,6 +46,22 @@ const skillMessages = {
   'skills.components.skills.SkillSourcesModal.remove_confirm': '移除',
   'skills.components.skills.SkillSourcesModal.add_success': '已成功添加来源。找到 {{count}} 个技能。正在刷新列表...',
   'skills.components.skills.SkillSourcesModal.remove_success': '技能来源已移除。技能列表已刷新。',
+  'skills.nameConflict.title': '技能名称重复',
+  'skills.nameConflict.body': '这些技能已存在于其他位置。每个技能名称必须唯一。请重命名或删除其中一份副本，然后重试。',
+  'skills.nameConflict.alreadyInstalled': '已安装：',
+  'skills.nameConflict.incoming': '新增：',
+  'skills.nameConflict.ok': '确定',
+  'skills.nameIssues.banner': '部分技能名称相同。AutoByteus 对每个名称只使用一份副本。',
+  'skills.nameIssues.showDetails': '显示详情',
+  'skills.nameIssues.hideDetails': '隐藏详情',
+  'skills.nameIssues.conflictHint': '请重命名或删除其中一份副本。',
+  'skills.nameIssues.shadowedHint': '已忽略运行时默认文件夹中的副本。建议删除它：Codex 运行中可能仍会显示两份副本。',
+  'skills.nameIssues.used': '使用：',
+  'skills.nameIssues.ignored': '已忽略：',
+  'skills.nameNotice.ignoredOneFromFolder': '已忽略 {{folder}} 默认文件夹中的 1 个技能，因为您自己的副本优先。',
+  'skills.nameNotice.ignoredManyFromFolder': '已忽略 {{folder}} 默认文件夹中的 {{count}} 个技能，因为您自己的副本优先。',
+  'skills.nameNotice.ignoredOne': '已忽略运行时默认文件夹中的 1 个技能，因为您自己的副本优先。',
+  'skills.nameNotice.ignoredMany': '已忽略运行时默认文件夹中的 {{count}} 个技能，因为您自己的副本优先。',
 } satisfies TranslationCatalog;
 
 export default skillMessages;

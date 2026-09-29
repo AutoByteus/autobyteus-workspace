@@ -6,6 +6,7 @@ import {
   ADD_SKILL_SOURCE,
   REMOVE_SKILL_SOURCE,
 } from '~/graphql/skillSources'
+import { readSkillNameConflictError, toSkillNameConflict } from '~/utils/skills/skillNames'
 
 export interface SkillSource {
   path: string
@@ -59,13 +60,16 @@ export const useSkillSourcesStore = defineStore('skillSources', () => {
       })
 
       if (errors && errors.length > 0) {
-        throw new Error(errors.map((e) => e.message).join(', '))
+        throw readSkillNameConflictError(errors) ?? new Error(errors.map((e: { message: string }) => e.message).join(', '))
       }
 
       if (data?.addSkillSource) {
         skillSources.value = data.addSkillSource
       }
     } catch (e: any) {
+      // A duplicate name is shown by the conflict dialog, not as a store error (D-19).
+      const conflict = toSkillNameConflict(e)
+      if (conflict) throw conflict
       error.value = e.message
       throw e
     } finally {

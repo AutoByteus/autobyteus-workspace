@@ -4,6 +4,7 @@ import { createTestingPinia } from '@pinia/testing'
 import { setActivePinia } from 'pinia'
 import SkillsList from './SkillsList.vue'
 import { useSkillStore } from '~/stores/skillStore'
+import { useSkillNamesStore } from '~/stores/skillNamesStore'
 
 const flushPromises = async () => {
   await Promise.resolve()
@@ -41,6 +42,9 @@ const mountComponent = async (skillStateOverrides = {}) => {
   Object.assign(skillStore, skillStateOverrides)
   skillStore.fetchAllSkills = vi.fn().mockResolvedValue(undefined)
   skillStore.reloadSkillCatalog = vi.fn().mockResolvedValue(undefined)
+  const skillNames = useSkillNamesStore()
+  skillNames.fetchIssues = vi.fn().mockResolvedValue([])
+  skillNames.runWithSkillNameChecks = vi.fn((action: () => Promise<unknown>) => action()) as typeof skillNames.runWithSkillNameChecks
 
   const wrapper = mount(SkillsList, {
     global: {
@@ -58,7 +62,7 @@ const mountComponent = async (skillStateOverrides = {}) => {
   })
 
   await flushPromises()
-  return { wrapper, skillStore }
+  return { wrapper, skillStore, skillNames }
 }
 
 describe('SkillsList', () => {
@@ -109,5 +113,47 @@ describe('SkillsList', () => {
 
     expect(reloadButton).toBeTruthy()
     expect(reloadButton!.attributes('disabled')).toBeDefined()
+  })
+
+  it('shows the one-copy-per-name banner with used and ignored paths (REQ-024)', async () => {
+    const { wrapper, skillNames } = await mountComponent()
+    skillNames.issues = [
+      { name: 'dup', usedPath: '/pkg/agents/a/skills/dup', ignoredPaths: ['/added/dup'], kind: 'conflict' },
+      { name: 'dup', usedPath: '/pkg/agents/a/skills/dup', ignoredPaths: ['/home/.codex/skills/dup'], kind: 'shadowed_runtime_default' },
+    ]
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="skill-name-issues-banner"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="skill-name-issues-details"]').exists()).toBe(false)
+
+    await wrapper.get('[data-testid="skill-name-issues-toggle"]').trigger('click')
+    const conflict = wrapper.get('[data-testid="skill-name-issue-conflict-dup"]').text()
+    expect(conflict).toContain('/pkg/agents/a/skills/dup')
+    expect(conflict).toContain('/added/dup')
+    expect(wrapper.get('[data-testid="skill-name-issue-shadowed_runtime_default-dup"]').text()).toContain('/home/.codex/skills/dup')
+  })
+
+  it('loads the banner issues on mount and after a catalog reload', async () => {
+    const { wrapper, skillNames } = await mountComponent()
+    expect(skillNames.fetchIssues).toHaveBeenCalledTimes(1)
+
+    await wrapper.findAll('button').find((button) => button.text().includes('Reload'))!.trigger('click')
+    await flushPromises()
+    expect(skillNames.fetchIssues).toHaveBeenCalledTimes(2)
+  })
+
+  it('creates a skill through the skill-name checks and keeps the dialog open when it is rejected', async () => {
+    const { wrapper, skillStore, skillNames } = await mountComponent()
+    skillStore.createSkill = vi.fn().mockRejectedValue(new Error('Duplicate skill names: alpha-skill'))
+    vi.spyOn(console, 'error').mockImplementation(() => undefined)
+
+    await wrapper.findAll('button').find((button) => button.text().toLowerCase().includes('create skill'))!.trigger('click')
+    await wrapper.get('.dialog input').setValue('alpha-skill')
+    await wrapper.findAll('.dialog-footer button').at(1)!.trigger('click')
+    await flushPromises()
+
+    expect(skillNames.runWithSkillNameChecks).toHaveBeenCalledTimes(1)
+    expect(skillStore.createSkill).toHaveBeenCalledWith(expect.objectContaining({ name: 'alpha-skill' }))
+    expect(wrapper.find('.dialog').exists()).toBe(true)
   })
 })

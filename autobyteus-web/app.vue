@@ -10,6 +10,7 @@
       <AppUpdateNotice />
       <UiErrorPanel v-if="config.public.showDebugErrorPanel" />
       <ToastContainer />
+      <SkillNameConflictDialog />
 
       <NuxtLayout v-if="isAppReady">
         <NuxtPage />
@@ -28,6 +29,7 @@ import AppLocalizationGate from '~/components/app/AppLocalizationGate.vue'
 import AppUpdateNotice from '~/components/app/AppUpdateNotice.vue'
 import UiErrorPanel from '~/components/ui/UiErrorPanel.vue'
 import ToastContainer from '~/components/common/ToastContainer.vue'
+import SkillNameConflictDialog from '~/components/skills/SkillNameConflictDialog.vue'
 import { ServerStatus } from '~/types/serverStatus'
 
 const config = useRuntimeConfig()
