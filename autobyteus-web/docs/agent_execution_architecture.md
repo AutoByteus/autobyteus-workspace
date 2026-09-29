@@ -1301,10 +1301,10 @@ the UI must not imply improver completion proves downstream improvement.
 
 ### New Run From Existing Run
 
-Standalone agent runs open in Chat and have no workspace header new-run action;
-a new chat starts from the left-panel pencil or the run-history tree `+` (see
-`chat.md`). When the user clicks the workspace header add/new-run action while
-an existing team run is selected, the frontend treats that selected run as a
+On a standalone agent run (the Chat run view), the header ＋ does not copy the
+run: it starts a New chat preset to that run's agent and workspace and routes
+to `/chat` (see `chat.md`). When the user clicks the workspace header
+add/new-run action while an existing team run is selected, the frontend treats that selected run as a
 launch template for the new editable draft. The selected run itself remains a
 persisted existing-run context whose eligible model settings can be edited only
 through Settings; the add/new-run action instead seeds a separate editable

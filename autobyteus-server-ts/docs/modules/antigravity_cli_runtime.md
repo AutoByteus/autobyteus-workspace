@@ -101,11 +101,11 @@ and an otherwise healthy startup continue. Merely copying a skill does not
 claim the provider loaded it. Unsafe provenance, source mutation, escaping or
 invalid links, protected destination collisions, and unrelated provider
 startup failures still fail closed. The one exception is a skill name that
-already exists in the user's `<workspace>/.agents/skills/` for an
-`ALL_INSTALLED` (weak) request: AGY leaves the workspace skill in place, omits
-its own copy and logs `skipped-workspace-owned`; a configured (strong) request
-still fails with `AGY_SKILL_NAME_COLLISION` (see `skills.md`, request
-strength). A Codex definition may name
+already exists in the user's `<workspace>/.agents/skills/` when the run's
+`workspaceCollisionPolicy` is `prefer_workspace` (an `ALL_INSTALLED` agent):
+AGY leaves the workspace skill in place, omits its own copy and logs
+`skipped-workspace-owned`. With `fail` (a configured agent) it still fails with
+`AGY_SKILL_NAME_COLLISION` (see `skills.md`, Rule 1). A Codex definition may name
 `software-engineering-workflow-skill`, but this server change does not bundle
 or guarantee that content in `autobyteus-agents`. If it is absent from the
 selected source and global fallback roots, AGY warns, omits it, and can answer

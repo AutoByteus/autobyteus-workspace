@@ -977,11 +977,12 @@ for interpreting and canonicalizing an absolute path.
 
 `components/workspace/config/RunConfigPanel.vue` separates editable new-run
 launch configuration from persisted configuration for a selected existing run.
-Existing Team runs mount `ExistingRunConfigEditor.vue`, which requests a fresh
-canonical Team resume configuration whenever Settings is entered. Standalone
-Agent runs have no selected-run Settings panel: they open in Chat, where the
-footer model/thinking controls load and save the same canonical resume
-configuration through `existingRunConfigStore` (see `chat.md`). A
+Existing Agent and Team runs mount `ExistingRunConfigEditor.vue`, which requests
+a fresh canonical Agent or Team resume configuration whenever Settings is
+entered. For a standalone agent run, Settings is the ⚙ on the Chat run view
+(`/chat?id=<runId>`); a standalone `temp-*` draft instead mounts
+`DraftRunConfigEditor.vue`, which edits the draft's config locally (see
+`chat.md`). A
 cached history response may relock an in-flight view when activity appears, but
 it cannot unlock a run or replace the Settings-owned network read.
 
@@ -1235,10 +1236,10 @@ the UI must not imply improver completion proves downstream improvement.
 
 ### New Run From Existing Run
 
-Standalone agent runs open in Chat and have no workspace header new-run action;
-a new chat starts from the left-panel pencil or the run-history tree `+` (see
-`chat.md`). When the user clicks the workspace header add/new-run action while
-an existing team run is selected, the frontend treats that selected run as a
+On a standalone agent run (the Chat run view), the header ＋ does not copy the
+run: it starts a New chat preset to that run's agent and workspace and routes
+to `/chat` (see `chat.md`). When the user clicks the workspace header
+add/new-run action while an existing team run is selected, the frontend treats that selected run as a
 launch template for the new editable draft. The selected run itself remains a
 persisted existing-run context whose eligible model settings can be edited only
 through Settings; the add/new-run action instead seeds a separate editable
