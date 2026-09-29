@@ -21,7 +21,7 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/implementation-revision-record.md`
-- Current implementation revision ID: `IR-005` (IR-004: D-16 labels; IR-003: D-14 marker; IR-002: CR-002 and D-15; IR-001: baseline)
+- Current implementation revision ID: `IR-006` (IR-005: D-17; IR-004: D-16 labels; IR-003: D-14 marker; IR-002: CR-002 and D-15; IR-001: baseline)
 - Related solution revision IDs: SR-003, SR-004, SR-007, SR-008, SR-009, SR-010
 - Related architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004, ARCH-REV-005, ARCH-REV-006
 - Related code-review revision IDs: CRR-001, CRR-002
@@ -40,10 +40,20 @@ Commits (in design change-sequence order):
 | `360de94a9` | 5 | Skill-request instruction codec, `requestedSkillNames`, message chips |
 | `797d49d6a` | 6–9 | Chat draft/launch/routing, Chat components and pages, removals, localization, docs |
 | `717603e61` | — | Ticket package (IR-001) |
+| `59a20f21b` | IR-006 | CRR-008 Local Fix: CR-005 run settings scoped to their run (pages/chat.vue; Team quick path); CR-006 neutral `useAnchoredPopover` and `utils/skills/skillTagMenu` |
 | `1f5fd8004` | IR-005 | D-17 (R3): chat run view = product agent run view in the workspace frame; `AgentWorkspaceView` restored; `DraftRunConfigEditor`; `/` skill tagging in the product box; shared right-panel state; contextual default tab rule; removals of the Chat run view and persisted footer |
 | `9d65adf6e` | IR-004 | D-16 Chat model labels (UVF-001): the shared label policy via `toChatModelOption`, Recommended-first order, one search predicate, label + badge + secondary rows; `existingRunChoiceLabelInput` and `compareRecommendedFirstBy` moved into the shared utils |
 | `5f11d52f6` | IR-003 | D-14 activation-pending marker (SR-010): mark/clear in `agentRunStore`, `onSendMessageCommandAck`, reconcile skip + clear on active snapshot, SR-008 guard removed; R-2 workspace request generation; web execution doc |
 | `da1033860` | IR-002 | CR-002 footer thinking source; D-14 `submissionPending` reconcile guard; D-15 request strength (Rule 1, Rule 2 A/B, IC-1, IC-2) across Codex/Claude/ACP-Grok/AGY; `workspace-skill-links.ts` split; server skills doc |
+
+### IR-006 outcome (CRR-008 Local Fix)
+
+- **CR-005.** Run settings (⚙) now belong to the run they were opened for.
+  - Chat shows the conversation whenever it displays any other run: a new chat after ⚙, another chat, or a mount with settings open elsewhere.
+  - A draft's settings survive its temp → permanent promotion.
+  - The Team quick path opens on the team's conversation.
+  - The fix is unit-tested, and verified live for both a first send and a failed first send.
+- **CR-006.** The popover composable and the skill-tag helpers are now neutral (`composables/popover/useAnchoredPopover.ts`, `utils/skills/skillTagMenu.ts`). `agentInput` imports nothing from `composables/chat`.
 
 ### IR-005 outcome
 

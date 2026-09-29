@@ -315,6 +315,47 @@ check('J', '⚙ on a catalog "Run agent" draft (temp-*): change model → back �
   return { chosenLabel: chosen, opsBetweenGearAndSend: opsBeforeSend, model: cfg.metadataConfig.llmModelIdentifier }
 })
 
+check('L', 'CR-005: ⚙ left open on a chat, then a New chat (pencil) and send → the new chat shows its conversation (also on a failed first send)', async (page) => {
+  const out = {}
+  for (const failFirst of [false, true]) {
+    await appNavigate(page, `/chat?id=${state.runId}`)
+    await page.locator(sel('workspace-header-edit-config')).click()
+    await page.locator(sel('run-config-back-to-events')).waitFor({ timeout: 30000 })
+    await page.locator(sel('app-left-panel-new-chat')).click()
+    await page.locator(sel('chat-new')).waitFor({ timeout: 30000 })
+    await delay(1000)
+    await page.locator(sel('chat-model-trigger')).click()
+    await page.locator(sel('chat-runtime-codex_app_server')).click()
+    await page.locator(sel(`chat-model-option-${MODEL}`)).click()
+    let injected = failFirst ? 0 : 1
+    await page.route('**/graphql', (route) => {
+      if (injected === 0 && /prepareAgentRun/i.test(route.request().postData() ?? '')) {
+        injected += 1
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ data: null, errors: [{ message: 'Injected prepare failure (probe)' }] }) })
+      }
+      return route.continue()
+    })
+    const marker = `L-${failFirst ? 'FAIL' : 'OK'}-${Date.now()}`
+    await sendInNewChat(page, `Reply with exactly ${marker} and nothing else.`)
+    if (failFirst) {
+      await page.waitForURL(/\/chat\?id=temp-/, { timeout: 60000 })
+      await page.getByText('Injected prepare failure (probe)').first().waitFor({ timeout: 30000 })
+    } else {
+      await waitForPermanentChat(page)
+      await waitForReply(page, marker)
+    }
+    await page.unroute('**/graphql')
+    out[failFirst ? 'failedFirstSend' : 'firstSend'] = {
+      url: page.url(),
+      settingsShown: await page.locator(`${sel('draft-run-config-editor')}, ${sel('save-existing-model-config')}`).count(),
+      conversationBox: await runBoxTextarea(page).isVisible(),
+    }
+    if (!failFirst) await terminate(routeRunId(page)).catch(() => undefined)
+  }
+  await shot(page, 'L-new-chat-after-settings')
+  return out
+})
+
 try {
   await fs.mkdir(outDir, { recursive: true })
   const chrome = ['/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'].find(() => true)

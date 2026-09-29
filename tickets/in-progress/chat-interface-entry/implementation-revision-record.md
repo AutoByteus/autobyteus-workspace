@@ -11,6 +11,7 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
 | IR-003 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-006 pass (SR-010) | CR-003 (F-02), IR-002 D-14 Design Impact, R-2 (optional) | Design execution (revised D-14) | SR-010; ARCH-REV-006; CRR-002; API-REV-001; DR N/A | D-14 activation-pending marker implemented; stale first-send and Offline-resume reproductions fail without it and pass with it; resend ×14 with 0 losses; R-2 included |
 | IR-004 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-008 pass (SR-012; user verification UVF-001, DR-002) | UVF-001 | Design execution (D-16; delta Small/Low, package Large/High) | SR-011, SR-012; ARCH-REV-008; CRR-003; API-REV N/A; DR-002 | Chat model labels follow the shared policy; V-L1 to V-L5 pass |
 | IR-005 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-010 pass (SR-013/SR-014; UVF-002) | UVF-002 (R3), AR-010, AR-011 | Design execution (D-17; delta Medium web-only, package Large/High) | SR-013, SR-014; ARCH-REV-010; CRR-005; API-REV N/A; DR N/A | Chat run view is the product agent run view in the workspace frame; draft ⚙ editor; `/` in the product box; shared panel state and contextual-tab rule; removals; live checks A–K pass |
+| IR-006 | code_reviewer / `code-review-report.md` / CRR-008 Fail (round 5) | CR-005, CR-006 | `Local Fix` | SR-014; ARCH-REV-010; CRR-008; API-REV N/A; DR N/A | Run settings scoped to their run in Chat; Team quick path opens on its conversation; agentInput free of `composables/chat` imports (neutral popover and skill-tag helpers) |
 
 ## Revision Entries
 
@@ -268,4 +269,41 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
   - For a reopened run whose conversation starts at a Codex compaction boundary, while history is not loaded (narrow view, tree not mounted), the title falls back to the product "Agent - XXXX".
   - After a draft's first send promotes its id, or when switching between chats, the tab re-defaults to Activity. This is an accepted consequence.
   - The draft editor shows the product's "workspace is fixed for existing runs" wording.
+
+### IR-006 — CRR-008 Local Fix: CR-005 and CR-006
+
+- Triggering role, report path, and round: code_reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md`, round 5, CRR-008 (Fail, Local Fix).
+- Triggering finding IDs: CR-005 (Medium), CR-006 (Low).
+- Classification: `Local Fix`. The package stays Large/High.
+- Prior authoritative result: IR-005 (`1f5fd8004`, `1671f722b`).
+- Current authoritative result: commit `59a20f21b`.
+- Related solution revision IDs: SR-014
+- Related architecture-review revision IDs: ARCH-REV-010
+- Related code-review revision IDs: CRR-008
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: the fix for the two blocking CRR-008 findings.
+- Approved behavior or requirement IDs affected: REQ-002 / AC-002 ("streams in the chat view"), REQ-012, SCN-001/SCN-008; the design Dependency Rules (AR-002).
+- Implementation delta:
+  - **CR-005.**
+    - `pages/chat.vue` records the context for which run settings were opened, when the global center-view mode turns to `config`. While in config mode, whenever Chat displays a different context it calls `workspaceCenterViewStore.showChat()`.
+    - That covers a New chat sent from the pencil or the tree `+` (successful and failed first sends), opening another chat, and mounting with settings left open for another run.
+    - A temp → permanent promotion keeps the same context object, so a draft's settings stay open.
+    - `chatLaunchService.launchTeamChat` calls `showChat()` before the Team launch, so `/workspace` opens on the team's conversation.
+  - **CR-006.**
+    - `composables/chat/useChatPopover.ts` moves to `composables/popover/useAnchoredPopover.ts` (renamed `useAnchoredPopover`), and all Chat menus and `useSkillTagMenu` use it.
+    - Optional recommendation, taken: `detectMenuTrigger`, `rankSkills` and the skill option type (renamed `SkillTagOption`) move from `components/chat/chatComposerMenus.ts` to the new `utils/skills/skillTagMenu.ts`.
+    - `agentInput` now imports only the `ChatSkillMenu` and `SkillTagChips` components from `components/chat`, which D-17 permits. It imports nothing from `composables/chat`, `services/chat` or `stores/chatDraftStore`.
+- Tests:
+  - `pages/__tests__/chat.spec.ts` gains 3 CR-005 tests: a new chat after ⚙ on another chat; a draft keeping its settings across promotion; a mount with settings open for another run. Without the fix, the first and third fail.
+  - `chatLaunchService.spec.ts`: the Team quick path resets to the conversation.
+  - `chatComposerMenus.spec.ts` imports from the new util.
+- Local validation and result:
+  - `pnpm test:nuxt run` with `LANG=en_US.UTF-8`: 3374 passed. The only failing files are the 4 baseline ones.
+  - vue-tsc: no errors in the changed files. The guards pass.
+  - Live check `L` passes (`implementation-evidence/README.md` § CR-005).
+- Next recipient or routing: code reviewer, via `get_handoff_rules`.
+- Remaining limitations or risks:
+  - The Team quick path fix is covered by a unit test, not a live team launch.
+  - The design-spec file-mapping residue (the `AgentWorkspaceView` "Remove" row and the CR-002 row) is for the Solution Designer and has no code impact.
 

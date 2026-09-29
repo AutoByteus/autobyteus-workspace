@@ -104,3 +104,14 @@ Script: `ir5-run-view-check.mjs`, run against the dev environment (`pnpm dev`; w
 | I — ⚙ on a failed first send (`temp-*`) | Pass. `DraftRunConfigEditor` changes the model to `gpt-5.6-luna`, and the send uses it. No run-config calls happen between ⚙ and send; the only GraphQL read is the pre-existing Skill Improvement capability query. |
 | J — ⚙ on a catalog "Run agent" draft | Pass. The model changes to `gpt-5.6-luna` and the send uses it. No GraphQL calls happen between ⚙ and send. |
 | K — narrow 390×844, VIS-027 | Pass. Left and right product strips show, the title is visible, and mic/send sit inside the box. |
+
+## CR-005 (CRR-008) — run settings stay with their run (IR-006)
+
+Check `L` in `ir5-run-view-check.mjs`, run on the dev environment; results are in `ir6-cr005/`. It opens ⚙ on an existing chat, leaves it open, starts a New chat with the Chat pencil (Codex `gpt-5.5`) and sends. It runs twice:
+
+| Case | Result |
+| --- | --- |
+| First send | Pass. The new chat lands on `/chat?id=<permanent>` with its conversation and box; no settings view is shown. |
+| Failed first send (injected `prepareAgentRun` failure) | Pass. The new chat lands on `/chat?id=temp-*` with its conversation and the visible error; no settings view is shown. |
+
+The first attempt of this check sent with the New chat's default model, which in the dev data root is an Anthropic model with no API key. The conversation still showed correctly; the check now picks the Codex model first.
