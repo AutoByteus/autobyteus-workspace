@@ -12,6 +12,7 @@ import { AgentPackageRootSettingsStore } from "../../../src/agent-packages/store
 import type { GitHubRepositoryRevisionMetadata, GitHubRepositorySource } from "../../../src/agent-packages/types.js";
 import { SkillNameConflictError } from "../../../src/skills/domain/skill-name-conflict-error.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
+import { writeAgentOrg } from "../../fixtures/agent-org-skill-package.js";
 
 // D-19 / REQ-023: every agent package import path validates skill names before it commits.
 const parseAdditionalRoots = (): string[] =>
@@ -74,6 +75,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
         getAdditionalSkillsDirs: () => skillPaths,
         getAdditionalAgentPackageRoots: parseAdditionalRoots,
         getAppDataDir: () => defaultRoot,
+        getAgentOrgsDir: () => path.join(defaultRoot, "agent-orgs"),
         get: (_key: string, defaultValue = "") => defaultValue,
       },
       isRuntimeDefaultSkillFolder: (directory) => path.resolve(directory) === runtimeDefault,
@@ -102,6 +104,19 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
     expect((error as Error).message).toBe("Duplicate skill names: desk-alpha");
     expect(parseAdditionalRoots()).toEqual([]);
     expect((await registryStore.listPackageRecords()).some((record) => record.rootPath === localRoot)).toBe(false);
+    expect(refreshes).toBe(0);
+  });
+
+  it("rejects a local import whose only duplicate is an Agent Org skill (SR-018), with nothing changed", async () => {
+    const existing = await writeSkill(path.join(skillsDir, "desk-alpha"), "desk-alpha");
+    const localRoot = path.join(base, "org-package");
+    await writePackage(localRoot, "plain-agent");
+    const orgDir = writeAgentOrg(path.join(localRoot, "agent-orgs"), "desk-org", { teams: ["desk-team"] });
+    const incoming = await writeSkill(path.join(orgDir, "agent-teams", "desk-team", "skills", "desk-alpha"), "desk-alpha");
+
+    await expect(createService().importAgentPackage({ sourceKind: "LOCAL_PATH", source: localRoot }))
+      .rejects.toMatchObject({ conflicts: [{ name: "desk-alpha", existingPath: existing, incomingPath: incoming }] });
+    expect(parseAdditionalRoots()).toEqual([]);
     expect(refreshes).toBe(0);
   });
 

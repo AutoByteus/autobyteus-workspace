@@ -1,84 +1,105 @@
-import fs from "node:fs/promises";
+import fs from "node:fs";
+import fsPromises from "node:fs/promises";
 import path from "node:path";
 import { readAgentOrgDefinitionConfig } from "./agent-org-definition-config.js";
 import { parseOrgMd } from "../utils/org-md-parser.js";
-import { buildAgentOrgOwnedDefinitionId } from "../utils/agent-org-owned-definition-id.js";
+import {
+  agentOrgOwnedFamilyDirName,
+  correlateAgentOrgOwnedMembers,
+  type AgentOrgOwnedDefinitionSourcePaths,
+  type AgentOrgOwnedSubject,
+} from "./agent-org-owned-definition-correlation.js";
 
-export type AgentOrgOwnedDefinitionSourcePaths = Readonly<{
-  kind: "agent_org_owned";
-  subject: "agent" | "agent_team";
-  definitionId: string;
-  localDefinitionId: string;
-  orgDefinitionId: string;
-  orgDefinitionName: string;
-  orgDir: string;
-  definitionDir: string;
-  mdPath: string;
-  configPath: string;
-  rootPath: string;
-}>;
+export type { AgentOrgOwnedDefinitionSourcePaths } from "./agent-org-owned-definition-correlation.js";
 
-const candidateIds = (
-  subject: "agent" | "agent_team",
-  orgDefinitionId: string,
-  localDefinitionId: string,
-): readonly string[] => Object.freeze([
-  buildAgentOrgOwnedDefinitionId(subject, orgDefinitionId, localDefinitionId),
-]);
+type OrgSourceQuery = { subject: AgentOrgOwnedSubject; orgRoots: readonly string[] };
+type OrgFiles = { config: ReturnType<typeof readAgentOrgDefinitionConfig>; orgDefinitionName: string };
+type DirEntry = { name: string; isDirectory(): boolean };
+
+const sortedOrgDirNames = (entries: readonly DirEntry[]): string[] => entries
+  .filter((entry) => entry.isDirectory() && !entry.name.startsWith("_"))
+  .map((entry) => entry.name)
+  .sort((left, right) => left.localeCompare(right));
+
+const localDirNames = (entries: readonly DirEntry[]): string[] =>
+  entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name);
+
+const parseOrgFiles = (configText: string, orgMdText: string, orgMdPath: string): OrgFiles => ({
+  config: readAgentOrgDefinitionConfig(JSON.parse(configText)),
+  orgDefinitionName: parseOrgMd(orgMdText, orgMdPath).name,
+});
+
+/** Correlates one Org and records its ids so later Orgs and roots skip them. */
+const correlateOrg = (query: OrgSourceQuery, orgRoot: string, orgDirName: string, files: OrgFiles,
+  entries: readonly DirEntry[], seen: Set<string>): AgentOrgOwnedDefinitionSourcePaths[] => {
+  const sources = correlateAgentOrgOwnedMembers({
+    subject: query.subject, orgRoot, orgDirName, config: files.config,
+    orgDefinitionName: files.orgDefinitionName, localDirNames: localDirNames(entries), seenDefinitionIds: seen,
+  });
+  for (const source of sources) seen.add(source.definitionId);
+  return sources;
+};
 
 /**
  * Builds exact identity-to-physical-source correlations from current Org packages.
  * The requested identity is never parsed to infer its owning Org or local path.
+ * Serves the definition providers and admission (non-blocking I/O).
  */
-export const listAgentOrgOwnedDefinitionSources = async (input: {
-  subject: "agent" | "agent_team";
-  orgRoots: readonly string[];
-}): Promise<readonly AgentOrgOwnedDefinitionSourcePaths[]> => {
+export const listAgentOrgOwnedDefinitionSources = async (
+  input: OrgSourceQuery,
+): Promise<readonly AgentOrgOwnedDefinitionSourcePaths[]> => {
   const output: AgentOrgOwnedDefinitionSourcePaths[] = [];
   const seen = new Set<string>();
   for (const orgRoot of input.orgRoots) {
-    const orgEntries = await fs.readdir(orgRoot, { withFileTypes: true }).catch(() => []);
-    for (const orgEntry of orgEntries.sort((left, right) => left.name.localeCompare(right.name))) {
-      if (!orgEntry.isDirectory() || orgEntry.name.startsWith("_")) continue;
-      const orgDir = path.join(orgRoot, orgEntry.name);
-      let config: ReturnType<typeof readAgentOrgDefinitionConfig>;
-      let orgDefinitionName: string;
+    const orgEntries = await fsPromises.readdir(orgRoot, { withFileTypes: true }).catch(() => []);
+    for (const orgDirName of sortedOrgDirNames(orgEntries)) {
+      const orgDir = path.join(orgRoot, orgDirName);
+      let files: OrgFiles;
       try {
-        config = readAgentOrgDefinitionConfig(JSON.parse(await fs.readFile(path.join(orgDir, "org-config.json"), "utf8")));
-        orgDefinitionName = parseOrgMd(await fs.readFile(path.join(orgDir, "org.md"), "utf8"), path.join(orgDir, "org.md")).name;
+        files = parseOrgFiles(
+          await fsPromises.readFile(path.join(orgDir, "org-config.json"), "utf8"),
+          await fsPromises.readFile(path.join(orgDir, "org.md"), "utf8"),
+          path.join(orgDir, "org.md"),
+        );
       } catch {
         continue;
       }
-      const familyDirName = input.subject === "agent" ? "agents" : "agent-teams";
-      const localEntries = await fs.readdir(path.join(orgDir, familyDirName), { withFileTypes: true }).catch(() => []);
-      for (const member of config.members) {
-        if (member.refScope !== "org_local" || member.refType !== input.subject || seen.has(member.ref)) continue;
-        const matches = localEntries.filter((entry) => entry.isDirectory()
-          && candidateIds(input.subject, orgEntry.name, entry.name).includes(member.ref));
-        if (matches.length !== 1) {
-          // A malformed correlation makes this one reference unavailable. It must
-          // not abort discovery for unrelated packages; target admission will
-          // report the owning Org as unavailable when its reference cannot be
-          // resolved through the exact source index.
-          continue;
-        }
-        const localDefinitionId = matches[0]!.name;
-        const definitionDir = path.join(orgDir, familyDirName, localDefinitionId);
-        output.push(Object.freeze({
-          kind: "agent_org_owned",
-          subject: input.subject,
-          definitionId: member.ref,
-          localDefinitionId,
-          orgDefinitionId: orgEntry.name,
-          orgDefinitionName,
-          orgDir,
-          definitionDir,
-          mdPath: path.join(definitionDir, input.subject === "agent" ? "agent.md" : "team.md"),
-          configPath: path.join(definitionDir, input.subject === "agent" ? "agent-config.json" : "team-config.json"),
-          rootPath: orgRoot,
-        }));
-        seen.add(member.ref);
+      const entries = await fsPromises.readdir(path.join(orgDir, agentOrgOwnedFamilyDirName(input.subject)), { withFileTypes: true })
+        .catch(() => []);
+      output.push(...correlateOrg(input, orgRoot, orgDirName, files, entries, seen));
+    }
+  }
+  return Object.freeze(output);
+};
+
+/** The same correlation with synchronous I/O, for the skill catalog (D-19), which is synchronous. */
+export const listAgentOrgOwnedDefinitionSourcesSync = (
+  input: OrgSourceQuery,
+): readonly AgentOrgOwnedDefinitionSourcePaths[] => {
+  const readdir = (directory: string): fs.Dirent[] => {
+    try {
+      return fs.readdirSync(directory, { withFileTypes: true });
+    } catch {
+      return [];
+    }
+  };
+  const output: AgentOrgOwnedDefinitionSourcePaths[] = [];
+  const seen = new Set<string>();
+  for (const orgRoot of input.orgRoots) {
+    for (const orgDirName of sortedOrgDirNames(readdir(orgRoot))) {
+      const orgDir = path.join(orgRoot, orgDirName);
+      let files: OrgFiles;
+      try {
+        files = parseOrgFiles(
+          fs.readFileSync(path.join(orgDir, "org-config.json"), "utf8"),
+          fs.readFileSync(path.join(orgDir, "org.md"), "utf8"),
+          path.join(orgDir, "org.md"),
+        );
+      } catch {
+        continue;
       }
+      const entries = readdir(path.join(orgDir, agentOrgOwnedFamilyDirName(input.subject)));
+      output.push(...correlateOrg(input, orgRoot, orgDirName, files, entries, seen));
     }
   }
   return Object.freeze(output);
@@ -86,7 +107,7 @@ export const listAgentOrgOwnedDefinitionSources = async (input: {
 
 export const findAgentOrgOwnedDefinitionSource = async (input: {
   definitionId: string;
-  subject: "agent" | "agent_team";
+  subject: AgentOrgOwnedSubject;
   orgRoots: readonly string[];
 }): Promise<AgentOrgOwnedDefinitionSourcePaths | null> => {
   const requestedId = input.definitionId.trim();

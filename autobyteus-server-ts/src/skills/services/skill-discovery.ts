@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import type { DiscoveredSkillRecord } from "../domain/installed-skill-record.js";
 import { SkillLoader } from "../loader.js";
+import { listAgentOrgOwnedDefinitionSourcesSync } from "../../agent-org-definition/providers/agent-org-owned-definition-source-index.js";
 
 /**
  * Layout scanners for the skill catalog (D-19). They only enumerate skill folders in one
@@ -81,9 +82,46 @@ const getAgentSkillLocations = (
   return locations;
 };
 
-/** `agents/*` by name, then `agent-teams/*` by name (each team's shared skills, then its agents). */
+/** A team folder's shared skills, then its local agents' skills; the team folder is their root. */
+const getTeamSkillLocations = (teamDir: string): BundledSkillLocation[] => [
+  ...getSkillFolderDirectories(path.join(teamDir, "skills")).map((skillDir) => ({
+    path: skillDir,
+    origin: "team_shared" as const,
+    root: teamDir,
+  })),
+  ...getAgentSkillLocations(path.join(teamDir, "agents"), () => teamDir),
+];
+
+/**
+ * Agent Org layouts (D-19, SR-018): for each Org by name, its org-owned agents by name
+ * (`<agentDir>/skills/*`, the agent folder is the root), then its org-owned teams by name (see
+ * `getTeamSkillLocations`). Org-owned folders come from the exact owned-source correlation; an
+ * Org has no org-level `skills/` folder.
+ */
+const getAgentOrgSkillLocations = (orgRoot: string): BundledSkillLocation[] => {
+  const sources = [
+    ...listAgentOrgOwnedDefinitionSourcesSync({ subject: "agent", orgRoots: [orgRoot] }),
+    ...listAgentOrgOwnedDefinitionSourcesSync({ subject: "agent_team", orgRoots: [orgRoot] }),
+  ].sort((left, right) => left.orgDefinitionId.localeCompare(right.orgDefinitionId)
+    || (left.subject === right.subject ? 0 : left.subject === "agent" ? -1 : 1)
+    || left.localDefinitionId.localeCompare(right.localDefinitionId));
+  return sources.flatMap((source) => source.subject === "agent"
+    ? getSkillFolderDirectories(path.join(source.definitionDir, "skills")).map((skillDir) => ({
+        path: skillDir,
+        origin: "agent_private" as const,
+        root: source.definitionDir,
+      }))
+    : getTeamSkillLocations(source.definitionDir));
+};
+
+/**
+ * `agents/*` by name, then `agent-teams/*` by name (each team's shared skills, then its agents),
+ * then the Agent Orgs under `orgRoot` (`<definitionRoot>/agent-orgs` unless the caller's config
+ * places them elsewhere, as for the app data dir).
+ */
 const getBundledSkillLocationsFromDefinitionRoot = (
   definitionRoot: string,
+  orgRoot: string,
 ): BundledSkillLocation[] => {
   const locations = getAgentSkillLocations(
     path.join(definitionRoot, "agents"),
@@ -96,27 +134,20 @@ const getBundledSkillLocationsFromDefinitionRoot = (
       continue;
     }
 
-    const teamDir = path.join(teamRoots, teamEntry.name);
-    locations.push(
-      ...getSkillFolderDirectories(path.join(teamDir, "skills")).map((skillDir) => ({
-        path: skillDir,
-        origin: "team_shared" as const,
-        root: teamDir,
-      })),
-      ...getAgentSkillLocations(path.join(teamDir, "agents"), () => teamDir),
-    );
+    locations.push(...getTeamSkillLocations(path.join(teamRoots, teamEntry.name)));
   }
 
-  return locations;
+  return [...locations, ...getAgentOrgSkillLocations(orgRoot)];
 };
 
 export const scanBundledSkillsFromDefinitionRoot = (
   definitionRoot: string,
   dependencies: SkillDiscoveryDependencies,
+  orgRoot: string = path.join(definitionRoot, "agent-orgs"),
 ): DiscoveredSkillRecord[] => {
   const records: DiscoveredSkillRecord[] = [];
 
-  for (const location of getBundledSkillLocationsFromDefinitionRoot(definitionRoot)) {
+  for (const location of getBundledSkillLocationsFromDefinitionRoot(definitionRoot, orgRoot)) {
     try {
       const skill = dependencies.loader.loadSkill(
         location.path,

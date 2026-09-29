@@ -24,6 +24,8 @@ export type SkillCatalogSource = {
   path: string;
   tier: SkillCatalogTier;
   layout: "skill_directory" | "definition_root" | "skill_path";
+  /** Where this root's Agent Orgs live when not `<path>/agent-orgs` (the app data dir's org folder). */
+  orgRoot?: string;
 };
 
 export type SkillCatalogConfig = {
@@ -31,6 +33,7 @@ export type SkillCatalogConfig = {
   getAdditionalSkillsDirs(): string[];
   getAdditionalAgentPackageRoots(): string[];
   getAppDataDir(): string;
+  getAgentOrgsDir(): string;
 };
 
 export type SkillCatalog = {
@@ -69,7 +72,13 @@ export const listSkillCatalogSources = (
 
   return [
     { path: config.getSkillsDir(), tier: 1, layout: "skill_directory" },
-    ...definitionRoots.map((root): SkillCatalogSource => ({ path: root, tier: 2, layout: "definition_root" })),
+    ...definitionRoots.map((root, index): SkillCatalogSource => ({
+      path: root,
+      tier: 2,
+      layout: "definition_root",
+      // The app data dir (first) keeps its Orgs where the config says; package roots in `agent-orgs`.
+      ...(index === 0 ? { orgRoot: config.getAgentOrgsDir() } : {}),
+    })),
     ...addedFolders.filter((source) => source.tier === 3),
     ...addedFolders.filter((source) => source.tier === 4),
   ];
@@ -83,7 +92,7 @@ export const scanSkillCatalogSource = (
   const discovered = source.layout === "skill_directory"
     ? scanSkillDirectory(source.path, dependencies)
     : source.layout === "definition_root"
-      ? scanBundledSkillsFromDefinitionRoot(source.path, dependencies)
+      ? scanBundledSkillsFromDefinitionRoot(source.path, dependencies, source.orgRoot)
       : [
           ...scanSkillDirectory(source.path, dependencies),
           ...scanBundledSkillsFromDefinitionRoot(source.path, dependencies),

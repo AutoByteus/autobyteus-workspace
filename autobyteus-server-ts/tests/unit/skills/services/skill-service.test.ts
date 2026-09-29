@@ -41,6 +41,7 @@ describe("SkillService", () => {
       getAdditionalSkillsDirs: () => additionalDirs,
       getAdditionalAgentPackageRoots: () => additionalDefinitionRoots,
       getAppDataDir: () => tempRoot,
+      getAgentOrgsDir: () => path.join(tempRoot, "agent-orgs"),
       get: (_key: string, defaultValue = "") => defaultValue,
     };
 

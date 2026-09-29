@@ -66,6 +66,7 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
         getAdditionalSkillsDirs: () => [],
         getAdditionalAgentPackageRoots: () => [packageRoot],
         getAppDataDir: () => appDataDir,
+        getAgentOrgsDir: () => path.join(appDataDir, "agent-orgs"),
         get: (_key: string, defaultValue = "") => defaultValue,
       },
     });

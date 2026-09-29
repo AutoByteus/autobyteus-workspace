@@ -32,7 +32,10 @@ Precedence (tier, then order within the tier):
 2. Definition-root bundles: the app data dir, then the agent package roots
    (`AUTOBYTEUS_AGENT_PACKAGE_ROOTS`) in order. Within a root: `agents/*` by
    name, then `agent-teams/*` by name (each team's shared skills, then its
-   agents).
+   agents), then `agent-orgs/*` by name (each Org's org-owned agents by name,
+   then its org-owned teams by name: the team's shared skills, then its local
+   agents). The app data dir's Orgs live in `config.getAgentOrgsDir()`; a
+   package root's in `<packageRoot>/agent-orgs`.
 3. Added skill folders (`AUTOBYTEUS_SKILLS_PATHS`) that are not runtime default
    folders, in Settings order.
 4. Runtime default folders, only if added: `$CODEX_HOME/skills` (default
@@ -48,6 +51,20 @@ Bundled layouts inside a definition root:
   `agent-teams/<team-id>/agents/<agent-id>/skills/<skill-name>/SKILL.md`
 - owning-team shared skills:
   `agent-teams/<team-id>/skills/<skill-name>/SKILL.md`
+- Agent Org-owned agents (`agent_private`, the agent folder is the root):
+  `agent-orgs/<org>/agents/<agent>/skills/<skill-name>/SKILL.md`
+- Agent Org-owned teams: shared skills (`team_shared`) in
+  `agent-orgs/<org>/agent-teams/<team>/skills/<skill-name>/SKILL.md`, and their
+  local agents (`agent_private`, the team folder is the root) in
+  `agent-orgs/<org>/agent-teams/<team>/agents/<agent>/skills/<skill-name>/SKILL.md`
+
+Org-owned agent and team folders come from the exact owned-source correlation
+(`correlateAgentOrgOwnedMembers` in
+`agent-org-definition/providers/agent-org-owned-definition-correlation.ts`,
+read synchronously for the catalog by `listAgentOrgOwnedDefinitionSourcesSync`
+and asynchronously for the definition providers by
+`listAgentOrgOwnedDefinitionSources`). A folder that no `org_local` member
+correlates with is not scanned, and an Org has no org-level `skills/` folder.
 
 An added skill folder is scanned both as a skills folder (including nested
 `skills` folders; a nested link back to a scanned folder is skipped) and as a

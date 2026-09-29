@@ -20,6 +20,7 @@ describe("SkillService integration", () => {
       getAdditionalSkillsDirs: () => [mockRepoPath],
       getAdditionalAgentPackageRoots: () => [],
       getAppDataDir: () => tempDir,
+      getAgentOrgsDir: () => path.join(tempDir, "agent-orgs"),
       get: (_key: string, defaultValue?: string) => defaultValue,
     };
 

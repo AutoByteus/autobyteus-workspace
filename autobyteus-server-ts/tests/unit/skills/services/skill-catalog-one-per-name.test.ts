@@ -41,6 +41,7 @@ describe("SkillService catalog: one skill per name (D-19)", () => {
         getAdditionalSkillsDirs: () => skillPaths,
         getAdditionalAgentPackageRoots: () => packageRoots,
         getAppDataDir: () => appData,
+        getAgentOrgsDir: () => path.join(appData, "agent-orgs"),
         get: (_key: string, defaultValue = "") => defaultValue,
       },
       isRuntimeDefaultSkillFolder: (directory) => [codexDefault, claudeDefault].includes(path.resolve(directory)),

@@ -49,6 +49,7 @@ type AppConfigLike = {
   getAdditionalSkillsDirs(): string[];
   getAdditionalAgentPackageRoots(): string[];
   getAppDataDir(): string;
+  getAgentOrgsDir(): string;
   get(key: string, defaultValue?: string): string | undefined;
 };
 

@@ -45,6 +45,7 @@ describe("SkillService skill source management", () => {
       getAdditionalSkillsDirs: () => additionalDirs,
       getAdditionalAgentPackageRoots: () => [],
       getAppDataDir: () => tempRoot,
+      getAgentOrgsDir: () => path.join(tempRoot, "agent-orgs"),
       get: (_key: string, defaultValue = "") => defaultValue,
     };
 
