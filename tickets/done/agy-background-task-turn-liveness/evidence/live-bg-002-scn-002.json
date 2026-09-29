@@ -1,0 +1,164 @@
+{
+  "case": "LIVE-BG-002",
+  "runId": "agy_background_live_fe27a4a6_d524_4e43_918b_2789_842ac7d14bed410faffd6e67ab207a2c",
+  "model": "gemini-3.8-flash-high",
+  "turn": [
+    {
+      "at_ms": 3,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 3,
+      "type": "AGENT_COMMAND_ACK",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 3,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 3,
+      "type": "TURN_STARTED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 2797,
+      "type": "TOOL_EXECUTION_STARTED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-92272dd1-39b9-48ce-aadb-8d361414ff64-2",
+      "command": "sleep 330 && echo FINISHED_MARKER",
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 332828,
+      "type": "TOOL_EXECUTION_SUCCEEDED",
+      "tool_name": "run_command",
+      "invocation_id": "agy-tool-92272dd1-39b9-48ce-aadb-8d361414ff64-2",
+      "command": "sleep 330 && echo FINISHED_MARKER",
+      "result": {
+        "provider_state": "DONE",
+        "output": "FINISHED_MARKER\r\n"
+      },
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 332828,
+      "type": "SEGMENT_START",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 332828,
+      "type": "SEGMENT_CONTENT",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": "STARTED\n"
+    },
+    {
+      "at_ms": 332828,
+      "type": "SEGMENT_END",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 335367,
+      "type": "SEGMENT_START",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 335367,
+      "type": "SEGMENT_CONTENT",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": "The background task has completed successfully with output:\n\n```\nFINISHED_MARKER\n```\n"
+    },
+    {
+      "at_ms": 335367,
+      "type": "SEGMENT_END",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 335378,
+      "type": "TOKEN_USAGE_UPDATED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 335378,
+      "type": "TURN_COMPLETED",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    },
+    {
+      "at_ms": 335378,
+      "type": "AGENT_STATUS",
+      "tool_name": null,
+      "invocation_id": null,
+      "command": null,
+      "result": null,
+      "code": null,
+      "delta": null
+    }
+  ],
+  "turnEnd": "TURN_COMPLETED",
+  "maxSilentGapMs": 330031,
+  "turnDurationMs": 335375,
+  "result": "Pass"
+}

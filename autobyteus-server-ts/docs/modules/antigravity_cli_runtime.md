@@ -165,6 +165,16 @@ closes it before the turn's completion or turn error as canonical success with
 running when the turn ended.`. User Stop and process death before `result`
 still interrupt open tool steps instead.
 
+Known limitation (observed with AGY 1.2.12): AutoByteus does not own AGY's
+background processes. Stop/Terminate ends the turn and the AGY process, but a
+daemon that AGY has already backgrounded survives SIGTERM of AGY — it is
+reparented to PID 1 in its own process group and can keep its port bound. There
+is no AutoByteus background-process manager; stray dev servers must be stopped
+manually. For a future fix: AGY starts each background command in its own
+process group, shared by the whole command tree. A raw-AGY probe showed that
+signalling AGY's descendant process groups before SIGTERMing AGY stops such
+daemons cleanly.
+
 The provider-native `generate_image` ACTIVE/DONE step becomes the ordinary
 STARTED/SUCCEEDED tool-card lifecycle, with matching invocation and turn IDs.
 Its provider `parameters` (including the prompt) are shown as ordinary public
