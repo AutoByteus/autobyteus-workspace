@@ -1,0 +1,108 @@
+holder listening 127.0.0.1:9333
+== 9333 holder
+COMMAND   PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+node    88329 normy   12u  IPv4 0xe1f21f72b0664418      0t0  TCP 127.0.0.1:9333 (LISTEN)
+== explicit --control-port 9333 while held (foreign busy)
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "start",
+  "error": {
+    "code": "CONTROL_PORT_IN_USE",
+    "message": "Control port 9333 is already in use; omit --control-port to use a free port, or pass another port"
+  }
+}
+exit=3
+== default start while 9333 held
+exit=0
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-50346-bf2c",
+    "pid": 88445,
+    "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:50347",
+    "graphqlUrl": "http://127.0.0.1:50347/graphql",
+    "controlEndpoint": "http://127.0.0.1:50346",
+    "controlPort": 50346,
+    "serverPort": 50347,
+    "dataRoot": "/private/tmp/abac1-9QNJ8Y/autobyteus-isolated-root-VyPRS8",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/tmp/abac1-9QNJ8Y/autobyteus-isolated-root-VyPRS8/server-data/db/production.db",
+    "logPath": "/tmp/abac1-9QNJ8Y/autobyteus-isolated-app/iso-50346-bf2c.log"
+  }
+}
+controlPort=50346 instanceId=iso-50346-bf2c pid=88445
+== listeners on controlPort
+COMMAND     PID  USER   FD   TYPE             DEVICE SIZE/OFF NODE NAME
+AutoByteu 88445 normy   33u  IPv4 0xeb6176234b2dfcd6      0t0  TCP 127.0.0.1:50346 (LISTEN)
+== owner pgid of controlPort listener vs instance pid
+88445 88445 /Applications/AutoByteus.app/Contents/MacOS/AutoByteus
+== browser-automation attach-only list-tabs on reported port
+{"schema_version":"1","ok":true,"command":"list-tabs","result":{"tabs":[{"tab_id":"CCEBAE957FCB533557E8E3F9461FB0DE","url":"file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents","title":""}]}}
+exit=0
+== /json/list page targets
+[{"id":"CCEBAE957FCB533557E8E3F9461FB0DE","url":"file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents"}]
+== list (private registry)
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": [
+      {
+        "instanceId": "iso-50346-bf2c",
+        "pid": 88445,
+        "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+        "backendUrl": "http://127.0.0.1:50347",
+        "graphqlUrl": "http://127.0.0.1:50347/graphql",
+        "controlEndpoint": "http://127.0.0.1:50346",
+        "controlPort": 50346,
+        "serverPort": 50347,
+        "dataRoot": "/private/tmp/abac1-9QNJ8Y/autobyteus-isolated-root-VyPRS8",
+        "ownsDataRoot": true,
+        "keepDataRoot": false,
+        "databaseUrl": "file:/private/tmp/abac1-9QNJ8Y/autobyteus-isolated-root-VyPRS8/server-data/db/production.db",
+        "logPath": "/tmp/abac1-9QNJ8Y/autobyteus-isolated-app/iso-50346-bf2c.log",
+        "startedAt": "2026-09-29T09:46:08.581Z",
+        "running": true
+      }
+    ]
+  }
+}
+== stop by id
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-50346-bf2c",
+    "wasRunning": true,
+    "forced": true,
+    "dataRoot": "/private/tmp/abac1-9QNJ8Y/autobyteus-isolated-root-VyPRS8",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+exit=0
+== post-stop
+controlPort 50346 free
+group 88445 gone
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": []
+  }
+}
+9333 released
+autobyteus-isolated-app
+node-compile-cache
+start.json
+private tmp removed

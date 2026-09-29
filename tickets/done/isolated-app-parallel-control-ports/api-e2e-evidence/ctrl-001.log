@@ -1,0 +1,6 @@
+explicit started iso-50790-55d5
+{"id":"iso-50790-55d5","wasRunning":true,"forced":true,"controlPortReleased":true}
+explicit stop took 10s
+auto started iso-50840-b376
+{"id":"iso-50840-b376","wasRunning":true,"forced":false,"controlPortReleased":true}
+auto stop took 9s
