@@ -1,9 +1,11 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { antigravityCommand } from "../../../../runtime-management/antigravity-cli-capability.js";
 import { parseAgyStreamMessage, type AgyStreamMessage } from "./agy-stream-message.js";
+import { listAgyBackgroundProcessGroups, signalProcessGroups } from "./agy-background-process-groups.js";
 
 const MAX_LINE = 2 * 1024 * 1024;
 const MAX_STDERR = 4096;
+const BACKGROUND_GROUP_KILL_DELAY_MS = 1_500;
 
 export class AgyStreamProcess {
   private child: ChildProcessWithoutNullStreams | null = null;
@@ -59,9 +61,25 @@ export class AgyStreamProcess {
     await new Promise<void>((resolve, reject) => child.stdin.write(line, (error) => error ? reject(error) : resolve()));
   }
 
+  /**
+   * Stops AGY and, while AGY is still alive, the background process groups it started (daemons survive
+   * a SIGTERM of AGY alone). If AGY already exited on its own its groups can no longer be found.
+   */
   stop(): void {
-    this.child?.kill("SIGTERM");
+    const child = this.child;
     this.child = null;
+    if (!child) return;
+    let groups: number[] = [];
+    if (child.exitCode === null && child.signalCode === null && child.pid) {
+      try {
+        groups = listAgyBackgroundProcessGroups(child.pid);
+        signalProcessGroups(groups, "SIGTERM");
+      } catch (error) {
+        console.warn("AGY_BACKGROUND_GROUP_STOP_FAILED", error instanceof Error ? error.message : String(error));
+      }
+    }
+    child.kill("SIGTERM");
+    if (groups.length) setTimeout(() => signalProcessGroups(groups, "SIGKILL"), BACKGROUND_GROUP_KILL_DELAY_MS).unref();
   }
 
   private acceptStdout(chunk: string): void {

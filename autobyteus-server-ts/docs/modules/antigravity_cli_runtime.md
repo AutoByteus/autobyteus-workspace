@@ -165,15 +165,34 @@ closes it before the turn's completion or turn error as canonical success with
 running when the turn ended.`. User Stop and process death before `result`
 still interrupt open tool steps instead.
 
-Known limitation (observed with AGY 1.2.12): AutoByteus does not own AGY's
-background processes. Stop/Terminate ends the turn and the AGY process, but a
-daemon that AGY has already backgrounded survives SIGTERM of AGY — it is
-reparented to PID 1 in its own process group and can keep its port bound. There
-is no AutoByteus background-process manager; stray dev servers must be stopped
-manually. For a future fix: AGY starts each background command in its own
-process group, shared by the whole command tree. A raw-AGY probe showed that
-signalling AGY's descendant process groups before SIGTERMing AGY stops such
-daemons cleanly.
+Stopping AGY also stops its background commands. AGY (observed with 1.2.12)
+starts each background command in its own session/process group, shared by the
+whole command tree, and such a group survives a SIGTERM of AGY alone. Whenever
+AutoByteus itself stops a live AGY process, `AgyStreamProcess.stop()` does the
+following. This covers user Stop, run/Team/Org Terminate, app/server shutdown,
+and a stream/protocol failure while AGY is still running.
+
+1. It lists the process table once (`ps -A -o pid=,ppid=,pgid=`, 2 s timeout)
+   through the private `agy-background-process-groups` helper.
+2. It selects the process groups led by a live descendant of AGY. AGY's own
+   group, the server's group and pgid ≤ 1 are excluded, so nothing outside the
+   run's background groups is signalled.
+3. It sends SIGTERM to those groups, then SIGTERM to AGY.
+4. About 1.5 s later it sends SIGKILL to the same groups. This timer is unref'd.
+
+A normal turn end never stops AGY, so daemons keep running between turns. A
+helper failure is logged as `AGY_BACKGROUND_GROUP_STOP_FAILED` and AGY is still
+stopped. There is no background-process tracking. Documented limits:
+
+- If AGY exits on its own (crash), its background groups are already orphaned
+  and are not found.
+- Commands that detach themselves further (`setsid` inside the command, Docker
+  containers, system services) are not found.
+- Windows keeps the previous behavior (AGY only).
+- A daemon that ignores SIGTERM can outlive an app quit, because the delayed
+  SIGKILL may not run before the process exits.
+- A hard-killed server (no graceful shutdown) leaves AGY and its daemons
+  running.
 
 The provider-native `generate_image` ACTIVE/DONE step becomes the ordinary
 STARTED/SUCCEEDED tool-card lifecycle, with matching invocation and turn IDs.

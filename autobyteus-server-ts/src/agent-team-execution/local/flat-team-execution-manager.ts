@@ -404,6 +404,11 @@ export class FlatTeamExecutionManager {
         if (fencing) return fencing;
         const attempt = fenceOnce();
         fencing = attempt;
+        void attempt.then((result) => {
+          if (!result.accepted && fencing === attempt) fencing = null;
+        }, () => {
+          if (fencing === attempt) fencing = null;
+        });
         return attempt;
       },
       finish: () => {

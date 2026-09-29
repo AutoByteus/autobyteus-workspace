@@ -23,16 +23,20 @@ import type { CollaborationMemberExecutionIdentity } from "../domain/root-execut
 export class ConfiguredAgentActivationPlanner {
   constructor(private readonly input: {
     identity: CollaborationMemberExecutionIdentity;
-    mode: ConfiguredAgentActivationMode;
     manager?: AgentRunManager;
     activityInspector?: AgentConversationActivityInspector;
   }) {}
 
-  async prepare(config: AgentRunConfig, currentPlatformAgentRunId: string | null): Promise<Readonly<{
+  /** `mode` belongs to this attempt: a handle re-activating after its run died plans as `restore`. */
+  async prepare(
+    config: AgentRunConfig,
+    currentPlatformAgentRunId: string | null,
+    mode: ConfiguredAgentActivationMode,
+  ): Promise<Readonly<{
     candidate: AgentRunActivationCandidate;
     bindingChange: CollaborationAgentPlatformBindingChange | null;
   }>> {
-    const plan = this.resolvePlan(config, currentPlatformAgentRunId);
+    const plan = this.resolvePlan(config, currentPlatformAgentRunId, mode);
     const candidate = await this.prepareCandidate(plan, config);
     const binding = this.createExternalBinding(candidate);
     const bindingChange = plan.kind === "replace_external_without_conversation"
@@ -54,9 +58,13 @@ export class ConfiguredAgentActivationPlanner {
       && !isAgentRunActivationQuarantineError(error);
   }
 
-  private resolvePlan(config: AgentRunConfig, currentPlatformAgentRunId: string | null): ActivationPlan {
+  private resolvePlan(
+    config: AgentRunConfig,
+    currentPlatformAgentRunId: string | null,
+    mode: ConfiguredAgentActivationMode,
+  ): ActivationPlan {
     const external = isExternalProviderRuntimeKind(config.runtimeKind);
-    if (this.input.mode === "fresh") {
+    if (mode === "fresh") {
       if (external) this.assertNoPriorConversationActivity(config);
       return Object.freeze({ kind: "new" });
     }

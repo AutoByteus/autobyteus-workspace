@@ -16,15 +16,21 @@ export const createFrozenAgentOrgTerminationScope = (input: Readonly<{
   return Object.freeze({
     fenceAgentRunsForRootShutdown: () => {
       if (fencing) return fencing;
-      fencing = Promise.all([
+      const attempt = Promise.all([
         ...input.agentHandles.map((handle) => handle.fenceForRootShutdown()),
         ...input.teamScopes.map((scope) => scope.fenceAgentRunsForRootShutdown()),
       ]).then((results) => results.find((result) => !result.accepted) ?? { accepted: true });
-      return fencing;
+      fencing = attempt;
+      void attempt.then((result) => {
+        if (!result.accepted && fencing === attempt) fencing = null;
+      }, () => {
+        if (fencing === attempt) fencing = null;
+      });
+      return attempt;
     },
     finish: () => {
       if (finishing) return finishing;
-      finishing = (async () => {
+      const attempt = (async (): Promise<AgentOperationResult> => {
         for (const scope of input.teamScopes) {
           const result = await scope.finish();
           if (!result.accepted) return result;
@@ -35,7 +41,13 @@ export const createFrozenAgentOrgTerminationScope = (input: Readonly<{
         }
         return { accepted: true };
       })();
-      return finishing;
+      finishing = attempt;
+      void attempt.then((result) => {
+        if (!result.accepted && finishing === attempt) finishing = null;
+      }, () => {
+        if (finishing === attempt) finishing = null;
+      });
+      return attempt;
     },
   });
 };
