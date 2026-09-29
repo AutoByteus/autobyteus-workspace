@@ -14,6 +14,13 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-006 | Round 6: SR-010 D-14 revision (after IR-002 Design Impact) | SR-010 | Pass | Pass | None; R-2 recommendation, MP-014 residual |
 | ARCH-REV-007 | Round 7: SR-011 D-16 Chat model labels (UVF-001) | SR-011 | Pass | Fail (Design Impact) | AR-009 (new, Medium) |
 | ARCH-REV-008 | Round 8: SR-012 D-16 re-review | SR-012 | Fail (Design Impact) | Pass | AR-009 resolved |
+| ARCH-REV-009 | Round 9: SR-013 D-17 Product R3 integration | SR-013 | Pass | Fail (Design Impact) | AR-010, AR-011 (new, Medium), AR-012 (new, Low) |
+| ARCH-REV-010 | Round 10: SR-014 D-17 re-review | SR-014 | Fail (Design Impact) | Pass | AR-010, AR-011, AR-012 resolved |
+| ARCH-REV-011 | Round 11: SR-015 (CRR-010: D-15 Rule 3, D-18) | SR-015 | Pass | Pass | None; IC-3 implementation constraint |
+| ARCH-REV-012 | Round 12: SR-016 D-19 one skill per name (DEC-017) | SR-016 | Pass | Fail (Design Impact) | AR-013 (new, High) |
+| ARCH-REV-013 | Round 13: SR-017 D-19 re-review | SR-017 | Fail (Design Impact) | Pass | AR-013 resolved; R-3 adopted |
+| ARCH-REV-014 | Round 14: SR-018 D-19 Agent Org amendment (CRR-012 CR-009, DEC-017a) | SR-018 | Pass | Fail (Design Impact) | AR-014 (new, Medium) |
+| ARCH-REV-015 | Round 15: SR-019 AR-014 re-review | SR-019 | Fail (Design Impact) | Pass | AR-014 resolved |
 
 ## Revision Entries
 
@@ -244,3 +251,184 @@ None
 - Remaining risks or uncertainty:
   - Relabeling while the catalog loads (reactive).
   - R-1, R-2 and MP-014, as before.
+
+### ARCH-REV-009 — SR-013 D-17 review: R3 frame accepted; tab-context correction and draft ⚙ undefined
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 9, triggered by the Solution Designer's SR-013 (Product R3, user-confirmed on 2026-09-29, DEC-016).
+- Triggering role, report path, and finding IDs: Solution Designer. Sources: `solution-designer-result-uvf-002.md`, the `api-e2e-evidence/round4-desktop/USER-Q1-*` evidence and `ui-ux-spec.md` R3.
+- Relevant solution revision IDs: SR-013
+- Prior authoritative decision: Pass (ARCH-REV-008)
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - The D-17 direction is accepted.
+  - AR-010: D-17's "no contextual default on panel mount" removes the only mount-time correction. `activeTab` is global, the validity watcher is not immediate, and `/workspace` and `/chat` remount `RightSideTabs`. That gives a blank chat panel after Team → Chat and a changed Team default after Chat → Team.
+  - AR-011: ⚙ for `temp-*` drafts reaches `ExistingRunConfigEditor` → `loadAgentCanonical(temp)`, which is broken today, and the draft footer is removed.
+  - AR-012: REQ-021 and AC-015 are stale versus R3.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-005, AR-007–AR-009 | Resolved | Still resolved (AR-009's persisted Chat list is obsolete under D-17) | SR-013 | — |
+
+- New or remaining finding IDs: AR-010 (Medium), AR-011 (Medium), AR-012 (Low)
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty: R-1, R-2 and MP-014, as before.
+
+### ARCH-REV-010 — SR-014 D-17 re-review: Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 10, triggered by the Solution Designer's SR-014 re-review request for ARCH-REV-009.
+- Triggering role, report path, and finding IDs: Solution Designer; ARCH-REV-009 AR-010, AR-011, AR-012.
+- Relevant solution revision IDs: SR-014
+- Prior authoritative decision: Fail (Design Impact)
+- Current authoritative decision: Pass
+- What changed:
+  - The scoped tab-context rule is owned by `useRightSideTabs`, with a last-applied key, application on mount or on change, an explicit-selection exception and an immediate validity watcher.
+  - The `DraftRunConfigEditor` draft branch is added for `temp-*` ⚙.
+  - The requirements are editorially aligned.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-010 | Open (Medium) | Resolved | SR-014 D-17 strip rule | The rule covers remounts (MP-016) in both directions; Team/Org keys are unchanged |
+| AR-011 | Open (Medium) | Resolved | SR-014 D-17 draft branch, File Mapping | `temp-*` never reaches `existingRunConfigStore`; validated for the catalog draft and the failed first send (MP-017) |
+| AR-012 | Open (Low) | Resolved | requirements-doc REQ-021, AC-018, AC-015 | Aligned with DEC-016 |
+
+- New or remaining finding IDs: None
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary); `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty:
+  - The standalone tab re-defaults on promotion and on chat switching (accepted).
+  - R-1, R-2 and MP-014, as before.
+
+### ARCH-REV-011 — SR-015 (CRR-010) review: D-15 Rule 3 and D-18 accepted; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 11, triggered by the Solution Designer's SR-015 after Code Reviewer CRR-010 (API-REV-005 UF-04 / UF-03).
+- Triggering role, report path, and finding IDs: Code Reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md` (CR-007, CR-008).
+- Relevant solution revision IDs: SR-015
+- Prior authoritative decision: Pass (ARCH-REV-010)
+- Current authoritative decision: Pass
+- What changed:
+  - D-15 Rule 3 is accepted: an unresolved strong request against weak-only holders skips (no join, no re-point) and preserves the configured-launch invariant, with V-F.
+  - D-18 is accepted: explicit draft `llmConfig` through the shared `applyModelConfigSchemaDefaults` plus the thinking defaults.
+  - IC-3 is recorded: non-thinking keys equal the launch form, thinking keys are the adapter defaults written explicitly, the config is never an empty or `null` config for a schema model, and the validation is adjusted accordingly.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-005, AR-007–AR-012 | Resolved | Still resolved | SR-015 | SR-015 touches D-15 (Rule 3) and D-18 only |
+
+- New or remaining finding IDs: None. IC-3 is an implementation constraint.
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary); `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty: R-1, R-2 and MP-014, as before.
+
+### ARCH-REV-012 — SR-016 D-19 review: single catalog accepted; name-based operations still use a second precedence
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 12, triggered by the Solution Designer's SR-016, a user-approved requirements change (DEC-017; REQ-022–024, AC-019–021).
+- Triggering role, report path, and finding IDs: the user (via the Solution Designer); AF-36.
+- Relevant solution revision IDs: SR-016
+- Prior authoritative decision: Pass (ARCH-REV-011)
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - Accepted: the D-19 tiered single catalog, the one resolution for CONFIGURED and ALL_INSTALLED, import validation before commit, the error contract, the banner, the Codex path match, the pop-up spec, and the removal of D-15 Rules 2–3.
+  - AR-013: `getSkill` → `findCatalogSkillLocation` (a Settings-ordered recursive search, with skill folders before bundles and tier 4 not demoted) still drives the Skills page detail, edit, delete (`rmSync`), enable/disable, file APIs and `skill-workspace.ts`. With the user's real duplicates they would act on the ignored copy.
+  - R-3 is a recommendation on reload semantics.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-005, AR-007–AR-012 | Resolved | Still resolved | SR-016 | — |
+| AR-008 (D-15 Rule 2) / IC-1 / IC-2 | Resolved / constraints | Superseded by D-19 (Rule 2 removed) | SR-016 | A single catalog source per name removes the cross-run different-source case; an out-of-band mid-run change stays fail-fast (residual) |
+
+- New or remaining finding IDs: AR-013 (High)
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty:
+  - R-2 and MP-014.
+  - R-3 (reload semantics).
+  - The Codex dual listing of stale default-folder copies (residual outside AutoByteus, noted in the design).
+
+### ARCH-REV-013 — SR-017 D-19 re-review: Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 13, triggered by the Solution Designer's SR-017 re-review request for ARCH-REV-012.
+- Triggering role, report path, and finding IDs: Solution Designer; ARCH-REV-012 AR-013 and R-3.
+- Relevant solution revision IDs: SR-017
+- Prior authoritative decision: Fail (Design Impact)
+- Current authoritative decision: Pass
+- What changed:
+  - `getSkill` and every by-name operation go through `resolveCatalogRecord`.
+  - The second-precedence lookups and the resolver's global-name search are removed.
+  - Ignored copies are read-only in the banner.
+  - The mapping and validation are added.
+  - Reload semantics are adopted.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-013 | Open (High) | Resolved | SR-017 D-19, File Mapping L806, validation | The grep at `f4864638b` shows the remaining by-name lookups (skill-service L85–L123, L189, L259, L295) are all in the removal list |
+
+- New or remaining finding IDs: None
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary); `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty:
+  - The Codex dual listing of stale default-folder copies.
+  - A mid-run out-of-band catalog change (fail-fast).
+  - R-2 and MP-014.
+
+### ARCH-REV-014 — SR-018 D-19 Agent Org amendment: scope accepted; sync/async enumeration undecided
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 14, triggered by the Solution Designer's SR-018 after Code Reviewer CRR-012 CR-009 and the user's direction DEC-017a.
+- Triggering role, report path, and finding IDs: Code Reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md` (CR-009).
+- Relevant solution revision IDs: SR-018
+- Prior authoritative decision: Pass (ARCH-REV-013)
+- Current authoritative decision: Fail (Design Impact)
+- What changed:
+  - Accepted: org layouts in tier 2 (org agents, org-team shared skills, org-team local agents), the within-root order, the AGY roots per the existing layout checks, import validation over org layouts, and the validation cases.
+  - AR-014: `listAgentOrgOwnedDefinitionSources` is async, while `SkillService.loadCatalog()` and all its callers are synchronous. The design must choose a synchronous correlation core with one owner, or an async catalog with the caller changes listed. It must also state how team-local agents inside org teams are enumerated.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001–AR-005, AR-007–AR-013 | Resolved | Still resolved | SR-018 | SR-018 touches the D-19 tier 2 only |
+
+- New or remaining finding IDs: AR-014 (Medium)
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty: as in ARCH-REV-013.
+
+### ARCH-REV-015 — SR-019 re-review: synchronous org correlation core; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`
+- Review round and trigger: Round 15, triggered by the Solution Designer's SR-019 re-review request for ARCH-REV-014 AR-014.
+- Triggering role, report path, and finding IDs: Solution Designer; ARCH-REV-014 AR-014.
+- Relevant solution revision IDs: SR-019
+- Prior authoritative decision: Fail (Design Impact)
+- Current authoritative decision: Pass
+- What changed:
+  - Option (a) was chosen: the pure `correlateAgentOrgOwnedMembers` core (one owner) with the async index delegating (signatures unchanged) and a new sync reader for the catalog, with parity tests.
+  - Team-local agents are enumerated via the team dir's `agents/*`.
+  - No catalog API change.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-014 | Open (Medium) | Resolved | SR-019 D-19, File Mapping L833–L834 | One correlation owner; the sync catalog is served without an API change |
+
+- New or remaining finding IDs: None
+- Material classification changes: None
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary); `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty: as in ARCH-REV-013.

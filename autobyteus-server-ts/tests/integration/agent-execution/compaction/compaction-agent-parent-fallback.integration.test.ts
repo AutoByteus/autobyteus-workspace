@@ -315,7 +315,7 @@ describe("compaction agent parent runtime/model fallback executable validation",
           getBasePath: () => workspaceDir,
         }),
       } as never,
-      skillService: { getSkill: () => null } as never,
+      skillService: { getSkill: () => null, hasEffectiveSkills: () => false } as never,
       compactionAgentRunnerFactory,
     });
 

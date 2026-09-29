@@ -8,7 +8,7 @@
 - API/E2E revision record: `…/tickets/in-progress/chat-interface-entry/api-e2e-revision-record.md`
 - Scope: API-REV-001, round 1; 20 cases (CE-01..CE-20), several live and long-running.
 - Evidence folder: `…/tickets/in-progress/chat-interface-entry/api-e2e-evidence/`
-- Last updated: 2026-09-28
+- Last updated: 2026-09-29
 
 ## Planned Cases
 
@@ -105,9 +105,54 @@ HEAD `3c062a180` (delivery merge; contains `origin/personal` `8778420fc`; lacks 
 | 61 | DT-05 | R4 | Completed | GraphQL edit of Daily Assistant → `isolated-app restart` → reopen the chat from the tree → resume | REQ-007/D-10 across a desktop restart; D-08 after restart | Edit preserved (`ALL_INSTALLED` kept); reopened chat Offline with `/desk-alpha` chip and saved `GPT-5.6-Luna` trigger (unlocked); resume replied `DESK-RESUMED-OK`; server active on `gpt-5.6-luna`; footer locked again | Pass | `DT05-*.png` | — |
 | 62 | — | R4 | Completed | `stop-recording` ×2; `isolated-app stop iso-9333-19f3` | Clean stop | Recordings 201.9 s / 37.3 s (`end_reason: stopped`); stop graceful, both ports released, data root removed; the user's running AutoByteus untouched | Done | `desktop-chat-journey.mp4`, `desktop-after-restart.mp4`, `isolated-stop.json` | — |
 
+### Round 5 (API-REV-005) — D-17 (R3) + CRR-008 fix; HEAD `e9ede7d83` (IR-005 `1f5fd8004`, IR-006 `59a20f21b`)
+
+Evidence: `api-e2e-evidence/round5/` (repository + probe), `api-e2e-evidence/round5-desktop/` (isolated desktop app), test data `api-e2e-evidence/test-data/chat-entry-desk-package/`.
+
+| Seq | Case ID | Timestamp | Event | Command / Entry Point / Material Configuration | Expected Observable Result | Observed Result Or Checkpoint | Result | Evidence | Next Action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 63 | UF-01/UF-02 (prior) | R5 | Checkpoint | Recheck prior user findings first | Header over the centre column, full-height right column; strip opens the clicked tab | Resolved (see Seq 69, 72, 75) | — | — | — |
+| 64 | CE-02/03 | R5 | Completed | Server build; web suite (`LANG=en_US.UTF-8`); Electron suite | In-scope pass | Web 3374 passed + same 4 baseline files; Electron 187 passed; no server change since `3c062a180` | Pass | `round5/*.log` | — |
+| 65 | — | R5 | Completed | Test data created on disk: `test-data/chat-entry-desk-package` (desk-lead, desk-helper with bundled `desk-alpha`/`desk-beta`, Desk Team) | Package layout per `autobyteus-agents` | Created | — | `test-data/` | Import in the app |
+| 66 | — | R5 | Completed | Probe rewritten for D-17: run-view helpers, C05/C06 via ⚙, C07/C08 product box, C11 shared panel, C16 V-L2 via ⚙; new C17 (frame + strip), C18 (draft ⚙), C19 (CR-005, ＋) | — | `node --check` ok | — | `chat-entry-live-probe.mjs` | Run |
+| 67 | CE-05..CE-19 | R5 | Checkpoint | First probe run | — | 15 Pass; C05/C06/C16/C17 failed on probe locators (lock note has an icon prefix; the gear editor shows `Provider / label`; model field is the first listbox; strip buttons are under `workspace-right-tool-strip`) — not product defects | Probe fix | `round5/probe-codex/` | Fix |
+| 68 | DT-20 | R5 | Completed | `isolated-app start --build` (`iso-9333-836a`); import the package via Settings → Agent Packages (typed path, Import) | Package imported | "Agent package imported."; 2 shared agents, 1 team; server lists desk-lead, desk-helper, Desk Team, desk-alpha, desk-beta | Pass | `DT10-package-imported.png` | — |
+| 69 | DT-21 | R5 | Completed | Skills → pencil → Codex → `/desk-alpha` → send | R3 run view | Reply `DESK-ALPHA-OK`; header = run title + status + ⚙ ＋, no Chat footer, product box, chip; right strip full height from the top, header stops at it | Pass (UF-01 resolved) | `DT11-chat-run-view.png` | — |
+| 70 | DT-22 | R5 | Completed | ⚙ while live, 6 s wait | VIS-026 | Lock note, Save disabled, model disabled; Thinking/Reasoning/Fast mode read "Not recorded for this historical run" (run started with default thinking, `llmConfig: null`) | Pass with finding UF-03 (Low) | `DT12-run-settings-live.png` | Report |
+| 71 | DT-23 | R5 | Completed | Terminate → ⚙ Offline → GPT-5.6-Luna → Save → back → resume | D-08 via ⚙ | Offline editor shows Thinking on, medium, Default; saved `gpt-5.6-luna`; resume replied `DESK-R3-RESUMED` on it | Pass | `DT13-*.png` | — |
+| 72 | DT-24 | R5 | Completed | `@Desk` team from Chat while a Daily Assistant chat is live in the same temp workspace | Team starts | Lead failed: `Workspace skill path collision for Codex skill 'desk-alpha' … already points to live target` (lead's configured `desk-alpha` is unresolved; DA's ALL_INSTALLED link holds the name) | Fail → UF-04 | `DT14-team-frame.png`, `isolated-instance.log` L373–374 | Isolate |
+| 73 | DT-24 | R5 | Completed | Terminate the DA chat (links released) and the failed team; relaunch the same way | Isolate cause | Team starts and replies `DESK-TEAM-OK` | Confirms UF-04 is caused by the live ALL_INSTALLED chat | — | Durable repro C20 |
+| 74 | DT-25 | R5 | Completed | Strip Files / Terminal in Team and Chat (1200 px window: panel opens as a drawer; Escape closes) | Exact tab | Files → Files, Terminal → Terminal in both views | Pass (UF-02 resolved) | `DT14-chat-strip.png` | — |
+| 75 | DT-26 | R5 | Completed | Header ＋ on the DA chat | Preset New chat | `/chat`, Daily Assistant, Temp workspace | Pass | `DT15-plus-preset.png` | — |
+| 76 | CE-05..CE-20 | R5 | Completed | Full probe (20 cases, fixed locators, C12 + VIS-027 run view, new C20) | All pass | 19 Pass; C20 Fail (UF-04 reproduced: `probe-borrower` with unresolved `probe-bundled` fails next to a live DA chat). C17 geometry Chat = Team (column x 990–1440, y 0–900; header ends 988); defaults Activity/Team; strip exact tabs; shared collapse; reopen keeps Files | Fail (C20) | `round5/probe-codex-full/` | Report |
+| 77 | — | R5 | Completed | Stop recording (966 s) and `isolated-app stop iso-9333-836a` | Clean | Graceful stop, ports released, data root removed | Done | `desktop-r3-journey.mp4`, `isolated-instance.log` | — |
+| 78 | — | R6 | Completed | Server build `10556948f`; targeted server suites (widened to integration/agent-execution, api) | Green apart from baselines | 30 failures; 8 ticket-caused (`hasEffectiveSkills is not a function` in five integration files' `SkillService` stubs); 21 reproduced identically on a merge-base worktree `f2924a2b0` | RD-01 | `round6/server-suites.log`, `baseline-mergebase-failures.log` | Fix stubs |
+| 79 | — | R6 | Completed | Add `hasEffectiveSkills: () => false` to the five stubs; rerun | 14/14 | 14/14; targeted rerun 1275 passed + 21 baselines | Pass | `round6/server-suites-after-fix.log` | — |
+| 80 | CE-21..27 | R6 | Completed | New `tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts` (real schema, singletons, owned CODEX_HOME via symlink alias, fake GitHub seams) | AC-019, AR-013, AC-020 (folder, create, local import, R-3 reload, GitHub import/update) | 7/7 | Pass | vitest output | — |
+| 81 | — | R6 | Completed | Web full (`LANG=en_US.UTF-8`); `test:electron` | Baselines only | Web 3402 passed, 4 baseline files + `platformServerEnvironment` ×2 (web-root runner only; pass in the Electron runner); Electron 187 passed | Pass | `round6/web-full.log`, `web-electron.log` | — |
+| 82 | K0..K2 | R6 | Completed | `probes/d19-codex-duplicate-noauth.mjs` (owned CODEX_HOME, skills only, no credentials) | `codex-runtime-duplicate`; reconcile-discoverable | K0/K1/K2 Pass; real `auth.json` unchanged | Pass | `round6/codex-duplicate-noauth/` | — |
+| 83 | C01..C22 | R6 | Completed | Full live probe, Codex `gpt-5.5`, HEAD `10556948f` | All pass | 22/22 (UF-04 via C20 and UF-03 via C05 resolved) | Pass | `round6/probe-codex/` | — |
+| 84 | C15,C20,C21,C22 | R6 | Completed | Claude `haiku`, `--owned-codex-home` | D-19 on a second runtime; tier-4 toast | All pass; C22e toast renders under the Sources overlay (z 100 < 1000) | Pass → UF-05 (Low) | `round6/probe-claude/C22e-tier4-toast.png` | Report |
+| 85 | C03..C05 | R6 | Completed | Claude `sonnet` | D-18 with a schema | `{thinking_enabled:false, reasoning_effort:medium}` = defaults; ⚙ disabled values | Pass | `round6/probe-claude-d18/` | — |
+| 86 | — | R6 | Completed | C-22 read-only scan of `autobyteus-agents`, `autobyteus-private-agents` | Report org agent `skills/` folders | None (4 orgs) | Done | — | — |
+| 87 | — | R6 | Interrupted | Grok C03,C15,C20 | — | Stopped by the user; not run | Not run | — | — |
+| 88 | — | R6 | Completed | Server rebuilt at `a65f58463` (IR-009); targeted suites incl. agent-org-definition/execution, e2e agent-org-runs, integration skills | Baselines only | 1381 passed; 22 failures all pre-existing (new in scope: `agent-org-run-config`, identical on merge base) | Pass | `round6/server-suites-ir9.log` | — |
+| 89 | CE-28..29 | R6 | Completed | Durable e2e + DEC-017a cases (org layouts; org package import duplicate) | Pass | First run: org-only package rejected by the pre-existing shape rule (O-6); fixtures given `agents/` like real org repos → 9/9, type-clean | Pass | vitest output | — |
+| 90 | C01..C23 | R6 | Completed | Full live probe, Codex, HEAD `a65f58463` (new C23 org skills) | All pass | 23/23 | Pass | `round6/probe-codex-ir9/` | — |
+| 91 | C01..C23 subset | R6 | Completed | Claude `haiku` `--owned-codex-home` C01,C03,C04,C05,C15,C20,C21,C22,C23; AGY C03,C23 | Pass | Claude 9/9 (links → org folders); AGY 2/2 (replies with org markers) | Pass | `round6/probe-claude-ir9/`, `probe-agy-ir9/` | — |
+| 92 | — | R6 | Interrupted | AutoByteus runtime C03,C23 | — | Stopped by the user; not run | Not run | — | — |
+| 93 | DT-40..56 | R6 | Completed | Isolated desktop `iso-9333-ec39` (`--build` compiled the bundle; DMG step failed with `hdiutil` error 35 → started `--from-worktree`); test data created on disk and imported via the UI | D-19 pop-ups, R-3, banner, D-18, UF-04, DEC-017a org run | All pass (see report table) | Pass | `round6-desktop/` | — |
+| 94 | — | R6 | Completed | Stop recording; `isolated-app stop`; remove owned working copy and the merge-base worktree | Clean | Graceful, ports released, data root removed | Done | `desktop-r6-journey.mp4`, `isolated-stop.json` | — |
+| 95 | C22e | R7 | Completed | Claude `haiku` `--owned-codex-home` C01,C03,C12,C19,C21,C22 (C22e layering assertion added) | Notice topmost above the open Sources dialog | `toastOnTop: true` (toast z 10000, overlay z 1000); C21/C22 Pass; C12/C19 failed on missing C04/C08 state (probe prerequisites) | Pass (UF-05 resolved) | `round7/probe-claude/` | Rerun deps |
+| 96 | — | R7 | Completed | Web full | Baselines only; ToastContainer spec | 3404 passed, same baseline files; `ToastContainer.spec.ts` 2/2 | Pass | `round7/web-full.log` | — |
+| 97 | C04,C12,C19 | R7 | Completed | Claude reruns: C03,C04,C10,C12,C19 → C04 exposure sampled at the first link (probe race), C19 lacked C08; fixed C04 wait; C03,C04,C12,C19 → C19 lacked `catalogRunId`; C03,C04,C08,C19 | Pass | All pass after probe fixes; `--cases` now adds prerequisites (unit-checked) | Pass | `round7/probe-claude-regression*` | — |
+| 98 | C01..C23 | R7 | Completed | Full Codex probe at `e58fb160a` | All pass | 23/23 | Pass | `round7/probe-codex-full/` | Hand off |
+
 ## Re-entry And Reconciliation
 
-- Last durably recorded event: Seq 62 (round 4 desktop complete)
+- Last durably recorded event: Seq 98 (round 7 complete)
+- Round 6 last event: Seq 94
+- Round 5 last event: Seq 77
 - Round 2 last event: Seq 45
 - Round 1 last event: Seq 33
 - Last completed case and result: durable probe run (C05 Fail = F-01)

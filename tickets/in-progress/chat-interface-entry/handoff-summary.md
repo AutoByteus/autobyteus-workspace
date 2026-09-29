@@ -2,12 +2,12 @@
 
 ## Status
 
-- Stage: Delivery round 5 (DR-005). The UVF-001 rework is integrated with `origin/personal@39e512edd` and checked. **Waiting for renewed user verification.** Nothing has been pushed, merged into `personal`, or released.
+- Stage: Delivery round 6 (DR-006). The UVF-001 rework is integrated with `origin/personal@39e512edd` and checked. **Waiting for renewed user verification.** Nothing has been pushed, merged into `personal`, or released.
 - Classification (preserved): `task_size=Large`, `architectural_risk=High`, route `Reviewed`. The latest chain is SR-011/SR-012 → ARCH-REV-008 → IR-004 (D-16) → CRR-005 Pass → API-REV-003 Pass 95% → CRR-006 Pass.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
-- Ticket branch: `codex/chat-interface-entry` at `3c062a180` (local only; not pushed yet). It merges `origin/personal@39e512edd` (runtime stop-cleanup and Org/Team recovery; release `1.4.91-beta.7`).
+- Ticket branch: `codex/chat-interface-entry` at `66304f510` (local only; not pushed yet). It merges `origin/personal@f2924a2b0`, which contains ticket records only. The code is identical to `3c062a180`, the source of the r4 test build and of the API-REV-004 isolated desktop run.
 - Finalization target: `personal` (remote `origin`)
-- Delivery revision: DR-005 (`delivery-revision-record.md`)
+- Delivery revision: DR-006 (`delivery-revision-record.md`)
 
 ## Integrated State For Verification
 
@@ -78,6 +78,7 @@ The second merge touches AGY server files, two web spec files (`toolLifecycleHan
 - CRR-003 source review Pass 9.3/10 (IR-001..IR-003; CR-002/003/004 resolved). CRR-004 test-code review Pass.
 - API-REV-002 Pass, 95% confidence, every critical AC directly proven. Live probe C01–C15 (`autobyteus-web/tests/e2e/chat-entry-live-probe.mjs`, `pnpm test:e2e:chat-entry-live`) and the browser journeys at 390×844 are in `api-e2e-evidence/`.
 - UVF-001 rework: CRR-005 source review Pass; API-REV-003 Pass 95%. AC-018 is proven live with an independent oracle, and the full live regression C01–C16 ran on the merged HEAD (`api-e2e-evidence/round3/`). CRR-006 test-code review Pass, no findings.
+- API-REV-004 desktop addendum: the isolated real desktop app built from `3c062a180` passed DT-00..DT-05, still at 95% (`api-e2e-evidence/round4-desktop/`). CRR-007 test-code review is Not Applicable: no durable test changed after CRR-006, and no Chat-owned source changed after `e9f2ce399`, so CRR-005 still stands.
 - Docs: `docs-sync-report.md`.
 
 ## How To Verify (suggested)
@@ -99,6 +100,9 @@ The second merge touches AGY server files, two web spec files (`toolLifecycleHan
 - RSK-006: the Codex reload tooltip may include the context-file section.
 - Test advisories A-1..A-4 are non-blocking (`api-e2e-test-review-report.md`).
 - **O-1 (loading moment, not an AC failure).** On a fresh New chat, the footer model button first shows the last-used model's raw identifier. It switches to the policy label once that runtime's catalog loads: about 0.6 s on Codex, 1.7 s on Grok, and 1.6–3.0 s on Claude, where it briefly shows `opus`. If the user objects, it goes to `/software_engineering_team/solution_designer` as a small follow-up.
+- **O-2 (a design question, not an AC failure).** The Chat `/` skill list loads once per app session. A skill added outside the Skills page (by another client, or by files placed in a skill root) does not appear in `/` until the user visits the Skills page or restarts the app; reloading the window does not help. The runtime still gets the skill, because all installed skills are resolved at run start.
+- **O-3 (allowed by DEC-015).** At the default desktop width of 1200 px, a long Codex model name also truncates the footer runtime badge to "Co…". The full text is in the tooltip.
+- If the user rejects O-1, O-2 or O-3, it goes to `/software_engineering_team/solution_designer`.
 - Under a non-English `LANG`, the upstream `TokenUsageMeterPanel.spec.ts` (from `origin/personal`) fails on number formatting. This is unrelated to this ticket; the delivery runs used an empty `LANG` and were not affected.
 - Pre-existing baseline unit failures are listed above. They are unchanged by this ticket.
 

@@ -1,0 +1,12 @@
+C01 Pass Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED
+C03 Pass Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation
+C12 Fail Narrow 390×844: no horizontal overflow; model menu is a bottom sheet with drill-in — locator.waitFor: Timeout 120000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="agent-workspace-surface"]') to be visible
+
+C19 Fail CR-005: ⚙ stays with its run — New chat (success, failed first send) and Team quick path land on their conversation; header ＋ opens a preset New chat — locator.waitFor: Timeout 120000ms exceeded.
+Call log:
+  - waiting for locator('[data-testid="agent-workspace-surface"]') to be visible
+
+C21 Pass AC-021: out-of-band duplicate → amber Skills banner "Some skills share a name…"; Show details lists the used and ignored paths
+C22 Pass AC-020 UI: add folder / Create skill / package import / package reload with a duplicate → "Duplicate skill names" pop-up with both paths, nothing changes; tier-4 duplicate accepted with the "Ignored N skills…" toast

@@ -175,3 +175,86 @@ Source: Implementation Engineer IR-002, `implementation-handoff.md`, `implementa
 | 3. One search predicate | `useChatModelCatalog.matchesModelQuery` / `filterOptions` for both the cross-runtime search and the fixed list; the inline predicate in `ChatModelMenu.vue` is removed |
 | 4. Validation | V-L2: a persisted Claude SDK chat whose fixed list and trigger show `claude-opus-5-5` · "Opus 5.5" · Recommended first, found by searching `Opus 5.5` (plus V-L1 and V-L3 to V-L5) |
 | Comparator note | `compareRecommendedFirstBy<T>(labelOf)` is exported generically from `modelSelectionOptions.ts` and used by `buildModelSelectionGroups` and both Chat paths |
+
+
+## SR-013 — Product R3 integration (D-17) — review request
+
+- Source:
+  - The user feedback relayed by API/E2E: `api-e2e-evidence/round4-desktop/USER-Q1-*` and `solution-designer-result-uvf-002.md`.
+  - The user-directed Product request `product-design-revision-request-r3-handoff.md`.
+  - Product `ui-ux-spec.md` R3 (`autobyteus-web-prototype` `origin/personal@ef5f909`), VIS-001–VIS-027 (VIS-020 superseded), 26/26 hashes verified. User-confirmed on 2026-09-29.
+- Requirements: REQ-011, 012, 013, 014, 016 and 018, AC-009–012, BEH-010–012 and DEC-016 (the user's R3 decisions) are revised; see `requirements-doc.md`.
+- Design: **D-17** in `design-spec.md`, plus the File Mapping rows and "SR-013 Resolution".
+  - `/chat?id` renders the product workspace frame with `AgentWorkspaceView` restored.
+  - ⚙ opens the product existing-run settings; ＋ opens a preset New chat.
+  - The standalone run-summary title.
+  - The product box plus an optional standalone `skillTagging` capability (`/`).
+  - The shared right-panel visibility (chat scope removed).
+  - The strip → exact tab fix in the shared `useRightSideTabs` / `RightSideTabs` (pre-existing: the contextual watcher fired on mount, AF-34).
+  - Removed: `ChatRunView`, `ChatRunHeader`, the persisted-mode `chatRunModelControls`, the `ChatComposer` run mode, the `useChatModelCatalog` `runChoice` / `filterOptions`.
+- Classification: the package stays Large / High; the delta is Medium, web-only, reusing existing owners.
+
+
+## SR-014 — D-17 revision for ARCH-REV-009 — re-review request
+
+| Finding | Resolution |
+| --- | --- |
+| AR-010 (MP-016) | `useRightSideTabs` owns `contextualScopeKey` (collaboration scope, else `standalone:<runId>`) and `lastAppliedScopeKey`. On `RightSideTabs` mount or on a key change, if the key differs from the last applied one, it applies the contextual default (`teamMembers` / `progress`), unless `selectTabExplicitly` was called in the same open action (explicit wins; the key is recorded). The `visibleTabs` validity watcher is immediate (explicit → default → first visible). Validation covers Team→Chat, Chat(Files)→Team, strip Files/Terminal, and reopening the same run |
+| AR-011 (MP-017) | `RunConfigPanel` draft branch: a selected standalone `temp-*` run → the new `DraftRunConfigEditor.vue` with an editable `AgentRunConfigForm` bound to `context.config` (runtime/model/thinking/auto-approve editable, workspace locked), with no `existingRunConfigStore`. The "existing behavior" claim is corrected. Added to the file mapping. Validation covers a catalog draft and a failed first send: ⚙ → change → send |
+| AR-012 | REQ-021/AC-018 are scoped to the New chat menu and the ⚙ gear-editor labels; AC-015 references VIS-001–027 |
+
+
+## SR-015 — CRR-010 (API/E2E round 5 failure origin) — review request
+
+| Finding | Resolution |
+| --- | --- |
+| CR-007 / UF-04 (Design Impact) | **D-15 Rule 3:** `reconcileUnresolved` meeting a `ready` entry held only by weak (ALL_INSTALLED) holders skips without throwing and logs `skipped-unresolved-held-by-weak`. It does not join and does not re-point; the configured run discovers the name through the existing link while the weak holders live, and it matches its baseline afterwards. Unresolved vs any strong holder or a user-owned/foreign path is unchanged. **V-F** added (the desk-package team next to a live Daily Assistant, Codex/Claude(/Grok); C20 regression). Evidence AF-35 |
+| CR-008 / UF-03 (Local Fix, sequenced) | **D-18:** the New chat draft's `llmConfig` = the shared `applyModelConfigSchemaDefaults(schema, …)` (extracted from `ModelConfigSection.applyDefaultsIfNeeded`) + the default thinking parameters from `llmThinkingConfigAdapter`, set on every model set; the team root is the same. The live ⚙ then shows VIS-026 values |
+| CRR-008 note | Stale File Mapping rows (`AgentWorkspaceView` "Remove", the CR-002 run-footer row) and the D-05/removal/rejection-log mentions are marked superseded by D-17 |
+
+
+## SR-016 — One skill per name + import validation (user decision DEC-017) — review request
+
+- Why:
+  - The cross-run skill conflicts (D-15 Rules 2–3) exist only because two resolution rules disagree. The Skills catalog uses first-found wins with added folders early; `CONFIGURED` agents resolve their own private copy first.
+  - The user decided the software must load exactly one copy per name, that runtime default folders (e.g. `~/.codex/skills`) never win, and that duplicates are blocked at import with a pop-up. All of this in this ticket.
+  - Evidence: AF-36.
+- Requirements: REQ-022 / REQ-023 / REQ-024, AC-019–021, SCN-010, BEH-015, DEC-017.
+- Design: **D-19** in `design-spec.md`, plus the File Mapping rows.
+  - The tiered single catalog (`listInstalledSkillRecords` one-per-name, `listSkillNameIssues`, `resolveCatalogRecord`).
+  - `CONFIGURED` resolution from the catalog (per-agent contextual resolution removed; application-owned agents are an explicit boundary).
+  - `validateIncomingSkillNames` before commit in `addSkillSource`, `createSkill`, and `importAgentPackage` / `updateAgentPackage` / `reloadAgentPackage`, with the `SKILL_NAME_CONFLICT` GraphQL error.
+  - The Skills page banner (`skillNameIssues`).
+  - The Codex `skills/list` path match (`codex-runtime-duplicate`).
+  - Web: the `SkillNameConflictDialog` pop-up, designed in-spec (the user waived Product).
+  - **Removal:** D-15 Rules 2–3 — strength, holder counts, re-point/yield, the Rule 3 skip (committed in `f4864638b`), and the IC-2 fallback. D-15 Rule 1 is kept.
+- Unchanged: D-14, D-16, D-17, D-18.
+- Code state: the implementation was stopped by the user at `f4864638b`.
+
+
+## SR-017 — D-19 completion for ARCH-REV-012 — re-review request
+
+| Finding | Resolution in `design-spec.md` D-19 |
+| --- | --- |
+| AR-013 (MP-018) | `SkillService.getSkill(name)` = `resolveCatalogRecord(name)?.skill`, so detail, the file tree, update, delete, enable/disable, upload/read/delete file, `getSkills`, GraphQL `skill(name)` (L136) and `workspaces/skill-workspace.ts` (L24) all act on the used copy. Removed: `findCatalogSkillLocation`, `findGlobalSkillLocation`, `getGlobalSkill`, and the resolver's global-name search. By-name directory searches remain only inside the catalog build or the application-owned boundary. Ignored copies are not addressable by name; they are read-only in the banner. File Mapping row added; validation adds tier-4 vs tier-3 (different contents) and tier-2 vs tier-3 cases, including that a delete leaves the ignored copy untouched |
+| R-3 | Adopted: a rejected reload shows the pop-up and keeps the previous registration; the catalog and banner reflect the on-disk state (REQ-024) |
+
+
+## SR-018 — Agent Org skill layouts (CRR-012 CR-009, user direction) — review request
+
+| Needed (CR-009) | Resolution in `design-spec.md` D-19 |
+| --- | --- |
+| 1. Tier-2 layout for Agent Orgs | Org-owned agents `agent-orgs/<o>/agents/<a>/skills/*`; org-owned teams `agent-orgs/<o>/agent-teams/<t>/skills/*` (shared) and `…/agents/<a>/skills/*` (team-local agents). Enumerated by the existing `listAgentOrgOwnedDefinitionSources` over the org roots (`getAgentOrgsDir()` + `<packageRoot>/agent-orgs`), with no guessed paths. The Org format defines no org-level `skills/`, so none is scanned |
+| 2. Order | Within each definition root: `agents/*` → `agent-teams/*` → `agent-orgs/*` (by org name: its agents by name, then its teams by name, each team shared then local agents). Roots: app data dir, then package roots in order |
+| 3. AGY provenance | Org agent: `agent_private`, root = the agent dir (layout `skills/<n>`). Org team shared: `team_shared`, root = the team dir. Org team-local agent: `agent_private`, root = the team dir (layout `agents/<a>/skills/<n>`). All pass the existing checks |
+| 4. Import validation | The prospective catalog includes org layouts; a package import/update/reload with duplicate org skill names is rejected with the pop-up |
+| 5. Validation | A test package with an org-owned agent and an org-owned team (+ local agent), each with its own skill: resolved on every runtime path, listed on the Skills page, a duplicate import rejected. This restores the `personal` behavior |
+
+
+## SR-019 — Actionable Agent Org enumeration (ARCH-REV-014 AR-014) — re-review request
+
+| Needed | Resolution |
+| --- | --- |
+| Sync vs async | **Option (a).** A pure core `correlateAgentOrgOwnedMembers` in the new `agent-org-definition/providers/agent-org-owned-definition-correlation.ts`, holding the member filter, candidate-id match, exactly-one handling, `seen` set and path construction, with no I/O. Thin readers in `agent-org-owned-definition-source-index.ts`: the existing async `listAgentOrgOwnedDefinitionSources` / `findAgentOrgOwnedDefinitionSource` (signatures unchanged; used by the definition providers and admission) and a new sync `listAgentOrgOwnedDefinitionSourcesSync` (used by the synchronous skill catalog). There is one correlation owner, and no catalog or `SkillService` signature changes |
+| File mapping | Rows added for the correlation core and index, and the catalog row updated |
+| Team-local agents in org-owned teams | Enumerated like ordinary teams: the team dir's `agents/*` via `getAgentSkillDirectories`, directory-based and not config-based |

@@ -13,6 +13,15 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) remains 
 | CRR-005 | `code-review-report.md` | Implementation Review, round 4 / IR-004 (D-16, UVF-001) | Pass (CRR-003/CRR-004) | Pass | None new |
 | CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code review, round 2 / API-REV-003 Pass | Pass (CRR-004/CRR-005) | Pass | None; advisories A-1..A-4; observation O-1 forwarded |
 | CRR-007 | `api-e2e-test-review-report.md` | Proportional test-code review, round 3 / API-REV-004 Pass (desktop addendum) | Pass (CRR-006) | Not Applicable | None; observations O-2, O-3 forwarded |
+| CRR-008 | `code-review-report.md` | Implementation Review, round 5 / IR-005 (D-17, UVF-002, R3) | Pass (CRR-005) | Fail (Local Fix) | CR-005 (new, Medium), CR-006 (new, Low) |
+| CRR-009 | `code-review-report.md` | Implementation Review, round 6 / IR-006 (CRR-008 Local Fix) | Fail (CRR-008) | Pass | CR-005, CR-006 resolved |
+| CRR-010 | `code-review-report.md` | API/E2E Failure-Origin Review, round 7 / API-REV-005 Fail | Pass (CRR-009) | Fail (Design Impact + Local Fix) | CR-007 (UF-04), CR-008 (UF-03) |
+| CRR-011 | `code-review-report.md` | Implementation Review, round 8 / IR-007 + IR-008 (D-18, D-19) | Fail (CRR-010) | Pass | CR-007, CR-008 resolved; C-22 held for evidence |
+| CRR-012 | `code-review-report.md` | Amendment of round 8 / user confirmation of the C-22 scenario | Pass (CRR-011) | Fail (Design Impact) | CR-009 (new, promoted from C-22) |
+| CRR-013 | `code-review-report.md` | Implementation Review, round 9 / IR-009 (D-19 Agent Org amendment) | Fail (CRR-012) | Pass | CR-009 resolved |
+| CRR-014 | `code-review-report.md` | API/E2E Failure-Origin Review, round 10 / API-REV-006 Fail | Pass (CRR-013) | Fail (Local Fix) | CR-010 (UF-05) |
+| CRR-015 | `code-review-report.md` | Implementation Review, round 11 / IR-010 (CR-010 Local Fix) | Fail (CRR-014) | Pass | CR-010 resolved |
+| CRR-016 | `api-e2e-test-review-report.md` | Proportional test-code review, round 4 / API-REV-007 Pass (covering API-REV-005..API-REV-007) | Pass (CRR-015) | Pass | None; advisories A-4..A-7 |
 
 ## Revision Entries
 
@@ -236,3 +245,281 @@ None. There are no open test-review findings.
   - O-2: the `/` skill list is fetched once per session, so a skill added externally is missing until the Skills page is visited or the app restarts.
   - O-3: the runtime badge truncates at 1200 px.
   - All three are for user re-verification; none is a finding against the approved requirements.
+
+### CRR-008 — Round 5 implementation review (IR-005, D-17 chat run view = product agent run view): Fail (Local Fix)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md`. See the "Round 5 Review (IR-005 / D-17)" section, the findings and the latest result.
+- Review entry point and round: Implementation Review, round 5.
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer, `implementation-handoff.md` (IR-005). The origin is UVF-002 (`solution-designer-result-uvf-002.md`), the R3 supplement, and DEC-016.
+- Relevant solution revision IDs: SR-013, SR-014
+- Relevant architecture-review revision IDs: ARCH-REV-009, ARCH-REV-010
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: N/A for this round (API-REV-004 was the prior pass)
+- Relevant delivery revision IDs: DR-005
+- Prior authoritative result: Pass (CRR-005)
+- Current authoritative result: Fail, `Local Fix` → implementation.
+- What changed in the review result and why:
+  - The D-17 frame, restorations, draft ⚙ (AR-011), header, box skill tagging, the shared right panel, the AR-010 tab rule and the removals are verified.
+  - CR-005: the restored global config mode is never reset on the Chat launch and open paths (`…WithoutShellNavigation`). After ⚙ on one chat, a new chat opens on its settings panel instead of its conversation.
+  - CR-006: `useSkillTagMenu` (agentInput) imports `composables/chat/useChatPopover`, against the design's Dependency Rules (AR-002).
+  - The reviewer reran 58 web files: 441/442 pass, and the only failure is the baseline `org-definition-navigation`.
+- Supported product scenario / material-premise basis changes: CR-005 rests on SCN-001/SCN-008 with ordinary sequential actions. C-18..C-20 were rejected; C-20 (design-spec file-mapping residue) is noted for the Solution Designer.
+
+#### Prior Finding Resolution
+
+None. No findings were open after CRR-005.
+
+- New or remaining finding IDs: CR-005 (Medium), CR-006 (Low).
+- Material score or classification changes: Ownership goes from 9.5 to 8.9, and Runtime Correctness from 9.2 to 8.6. The classification is Local Fix.
+- Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: the Team quick path should be checked for the same config-mode leak as part of the CR-005 fix.
+
+### CRR-009 — Round 6 implementation review (IR-006, the CRR-008 Local Fix): Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md`. See the "Round 6 Review" section and the latest result.
+- Review entry point and round: Implementation Review, round 6.
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer, `implementation-handoff.md` (IR-006); CR-005, CR-006.
+- Relevant solution revision IDs: SR-014
+- Relevant architecture-review revision IDs: ARCH-REV-010
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-008)
+- Current authoritative result: Pass, 9.3/10.
+- What changed in the review result and why:
+  - CR-005: `pages/chat.vue` ties ⚙ to the context it was opened for and shows the conversation whenever Chat displays another context. A promotion keeps the settings. The Team quick path resets before launch. Regression tests were added.
+  - CR-006: the popover moved to `composables/popover/useAnchoredPopover.ts`, and the skill-tag helpers to `utils/skills/skillTagMenu.ts`. `agentInput` has no `composables/chat` imports.
+  - The reviewer reran 42 files (345 tests); all passed.
+- Supported product scenario / material-premise basis changes: None. C-21 was rejected.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-005 | Open (Medium, Local Fix) | Resolved | IR-006 `59a20f21b` | `pages/chat.vue` config-context watchers; `launchTeamChat` `showChat()`; `chat.spec.ts` (3 new tests); `chatLaunchService.spec.ts`; live check L |
+| CR-006 | Open (Low, Local Fix) | Resolved | IR-006 `59a20f21b` | Grep: agentInput imports only `ChatSkillMenu.vue` and `SkillTagChips.vue` from chat; `useAnchoredPopover` and `skillTagMenu` are the neutral owners |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: Ownership goes from 8.9 to 9.3, and Runtime Correctness from 8.6 to 9.2.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`
+- Remaining risks or uncertainty: the API/E2E probe must be updated for the removed run-view selectors.
+
+### CRR-010 — API/E2E failure-origin review (API-REV-005): UF-04 Design Impact, UF-03 Local Fix
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md`. See the "API/E2E Failure-Origin Review (Round 7)" section.
+- Review entry point and round: API/E2E Failure-Origin Review, round 7.
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer, `api-e2e-execution-coverage-report.md` ("Round 5"; API-REV-005, Fail, 93%); UF-04 (C20, desktop Desk Team) and UF-03 (DT12/DT13).
+- Relevant solution revision IDs: SR-008..SR-010 (D-15), SR-014 (D-17)
+- Relevant architecture-review revision IDs: ARCH-REV-004..ARCH-REV-006, ARCH-REV-010
+- Relevant implementation revision IDs: IR-002 (D-15 materializer), IR-005, IR-006
+- Relevant API/E2E revision IDs: API-REV-005
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-009)
+- Current authoritative result: Fail. CR-007 (UF-04) is `Design Impact`; CR-008 (UF-03) is `Local Fix` → implementation, sequenced by the Solution Designer.
+- What changed in the review result and why:
+  - UF-04 is confirmed in source. `reconcileUnresolved` (unchanged from base, and kept "unchanged" by D-15) throws on a ready, weak-held, materializer-owned link. That breaks the D-15 invariant that configured launches never regress because of a live ALL_INSTALLED chat. The rule for unresolved strong requests is undefined in the design. This is an earlier review gap (CRR-003).
+  - UF-03: Chat's `llmConfig: null` launch meets the pre-existing `showMissingHistoricalConfig` rule on a live, read-only ⚙. It is not a review gap.
+- Supported product scenario / material-premise basis changes: both are Supported Normal Scenarios (an imported package team next to the default Daily Assistant chat; ⚙ on a fresh live chat).
+
+#### Prior Finding Resolution
+
+None. No findings were open after CRR-009.
+
+- New or remaining finding IDs: CR-007 (Medium, Design Impact), CR-008 (Low, Local Fix).
+- Material score or classification changes: Runtime Correctness goes from 9.2 to 8.5.
+- Recommended recipient: `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty:
+  - The policy choice for CR-007 (skip as discoverable, join, or another option) is the designer's.
+  - The updated probe (C17–C20) is uncommitted; it needs the proportional test review after a passing API/E2E round.
+
+### CRR-011 — Round 8 implementation review (IR-007 D-18, IR-008 D-19 one skill per name): Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md`. See the "Round 8 Review" section and the latest result.
+- Review entry point and round: Implementation Review, round 8.
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer, `implementation-handoff.md` (IR-008); CR-007 (UF-04) and CR-008 (UF-03); REQ-022/023/024; AR-013; R-3.
+- Relevant solution revision IDs: SR-015, SR-016, SR-017
+- Relevant architecture-review revision IDs: ARCH-REV-011, ARCH-REV-012, ARCH-REV-013
+- Relevant implementation revision IDs: IR-007, IR-008
+- Relevant API/E2E revision IDs: API-REV-005 (the triggering failure)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-010)
+- Current authoritative result: Pass, 9.3/10.
+- What changed in the review result and why:
+  - D-18: the default computation was extracted to a pure shared function, and the chat records explicit default thinking.
+  - D-19:
+    - a tiered one-per-name catalog in SkillService;
+    - CONFIGURED, ALL_INSTALLED and AGY resolution plus every name-based operation read the catalog;
+    - validation before commit on every import path, with the GraphQL `SKILL_NAME_CONFLICT` contract;
+    - the issues query and banner;
+    - Codex duplicate exposure;
+    - the D-15 strength and re-point machinery removed.
+  - UF-04 no longer reaches the unresolved branch.
+  - The reviewer reran server 617/622 (5 baseline) and web 1176/1176.
+- Supported product scenario / material-premise basis changes:
+  - C-22 (org-owned agent private skill folders) is held for evidence and needs owner confirmation.
+  - C-23..C-25 were rejected; C-26 and C-27 were accepted as local decisions within the design.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-007 | Open (Design Impact; UF-04) | Resolved | SR-016/SR-017 D-19; IR-008 `ec31ff371` | Catalog resolution for CONFIGURED (`catalogLookup`); a same-source join in the materializer; V-F live on Codex, Claude and Grok |
+| CR-008 | Open (Local Fix; UF-03) | Resolved | SR-015 D-18; IR-007 `f4864638b` | `explicitChatModelConfig` / `applyModelConfigSchemaDefaults` / `getDefaultThinkingConfig`; IC-3 live |
+
+- New or remaining finding IDs: None. C-22 is held for evidence.
+- Material score or classification changes: Runtime Correctness goes from 8.5 to 9.2.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - C-22.
+  - `skill-service.ts` size.
+  - Catalog rescans.
+  - The Codex dual listing when a stale default copy exists.
+  - GitHub rejection unit-tested only.
+
+### CRR-012 — Round 8 amendment: C-22 promoted to CR-009 on the user's confirmation (Design Impact)
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md` (findings, classification and latest result).
+- Review entry point and round: Implementation Review, round 8 (amendment).
+- Triggering role, report path, and finding or scenario IDs: the user (product owner), 2026-09-29, in the reviewer conversation. The user confirmed that an Agent Org private agent with its own `skills/` folder is normal and must be supported, and that Agent Orgs, which contain agents and teams, must behave like teams. This is the evidence C-22 was held for.
+- Relevant solution revision IDs: SR-016, SR-017
+- Relevant architecture-review revision IDs: ARCH-REV-013
+- Relevant implementation revision IDs: IR-008
+- Relevant API/E2E revision IDs: API-REV-006 (in progress; not yet received)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-011)
+- Current authoritative result: Fail, `Design Impact` (CR-009).
+- What changed in the review result and why:
+  - C-22 is promoted.
+  - Base and current `origin/personal` resolve org-agent private skills at run time (`resolveContextualSkill` via `agentDirPath`). D-19 removed that lookup, and its tier-2 scan omits `agent-orgs/*`. This is a regression introduced on this branch.
+  - The Skills page listing gap for org skills already existed on `personal`.
+- Supported product scenario / material-premise basis changes: org-owned agent and team skill folders are now a Supported Normal Scenario (user-confirmed).
+
+#### Prior Finding Resolution
+
+None. CR-007 and CR-008 remain resolved.
+
+- New or remaining finding IDs: CR-009 (High, Design Impact).
+- Material score or classification changes: Runtime Correctness goes from 9.2 to 8.6. The classification is Design Impact.
+- Recommended recipient: `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty: the exact org layouts to scan (org agents, org-owned teams and their agents, any org-level skills folder) and the tier-2 order are for the designer to define.
+
+### CRR-013 — Round 9 implementation review (IR-009, D-19 Agent Org layouts): Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md`. See the "Round 9 Review" section and the latest result.
+- Review entry point and round: Implementation Review, round 9.
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer, `implementation-handoff.md` (IR-009); CR-009; DEC-017a; AR-014; AF-37.
+- Relevant solution revision IDs: SR-018, SR-019
+- Relevant architecture-review revision IDs: ARCH-REV-014, ARCH-REV-015
+- Relevant implementation revision IDs: IR-009
+- Relevant API/E2E revision IDs: N/A for this round
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-012)
+- Current authoritative result: Pass, 9.3/10.
+- What changed in the review result and why:
+  - The pure `correlateAgentOrgOwnedMembers` core behind a behavior-preserving async reader and a new sync reader.
+  - Tier 2 now includes `agent-orgs/*`: org agents' `skills/`, and org teams' shared and local-agent skills. There is no org-level folder, and only correlated folders are scanned.
+  - App-data org roots come from config.
+  - AGY roots follow the SR-018 table.
+  - Import validation covers org packages.
+  - The reviewer reran 301/302 server unit tests (1 baseline).
+- Supported product scenario / material-premise basis changes: none beyond DEC-017a. C-28 and C-29 were rejected.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-009 | Open (High, Design Impact) | Resolved | SR-018/SR-019; ARCH-REV-015; IR-009 `0be1dd47e` | `skill-discovery.getAgentOrgSkillLocations`; the `skill-catalog` org root; correlation core and parity tests; `skill-catalog-agent-orgs.test.ts` (7 cases); live `ir9-org-probe` on Codex, Claude, Grok and AGY |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: Runtime Correctness goes from 8.6 to 9.2.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`
+- Remaining risks or uncertainty:
+  - `skill-service.ts` size (485).
+  - Catalog rescan cost.
+  - The org Skills page listing not rendered live.
+
+### CRR-014 — API/E2E failure-origin review (API-REV-006): UF-05 implementation Local Fix
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md`. See the "API/E2E Failure-Origin Review (Round 10)" section.
+- Review entry point and round: API/E2E Failure-Origin Review, round 10.
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer, `api-e2e-execution-coverage-report.md` ("Round 6"; API-REV-006, Fail, 94%); UF-05 (C22e).
+- Relevant solution revision IDs: SR-016..SR-019
+- Relevant architecture-review revision IDs: ARCH-REV-013, ARCH-REV-015
+- Relevant implementation revision IDs: IR-008 (web `be6c8977d`), IR-009
+- Relevant API/E2E revision IDs: API-REV-006
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-013)
+- Current authoritative result: Fail, `Local Fix` → implementation (CR-010).
+- What changed in the review result and why:
+  - UF-05 is confirmed in source. The tier-4 toast is raised from `SkillSourcesModal`'s flow, and the pre-existing `ToastContainer` `z-[100]` sits below the dialog overlay (`z-index: 1000`). The conflict dialog was raised to 1100 for the same stacking, but the toast was not.
+  - This is a minor earlier review gap (CRR-011).
+  - UF-04 and UF-03 are confirmed resolved live.
+- Supported product scenario / material-premise basis changes: None (AC-020 alternate, supported normal).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-007 | Resolved (source) | Resolved (live-confirmed) | API-REV-006 | C20 on Codex and Claude; desktop DT-51 |
+| CR-008 | Resolved (source) | Resolved (live-confirmed) | API-REV-006 | C05 `llmConfig` schema defaults; desktop DT-50 |
+| CR-009 | Resolved (source) | Resolved (live-confirmed) | API-REV-006 | C23 on Codex, Claude and AGY; desktop Desk Org run |
+
+- New or remaining finding IDs: CR-010 (Low).
+- Material score or classification changes: Runtime Correctness goes from 9.2 to 9.0. The classification is Local Fix.
+- Recommended recipient: `/software_engineering_team/implementation_engineer`
+- Remaining risks or uncertainty: none beyond the residuals. The durable test changes await the proportional test review after a passing API/E2E round.
+
+### CRR-015 — Round 11 implementation review (IR-010, the CR-010 toast layer): Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md`. See the "Round 11 Review" section.
+- Review entry point and round: Implementation Review, round 11.
+- Triggering role, report path, and finding or scenario IDs: implementation_engineer, `implementation-handoff.md` (IR-010); CR-010 / UF-05.
+- Relevant solution revision IDs: SR-016..SR-019 (D-19 web)
+- Relevant architecture-review revision IDs: N/A for this delta
+- Relevant implementation revision IDs: IR-010
+- Relevant API/E2E revision IDs: API-REV-006
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-014)
+- Current authoritative result: Pass, 9.3/10.
+- What changed in the review result and why: the toast layer is now `z-[10000]`, above every overlay (the highest is 9999, verified by grep), and the new static guard plus render spec passes. The reviewer reran 18/18.
+- Supported product scenario / material-premise basis changes: None. C-30 was rejected.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-010 | Open (Low, Local Fix) | Resolved | IR-010 `a98a15d05` | `ToastContainer.vue` `z-[10000]`; `ToastContainer.spec.ts`; implementer U6 (`elementFromPoint` = toast over the Sources dialog) |
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: Runtime Correctness goes from 9.0 to 9.2.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`
+- Remaining risks or uncertainty: none new.
+
+### CRR-016 — Proportional API/E2E test-code review, round 4 (D-17/D-18/D-19/DEC-017a test changes): Pass
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/api-e2e-test-review-report.md`. See the "Round 4" section and the latest result.
+- Review entry point and round: Successful API/E2E test-code review, round 4.
+- Triggering role, report path, and finding or scenario IDs: api_e2e_engineer, `api-e2e-execution-coverage-report.md` ("Round 7"; API-REV-007, Pass, 95%).
+- Relevant solution revision IDs: SR-013..SR-019
+- Relevant architecture-review revision IDs: ARCH-REV-010, ARCH-REV-013, ARCH-REV-015
+- Relevant implementation revision IDs: IR-005..IR-010
+- Relevant API/E2E revision IDs: API-REV-005, API-REV-006, API-REV-007
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-015 source review; CRR-007 last test review)
+- Current authoritative result: Pass
+- What changed in the review result and why:
+  - The new D-19 GraphQL e2e (9 cases), the probe rewrite for D-17 and the new C17–C23, and the RD-01 stub fixes were reviewed. They are coherent, isolated and requirement-aligned, and the retired D-15 assertions are replaced, not kept.
+  - The reviewer reran the server e2e plus two stubbed integration files (16/16) and the probe syntax check.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None. There were no open test-review findings; A-2 is resolved, and A-5 to A-7 were added as advisories.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: N/A.
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty:
+  - The test changes are uncommitted.
+  - Grok and the AutoByteus runtime were not rerun (stopped by the user).
+  - O-1..O-7 are with delivery.

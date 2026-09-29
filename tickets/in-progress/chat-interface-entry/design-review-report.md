@@ -18,8 +18,15 @@
     - `implementation-handoff.md`
 - Relevant Solution Revision IDs: SR-003, SR-004, SR-010, SR-011 (REQ-021 / AC-018 / DEC-015, user-approved 2026-09-29), SR-012
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-008`
-- Current Review Round: `8`
+- Current Architecture Review Revision ID: `ARCH-REV-015`
+- Current Review Round: `15`
+- Trigger (round 15): SR-019, the AR-014 resolution (option (a), a synchronous correlation core).
+- Trigger (round 14): SR-018, the D-19 amendment after Code Reviewer CRR-012 CR-009 (Agent Org skill folders outside the catalog; a regression versus `personal`) and the user's direction DEC-017a.
+- Trigger (round 13): SR-017, the D-19 completion for ARCH-REV-012 (AR-013; R-3 adopted).
+- Trigger (round 12): SR-016, a user-approved requirements change (DEC-017; REQ-022–024, AC-019–021). D-19: one skill per name, decided at load, with duplicates blocked at import. It removes D-15 Rules 2–3. The implementation was stopped by the user at `f4864638b`.
+- Trigger (round 11): SR-015 from Code Reviewer CRR-010 (the failure origin of API/E2E round 5, API-REV-005). It covers CR-007 / UF-04 (Design Impact) → D-15 Rule 3, and CR-008 / UF-03 (Local Fix, sequenced) → D-18.
+- Trigger (round 10): SR-014, the D-17 revision for ARCH-REV-009 (AR-010, AR-011, AR-012).
+- Trigger (round 9): SR-013, Product R3 integration (D-17), with user-confirmed R3 decisions DEC-016 (`ui-ux-spec.md` R3 @ `origin/personal@ef5f909`, 26/26 hashes). REQ-011/012/013/014/016/018 and AC-009–012 are revised. The delta is Medium and web-only.
 - Trigger (round 8): SR-012, the D-16 revision for ARCH-REV-007 AR-009.
 - Trigger (round 7): SR-011 D-16 (Chat model labels), from user-verification Requirement Gap UVF-001 (Delivery DR-002). REQ-021 / AC-018 / DEC-015 were approved by the user on 2026-09-29. The delta is Small/Low; the package stays Large/High.
 - Trigger (round 6): Implementation Engineer IR-002 returned `Design Impact` on D-14. The closer is confirmed as `reconcileDiscoveredActiveRuns` ← `fetchRunHistoryTree`, and the `submissionPending` premise is disproved (AF-33). The Solution Designer revised D-14 in SR-010.
@@ -27,8 +34,8 @@
   - CR-004: Design Impact, which fired the RSK-003 trigger.
   - CR-003: Unclear, reclassified by the designer as a Missing Invariant.
   - CR-002: Local Fix.
-- Prior Review Round Reviewed: Round 7 / ARCH-REV-007 (Fail, AR-009)
-- Latest Authoritative Round: 8
+- Prior Review Round Reviewed: Round 14 / ARCH-REV-014 (Fail, AR-014)
+- Latest Authoritative Round: 15
 - Current-State Evidence Basis: the implemented branch `codex/chat-interface-entry` (IR-001 commits through `717603e61`, plus uncommitted API/E2E tests). Read in round 4:
   - Server:
     - `agent-execution/backends/antigravity/capsule/agy-configured-skill-materializer.ts` L125–L170: materializes into the capsule, probes the workspace `.agents/skills`, and has a case-insensitive intra-set name check.
@@ -326,6 +333,176 @@ MP-001 to MP-007 are unchanged from earlier rounds. See ARCH-REV-001 to ARCH-REV
   - **Validation.** V-L1 to V-L5 cover AC-018 on both paths and the gear-editor regression (V-L5).
 - Residual (non-blocking): while a persisted run's catalog is still loading, rows use the fallback mapping and may relabel once the catalog arrives, which is reactive. For AutoByteus OpenAI-compatible and Qwen models absent from the catalog, the fallback shows the identifier, as the gear editor does today.
 
+## Round 9 — D-17 Review (SR-013, Product R3)
+
+- Basis: R3 and DEC-016 are user-directed and user-confirmed ("I think it looks correct", 2026-09-29). REQ-011, 012, 013, 014, 016 and 018 and AC-009–012 are revised accordingly. The reviewer does not re-judge the product decision.
+- Evidence read in round 9 (branch HEAD `66304f510`):
+  - `components/layout/RightSideTabs.vue` L155–L175: the contextual watcher on `activeMessagesScopeKey` is `{ immediate: true }` and sets `teamMembers` (collaboration scope) or `progress` (standalone). The `visibleTabs` validity watcher is **not** immediate.
+  - `composables/useRightSideTabs.ts`: `activeTab` is module-global. `teamMembers` requires a collaboration `messages` scope, so it is invisible for standalone targets.
+  - `components/layout/RightSidebarStrip.vue` L55–L68: a strip click calls `setActiveTab` and then redocks or opens.
+  - `pages/workspace.vue` and `pages/chat.vue` are separate route components, so navigating between them remounts `RightSideTabs`.
+  - `components/workspace/config/RunConfigPanel.vue` L115 (`isSelectionMode = !!selectedRunId`), `ExistingRunConfigEditor.vue` (`loadAgentCanonical(id)` for every agent selection) and `existingRunConfigStore.ts`: none of them handles `temp-*` ids.
+- Accepted:
+  - Reusing the product frame (`WorkspaceAdaptiveLayout` / `WorkspaceToolShell`) with `AgentWorkspaceView` restored; the run-summary title; ⚙ and ＋ (preset New chat).
+  - The optional standalone `skillTagging` capability (team/org callers pass nothing).
+  - The shared right-panel visibility, and the removal of `ChatRunView`, `ChatRunHeader`, the run-mode `ChatComposer`, the persisted `chatRunModelControls` and the fixed-list code paths.
+  - D-13, D-14, D-15 and the New chat path are unchanged.
+  - Fixing the strip-tab defect in the shared owner is in scope: R3 CHK-015 / VIS-018 and REQ-012 R3 require that a strip click opens exactly that tab.
+
+### MP-016 — Right panel after navigating between Team/Org (`/workspace`) and Chat (`/chat`)
+
+- Related approved requirement: REQ-012 R3 / AC-010 (the chat view uses the same right tabs; team/org views keep their existing view).
+- Initiating basis kind: `User`. The panel is open (R3 shared default). In the Team view the Team-members tab is active. The user clicks a chat row in the Workspaces tree, and later clicks a team row.
+- Forward path:
+  - **Team → Chat.** The selection changes and the route becomes `/chat?id` → a new `RightSideTabs` mounts with the global `activeTab = 'teamMembers'`, which is invisible for a standalone target.
+    - Today the immediate contextual watcher corrects this to `progress`.
+    - Under D-17's rule ("contextual defaults apply only when the active run/scope changes (not on panel mount)"), nothing corrects it: the `visibleTabs` watcher is not immediate and visibleTabs does not change after mount. The chat's panel shows an invisible active tab (no content).
+  - **Chat → Team.** `/workspace` mounts `RightSideTabs` with, for example, `activeTab = 'files'`. The Team view no longer opens on Team members as it does today.
+- Consequence: a blank tool panel in the chat view (AC-010), and a change to the preserved Team/Org default tab after navigation.
+- Reachability: `Reachable`; this is ordinary tree navigation.
+- Review consequence: AR-010.
+
+### MP-017 — ⚙ on a pre-first-send `temp-*` draft
+
+- Related approved requirement:
+  - REQ-011 R3 (before the first message, runtime/model/thinking are editable; persisted runs change model only in ⚙).
+  - The D-04 failed-launch alternate (a resend from `/chat?id=<temp>`).
+  - REQ-017 (catalog launch → chat view).
+- Initiating basis kind: `User`. There are two independent starts:
+  - (1) Agents catalog → RunConfigPanel "Run agent" → a registered `temp-*` draft → `/chat?id=temp-…`.
+  - (2) A New chat whose first send fails (D-04) → `/chat?id=temp-…`.
+- Forward path:
+  - D-17 renders `AgentWorkspaceView` with ⚙ → `showSelectedRunConfig` → `RunConfigPanel` (`isSelectionMode` is true for any selected id) → `ExistingRunConfigEditor` → `existingRunConfigStore.loadAgentCanonical('temp-…')` → `refreshAgentResumeConfig` for an id the server does not know → `reconciliationRequired`, an error, and a non-editable form.
+  - D-17 states "editable draft config for `temp-*` drafts, per the existing behavior". The current and base code has no such behavior.
+  - D-17 also removes the run-view footer that edited `context.config` for these drafts (SR-007 D-08).
+- Consequence:
+  - The user cannot change model or thinking before the (re)send of a draft.
+  - In case (2) that is the natural recovery when the failure was model-related.
+  - ⚙ presents a broken editor.
+- Reachability: `Reachable`.
+- Review consequence: AR-011.
+
+## Round 10 — D-17 Re-review (SR-014)
+
+- Verdict: `Pass`.
+  - **AR-010 is resolved.**
+    - `useRightSideTabs` owns `contextualScopeKey` (the collaboration key, else `standalone:<runId>`) and `lastAppliedScopeKey`.
+    - The contextual default applies on mount or on a key change whenever the key differs from the last applied one, so it now survives the `/workspace` ↔ `/chat` remounts (MP-016).
+    - `selectTabExplicitly` wins within the same open action, and the validity watcher is immediate, so an invisible tab is always replaced on mount.
+    - Validation covers both navigation directions, the strip Files/Terminal clicks, and reopening the same run.
+    - Team/Org keys are unchanged (the collaboration scope), so the Team/Org default tab behavior is preserved.
+  - **AR-011 is resolved.**
+    - `RunConfigPanel` has an explicit draft branch: a standalone `temp-*` selection opens `DraftRunConfigEditor`, an editable `AgentRunConfigForm` bound to `context.config`, with the runtime selectable, the workspace locked, and no `existingRunConfigStore` calls.
+    - The inaccurate "existing behavior" claim is corrected.
+    - Validation covers a catalog draft and a failed New chat first send (MP-017).
+  - **AR-012 is resolved.** REQ-021 / AC-018 are rescoped to the New chat menu plus the ⚙ gear-editor labels, and AC-015 now references VIS-001–027. The change is editorial, with no behavior or approval impact.
+- Accepted consequences (non-blocking):
+  - Because the standalone key includes the run id, the chat panel re-defaults to Activity (`progress`) when the draft id is promoted after the first send, and when switching between two different chats.
+  - This is consistent with the Team/Org per-root default, and reopening the same run keeps its tab.
+
+## Round 11 — D-15 Rule 3 and D-18 Review (SR-015)
+
+- Evidence read in round 11:
+  - `code-review-report.md` CRR-010 (UF-04, UF-03).
+  - AF-35.
+  - `workspace-skill-materializer.ts`: `strongHolderCount` / `weakHolderCount` (L80–L83; IC-1 is implemented) and `reconcileUnresolved` (L349).
+  - `ModelConfigSection.vue` `applyDefaultsIfNeeded` (L255–L282): non-thinking schema defaults, plus the budget only when thinking is enabled; thinking keys are skipped.
+  - `utils/llmThinkingConfigAdapter.ts` (`getThinkingControlState`, `applyThinkingToggle`).
+- **D-15 Rule 3: `Pass`.**
+  - Authority: REQ-017 / AC-014 and the D-15 invariant, plus the established contract that an unresolved configured skill is recorded as unresolved and the run starts. UF-04 is a supported normal scenario per CRR-010.
+  - An unresolved strong request that meets a `ready` entry held only by weak holders skips, and logs `skipped-unresolved-held-by-weak`. It does not join and does not re-point. That is the same outcome as the configured run alone, so this is proportionate.
+  - The rejected alternatives are argued correctly: joining would adopt a source the run never resolved, and fail-fast breaks the invariant.
+  - The existing phase waits (`acquiring` / `releasing`) remain before the rule applies.
+  - Unresolved vs any strong holder or a user-owned/foreign path keeps today's behavior (pre-existing).
+  - The owner is the materializer, which already holds the registry and holder strengths.
+  - V-F covers the C20 regression.
+- **D-18: `Pass`, with implementation constraint IC-3.**
+  - Authority: REQ-011 R3 / VIS-026 and REQ-006 ("choosing a model applies that model's default thinking").
+  - Recording an explicit `llmConfig` at every draft model set, and extracting `applyModelConfigSchemaDefaults` as a pure shared function used by both `ModelConfigSection` and `chatDraftStore`, is the right single owner.
+  - The team root uses the same value.
+  - The historical "Not recorded" rule stays for genuinely unrecorded runs.
+- **IC-3 (binding clarification).** D-18 says both that the draft `llmConfig` "equals what the launch form would record" and that it adds the model's default thinking parameters.
+  - The launch form's `applyDefaultsIfNeeded` skips thinking keys. For thinking-only schemas (for example Codex `reasoning_effort`), it would therefore record no thinking values.
+  - Implement: non-thinking keys = `applyModelConfigSchemaDefaults` (identical to the launch form), and thinking keys = the adapter's default thinking state written explicitly.
+  - The validation should assert that non-thinking keys equal the launch form, that thinking keys equal the schema defaults, and that live ⚙ shows the VIS-026 values. It should not assert byte equality with the launch form.
+  - Never record `{}` where a later sanitizer would normalize it back to `null`. The recorded config must be non-null whenever the model has a config schema.
+- CRR-008 note (the stale mapping rows marked superseded by D-17): accepted.
+
+## Round 12 — D-19 Review (SR-016)
+
+- Basis: DEC-017 and REQ-022–024 / AC-019–021 are user-approved (2026-09-29), including the accepted consequence that a package's own copy is used only if it is the catalog's copy. The user waived Product design for the pop-up.
+- Evidence read in round 12:
+  - `skills/services/skill-service.ts`:
+    - `findGlobalSkillLocation` (L85) searches `getAllSkillDirectories` in Settings order with `searchDirectoryRecursive`.
+    - `findCatalogSkillLocation` (L95): skill directories first, then definition-root bundles.
+    - `getSkill` (L189), and its callers: `getSkills` (L208), `updateSkill` (L321), `deleteSkill` (L343, `fs.rmSync(skill.rootPath)`), `disableSkill` / `enableSkill`, `getSkillFileTree`, `uploadFile`, `readFile`, `deleteFile` (L385–L423).
+  - GraphQL `api/graphql/types/skills.ts`: the `skill(name)` query L136, the file tree L147, `updateSkill` L182, `deleteSkill` L189, `deleteSkillFile` L213.
+  - `workspaces/skill-workspace.ts` L24.
+  - The real user settings (AF-36): `AUTOBYTEUS_SKILLS_PATHS` = `autobyteus-agents`, `~/.codex/skills`, `autobyteus-skills`, … There are six duplicates between `~/.codex/skills` and `autobyteus-skills`, two of them with different content.
+- Accepted:
+  - The single-catalog owner (`SkillService`) with four precedence tiers, and runtime-default folders identified by realpath and always last.
+  - One CONFIGURED/ALL_INSTALLED resolution from the catalog; the application-owned boundary.
+  - `validateIncomingSkillNames` before commit at every import entry point, with the `SKILL_NAME_CONFLICT` error contract.
+  - The `skillNameIssues` banner, the Codex `skills/list` path match, the in-design pop-up spec, and the removal of D-15 Rules 2–3 (sound now that every run resolves the same source per name).
+  - Persisted data: `Not Affected` / `Directly Usable`. No stored data is rewritten; existing duplicates are handled by the load-time precedence and the banner.
+
+### MP-018 — Skills page operations on a name with an ignored duplicate
+
+- Related approved requirement: REQ-022 ("everything uses that copy"), REQ-024 (the used vs ignored copies are shown), AC-019.
+- Initiating basis kind: `User`. With the user's real settings, open the Skills page, which lists the catalog winner. `autobyteus-skills/<name>` wins because `~/.codex/skills` is tier 4. Click the skill to view, edit, disable or delete it.
+- Forward path: GraphQL `skill(name)` / `updateSkill` / `deleteSkill` / file APIs → `SkillService.getSkill(name)` → `findCatalogSkillLocation` → `findGlobalSkillLocation` iterates the skill directories in **Settings order**, recursively. It finds `~/.codex/skills/<name>` before `autobyteus-skills/<name>`. For tier-2 vs tier-3 duplicates it also returns the tier-3 folder copy before the tier-2 package bundle.
+- Consequence:
+  - The Skills page shows and edits the ignored copy while every run uses the catalog copy.
+  - Delete removes the wrong folder (`fs.rmSync`), for example the Codex default copy.
+  - Edits never affect the copy the agents use.
+- Reachability: `Reachable` with the user's current data (the two differing duplicates) and any out-of-band duplicate (REQ-024).
+- Review consequence: AR-013.
+
+## Round 13 — D-19 Re-review (SR-017)
+
+- Verdict: `Pass`.
+  - **AR-013 is resolved.**
+    - `SkillService.getSkill(name)` returns `resolveCatalogRecord(name)?.skill`. That covers the GraphQL `skill(name)` query (L136), the file tree, `updateSkill`, `deleteSkill`, enable/disable, `uploadFile` / `readFile` / `deleteFile`, `getSkills` (L208) and `workspaces/skill-workspace.ts` (L24).
+    - `findCatalogSkillLocation`, `findGlobalSkillLocation`, `getGlobalSkill` and the resolver's global-name search (`globalCandidatePaths` / `searchConfiguredSkillCandidate` in the detailed resolver) are removed. By-name directory helpers remain only inside the catalog build or the application-owned boundary.
+    - Ignored copies are read-only in the banner.
+    - The file mapping (design-spec L806) and validation are added: tier-4 vs tier-3 with different contents, and tier-2 vs tier-3. Detail, file tree, read, update and delete act on the used copy, and the ignored files stay untouched.
+    - Verified by grep: at HEAD `f4864638b` the only remaining by-name lookups are in `skill-service.ts` (L85–L123, L189, L259, L295) and the `skill-discovery.ts` helpers. All of them are covered by the SR-017 removal list.
+  - **R-3 is adopted.** A rejected reload keeps the previous registration, and the catalog and banner reflect the on-disk state (REQ-024).
+- Implementation note: implementation resumes from `f4864638b`. The committed D-15 Rule 3, Rule 2 and IC-2 code must be removed as the D-19 "Materializer simplification" section states. Rule 1 and D-18 (with IC-3) stay.
+
+## Round 14 — D-19 Agent Org Amendment Review (SR-018)
+
+- Basis:
+  - DEC-017a (user direction, 2026-09-29) says Agent Org private agents and org-owned teams with their own `skills/` are a normal layout and must behave like agents and teams.
+  - CR-009 establishes the regression: at base `fcd3e83a4` and `origin/personal` `cd4ad898b`, an org agent's `<agentDir>/skills/<name>` resolved through `resolveContextualSkill`, and D-19 removed that path.
+- Evidence read in round 14 (HEAD `10556948f`):
+  - `agent-org-definition/providers/agent-org-owned-definition-source-index.ts`: `listAgentOrgOwnedDefinitionSources` is **`async`** (`fs/promises` readdir/readFile). It parses `org-config.json` and `org.md` and matches the `org_local` members exactly.
+  - `agent-org-definition-config.ts` L15/L90: member `refType` is only `agent` or `agent_team`, so there are no nested orgs.
+  - `skills/services/skill-service.ts` (implemented D-19): `loadCatalog()` (L129) is **synchronous** and backs the synchronous `listInstalledSkillRecords` / `listSkillNameIssues` / `resolveCatalogRecord` / `getSkill`, the regular and detailed binding builders, and `validateIncomingSkillNames`.
+  - Synchronous callers: GraphQL `skills.ts` L154 (`getSkill`), `workspaces/skill-workspace.ts` L24, `claude-session-bootstrapper.ts` L72, `codex-thread-bootstrapper.ts` L245, `agy-agent-run-backend-factory.ts` L40, `acp-agent-run-backend-factory.ts` L115.
+  - Real data: the org packages in `autobyteus-agents/agent-orgs` and `autobyteus-private-agents/agent-orgs` (e.g. `nested-classroom-test` with `org_local` agents and teams). None ships `skills/` today.
+- Accepted:
+  - Tier-2 coverage of org-owned agents, org-owned teams' shared skills, and their team-local agents.
+  - The within-root order `agents/*` → `agent-teams/*` → `agent-orgs/*`.
+  - Exact enumeration through the org-owned source index rather than guessed paths.
+  - No org-level `skills/`, since the Org format defines none.
+  - AGY roots: org agent → `agent_private` with the agent dir (`skills/<n>`); org-team shared → `team_shared` with the team dir (`skills/<n>`); org team-local agent → `agent_private` with the team dir (`agents/<a>/skills/<n>`). These satisfy the existing `assertDetailedCandidateProvenance` layout checks.
+  - Import validation extended to org layouts.
+  - The validation cases.
+
+## Round 15 — D-19 Agent Org Enumeration Re-review (SR-019)
+
+- Verdict: `Pass`. AR-014 is resolved.
+  - **One correlation owner.** The pure `correlateAgentOrgOwnedMembers` in `agent-org-definition/providers/agent-org-owned-definition-correlation.ts` holds the `org_local` + `refType` filter, the `candidateIds` match, the exactly-one handling (a malformed correlation skips only that member), the `seen` set and the path construction. It does no I/O.
+  - **Two thin readers over it.**
+    - The existing async `listAgentOrgOwnedDefinitionSources` / `findAgentOrgOwnedDefinitionSource` keep unchanged signatures for the definition providers and admission.
+    - A new sync `listAgentOrgOwnedDefinitionSourcesSync` feeds the synchronous catalog.
+    - Only the `readdir` / `readFile` / parse I/O is mirrored, and parity tests guard it.
+  - **No API ripple.** There are no `SkillService` or catalog signature changes, so the synchronous callers (GraphQL, `skill-workspace.ts`, the four runtime call sites) are unaffected.
+  - **Team-local agents.** Agents inside org-owned teams are enumerated like ordinary teams (the team dir's `agents/*` via `getAgentSkillDirectories`), consistent with the existing team scan.
+  - **Mapping and tests.** The file mapping (design-spec L833–L834) is updated, with core unit tests and reader parity tests.
+- The SR-018 scope, order, AGY roots, import validation and validation cases, accepted in round 14, are unchanged.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None
@@ -336,7 +513,7 @@ None
 
 ## Findings
 
-None open. AR-009 is resolved in SR-012 (ARCH-REV-008). AR-001 to AR-005, AR-007 and AR-008 stay resolved. D-14 (SR-010) stays passed.
+None open. AR-014 is resolved in SR-019 (ARCH-REV-015). AR-001 to AR-005 and AR-007 to AR-013 stay resolved or superseded as recorded. IC-3 (D-18) still applies.
 
 ## Classification
 
@@ -354,13 +531,15 @@ N/A. Pass.
 - The `/` menu description versus the workspace or held copy is a presentation note, accepted in the design.
 - R-2 (non-blocking, MP-013): add a request-generation guard to the workspace branch of `fetchRunHistoryTree` so an older snapshot cannot reconcile after a newer one.
 - MP-014: the marker can outlive a very short activation until terminate or close. This has limited consequence.
-- R-1 (non-blocking, MP-012): in Direction A the weak request could join the existing entry as a weak co-holder instead of skipping. The link would then survive the strong holder's release, which is symmetrical with Direction B's "remaining holders accept the last source". The designer may adopt this in a later revision; the current rule is acceptable.
+- R-3 (adopted in SR-017): package **reload** after an out-of-band `git pull` cannot undo files already on disk. A rejected reload should show the pop-up, but the catalog already reflects the on-disk content by precedence, per REQ-024. The design could state that a reload rejection reports the conflict and keeps the previous registration, and that the banner covers the live state.
+- R-1 (superseded by SR-016: D-15 Rule 2 is removed).
+- R-1 (historical, MP-012): in Direction A the weak request could join the existing entry as a weak co-holder instead of skipping. The link would then survive the strong holder's release, which is symmetrical with Direction B's "remaining holders accept the last source". The designer may adopt this in a later revision; the current rule is acceptable.
 - CR-002 is a local implementation fix. It must keep DEC-009: hide the control when the model has no thinking parameters.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass`. MP-015 is resolved by the single option builder and search predicate.
+- Material-Premise Gate: `Pass`
 - Notes:
-  - SR-012 D-16 is ready for implementation (web only): `toChatModelOption`, `existingRunChoiceLabelInput`, `compareRecommendedFirstBy`, `matchesModelQuery` / `filterOptions`, and V-L1 to V-L5.
-  - D-14 (SR-010), D-15 and CR-002 are unchanged.
+  - SR-019 (the D-19 Agent Org amendment) is ready for implementation: org layouts in tier 2 through the synchronous correlation core, the AGY roots per the SR-018 table, import validation over org layouts, and the org validation case (the CR-009 regression fix).
+  - The other decisions are unchanged.

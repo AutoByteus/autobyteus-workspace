@@ -1,0 +1,71 @@
+{
+  "startedAt": "2026-09-29T14:11:20.009Z",
+  "runtime": "grok_build",
+  "cases": {
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 5298,
+      "details": {
+        "model": "grok-4.7",
+        "skills": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-borrower",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C15": {
+      "title": "D-19: configured agent with an on-disk duplicate uses the catalog copy — same link and marker as the Daily Assistant, no Rule 2/3 dispositions, private copy untouched, link removed after both end",
+      "result": "Fail",
+      "ms": 220138,
+      "error": "page.waitForFunction: Target page, context or browser has been closed",
+      "details": null
+    },
+    "C20": {
+      "title": "V-F under D-19 (UF-04): a configured agent naming a skill bundled in another agent resolves the catalog copy and starts next to a live Daily Assistant chat; one shared link",
+      "result": "Fail",
+      "ms": 2,
+      "error": "page.goto: Target page, context or browser has been closed",
+      "details": null
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 95055
+    },
+    {
+      "label": "frontend",
+      "pid": 95077
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 95077,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 95055,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-th8rLY"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-th8rLY",
+  "backendUrl": "http://127.0.0.1:54879",
+  "frontUrl": "http://127.0.0.1:54880",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T14:15:13.114Z"
+}

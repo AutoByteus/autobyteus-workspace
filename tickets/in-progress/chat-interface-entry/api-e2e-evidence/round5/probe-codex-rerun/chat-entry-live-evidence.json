@@ -1,0 +1,175 @@
+{
+  "startedAt": "2026-09-29T10:13:54.610Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C01": {
+      "title": "Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED",
+      "result": "Pass",
+      "ms": 19,
+      "details": {
+        "da": {
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "skillScope": "ALL_INSTALLED",
+          "skillNames": []
+        },
+        "legacy": {
+          "id": "probe-legacy",
+          "name": "Probe Legacy",
+          "skillScope": "CONFIGURED",
+          "skillNames": [
+            "probe-alpha"
+          ]
+        }
+      }
+    },
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 7569,
+      "details": {
+        "model": "gpt-5.5",
+        "skills": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 16029,
+      "details": {
+        "runId": "daily_assistant_ad79801f744f4bd7bfed2d8418f01acf",
+        "exposure": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "GPT-5.5 (default reasoning: medium) · Codex",
+        "triggerFirstSeen": "gpt-5.5",
+        "triggerSettledAfterMs": 921
+      }
+    },
+    "C05": {
+      "title": "Live run view (D-17): product header and box; ⚙ run settings locked while live (REQ-011 R3, VIS-026)",
+      "result": "Fail",
+      "ms": 3533,
+      "error": "Run settings not locked while live",
+      "details": {
+        "note": 0,
+        "saveDisabled": true,
+        "modelDisabled": true
+      }
+    },
+    "C06": {
+      "title": "Terminate → Offline → ⚙ save → reload → ⚙ save → resume uses the saved model (D-08 via run settings)",
+      "result": "Fail",
+      "ms": 17421,
+      "error": "Run settings not locked again after resume",
+      "details": null
+    },
+    "C08": {
+      "title": "Catalog Run (form unchanged) → /chat?id=temp-* → first send → permanent URL and streamed reply",
+      "result": "Pass",
+      "ms": 7652,
+      "details": {
+        "runId": "probe_legacy_dd60d379b5b94f2ea82534efadcb9d88"
+      }
+    },
+    "C10": {
+      "title": "Team quick path with an attachment: uniform member config, coordinator reads the file, Team view with the unchanged box",
+      "result": "Pass",
+      "ms": 9607,
+      "details": {
+        "teamRunId": "probe_team_08e5218f9f354f1491fb137725542edf",
+        "coordinator": "/lead",
+        "memberConfig": {
+          "runtime_kind": "codex_app_server",
+          "llm_model_identifier": "gpt-5.5",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-oKnGXy/server-data/temp_workspace"
+        }
+      }
+    },
+    "C16": {
+      "title": "D-16 / AC-018: Chat model labels follow the launch-form policy (rows, trigger, search, fixed list, launch-form parity, 390×844)",
+      "result": "Fail",
+      "ms": 43385,
+      "error": "Timed out waiting for run-settings model label",
+      "details": null
+    },
+    "C17": {
+      "title": "D-17 frame: chat run view geometry equals the Team view; strip Files/Terminal open exact tabs in Chat and Team; defaults; reopen keeps its tab; collapsed state is shared",
+      "result": "Fail",
+      "ms": 18763,
+      "error": "locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-right-tool-strip-surface\"] button[title=\"Files\"]').first() to be visible\n",
+      "details": null
+    },
+    "C19": {
+      "title": "CR-005: ⚙ stays with its run — New chat (success, failed first send) and Team quick path land on their conversation; header ＋ opens a preset New chat",
+      "result": "Pass",
+      "ms": 14076,
+      "details": {
+        "success": {
+          "runView": true,
+          "settingsOpen": false
+        },
+        "failed": {
+          "runView": true,
+          "settingsOpen": false
+        },
+        "team": {
+          "settingsOpen": false,
+          "textarea": 1
+        },
+        "plus": {
+          "url": "/chat",
+          "chip": "PL\nProbe Legacy",
+          "workspace": "Temp workspace"
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 2030
+    },
+    {
+      "label": "frontend",
+      "pid": 2367
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 2367,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 2030,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-oKnGXy"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-oKnGXy",
+  "backendUrl": "http://127.0.0.1:54211",
+  "frontUrl": "http://127.0.0.1:54212",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T10:16:24.172Z"
+}

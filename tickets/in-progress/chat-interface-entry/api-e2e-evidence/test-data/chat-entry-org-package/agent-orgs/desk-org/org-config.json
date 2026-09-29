@@ -1,0 +1,9 @@
+{
+  "avatarUrl": null,
+  "members": [
+    { "memberName": "desk_writer", "ref": "agent-org-owned-agent:desk-org:desk-writer", "refType": "agent", "refScope": "org_local" },
+    { "memberName": "desk_crew", "ref": "agent-org-owned-team:desk-org:desk-crew", "refType": "agent_team", "refScope": "org_local" }
+  ],
+  "handoffs": [],
+  "defaultLaunchConfig": null
+}

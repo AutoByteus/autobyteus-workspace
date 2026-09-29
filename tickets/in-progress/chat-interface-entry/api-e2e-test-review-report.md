@@ -2,7 +2,7 @@
 
 ## Review Meta
 
-- Review Round: 3 (latest authoritative; `Not Applicable`). Round 2 (CRR-006) reviewed the API-REV-003 probe update, since committed in `030bab78d`. Round 1 (CRR-004) reviewed the API-REV-002 changes, committed in `a4b22fc27`.
+- Review Round: 4 (latest authoritative; `Pass`). It covers the durable test changes of API-REV-005, API-REV-006 and API-REV-007, validated at HEAD `e58fb160a`. Round 3 (CRR-007) was `Not Applicable`, round 2 (CRR-006) reviewed the probe committed in `030bab78d`, and round 1 (CRR-004) reviewed the changes committed in `a4b22fc27`.
 - Trigger: API/E2E Pass, API-REV-003 (api_e2e_engineer, 95%), at HEAD `e9f2ce399` (IR-004 / D-16 on the `origin/personal` merge), with an uncommitted probe update
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-003 intended behavior)
 - Investigation Notes Reviewed As Context: `investigation-notes.md`
@@ -13,7 +13,7 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-001..IR-003)
 - Original Code Review Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md` (CRR-005, Pass, round 4, D-16)
 - Code Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-007`
+- Current Code Review Revision ID: `CRR-016`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`, with the round-2 delta
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md` (the "Round 3" section is authoritative)
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-003)
@@ -22,6 +22,50 @@
 - Final Validation Confidence: 95%
 - Prior unresolved test-review findings rechecked: none were blocking. Advisories A-1..A-3 from round 1: A-1 and A-3 are unchanged (still advisory); A-2 is partly addressed, since the C16 prerequisites are commented at the case.
 - Supported Product Scenario Basis Confirmed: `Yes`. Every probe case exercises a scenario already established upstream. Round 2 adds C16 for REQ-021/AC-018 (SCN-002; D-16 V-L1..V-L5), user-approved after UVF-001.
+
+## Round 4 (API-REV-005 … API-REV-007: D-17, D-18, D-19, DEC-017a)
+
+- Trigger: API-REV-007 Pass (95%), with no open findings, at HEAD `e58fb160a`. The code under test passed source review as CRR-009 (D-17), CRR-011 (D-18/D-19), CRR-013 (DEC-017a) and CRR-015 (CR-010).
+- Supported product scenario basis: `Yes`. Each case reproduces an approved scenario: REQ-011/012/013/016 R3 (D-17), D-18/IC-3, REQ-022–024 / AC-019–021 / AR-013 (D-19), DEC-017a, CR-005, CR-010, and V-F (UF-04).
+
+### Changed Durable Test Scope
+
+| Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility |
+| --- | --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts` | Added (418 lines, 9 cases) | AC-019; AR-013; AC-020 ×5 (add folder, create skill, local import, R-3 reload, GitHub import/update); DEC-017a ×2 | The D-19 GraphQL contract end to end over the real schema |
+| `autobyteus-web/tests/e2e/chat-entry-live-probe.mjs` | Updated (+662/−89) | See the list below. | One live Chat-entry journey suite |
+| Five `autobyteus-server-ts/tests/integration/agent-execution/**` files | Updated (1 line each) | RD-01: the `SkillService` stubs gain `hasEffectiveSkills: () => false` (the AutoByteus factory has called it since `770b14651`) | Stub completeness only |
+
+Changes to the probe:
+- **D-17 run view:** `RUN_VIEW` helpers, run-settings (⚙) helpers, and C05/C06/C07/C08/C09/C11/C12 moved to the product run view.
+- **New cases:** C17 (frame, strip tabs, shared collapse), C18 (draft ⚙) and C19 (CR-005).
+- **D-18:** C05 uses a catalog `configSchema` oracle.
+- **D-19:** C15 is replaced (a configured agent with an on-disk duplicate uses the catalog copy, and no retired D-15 disposition is logged). C20 covers V-F. C21 covers the banner. C22 covers the pop-ups plus the tier-4 toast, with a layering assertion.
+- **DEC-017a:** C23 (org skills).
+- **Harness:** `--owned-codex-home`, automatic `--cases` prerequisites, and the C04 link wait.
+
+Removed paths: none. The removed test logic is the old C15 assertions of the retired D-15 Rule 2 dispositions (`yielded-to-configured`, `skipped-held-by-other-run`); they were correctly retired with D-19, not left stale. Ticket-only evidence scripts (`api-e2e-evidence/probes/*`, `test-data/*`) are not durable test code.
+
+### Checks
+
+| Check | Result | Evidence / Notes |
+| --- | --- | --- |
+| Scenario grouping and names make intent clear | Pass | The server e2e `it` names cite AC and requirement IDs. Probe case titles name D-17/D-18/D-19/DEC-017a/CR-005/UF-05, and the helpers are grouped per concern (run view, frame, D-19 web, org fixture). |
+| Assertions prove approved requirements | Pass | Assertions are on observable outcomes: conflict extensions and paths, persisted sources and roots, catalog `rootPath`, `skillNameIssues`, byte-hash-unchanged ignored copies, recorded `llmConfig` versus an independent schema oracle, frame geometry, exact strip tabs, network-op capture proving no server call before a draft send (C18), `elementFromPoint` layering (C22e), and workspace links pointing at the org folders (C23). |
+| Fixtures and helpers reuse meaningful repetition | Pass | Server: `writeSkill`/`writeAgent`/`treeHash`/`expectConflict`/`useTestPackageService`/`fixtureGitHubInstaller` (installer seams, not network). Probe: `openRunSettings`, `pickFormModel`, `startChat`, `writeProbeOrg`, `launchStandalone`, `askInRunView`, `readConflictRows`. |
+| Isolation and determinism fit the boundary | Pass | Server: per-test `mkdtemp`, env and singleton save/restore, an owned `CODEX_HOME` reached through a symlink alias. Probe: the owned environment as before, plus an owned `CODEX_HOME` holding no credentials. The waits are bounded. |
+| Large files remain coherent and navigable | Pass | The probe (1330 lines) is one surface, sectioned by concern; the server e2e (418 lines) is one contract. |
+| No stale, duplicated, disabled or compatibility-only tests | Pass (one stale comment, see A-5) | The retired D-15 assertions were replaced, not kept. The RD-01 stubs fix real drift. |
+| Coverage agrees with the investigation and execution evidence | Pass | This matches the Round 5–7 execution reports (C05–C23; API-REV-005 to API-REV-007). The reviewer reran the server e2e plus two stubbed integration files (3 files, 16/16) and `node --check` on the probe. |
+| Test callers exercise independently established scenarios | Pass | Fault injection (`prepareAgentRun`) and the owned `CODEX_HOME` reproduce approved paths (D-04, and the AF-36 tier-4 flow); they do not invent scenarios. |
+
+### Round 4 Advisories (non-blocking)
+
+- **A-5 (stale comment):** the probe fixture comment "Configured agent naming a skill it does not own … resolves as unresolved" (near `writeAgent('probe-borrower', …)`) contradicts D-19 and C20, which asserts that no unresolved warning is logged. Reword it to "resolves from the catalog (the bundled copy)".
+- **A-6:** C22(e) returns `tier4: 'Unavailable…'` without failing when `--owned-codex-home` is not given. That is documented in the header, but a run without the flag silently skips the tier-4 and UF-05 checks. Consider marking the case result as partial.
+- **A-7:** C07 no longer checks the approval mode in the UI, after R3 removed the header line (REQ-016). The server-side `autoExecuteTools` check remains. REQ-014 R3's "shown in ⚙ (Auto approve tools)" is not asserted in the probe.
+- **A-4 (carried):** launch-form and run-settings selectors couple to `SearchableGroupedSelect` internals (`span.block.truncate`, `main button[aria-haspopup="listbox"]`). New `.dialog …` and XPath `ancestor` selectors in C22 add similar coupling.
+- **A-1, A-3:** unchanged. **A-2:** resolved by the new header text and the automatic `--cases` prerequisites.
 
 ## Round 3 (API-REV-004, real desktop app addendum)
 
@@ -109,9 +153,15 @@ Advisory notes (no action required for delivery; worth folding in the next time 
 
 ## Latest Authoritative Result
 
-- Result: `Not Applicable` (round 3: no durable test changed in API-REV-004). The last reviewed test code passed in round 2 (CRR-006).
-- Changed durable test paths reviewed: none this round.
-  - Earlier rounds: `chat-entry-live-probe.mjs` (Added, round 1; Updated, round 2; committed in `a4b22fc27` and `030bab78d`), `package.json` (Updated, round 1), and `WorkspaceAgentRunsTreePanel.regressions.spec.ts` (Updated, round 1, CR-001).
-- Unresolved finding IDs: None. A-1..A-4 are advisory.
+- Result: `Pass` (round 4)
+- Changed durable test paths reviewed:
+  - Round 4:
+    - `autobyteus-server-ts/tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts` (Added);
+    - `autobyteus-web/tests/e2e/chat-entry-live-probe.mjs` (Updated);
+    - the RD-01 stub updates in `tests/integration/agent-execution/{agent-run-manager.memory-layout.real, agent-run-prompt-fallback, autobyteus-agent-run-backend-factory}.integration.test.ts` and `tests/integration/agent-execution/compaction/{compaction-agent-parent-fallback, recursive-memory-compactor-leaf}.integration.test.ts`.
+  - Earlier rounds: see rounds 1–3.
+- Unresolved finding IDs: None. A-1, A-3, A-4, A-5, A-6 and A-7 are advisory.
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
-- Notes: observations O-1, O-2 and O-3 are for user re-verification. They are not test-review findings.
+- Notes:
+  - All round-4 test changes are uncommitted and must be committed at finalization.
+  - Observations O-1..O-7 are with delivery for user verification.

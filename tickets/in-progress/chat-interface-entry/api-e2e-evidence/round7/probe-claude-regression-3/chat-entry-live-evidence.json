@@ -1,0 +1,112 @@
+{
+  "startedAt": "2026-09-29T15:28:42.256Z",
+  "runtime": "claude_agent_sdk",
+  "cases": {
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 6462,
+      "details": {
+        "model": "haiku",
+        "skills": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-borrower",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 0
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 14988,
+      "details": {
+        "runId": "daily_assistant_765d4b02c70e470ab67961de804ee31a",
+        "exposure": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "claude-haiku-4-5-20251001 · Claude SDK",
+        "triggerFirstSeen": "haiku",
+        "triggerSettledAfterMs": 1662
+      }
+    },
+    "C08": {
+      "title": "Catalog Run (form unchanged) → /chat?id=temp-* → first send → permanent URL and streamed reply",
+      "result": "Pass",
+      "ms": 7299,
+      "details": {
+        "runId": "probe_legacy_247f61e9aeea4088ad0e6b5c448cb027"
+      }
+    },
+    "C19": {
+      "title": "CR-005: ⚙ stays with its run — New chat (success, failed first send) and Team quick path land on their conversation; header ＋ opens a preset New chat",
+      "result": "Pass",
+      "ms": 11529,
+      "details": {
+        "success": {
+          "runView": true,
+          "settingsOpen": false
+        },
+        "failed": {
+          "runView": true,
+          "settingsOpen": false
+        },
+        "team": {
+          "settingsOpen": false,
+          "textarea": 1
+        },
+        "plus": {
+          "url": "/chat",
+          "chip": "PL\nProbe Legacy",
+          "workspace": "Temp workspace"
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 82152
+    },
+    {
+      "label": "frontend",
+      "pid": 82175
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 82175,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 82152,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-xfh6WK"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-xfh6WK",
+  "backendUrl": "http://127.0.0.1:63241",
+  "frontUrl": "http://127.0.0.1:63242",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T15:29:36.673Z"
+}

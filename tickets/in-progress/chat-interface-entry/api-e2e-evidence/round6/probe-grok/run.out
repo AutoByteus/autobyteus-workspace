@@ -1,0 +1,3 @@
+C03 Pass Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation
+C15 Fail D-19: configured agent with an on-disk duplicate uses the catalog copy — same link and marker as the Daily Assistant, no Rule 2/3 dispositions, private copy untouched, link removed after both end — page.waitForFunction: Target page, context or browser has been closed
+C20 Fail V-F under D-19 (UF-04): a configured agent naming a skill bundled in another agent resolves the catalog copy and starts next to a live Daily Assistant chat; one shared link — page.goto: Target page, context or browser has been closed

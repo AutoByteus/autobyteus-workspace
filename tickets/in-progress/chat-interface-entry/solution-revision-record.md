@@ -16,6 +16,13 @@
 | SR-010 | Design | Implementation Engineer IR-002 Design Impact on D-14 | CR-003 / RSK-007 (AF-30 premise disproved) | Design Ready (SR-009), ARCH-REV-005 Pass | Design Ready; Architecture Design Complete (Large/High) | REQ-003/AC-002, REQ-011/AC-009 | Routed to architecture review |
 | SR-011 | Mixed | Delivery Engineer DR-002, user verification UVF-001 | UVF-001 | Approved (SR-003) | Approved (delta); design D-16 Ready | BEH-003; REQ-021 / AC-018 / DEC-015 | Routed to architecture review |
 | SR-012 | Design | ARCH-REV-007 (Fail, Design Impact) | AR-009 (MP-015) | Design Ready (SR-011) | Design Ready; Architecture Design Complete (package Large/High; delta Small/Low) | REQ-021 / AC-018 | Returned to architecture review (ARCH-REV-008) |
+| SR-013 | Mixed | Product R3 (user-directed Result Correction, user-confirmed) | UVF-002 (Chat run view top area / right tabs), strip-tab defect | Approved (SR-003+SR-011); design SR-012 | Approved (R3 delta); design D-17 Ready; Architecture Design Complete (Large/High) | BEH-010–012; REQ-011, 012, 013, 014, 016, 018; AC-009–012; DEC-016 | Routed to architecture review |
+| SR-014 | Design | ARCH-REV-009 (Fail, Design Impact) | AR-010, AR-011, AR-012 | D-17 (SR-013) | Design Ready; Architecture Design Complete (Large/High) | REQ-011, REQ-012, REQ-017, REQ-021 / AC-018 (editorial), AC-015 (editorial) | Returned to architecture review (ARCH-REV-010) |
+| SR-015 | Design | Code Reviewer CRR-010 (API/E2E API-REV-005 failure origin) | CR-007 / UF-04, CR-008 / UF-03, CRR-008 note | Design Ready (SR-014), ARCH-REV-010 Pass | Design Ready; Architecture Design Complete (Large/High) | REQ-017/AC-014, REQ-007, REQ-011/AC-009, REQ-018 (VIS-026) | Routed to architecture review |
+| SR-016 | Mixed | User decision DEC-017 (skills discussion 2026-09-29) | Root cause: two skill-resolution rules | Approved; design SR-015 (ARCH-REV-011 Pass) | Approved (REQ-022–024); design D-19 Ready; Architecture Design Complete (Large/High) | BEH-015; REQ-022, 023, 024; AC-019–021; SCN-010; D-15 Rules 2–3 removed | Routed to architecture review |
+| SR-017 | Design | ARCH-REV-012 (Fail, Design Impact) | AR-013 (MP-018), R-3 | D-19 (SR-016) | Design Ready; Architecture Design Complete (Large/High) | REQ-022/AC-019, REQ-024/AC-021 | Returned to architecture review (ARCH-REV-013) |
+| SR-018 | Mixed | Code Reviewer CRR-012 CR-009 + user direction (DEC-017a) | CR-009 | D-19 (SR-017), ARCH-REV-013 Pass; IR-008 `ec31ff371` | Design Ready; Architecture Design Complete (Large/High) | REQ-022–024 (tier 2 incl. Agent Orgs), AC-019–021 | Routed to architecture review |
+| SR-019 | Design | ARCH-REV-014 (Fail, Design Impact) | AR-014 | D-19 (SR-018) | Design Ready; Architecture Design Complete (Large/High) | REQ-022–024 (Agent Org layouts) | Returned to architecture review (ARCH-REV-015) |
 
 ## Revision Entries
 
@@ -303,3 +310,135 @@
 - 2026-09-29: Architecture Reviewer ARCH-REV-008 — **Pass**. Basis: SR-012, with approved SR-003/SR-004/SR-011. AR-009 is resolved. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`.
 - The reviewer handed the package to `/software_engineering_team/implementation_engineer`. Solution Designer did not duplicate the handoff.
 - Accepted non-blocking residual: while a persisted run's catalog is still loading, its rows use the fallback mapping and may relabel once the catalog arrives.
+
+#### Pending (not yet a completed SR round): R3 Product revision requested
+
+- 2026-09-29: the user directed a Product revision of the Chat run view's top area and right-side tabs, for consistency with the workspace Team/Org views. The feedback was relayed by API/E2E, with evidence in `api-e2e-evidence/round4-desktop/USER-Q1-*`.
+- Request: `product-design-revision-request-r3-handoff.md` → `/product_team/product_prototyper` (delivered).
+- Affected: REQ-012/AC-010 and REQ-018/AC-015 reference visuals (VIS-015/017/018/019). SR-013 will integrate the user-confirmed R3.
+
+### SR-013 — Integrate Product R3: the chat run view is the product agent run view
+
+- Phase and classification: Mixed. Requirements refinement (user-directed via Product R3) and design (D-17).
+- Triggering input:
+  - User feedback relayed by API/E2E (round-4 desktop evidence `USER-Q1-*`).
+  - The user's explicit direction to Product, request `product-design-revision-request-r3-handoff.md`.
+  - Product Prototyper `Prototype Completed` R3, `origin/personal@ef5f909`.
+- Verification: 26/26 SHA-256 against `manifest.json`; the remote commit is `ef5f909`; VIS-015 and VIS-026 were viewed.
+- Intended behavior changed: Yes. REQ-011, 012, 013, 014, 016 and 018 were revised, together with BEH-010–012, AC-009–012 and DEC-016 (new).
+- Approval basis:
+  - The user's explicit R3 decisions, quoted in DEC-016.
+  - The R3 confirmation, "I think it looks correct" (2026-09-29).
+  - The integrated delta is reported to the user, who may object.
+- Design: D-17 added. It supersedes the conflicting parts of D-05 (AgentWorkspaceView restored), D-07 (chat scope removed), D-08 (persisted footer removed → ⚙), D-16 (persisted Chat list removed) and CR-002 (moot).
+  - It includes the pre-existing strip-tab defect fix in the shared owner (AF-34).
+- Classification: the package stays Large / High; the delta is Medium, web-only.
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` — see `architecture-review-handoff.md` (SR-013 section)
+- The API/E2E layout finding and strip-tab finding (pending R3) are now addressed by D-17.
+
+### SR-014 — D-17 revision for ARCH-REV-009
+
+- Phase and classification: Design — Design Impact, plus editorial requirements alignment
+- Triggering finding IDs: AR-010 (MP-016), AR-011 (MP-017), AR-012
+- Decisions:
+  - **AR-010:** `useRightSideTabs` tracks `contextualScopeKey` / `lastAppliedScopeKey`. The contextual default applies on mount or on scope change when the key differs; `selectTabExplicitly` wins in the same open action; the validity watcher becomes immediate.
+  - **AR-011:** `RunConfigPanel` draft branch → the new `DraftRunConfigEditor`: an editable `AgentRunConfigForm` on the draft `context.config` (runtime selectable, workspace locked), with no `existingRunConfigStore`. The incorrect "existing behavior" claim is corrected.
+  - **AR-012:** REQ-021/AC-018 are scoped to the New chat menu + ⚙ gear-editor labels; AC-015 now references VIS-001–027.
+- Intended behavior changed: No. The requirements edits are editorial alignment with the R3 already approved via DEC-016.
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` — see `architecture-review-handoff.md` (SR-014 section)
+
+#### Review outcome for SR-014 (informational)
+
+- 2026-09-29: Architecture Reviewer ARCH-REV-010 — **Pass**. Basis: SR-014, with approved SR-003/SR-011/SR-013 (DEC-016). AR-010, AR-011 and AR-012 are resolved. Report: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/design-review-report.md`.
+- The reviewer handed the package to `/software_engineering_team/implementation_engineer`. Solution Designer did not duplicate the handoff.
+- Accepted consequence: the standalone right tab re-defaults to Activity when a draft id is promoted and when switching between different chats.
+
+### SR-015 — D-15 Rule 3 and D-18 (CRR-010)
+
+- Phase and classification: Design — Design Impact (CR-007), plus a sequenced Local Fix (CR-008) and editorial mapping cleanup
+- Triggering input: Code Reviewer CRR-010 round 7 (run `code_reviewer_ee824e288f4b487ba385d3ae690145ac`); API/E2E API-REV-005 (probe C20; desktop evidence DT12/DT13)
+- Evidence: AF-35
+- Decisions:
+  - **D-15 Rule 3:** an unresolved strong request meeting a weak-only `ready` link skips without throwing and logs `skipped-unresolved-held-by-weak`. It does not join or re-point. Strong/foreign cases are unchanged. Validation case V-F added.
+  - **D-18:** the New chat draft records an explicit `llmConfig` (shared `applyModelConfigSchemaDefaults` + default thinking) on every model set, and the team root does the same.
+  - Stale mapping rows are marked superseded by D-17.
+- Intended behavior changed: No. Rule 3 restores the approved invariant REQ-017/AC-014; D-18 realizes VIS-026/REQ-018.
+- Approval impact: none
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` — see `architecture-review-handoff.md` (SR-015 section)
+- Next: architecture review → implementation (CR-007 per Rule 3, CR-008 per D-18) → source review → API/E2E rerun → test review
+
+#### Review outcome for SR-015 (informational)
+
+- 2026-09-29: Architecture Reviewer ARCH-REV-011 — **Pass**. Basis: SR-015 (D-15 Rule 3, D-18), with approved SR-003/SR-011/SR-013 (DEC-016). Report: `design-review-report.md`.
+- The reviewer handed the package to `/software_engineering_team/implementation_engineer`, with IC-3 in the handoff. Solution Designer did not duplicate the handoff.
+- Editorial alignment applied to D-18, with no design change: "equals the launch form" now reads "the launch form's non-thinking defaults + explicit default thinking parameters", matching IC-3.
+
+### SR-016 — One skill per name + import validation (user decision DEC-017)
+
+- Phase and classification: Mixed. A requirements change (user-directed) plus design (D-19).
+- Trigger: the user's questions about skill conflicts. Solution Designer concluded the user's approach is cleaner: the root cause is two resolution rules (AF-36).
+  - The user decided: runtime default folders never win; validate duplicates at import with a pop-up; do it in this ticket; no Product design needed for the pop-up.
+  - The user stopped the implementation engineer to allow this. Code head: `f4864638b` (it includes D-15 Rule 3 + D-18).
+- Housekeeping done at the user's request: the identical `~/.codex/skills/software-tutorial-video-maker` was removed. The agent package copy is kept.
+- Requirements: REQ-022, 023, 024; AC-019–021; SCN-010; BEH-015; DEC-017 (approved: "let's do it now … you don't have to ask").
+- Design: D-19 added.
+  - One catalog record per name with tiers (runtime default folders last).
+  - `CONFIGURED` and ALL_INSTALLED both resolve from the catalog; application-owned agents are a boundary.
+  - Import validation before commit (skill source add, package import/update/reload, create skill) with the `SKILL_NAME_CONFLICT` error and pop-up.
+  - An out-of-band banner.
+  - The Codex discovery path match.
+  - D-15 Rules 2–3 removed (including the committed Rule 3 and the IC-2 re-point fallback); Rule 1 kept.
+  - D-18 unchanged.
+- Classification: package Large / High (shared GraphQL error contract, a new query, the resolution change across runtimes, package import semantics).
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` — see `architecture-review-handoff.md` (SR-016 section)
+- Pending user housekeeping (offered, not done): the remaining `~/.codex/skills` duplicates (4 identical, 2 different).
+
+### SR-017 — D-19 completed: every name-based skill operation uses the catalog (ARCH-REV-012)
+
+- Verified (2026-09-29): `SkillService.getSkill` (L188–L189) → `findCatalogSkillLocation` (L95) → `findGlobalSkillLocation` (L85), with callers at L208, L321, L339, L343, L359, L370, L385, L395, L409 and L423, `api/graphql/types/skills.ts` L136, and `workspaces/skill-workspace.ts` L24.
+- Decision:
+  - All of those callers resolve through `resolveCatalogRecord`, and the old lookups are removed.
+  - Edits and deletes act on the used copy only; ignored copies appear read-only in the banner.
+  - R-3 is adopted: a rejected reload keeps the previous registration, and the banner reflects the disk.
+  - Validation extended with tier-4 vs tier-3 and tier-2 vs tier-3 duplicates.
+- Intended behavior changed: No (completes REQ-022/REQ-024)
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` — see `architecture-review-handoff.md` (SR-017 section)
+
+#### Review outcome for SR-017 (informational)
+
+- 2026-09-29: Architecture Reviewer ARCH-REV-013 — **Pass**. Basis: SR-017, with approved SR-003/SR-011/SR-013 (DEC-016)/SR-016 (DEC-017). AR-013 is resolved and R-3 is adopted. Report: `design-review-report.md`.
+- The reviewer handed the package to `/software_engineering_team/implementation_engineer`. Implementation resumes from `f4864638b`, including removal of the committed D-15 Rule 2/3 code. Solution Designer did not duplicate the handoff.
+- Still offered to the user (not done): cleanup of the remaining `~/.codex/skills` duplicates (4 identical, 2 different).
+
+### SR-018 — Agent Org skill layouts in the single catalog (CRR-012 CR-009)
+
+- Trigger: Code Reviewer CRR-012 (run `code_reviewer_ee824e288f4b487ba385d3ae690145ac`) with the user's direction that an Agent Org private agent's `skills/` is a normal layout, and that agents, teams and orgs must behave the same.
+- Evidence: AF-37
+- Requirements: the REQ-022 tier (2) wording now includes Agent Org packages (DEC-017a). This is a clarification of approved intent, with explicit user direction.
+- Design: D-19 tier 2 adds org-owned agents and org-owned teams (shared + team-local agent skills), enumerated via `listAgentOrgOwnedDefinitionSources` over the org roots, ordered after `agents/*` and `agent-teams/*` within each root. It also covers the AGY provenance roots (existing layout checks), import validation including org layouts, and an org validation case. No org-level `skills/` folder (not in the Org format).
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` — see `architecture-review-handoff.md` (SR-018 section)
+
+### SR-019 — Actionable Agent Org enumeration (ARCH-REV-014 AR-014)
+
+- Verified: `agent-org-owned-definition-source-index.ts` is async (`fs/promises`). Its callers are the providers `file-agent-definition-provider.ts` L264/L404, `file-agent-team-definition-provider.ts` L204/L221, `team-definition-source-paths.ts` L150 and `definition-source-registry.ts` L98. The skill catalog is synchronous (HEAD `10556948f`).
+- Decision: option (a).
+  - A pure `correlateAgentOrgOwnedMembers` core (new `agent-org-owned-definition-correlation.ts`), moved out of the async index.
+  - The async index keeps its signatures and delegates to the core.
+  - A new `listAgentOrgOwnedDefinitionSourcesSync` serves the catalog.
+  - No `SkillService` / catalog API changes.
+  - Team-local agents in org-owned teams are enumerated via the team dir's `agents/*`, as for ordinary teams.
+- Applied handoff-rule outcome: `/software_engineering_team/architecture_reviewer` — see `architecture-review-handoff.md` (SR-019 section)
+
+#### Review outcome for SR-019 (informational)
+
+- 2026-09-29: Architecture Reviewer ARCH-REV-015 — **Pass**. Basis: SR-019 + SR-018 (DEC-017a). AR-014 is resolved by option (a), the synchronous correlation core. Report: `design-review-report.md`.
+- The reviewer handed the package to `/software_engineering_team/implementation_engineer`. Solution Designer did not duplicate the handoff.
+
+#### User clarification for CR-009 (informational; no revision needed)
+
+- 2026-09-29, relayed by Code Reviewer CRR-012: "agent org consists of agent teams … The skills are still belonging to agents." There is no org-level skills folder, and an org-owned team's shared `skills/` is allowed only if it mirrors the existing team layout.
+- Checked against the approved design (SR-018/SR-019, ARCH-REV-015 Pass). It already matches:
+  - It scans org-owned agents' `skills/` and org-owned teams' local agents' `skills/`.
+  - It adds **no** org-level `skills/`.
+  - The org-owned team shared `agent-orgs/<o>/agent-teams/<t>/skills/` mirrors the existing ordinary-team rule, verified on base `fcd3e83a4` `skill-discovery.ts` L108–L117 (`getSkillFolderDirectories(path.join(teamDir, "skills"))`, origin `team_shared`). Nothing new is added for orgs.
+- Result: no design or requirements change. The implementation proceeds on SR-019 as handed off.

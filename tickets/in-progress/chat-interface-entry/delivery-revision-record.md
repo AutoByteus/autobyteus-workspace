@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery handoff from `code_reviewer` after CRR-004 Pass (2026-09-29) | N/A | Integrated, checked, docs synced; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/` |
+| DR-006 | `code_reviewer`: API-REV-004 desktop addendum, CRR-007 Not Applicable | DR-005 waiting for verification | Still waiting for verification; O-2 and O-3 added for the user; ticket-only base commit merged (`66304f510`) | `handoff-summary.md` |
 | DR-005 | User asked to check `personal` and rebuild | DR-004 waiting for verification | Re-integrated `origin/personal@39e512edd` (`3c062a180`), checked (new failures proven upstream baseline), rebuilt; waiting for verification | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-electron-build-r4.log`, `server-build-full-r4.log`, `refresh4-baseline-proof.txt` |
 | DR-004 | User asked for a rebuild after `personal` advanced | DR-003 waiting for renewed verification | Re-integrated `origin/personal@c84b57739` (`97c169c71`), checked, rebuilt; waiting for renewed verification | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-electron-build-r3.log` |
 | DR-003 | `code_reviewer` delivery handoff after the UVF-001 rework (CRR-006 Pass) | DR-002 `Blocked` | Re-integrated (`a1f2a26d2`), checked, docs verified, local build rebuilt; waiting for renewed verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` (addendum), `release-notes.md`, `delivery-evidence/delivery-electron-build-r2.log` |
@@ -133,3 +134,23 @@
 - Remaining blockers, rollback concerns, or untested scope:
   - User verification is pending.
   - The upstream Team/Org run-config unit failures are pre-existing on `personal`; they are outside this ticket and should be reported to their owners.
+
+### DR-006: API-REV-004 desktop addendum received; observations O-2 and O-3 added
+
+- Delivery round and trigger: `code_reviewer` message. API-REV-004 (the isolated real desktop app from `3c062a180` passed DT-00..DT-05, 95%); CRR-007 Not Applicable.
+- Triggering upstream report, verification, or evidence: `api-e2e-execution-coverage-report.md` (Round 4), `api-e2e-revision-record.md` (API-REV-004), `code-review-revision-record.md` (CRR-007), `api-e2e-evidence/round4-desktop/`
+- Prior authoritative result: DR-005, waiting for verification.
+- Current authoritative result: waiting for renewed user verification.
+  - Checkpoint `9548bffe3`.
+  - Merged `origin/personal@f2924a2b0` (ticket records only) as `66304f510`. There is no code diff from `3c062a180`, so no rebuild or rerun was needed, and the r4 build stays current.
+  - O-1, O-2 and O-3 go to the user.
+- Docs sync report: no change.
+- Handoff summary: updated (branch head, desktop evidence, O-2, O-3).
+- Release/publication/deployment report: no change; a release would be `1.4.91-beta.8`.
+- Integration and post-integration verification: as DR-005. The code is unchanged since then.
+- User verification/finalization state: pending. Nothing was pushed, merged or released.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Terminal message/reference: —
+- Why this baseline or delivery revision was recorded: new validation evidence and new observations for the user.
+- Next recipient/action: the user verifies the r4 build and accepts or rejects O-1, O-2 and O-3. Rejected items go to `/software_engineering_team/solution_designer`.
+- Remaining blockers, rollback concerns, or untested scope: user verification pending.

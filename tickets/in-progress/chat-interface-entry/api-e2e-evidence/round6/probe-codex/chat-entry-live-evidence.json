@@ -1,0 +1,562 @@
+{
+  "startedAt": "2026-09-29T14:02:11.159Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C01": {
+      "title": "Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED",
+      "result": "Pass",
+      "ms": 10,
+      "details": {
+        "da": {
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "skillScope": "ALL_INSTALLED",
+          "skillNames": []
+        },
+        "legacy": {
+          "id": "probe-legacy",
+          "name": "Probe Legacy",
+          "skillScope": "CONFIGURED",
+          "skillNames": [
+            "probe-alpha"
+          ]
+        }
+      }
+    },
+    "C02": {
+      "title": "Landing: / → /chat, Chat first with pencil, New chat defaults",
+      "result": "Pass",
+      "ms": 4520,
+      "details": {
+        "nav": [
+          "Chat",
+          "Agents",
+          "Agent Teams"
+        ],
+        "workspace": "Temp workspace",
+        "approval": "Auto-approve",
+        "model": "Choose a model\nAutoByteus"
+      }
+    },
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 16282,
+      "details": {
+        "model": "gpt-5.5",
+        "skills": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-borrower",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 17639,
+      "details": {
+        "runId": "daily_assistant_43930c9ad5164e248b67693caf3ec533",
+        "exposure": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "GPT-5.5 (default reasoning: medium) · Codex",
+        "triggerFirstSeen": "gpt-5.5",
+        "triggerSettledAfterMs": 1580
+      }
+    },
+    "C05": {
+      "title": "Live run view (D-17): product header and box; ⚙ run settings locked while live (REQ-011 R3, VIS-026)",
+      "result": "Pass",
+      "ms": 3574,
+      "details": {
+        "title": "Reply with the two markers from these ski…",
+        "editability": {
+          "editable": false,
+          "reason": "RUN_ACTIVE"
+        },
+        "d18": {
+          "recorded": {
+            "reasoning_effort": "medium"
+          },
+          "defaults": {
+            "reasoning_effort": "medium"
+          },
+          "notRecordedShown": false,
+          "missingHistoricalMarkers": 0,
+          "enabledFormControls": 0
+        }
+      }
+    },
+    "C06": {
+      "title": "Terminate → Offline → ⚙ save → reload → ⚙ save → resume uses the saved model (D-08 via run settings)",
+      "result": "Pass",
+      "ms": 24500,
+      "details": {
+        "saved": [
+          "gpt-5.6-luna",
+          "gpt-5.6-sol"
+        ],
+        "resumed": {
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": null,
+          "runtimeKind": "codex_app_server",
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/temp_workspace"
+        }
+      }
+    },
+    "C07": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 8078,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_de214b3662ae4fd382193905edde6cbc",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/folder-ws"
+      }
+    },
+    "C08": {
+      "title": "Catalog Run (form unchanged) → /chat?id=temp-* → first send → permanent URL and streamed reply",
+      "result": "Pass",
+      "ms": 8412,
+      "details": {
+        "runId": "probe_legacy_2e16cf07468244369937f2f3b9b9eb3e"
+      }
+    },
+    "C09": {
+      "title": "@agent scoped /, × back to Daily Assistant, tree + preset",
+      "result": "Pass",
+      "ms": 1892,
+      "details": {
+        "scoped": [
+          "probe-bundled"
+        ],
+        "presetUrl": "/chat"
+      }
+    },
+    "C10": {
+      "title": "Team quick path with an attachment: uniform member config, coordinator reads the file, Team view with the unchanged box",
+      "result": "Pass",
+      "ms": 9296,
+      "details": {
+        "teamRunId": "probe_team_6413aecb630641b09f2ee138c53be608",
+        "coordinator": "/lead",
+        "memberConfig": {
+          "runtime_kind": "codex_app_server",
+          "llm_model_identifier": "gpt-5.5",
+          "llm_config": {
+            "reasoning_effort": "medium"
+          },
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/temp_workspace"
+        }
+      }
+    },
+    "C11": {
+      "title": "RSK-005 redirects, missing and unregistered ids, tool strip collapsed",
+      "result": "Pass",
+      "ms": 7693,
+      "details": {
+        "orgRunId": "probe_org_a15102fdbc3b4c3f90dcf458eb048640"
+      }
+    },
+    "C12": {
+      "title": "Narrow 390×844: no horizontal overflow; model menu is a bottom sheet with drill-in",
+      "result": "Pass",
+      "ms": 4136,
+      "details": {
+        "sheet": {
+          "x": 8,
+          "y": 569,
+          "width": 374,
+          "height": 267
+        },
+        "runOverflow": 0
+      }
+    },
+    "C14": {
+      "title": "D-15 Rule 1 (V-D): a user-owned workspace skill wins for the Daily Assistant; a configured agent still fails fast",
+      "result": "Pass",
+      "ms": 8467,
+      "details": {
+        "daRun": "daily_assistant_5e2baccaee90405dba72643a9648b2ff",
+        "strongRun": "probe_shadow_owner_1abda54baa98491bb3487101b7ce1589",
+        "strongError": "Failed to prepare agent run 'probe_shadow_owner_1abda54baa98491bb3487101b7ce1589'.",
+        "userFolderIntact": true
+      }
+    },
+    "C15": {
+      "title": "D-19: configured agent with an on-disk duplicate uses the catalog copy — same link and marker as the Daily Assistant, no Rule 2/3 dispositions, private copy untouched, link removed after both end",
+      "result": "Pass",
+      "ms": 19638,
+      "details": {
+        "weak": "daily_assistant_36d07a8623e042389556d97e035e548a",
+        "configured": "probe_shadow_owner_de1064c9c76848f39292e4196515f4a4",
+        "linkTarget": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-alpha",
+        "removedDispositions": 0
+      }
+    },
+    "C16": {
+      "title": "D-16 / AC-018: Chat model labels follow the launch-form policy (rows, trigger, search, fixed list, launch-form parity, 390×844)",
+      "result": "Pass",
+      "ms": 26320,
+      "details": {
+        "claude_agent_sdk": [
+          {
+            "id": "opus",
+            "label": "claude-opus-5-5",
+            "secondary": "Opus 5.5 · For complex work and everyday tasks",
+            "recommended": true
+          },
+          {
+            "id": "claude-fable-5",
+            "label": "claude-fable-5",
+            "secondary": "Fable 5 · Most capable for your hardest and longest-running tasks",
+            "recommended": false
+          },
+          {
+            "id": "claude-fable-5-1[1m]",
+            "label": "claude-fable-5-1",
+            "secondary": "Fable 5.1 · For your toughest challenges",
+            "recommended": false
+          },
+          {
+            "id": "haiku",
+            "label": "claude-haiku-4-5-20251001",
+            "secondary": "Haiku 4.5 · Fastest for quick answers",
+            "recommended": false
+          }
+        ],
+        "codex_app_server": [
+          {
+            "id": "gpt-5.5",
+            "label": "GPT-5.5 (default reasoning: medium)",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "gpt-5.6-luna",
+            "label": "GPT-5.6-Luna (default reasoning: medium)",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "gpt-5.6-sol",
+            "label": "GPT-5.6-Sol (default reasoning: low)",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "gpt-5.6-terra",
+            "label": "GPT-5.6-Terra (default reasoning: medium)",
+            "secondary": null,
+            "recommended": false
+          }
+        ],
+        "autobyteus": [
+          {
+            "id": "claude-fable-5",
+            "label": "claude-fable-5",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "claude-fable-5-1",
+            "label": "claude-fable-5-1",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "claude-opus-4.7",
+            "label": "claude-opus-4.7",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "claude-opus-4.8",
+            "label": "claude-opus-4.8",
+            "secondary": null,
+            "recommended": false
+          }
+        ],
+        "freshTrigger": {
+          "firstSeenLabel": "opus",
+          "settledAfterMs": 1669
+        },
+        "narrowFirstSeen": "opus",
+        "narrowSettledAfterMs": 2313,
+        "picked": {
+          "id": "opus",
+          "label": "claude-opus-5-5",
+          "secondary": "Opus 5.5 · For complex work and everyday tasks",
+          "recommended": true,
+          "singleLine": true,
+          "title": "claude-opus-5-5 — Opus 5.5 · For complex work and everyday tasks"
+        },
+        "searches": {
+          "opus-5-5": 2,
+          "Opus 5.5": 1,
+          "opus": 12,
+          "gpt-6": 6
+        },
+        "fixedRows": 9,
+        "launchFormParity": 10
+      }
+    },
+    "C17": {
+      "title": "D-17 frame: chat run view geometry equals the Team view; strip Files/Terminal open exact tabs in Chat and Team; defaults; reopen keeps its tab; collapsed state is shared",
+      "result": "Pass",
+      "ms": 8044,
+      "details": {
+        "chatDefaultTab": "Activity",
+        "chat": {
+          "tabList": {
+            "top": 8,
+            "left": 990,
+            "right": 1398,
+            "bottom": 57
+          },
+          "column": {
+            "top": 0,
+            "left": 990,
+            "right": 1440,
+            "bottom": 900
+          },
+          "header": {
+            "top": 0,
+            "left": 323,
+            "right": 988,
+            "bottom": 57
+          }
+        },
+        "teamDefaultTab": "Team",
+        "team": {
+          "tabList": {
+            "top": 8,
+            "left": 990,
+            "right": 1398,
+            "bottom": 57
+          },
+          "column": {
+            "top": 0,
+            "left": 990,
+            "right": 1440,
+            "bottom": 900
+          },
+          "header": {
+            "top": 0,
+            "left": 323,
+            "right": 988,
+            "bottom": 57
+          }
+        },
+        "teamStrip": {
+          "Files": "Files",
+          "Terminal": "Terminal"
+        },
+        "chatCollapsedAfterTeamCollapse": true,
+        "chatStrip": {
+          "Files": "Files",
+          "Terminal": "Terminal"
+        },
+        "reopenTab": "Files"
+      }
+    },
+    "C18": {
+      "title": "D-17 draft ⚙ (AR-011): catalog draft and failed first send edit the draft model locally (no server call) and the send uses it",
+      "result": "Pass",
+      "ms": 13921,
+      "details": {
+        "catalogOpsBeforeSend": [],
+        "catalogModel": "gpt-5.6-luna",
+        "resendOpsBeforeSend": [
+          "query GetSkillImprovementCapability"
+        ],
+        "resendModel": "gpt-5.6-sol"
+      }
+    },
+    "C19": {
+      "title": "CR-005: ⚙ stays with its run — New chat (success, failed first send) and Team quick path land on their conversation; header ＋ opens a preset New chat",
+      "result": "Pass",
+      "ms": 12410,
+      "details": {
+        "success": {
+          "runView": true,
+          "settingsOpen": false
+        },
+        "failed": {
+          "runView": true,
+          "settingsOpen": false
+        },
+        "team": {
+          "settingsOpen": false,
+          "textarea": 1
+        },
+        "plus": {
+          "url": "/chat",
+          "chip": "PL\nProbe Legacy",
+          "workspace": "Temp workspace"
+        }
+      }
+    },
+    "C20": {
+      "title": "V-F under D-19 (UF-04): a configured agent naming a skill bundled in another agent resolves the catalog copy and starts next to a live Daily Assistant chat; one shared link",
+      "result": "Pass",
+      "ms": 15273,
+      "details": {
+        "da": "daily_assistant_b58c90f8e1b24f2796e52a0ab5bdc2aa",
+        "borrower": "probe_borrower_4eb8c1f395a04711ab7e46b007f2b64b",
+        "outcome": "replied",
+        "heldBefore": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/agents/probe-bundle-owner/skills/probe-bundled",
+        "heldAfter": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/agents/probe-bundle-owner/skills/probe-bundled",
+        "log": [],
+        "unresolved": [],
+        "removed": []
+      }
+    },
+    "C21": {
+      "title": "AC-021: out-of-band duplicate → amber Skills banner \"Some skills share a name…\"; Show details lists the used and ignored paths",
+      "result": "Pass",
+      "ms": 1520,
+      "details": {
+        "issue": {
+          "name": "probe-alpha",
+          "usedPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-alpha",
+          "ignoredPaths": [
+            "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/agents/probe-shadow-owner/skills/probe-alpha"
+          ],
+          "kind": "conflict"
+        },
+        "bannerText": "Some skills share a name. AutoByteus uses one copy per name.\n\nShow details",
+        "background": "rgb(255, 251, 235)"
+      }
+    },
+    "C22": {
+      "title": "AC-020 UI: add folder / Create skill / package import / package reload with a duplicate → \"Duplicate skill names\" pop-up with both paths, nothing changes; tier-4 duplicate accepted with the \"Ignored N skills…\" toast",
+      "result": "Pass",
+      "ms": 4498,
+      "details": {
+        "addFolder": {
+          "title": "​\nDuplicate skill names\n\nThese skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again.\n\nprobe-bundled\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/agents/probe-bundle-owner/skills/probe-bundled\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/incoming-skills/probe-bundled\nOK",
+          "rows": [
+            {
+              "id": "skill-name-conflict-probe-bundled",
+              "text": "probe-bundled\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/agents/probe-bundle-owner/skills/probe-bundled\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/incoming-skills/probe-bundled",
+              "titles": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/agents/probe-bundle-owner/skills/probe-bundled",
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/incoming-skills/probe-bundled"
+              ]
+            }
+          ]
+        },
+        "create": {
+          "title": "​\nDuplicate skill names\n\nThese skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again.\n\nprobe-bundled\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/agents/probe-bundle-owner/skills/probe-bundled\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-bundled\nOK",
+          "rows": [
+            {
+              "id": "skill-name-conflict-probe-bundled",
+              "text": "probe-bundled\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/agents/probe-bundle-owner/skills/probe-bundled\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-bundled",
+              "titles": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/agents/probe-bundle-owner/skills/probe-bundled",
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-bundled"
+              ]
+            }
+          ]
+        },
+        "importPkg": {
+          "title": "​\nDuplicate skill names\n\nThese skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again.\n\nprobe-alpha\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-alpha\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/dup-package/agents/dup-helper/skills/probe-alpha\nOK",
+          "rows": [
+            {
+              "id": "skill-name-conflict-probe-alpha",
+              "text": "probe-alpha\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-alpha\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/dup-package/agents/dup-helper/skills/probe-alpha",
+              "titles": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-alpha",
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/dup-package/agents/dup-helper/skills/probe-alpha"
+              ]
+            }
+          ]
+        },
+        "reload": {
+          "title": "​\nDuplicate skill names\n\nThese skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again.\n\nprobe-alpha\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-alpha\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/reload-package/agents/rl-helper/skills/probe-alpha\nOK",
+          "rows": [
+            {
+              "id": "skill-name-conflict-probe-alpha",
+              "text": "probe-alpha\nAlready installed:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-alpha\nNew:\n/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/reload-package/agents/rl-helper/skills/probe-alpha",
+              "titles": [
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/server-data/skills/probe-alpha",
+                "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7/reload-package/agents/rl-helper/skills/probe-alpha"
+              ]
+            }
+          ]
+        },
+        "tier4": "Unavailable: run with --owned-codex-home"
+      }
+    },
+    "C13": {
+      "title": "Daily Assistant restart lifecycle: user edit preserved; deleted config restored from the template",
+      "result": "Pass",
+      "ms": 3122,
+      "details": {
+        "restored": true
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 66916
+    },
+    {
+      "label": "frontend",
+      "pid": 66948
+    },
+    {
+      "label": "backend-restart-1",
+      "pid": 91413
+    },
+    {
+      "label": "backend-restart-2",
+      "pid": 91420
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 91420,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 91413,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 66948,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 66916,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uzKYZ7",
+  "backendUrl": "http://127.0.0.1:52800",
+  "frontUrl": "http://127.0.0.1:52801",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T14:05:59.700Z"
+}

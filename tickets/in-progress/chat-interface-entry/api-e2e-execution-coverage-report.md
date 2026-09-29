@@ -264,6 +264,203 @@ Observations (non-blocking):
 
 Result: `Pass`. The desktop evidence replaces the earlier packaged-harness evidence for launch, seeding, restart persistence and the core Chat journeys. Final confidence stays **95%**; the user-surface/desktop category rises to 95%. Cleanup: instance stopped gracefully, ports released, data root removed, the user's AutoByteus untouched.
 
+## Round 5 (API-REV-005) — D-17 (R3) run view, real desktop app (superseded by Round 6)
+
+HEAD `e9ede7d83` (IR-005 `1f5fd8004`, IR-006 `59a20f21b`). Repository: web 3374 passed + same 4 baseline files; Electron 187 passed; server unchanged since `3c062a180` (rebuilt).
+
+| Scenario | Proves | Result | Evidence |
+| --- | --- | --- | --- |
+| Prior UF-01 | Chat header over the centre column; full-height right column from the top (= Team) | Resolved — probe C17 geometry Chat = Team at 1440×900 (column x 990–1440, y 0–900; header right 988); desktop DT-21 | `round5/probe-codex-full/C17-*.png`, `round5-desktop/DT11-chat-run-view.png` |
+| Prior UF-02 | Strip Files/Terminal open exactly those tabs (Chat and Team) | Resolved — C17 and desktop DT-25 | `DT14-chat-strip.png` |
+| C05 / DT-22 | ⚙ locked while live (lock note, model disabled, Save disabled) | Pass (see UF-03) | `C05-run-settings-live-locked.png`, `DT12-run-settings-live.png` |
+| C06 / DT-23 | D-08 via ⚙: Offline save → reload → save → resume on the saved model; relocks | Pass | evidence JSON, `DT13-*.png` |
+| C07, C08 | Failed-then-resent temp chat and catalog draft send through the product box; D-13 | Pass | evidence JSON |
+| C11 | Shared right panel open by default; RSK-005 | Pass | evidence JSON |
+| C12 | 390×844 New chat + narrow chat run view (VIS-027) | Pass | `C12-narrow-*.png` |
+| C16 | AC-018 labels; Offline Claude ⚙ labels (Provider / canonical), recommended first; launch-form parity | Pass | evidence JSON |
+| C17 | Frame geometry, default tabs (Activity / Team), strip exact tabs, shared collapse, reopen keeps its tab | Pass | `C17-*.png` |
+| C18 | Draft ⚙ (catalog draft, failed first send): local edit, no server call before send, send uses it | Pass | evidence JSON |
+| C19 | CR-005: ⚙ stays with its run (New chat success/failure, Team quick path); header ＋ preset | Pass | evidence JSON |
+| C01–C04, C09, C10, C13–C15 | Regression (seed, landing, menus, tags, D-15, team quick path, restart) | Pass | evidence JSON |
+| **C20 / DT-24** | **D-15: configured agent with an unresolved configured skill next to a live Daily Assistant chat** | **Fail (UF-04)** | `round5/probe-codex-full/C20-failure.png`, `round5-desktop/isolated-instance.log` |
+| DT-20 | Test data imported via Settings → Agent Packages | Pass | `DT10-package-imported.png` |
+| DT-26 | Header ＋ on a DA chat → preset New chat | Pass | `DT15-plus-preset.png` |
+
+### Findings
+
+| ID | Severity | Finding | Evidence | Basis | Preliminary classification |
+| --- | --- | --- | --- | --- | --- |
+| UF-04 | Medium | A configured (strong) agent whose configured skill is **unresolved** (named skill bundled in another agent's folder) fails to start when a live Daily Assistant (ALL_INSTALLED, weak) chat in the same workspace has linked that skill name: `Workspace skill path collision for Codex skill '<name>': path '<ws>/.codex/skills/<name>' already points to live target '<source>'`. Without the live DA chat the same launch starts (desktop DT-24, relaunch after terminating the DA chat → `DESK-TEAM-OK`). Reproduced durably by C20 (`probe-borrower` with `probe-bundled`) | C20 details/log; `isolated-instance.log` L373–374 | D-15 promise "configured launches never regress because an ALL_INSTALLED chat is live" (REQ-017/AC-014); D-15 kept `reconcile-unresolved` unchanged and did not cover a weak holder | `Unclear` — Local Fix in the shared materializer's unresolved-reconcile path vs. a D-15 Design Impact (the rule for unresolved strong requests vs. weak holders is not specified) |
+| UF-03 | Low | Live ⚙ on a fresh chat started with default thinking (`llmConfig: null`) shows Thinking / Reasoning Effort / Fast mode as "Not recorded for this historical run"; VIS-026 shows the (disabled) thinking values. Offline the same editor shows real values (Thinking on, medium) | `DT12-run-settings-live.png`, `DT13-run-settings-offline.png` | R3 VIS-026, REQ-011 | `Local Fix` (misleading wording/values for a new live chat; pre-existing editor rule surfaced by Chat's `llmConfig: null`) |
+
+Observations (non-blocking, unchanged, with delivery): O-1..O-3. O-2 was seen again: after importing a package the `/` list shows the new skills only after visiting Skills. On the first probe screenshot the live ⚙ briefly showed "Runtime is not available in current capabilities." / "Loading model options…" before settling (transient).
+
+### Scorecard (round 5)
+
+| Category | Final |
+| --- | --- |
+| Requirement / AC proof | 88% (REQ-017 regression UF-04) |
+| Changed-boundary directness | 97% |
+| Integration realism | 96% |
+| Environment / fixture fidelity | 96% (imported package test data in the desktop app) |
+| Failure / lifecycle | 88% (UF-04) |
+| User surface / browser / desktop | 93% (UF-03) |
+| Durable regression quality | 96% |
+
+- Overall: **93%**; categories below 90%: requirement proof, failure/lifecycle.
+
+### Durable Coverage Changed (round 5)
+
+- `autobyteus-web/tests/e2e/chat-entry-live-probe.mjs` — D-17 rewrite and C17–C20 (20 cases).
+
+### Result
+
+- Result: `Fail` (UF-04 blocking; UF-03 Low). Recommended recipient: `/software_engineering_team/code_reviewer` (failure-origin review).
+- Cleanup: probe roots/processes removed; isolated instance stopped (graceful, ports released, data root removed). The user's AutoByteus untouched.
+
+## Round 7 (API-REV-007) — UF-05 fix (IR-010 / CR-010) (latest authoritative)
+
+- Trigger: CRR-015 Pass. The IR-010 fix (`a98a15d05`) moves `ToastContainer` from `z-[100]` to `z-[10000]` and adds `data-testid="toast-container"` and the `ToastContainer.spec.ts` guard. HEAD `e58fb160a`. Classification Large/High.
+
+| Scenario | Proves | Result | Evidence |
+| --- | --- | --- | --- |
+| Prior UF-05: C22e rerun (Claude, `--owned-codex-home`) | Adding the owned Codex default folder through Skills → Sources shows "Ignored 1 skill from the Codex default folder…". The element at the toast's centre belongs to the toast layer (z 10000) while the Sources dialog (z 1000) is still open; the tier-1 copy is used; issue `shadowed_runtime_default` | **Resolved** — `toastOnTop: true`, `sourcesDialogOpen: true` | `round7/probe-claude/C22e-tier4-toast.png`, evidence JSON |
+| Light regression, other pop-ups and toasts (Claude) | C21 banner; C22 conflict pop-ups (1100) over Sources and create dialogs, package import/reload; C03 model/skill/target menus; C12 narrow bottom sheet; C19 ⚙ and ＋; C04/C08 sends | Pass | `round7/probe-claude*` |
+| Full regression (Codex `gpt-5.5`) | C01–C23 including the strengthened C22e and C23 org skills | 23/23 Pass | `round7/probe-codex-full/` |
+| Web full (`LANG=en_US.UTF-8`) | Includes the new `ToastContainer.spec.ts` (2/2) | 3404 passed; the same baseline files as round 6 | `round7/web-full.log` |
+
+Probe maintenance found during the partial Claude runs (test code only, no product finding):
+- C04 sampled the workspace skills folder at its first entry; with the round-6 org fixture there are more links, written one by one. It now waits for the tagged `probe-bundled` link.
+- C12 and C19 depend on state from C04 and C08. `--cases` now adds prerequisite producer cases (C03 model, C04 tagged run, C08 catalog run, C10 team run) and logs them. The expansion was unit-checked.
+
+Desktop not rebuilt for IR-010: the change is one CSS layer value in a web component, verified in the browser at the Electron renderer's default layering. A desktop tier-4 repro would need a write into the user's `~/.codex/skills`.
+
+### Scorecard (round 7)
+
+| Category | Final |
+| --- | --- |
+| Requirement / AC proof | 96% |
+| Changed-boundary directness | 97% |
+| Integration realism | 96% (Grok/AutoByteus not rerun) |
+| Environment / fixture fidelity | 96% |
+| Failure / lifecycle | 96% |
+| User surface / browser / desktop | 95% |
+| Durable regression quality | 97% |
+
+- Overall: **95%**; no category below 90%.
+
+### Durable Coverage Changed (cumulative, uncommitted, for test-code review)
+
+- Added: `autobyteus-server-ts/tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts`.
+- Updated: `autobyteus-web/tests/e2e/chat-entry-live-probe.mjs` (C05 D-18; C15 replaced; C20 rewritten; new C21, C22 incl. the C22e layering assertion, C23; `--owned-codex-home`; org fixture; C04 exposure wait; `--cases` prerequisites).
+- Updated (RD-01 stub fixes): `autobyteus-server-ts/tests/integration/agent-execution/{agent-run-manager.memory-layout.real,agent-run-prompt-fallback,autobyteus-agent-run-backend-factory}.integration.test.ts` and `…/compaction/{compaction-agent-parent-fallback,recursive-memory-compactor-leaf}.integration.test.ts`.
+- Removed: no files. Removed test logic: the old C15 (D-15 Rule 2 dispositions `yielded-to-configured` / `skipped-held-by-other-run`, retired by D-19).
+- Not durable (ticket evidence): `api-e2e-evidence/probes/d19-codex-duplicate-noauth.mjs`, `api-e2e-evidence/test-data/*`.
+
+### Result
+
+- Result: `Pass`, 95%. UF-05 resolved; no open findings. Observations O-1..O-7 unchanged (non-blocking). Recommended recipient: `/software_engineering_team/code_reviewer` (proportional test-code review, Large/High).
+
+## Round 6 (API-REV-006) — D-18, D-19 one skill per name, DEC-017a Agent Org skills (superseded by Round 7)
+
+- Triggers: CRR-011 (IR-007 D-18, IR-008 D-19) and CRR-013 (IR-009, DEC-017a). HEAD `a65f58463`. Classification Large/High.
+- Environment: every owned process started under a sanitized env; owned temp roots; the user's AutoByteus (29695), `~/.autobyteus` and all skill repos untouched. Runtime default folder tests use an owned `CODEX_HOME` holding skills only; no credential was copied or linked (real `~/.codex/auth.json` size/mtime verified unchanged).
+
+### Repository
+
+| Suite | Result |
+| --- | --- |
+| Server targeted (skills, agent-definition, agent-org-definition/execution, built-in-agents, agent-execution, agent-packages, api; e2e skills, agent-definitions, agent-org-runs; integration agent-execution, skills) | 1381 passed; 22 failed, all pre-existing: rerun on a merge-base worktree (`f2924a2b0`) with identical failures (agent-packages-graphql ×2, json-file-persistence, agent-run-service ×6, codex-command-failure-transport, agent-run-provisioning, codex-tool-log-correlation ×4, package-root-summary, workspace-converter ×2, studio-application-api-services, memory-view-member-resolver ×2, agent-org-run-config) |
+| New `tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts` | 9/9 (with `skills-graphql` 14/14); type-clean |
+| Web full (`LANG=en_US.UTF-8`) | 3402 passed; 4 known baseline files (TreePanel regressions ×2, StartupDelayLifecycle, org-definition-navigation, font-size audit); `platformServerEnvironment` ×2 fail only under the web-root runner and pass in the canonical Electron runner (unchanged files) |
+| Electron (`test:electron`) | 187 passed, 1 skipped |
+
+Test drift found and fixed (RD-01): widening the server run to `tests/integration/agent-execution` exposed 8 ticket-caused failures (`this.skillService.hasEffectiveSkills is not a function`). Five integration files stub `SkillService` as `{ getSkill }`; since step 1 (`770b14651`) the AutoByteus factory calls `hasEffectiveSkills`. The stubs gain `hasEffectiveSkills: () => false` (they model "no skills"); all 14 tests in those files pass.
+
+### Live (browser → Nuxt dev → real backend → real runtime)
+
+| Scenario | Proves | Codex | Claude | AGY |
+| --- | --- | --- | --- | --- |
+| Prior UF-04: C20 V-F under D-19 | Configured agent naming a skill bundled elsewhere starts next to a live DA chat; both share the catalog copy's link; no unresolved warning, no removed D-15 disposition | Pass | Pass | n/a (no workspace link) |
+| Prior UF-03: C05 D-18 | Fresh default-thinking chat records `llmConfig` = catalog `configSchema` defaults (Codex `{reasoning_effort: medium}`, Claude Sonnet `{thinking_enabled: false, reasoning_effort: medium}`; Haiku has no schema → `null`); live ⚙ shows the values disabled, never "Not recorded" | Pass | Pass | — |
+| C15 D-19 / AR-013 | Configured agent with an on-disk private duplicate answers with the catalog copy's marker (ALPHA-OK, not SHADOW-OK), shares the DA link, no Rule 2/3 disposition, private copy byte-identical, link removed after both end | Pass | Pass | — |
+| C21 AC-021 | Out-of-band duplicate → amber banner "Some skills share a name…"; details list used and ignored paths | Pass | Pass | — |
+| C22 AC-020 | Pop-up "Duplicate skill names" with both paths for Add Folder, Create Skill (dialog keeps the name), package import, package reload (R-3: registration kept, banner lists the pulled copy); nothing changes | Pass | Pass | — |
+| C22e tier 4 | Adding the (owned) Codex default folder that duplicates a skills-folder copy is accepted; toast "Ignored 1 skill from the Codex default folder…"; issue `shadowed_runtime_default`; tier-1 copy used | — | Pass — **see UF-05** | — |
+| C23 DEC-017a | Org skills (org agent, org team shared, org team-local) on the Skills page and in DA `/`; org agent and team-local agent reply with their own skills' markers; links → org folders | Pass | Pass | Pass (capsule copies; replies) |
+| C01–C14, C16–C19, C13 | Full regression (seed, landing, menus, tags, D-08/D-13/D-14, team quick path, labels, D-17 frame/⚙, CR-005, restart) | 23/23 Pass | — | — |
+| Codex path match (no credentials) | K0 catalog precedence; K1 stale `CODEX_HOME/skills/desk-alpha` → `codex-runtime-duplicate` logged, link → package copy; K2 used copy in CODEX_HOME → `reconcile-discoverable`, no link, no log | Pass (on `10556948f` and `a65f58463`) | | |
+
+Not run: Grok and the AutoByteus native runtime (the user stopped both runs in this round). The implementer's IR-008/IR-009 evidence covers Grok; AutoByteus org skills are unit-covered only.
+
+### Desktop (isolated instance `iso-9333-ec39`, built from this worktree, driven over port 9333)
+
+`isolated-app start --build` compiled the app bundle (16:55, contains IR-009) but failed at DMG packaging (`hdiutil resize` error 35, "resource temporarily unavailable", a macOS environment issue). The instance was started from that fresh bundle with `--from-worktree`. Test data created on disk under `api-e2e-evidence/test-data/` (`README-d19.md`) and imported through the UI.
+
+| ID | Scenario | Result | Evidence |
+| --- | --- | --- | --- |
+| DT-40 | Import desk package (Settings → Agent Packages) | Pass | recording |
+| DT-41 | Import `chat-entry-dup-package` → pop-up (desk-alpha existing vs new), not registered | Pass | `DT41-dup-package-conflict.png` |
+| DT-42 | Import `chat-entry-org-package` | Pass | `DT42-org-package-imported.png` |
+| DT-43 | Import `chat-entry-org-dup-package` → pop-up (org path vs incoming org path), not registered | Pass | `DT43-org-dup-package-conflict.png` |
+| DT-44 | Skills page lists desk and org skills | Pass | `DT44-skills-page-org-skills.png` |
+| DT-45 | Sources → Add Folder `chat-entry-dup-skill-folder` → pop-up; folder not added | Pass | `DT45-add-folder-conflict.png` |
+| DT-46 | Create Skill `desk-writer-skill` → pop-up lists the org path; dialog keeps the name | Pass | `DT46-create-skill-conflict.png` |
+| DT-47 | R-3: clean package imported from an owned working copy, out-of-band duplicate, Reload → pop-up; registration kept | Pass | `DT47-reload-conflict.png` |
+| DT-48 | Banner lists desk-alpha used / pulled copy ignored | Pass | `DT48-skills-banner.png` |
+| DT-49 | DA chat (Codex) follows desk-alpha → DESK-ALPHA-OK (catalog copy, not the ignored copy) | Pass | `DT49-da-desk-alpha.png` |
+| DT-50 | D-18 live ⚙: medium, all selects and switches `disabled`, no "Not recorded"; "Runtime is not available" not present after 6 s | Pass | `DT50-live-run-settings-d18.png` |
+| DT-51 | UF-04 on desktop: @Desk Team from Chat while the DA chat is live → lead replies DESK-TEAM-OK; no collision in the instance log | Pass | `DT51-team-next-to-live-da.png` |
+| DT-52 | DA `/` list shows the org skills | Pass | — |
+| DT-53..56 | Desk Org run from the Agent Orgs page (Codex, GPT-5.5): desk writer → DESK-WRITER-OK; desk crew coordinator (team-local) → DESK-MEMBER-OK and DESK-CREW-SHARED-OK | Pass | `DT55-org-writer-reply.png`, `DT56-org-team-member-replies.png` |
+| — | Tier-4 toast on desktop | Not feasible: the desktop server uses the real `~/.codex/skills` (no loadable skills); creating one would write into the user's folder. Covered by C22e | — |
+
+Stopped: recording `desktop-r6-journey.mp4`; `isolated-app stop` graceful, ports released, data root removed; owned reload working copy removed.
+
+### Findings
+
+| ID | Severity | Finding | Evidence | Basis | Classification |
+| --- | --- | --- | --- | --- | --- |
+| UF-05 | Low | The tier-4 notice toast ("Ignored N skills from the Codex default folder…") renders beneath the Manage Skill Sources dialog overlay: `ToastContainer` is `z-[100]`, the Sources `.dialog-overlay` is `z-index: 1000` (the conflict pop-up was raised to 1100, the toast was not). Adding a runtime default folder, the main tier-4 flow (AF-36 layout), happens inside that dialog, so the notice appears dimmed behind the overlay and auto-dismisses after 6 s | `round6/probe-claude/C22e-tier4-toast.png`, `round6/probe-claude-ir9/C22e-tier4-toast.png` | AC-020 / REQ-023 tier-4 notice | `Local Fix` |
+
+Observations (non-blocking): O-1..O-3 unchanged. **O-4** the ⚙ thinking switches are `disabled` but keep active styling (pre-existing `ModelConfigBasic`, unchanged by the ticket). **O-5** the Agent Orgs list is stale after a package import until Reload (same class as O-2). **O-6** a package containing only `agent-orgs/` is rejected by the pre-existing shape rule ("must contain … 'agents', 'agent-teams', or 'applications'"), so an org-only package cannot be imported; real org repos also carry `agents/`. **O-7** "Successfully added source. Found 1 skills." counts copies the catalog ignores (pre-existing wording). **C-22** (held): no `agent-orgs/<org>/agents/<a>/skills` folder exists today in `autobyteus-agents` (3 orgs) or `autobyteus-private-agents` (1 org).
+
+### Scorecard (round 6)
+
+| Category | Final |
+| --- | --- |
+| Requirement / AC proof | 96% |
+| Changed-boundary directness | 97% |
+| Integration realism | 96% (Grok/AutoByteus not run this round) |
+| Environment / fixture fidelity | 96% |
+| Failure / lifecycle | 96% |
+| User surface / browser / desktop | 91% (UF-05) |
+| Durable regression quality | 97% |
+
+- Overall: **94%**; no category below 90%.
+
+### Durable Coverage Changed (round 6)
+
+- Added `autobyteus-server-ts/tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts` (9 cases: AC-019, AR-013, AC-020 ×5 incl. GitHub import/update, DEC-017a ×2).
+- Updated `autobyteus-web/tests/e2e/chat-entry-live-probe.mjs`: C05 D-18; C15 replaced (D-19); C20 rewritten (V-F under D-19); new C21, C22, C23; `--owned-codex-home`; org fixture.
+- Fixed stale stubs (RD-01) in five `autobyteus-server-ts/tests/integration/agent-execution/**` files.
+- Temporary: `api-e2e-evidence/probes/d19-codex-duplicate-noauth.mjs`.
+
+### Result
+
+- Result: `Fail` — one Low `Local Fix` (UF-05). Prior UF-04 and UF-03 are resolved. Recommended recipient: `/software_engineering_team/code_reviewer`. (UF-05 resolved in Round 7.)
+
+## User Review Findings After API-REV-004 (resolved in round 5)
+
+Raised by the user on the isolated desktop instance `iso-9333-b35d` after the API-REV-004 pass; confirmed by API/E2E. Routed at the user's request to `/software_engineering_team/solution_designer`. Status: **pending R3** — at the user's direction the Solution Designer sent the Product Prototyper a Result Correction request for R3 (`product-design-revision-request-r3-handoff.md`; `solution-designer-result-uvf-002.md`). No layout fix is routed against R2; the Solution Designer will integrate the user-confirmed R3 and route the implementation. API/E2E revalidates both items against R3.
+
+| ID | Finding | Evidence | Basis |
+| --- | --- | --- | --- |
+| UF-01 | Chat run view layout differs from the Team/Org views: the chat header spans the full window width and the right tool strip/panel sits below it, instead of a full-height right column (three-column layout). Header right edge 1273 px = window width; tool shell starts at y = 56 | `round4-desktop/USER-Q1-chat-strip-collapsed.png`, `USER-Q1-chat-panel-open.png` | R2 VIS-018/VIS-019 show the full-height right column (implementation deviates); user wants Chat consistent with the Team/Org layout. Likely cause: `ChatRunView.vue` renders `ChatRunHeader` above `WorkspaceToolShell` |
+| UF-02 | Clicking a strip icon (Files, Terminal) opens the panel on Activity instead of the clicked tab | `round4-desktop/USER-Q1-strip-files-click.png` | UIS-009, TR-013, CHK-015. Pending R3. Team-view comparison (shared panel, pre-existing or not) not yet run: waiting for the user's test-data direction |
+
+Missed earlier: the round-1..4 visual comparisons checked the normative content lists of each reference, not the column structure; the strip-tab behavior was not asserted. Status: the latest API/E2E result is no longer a clean pass for AC-015 / UIS-009 until these are resolved or re-scoped by the Solution Designer.
+
 ## Latest Authoritative Result (round 2 — superseded by the Round 3 Result above)
 
 - Result: `Pass`

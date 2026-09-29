@@ -1,0 +1,847 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/private/tmp/cie-baseline/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/tmp/cie-baseline/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+┌─────────────────────────────────────────────────────────┐
+│  Update available 5.22.0 -> 8.0.0-rc.19                 │
+│                                                         │
+│  This is a major update - please follow the guide at    │
+│  https://pris.ly/d/major-version-upgrade                │
+│                                                         │
+│  Run the following to update                            │
+│    npm i --save-dev prisma@latest                       │
+│    npm i @prisma/client@latest                          │
+└─────────────────────────────────────────────────────────┘
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:45016) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-29T13:53:50.821Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/cie-baseline/autobyteus-server-ts
+App data directory: /private/tmp/cie-baseline/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mInitialized server settings service with 21 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mAgent definition cache populated with 3 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-09-29T13:53:50.901Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mDEFINITION_CONTRACT_INVALID: skipped Team 'default-team-1790690030869_46571cc60fa8a' at '/private/tmp/cie-baseline/autobyteus-server-ts/agent-teams/default-team-1790690030869_46571cc60fa8a/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mDEFINITION_CONTRACT_INVALID: skipped Team 'duplicate-team-1790690030869_46571cc60fa8a' at '/private/tmp/cie-baseline/autobyteus-server-ts/agent-teams/duplicate-team-1790690030869_46571cc60fa8a/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mDEFINITION_CONTRACT_INVALID: skipped Team 'external-team-1790690030869_46571cc60fa8a' at '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-local-1790690030869_46571cc60fa8a-vz6S0S/agent-teams/external-team-1790690030869_46571cc60fa8a/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-09-29T13:53:50.903Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mError fetching all agent team definitions: Error: E2E Studio service 'definitionAdmissionService' does not implement 'scan'. Provide an explicit service override for this scenario.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mError fetching agent team definition by ID duplicate-team-1790690030869_46571cc60fa8a: Error: E2E Studio service 'definitionAdmissionService' does not implement 'requireAvailable'. Provide an explicit service override for this scenario.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-09-29T13:53:50.916Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a linked local package while preserving runtime discovery behavior
+[22m[39m[2026-09-29T13:53:50.916Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-09-29T13:53:50.928Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-09-29T13:53:50.928Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-09-29T13:53:50.932Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-09-29T13:53:50.932Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-09-29T13:53:50.937Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreloads a linked local package through GraphQL and refreshes package-derived reads
+[22m[39m[2026-09-29T13:53:50.937Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-09-29T13:53:50.948Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mDEFINITION_CONTRACT_INVALID: skipped Team 'github-team-1790690030937_68d926b9b8cc7' at '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-managed-1790690030937_68d926b9b8cc7-h5ROmI/agent-packages/github/autobyteus__mock-agent-package-1790690030937_68d926b9b8cc7/agent-teams/github-team-1790690030937_68d926b9b8cc7/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-09-29T13:53:50.950Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-09-29T13:53:50.962Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-09-29T13:53:50.962Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-09-29T13:53:50.965Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mimports and removes a managed GitHub package through the package-oriented GraphQL contract
+[22m[39m[2026-09-29T13:53:50.965Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-09-29T13:53:50.984Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-09-29T13:53:50.984Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mAgent definition cache populated with 2 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-09-29T13:53:51.018Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mDEFINITION_CONTRACT_INVALID: skipped Team 'github-update-new-team-1790690030965_6b7dc113e99b8' at '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agent-packages-github-data-1790690030965_6b7dc113e99b8-PdYxEz/agent-packages/github/autobyteus__mock-agent-package-update-1790690030965_6b7dc113e99b8/agent-teams/github-update-new-team-1790690030965_6b7dc113e99b8/team-config.json'; expected current Team Definition Config: AgentTeam Definition Config must contain exactly avatarUrl, coordinatorMemberName, defaultLaunchConfig, handoffs, members. Unsupported keys: none. Missing keys: handoffs.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-09-29T13:53:51.019Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstderr[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mError fetching all agent team definitions: Error: E2E Studio service 'definitionAdmissionService' does not implement 'scan'. Provide an explicit service override for this scenario.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-09-29T13:53:51.026Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[22m[39m[2026-09-29T13:53:51.026Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39m[2026-09-29T13:53:51.041Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39m[2026-09-29T13:53:51.041Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39m[2026-09-29T13:53:51.045Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mallows legacy managed GitHub records with unknown revision to update to latest through GraphQL
+[22m[39m[2026-09-29T13:53:51.045Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-09-29T13:53:51.059Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-09-29T13:53:51.059Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-09-29T13:53:51.097Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrolls back managed GitHub directory replacement and persists failed status on GraphQL update failure
+[22m[39m[2026-09-29T13:53:51.097Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39m[2026-09-29T13:53:51.100Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mreturns local-clone guidance when direct private GitHub import metadata is unavailable
+[22m[39m[2026-09-29T13:53:51.100Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-09-29T13:53:51.103Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-09-29T13:53:51.104Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39mAgent definition cache populated with 0 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-09-29T13:53:51.105Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22m[2mAgent packages GraphQL e2e[2m > [22m[2mrejects invalid import input and invalid managed package shape
+[22m[39m[2026-09-29T13:53:51.105Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+
+ [31m❯[39m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts [2m([22m[2m8 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 285[2mms[22m[39m
+[31m     [31m×[31m imports and removes a linked local package while preserving runtime discovery behavior[39m[32m 48[2mms[22m[39m
+     [32m✓[39m reloads a linked local package through GraphQL and refreshes package-derived reads[32m 21[2mms[22m[39m
+     [32m✓[39m imports and removes a managed GitHub package through the package-oriented GraphQL contract[32m 28[2mms[22m[39m
+[31m     [31m×[31m checks and updates a managed GitHub package through GraphQL with staged directory replacement[39m[32m 61[2mms[22m[39m
+     [32m✓[39m allows legacy managed GitHub records with unknown revision to update to latest through GraphQL[32m 19[2mms[22m[39m
+     [32m✓[39m rolls back managed GitHub directory replacement and persists failed status on GraphQL update failure[32m 53[2mms[22m[39m
+     [32m✓[39m returns local-clone guidance when direct private GitHub import metadata is unavailable[32m 2[2mms[22m[39m
+     [32m✓[39m rejects invalid import input and invalid managed package shape[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/integration/agent-execution/agent-run-service.integration.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/integration/agent-execution/agent-run-service.integration.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m6 failed[39m[2m)[22m[32m 14[2mms[22m[39m
+[31m     [31m×[31m prepares, durably starts, and only then publishes a autobyteus run[39m[32m 6[2mms[22m[39m
+[31m     [31m×[31m prepares, durably starts, and only then publishes a codex_app_server run[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m prepares, durably starts, and only then publishes a claude_agent_sdk run[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m restores a started autobyteus run through the correct exact continuation path[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m restores a started codex_app_server run through the correct exact continuation path[39m[32m 0[2mms[22m[39m
+[31m     [31m×[31m restores a started claude_agent_sdk run through the correct exact continuation path[39m[32m 0[2mms[22m[39m
+     [32m✓[39m returns an already-active run only when its durable metadata is present[32m 1[2mms[22m[39m
+     [32m✓[39m terminates native and external active runs through the manager and records termination[32m 1[2mms[22m[39m
+     [32m✓[39m returns not_found for a missing run or a manager-rejected termination[32m 1[2mms[22m[39m
+     [32m✓[39m rejects unsupported runtime kinds before allocating or constructing a candidate[32m 1[2mms[22m[39m
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:45065) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)
+[22m[39mCachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-29T13:53:52.935Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/cie-baseline/autobyteus-server-ts
+App data directory: /private/tmp/cie-baseline/autobyteus-server-ts
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition created successfully with ID: professor-agent-ac-1790690032981-ba31da
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mInitialized server settings service with 21 predefined settings
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent definition cache populated with 1 items.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mIn-memory cache: Updated agent definition with ID professor-agent-ac-1790690032981-ba31da.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition with ID professor-agent-ac-1790690032981-ba31da updated successfully.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mIn-memory cache: Updated agent definition with ID professor-agent-ac-1790690032981-ba31da.
+
+[90mstdout[2m | tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22m[2mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22m[2mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[22m[39mAgent Definition with ID professor-agent-ac-1790690032981-ba31da updated successfully.
+
+ [31m❯[39m tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 113[2mms[22m[39m
+[31m     [31m×[31m persists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json[39m[32m 67[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/agent-run-provisioning-service.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/agent-execution/agent-run-provisioning-service.test.ts [2m([22m[2m4 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 14[2mms[22m[39m
+     [32m✓[39m prepares a standalone run identity through the catalog without persisted live status[32m 6[2mms[22m[39m
+[31m     [31m×[31m does not persist activation failure state and permits retry from prepared facts[39m[32m 3[2mms[22m[39m
+     [32m✓[39m delegates prepared cancellation to the catalog boundary[32m 1[2mms[22m[39m
+     [32m✓[39m cleans up only expired prepared identities[32m 2[2mms[22m[39m
+ [31m❯[39m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts [2m([22m[2m5 tests[22m[2m | [22m[31m4 failed[39m[2m)[22m[32m 15[2mms[22m[39m
+[31m     [31m×[31m retains exact tool identity across a retry diagnostic[39m[32m 9[2mms[22m[39m
+[31m     [31m×[31m correlates started/local-completed/raw output and admits it through the strict Team boundary[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m uses an exact direct raw provider tool name without inventing correlation[39m[32m 1[2mms[22m[39m
+[31m     [31m×[31m suppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output[39m[32m 1[2mms[22m[39m
+     [32m✓[39m fails closed when lifecycle facts conflict for the same invocation[32m 0[2mms[22m[39m
+ [31m❯[39m tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 7[2mms[22m[39m
+[31m     [31m×[31m preserves one enriched provider-shaped failure through standalone and Team wire paths[39m[32m 6[2mms[22m[39m
+[90mstdout[2m | tests/unit/api/graphql/types/memory-view-member-resolver.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+ [31m❯[39m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts [2m([22m[2m3 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 94[2mms[22m[39m
+[31m     [31m×[31m reads an org member run's memory through its resolved org location[39m[32m 37[2mms[22m[39m
+     [32m✓[39m returns an empty view for an unknown org member[32m 29[2mms[22m[39m
+[31m     [31m×[31m keeps reading team member runs through the shared member view read[39m[32m 27[2mms[22m[39m
+ [31m❯[39m tests/unit/api/graphql/studio-application-api-services.test.ts [2m([22m[2m10 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 6[2mms[22m[39m
+[31m     [31m×[31m publishes one exact service set and releases it idempotently[39m[32m 2[2mms[22m[39m
+     [32m✓[39m rejects a missing agentDefinitionService before publishing any service[32m 1[2mms[22m[39m
+     [32m✓[39m rejects a missing agentTeamDefinitionService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing agentRunService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing teamRunService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing runModelConfigService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing bundleService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing capabilityService before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing packageQueries before publishing any service[32m 0[2mms[22m[39m
+     [32m✓[39m rejects a missing packageCommands before publishing any service[32m 0[2mms[22m[39m
+ [31m❯[39m tests/unit/agent-packages/package-root-summary.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[32m 13[2mms[22m[39m
+[31m     [31m×[31m validates package roots and counts shared agents, team-local agents, and teams[39m[32m 11[2mms[22m[39m
+     [32m✓[39m rejects directories that do not contain package content[32m 1[2mms[22m[39m
+ [31m❯[39m tests/unit/api/graphql/converters/workspace-converter.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 3[2mms[22m[39m
+[31m     [31m×[31m sets isTemp false for regular workspace IDs[39m[32m 2[2mms[22m[39m
+[31m     [31m×[31m sets isTemp true for temp workspace ID[39m[32m 0[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 21 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22mAgent packages GraphQL e2e[2m > [22mimports and removes a linked local package while preserving runtime discovery behavior
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts[2m > [22mAgent packages GraphQL e2e[2m > [22mchecks and updates a managed GitHub package through GraphQL with staged directory replacement
+[31m[1mGraphQLError[22m: Unable to fetch agent team definitions at this time.[39m
+[36m [2m❯[22m AgentTeamDefinitionResolver.agentTeamDefinitions src/api/graphql/types/agent-team-definition.ts:[2m295:13[22m[39m
+    [90m293| [39m    } [35mcatch[39m (error) {
+    [90m294| [39m      logger.error(`Error fetching all agent team definitions: ${Strin…
+    [90m295| [39m      throw new Error("Unable to fetch agent team definitions at this …
+    [90m   | [39m            [31m^[39m
+    [90m296| [39m    }
+    [90m297| [39m  }
+[90m [2m❯[22m ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:[2m28:64[22m[39m
+[90m [2m❯[22m applyMiddlewares ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/helpers.js:[2m51:16[22m[39m
+[90m [2m❯[22m ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:[2m22:16[22m[39m
+[90m [2m❯[22m executeField ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:[2m500:20[22m[39m
+[90m [2m❯[22m executeFields ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:[2m422:22[22m[39m
+[90m [2m❯[22m executeOperation ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:[2m352:14[22m[39m
+[90m [2m❯[22m execute ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/execution/execute.js:[2m136:20[22m[39m
+[90m [2m❯[22m graphqlImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:[2m86:31[22m[39m
+[90m [2m❯[22m ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:[2m23:43[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts[2m > [22mJSON file persistence contract e2e (md-centric, no mocks)[2m > [22mpersists agent/team/mcp contracts with agent.md+agent-config.json and team.md+team-config.json
+[31m[1mGraphQLError[22m: Cannot query field "refType" on type "TeamMember". Did you mean "refScope"?[39m
+[90m [2m❯[22m Object.Field ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/rules/FieldsOnCorrectTypeRule.js:[2m51:13[22m[39m
+[90m [2m❯[22m Object.enter ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/visitor.js:[2m298:32[22m[39m
+[90m [2m❯[22m Object.enter ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/utilities/TypeInfo.js:[2m391:27[22m[39m
+[90m [2m❯[22m visit ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/language/visitor.js:[2m194:21[22m[39m
+[90m [2m❯[22m validate ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/validation/validate.js:[2m91:24[22m[39m
+[90m [2m❯[22m graphqlImpl ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:[2m78:52[22m[39m
+[90m [2m❯[22m ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:[2m23:43[22m[39m
+[90m [2m❯[22m graphql ../node_modules/.pnpm/graphql@16.12.0/node_modules/graphql/graphql.js:[2m23:10[22m[39m
+[36m [2m❯[22m execGraphql tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts:[2m83:26[22m[39m
+    [90m 81| [39m    variables[33m?[39m[33m:[39m [33mRecord[39m[33m<[39mstring[33m,[39m unknown[33m>[39m[33m,[39m
+    [90m 82| [39m  )[33m:[39m [33mPromise[39m[33m<[39m[33mT[39m[33m>[39m [33m=>[39m {
+    [90m 83| [39m    [35mconst[39m result [33m=[39m [35mawait[39m [34mgraphql[39m({
+    [90m   | [39m                         [31m^[39m
+    [90m 84| [39m      schema[33m,[39m
+    [90m 85| [39m      source[33m:[39m query[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/agent-run-service.integration.test.ts[2m > [22mAgentRunService integration[2m > [22mprepares, durably starts, and only then publishes a autobyteus run
+[31m[1mError[22m: Run package 'agent:run-create-autobyteus' is unavailable.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:[2m38:45[22m[39m
+    [90m 36| [39m  async assertAdmitted(family: RootRunPackageFamily, id: string): Prom…
+    [90m 37| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mawaitReady[39m()[33m;[39m
+    [90m 38| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Run package '${…
+    [90m   | [39m                                            [31m^[39m
+    [90m 39| [39m  }
+    [90m 40| [39m  [34mlistAdmitted[39m(family[33m:[39m [33mRootRunPackageFamily[39m)[33m:[39m readonly string[] {
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.activateOnce src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m238:5[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m190:14[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m230:14[22m[39m
+[90m [2m❯[22m AgentRunService.createAgentRun src/agent-execution/services/agent-run-service.ts:[2m212:23[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/agent-run-service.integration.test.ts:[2m173:22[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/agent-run-service.integration.test.ts[2m > [22mAgentRunService integration[2m > [22mprepares, durably starts, and only then publishes a codex_app_server run
+[31m[1mError[22m: Run package 'agent:run-create-codex_app_server' is unavailable.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:[2m38:45[22m[39m
+    [90m 36| [39m  async assertAdmitted(family: RootRunPackageFamily, id: string): Prom…
+    [90m 37| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mawaitReady[39m()[33m;[39m
+    [90m 38| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Run package '${…
+    [90m   | [39m                                            [31m^[39m
+    [90m 39| [39m  }
+    [90m 40| [39m  [34mlistAdmitted[39m(family[33m:[39m [33mRootRunPackageFamily[39m)[33m:[39m readonly string[] {
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.activateOnce src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m238:5[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m190:14[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m230:14[22m[39m
+[90m [2m❯[22m AgentRunService.createAgentRun src/agent-execution/services/agent-run-service.ts:[2m212:23[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/agent-run-service.integration.test.ts:[2m173:22[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/agent-run-service.integration.test.ts[2m > [22mAgentRunService integration[2m > [22mprepares, durably starts, and only then publishes a claude_agent_sdk run
+[31m[1mError[22m: Run package 'agent:run-create-claude_agent_sdk' is unavailable.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:[2m38:45[22m[39m
+    [90m 36| [39m  async assertAdmitted(family: RootRunPackageFamily, id: string): Prom…
+    [90m 37| [39m    [35mawait[39m [35mthis[39m[33m.[39m[34mawaitReady[39m()[33m;[39m
+    [90m 38| [39m    if (!this.isAdmitted(family, id)) throw new Error(`Run package '${…
+    [90m   | [39m                                            [31m^[39m
+    [90m 39| [39m  }
+    [90m 40| [39m  [34mlistAdmitted[39m(family[33m:[39m [33mRootRunPackageFamily[39m)[33m:[39m readonly string[] {
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.activateOnce src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m238:5[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m190:14[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m230:14[22m[39m
+[90m [2m❯[22m AgentRunService.createAgentRun src/agent-execution/services/agent-run-service.ts:[2m212:23[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/agent-run-service.integration.test.ts:[2m173:22[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/agent-run-service.integration.test.ts[2m > [22mAgentRunService integration[2m > [22mrestores a started autobyteus run through the correct exact continuation path
+[31m[1mAssertionError[22m: promise rejected "Error: Run package 'agent:run-restore-aut…" instead of resolving[39m
+[36m [2m❯[22m tests/integration/agent-execution/agent-run-service.integration.test.ts:[2m254:50[22m[39m
+    [90m252| [39m      })[33m;[39m
+    [90m253| [39m
+    [90m254| [39m      await expect(service.restoreAgentRun(runId)).resolves.toMatchObj…
+    [90m   | [39m                                                 [31m^[39m
+    [90m255| [39m        run[33m,[39m
+    [90m256| [39m        metadata[33m:[39m { platformAgentRunId[33m:[39m expectedPlatformAgentRunId }[33m,[39m
+
+[31m[1mCaused by: Error[22m: Run package 'agent:run-restore-autobyteus' is unavailable.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:[2m38:45[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.activateOnce src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m238:5[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m190:14[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m230:14[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/agent-run-service.integration.test.ts:[2m254:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/agent-run-service.integration.test.ts[2m > [22mAgentRunService integration[2m > [22mrestores a started codex_app_server run through the correct exact continuation path
+[31m[1mAssertionError[22m: promise rejected "Error: Run package 'agent:run-restore-cod…" instead of resolving[39m
+[36m [2m❯[22m tests/integration/agent-execution/agent-run-service.integration.test.ts:[2m254:50[22m[39m
+    [90m252| [39m      })[33m;[39m
+    [90m253| [39m
+    [90m254| [39m      await expect(service.restoreAgentRun(runId)).resolves.toMatchObj…
+    [90m   | [39m                                                 [31m^[39m
+    [90m255| [39m        run[33m,[39m
+    [90m256| [39m        metadata[33m:[39m { platformAgentRunId[33m:[39m expectedPlatformAgentRunId }[33m,[39m
+
+[31m[1mCaused by: Error[22m: Run package 'agent:run-restore-codex_app_server' is unavailable.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:[2m38:45[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.activateOnce src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m238:5[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m190:14[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m230:14[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/agent-run-service.integration.test.ts:[2m254:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/agent-run-service.integration.test.ts[2m > [22mAgentRunService integration[2m > [22mrestores a started claude_agent_sdk run through the correct exact continuation path
+[31m[1mAssertionError[22m: promise rejected "Error: Run package 'agent:run-restore-cla…" instead of resolving[39m
+[36m [2m❯[22m tests/integration/agent-execution/agent-run-service.integration.test.ts:[2m254:50[22m[39m
+    [90m252| [39m      })[33m;[39m
+    [90m253| [39m
+    [90m254| [39m      await expect(service.restoreAgentRun(runId)).resolves.toMatchObj…
+    [90m   | [39m                                                 [31m^[39m
+    [90m255| [39m        run[33m,[39m
+    [90m256| [39m        metadata[33m:[39m { platformAgentRunId[33m:[39m expectedPlatformAgentRunId }[33m,[39m
+
+[31m[1mCaused by: Error[22m: Run package 'agent:run-restore-claude_agent_sdk' is unavailable.[39m
+[36m [2m❯[22m RootRunPackageReadinessIndex.assertAdmitted src/run-history/services/root-run-package-readiness-index.ts:[2m38:45[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.activateOnce src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m238:5[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.resolveInsideTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m190:14[22m[39m
+[90m [2m❯[22m StandaloneAgentRunLifecycleService.withTransition src/agent-execution/services/standalone-agent-run-lifecycle-service.ts:[2m230:14[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/agent-run-service.integration.test.ts:[2m254:7[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts[2m > [22mCodex command failure transport integration[2m > [22mpreserves one enriched provider-shaped failure through standalone and Team wire paths
+[31m[1mError[22m: Collaboration member execution identity accepts exactly agentRunId, memberAddress, root.[39m
+[36m [2m❯[22m exactKeys src/agent-collaboration/execution/domain/root-execution-identity.ts:[2m41:11[22m[39m
+    [90m 39| [39m  [35mconst[39m keys [33m=[39m [[33m...[39mexpected][33m.[39m[34msort[39m()[33m;[39m
+    [90m 40| [39m  if (actual.length !== keys.length || actual.some((key, index) => key…
+    [90m 41| [39m    [35mthrow[39m [35mnew[39m [33mError[39m([32m`[39m[36m${[39mlabel[36m}[39m[32m accepts exactly [39m[36m${[39mkeys[33m.[39m[34mjoin[39m([32m", "[39m)[36m}[39m[32m.`[39m)[33m;[39m
+    [90m   | [39m          [31m^[39m
+    [90m 42| [39m  }
+    [90m 43| [39m}[33m;[39m
+[90m [2m❯[22m createCollaborationMemberExecutionIdentity src/agent-collaboration/execution/domain/root-execution-identity.ts:[2m97:3[22m[39m
+[90m [2m❯[22m createTeamAgentExecutionBinding src/agent-team-execution/domain/team-agent-execution-binding.ts:[2m11:33[22m[39m
+[90m [2m❯[22m tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts:[2m57:23[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/agent-run-provisioning-service.test.ts[2m > [22mAgentRunProvisioningService[2m > [22mdoes not persist activation failure state and permits retry from prepared facts
+[31m[1mTypeError[22m: service.activatePreparedRun is not a function[39m
+[36m [2m❯[22m tests/unit/agent-execution/agent-run-provisioning-service.test.ts:[2m169:26[22m[39m
+    [90m167| [39m    [35mconst[39m service [33m=[39m [34mbuildService[39m()[33m;[39m
+    [90m168| [39m
+    [90m169| [39m    await expect(service.activatePreparedRun(runId)).rejects.toThrow("…
+    [90m   | [39m                         [31m^[39m
+    [90m170| [39m    expect(historyCatalogService.recordRunStarted).not.toHaveBeenCalle…
+    [90m171| [39m    [34mexpect[39m(metadataByRunId[33m.[39m[35mget[39m(runId))[33m.[39m[34mtoMatchObject[39m({
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-packages/package-root-summary.test.ts[2m > [22mpackage-root-summary[2m > [22mvalidates package roots and counts shared agents, team-local agents, and teams
+[31m[1mAssertionError[22m: expected { sharedAgentCount: 1, …(3) } to deeply equal { sharedAgentCount: 1, …(2) }[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[2m    "agentTeamCount": 1,[22m
+[31m+   "applicationCount": 0,[39m
+[2m    "sharedAgentCount": 1,[22m
+[2m    "teamLocalAgentCount": 1,[22m
+[2m  }[22m
+
+[36m [2m❯[22m tests/unit/agent-packages/package-root-summary.test.ts:[2m59:43[22m[39m
+    [90m 57| [39m
+    [90m 58| [39m    [34mexpect[39m([34mvalidatePackageRoot[39m(rootPath))[33m.[39m[34mtoBe[39m(rootPath)[33m;[39m
+    [90m 59| [39m    [34mexpect[39m([34mbuildPackageSummary[39m(rootPath))[33m.[39m[34mtoEqual[39m({
+    [90m   | [39m                                          [31m^[39m
+    [90m 60| [39m      sharedAgentCount[33m:[39m [34m1[39m[33m,[39m
+    [90m 61| [39m      teamLocalAgentCount[33m:[39m [34m1[39m[33m,[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/studio-application-api-services.test.ts[2m > [22mStudio application API service registration[2m > [22mpublishes one exact service set and releases it idempotently
+[31m[1mError[22m: Complete Studio application API services are required.[39m
+[36m [2m❯[22m configureStudioApplicationApiServices src/api/graphql/studio-application-api-services.ts:[2m51:11[22m[39m
+    [90m 49| [39m    [33m||[39m [33m![39mservices[33m.[39mpackageCommands
+    [90m 50| [39m  ) {
+    [90m 51| [39m    throw new Error("Complete Studio application API services are requ…
+    [90m   | [39m          [31m^[39m
+    [90m 52| [39m  }
+    [90m 53| [39m  [35mif[39m (configuredServices) {
+[90m [2m❯[22m tests/unit/api/graphql/studio-application-api-services.test.ts:[2m39:20[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/converters/workspace-converter.test.ts[2m > [22mWorkspaceConverter[2m > [22msets isTemp false for regular workspace IDs
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'workspaceId')[39m
+[36m [2m❯[22m Function.toGraphql src/api/graphql/converters/workspace-converter.ts:[2m8:29[22m[39m
+    [90m  6| [39m    [35mconst[39m metadata [33m=[39m workspace[33m.[39mmetadata[33m;[39m
+    [90m  7| [39m    [35mreturn[39m {
+    [90m  8| [39m      workspaceId[33m:[39m metadata[33m.[39mworkspaceId[33m,[39m
+    [90m   | [39m                            [31m^[39m
+    [90m  9| [39m      name[33m:[39m metadata[33m.[39mname[33m,[39m
+    [90m 10| [39m      displayName[33m:[39m metadata[33m.[39mname[33m,[39m
+[90m [2m❯[22m tests/unit/api/graphql/converters/workspace-converter.test.ts:[2m17:43[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/converters/workspace-converter.test.ts[2m > [22mWorkspaceConverter[2m > [22msets isTemp true for temp workspace ID
+[31m[1mTypeError[22m: Cannot read properties of undefined (reading 'workspaceId')[39m
+[36m [2m❯[22m Function.toGraphql src/api/graphql/converters/workspace-converter.ts:[2m8:29[22m[39m
+    [90m  6| [39m    [35mconst[39m metadata [33m=[39m workspace[33m.[39mmetadata[33m;[39m
+    [90m  7| [39m    [35mreturn[39m {
+    [90m  8| [39m      workspaceId[33m:[39m metadata[33m.[39mworkspaceId[33m,[39m
+    [90m   | [39m                            [31m^[39m
+    [90m  9| [39m      name[33m:[39m metadata[33m.[39mname[33m,[39m
+    [90m 10| [39m      displayName[33m:[39m metadata[33m.[39mname[33m,[39m
+[90m [2m❯[22m tests/unit/api/graphql/converters/workspace-converter.test.ts:[2m34:43[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[14/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts[2m > [22mMemoryViewResolver member run views[2m > [22mreads an org member run's memory through its resolved org location
+[31m[1mAssertionError[22m: expected null to deeply equal [ ObjectContaining{…} ][39m
+
+[32m- Expected:[39m 
+[
+  ObjectContaining {
+    "fact": "org fact",
+  },
+]
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts:[2m62:27[22m[39m
+    [90m 60| [39m    const view = await new MemoryViewResolver().getAgentOrgMemberRunMe…
+    [90m 61| [39m    [34mexpect[39m(view[33m.[39mrunId)[33m.[39m[34mtoBe[39m([32m"org-lead-run"[39m)[33m;[39m
+    [90m 62| [39m    expect(view.semantic).toEqual([expect.objectContaining({ fact: "or…
+    [90m   | [39m                          [31m^[39m
+    [90m 63| [39m  })[33m;[39m
+    [90m 64| [39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[15/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts[2m > [22mMemoryViewResolver member run views[2m > [22mkeeps reading team member runs through the shared member view read
+[31m[1mAssertionError[22m: expected null to deeply equal [ ObjectContaining{…} ][39m
+
+[32m- Expected:[39m 
+[
+  ObjectContaining {
+    "fact": "team fact",
+  },
+]
+
+[31m+ Received:[39m 
+null
+
+[36m [2m❯[22m tests/unit/api/graphql/types/memory-view-member-resolver.test.ts:[2m74:27[22m[39m
+    [90m 72| [39m    const view = await new MemoryViewResolver().getTeamMemberRunMemory…
+    [90m 73| [39m    [34mexpect[39m(view[33m.[39mrunId)[33m.[39m[34mtoBe[39m([32m"writer-run"[39m)[33m;[39m
+    [90m 74| [39m    expect(view.semantic).toEqual([expect.objectContaining({ fact: "te…
+    [90m   | [39m                          [31m^[39m
+    [90m 75| [39m  })[33m;[39m
+    [90m 76| [39m})[33m;[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[16/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22mretains exact tool identity across a retry diagnostic
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m92:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[17/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22mcorrelates started/local-completed/raw output and admits it through the strict Team boundary
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m134:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[18/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22muses an exact direct raw provider tool name without inventing correlation
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m188:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[19/21]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts[2m > [22mCodex TOOL_LOG correlation[2m > [22msuppresses incomplete, uncorrelated, wrong-turn, and post-terminal raw output
+[31m[1mAssertionError[22m: expected { kind: 'rejected', …(2) } to match object { kind: 'publish' }
+(2 matching properties omitted from actual)[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[2m  {[22m
+[32m-   "kind": "publish",[39m
+[31m+   "kind": "rejected",[39m
+[2m  }[22m
+
+[36m [2m❯[22m expectStrictTeamAdmission tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m12:44[22m[39m
+    [90m 10| [39mconst expectStrictTeamAdmission = (events: readonly AgentRunEvent[]): …
+    [90m 11| [39m  [35mfor[39m ([35mconst[39m event [35mof[39m events) {
+    [90m 12| [39m    expect(strictTeamAdapter.adapt(event)).toMatchObject({ kind: "publ…
+    [90m   | [39m                                           [31m^[39m
+    [90m 13| [39m  }
+    [90m 14| [39m}[33m;[39m
+[90m [2m❯[22m tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts:[2m216:5[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[20/21]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m10 failed[39m[22m[90m (10)[39m
+[2m      Tests [22m [1m[31m21 failed[39m[22m[2m | [22m[1m[32m25 passed[39m[22m[90m (46)[39m
+[2m   Start at [22m 15:53:45
+[2m   Duration [22m 9.80s[2m (transform 3.22s, setup 51ms, import 7.62s, tests 563ms, environment 1ms)[22m
+

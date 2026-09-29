@@ -254,6 +254,39 @@ Scored after rows 1–6 (repository suites + real-catalog probe), before live br
 - Packaged Electron not re-run: no shell, seeding or packaging code changed.
 - Results: ledger Seq 46–54; execution report round 3.
 
+## Round 5 Delta (API-REV-005)
+
+- Trigger: CRR-009 Pass — D-17 (R3: the chat run view is the product agent run view in the workspace frame; ⚙ run settings; product box with `/`; shared right panel; strip opens exact tab) + the CRR-008 CR-005 fix. HEAD `e9ede7d83`.
+- Prior open items rechecked first: UF-01 (layout) and UF-02 (strip tab) — now resolved.
+- Durable coverage: `chat-entry-live-probe.mjs` rewritten for D-17 (selectors of the removed `ChatRunView`; D-08 through ⚙; C11 shared panel; C16 V-L2 via ⚙; C12 narrow run view VIS-027); new C17 (frame geometry = Team, strip exact tabs, defaults, reopen, shared collapse), C18 (draft ⚙ with no server call before send), C19 (CR-005, ＋), C20 (UF-04 reproduction).
+- Desktop: per the user's direction, a real isolated desktop instance (`isolated-app start --build`) driven via the browser-automation CLI on port 9333, with test data created on disk and imported through Settings → Agent Packages; stopped afterwards.
+
+## Round 6 Delta (API-REV-006)
+
+- Trigger: CRR-011 (round 8) — IR-007 D-18 (explicit chat `llmConfig`), IR-008 D-19 (one skill per name: tiered catalog, duplicate rejection at import, banner, Codex path match; D-15 Rules 2–3 removed). HEAD `10556948f`.
+- Prior failures rechecked first: UF-04 → probe C20 (V-F under D-19) and desktop team next to a live DA chat; UF-03 → probe C05 D-18 assertion and desktop live ⚙.
+- Changed boundary: server skill catalog and every name-based skill operation (GraphQL `skill`, file tree/read/update/upload/delete, `deleteSkill`), `addSkillSource`, `createSkill`, agent package import/update/reload (`SKILL_NAME_CONFLICT`), `skillNameIssues`, Codex skill preflight; web conflict pop-up, tier-4 toast, Skills banner; Chat draft `llmConfig`.
+- Durable coverage decisions:
+  - Add (server, deterministic, no model): `autobyteus-server-ts/tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts` — AC-019 (tier 1–2 over the real realpath-matched Codex default folder reached through a symlink alias; Codex-only name used from there), AR-013 through GraphQL (detail, tree, read, update, upload/delete file, delete; ignored copy hash unchanged; ignored copy promoted after delete), AC-020 (add folder, create skill, local import, R-3 reload, GitHub import with download removed, GitHub update rolled back — fake GitHub via the installer's fetch/download/extract seams), tier-4 acceptance with `shadowed_runtime_default` issues. The existing unit tests use injected matchers and service instances; this test goes through the real schema, error extensions and singletons.
+  - Update (live): `chat-entry-live-probe.mjs` — C05 adds D-18 (recorded `llmConfig` = catalog `configSchema` defaults; live ⚙ never "Not recorded"); C15 replaced (removed D-15 Rule 2 dispositions) by D-19 one-copy-per-name (configured agent with an on-disk private duplicate answers with the catalog copy's marker, shares the DA link, no Rule 2/3 disposition, private copy untouched); C20 rewritten for V-F under D-19 (borrower resolves the bundled catalog copy; shared link); new C21 (AC-021 banner and details) and C22 (AC-020 pop-ups for Add Folder, Create Skill, package import and reload; tier-4 toast with `--owned-codex-home`).
+  - Fix (stale, ticket-caused test drift found by widening the server run): five `tests/integration/agent-execution/**` files stub `SkillService` as `{ getSkill }` only; since step 1 (`770b14651`) the AutoByteus factory calls `hasEffectiveSkills` → 8 failures. Stubs gain `hasEffectiveSkills: () => false` (no behavior change: the stubs model "no skills").
+  - Temporary: `api-e2e-evidence/probes/d19-codex-duplicate-noauth.mjs` — `codex-runtime-duplicate` and `reconcile-discoverable` with an owned CODEX_HOME holding skills only (no credential copied or linked; `skills/list` runs before any model call).
+- Real-layout scan (C-22, held): read-only scan of `autobyteus-agents` and `autobyteus-private-agents` for `agent-orgs/<org>/agents/<a>/skills`.
+- Desktop: isolated instance (`isolated-app start --build`), test data created on disk (`test-data/chat-entry-*-package`, `chat-entry-dup-skill-folder`) and added/imported through the UI; stopped afterwards.
+- Baseline classification: failures outside the changed boundary are rerun on a merge-base worktree (`f2924a2b0`) to confirm they are pre-existing.
+- IR-009 amendment (CRR-013, HEAD `a65f58463`, DEC-017a: Agent Org agents' own `skills/` in the one catalog). Validated in the same round and recorded as one revision (API-REV-006):
+  - Durable (server e2e, same file): Agent Org layouts in the catalog (org agent, org team shared, org team-local agent; a non-member folder excluded; a tier-1 copy wins over an org copy and the org copy is reported), and org package import with a duplicate rejected / clean org package imported.
+  - Durable (live probe): C23 — on-disk org in the app data root; org skills on the Skills page and in the Daily Assistant `/`; the org agent and the org team-local agent reply with their own skills' markers (and the team's shared skill); workspace links point to the org folders.
+  - Desktop: org package created on disk and imported through Agent Packages; the Desk Org run from the Agent Orgs page; org members answer with their own skills' markers; a duplicate org package rejected with the pop-up.
+  - Runtimes: Codex (full probe), Claude, AGY. Grok and AutoByteus were not run: the user stopped both runs during this round.
+
+## Round 7 Delta (API-REV-007)
+
+- Trigger: CRR-015 — IR-010 (CR-010 / UF-05): the toast layer moves above every overlay. HEAD `e58fb160a`.
+- Prior failure rechecked first: UF-05 → C22e, strengthened to assert that the topmost element at the toast's centre belongs to `[data-testid="toast-container"]` while the Sources dialog is open. This check would have failed before the fix (the overlay was topmost).
+- Light regression of other toasts and pop-ups (C03, C12, C19, C21, C22) plus a full Codex run; web suite for the new guard spec.
+- Probe maintenance: C04 link wait; automatic prerequisite cases for `--cases`.
+
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes` (executed)

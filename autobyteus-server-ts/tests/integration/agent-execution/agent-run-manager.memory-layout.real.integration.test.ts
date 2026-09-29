@@ -105,6 +105,7 @@ describe("AgentRunService real memory layout integration", () => {
       } as any,
       skillService: {
         getSkill: () => null,
+        hasEffectiveSkills: () => false,
       } as any,
     });
     const deactivator = createNoopAgentToolMcpRunSessionDeactivator();

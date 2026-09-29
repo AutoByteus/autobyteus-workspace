@@ -241,7 +241,7 @@ describe("recursive Memory Compactor leaf integration", () => {
           getBasePath: () => workspaceRoot,
         }),
       } as any,
-      skillService: { getSkill: () => null } as any,
+      skillService: { getSkill: () => null, hasEffectiveSkills: () => false } as any,
       compactionAgentRunnerFactory,
     });
     const childRunService = new RecordingChildRunService(backendFactory, memoryRoot);

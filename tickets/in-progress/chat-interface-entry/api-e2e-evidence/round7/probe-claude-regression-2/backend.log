@@ -1,0 +1,222 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:62729
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:62729
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:79528) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 21 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-29T15:25:32.522Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'submit_task_result'
+Successfully registered tool definition: 'review_task_result'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 7 items.
+Populating agent definition cache for the first time...
+[2026-09-29T15:25:32.652Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-29T15:25:32.652Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 7 items.
+{"level":30,"time":1790695532658,"pid":79528,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:62736"}
+{"level":30,"time":1790695532681,"pid":79528,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:62729"}
+[2026-09-29T15:25:32.681Z] [INFO] [server.runtime] Server listening on 127.0.0.1:62729
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Skill name 'probe-alpha' (conflict): using '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/skills/probe-alpha', ignoring '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/agents/probe-shadow-owner/skills/probe-alpha'.
+[2026-09-29T15:25:32.730Z] [INFO] [agent-team-definition.cache] In-memory cache: Added new agent team definition with ID probe-team.
+Agent Team Definition created successfully with ID: probe-team
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Created agent session b080c51b-70e7-4518-a296-9cd37409f70f for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent WebSocket connected: session=b080c51b-70e7-4518-a296-9cd37409f70f, run=daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'daily_assistant_4513a79601d449bf9b29ec0f11d91281'.
+(node:79528) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: Skill, edit_image, mcp__autobyteus_agent_tools__edit_image, generate_image, mcp__autobyteus_agent_tools__generate_image, generate_speech, mcp__autobyteus_agent_tools__generate_speech. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790695548710,"pid":79528,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_xuSCNL8uoWog6G4LllcfLMaD1b-Wiqp7_ij1WUrzrz0","statusCode":400,"elapsedMs":0.8169579952955246,"msg":"http request completed"}
+Closed agent session b080c51b-70e7-4518-a296-9cd37409f70f
+Agent WebSocket disconnected: b080c51b-70e7-4518-a296-9cd37409f70f
+Agent websocket attached for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Created agent session 05b61d19-2a79-498e-874e-cb0015b830d3 for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent WebSocket connected: session=05b61d19-2a79-498e-874e-cb0015b830d3, run=daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Closed agent session 05b61d19-2a79-498e-874e-cb0015b830d3
+Agent WebSocket disconnected: 05b61d19-2a79-498e-874e-cb0015b830d3
+Agent websocket attached for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Created agent session 7f6473fe-7395-4a39-a214-805827ad4cad for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent WebSocket connected: session=7f6473fe-7395-4a39-a214-805827ad4cad, run=daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent websocket attached for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Created agent session afecd875-50d4-44ef-90b5-286f3f43656d for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent WebSocket connected: session=afecd875-50d4-44ef-90b5-286f3f43656d, run=daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Closed agent session afecd875-50d4-44ef-90b5-286f3f43656d
+Agent WebSocket disconnected: afecd875-50d4-44ef-90b5-286f3f43656d
+Closed agent session 7f6473fe-7395-4a39-a214-805827ad4cad
+Agent WebSocket disconnected: 7f6473fe-7395-4a39-a214-805827ad4cad
+Agent websocket attached for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Created agent session 93ad6b73-ef41-4af5-a026-27de1ce8722f for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent WebSocket connected: session=93ad6b73-ef41-4af5-a026-27de1ce8722f, run=daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Created agent session d073d1ed-0523-4635-ba4a-669cdd9dd58d for run daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Agent WebSocket connected: session=d073d1ed-0523-4635-ba4a-669cdd9dd58d, run=daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'daily_assistant_5dc3907640f6405bb8a72498c3a934b7'.
+(node:79528) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: Skill, edit_image, mcp__autobyteus_agent_tools__edit_image, generate_image, mcp__autobyteus_agent_tools__generate_image, generate_speech, mcp__autobyteus_agent_tools__generate_speech. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790695564008,"pid":79528,"hostname":"MacBookPro","reqId":"req-m","method":"POST","url":"/mcp/agent-tools/agtrun_XqZjFVjTLumIXHq0qrxifBBMs7adCfXQ0NMD5THJRKE","statusCode":400,"elapsedMs":0.350832998752594,"msg":"http request completed"}
+Closed agent session 93ad6b73-ef41-4af5-a026-27de1ce8722f
+Agent WebSocket disconnected: 93ad6b73-ef41-4af5-a026-27de1ce8722f
+Closed agent session d073d1ed-0523-4635-ba4a-669cdd9dd58d
+Agent WebSocket disconnected: d073d1ed-0523-4635-ba4a-669cdd9dd58d
+Agent websocket attached for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Created agent session 96d31a4e-ab64-4ca9-acfe-13ba6108af99 for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent WebSocket connected: session=96d31a4e-ab64-4ca9-acfe-13ba6108af99, run=daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent websocket attached for run daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Created agent session 34ca11ea-9168-413c-bc41-42ee28699a24 for run daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Agent WebSocket connected: session=34ca11ea-9168-413c-bc41-42ee28699a24, run=daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Closed agent session 34ca11ea-9168-413c-bc41-42ee28699a24
+Agent WebSocket disconnected: 34ca11ea-9168-413c-bc41-42ee28699a24
+Closed agent session 96d31a4e-ab64-4ca9-acfe-13ba6108af99
+Agent WebSocket disconnected: 96d31a4e-ab64-4ca9-acfe-13ba6108af99
+Agent websocket attached for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Created agent session 854896e9-f211-4fdc-8233-c29da14cbe50 for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent WebSocket connected: session=854896e9-f211-4fdc-8233-c29da14cbe50, run=daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent websocket attached for run daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Created agent session f5564f7c-d8df-4637-b96b-12edd9fce037 for run daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Agent WebSocket connected: session=f5564f7c-d8df-4637-b96b-12edd9fce037, run=daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Resolved configured temp workspace root to TempWorkspace.
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/memory/agent_teams/probe_team_7c2796114c044c06a01a4db295fbbc01/probe_legacy_32dcc18109db4efbb3d0ab9ddecd80f6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/memory/agent_teams/probe_team_7c2796114c044c06a01a4db295fbbc01/probe_bundle_owner_4b260618f2da441ba2a37ab171663a7b/raw_traces_active.jsonl
+Agent team websocket attached for team run probe_team_7c2796114c044c06a01a4db295fbbc01
+Created agent session 13851a58-12e9-4e99-a59c-0e46f3d51dc5 for run probe_team_7c2796114c044c06a01a4db295fbbc01
+Agent Team WebSocket connected: session=13851a58-12e9-4e99-a59c-0e46f3d51dc5, run=probe_team_7c2796114c044c06a01a4db295fbbc01
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/memory/agent_teams/probe_team_7c2796114c044c06a01a4db295fbbc01/probe_legacy_32dcc18109db4efbb3d0ab9ddecd80f6/raw_traces_active.jsonl
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/memory/agent_teams/probe_team_7c2796114c044c06a01a4db295fbbc01/probe_legacy_32dcc18109db4efbb3d0ab9ddecd80f6/raw_traces_active.jsonl
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'probe_legacy_32dcc18109db4efbb3d0ab9ddecd80f6'.
+(node:79528) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: Skill, get_handoff_rules, mcp__autobyteus_agent_tools__get_handoff_rules, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790695572738,"pid":79528,"hostname":"MacBookPro","reqId":"req-18","method":"POST","url":"/mcp/agent-tools/agtrun_G0Sw8bMFB5_E0xw_v6xsx0cNfYizlGr9mUykVx6J9gs","statusCode":400,"elapsedMs":0.2692909985780716,"msg":"http request completed"}
+Closed agent session 854896e9-f211-4fdc-8233-c29da14cbe50
+Agent WebSocket disconnected: 854896e9-f211-4fdc-8233-c29da14cbe50
+Closed agent session 13851a58-12e9-4e99-a59c-0e46f3d51dc5
+Closed agent session f5564f7c-d8df-4637-b96b-12edd9fce037
+Agent WebSocket disconnected: f5564f7c-d8df-4637-b96b-12edd9fce037
+{"level":30,"time":1790695575290,"pid":79528,"hostname":"MacBookPro","reqId":"req-7z","err":{"type":"GraphQLError","message":"Run package 'agent:null' is unavailable.","stack":"Error: Run package 'agent:null' is unavailable.\n    at RootRunPackageReadinessIndex.assertAdmitted (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/run-history/services/root-run-package-readiness-index.js:31:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\n    at async AgentRunViewProjectionService.getProjection (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/run-history/services/agent-run-view-projection-service.js:32:9)","path":["getRunProjection"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Run package 'agent:null' is unavailable."}
+{"level":30,"time":1790695575291,"pid":79528,"hostname":"MacBookPro","reqId":"req-80","err":{"type":"GraphQLError","message":"Run metadata not found for 'null'.","stack":"Error: Run metadata not found for 'null'.\n    at AgentRunResumeConfigService.getAgentRunResumeConfig (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/run-history/services/agent-run-resume-config-service.js:19:19)\n    at async StudioRunModelConfigService.getAgentRunResumeConfig (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/autobyteus-server-ts/dist/run-history/services/studio-run-model-config-service.js:13:27)\n    at async Promise.all (index 0)\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)","path":["getAgentRunResumeConfig"],"locations":[{"line":2,"column":3}],"extensions":{}},"msg":"Run metadata not found for 'null'."}
+Agent websocket attached for run daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Created agent session fdd2e4f6-0119-42e2-b31f-d37971f89f36 for run daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Agent WebSocket connected: session=fdd2e4f6-0119-42e2-b31f-d37971f89f36, run=daily_assistant_5dc3907640f6405bb8a72498c3a934b7
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-bvnH2c/server-data/memory/agent_teams/probe_team_7c2796114c044c06a01a4db295fbbc01/probe_bundle_owner_4b260618f2da441ba2a37ab171663a7b/raw_traces_active.jsonl
+Agent websocket attached for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Created agent session b8281e40-2cf9-4621-a338-3eaa4d56f7a9 for run daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent WebSocket connected: session=b8281e40-2cf9-4621-a338-3eaa4d56f7a9, run=daily_assistant_4513a79601d449bf9b29ec0f11d91281
+Agent team websocket attached for team run probe_team_7c2796114c044c06a01a4db295fbbc01
+Created agent session 70e77384-7e3f-46bc-a39e-c5f2a4181cab for run probe_team_7c2796114c044c06a01a4db295fbbc01
+Agent Team WebSocket connected: session=70e77384-7e3f-46bc-a39e-c5f2a4181cab, run=probe_team_7c2796114c044c06a01a4db295fbbc01
+Closed agent session fdd2e4f6-0119-42e2-b31f-d37971f89f36
+Agent WebSocket disconnected: fdd2e4f6-0119-42e2-b31f-d37971f89f36
+Closed agent session b8281e40-2cf9-4621-a338-3eaa4d56f7a9
+Agent WebSocket disconnected: b8281e40-2cf9-4621-a338-3eaa4d56f7a9
+Closed agent session 70e77384-7e3f-46bc-a39e-c5f2a4181cab
+[2026-09-29T15:28:15.309Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+Claude process for run 'daily_assistant_4513a79601d449bf9b29ec0f11d91281' exited: Error: Claude Code process exited with code 143
+    at Jk.getProcessExitError (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:11535)
+    at ChildProcess.n (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:15775)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at m (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:4918)
+    at ChildProcess.<anonymous> (file:///Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/node_modules/.pnpm/@anthropic-ai+claude-agent-sdk@0.3.280_@anthropic-ai+sdk@0.128.0_zod@4.3.6__@modelconte_49585bd31487830510ba6409d519ab00/node_modules/@anthropic-ai/claude-agent-sdk/sdk.mjs:127:5122)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:531:35)
+    at ChildProcess._handle.onexit (node:internal/child_process:293:12)
+    at Process.callbackTrampoline (node:internal/async_hooks:130:17)
+[2026-09-29T15:28:15.840Z] [INFO] [server.runtime] Server closed cleanly.

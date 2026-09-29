@@ -8,6 +8,9 @@
 | API-REV-002 | code_reviewer / `code-review-report.md` CRR-003 / round 2 | SR-010; ARCH-REV-006; IR-002, IR-003; CRR-002, CRR-003 | Fail / 88% | Pass / 95% |
 | API-REV-003 | code_reviewer / `code-review-report.md` CRR-005 / round 3 | SR-011, SR-012; ARCH-REV-008; IR-004; CRR-005; DR-002 (UVF-001) | Pass / 95% | Pass / 95% |
 | API-REV-004 | user direction / real desktop app via isolated instance | same as API-REV-003; HEAD `3c062a180` | Pass / 95% | Pass / 95% |
+| API-REV-005 | code_reviewer / CRR-009 / round 5 | SR-013, SR-014; ARCH-REV-010; IR-005, IR-006; CRR-008, CRR-009; UVF-002 | Pass / 95% (+ UF-01/UF-02 open) | Fail / 93% |
+| API-REV-006 | code_reviewer / CRR-011 (round 8) + CRR-013 (round 9) | SR-015..SR-019; ARCH-REV-011..015; IR-007, IR-008, IR-009; CRR-010..CRR-013; DEC-017, DEC-017a | Fail / 93% | Fail / 94% |
+| API-REV-007 | code_reviewer / CRR-015 / round 11 | IR-010; CRR-014, CRR-015 | Fail / 94% | Pass / 95% |
 
 ## Revision Entries
 
@@ -92,3 +95,60 @@ None — no prior failure open.
 - Result and confidence: Pass, 95% (user-surface/desktop category 93% → 95%)
 - New failure IDs: none. New observations: O-2 (`/` skill list loads once per session), O-3 (runtime badge truncation with long labels at 1200 px).
 - Recommended recipient: `/software_engineering_team/code_reviewer` (informational addendum to the round-3 pass)
+
+### API-REV-005 — D-17 (R3) validated; prior UF-01/UF-02 resolved; new UF-04 (D-15 regression) and UF-03
+
+- Trigger: `code_reviewer` CRR-009 Pass (IR-005 D-17, IR-006 CR-005 fix). HEAD `e9ede7d83`.
+- Coverage changes: `chat-entry-live-probe.mjs` rewritten for D-17 and extended with C17 (frame + strip), C18 (draft ⚙), C19 (CR-005, ＋), C20 (UF-04 reproduction); C12 adds the narrow chat run view (VIS-027).
+- Environment delta: real desktop app via `isolated-app start --build`, driven by the browser-automation CLI (port 9333, `__abDemo`), test data created on disk and imported through Settings → Agent Packages; stopped afterwards.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| UF-01 chat header full width / tools under it | Local Fix → pending R3 → D-17 | Resolved | C17 geometry Chat = Team; desktop DT-21 |
+| UF-02 strip icon opens Activity | Local Fix → D-17 (shared owner, pre-existing) | Resolved | C17; desktop DT-25 |
+
+- Current result and confidence: Fail, 93%
+- New failure IDs: UF-04 (Medium, Unclear: Local Fix vs D-15 Design Impact), UF-03 (Low, Local Fix)
+- Recommended recipient: `/software_engineering_team/code_reviewer` (failure-origin review)
+
+### API-REV-006 — UF-04 and UF-03 resolved; D-19 and DEC-017a validated; new UF-05 (Low)
+
+- Trigger: `code_reviewer` CRR-011 (IR-007 D-18, IR-008 D-19) and CRR-013 (IR-009, DEC-017a Agent Org skills). HEADs `10556948f` then `a65f58463`. Both are validated in this one revision because IR-009 arrived before the IR-008 result was reported.
+- Coverage changes: added `autobyteus-server-ts/tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts` (9 cases). Updated `chat-entry-live-probe.mjs`: C05 D-18, C15 replaced for D-19, C20 V-F under D-19, new C21/C22/C23, `--owned-codex-home`, org fixture. Fixed stale `SkillService` stubs in five integration files (RD-01, 8 ticket-caused failures).
+- Environment delta: owned `CODEX_HOME` holding skills only (no credential copied or linked). A merge-base worktree was used to classify baselines and then removed. Isolated desktop instance started from the fresh bundle after a DMG-only packaging failure (`hdiutil`). Test data created on disk and imported via the UI. Grok and AutoByteus runs were stopped by the user and not run.
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| UF-04 configured agent with an unresolved configured skill fails next to a live DA chat | Unclear → CR-007 → D-19 | Resolved | C20 on Codex and Claude; desktop DT-51 (team replies next to the live DA chat, no collision in the log) |
+| UF-03 live ⚙ shows "Not recorded" on a fresh default-thinking chat | Local Fix → CR-008 → D-18 | Resolved | C05 on Codex and Claude Sonnet (recorded = schema defaults); desktop DT-50 |
+
+- Canonical artifacts: investigation "Round 6 Delta"; execution report "Round 6"; ledger Seq 78–94; `api-e2e-evidence/round6/`, `round6-desktop/`, `test-data/README-d19.md`
+- Prior result and confidence: Fail, 93%
+- Current result and confidence: Fail, 94%
+- New failure IDs: UF-05 (Low, Local Fix: the tier-4 notice toast renders beneath the Manage Skill Sources overlay)
+- Observations: O-4..O-7 (non-blocking); C-22 scan: no org agent `skills/` folders in the real repos
+- Recommended recipient: `/software_engineering_team/code_reviewer`
+- Remaining risks: Grok and AutoByteus not rerun this round; the desktop tier-4 toast is not reproducible without writing into the user's `~/.codex/skills` (covered in the browser)
+
+### API-REV-007 — UF-05 resolved; full regression green
+
+- Trigger: `code_reviewer` CRR-015 Pass (IR-010, CR-010: toast layer `z-[10000]`, `data-testid="toast-container"`, `ToastContainer.spec.ts`). HEAD `e58fb160a`.
+- Coverage changes: `chat-entry-live-probe.mjs` — C22e asserts that the tier-4 notice is the topmost element above the open Sources dialog; C04 waits for the tagged link; `--cases` adds prerequisite producer cases.
+- Environment: unchanged (sanitized env, owned roots, owned `CODEX_HOME` with skills only).
+
+#### Prior Failure Resolution
+
+| Prior Scenario / Failure Reference | Previous Classification | Current Resolution | Evidence |
+| --- | --- | --- | --- |
+| UF-05 tier-4 notice beneath the Sources dialog overlay | Local Fix → CR-010 | Resolved | C22e `toastOnTop: true` (z 10000 over 1000), `round7/probe-claude/C22e-tier4-toast.png` |
+
+- Canonical artifacts: execution report "Round 7"; investigation "Round 7 Delta"; ledger Seq 95–98
+- Prior result and confidence: Fail, 94%
+- Current result and confidence: Pass, 95%
+- New failure IDs: none
+- Recommended recipient: `/software_engineering_team/code_reviewer` (proportional test-code review of the cumulative durable changes)
+- Remaining risks: Grok and AutoByteus not rerun since the user stopped those runs; desktop not rebuilt for a one-value CSS change; O-1..O-7 non-blocking

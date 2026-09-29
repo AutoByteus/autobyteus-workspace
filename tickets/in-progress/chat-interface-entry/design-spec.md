@@ -2,13 +2,13 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-012`. D-16 was completed for the persisted-run path (ARCH-REV-007 AR-009). Earlier: `SR-011` (D-16 added, REQ-021 user-approved 2026-09-29) and `SR-010` (ARCH-REV-006 Pass).
+- Current solution revision ID: `SR-019`. The D-19 Agent Org enumeration is made actionable with a synchronous correlation core (ARCH-REV-014 AR-014). Earlier: `SR-018` (Agent Org layouts).
 - Approved requirements baseline and user-approval reference:
   - Baseline: `requirements-doc.md` `SR-003`.
   - User approval: 2026-09-28 in the Solution Designer conversation.
   - `SR-004` integrated the R2 supplement without changing intended behavior.
 - Behavior-defining supplements and their approval references:
-  - Product `ui-ux-spec.md` revision R2 plus VIS-001–VIS-025. VIS-020 is superseded.
+  - Product `ui-ux-spec.md` revision **R3** plus VIS-001–VIS-027 (VIS-020 superseded), `origin/personal@ef5f909`, 26/26 SHA-256 verified; user-confirmed R3 2026-09-29.
   - Location: `/Users/normy/autobyteus_org/autobyteus-web-prototype/tickets/done/chat-interface-entry/`.
   - Revision: `origin/personal@8ac6cad`. All 24 SHA-256 hashes were verified.
   - User confirmations: R1 (PC-035) and R2 ("I think now the chat box looks good").
@@ -134,7 +134,7 @@ Constraints to respect:
 - **D-05 — All standalone agent runs open in the chat view.**
   - One routing resolver maps a standalone-agent selection to `/chat?id=<runId>`. It is used by the left panel, execution links and the `/workspace` redirect.
   - Team and org runs stay on `/workspace`.
-  - `AgentWorkspaceView` is removed.
+  - ~~`AgentWorkspaceView` is removed.~~ Superseded by D-17: `AgentWorkspaceView` is restored as the chat run view's center pane.
 - **D-13 — Route sync across promotion (AR-001).**
   - `pages/chat.vue` owns keeping `/chat?id=` equal to the displayed run, through `composables/chat/useChatRouteRunSync.ts`.
   - Rule: while route id `R` is displayed, if the standalone selection changes from `R` to `P` because `agentContextsStore.promoteTemporaryId(R, P)` re-keyed that same context, call `router.replace('/chat?id=P')`.
@@ -210,6 +210,9 @@ Constraints to respect:
     - Unit tests cover each clear path (active snapshot, failure, rejected ack, terminate).
     - The resend probe must pass 14×.
   - If the probe still shows a close, return `Unclear` with the stack.
+- **Note (SR-016):** D-15 **Rules 2 and 3 are removed** by D-19. With one skill per name, two runs never request different sources for the same name, so the weak/strong holder machinery is unnecessary.
+  - Kept: D-15's scope, Rule 1 (user-owned workspace entries, keyed on scope via a simple `workspaceCollisionPolicy: 'fail' | 'prefer_workspace'`), and the "Unchanged" list.
+  - The text below is kept for history.
 - **D-15 — Skill-path collisions under ALL_INSTALLED: `ALL_INSTALLED` requests are weak; configured requests are strong (CRR-002 CR-004, ARCH-REV-004 AR-008).**
   - **Scope.** Every runtime that exposes skills through a workspace skill path:
     - AGY `.agents/skills` (a per-run capsule plus a workspace check);
@@ -233,9 +236,21 @@ Constraints to respect:
         - Log `yielded-to-configured` (weak run ids, old source → new source). The weak runs keep a skill of that name, now served from the configured copy.
       - Configured launches therefore never regress because an ALL_INSTALLED chat is live (REQ-017/AC-014).
     - The registry entry tracks `strongHolderCount` and `weakHolderCount`. Release decrements the matching count, and the link is removed when both reach zero. The link source stays whatever it last pointed to; the remaining holders accept that because the name is the same.
+  - **Rule 3 — an unresolved strong request meets a link held only by weak holders (CRR-010 CR-007 / UF-04, SR-015).**
+    - Case: `reconcileUnresolved` (`workspace-skill-materializer.ts` L349–L391) finds a `ready` entry whose holders are all `all_installed` (weak).
+    - The strong run could not resolve that name. Its established behavior when alone is "Recording an unresolved binding for workspace reconciliation" → skipped, and the run starts.
+    - **Rule:** skip without throwing. Log `skipped-unresolved-held-by-weak` (run, skill, the holder's current source). Do not join as a holder, and do not re-point.
+      - The configured run still discovers the same-named skill through the existing link while the weak holders live.
+      - When the last weak holder releases, the link is removed normally. That equals the configured run's baseline (unresolved = not provided).
+    - Why not join (option 2): the strong run would adopt a source it never resolved, and the link would outlive the weak holders on the strong run's behalf.
+    - Why not fail-fast (option 3): it breaks the D-15 invariant "configured launches never regress because an ALL_INSTALLED chat is live" (REQ-017/AC-014).
+    - **Unchanged:**
+      - Unresolved vs an entry with any strong holder, or vs a user-owned or foreign path: today's `reconcileUnavailable` classification and fail-fast.
+      - Unresolved vs `missing` / `same-source` / `broken`: today's skip and repair.
+    - Owner: `WorkspaceSkillMaterializer.reconcileUnresolved` consults the registry entry's holder strengths before calling `reconcileUnavailable`. The rule lives in the materializer, which already owns the registry.
   - **Unchanged:**
     - Same-source sharing.
-    - `reconcile-discoverable` / `reconcile-unresolved` handling.
+    - `reconcile-discoverable` handling, and `reconcile-unresolved` handling except Rule 3.
     - Repair of materializer-owned symlinks (`repaired`, `removed-and-skipped`).
     - AGY per-run capsule copies, which are not shared between runs, so Rule 2 does not arise for AGY.
   - **Presentation note (accepted):** when a workspace or held copy is used, `/` still shows the installed skill's description.
@@ -282,7 +297,165 @@ Constraints to respect:
     - **V-L3:** Codex rows show display names.
     - **V-L4:** AutoByteus rows show identifiers.
     - **V-L5:** the gear editor's labels are unchanged (regression).
-- - **D-12 — Last-used model.** One device-local value records the runtime and model. It is used as the New chat default, then the Daily Assistant default launch config, then the runtime default.
+- - **D-17 — The chat run view is the product agent run view in the workspace frame (R3, SR-013; supersedes the conflicting parts of D-05, D-07, D-08, D-16 and CR-002).**
+  - **Frame.** `pages/chat.vue` with an `id` renders the product workspace frame `WorkspaceAdaptiveLayout` (with its extracted `WorkspaceToolShell`, scope `workspace`) for the selected standalone run. The center pane is the standalone-agent branch, `AgentWorkspaceView`.
+    - This keeps the full-height `RightSideTabs` column, resize handle, docked width, strip, drawer and the 57 px header line identical to the Team/Org views.
+    - `/chat` without an `id` still renders the New chat page (`ChatNewSurface`), unchanged.
+    - The `/chat?id` URL, the D-13 route sync, the D-05 routing resolver and the `/workspace` → `/chat` redirect are unchanged, so the Chat nav stays active.
+  - **Restored (reverses a D-05 removal):**
+    - `components/workspace/agent/AgentWorkspaceView.vue` and its standalone branch in `WorkspaceAdaptiveLayout`.
+    - The standalone `showSelectedRunConfig` mode: ⚙ → `RunConfigPanel`.
+      - **Persisted runs** (permanent id): `ExistingRunConfigEditor` → `AgentRunConfigForm` in existing-run mode (`existingRunConfigStore`, `runModelConfigEditability`, runtime and workspace fixed).
+      - **`temp-*` drafts (AR-011, new; this is not existing behavior).** Today `RunConfigPanel`'s `isSelectionMode = !!selectedRunId` (L115) routes drafts into `ExistingRunConfigEditor`, which calls `loadAgentCanonical('temp-…')` against a server that does not know the id.
+        - `RunConfigPanel` gains a draft branch: selected standalone run id `temp-*` → new `components/workspace/config/DraftRunConfigEditor.vue`.
+        - It renders the editable `AgentRunConfigForm` (non-existing-run mode) bound directly to the draft `context.config`: runtime selectable, model + schema thinking, Auto approve tools. The workspace is shown and locked (the chat was already created for it).
+        - There are no `existingRunConfigStore` calls. Changes apply immediately to `context.config`, and the header back arrow returns to the run view. The first send (or resend after a failed launch, D-04) uses them.
+        - It reaches: a catalog "Run agent" draft, and a failed New chat first send on `/chat?id=<temp>`.
+    - `WorkspaceHeaderActions` ⚙ ＋. ＋ now calls `chatDraftStore.startNewChat({ agentDefinitionId, workspaceRootPath })` + `/chat` (UIS-013 R3) instead of the old RunConfigPanel draft.
+  - **Header.** For standalone targets, `AgentWorkspaceSurface` titles the run with its run summary (the first-message title, ≤42 chars, via the existing run summary) and keeps `AgentStatusDisplay` and the header actions. Org direct-agent targets keep their current title. There is no agent · workspace · approval line.
+  - **Box after the first message.** The standalone `AgentEventMonitor` keeps the product `AgentUserInputForm` (same geometry as the Team view: mic and send/stop inside the textarea, no footer) with **standalone skill tagging** enabled:
+    - `AgentUserInputForm` / `AgentUserInputTextArea` accept an optional `skillTagging` capability `{ skills }`, supplied only by `AgentWorkspaceView` for standalone targets.
+    - With it, the textarea offers the `/` menu (`ChatSkillMenu`, reused) and a skill-chip row that writes `AgentContext.requestedSkillNames` (D-09 unchanged).
+    - Team/org callers pass nothing, so their behavior is unchanged.
+  - **Model/thinking after the first message:** only in ⚙ (product existing-run editor, `runModelConfigEditability`), per REQ-011 R3.
+  - **Right panel state.** `useRightPanel` returns to one shared visibility preference (default open). The `chat` scope and `setActiveRightPanelScope` are removed.
+  - **Strip → exact tab (shared owner, pre-existing defect).**
+    - Cause: `components/layout/RightSideTabs.vue` runs its contextual watcher (`activeMessagesScopeKey`, `{ immediate: true }`) on mount, forcing `teamMembers` (team) or `progress` (standalone) and overriding the tab the strip click just set.
+    - Constraints: `activeTab` is module-global, `teamMembers` is invisible without a collaboration scope, and `/workspace` and `/chat` remount `RightSideTabs` (ARCH-REV-009 MP-016).
+    - Rule (AR-010):
+      - `useRightSideTabs` owns `contextualScopeKey`: the collaboration scope key when present, else `standalone:<runId>` for a standalone target, else `null`. It also owns `lastAppliedScopeKey`.
+      - Whenever `RightSideTabs` mounts **or** `contextualScopeKey` changes, and `contextualScopeKey !== lastAppliedScopeKey`, it applies the contextual default (`teamMembers` for a collaboration scope, `progress` for standalone) and records `lastAppliedScopeKey`.
+      - **Exception:** an explicit selection made through `selectTabExplicitly(tab)` (strip or tab-bar click) in the same open action wins. The pending explicit tab is consumed at mount, `lastAppliedScopeKey` is set to the current key, and no default overrides it.
+      - The `visibleTabs` validity watcher becomes `immediate`, so on mount an invisible active tab is always replaced (explicit tab → contextual default → first visible).
+    - This applies to Chat, Team and Org alike.
+    - Validation:
+      - Team (Team members) → a chat opens on a visible tab (Activity), never blank.
+      - A chat (Files) → Team opens on Team members.
+      - Strip Files and Terminal clicks open exactly those tabs in Chat and Team.
+      - Reopening the same run keeps its current tab.
+  - **Removals (clean cut):**
+    - `components/chat/ChatRunView.vue` and `ChatRunHeader.vue`.
+    - The run-view mode of `ChatComposer` and its footer; `ChatComposer` is now New-chat-only.
+    - `components/chat/chatRunModelControls.ts` persisted mode, the fixed model list and the footer lock, including the CR-002 run-footer thinking-schema load, which is now moot. Its draft mode moves into the New chat surface if it is still needed.
+    - The `useChatModelCatalog.toChatModelOption` `runChoice` branch and `filterOptions` for fixed lists, since there is no persisted Chat menu. The gear editor keeps the shared `existingRunChoiceLabelInput`.
+    - The `useRightPanel` chat scope.
+    - The Removal Plan rows for `AgentWorkspaceView`, the standalone `showSelectedRunConfig` and the header actions are **withdrawn** (restored by D-17).
+  - **Unchanged:**
+    - The New chat page, footer, menus, `@` and `/`; D-03, D-04, D-06, D-09 to D-16 for the New chat and server paths.
+    - D-13, D-14, D-15; REQ-021 labels in the New chat menu.
+    - The Team/Org views apart from the strip-tab fix.
+  - **Validation:**
+    - Visual fidelity with VIS-015, VIS-016, VIS-017, VIS-018, VIS-019, VIS-026 and VIS-027.
+    - The frame geometry equals the Team view (header right edge = tabs column left edge; column top = 0; shared 57 px line).
+    - The strip Files/Terminal clicks open those tabs in Chat and Team (CHK-015).
+    - ⚙ is locked while live and editable after Offline, with Save → resume on the new model (AC-009).
+    - ⚙ on a `temp-*` draft (catalog "Run agent", and a failed New chat first send) → `DraftRunConfigEditor` → change runtime/model → back → send uses the new config, with no server call before the send.
+    - `/` in the run view box.
+    - ＋ opens a preset New chat.
+    - The collapsed state is shared across Team and Chat.
+- **D-18 — A New chat records explicit model-config defaults (CRR-010 CR-008 / UF-03, SR-015).**
+  - Today a New chat with default thinking launches with `llmConfig: null`. The live, read-only ⚙ then shows "Not recorded for this historical run" (`ModelConfigSection.showMissingHistoricalConfig`), not VIS-026's disabled values.
+  - **Rule:** the chat draft's `config.llmConfig` always holds the same non-thinking schema defaults the launch form records for that model, **plus** the model's default thinking parameters recorded explicitly. The launch form skips thinking keys; see ARCH-REV-011 IC-3. Whenever the draft model is set (the initial default, a menu pick, or a preset), `chatDraftStore` sets it to the schema defaults plus the model's default thinking parameters. The thinking control then edits those explicit values.
+    - A model without a config schema keeps `null`.
+    - The team quick path's root `llmConfig` uses the same value.
+  - **Shared owner:** the non-thinking default computation in `ModelConfigSection.applyDefaultsIfNeeded` (L255–L282) moves into `utils/llmConfigSchema.ts` as `applyModelConfigSchemaDefaults(schema, config)`, a pure function. `ModelConfigSection` and `chatDraftStore` both call it. The default thinking parameters come from the existing `llmThinkingConfigAdapter` default state, with no duplicate logic.
+  - **Unchanged:** the editor's historical rule for genuinely unrecorded historical runs.
+  - **Validation:** after a New chat with default thinking, live ⚙ shows the disabled current values (VIS-026) and never "Not recorded"; the recorded `llmConfig` has the launch form's non-thinking defaults for the same model, plus explicit default thinking parameters (IC-3).
+- **D-19 — One skill per name, decided at load; duplicates blocked at import (REQ-022–024, DEC-017, SR-016).**
+  - **Single catalog owner:** `SkillService`.
+    - `listInstalledSkillRecords()` becomes **the** installed-skill catalog: exactly one record per name, with `{ skill, origin, trustedRoot, configuredRoot, tier, sourcePath }`.
+    - A companion `listSkillNameIssues()` returns the ignored copies: `{ name, usedPath, ignoredPaths, kind: 'conflict' | 'shadowed_runtime_default' }`.
+  - **Precedence (tier, then order within the tier):**
+    1. `config.getSkillsDir()`, AutoByteus's own skills.
+    2. Definition-root bundles: the app data dir (built-in + user agents/teams/orgs), then `AUTOBYTEUS_AGENT_PACKAGE_ROOTS` in order. Within a root, in this order:
+       - `agents/*` by name;
+       - `agent-teams/*` by name (each team's shared `skills/`, then its local agents' `skills/`);
+       - **`agent-orgs/*` by name (SR-018, CR-009):** each org's org-owned agents `agent-orgs/<o>/agents/<a>/skills/*` by name, then its org-owned teams `agent-orgs/<o>/agent-teams/<t>/` (the team's shared `skills/`, then its local agents' `agents/<a>/skills/`) by name.
+         - Org-owned agent and team directories are enumerated with the exact owned-source correlation, synchronously (AR-014, option a).
+           - The correlation logic currently inside the async `listAgentOrgOwnedDefinitionSources` moves into one pure core, `correlateAgentOrgOwnedMembers({ subject, orgRoot, orgDirName, config, orgDefinitionName, localDirNames })`, in `agent-org-definition/providers/agent-org-owned-definition-correlation.ts`. It covers the `org_local` + `refType` member filter, the `candidateIds` match, exactly-one-match handling (a malformed correlation skips only that member), the per-subject `seen` set and the path construction. It does no I/O.
+           - Two thin I/O readers in `agent-org-owned-definition-source-index.ts` call that core: they read `org-config.json` / `org.md`, list `agents|agent-teams`, and skip unreadable orgs, as today.
+             - The existing **async** `listAgentOrgOwnedDefinitionSources` (`fs/promises`) keeps serving the definition providers and admission, so their request paths stay non-blocking. Its signature is unchanged.
+             - A new **sync** `listAgentOrgOwnedDefinitionSourcesSync` (`fs` sync) serves the skill catalog, which is already synchronous: `readSortedDirectoryEntries` and `loadCatalog`.
+             - There is one correlation owner and no duplicated member matching. The catalog stays synchronous, so no `SkillService` method or caller changes signature. That keeps unchanged GraphQL `skills.ts` L154, `skill-workspace.ts` L24, the Claude/Codex/ACP/AGY bootstrappers and factories, `validateIncomingSkillNames` and `resolveCatalogRecord`.
+           - Org roots come from config: `config.getAgentOrgsDir()` + `<packageRoot>/agent-orgs`, the same rule as the definition providers' `getReadOrgRoots`.
+         - **Team-local agents inside an org-owned team** are enumerated exactly like an ordinary team's: the team directory's `agents/*` subdirectories, via the existing `getAgentSkillDirectories(path.join(teamDir, 'agents'))`. This is directory-based, not read from the team config. Org-owned agents' skills come from each correlated agent `definitionDir`, and org-owned teams' shared skills from `<definitionDir>/skills/*`.
+         - The Org format defines no org-level `skills/` folder, so none is scanned. Adding one would be a separate format change.
+    3. `AUTOBYTEUS_SKILLS_PATHS` entries that are not runtime-default folders, in Settings order.
+    4. Runtime-default folders, only if added:
+       - `$CODEX_HOME/skills` (default `~/.codex/skills`), `~/.claude/skills`, `~/.agents/skills`, `~/.grok/skills`.
+       - These are identified by realpath equality through a new `skills/services/runtime-default-skill-folders.ts`.
+       - They always come after tiers 1–3, whatever the Settings order.
+    - The first record per name wins. A later same-name copy is recorded as an issue: `conflict` if both copies are in tiers 1–3, `shadowed_runtime_default` if the ignored copy is in tier 4.
+    - `listSkills()`, the Skills page, `skillStore`, the `/` menu and ALL_INSTALLED all read this catalog.
+  - **One resolution for every scope (removes the second rule).**
+    - `CONFIGURED` skill names resolve **by name against the catalog**: `SkillService.resolveCatalogRecord(name)` → record or unresolved.
+    - `ConfiguredAgentSkillResolver`'s per-agent contextual resolution (agent-private → team → `getGlobalSkill`) is removed for installed agents.
+    - Both the regular and detailed (AGY) bindings are built from catalog records, the same as ALL_INSTALLED, reusing the existing provenance checks. For AGY, a record's trusted/configured roots follow the D-11 layout table.
+    - Consequence (accepted by DEC-017): an agent that ships its own copy of a name uses it only if that copy is the catalog's. REQ-023 prevents such duplicates among custom sources.
+    - **Boundary:** application-owned agents (`ownershipScope: 'application_owned'`) keep resolving their app-bundled skills from their application bundle first, then the catalog. Applications are sandboxed bundles, not installed skills.
+  - **Agent Org layouts, AGY provenance (SR-018).** These have the same semantics as the D-11 table, and each passes the existing `assertDetailedCandidateProvenance` layout checks unchanged:
+    - `<root>/agent-orgs/<o>/agents/<a>/skills/<n>` → `agent_private`; trusted/configured root = `<root>/agent-orgs/<o>/agents/<a>` (layout `skills/<n>`).
+    - `<root>/agent-orgs/<o>/agent-teams/<t>/skills/<n>` → `team_shared`; trusted/configured root = `<root>/agent-orgs/<o>/agent-teams/<t>` (layout `skills/<n>`).
+    - `<root>/agent-orgs/<o>/agent-teams/<t>/agents/<a>/skills/<n>` → `agent_private`; trusted/configured root = `<root>/agent-orgs/<o>/agent-teams/<t>` (layout `agents/<a>/skills/<n>`).
+    - So agents, teams and orgs behave the same:
+      - an org agent's own skill is in the one catalog;
+      - it resolves by name for that agent (and for everyone else, as with teams);
+      - it is listed on the Skills page, which was never the case before, even on `personal`;
+      - it is covered by import validation.
+  - **Every name-based skill operation uses the catalog (AR-013).**
+    - `SkillService.getSkill(name)` returns `resolveCatalogRecord(name)?.skill`, the used copy. That covers the GraphQL `skill(name)` query, the file tree, `updateSkill`, `deleteSkill`, enable/disable, `uploadFile` / `readFile` / `deleteFile`, `getSkills` (L208) and `workspaces/skill-workspace.ts`.
+      - Opening, editing, deleting, enabling/disabling and file operations therefore **always act on the used copy**, never on an ignored duplicate.
+    - Removed (clean cut): `findCatalogSkillLocation` (L95), `findGlobalSkillLocation` (L85), `getGlobalSkill` (L122), and the resolver's `resolveGlobalSkill` / `globalCandidatePaths` name searches.
+      - Any remaining lookup of a directory by name (`searchConfiguredSkillCandidate`, `searchBundledSkillDirectory`) is used only inside the catalog build or the application-owned boundary, never for installed-skill operations.
+    - Ignored copies are **not** addressable by name. They appear read-only, with their paths, in the Skills page banner details (REQ-024). To change or remove one, the user edits the files at that path or resolves the duplicate.
+    - Enable/disable stays keyed by name, so it applies to the used copy. Ignored copies are never loaded.
+  - **Import validation (REQ-023).** `SkillService.validateIncomingSkillNames(incoming: { sourcePath, tier })` computes the prospective catalog and returns conflicts among tiers 1–3 as `{ name, existingPath, incomingPath }`, plus shadow notices for tier 4.
+    - **Callers**, each validating **before** committing, so a rejected operation changes nothing:
+      - `SkillService.addSkillSource` (reject before persisting `AUTOBYTEUS_SKILLS_PATHS`). Adding a runtime-default folder never conflicts; it returns shadow notices.
+      - `AgentPackageService.importAgentPackage`:
+        - local path: validate before registering;
+        - GitHub: validate the downloaded tree before recording the package, and delete the download on rejection.
+      - `AgentPackageService.updateAgentPackage` (validate the new revision before switching) and `reloadAgentPackage`.
+        - Reload semantics (R-3): a reload cannot undo files already on disk (e.g. after an out-of-band `git pull`). A rejected reload therefore shows the pop-up and keeps the package's previous registration record. The catalog and the Skills banner still reflect the on-disk state per REQ-024: one used copy per name, the conflict listed.
+      - `SkillService.createSkill`: its existing own-folder check is extended to the whole tiers 1–3 catalog.
+      - The prospective catalog used for validation includes Agent Org layouts. An agent package import/update/reload whose `agent-orgs/**/skills/*` names duplicate existing tier 1–3 names is rejected the same way (SR-018).
+    - **Error contract:** a GraphQL error with message `Duplicate skill names: <names>` and `extensions: { code: 'SKILL_NAME_CONFLICT', conflicts: [{ name, existingPath, incomingPath }] }`. Successful mutations may return `skillNameNotices` for tier-4 shadows.
+  - **Safety net (REQ-024).** Out-of-band changes (git pull, Finder copy, Codex installing into its folder) are not imports.
+    - Loading still yields one record per name.
+    - `listSkillNameIssues()` is logged at catalog load, and a new GraphQL query `skillNameIssues` feeds a Skills page banner.
+  - **Codex native discovery (AF-36).** Codex also reads its own default folder, and it does not de-duplicate same-named skills (openai/codex#25324).
+    - `codex-thread-bootstrapper.planWorkspaceSkillRequests` treats a name as `reconcile-discoverable` only when Codex's `skills/list` entry path (realpath of its `SKILL.md` directory) equals the catalog record's root.
+    - Otherwise it uses `expose-resolved`, so the chosen copy is linked into the workspace, and it logs `codex-runtime-duplicate` (name, Codex path, chosen path).
+    - The Skills page shadow notice recommends removing stale runtime-default copies, because Codex may still show both copies inside Codex runs. This is a residual risk outside AutoByteus.
+  - **Materializer simplification.** From D-15 only Rule 1 remains (`workspaceCollisionPolicy`).
+    - Removed: `requestStrength`, strong/weak holder counts, re-pointing, `yielded-to-configured`, `skipped-held-by-other-run`, and Rule 3 `skipped-unresolved-held-by-weak`.
+    - Also removed: `workspace-skill-links.ts` re-point helpers not needed by Rule 1 and the unchanged base behavior, plus the IC-2 Windows re-point fallback.
+    - The registry's pre-existing `sourceCollisionError` remains only for a mid-run out-of-band catalog change (residual: fail-fast with a clear message).
+  - **Web — the error pop-up** (designed here; the user waived Product design).
+    - `components/skills/SkillNameConflictDialog.vue` is built on the existing `components/common/Modal.vue` overlay.
+    - Title: "Duplicate skill names".
+    - Body: "These skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again."
+    - One row per conflict: the **name** in bold, then "Already installed: `<existingPath>`" and "New: `<incomingPath>`" in monospace, truncated with the full path in a tooltip.
+    - A single primary "OK" button. Esc and a backdrop click close it.
+    - It opens from `SkillSourcesModal` (add folder), `AgentPackagesManager` (import/update/reload) and skill creation whenever the mutation error has `code === 'SKILL_NAME_CONFLICT'`. The stores parse `extensions.conflicts` instead of flattening the message.
+    - Tier-4 notices use the existing toast: "Ignored N skills from the Codex default folder because your own copies take precedence."
+  - **Web — Skills page banner** (`SkillsList.vue`): when `skillNameIssues` is non-empty, an amber banner reads "Some skills share a name. AutoByteus uses one copy per name." with "Show details" listing name → used path / ignored paths. `conflict` rows ask the user to fix them; `shadowed_runtime_default` rows are informational.
+  - **Validation:**
+    - The catalog precedence covers all four tiers, including the real layout: `~/.codex/skills` vs `autobyteus-skills` duplicates → `autobyteus-skills` wins.
+    - A CONFIGURED agent and Daily Assistant resolve the same path for the same name.
+    - V-F rerun: the desk-package team next to a live Daily Assistant resolves `desk-alpha` from the catalog and starts, with no special rule.
+    - Each import path is rejected with nothing changed and the pop-up shown; a runtime-default duplicate is accepted with a notice.
+    - The out-of-band duplicate banner.
+    - Codex: a stale `~/.codex/skills` duplicate → the chosen copy is exposed and `codex-runtime-duplicate` is logged.
+    - Regression: application-owned agents still resolve their app-bundled skills.
+    - AR-013, with a tier-4 vs tier-3 duplicate (a `~/.codex/skills` copy vs `autobyteus-skills`, different contents) and a tier-2 vs tier-3 duplicate: GraphQL `skill(name)`, the file tree, `readFile`, `updateSkill` and `deleteSkill` all act on the used copy (the catalog winner); the ignored copy's files stay untouched; the banner lists the ignored path.
+    - A rejected reload keeps the previous registration, and the banner shows the on-disk conflict.
+    - **Agent Org (SR-018)**, with a test package containing an org-owned agent and an org-owned team (with a team-local agent), each with its own `skills/<unique-name>`:
+      - each org agent runs with its own skill resolved (AutoByteus catalog / Codex / Claude materialization / AGY capsule);
+      - the Skills page lists these skills with their org paths;
+      - importing a second package with a same-named skill is rejected with the pop-up;
+      - regression: this restores the `personal` behavior where an org agent's `<agentDir>/skills/<name>` was used.
+- **D-12 — Last-used model.** One device-local value records the runtime and model. It is used as the New chat default, then the Daily Assistant default launch config, then the runtime default.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
@@ -437,14 +610,14 @@ Constraints to respect:
 
 | Item To Remove | Why It Becomes Unnecessary | Replaced By | Scope | Notes |
 | --- | --- | --- | --- | --- |
-| `components/workspace/agent/AgentWorkspaceView.vue` and its branch in `WorkspaceAdaptiveLayout` | Standalone runs open in the chat view (D-05) | `ChatRunView` via `/chat?id` + redirect | In This Change | `AgentWorkspaceSurface` stays (org). Remove its i18n keys and tests |
+| `components/workspace/agent/AgentWorkspaceView.vue` and its branch in `WorkspaceAdaptiveLayout` | Standalone runs open in the chat view (D-05) | `ChatRunView` via `/chat?id` + redirect | In This Change | `AgentWorkspaceSurface` stays (org). Remove its i18n keys and tests — **Withdrawn by D-17 (restored)** |
 | `runHistoryStore.createDraftRun` + `createDraftRunForHistoryStore` + `onCreateRun` draft path in `useWorkspaceHistorySelectionActions` | Tree `+` now starts a preset New chat (REQ-009) | `chatDraftStore.startNewChat({ agentDefinitionId, workspaceRootPath })` + route `/chat` | In This Change | Update `workspace-history-draft-send.integration.test.ts` |
 | Direct `activeContextStore` reads inside `ContextFilePathInputArea.vue` / `AgentUserInputTextArea.vue` | Explicit `ComposerTarget` | `useComposerTarget` | In This Change | Behavior unchanged for team/org |
 | Absolutely positioned mic/send markup inlined in `AgentUserInputTextArea.vue` | Extracted reusable buttons | `VoiceInputButton.vue`, `MessagePrimaryActionButton.vue` | In This Change | Same positions in the run-view box |
 | Right-panel dock/strip/drawer code inside `WorkspaceAdaptiveLayout.vue` | Extracted shell | `WorkspaceToolShell.vue` | In This Change | — |
 | `/workspace` agent execution-link handling (`workspaceExecutionKind=agent` built by `buildWorkspaceExecutionRoute`) | Agent links go to chat | `buildAgentRunChatRoute` | In This Change | Links are ephemeral route queries, not persisted |
 | `voiceInputStore` capture of the composer target from `useActiveContextStore().activeAgentContext`, and the bare `VoiceInputRecordingSource` string parameter | Explicit target (AR-004) | Discriminated recording request | In This Change | Settings test recording behavior unchanged |
-| Standalone-agent `showSelectedRunConfig` config mode in `WorkspaceAdaptiveLayout` (RunConfigPanel for a selected standalone run) and the `AgentWorkspaceView` header actions (`new-agent`, `edit-config`) | The chat view has no standalone gear or new-agent action | Chat footer (D-08); pencil / tree `+` for new chats | In This Change | Team/org config modes unchanged |
+| Standalone-agent `showSelectedRunConfig` config mode in `WorkspaceAdaptiveLayout` (RunConfigPanel for a selected standalone run) and the `AgentWorkspaceView` header actions (`new-agent`, `edit-config`) | The chat view has no standalone gear or new-agent action | Chat footer (D-08); pencil / tree `+` for new chats | In This Change | Team/org config modes unchanged — **Withdrawn by D-17 (restored)** |
 | Consumers using `definition.skillNames.length` to decide skill use (`autobyteus-agent-run-backend-factory.ts`, `agy-agent-run-backend-factory.ts`) | Effective skills owned by SkillService | `SkillService.hasEffectiveSkills` / resolution | In This Change | — |
 | `index.redirecting_to_agent_management` copy | Landing changes | "Opening Chat..." key (en, zh-CN) | In This Change | — |
 
@@ -641,7 +814,7 @@ Web (`autobyteus-web/`):
 | `components/layout/WorkspaceToolShell.vue` | Add (extract) | Tool shell | Dock/strip/drawer/resize around a slot; `scope` prop |
 | `components/layout/WorkspaceAdaptiveLayout.vue` | Modify | Center switch | Uses the shell; standalone-agent branch removed |
 | `composables/useRightPanel.ts` | Modify | Preference | Scoped visibility: `workspace` (default visible), `chat` (default collapsed) |
-| `components/workspace/agent/AgentWorkspaceView.vue` | Remove | — | Replaced |
+| `components/workspace/agent/AgentWorkspaceView.vue` | ~~Remove~~ → **Restored (D-17)** | Standalone run view | Superseded row (SR-015 cleanup): restored with ＋ → preset New chat; see the D-17 rows |
 | `composables/useShellPrimaryNavigation.ts`, `components/AppLeftPanel.vue` | Modify | Nav | `chat` item first; pencil → `chatDraftStore.startNewChat()` + `/chat`; collapse on the first item; run-selected → `resolveSelectionRoute` |
 | `components/workspace/history/WorkspaceAgentRunsTreePanel.vue`, `composables/useWorkspaceHistorySelectionActions.ts` | Modify | Tree | `onCreateRun` → preset New chat; `/chat?id` selected-row sync and expansion |
 | `stores/runHistoryStore.ts`, `stores/runHistoryDraftActions.ts` | Modify | History | Remove `createDraftRun` path |
@@ -650,10 +823,25 @@ Web (`autobyteus-web/`):
 | `stores/agentRunStore.ts`, `types/agent/AgentContext.ts`, `services/runSubmission/localUserSubmission.ts`, `stores/activeContextStore.ts` | Modify | Send | Compose instruction; `initialSummary` = user text (tags-only fallback: the instruction); `requestedSkillNames`; clear on submission; `hasDraft` counts tags |
 | `stores/agentTeamRunStore.ts` | Modify | Team send | `attachmentDraftOwner` option |
 | `composables/chat/useChatModelCatalog.ts` (`toChatModelOption`, `matchesModelQuery`, `filterOptions`), `components/chat/chatRunModelControls.ts` (fixed list + persisted `modelLabel` via `toChatModelOption`), `components/chat/ChatModelMenu.vue` (+ footer trigger; inline predicate removed), `utils/modelSelectionOptions.ts` (export `compareRecommendedFirstBy`), `utils/modelSelectionLabel.ts` (+ `existingRunChoiceLabelInput`), `components/launch-config/RuntimeModelConfigFields.vue` (uses the shared mapping; local `choiceLabel` removed) | Modify | D-16 labels (SR-012) | One option builder and one search predicate for the catalog and persisted paths; shared order; truncation + tooltip; tests V-L1 to V-L5 |
+| `pages/chat.vue`, `components/layout/WorkspaceAdaptiveLayout.vue` (standalone branch + standalone config mode restored), `components/workspace/agent/AgentWorkspaceView.vue` (restored; ＋ → preset New chat), `components/workspace/agent/AgentWorkspaceSurface.vue` (standalone run-summary title), `components/workspace/common/WorkspaceHeaderActions.vue` (if needed) | Modify/Restore | D-17 frame and header | Chat run view = product agent run view in the workspace frame |
+| `components/agentInput/AgentUserInputForm.vue`, `AgentUserInputTextArea.vue` | Modify | D-17 box | Optional standalone `skillTagging` capability (`/` menu + chip row); team/org unchanged |
+| `composables/useRightPanel.ts`, `composables/useRightSideTabs.ts`, `components/layout/RightSideTabs.vue`, `RightSidebarStrip.vue` | Modify | D-17 panel | Shared visibility (chat scope removed). `contextualScopeKey` / `lastAppliedScopeKey`; default applied on mount or on scope change when the key differs; `selectTabExplicitly` wins in the same open action; immediate validity watcher |
+| `components/workspace/config/RunConfigPanel.vue`, `components/workspace/config/DraftRunConfigEditor.vue` (new) | Modify / Add | D-17 ⚙ on drafts (AR-011) | Draft branch for a selected `temp-*` standalone run: an editable `AgentRunConfigForm` bound to `context.config`; no `existingRunConfigStore` |
+| `components/chat/ChatRunView.vue`, `ChatRunHeader.vue`, `chatRunModelControls.ts` (persisted mode), the `ChatComposer` run mode, the `useChatModelCatalog` `runChoice`/`filterOptions` | Remove | D-17 removals | Superseded by the product run view and ⚙ |
+| `autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts` (`reconcileUnresolved`) | ~~Modify (D-15 Rule 3)~~ **Superseded by D-19** | — | Rule 3 is not implemented; strength/holder/re-point code is removed (see the D-19 rows) |
+| `autobyteus-server-ts/src/skills/services/skill-service.ts`, `skill-discovery.ts`, new `runtime-default-skill-folders.ts`, `configured-agent-skill-resolver.ts`, `domain/installed-skill-record.ts` | Modify / Add | D-19 catalog (SR-016) | One record per name with tiers; `listSkillNameIssues`; `resolveCatalogRecord`; `validateIncomingSkillNames`; the per-agent contextual resolution removed except for application-owned agents |
+| `autobyteus-server-ts/src/skills/services/skill-catalog.ts`, `skill-discovery.ts` (`getBundledSkillDirectoriesFromDefinitionRoot` / its record builder), `config` org roots | Modify | D-19 Agent Org layouts (SR-018/SR-019) | Tier-2 enumeration adds org-owned agents and org-owned teams (+ team-local agents via the team dir's `agents/*`) in the stated order, using `listAgentOrgOwnedDefinitionSourcesSync`; AGY roots per the SR-018 table; tests + the org validation case |
+| `autobyteus-server-ts/src/agent-org-definition/providers/agent-org-owned-definition-correlation.ts` (new), `agent-org-owned-definition-source-index.ts` | Add / Modify | AR-014 (SR-019) | Pure `correlateAgentOrgOwnedMembers` core, moved from the async index; the async `listAgentOrgOwnedDefinitionSources` / `findAgentOrgOwnedDefinitionSource` delegate to it with unchanged signatures; new sync `listAgentOrgOwnedDefinitionSourcesSync`; unit tests for the core, plus parity tests showing both readers produce identical results |
+| `autobyteus-server-ts/src/skills/services/skill-service.ts` (`getSkill` and every caller: detail, file tree, update, delete, enable/disable, upload/read/delete file, `getSkills`), `src/api/graphql/types/skills.ts` (L136), `src/workspaces/skill-workspace.ts` (L24) | Modify / Remove | D-19 AR-013 (SR-017) | Every name-based lookup → `resolveCatalogRecord`; remove `findCatalogSkillLocation`, `findGlobalSkillLocation`, `getGlobalSkill` and the resolver's global-name search |
+| `autobyteus-server-ts/src/agent-packages/services/agent-package-service.ts`, `skill-service.ts` (`addSkillSource`, `createSkill`), `api/graphql/types/skills.ts` (+ `skillNameIssues` query; `SKILL_NAME_CONFLICT` error), agent-package GraphQL types | Modify | D-19 import validation | Validate before commit on add/import/update/reload/create; structured conflict error; notices |
+| `autobyteus-server-ts/src/agent-execution/backends/shared/workspace-skill-materializer.ts`, `workspace-skill-links.ts`, the Codex/Claude/ACP/AGY bootstrappers and factories | Modify (removal) | D-19 simplification | Remove `requestStrength`, holder strengths, re-point/yield, the Rule 3 skip and the IC-2 re-point fallback; keep Rule 1 (`workspaceCollisionPolicy`) |
+| `autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts` | Modify | D-19 Codex | `reconcile-discoverable` only when the discovered path equals the catalog root; else expose + log `codex-runtime-duplicate` |
+| `autobyteus-web/components/skills/SkillNameConflictDialog.vue` (new), `components/skills/SkillSourcesModal.vue`, `components/skills/SkillsList.vue` (banner), `components/settings/AgentPackagesManager.vue`, `stores/skillSourcesStore.ts`, `stores/agentPackagesStore.ts`, `stores/skillStore.ts`, `graphql/skills*.ts`, localization | Add / Modify | D-19 web | Conflict pop-up, notices toast, Skills page banner, structured error parsing |
+| `autobyteus-web/utils/llmConfigSchema.ts` (`applyModelConfigSchemaDefaults`), `components/workspace/config/ModelConfigSection.vue`, `stores/chatDraftStore.ts`, `services/chat/chatTeamLaunchConfig.ts` | Modify | D-18 (SR-015) | Shared defaults helper; the chat draft records an explicit `llmConfig` (schema defaults + default thinking) on every model set; team root the same |
 | `stores/runHistoryLoadActions.ts` | Modify | Reconcile (D-14, SR-010) | Skip contexts where `agentRunStore.isActivationPending(runId)`; clear the marker for runs in the active set. Remove the SR-008 `submissionPending` guard |
 | `stores/agentRunStore.ts` (D-14) | Modify | Activation marker | `activationPendingRunIds` + mark/clear/is; set before connecting for first sends (after promotion) and Offline/Error resumes; clear on failure/cancel, a rejected ack, or terminate/close |
 | `services/agentStreaming/AgentStreamingService.ts` | Modify | Send ack callback | `onSendMessageCommandAck(ack)` option, mirroring `onInterruptCommandResult` |
-| `components/chat/chatRunModelControls.ts` (CR-002 local fix) | Modify | Footer thinking schema | Persisted mode ensures the run's runtime catalog/schema source is loaded (`useChatModelCatalog` / `llmProviderConfig` ensure for that runtime) whether live or Offline. Models with no thinking parameters still hide the control |
+| `components/chat/chatRunModelControls.ts` (CR-002 local fix) | **Superseded (D-17)** | — | The run footer is removed by R3/D-17; the CR-002 fix is moot. Kept only as history (SR-015 cleanup) |
 | `stores/agentDefinitionStore.ts`, `graphql/queries/agentDefinitionQueries.ts`, agent-definition mutations | Modify | Contract | `skillScope` |
 | `components/agents/AgentDefinitionForm.vue`, `AgentCard.vue`, `AgentDefinitionDetailSections.vue`, `AgentDetail.vue` | Modify | Editor | "Use all installed skills" option (picker disabled when on); cards/detail show "All installed skills" |
 | `localization/messages/{en,zh-CN}/*` | Modify | Copy | Spec copy (normative English; zh-CN translations) |
@@ -719,7 +907,7 @@ Tests: update or add unit tests beside each changed owner. Add e2e for Daily Ass
 
 | Candidate | Why Considered | Decision | Clean-Cut Replacement |
 | --- | --- | --- | --- |
-| Keep `AgentWorkspaceView` on `/workspace` alongside the chat view | Catalog-launched runs | Rejected | All standalone runs → chat view (D-05) |
+| Keep a separate `AgentWorkspaceView` on `/workspace` alongside a different chat view | Catalog-launched runs | Rejected | One standalone run view: after D-17 it is `AgentWorkspaceView` inside the workspace frame at `/chat?id` (D-05 routing + D-17) |
 | Keep the tree `+` creating draft runs | Existing behavior | Rejected | Preset New chat |
 | Keep `/workspace` agent execution links working in parallel | Old in-app links | Rejected | Agent links build chat routes; `/workspace` redirects standalone selection |
 | A magic `"*"` entry in `skillNames` | Avoid a schema field | Rejected | `skillScope` enum |
@@ -808,6 +996,23 @@ Presentation (`components/chat`) → chat domain (`chatDraftStore`, `chatLaunchS
 
 Delta classification: `Small` / `Low`. The change is web-only, inside the existing chat catalog owner, and reuses existing utilities, with no contract or persistence change. The cumulative package stays Large / High.
 
+## SR-013 Resolution (Product R3, user-confirmed)
+
+| Item | Resolution |
+| --- | --- |
+| The user asked for the Chat run view's top area and right tabs to match the workspace Team/Org views; R3 decisions (DEC-016) | D-17: the product agent run view inside the workspace frame; the ⚙ existing-run settings; the product box + `/`; the shared right-panel state; strip → exact tab fixed in the shared owner |
+| Classification | Package Large / High. The delta is a Medium web-only refactor inside existing owners: the chat run surfaces are removed and product owners reused, with no server or contract change |
+| ARCH-REV-009 AR-010 | The tab context rule is revised: a last-applied scope key, applied on mount or on change, explicit selection wins, immediate validity |
+| ARCH-REV-009 AR-011 | ⚙ on `temp-*` drafts → the new `DraftRunConfigEditor` (editable form on `context.config`); the "existing behavior" claim is corrected |
+| CRR-010 CR-007 / UF-04 (Design Impact) | ~~D-15 Rule 3~~ superseded by D-19 (SR-016): the bundled `desk-alpha` resolves from the single catalog, so there is no weak/strong conflict. V-F is rerun under D-19 |
+| ARCH-REV-014 AR-014 (SR-019) | Option (a): the synchronous correlation core in `agent-org-definition`, shared by the async index (providers, unchanged signature) and a new sync reader (catalog); no catalog or `SkillService` API changes; team-local agents in org-owned teams are enumerated via the team dir's `agents/*` |
+| CRR-012 CR-009 (SR-018, user direction) | D-19 tier 2 includes Agent Org layouts (org-owned agents; org-owned teams' shared and local-agent skills) via the owned-source index, with an order, AGY roots, import validation and a validation case; this fixes the D-19 regression vs `personal` and adds org skills to the Skills page |
+| ARCH-REV-012 AR-013 / R-3 (SR-017) | Every name-based skill operation goes through the catalog (edits and deletes hit the used copy only; ignored copies are read-only in the banner); the second-precedence lookups are removed; a rejected reload keeps the previous registration while the banner reflects the disk |
+| User decision DEC-017 (SR-016) | D-19: one skill per name with precedence tiers (runtime default folders never win); import validation with a conflict pop-up; out-of-band banner; Codex discovery match; D-15 Rules 2–3 removed |
+| CRR-010 CR-008 / UF-03 (Local Fix, sequenced) | D-18: the New chat records an explicit `llmConfig` via the shared `applyModelConfigSchemaDefaults` + default thinking |
+| CRR-008 note | Stale mapping rows (`AgentWorkspaceView` "Remove", the CR-002 run-footer row) are marked superseded by D-17 |
+| ARCH-REV-009 AR-012 | Editorial: REQ-021/AC-018 scope (New chat menu + ⚙ gear-editor labels); AC-015 → VIS-001–027 |
+
 ## Guidance For Implementation
 
 - **Fidelity.** Treat R2 `ui-ux-spec.md` and VIS-001–025 as normative. The prototype `components/chat/*` markup may guide styling, but no prototype state files may be ported (`usePrototypeChat`, `chat-fixtures`, `chatTreeProjection`).
@@ -840,6 +1045,7 @@ Delta classification: `Small` / `Low`. The change is web-only, inside the existi
   - **V-D:** a user-owned folder at the workspace skill path → Daily Assistant starts (`skipped-workspace-owned`), and a configured agent fails fast, unchanged.
   - **V-E:** both runs terminate → the link is removed and the registry is empty.
   - Use a same-name, different-source skill pair from the real catalog (seven exist, e.g. `software-tutorial-video-maker`).
+  - **V-F (Rule 3, regression C20):** a Daily Assistant chat is live in the temp workspace. Start the test package team (`api-e2e-evidence/test-data/chat-entry-desk-package`), whose coordinator `desk-lead` configures `desk-alpha`, bundled in sibling `desk-helper` (unresolved for CONFIGURED). The team starts, logs `skipped-unresolved-held-by-weak`, and can discover `desk-alpha`. After the chat terminates, the link is removed. Cover Codex and Claude (ACP/Grok where available).
 - **Header status** uses the existing run-status mapping.
 - **Title** is the run summary, truncated to 42 characters with an ellipsis.
 - **Tree:** `/chat?id` sets the selected row, expands its workspace and agent, and is selected with `bg-indigo-50 text-indigo-900`.
