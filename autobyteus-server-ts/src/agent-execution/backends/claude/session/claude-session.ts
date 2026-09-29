@@ -36,6 +36,7 @@ import {
   hasClaudeUserMessageContent,
 } from "./claude-user-message-builder.js";
 import { CLAUDE_BACKGROUND_TASK_NOTICE_SENDER_ID } from "../../../domain/system-task-notification-senders.js";
+import { buildBackgroundTaskUpdatedPayload } from "../../../domain/agent-background-task.js";
 import type { ClaudeSdkSessionBinding } from "../../../../runtime-management/claude/client/claude-sdk-session-binding.js";
 import {
   CLAUDE_CANCEL_QUEUED_CAPABILITY,
@@ -82,7 +83,9 @@ export class ClaudeSession {
   private rawClaudeChunkSequence = 0;
   private readonly agentToolsMcpSessionState: ClaudeAgentToolsMcpSessionState;
   private readonly providerSessionLifecycle: ClaudeProviderSessionLifecycle;
-  private readonly taskRegistry = new ClaudeBackgroundTaskRegistry();
+  private readonly taskRegistry = new ClaudeBackgroundTaskRegistry((task) => this.emitRuntimeEvent({
+    method: ClaudeSessionEventName.BACKGROUND_TASK_UPDATED, params: buildBackgroundTaskUpdatedPayload(task),
+  }));
   private readonly turnTracker: ClaudeTurnTracker;
   private readonly process: ClaudeSessionProcess;
   private readonly interruptTasks = new Map<string, Promise<void>>();

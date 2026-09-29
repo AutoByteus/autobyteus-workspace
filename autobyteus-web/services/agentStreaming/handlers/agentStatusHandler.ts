@@ -2,7 +2,7 @@
  * Status and other event handlers.
  * 
  * Layer 3 of the agent streaming architecture - handles AGENT_STATUS,
- * TODO_LIST_UPDATE, and ERROR events.
+ * and ERROR events.
  */
 
 import type { AgentContext } from '~/types/agent/AgentContext';

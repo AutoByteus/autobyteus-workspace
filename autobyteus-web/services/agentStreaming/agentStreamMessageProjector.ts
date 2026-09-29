@@ -20,7 +20,7 @@ import {
   handleAssistantComplete,
   handleTurnCompleted,
   handleTurnInterrupted,
-  handleTodoListUpdate,
+  handleBackgroundTaskUpdated,
   handleError,
   handleInterAgentMessage,
   handleFileChange,
@@ -186,8 +186,8 @@ const dispatchToHandler = (
       return conversationResult(handleInterAgentMessage(message.payload, context), 'STRUCTURAL');
     case 'SYSTEM_TASK_NOTIFICATION':
       return conversationResult(handleSystemTaskNotification(message.payload, context), 'STRUCTURAL');
-    case 'TODO_LIST_UPDATE':
-      handleTodoListUpdate(message.payload, context);
+    case 'BACKGROUND_TASK_UPDATED':
+      handleBackgroundTaskUpdated(message.payload, context);
       return NO_AGENT_STREAM_MUTATION;
     case 'FILE_CHANGE':
       handleFileChange(message.payload, context);

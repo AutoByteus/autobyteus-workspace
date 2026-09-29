@@ -129,3 +129,19 @@ test('requires a non-negative safe-integer report generation', () => {
   })));
   assert.throws(() => tokenUsageRunSummaryDtoSchema.parse(summary({ usage_report_count: -1 })));
 });
+
+test('team stream carries background-task snapshots with execution identity and rejects to-do messages', () => {
+  const payload = {
+    task_id: 'task-1',
+    kind: 'subagent',
+    description: 'Review the diff',
+    status: 'completed',
+    summary: 'Done',
+    started_at: '2026-09-29T16:48:20.000Z',
+    change_sequence: 3,
+    agent_run_id: 'member-run-1',
+  };
+  assert.equal(parseTeamStreamServerMessage({ type: 'BACKGROUND_TASK_UPDATED', payload }).payload.task_id, 'task-1');
+  assert.throws(() => parseTeamStreamServerMessage({ type: 'BACKGROUND_TASK_UPDATED', payload: { ...payload, agent_run_id: undefined } }));
+  assert.throws(() => parseTeamStreamServerMessage({ type: 'TODO_LIST_UPDATE', payload: { todos: [], change_sequence: 1, agent_run_id: 'member-run-1' } }));
+});

@@ -203,6 +203,32 @@ const messages = {
     "新建 - {{name}}",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "记忆压缩",
+  "workspace.components.progress.BackgroundTaskPanel.title":
+    "后台任务",
+  "workspace.components.progress.BackgroundTaskPanel.counts":
+    "{{running}} 个运行中 · 共 {{total}} 个",
+  "workspace.components.progress.BackgroundTaskPanel.empty":
+    "没有后台任务",
+  "workspace.components.progress.BackgroundTaskPanel.untitled":
+    "后台任务",
+  "workspace.components.progress.BackgroundTaskPanel.kind.shell":
+    "命令行",
+  "workspace.components.progress.BackgroundTaskPanel.kind.subagent":
+    "子智能体",
+  "workspace.components.progress.BackgroundTaskPanel.kind.monitor":
+    "监视器",
+  "workspace.components.progress.BackgroundTaskPanel.kind.workflow":
+    "工作流",
+  "workspace.components.progress.BackgroundTaskPanel.kind.other":
+    "任务",
+  "workspace.components.progress.BackgroundTaskPanel.status.running":
+    "运行中",
+  "workspace.components.progress.BackgroundTaskPanel.status.completed":
+    "已完成",
+  "workspace.components.progress.BackgroundTaskPanel.status.failed":
+    "失败",
+  "workspace.components.progress.BackgroundTaskPanel.status.stopped":
+    "已停止",
   "workspace.components.progress.SystemInstructionActivityItem.title":
     "系统指令",
   "workspace.components.progress.SystemInstructionActivityItem.available":

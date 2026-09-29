@@ -77,7 +77,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useAgentTodoStore } from '~/stores/agentTodoStore';
 import { useRightPanel } from '~/composables/useRightPanel';
 import { useRightPanelOpenFileAutoSwitch } from '~/composables/useRightPanelOpenFileAutoSwitch';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
@@ -98,12 +97,10 @@ const props = withDefaults(defineProps<{
 });
 
 const activeContextStore = useActiveContextStore();
-const todoStore = useAgentTodoStore();
 
 const { activeTab, visibleTabs: baseVisibleTabs, setActiveTab } = useRightSideTabs();
 const { toggleRightPanel } = useRightPanel();
 
-const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
 const activeWorkspaceId = computed(() => {
   const target = activeContextStore.activeWorkspaceTarget;
   const id = target?.context.config.workspaceId;
@@ -175,13 +172,6 @@ watch(isTerminalTabActive, (isActive) => {
     hasOpenedTerminalTab.value = true;
   }
 }, { immediate: true });
-
-// Watch the ToDo list for the active agent. If it becomes populated, switch to the To-Do tab.
-watch(() => currentAgentRunId.value ? todoStore.getTodos(currentAgentRunId.value) : [], (newTodoList) => {
-  if (activeContextStore.activeWorkspaceTarget && newTodoList.length > 0 && activeTab.value !== 'progress') {
-    setActiveTab('progress');
-  }
-});
 
 useRightPanelOpenFileAutoSwitch({ filesTabEnabled });
 

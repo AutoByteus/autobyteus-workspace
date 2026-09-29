@@ -203,6 +203,32 @@ const messages = {
     "New - {{name}}",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "Memory compaction",
+  "workspace.components.progress.BackgroundTaskPanel.title":
+    "Background Tasks",
+  "workspace.components.progress.BackgroundTaskPanel.counts":
+    "{{running}} running · {{total}} total",
+  "workspace.components.progress.BackgroundTaskPanel.empty":
+    "No background tasks",
+  "workspace.components.progress.BackgroundTaskPanel.untitled":
+    "Background task",
+  "workspace.components.progress.BackgroundTaskPanel.kind.shell":
+    "Shell",
+  "workspace.components.progress.BackgroundTaskPanel.kind.subagent":
+    "Subagent",
+  "workspace.components.progress.BackgroundTaskPanel.kind.monitor":
+    "Monitor",
+  "workspace.components.progress.BackgroundTaskPanel.kind.workflow":
+    "Workflow",
+  "workspace.components.progress.BackgroundTaskPanel.kind.other":
+    "Task",
+  "workspace.components.progress.BackgroundTaskPanel.status.running":
+    "Running",
+  "workspace.components.progress.BackgroundTaskPanel.status.completed":
+    "Completed",
+  "workspace.components.progress.BackgroundTaskPanel.status.failed":
+    "Failed",
+  "workspace.components.progress.BackgroundTaskPanel.status.stopped":
+    "Stopped",
   "workspace.components.progress.SystemInstructionActivityItem.title":
     "System instructions",
   "workspace.components.progress.SystemInstructionActivityItem.available":

@@ -7,6 +7,7 @@
 
 import type { AgentCommandAckPayload } from './agentCommandTypes';
 import type { JsonValue } from '@autobyteus/team-stream-contracts';
+import type { BackgroundTaskKind, BackgroundTaskStatus } from '~/types/backgroundTask';
 export type {
   AgentCommandAckPayload,
   InterruptCommandTarget,
@@ -49,7 +50,7 @@ export type ServerMessageType =
   | 'TOOL_EXECUTION_INTERRUPTED'
   | 'TOOL_LOG'
   | 'ASSISTANT_COMPLETE'
-  | 'TODO_LIST_UPDATE'
+  | 'BACKGROUND_TASK_UPDATED'
   | 'INTER_AGENT_MESSAGE'
   | 'SYSTEM_TASK_NOTIFICATION'
   | 'ARTIFACT_PERSISTED'
@@ -188,14 +189,13 @@ export interface TurnLifecyclePayload {
   interrupted?: boolean;
 }
 
-export interface TodoItem {
-  todo_id: string;
+export interface BackgroundTaskUpdatedPayload {
+  task_id: string;
+  kind: BackgroundTaskKind;
   description: string;
-  status: string;
-}
-
-export interface TodoListUpdatePayload {
-  todos: TodoItem[];
+  status: BackgroundTaskStatus;
+  summary: string | null;
+  started_at: string;
 }
 
 export interface InterAgentMessagePayload {
@@ -284,7 +284,7 @@ export type ServerMessage =
   | { type: 'TOOL_EXECUTION_INTERRUPTED'; payload: ToolExecutionInterruptedPayload }
   | { type: 'TOOL_LOG'; payload: ToolLogPayload }
   | { type: 'ASSISTANT_COMPLETE'; payload: AssistantCompletePayload }
-  | { type: 'TODO_LIST_UPDATE'; payload: TodoListUpdatePayload }
+  | { type: 'BACKGROUND_TASK_UPDATED'; payload: BackgroundTaskUpdatedPayload }
   | { type: 'INTER_AGENT_MESSAGE'; payload: InterAgentMessagePayload }
   | { type: 'SYSTEM_TASK_NOTIFICATION'; payload: SystemTaskNotificationPayload }
   | { type: 'ARTIFACT_PERSISTED'; payload: ArtifactPersistedPayload }

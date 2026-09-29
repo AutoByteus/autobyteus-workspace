@@ -60,7 +60,7 @@ graph TD
     Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
     Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
     Handler-->|Activity Log| ActivityStore[Activity Store]
-    Handler-->|Backend TODO/progress update| TodoStore[Todo Store]
+    Handler-->|Background task snapshot| BackgroundTaskStore[Background Task Store]
     Handler-->|Token usage| UsageMeterStore[Token Usage Meter Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
@@ -1459,7 +1459,7 @@ Incoming events are routed based on their `type`:
 | `SYSTEM_TASK_NOTIFICATION` | `systemTaskNotificationHandler.handleSystemTaskNotification` | Appends backend-provided system-task notification content as a `system_task_notification` AI message segment without rewriting the display text. |
 | `INTER_AGENT_MESSAGE`      | `teamHandler.handleInterAgentMessage`       | Preserves existing conversation rendering only. |
 | `TEAM_COMMUNICATION_MESSAGE`| `teamHandler.handleTeamCommunicationMessage` | Upserts normalized Team Communication messages and child reference files into the Team Communication store. |
-| `TODO_LIST_UPDATE`        | `todoHandler.handleTodoListUpdate`                 | Projects backend-owned plan/progress TODO updates into the UI; native `autobyteus-ts` no longer emits this event. |
+| `BACKGROUND_TASK_UPDATED` | `backgroundTaskHandler.handleBackgroundTaskUpdated` | Upserts one background-task snapshot (by `task_id`) into `agentBackgroundTaskStore` for the receiving run; it never changes run status or the active right-panel tab. |
 | `TOKEN_USAGE_UPDATED`    | `tokenUsageHandler.handleTokenUsageUpdated`        | Applies server-accounted token/cost deltas to `tokenUsageMeterStore`; the frontend does not compute authoritative accounting or pricing. |
 
 ---
@@ -1638,8 +1638,9 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Run details keeps explicit creation-time/lifetime-total helper copy and sends no analytics `rangeMode`; observation-time claims belong only to the Analytics query/projection. It does not add inactive no-usage roster rows or rebuild deeper Team topology, and changing Task/Model presentation does not refetch.
     - Frontend code must not reconstruct Team topology, parse opaque identity keys, infer pricing/coverage/comparison facts, reprice captured costs, or round unsafe primary token totals. Generated GraphQL types must stay synchronized with the matching server schema.
     - Durable coverage includes real-SQLite policy/GraphQL reconciliation, preserved Run-details queries, focused component/store/state/accessibility/localization checks, a strict negative export/file boundary, and a self-starting built-server/Nuxt/Chromium journey covering default/custom/filter/retry/partial-pricing/Detailed-usage/Run-details behavior at desktop and 390px widths. Browser proof does not imply packaged Electron execution.
-6.  **Backend-owned TODO progress (`AgentTodoStore`)**:
-    - Maintains backend-provided plan/progress TODO updates separately from the chat history; native `autobyteus-ts` no longer emits this event.
+6.  **Live background tasks (`agentBackgroundTaskStore`)**:
+    - Keeps each run's background tasks (Claude background shells, subagents, monitors and workflows; Antigravity daemons) keyed by `task_id`, newest first, with running/total counts. Live-session state only: it is not persisted and starts empty after a reload.
+    - `ProgressPanel` (the Activity tab) shows it in the `BackgroundTaskPanel` section above the Activity feed. The two sections share one accordion (Activity expanded by default); the section is always present and shows "No background tasks" when empty.
 
 ### Run-Level Compaction Activity
 
