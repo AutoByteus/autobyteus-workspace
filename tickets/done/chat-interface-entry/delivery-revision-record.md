@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery handoff from `code_reviewer` after CRR-004 Pass (2026-09-29) | N/A | Integrated, checked, docs synced; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/` |
+| DR-007 | `code_reviewer` delivery handoff after D-16..D-19 / DEC-017a / CR-010 (CRR-016 Pass); Daily Assistant prompt trim | DR-006 waiting for verification | Re-integrated `origin/personal@43b6fc0f4` (`5d8329038`, 2 conflicts resolved), checked (no new failures vs base), docs corrected, release notes rewritten, rebuilt; waiting for re-verification | `handoff-summary.md`, `docs-sync-report.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/refresh5-*`, `delivery-electron-build-r5.log` |
 | DR-006 | `code_reviewer`: API-REV-004 desktop addendum, CRR-007 Not Applicable | DR-005 waiting for verification | Still waiting for verification; O-2 and O-3 added for the user; ticket-only base commit merged (`66304f510`) | `handoff-summary.md` |
 | DR-005 | User asked to check `personal` and rebuild | DR-004 waiting for verification | Re-integrated `origin/personal@39e512edd` (`3c062a180`), checked (new failures proven upstream baseline), rebuilt; waiting for verification | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-electron-build-r4.log`, `server-build-full-r4.log`, `refresh4-baseline-proof.txt` |
 | DR-004 | User asked for a rebuild after `personal` advanced | DR-003 waiting for renewed verification | Re-integrated `origin/personal@c84b57739` (`97c169c71`), checked, rebuilt; waiting for renewed verification | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-electron-build-r3.log` |
@@ -154,3 +155,34 @@
 - Why this baseline or delivery revision was recorded: new validation evidence and new observations for the user.
 - Next recipient/action: the user verifies the r4 build and accepts or rejects O-1, O-2 and O-3. Rejected items go to `/software_engineering_team/solution_designer`.
 - Remaining blockers, rollback concerns, or untested scope: user verification pending.
+
+### DR-007: Fifth integration refresh after the UVF-002 rework (D-17..D-19, DEC-017a, CR-010)
+
+- Delivery round and trigger:
+  - The `code_reviewer` delivery message: CRR-015 source Pass 9.3/10, API-REV-007 Pass 95%, CRR-016 test-code review Pass.
+  - A follow-up `code_reviewer` message: the Daily Assistant prompt trim, requested by the user.
+- Triggering upstream report, verification, or evidence: `code-review-report.md` (round 11), `api-e2e-execution-coverage-report.md` (Round 7), `api-e2e-test-review-report.md` (round 4)
+- Prior authoritative result: DR-006, waiting for verification.
+- Current authoritative result: re-integrated and checked; waiting for user re-verification.
+  - Checkpoint `fc87b166b`.
+  - Merged `origin/personal@43b6fc0f4` as `5d8329038`, with 2 mechanical conflicts resolved (keep both).
+  - Committed `74b68c748` (the prompt trim) and `531214f15` (docs sync).
+- Docs sync report: Round 3 addendum. Three stale delivery edits were corrected.
+- Handoff summary: rewritten.
+- Release notes: rewritten for D-17 (⚙ and ＋ in the run view) and D-19 (one skill per name).
+- Release/publication/deployment report: updated. The next beta would be `1.4.91-beta.10`.
+- Integration and post-integration verification:
+  - Full server unit failures are identical to the clean base (78).
+  - The new tests pass (23/23), and the built-in units pass (10/10).
+  - Web nuxt: 3348 passed; 4 baseline files fail.
+  - Web electron: 187 passed.
+  - Guards: passed.
+- User verification/finalization state: pending. Nothing was pushed, merged or released.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Terminal message/reference: —
+- Why this baseline or delivery revision was recorded: a new validated package and a new base.
+- Next recipient/action: the user re-verifies the r5 build (and judges O-1..O-7) and decides on a beta. Rejected observations go to `/software_engineering_team/solution_designer`.
+- Remaining blockers, rollback concerns, or untested scope:
+  - User verification is pending.
+  - `agy-run-capsule.test.ts` has test-only type errors, already present on the reviewed branch (non-blocking).
+  - There are 78 upstream server unit failures on `personal`.

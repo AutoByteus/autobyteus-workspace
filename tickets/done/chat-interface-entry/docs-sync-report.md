@@ -73,3 +73,22 @@
 - Delivery's round-1 corrections to `settings.md`, `agent_execution_architecture.md` and `antigravity_cli_runtime.md` are committed in `030bab78d`. The merged upstream edit to `antigravity_cli_runtime.md` merged cleanly with them, and the weak-request exception text is still present.
 - O-1 (a raw identifier shows on the trigger until the catalog loads) is transient loading behavior. It is not documented as a contract; the doc describes the steady-state label.
 - Result: `Pass`
+
+## Round 3 Addendum (DR-007, after D-16..D-19 / DEC-017a / CR-010)
+
+- Integrated base used: `origin/personal@43b6fc0f4`, merged as `5d8329038` (2 code conflicts resolved; no doc conflicts). Delivery docs commit: `531214f15`.
+- In-branch docs, checked against the code:
+  - web `chat.md` (Run View D-17, Model labels D-16): accurate. `AgentWorkspaceView` ⚙ calls `center.showConfig()` → `RunConfigPanel`, and ＋ calls `chatDraftStore.startNewChat({ agentDefinitionId, workspaceRootPath })`.
+  - `skills.md`, `workspace_layout.md`, `agent_execution_architecture.md` § Existing Run Model Configuration.
+  - server `skills.md` (D-19 tiers, import validation, Rule 1 with `workspaceCollisionPolicy`), `agent_orgs.md`, `agent_packages.md`, `agent_execution.md`.
+  - The merged docs have no conflict residue and no duplicate headings.
+- **Delivery corrections.** Three of delivery's own round-1 edits had gone stale after D-17/D-19:
+
+| Doc | Stale statement | Corrected to |
+| --- | --- | --- |
+| web `settings.md` § Existing Run Configuration | "Standalone Agent runs have no selected-run Settings panel … footer model/thinking controls" | Existing Agent and Team runs mount `ExistingRunConfigEditor`. For a standalone run, Settings is ⚙ on the Chat run view; a `temp-*` draft mounts `DraftRunConfigEditor` |
+| web `settings.md` and `agent_execution_architecture.md` § New Run From Existing Run | "Standalone agent runs … have no workspace header new-run action" | The standalone header ＋ starts a New chat preset to the run's agent and workspace (it does not copy the run); the Team launch-template behavior is unchanged |
+| server `antigravity_cli_runtime.md` | "weak/strong request … see `skills.md`, request strength" (a section D-19 renamed) | `workspaceCollisionPolicy` `prefer_workspace` / `fail`, see `skills.md` Rule 1 |
+
+- Removed or replaced concepts recorded: the round-1 "footer model controls on a run" (`chatRunModelControls`) is replaced by ⚙ `ExistingRunConfigEditor` / `DraftRunConfigEditor` (D-17). "Request strength" (`skillRequestStrength`) is replaced by `workspaceCollisionPolicy` (D-19). Both are documented in `chat.md` and server `skills.md`.
+- Result: `Pass`
