@@ -249,6 +249,17 @@ show no starter line, and task-Team members show none. Shut-down children use
 the standard `offline` status. Participant links open the exact AgentRun,
 never the configured source at the same address.
 
+A delegated task-Team row (including a nested Team inside a task Team) that has
+members or nested task executions shows the same chevron as a mounted Team row
+and starts expanded. Activating the row by pointer or Enter/Space toggles its
+descendants and inspects its coordinator, as the mounted Team row does. The row
+exposes `aria-expanded` only while it has children. Collapse state is keyed by
+the delegated execution (`rootRunId` + `teamRunId`), not by address. A
+same-named mounted Team and every other delegation of the same Team keep
+independent state. A manual collapse survives live tree updates. The state is
+local UI state that resets on reload, and selecting a hidden member elsewhere
+does not reopen a user-collapsed task Team.
+
 Messages keeps compact readable counterpart/type/direction/time/content and
 reference rows, without a permanent address or Task/ID badge. Exact counterpart
 address, AgentRun and host/execution identities remain available in an
@@ -516,7 +527,10 @@ report for the exact acceptance scope.
 - `services/agentOrgExecution/agentOrgCommunicationPerspective.ts`: root-owned
   Messages facet.
 - `utils/agentOrgHistoryRows.ts`: Org Workspaces rows, including delegated rows
-  with their "Started by" line.
+  with their "Started by" line and per-`teamRunId` task-Team disclosure
+  (`hasChildren`/`expanded`; descendants are emitted only while expanded).
+- `composables/useWorkspaceHistoryTreeState.ts`: local Org run, mounted-Team
+  (by address) and delegated task-Team (by `teamRunId`) expansion state.
 - `services/agentOrgExecution/agentOrgStreamingService.ts`: stream protocol.
 - `services/agentOrgExecution/agentOrgContextHydration.ts`: initial/reopen
   hydration.

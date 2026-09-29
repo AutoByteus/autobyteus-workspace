@@ -451,6 +451,13 @@ task-Agent or task-Team row shows a secondary "Started by <delegator>" line
 `delegatorAgentRunId` (created before the resource lifecycle) shows no starter
 line. Task-Team members show no starter line.
 
+In the AgentOrg Workspaces rows, a delegated task-Team row with children has the
+mounted-Team chevron and `aria-expanded`. It starts expanded, and a row click
+toggles it and inspects the coordinator. Its expansion state is keyed by
+`rootRunId` + `teamRunId` in `useWorkspaceHistoryTreeState`, so it is
+independent of a same-address mounted Team and of sibling delegations.
+`projectAgentOrgHistoryRows` omits a collapsed task Team's descendants.
+
 `WorkspaceTeamExecutionTree.vue` applies the existing local disclosure state to
 the depth-first execution projection and derives sibling continuation metadata.
 `WorkspaceHierarchyBranches.vue` renders continuous ancestor rails and a
