@@ -8,11 +8,11 @@
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/handoff-summary.md`
+- Handoff summary artifact: `tickets/done/agent-isolated-app-recording/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: this is the pre-verification baseline.
+- Current delivery revision ID: `DR-002`
+- Notes: DR-001 was the pre-verification baseline. DR-002 records verification, finalization, the beta.6 release and cleanup.
 
 ## Initial Delivery Integration Refresh
 
@@ -60,48 +60,81 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/agent-isolated-app-recording`: `No` (pending verification)
-- Archived ticket path: —
+- Ticket moved to `tickets/done/agent-isolated-app-recording`: `Yes` (`git mv`, commit `002d30d35`)
+- Archived ticket path: `tickets/done/agent-isolated-app-recording/`
 
 ## Version / Tag / Release Commit
 
-- Pending the user's release decision. The documented method, if requested: `bash scripts/desktop-release.sh beta …`, as used for `v1.4.91-beta.5`.
+- Method: the documented release helper, `bash scripts/desktop-release.sh beta --branch finalize/agent-isolated-app-recording --no-push`. It ran in the isolated finalization worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording-finalize`, as for beta.5.
+- Version: `1.4.91-beta.6`. `autobyteus-web/package.json` was bumped from `1.4.91-beta.5`.
+- Release commit: `c84b577399ab4cc8f9c1b3d55b1cadd80c9b4ce6` ("chore(release): bump workspace release version to 1.4.91-beta.6")
+- Tag: annotated `v1.4.91-beta.6` (tag object `5f6a776b6b15b2f0e536cdd408eddbf0817d9f70`), pointing at `c84b57739`
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` (bootstrap), `handoff-architecture-design-complete.md` § Workspace Context
 - Ticket branch: `codex/agent-isolated-app-recording` (in both repos)
-- Ticket branch commit result: pending verification
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`.
+  - Workspace commits on top of the reviewed state: `907475467` (checkpoint), `c474cb9fc` (base merge) and `002d30d35` (archive + delivery records). The untracked SDK `dist/` outputs were excluded, and the artifact hygiene check passed (`scripts/check_repository_artifact_hygiene.py`).
+  - mcps: `c37b2b9`.
+- Ticket branch push result: `Completed`. This created `origin/codex/agent-isolated-app-recording` in both repos (workspace `002d30d35`, mcps `c37b2b9`).
 - Finalization target remote: `origin` (workspace and mcps)
 - Finalization target branch: workspace `personal`; mcps `main`
-- Target advanced after verification / acceptance: —
-- Delivery-owned edits protected before re-integration: —
-- Re-integration before final merge result: —
-- Target branch update result: —
-- Merge into target result: —
-- Push target branch result: —
-- Repository finalization status: pending verification. This is not a blocker.
+- Target advanced after verification / acceptance: `No`. It was re-fetched after verification and again right before each push: `origin/personal@5d6179797`, `origin/main@f11098c`.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`.
+  - Workspace: finalization worktree from `origin/personal@5d6179797` (branch `finalize/agent-isolated-app-recording`).
+  - mcps: detached worktree from `origin/main@f11098c`.
+- Merge into target result: `Completed`.
+  - Workspace: `git merge --ff-only codex/agent-isolated-app-recording` fast-forwarded to `002d30d35`, and the helper's release commit `c84b57739` went on top.
+  - mcps: `git merge --no-ff`, following the repository convention, gave `6b395628785dcaa4aa7e5463e6535ae45eaf8deb`.
+- Push target branch result: `Completed`, confirmed with `git ls-remote`.
+  - Workspace: `git push origin HEAD:personal` moved `5d6179797..c84b57739`.
+  - mcps: `git push origin HEAD:main` moved `f11098c..6b39562`.
+- Repository finalization status: `Completed`
 - Blocker: None
 
 ## Release / Publication / Deployment
 
-- Applicable: to be decided by the user
-- Method: `Release Script` (`scripts/desktop-release.sh`) if requested
-- Method reference / command: —
-- Release/publication/deployment result: pending
-- Release notes handoff result: pending
+- Applicable: `Yes`. The user requested a new beta. mcps has no release process, so merging into `main` is its publication.
+- Method: `Git Tag Method`. Pushing the tag starts the desktop, Android, iOS and server Docker release workflows.
+- Method reference / command: root `README.md` "Release workflow"; `git push origin v1.4.91-beta.6`
+- Workflows at `c84b57739`: all `completed / success` (`delivery-evidence/release-workflows.json`)
+  - Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36523043252
+  - Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36523043209
+  - iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36523043204
+  - Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36523043246 (finished 2026-09-29T05:19:57Z)
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.91-beta.6
+  - Published 2026-09-29T04:49:50Z as a pre-release, not a draft.
+  - 17 assets: macOS ARM64 and x64 DMG/ZIP with blockmaps, Windows EXE, Linux x64 and ARM64 AppImages, Android APK with sha256, and updater metadata `latest*.yml`.
+  - Evidence: `delivery-evidence/github-release.json`
+- Published-artifact feature check: the published `AutoByteus_personal_macos-arm64-1.4.91-beta.6.zip` contains `AutoByteus.app/Contents/Resources/isolated-launch.json` = `{"isolatedLaunchContract": 1}` (`delivery-evidence/published-marker-check.txt`). Installed beta.6 therefore passes the isolated-launch gate.
+- Docker Hub, verified through the registry API (`delivery-evidence/docker-digests-{before,after}-beta6.txt`):
+  - `autobyteus/autobyteus-server:1.4.91-beta.6` is `sha256:f1ab14c7dd1cb380a95ff21835acf0b7659d5a43ac09396bd6342e39ffd17655`, built for amd64 and arm64.
+  - `:beta` moved from `sha256:d811e607…` (beta.5) to `sha256:f1ab14c7…`.
+  - `:latest` is unchanged at `sha256:154f2c2b…` (stable).
+- Channel behavior:
+  - Desktop installs get beta.6 only when **Settings > Updates > Receive beta updates** is on.
+  - GitHub "Latest" stays on the newest stable release.
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required`. Pre-release tags use GitHub generated notes. The archived `release-notes.md` is kept as supporting context.
 - Blocker: None
+- Not exercised by delivery: the published installers were not installed or launched; only the marker inside the macOS arm64 zip was inspected. Linux AppImages are unvalidated by user decision.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording`;
   - `/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording`.
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: pending
+- Worktree cleanup result: `Completed`.
+  - Both ticket worktrees were removed with `git worktree remove --force`. Their only leftover content was untracked SDK `dist/` output, a git-ignored `electron-dist`/`.nuxt`, and mcps `.venv`/caches. All evidence had been committed.
+  - Before removal, no reference to either worktree path was found in `~/.autobyteus` JSON, `~/.claude.json`, `~/.claude/settings.json` or `~/.codex/config.toml`.
+  - The mcps detached finalization worktree was removed too.
+- Worktree prune result: `Completed` (both repos)
+- Local ticket branch cleanup result: `Completed`. `git branch -d codex/agent-isolated-app-recording` in both repos. mcps printed a "not merged to HEAD" warning only because the user's own `autobyteus_mcps` checkout is on a stale local `main` (`f11098c`); the commit is contained in `origin/main`. That checkout was left untouched because it holds unrelated untracked user files.
+- Finalization worktree and branch: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording-finalize` on `finalize/agent-isolated-app-recording`. Both are removed right after this record is pushed to `personal`, and the terminal message confirms it.
+- Remote branch cleanup result: `Not required`. `origin/codex/agent-isolated-app-recording` is fully merged in both repos and is kept, following the beta.5 precedent.
 - Blocker: None
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
@@ -110,13 +143,13 @@
 
 ## Release Notes Summary
 
-- Release notes artifact created before verification / acceptance: `tickets/in-progress/agent-isolated-app-recording/release-notes.md`
-- Archived release notes artifact used for release/publication: —
-- Release notes status: `Updated`
+- Release notes artifact created before verification / acceptance: `release-notes.md`
+- Archived release notes artifact used for release/publication: `tickets/done/agent-isolated-app-recording/release-notes.md`, kept as supporting context only. The beta uses generated notes.
+- Release notes status: `Final`
 
 ## Deployment Steps
 
-- None beyond the optional desktop release.
+None. This is a beta-channel publication; no hosted deployment was requested.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -142,17 +175,17 @@ Delivery reruns on the integrated state, 2026-09-29, logs in `delivery-evidence/
 
 ## Rollback Criteria
 
-- Workspace: revert the merge commit on `personal`. The feature is additive except for the isolated server-env policy and the disabled updater, which apply only to the isolated/e2e profile. Production launch composition is verified identical.
-- mcps: revert the merge on `main`. The two new tools and attach-only mode are additive, and existing tools keep their connect–operate–disconnect behavior.
+- Workspace: revert the ticket's commits on `personal` (range `5d6179797..002d30d35`, excluding the base-merge commit `c474cb9fc`), then release a newer beta. Do not delete or move the published `v1.4.91-beta.6` tag. The feature is additive except for the isolated server-env policy and the disabled updater, which apply only to the isolated/e2e profile. Production launch composition is verified identical.
+- mcps: revert merge `6b39562` on `main` (`git revert -m 1`). The two new tools and attach-only mode are additive, and existing tools keep their connect–operate–disconnect behavior.
 - Trigger rollback if a production launch shows a changed server env or update behavior, or if existing browser-automation tools regress.
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (pending decision)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: None (waiting for user verification)
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: —
+- Explicit user testing/verification complete: `Yes` (2026-09-29)
+- Repository finalization complete: `Yes` (workspace `personal@c84b57739`, then this evidence commit; mcps `main@6b39562`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`v1.4.91-beta.6` published; all 4 workflows succeeded; the published marker is present)
+- Applicable safe cleanup complete or not required: `Yes`. Ticket worktrees and branches are removed; the finalization worktree is removed after this push.
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent immediately after this record was pushed. See DR-002.
+- Terminal message/reference: `send_message_to` → `/solution_designer` (`Delivery Completed`)
