@@ -60,7 +60,7 @@ test('session retains the root and fails when whole-tree completion is unconfirm
     disposeOwnedDataRoot: async () => { disposed = true },
   }
   const unconfirmedError = Object.assign(new Error('tree remains'), {
-    code: 'ELECTRON_E2E_TREE_UNCONFIRMED',
+    code: 'ELECTRON_PROCESS_TREE_UNCONFIRMED',
   })
   const session = createElectronE2ESession(prepared, controller({
     closeAndConfirmTree: async () => { throw unconfirmedError },

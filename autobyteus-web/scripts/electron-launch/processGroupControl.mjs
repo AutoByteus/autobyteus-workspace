@@ -1,4 +1,4 @@
-import { createWindowsOwnedProcessTree } from './windowsOwnedProcessTree.mjs'
+import { createWindowsOwnedProcessTree } from './windowsProcessTree.mjs'
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -99,7 +99,7 @@ export function createCloseAndConfirmTreeController({
         `Unable to confirm completion of owned Electron process tree ${identity}`
         + (details.length ? ` (${details.join('; ')})` : ''),
       )
-      error.code = 'ELECTRON_E2E_TREE_UNCONFIRMED'
+      error.code = 'ELECTRON_PROCESS_TREE_UNCONFIRMED'
       error.treeIdentity = identity
       throw error
     })()
@@ -115,7 +115,7 @@ export function createCloseAndConfirmTreeController({
   })
 }
 
-function isPosixProcessGroupAbsent(processGroupId) {
+export function isPosixProcessGroupAbsent(processGroupId) {
   try {
     process.kill(-processGroupId, 0)
     return false
@@ -168,6 +168,26 @@ export async function createOwnedElectronProcessTreeController({
     forceOwnedTree: tree.forceOwnedTree,
     refreshOwnedTree: tree.refreshOwnedTree,
     isOwnedTreeAbsent: tree.isOwnedTreeAbsent,
+    outputSummary,
+  })
+}
+
+/**
+ * Close-and-confirm control of a POSIX process group owned across process lifetimes
+ * (for example a detached app recorded by an earlier CLI invocation). The group id is the
+ * pid of the detached group leader; the group counts as running while any member exists.
+ */
+export function createPosixProcessGroupController(processGroupId, { outputSummary } = {}) {
+  if (!Number.isInteger(processGroupId) || processGroupId <= 0) {
+    throw new Error('POSIX process-group control requires a positive process-group id')
+  }
+  return createCloseAndConfirmTreeController({
+    pid: processGroupId,
+    identity: `posix-process-group:${processGroupId}`,
+    isRootRunning: () => !isPosixProcessGroupAbsent(processGroupId),
+    requestGracefulClose: () => signalPosixProcessGroup(processGroupId, 'SIGTERM'),
+    forceOwnedTree: () => signalPosixProcessGroup(processGroupId, 'SIGKILL'),
+    isOwnedTreeAbsent: () => isPosixProcessGroupAbsent(processGroupId),
     outputSummary,
   })
 }

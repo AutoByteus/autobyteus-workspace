@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { buildElectronE2ELaunchEnvironment } from '../electronE2EEnvironment.mjs'
+import { buildIsolatedLaunchEnvironment } from '../launchEnvironment.mjs'
 
-test('E2E environment preserves caller provisioning values and forces only isolation values', () => {
+test('isolated launch environment preserves caller values, drops ELECTRON_RUN_AS_NODE and forces isolation values', () => {
   const sourceEnv = {
     PATH: '/bin',
     HOME: '/home/tester',
@@ -23,7 +23,7 @@ test('E2E environment preserves caller provisioning values and forces only isola
     AUTOBYTEUS_ELECTRON_SERVER_PORT: '32001',
   }
 
-  const env = buildElectronE2ELaunchEnvironment({
+  const env = buildIsolatedLaunchEnvironment({
     sourceEnv,
     launch: { port: 31001, dataRoot: '/tmp/autobyteus-e2e-test' },
     extraEnv,
@@ -32,7 +32,7 @@ test('E2E environment preserves caller provisioning values and forces only isola
   assert.equal(env.PATH, '/fixture/bin')
   assert.equal(env.HOME, '/home/tester')
   assert.equal(env.NODE_OPTIONS, '--require caller-hook')
-  assert.equal(env.ELECTRON_RUN_AS_NODE, 'caller-value')
+  assert.equal(Object.hasOwn(env, 'ELECTRON_RUN_AS_NODE'), false)
   assert.equal(env.OPENAI_API_KEY, 'non-secret-openai-sentinel')
   assert.equal(env.GOOGLE_API_KEY, 'non-secret-provider-sentinel')
   assert.equal(env.SERPER_API_KEY, 'non-secret-search-sentinel')

@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { createCloseAndConfirmTreeController } from '../ownedElectronProcessTree.mjs'
-import { createWindowsOwnedProcessTree } from '../windowsOwnedProcessTree.mjs'
+import { createCloseAndConfirmTreeController } from '../processGroupControl.mjs'
+import { createWindowsOwnedProcessTree } from '../windowsProcessTree.mjs'
 
 const processEntry = (pid, parentPid, createdAt) => ({ pid, parentPid, createdAt })
 
@@ -33,7 +33,7 @@ test('Windows cleanup fails closed when a late child remains after the root exit
   await assert.rejects(
     controller.closeAndConfirmTree({ gracefulTimeoutMs: 1, forceTimeoutMs: 1 }),
     (error) => (
-      error.code === 'ELECTRON_E2E_TREE_UNCONFIRMED'
+      error.code === 'ELECTRON_PROCESS_TREE_UNCONFIRMED'
       && error.message.includes('captured root disappeared')
     ),
   )

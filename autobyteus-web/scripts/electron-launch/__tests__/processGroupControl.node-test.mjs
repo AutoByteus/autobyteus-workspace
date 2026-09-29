@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { createCloseAndConfirmTreeController } from '../ownedElectronProcessTree.mjs'
+import { createCloseAndConfirmTreeController } from '../processGroupControl.mjs'
 
 function controllerFixture(overrides = {}) {
   return createCloseAndConfirmTreeController({
@@ -68,8 +68,28 @@ test('whole-tree controller fails when absence cannot be confirmed', async () =>
   await assert.rejects(
     controller.closeAndConfirmTree({ gracefulTimeoutMs: 1, forceTimeoutMs: 1 }),
     (error) => (
-      error.code === 'ELECTRON_E2E_TREE_UNCONFIRMED'
+      error.code === 'ELECTRON_PROCESS_TREE_UNCONFIRMED'
       && error.treeIdentity === 'test-owned-tree:41'
     ),
   )
+})
+
+test('POSIX process-group controller closes a detached group owned by an earlier invocation', {
+  skip: process.platform === 'win32',
+}, async () => {
+  const { spawn } = await import('node:child_process')
+  const { createPosixProcessGroupController } = await import('../processGroupControl.mjs')
+  const child = spawn(process.execPath, ['-e', 'setInterval(() => {}, 1000)'], {
+    detached: true,
+    stdio: 'ignore',
+  })
+  child.unref()
+  await new Promise((resolve) => child.once('spawn', resolve))
+
+  const controller = createPosixProcessGroupController(child.pid)
+  assert.equal(controller.isRunning(), true)
+  const completion = await controller.closeAndConfirmTree({ gracefulTimeoutMs: 2000, forceTimeoutMs: 1000 })
+  assert.equal(completion.status, 'complete')
+  assert.equal(completion.identity, `posix-process-group:${child.pid}`)
+  assert.equal(controller.isRunning(), false)
 })
