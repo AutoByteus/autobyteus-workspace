@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery handoff from `code_reviewer` after CRR-004 Pass (2026-09-29) | N/A | Integrated, checked, docs synced; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/` |
+| DR-008 | User verified ("it works. lets finalize and release a beta"); then "lets release a stable version. the beta is great" | DR-007 waiting for verification | Finalized into `personal`; beta `v1.4.91-beta.10` published (4/4 workflows); stable `v1.4.91` release in progress | `release-deployment-report.md`, `handoff-summary.md`, `release-notes-v1.4.91.md`, `delivery-evidence/*beta10*` |
 | DR-007 | `code_reviewer` delivery handoff after D-16..D-19 / DEC-017a / CR-010 (CRR-016 Pass); Daily Assistant prompt trim | DR-006 waiting for verification | Re-integrated `origin/personal@43b6fc0f4` (`5d8329038`, 2 conflicts resolved), checked (no new failures vs base), docs corrected, release notes rewritten, rebuilt; waiting for re-verification | `handoff-summary.md`, `docs-sync-report.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/refresh5-*`, `delivery-electron-build-r5.log` |
 | DR-006 | `code_reviewer`: API-REV-004 desktop addendum, CRR-007 Not Applicable | DR-005 waiting for verification | Still waiting for verification; O-2 and O-3 added for the user; ticket-only base commit merged (`66304f510`) | `handoff-summary.md` |
 | DR-005 | User asked to check `personal` and rebuild | DR-004 waiting for verification | Re-integrated `origin/personal@39e512edd` (`3c062a180`), checked (new failures proven upstream baseline), rebuilt; waiting for verification | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-electron-build-r4.log`, `server-build-full-r4.log`, `refresh4-baseline-proof.txt` |
@@ -186,3 +187,18 @@
   - User verification is pending.
   - `agy-run-capsule.test.ts` has test-only type errors, already present on the reviewed branch (non-blocking).
   - There are 78 upstream server unit failures on `personal`.
+
+### DR-008: User verification, finalization, beta.10, and the stable release request
+
+- Delivery round and trigger:
+  - The user said: "it works. lets finalize and release a beta" (2026-09-29).
+  - After beta.10 was published, the user said: "lets release a stable version. the beta is great".
+- Prior authoritative result: DR-007, waiting for user verification.
+- Current authoritative result:
+  - The ticket was archived (`f2f6079a4`) and the ticket branch pushed.
+  - `personal` was fast-forwarded and pushed to `73b5865da` (the beta.10 release commit).
+  - All 4 beta.10 workflows succeeded; the pre-release has 17 assets; Docker `:beta` points to beta.10 and `:latest` is unchanged.
+  - The stable `v1.4.91`, with curated notes for all changes since `v1.4.90`, is being prepared in the finalization worktree.
+- User verification/finalization state: verified; repository finalization `Completed`; release `In progress` (the stable release).
+- Terminal return to `/solution_designer`: `Not yet eligible` (the stable release is not complete yet).
+- Next recipient/action: publish and verify the stable release, then clean up, then return the terminal package.
