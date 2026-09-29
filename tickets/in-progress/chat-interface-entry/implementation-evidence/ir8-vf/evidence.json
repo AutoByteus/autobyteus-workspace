@@ -1,0 +1,76 @@
+{
+  "startedAt": "2026-09-29T13:29:53.764Z",
+  "runtimes": {
+    "codex_app_server": {
+      "model": "gpt-5.5",
+      "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk/ws-codex_app_server-M080el",
+      "linkWithDailyAssistant": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk/server-data/agents/desk-helper/skills/desk-alpha",
+      "team": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "desk_team_6d67de83bb844de99a9f3b7243185b30"
+      },
+      "leadTurn": {
+        "replied": true,
+        "errors": []
+      },
+      "linkWithTeam": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk/server-data/agents/desk-helper/skills/desk-alpha",
+      "collisions": [],
+      "removedRuleLogs": [],
+      "leadDeskAlphaUnresolved": 0,
+      "sameCatalogCopy": true,
+      "result": "Pass",
+      "linkAfterAllTerminated": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk/server-data/agents/desk-helper/skills/desk-alpha"
+    },
+    "claude_agent_sdk": {
+      "model": "haiku",
+      "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk/ws-claude_agent_sdk-hHR0mk",
+      "linkWithDailyAssistant": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk/server-data/agents/desk-helper/skills/desk-alpha",
+      "team": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "desk_team_d9fd02a1f40f4398b5f6a9ee7c0e611e"
+      },
+      "leadTurn": {
+        "replied": true,
+        "errors": []
+      },
+      "linkWithTeam": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk/server-data/agents/desk-helper/skills/desk-alpha",
+      "collisions": [],
+      "removedRuleLogs": [],
+      "leadDeskAlphaUnresolved": 0,
+      "sameCatalogCopy": true,
+      "result": "Pass",
+      "linkAfterAllTerminated": "absent"
+    },
+    "grok_build": {
+      "model": "grok-4.7",
+      "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk/ws-grok_build-uy2qyF",
+      "linkWithDailyAssistant": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk/server-data/agents/desk-helper/skills/desk-alpha",
+      "team": {
+        "success": true,
+        "message": "Agent team run created successfully.",
+        "teamRunId": "desk_team_71ab6ce014aa4274bdb86b1663b917e5"
+      },
+      "leadTurn": {
+        "replied": true,
+        "errors": []
+      },
+      "linkWithTeam": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk/server-data/agents/desk-helper/skills/desk-alpha",
+      "collisions": [],
+      "removedRuleLogs": [],
+      "leadDeskAlphaUnresolved": 0,
+      "sameCatalogCopy": true,
+      "result": "Pass",
+      "linkAfterAllTerminated": "absent"
+    }
+  },
+  "cleanup": [
+    {
+      "removed": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk"
+    }
+  ],
+  "ownedRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-vf-hs7qkk",
+  "backendUrl": "http://127.0.0.1:51272",
+  "completedAt": "2026-09-29T13:30:08.998Z"
+}

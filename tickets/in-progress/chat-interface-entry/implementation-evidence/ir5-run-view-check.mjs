@@ -110,6 +110,56 @@ const checks = []
 const check = (id, title, fn) => checks.push({ id, title, fn })
 const state = { runId: arg('run-id', null) }
 
+// D-18 / IC-3: the recorded llmConfig of a New chat run equals the launch form's schema defaults.
+const THINKING_KEYS = new Set(['thinking_enabled', 'thinking_budget_tokens', 'reasoning_effort', 'thinking_type', 'thinking_level'])
+const rawSchema = async (runtimeKind, modelId) => {
+  const snapshots = (await gql('query($r:String){providerModelCatalogSnapshots(runtimeKind:$r){llmModels{modelIdentifier configSchema}}}', { r: runtimeKind })).providerModelCatalogSnapshots
+  return snapshots.flatMap((s) => s.llmModels).find((m) => m.modelIdentifier === modelId)?.configSchema ?? null
+}
+const schemaDefaults = (schema) => Object.fromEntries(
+  (schema?.parameters ?? Object.entries(schema?.properties ?? {}).map(([name, p]) => ({ name, default_value: p.default })))
+    .filter((p) => p.default_value !== undefined).map((p) => [p.name, p.default_value]))
+const split = (config) => {
+  const thinking = {}, other = {}
+  for (const [k, v] of Object.entries(config ?? {})) (THINKING_KEYS.has(k) ? thinking : other)[k] = v
+  return { thinking, other }
+}
+for (const [runtimeKind, modelId] of [['codex_app_server', 'gpt-5.5'], ['claude_agent_sdk', 'sonnet']]) {
+  check(`M-${runtimeKind}`, `D-18/IC-3: New chat on ${modelId} (${runtimeKind}), default thinking untouched → explicit llmConfig recorded; live ⚙ shows the values (VIS-026), never "Not recorded"`, async (page) => {
+    await page.goto(`${FRONT}/chat`, { waitUntil: 'domcontentloaded' })
+    await page.locator(sel('chat-new')).waitFor({ timeout: 120000 })
+    await delay(1500)
+    await page.locator(sel('chat-model-trigger')).click()
+    await page.locator(sel(`chat-runtime-${runtimeKind}`)).click()
+    await page.locator(sel(`chat-model-option-${modelId}`)).click()
+    const marker = `M-${runtimeKind}-${Date.now()}`
+    await sendInNewChat(page, `Reply with exactly ${marker} and nothing else.`)
+    await waitForPermanentChat(page)
+    const runId = routeRunId(page)
+    await waitForReply(page, marker)
+    const recorded = (await gql('query($runId:String!){getAgentRunResumeConfig(runId:$runId){metadataConfig{llmModelIdentifier runtimeKind llmConfig}}}', { runId })).getAgentRunResumeConfig.metadataConfig
+    const defaults = split(schemaDefaults(await rawSchema(runtimeKind, modelId)))
+    const got = split(recorded.llmConfig)
+    await page.locator(sel('workspace-header-edit-config')).click()
+    await page.locator(sel('save-existing-model-config')).waitFor({ timeout: 30000 })
+    await delay(1500)
+    await shot(page, `M-${runtimeKind}-live-settings`)
+    const settingsText = await center(page).innerText()
+    const result = {
+      runId, recordedModel: recorded.llmModelIdentifier, recordedLlmConfig: recorded.llmConfig, schemaDefaults: defaults,
+      nonThinkingEqualsLaunchForm: JSON.stringify(got.other) === JSON.stringify(defaults.other),
+      thinkingKeysEqualSchemaDefaults: Object.keys(got.thinking).length > 0
+        && Object.entries(got.thinking).every(([k, v]) => defaults.thinking[k] === v),
+      notRecordedShown: /Not recorded/.test(settingsText),
+      missingHistoricalMarkers: await center(page).locator('[data-testid^="missing-historical-config"]').count(),
+      saveDisabled: await page.locator(sel('save-existing-model-config')).isDisabled(),
+    }
+    await page.locator(sel('run-config-back-to-events')).click()
+    await terminate(runId).catch(() => undefined)
+    return result
+  })
+}
+
 check('A', 'Chat run view (VIS-015): workspace frame, product header with run title, ⚙ ＋, product box; geometry', async (page) => {
   await newChatWithModel(page)
   await sendInNewChat(page, 'Reply with exactly R1-OK and nothing else.')

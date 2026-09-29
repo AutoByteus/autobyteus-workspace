@@ -12,6 +12,8 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
 | IR-004 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-008 pass (SR-012; user verification UVF-001, DR-002) | UVF-001 | Design execution (D-16; delta Small/Low, package Large/High) | SR-011, SR-012; ARCH-REV-008; CRR-003; API-REV N/A; DR-002 | Chat model labels follow the shared policy; V-L1 to V-L5 pass |
 | IR-005 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-010 pass (SR-013/SR-014; UVF-002) | UVF-002 (R3), AR-010, AR-011 | Design execution (D-17; delta Medium web-only, package Large/High) | SR-013, SR-014; ARCH-REV-010; CRR-005; API-REV N/A; DR N/A | Chat run view is the product agent run view in the workspace frame; draft ⚙ editor; `/` in the product box; shared panel state and contextual-tab rule; removals; live checks A–K pass |
 | IR-006 | code_reviewer / `code-review-report.md` / CRR-008 Fail (round 5) | CR-005, CR-006 | `Local Fix` | SR-014; ARCH-REV-010; CRR-008; API-REV N/A; DR N/A | Run settings scoped to their run in Chat; Team quick path opens on its conversation; agentInput free of `composables/chat` imports (neutral popover and skill-tag helpers) |
+| IR-007 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-011 pass (SR-015; CRR-010 failure origin of API-REV-005) | CR-007 / UF-04, CR-008 / UF-03, IC-3 | Design execution (D-15 Rule 3 server, D-18 web) | SR-015; ARCH-REV-011; CRR-009, CRR-010; API-REV-005; DR N/A | Stopped by the user at `f4864638b` before handoff. D-18 stands (IC-3 verified); the Rule 3 part is removed by IR-008 (D-19) |
+| IR-008 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-013 pass (SR-016 DEC-017; SR-017 for ARCH-REV-012) | REQ-022–024 / AC-019–021, AR-013, R-3 | Design execution (D-19; includes removal of D-15 Rules 2–3 and the IR-007 Rule 3) | SR-016, SR-017; ARCH-REV-012, ARCH-REV-013; CRR-010; API-REV-005; DR N/A | One skill per name at load; duplicates rejected before commit on every import path with the pop-up; banner for out-of-band duplicates; Codex path match; V-F passes with no special rule |
 
 ## Revision Entries
 
@@ -306,4 +308,83 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
 - Remaining limitations or risks:
   - The Team quick path fix is covered by a unit test, not a live team launch.
   - The design-spec file-mapping residue (the `AgentWorkspaceView` "Remove" row and the CR-002 row) is for the Solution Designer and has no code impact.
+
+### IR-007 — D-15 Rule 3 and D-18 (SR-015, ARCH-REV-011)
+
+- Triggering role, report path, and round: architecture_reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-handoff.md` (SR-015 section; report `design-review-report.md`), ARCH-REV-011 Pass. Origin: code reviewer CRR-010 (failure origin of API/E2E API-REV-005: C20 / DT-24, and DT12/DT13).
+- Triggering finding IDs: CR-007 / UF-04 (Design Impact → D-15 Rule 3), CR-008 / UF-03 (→ D-18), and IC-3 (validation condition).
+- Classification: design execution. The package stays Large/High.
+- Prior authoritative result: IR-006 (`59a20f21b`, `e9ede7d83`).
+- Current authoritative result: commit `f4864638b`.
+- Related solution revision IDs: SR-015
+- Related architecture-review revision IDs: ARCH-REV-011
+- Related code-review revision IDs: CRR-009 (Pass for IR-006), CRR-010
+- Related API/E2E revision IDs: API-REV-005
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: it implements the SR-015 design deltas.
+- Approved behavior or requirement IDs affected: REQ-017 / AC-014 (a configured launch never fails because of a live ALL_INSTALLED chat); REQ-018 / VIS-026 (⚙ shows the run's model settings); BEH-003, BEH-009, BEH-010.
+- Implementation delta:
+  - **D-15 Rule 3 (server).** `workspace-skill-materializer.ts#reconcileUnresolved`: after the existing `acquiring`/`releasing` waits, a `ready` entry with holders that are all `all_installed` is skipped. It logs `skipped-unresolved-held-by-weak` with the run, the skill and the holder source, and returns `null`, with no join and no re-point. A strong holder, a user-owned path or a foreign path still goes through `reconcileUnavailable`, which raises the collision error. The `Disposition` union gains the new value. The file is 403 non-empty lines.
+  - **D-18 (web).**
+    - `utils/llmConfigSchema.ts#applyModelConfigSchemaDefaults(schema, config)` is the pure non-thinking default logic extracted from `ModelConfigSection.applyDefaultsIfNeeded`. That method now calls it, and emits only when the result differs.
+    - `utils/llmThinkingConfigAdapter.ts#getDefaultThinkingConfig(schema)` gives the default thinking state: each thinking key's effective default. The Claude budget is dropped unless thinking is enabled, and typed `reasoning_effort` is dropped unless `thinking_type` is `enabled`.
+    - `stores/chatDraftStore.ts#explicitChatModelConfig(schema, preset)` combines the two, unless the preset already carries thinking keys. `applyModel`, which every draft model set goes through (`setModel`, last-used, the Daily Assistant default and the runtime default), stores it.
+    - A model without a schema keeps `null`. A model with a schema is never recorded as `{}` or `null`.
+    - The team quick-path root already copies `context.config.llmConfig` (`buildChatTeamLaunchConfig`), so it carries the same value.
+  - `llmConfigSchema.ts` now imports `getThinkingParamKeys` from `llmThinkingConfigAdapter.ts`, which already imports from `llmConfigSchema.ts`. This module cycle is harmless: only functions are used, and none runs at module load.
+  - Docs: `autobyteus-server-ts/docs/modules/skills.md` (Rule 3); `autobyteus-web/docs/chat.md` (explicit `llmConfig`).
+- Tests:
+  - `workspace-skill-materializer-request-strength.test.ts`, "Rule 3":
+    - A weak-held link is skipped and logged with `previousTarget` equal to the holder source. The link is kept, and it is removed after the weak release (the run did not join).
+    - A strong holder still throws `Workspace skill path collision`.
+    - 37/37 pass.
+  - `chatDraftStore.spec.ts`, D-18 (4 tests):
+    - Codex thinking-only records `{reasoning_effort: 'medium'}`.
+    - Claude records the launch-form non-thinking keys plus `thinking_enabled: false`, with no budget.
+    - A preset keeps its thinking.
+    - A model with no schema stays `null`.
+  - `llmConfigSchema.spec.ts` and `llmThinkingConfigAdapter.spec.ts` gain tests for the new functions.
+- Local validation and result: see `implementation-handoff.md` § Local Implementation Checks Run (IR-007).
+  - V-F (`implementation-evidence/ir7-vf-probe.mjs`) passes on Codex, Claude and Grok: the lead replies, one Rule 3 line is logged, and there is no collision.
+  - IC-3 (checks `M-*` in `ir5-run-view-check.mjs`) passes on Codex `gpt-5.5` and Claude SDK `sonnet`.
+- Next recipient or routing: not handed off. The user stopped the implementation at `f4864638b`; SR-016/SR-017 (D-19) followed, and IR-008 continues from this commit.
+- Remaining limitations or risks:
+  - Superseded by IR-008: the Rule 3 code, its tests and its V-F evidence (`ir7-vf/`) are replaced by D-19 (`ir8-vf/`). The D-18 code and IC-3 evidence (`ir7-d18/`) remain current.
+  - V-F sends the first message only to the lead. The helper holds `desk-alpha` from the same source as the Daily Assistant, so when it activates it joins as a strong same-source holder, which the rules already covered.
+  - AGY is out of scope for Rule 3: its run capsules copy skills per run.
+  - IC-3 was checked live on models whose schemas have no non-thinking defaults. That equality is also covered by the unit test with a schema that has non-thinking defaults.
+
+### IR-008 — D-19 one skill per name (SR-016/SR-017, ARCH-REV-013)
+
+- Triggering role, report path, and round: architecture_reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/architecture-review-handoff.md` (SR-016 and SR-017 sections; report `design-review-report.md`), ARCH-REV-013 Pass after ARCH-REV-012 (Fail, AR-013).
+- Triggering finding IDs: REQ-022, REQ-023, REQ-024 (AC-019–021, DEC-017, user-approved 2026-09-29); AR-013; R-3.
+- Classification: design execution. The package stays Large/High.
+- Prior authoritative result: IR-007 at `f4864638b` (stopped by the user before handoff).
+- Current authoritative result: commits `ec31ff371` (server) and `be6c8977d` (web).
+- Related solution revision IDs: SR-016, SR-017
+- Related architecture-review revision IDs: ARCH-REV-012, ARCH-REV-013
+- Related code-review revision IDs: CRR-010 (origin of SR-015, whose Rule 3 D-19 replaces)
+- Related API/E2E revision IDs: API-REV-005 (C20)
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: it implements D-19 and removes the D-15 Rule 2/3 machinery, including the IR-007 Rule 3 commit.
+- Approved behavior or requirement IDs affected: REQ-022 / AC-019, REQ-023 / AC-020, REQ-024 / AC-021, BEH-015, REQ-007 (ALL_INSTALLED), REQ-017 / AC-014.
+- Implementation delta:
+  - **Catalog (server).** New `skill-catalog.ts` builds one record per name from sources in precedence order: tier 1 skills folder, tier 2 app data then package roots, tier 3 added folders, tier 4 runtime default folders. Tier 4 is recognised by realpath in the new `runtime-default-skill-folders.ts` and always comes last. Records gain `tier` and `sourcePath`. `listSkillNameIssues()` returns `conflict` / `shadowed_runtime_default` issues and they are logged when they change. `skill-discovery.ts` keeps only the layout scanners, with team skills before team agents and a cycle guard.
+  - **One resolution.** `resolveCatalogRecord(name)` serves CONFIGURED and ALL_INSTALLED, regular and detailed (AGY), and every name-based operation (`getSkill` and all its callers; AR-013). The resolver keeps per-agent bundle lookup only for `application_owned` agents. Removed: `findCatalogSkillLocation`, `findGlobalSkillLocation`, `getGlobalSkill`, the resolver's global-name search, and the discovery helpers only they used.
+  - **Import validation.** `validateIncomingSkillNames` / `assertNoIncomingSkillNameConflicts` run before commit in `addSkillSource`, `createSkill` (an existing skills-folder copy included), local and GitHub `importAgentPackage` (download deleted), `updateAgentPackage` (staged revision rolled back; record and status unchanged) and `reloadAgentPackage` (R-3: registration kept). `SkillNameConflictError` maps to GraphQL `SKILL_NAME_CONFLICT` with `extensions.conflicts`. New `skillNameIssues` query.
+  - **Codex.** `planWorkspaceSkillRequests` is discoverable only when every enabled `skills/list` entry for the name has the catalog copy's real directory; otherwise it exposes and logs `codex-runtime-duplicate`.
+  - **Materializers.** Removed `skill-request-strength.ts`, strengths, re-point/yield, the Rule 3 skip and the IC-2 rename fallback (and `rename` from the link file system). Rule 1 is kept as `workspaceCollisionPolicy` (`fail` / `prefer_workspace`) on Codex, Claude, ACP/Grok and AGY. A different source for a live path fails fast with `sourceCollisionError`.
+  - **Web.** `SkillNameConflictDialog.vue` (on `common/Modal.vue`, mounted in `app.vue`, z-index above the Sources dialog; OK/Esc/backdrop close; OK focused). `skillNamesStore` provides issues, the conflict state and `runWithSkillNameChecks`, which opens the pop-up on a conflict and shows the tier-4 toast by diffing issues. `SkillNameIssuesBanner.vue` sits on the Skills page. The skill, source and package stores parse `extensions.conflicts` into `SkillNameConflictError`. Localization is in en and zh-CN.
+  - Docs: server `skills.md`, `agent_packages.md`, `agent_execution.md`; web `skills.md`.
+- Tests: new catalog, package-validation, collision-policy, GraphQL-error and Codex-duplicate tests on the server; new util, store, dialog, banner and surface tests on the web. Contextual-resolution tests and `agent-package-private-skills.e2e` are rewritten for the one catalog; the strength test file is removed.
+- Local validation and result: see `implementation-handoff.md` § Local Implementation Checks Run (IR-008). Server unit and integration failures equal the stashed baseline; web failures are the 4 baseline files. Live:
+  - V-F rerun (Codex, Claude and Grok);
+  - the D-19 probe: P1, AR13-T4, AR13-T2, I1–I5, C1;
+  - the rendered check: U1–U5.
+- Next recipient or routing: code reviewer, via `get_handoff_rules`.
+- Remaining limitations or risks:
+  - Agent Org-owned agents' private skill folders are not in the D-19 tier-2 scan and lost their per-agent lookup. No real data, docs or tests use that layout; flagged for review.
+  - GitHub import/update rejection is covered by unit tests only.
+  - The tier-4 toast is not rendered live.
+  - Codex may still show a stale runtime-default copy inside Codex runs (outside AutoByteus).
 

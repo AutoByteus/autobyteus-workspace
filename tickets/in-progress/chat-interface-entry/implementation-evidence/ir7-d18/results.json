@@ -1,0 +1,51 @@
+{
+  "startedAt": "2026-09-29T10:52:13.790Z",
+  "checks": {
+    "M-codex_app_server": {
+      "title": "D-18/IC-3: New chat on gpt-5.5 (codex_app_server), default thinking untouched → explicit llmConfig recorded; live ⚙ shows the values (VIS-026), never \"Not recorded\"",
+      "details": {
+        "runId": "daily_assistant_221f83042d494544acb649c2d5113ecd",
+        "recordedModel": "gpt-5.5",
+        "recordedLlmConfig": {
+          "reasoning_effort": "medium"
+        },
+        "schemaDefaults": {
+          "thinking": {
+            "reasoning_effort": "medium"
+          },
+          "other": {}
+        },
+        "nonThinkingEqualsLaunchForm": true,
+        "thinkingKeysEqualSchemaDefaults": true,
+        "notRecordedShown": false,
+        "missingHistoricalMarkers": 0,
+        "saveDisabled": true
+      }
+    },
+    "M-claude_agent_sdk": {
+      "title": "D-18/IC-3: New chat on sonnet (claude_agent_sdk), default thinking untouched → explicit llmConfig recorded; live ⚙ shows the values (VIS-026), never \"Not recorded\"",
+      "details": {
+        "runId": "daily_assistant_ca88de9b82aa4128b3fa7a8d780e308a",
+        "recordedModel": "sonnet",
+        "recordedLlmConfig": {
+          "thinking_enabled": false,
+          "reasoning_effort": "medium"
+        },
+        "schemaDefaults": {
+          "thinking": {
+            "thinking_enabled": false,
+            "reasoning_effort": "medium"
+          },
+          "other": {}
+        },
+        "nonThinkingEqualsLaunchForm": true,
+        "thinkingKeysEqualSchemaDefaults": true,
+        "notRecordedShown": false,
+        "missingHistoricalMarkers": 0,
+        "saveDisabled": true
+      }
+    }
+  },
+  "pageErrors": [],
+  "completedAt": "2026-09-29T10:52:39.625Z"
+}
