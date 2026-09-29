@@ -9,6 +9,8 @@ The latest `design-review-report.md` remains authoritative. This record holds th
 | ARCH-REV-001 | Round 1 / Architecture Design Complete (SR-007) | SR-003, SR-006, SR-007 | N/A | Fail | ARCH-DR-001, ARCH-DR-002, ARCH-DR-003 |
 | ARCH-REV-002 | Round 2 / Revised design (SR-009) after ARCH-REV-001 | SR-008, SR-009 | Fail | Fail (Requirement Gap) | ARCH-DR-001..003 resolved; ARCH-DR-004 new |
 | ARCH-REV-003 | Round 3 / SR-010 requirements repair | SR-010 | Fail | Pass | ARCH-DR-004 resolved |
+| ARCH-REV-004 | Round 4 / SR-011 isolated-launch capability gate (IMP-DI-001) | SR-011 | Pass | Fail (Design Impact) | ARCH-DR-005, ARCH-DR-006 new |
+| ARCH-REV-005 | Round 5 / SR-012 AppImage branch + text alignment | SR-012 | Fail | Pass | ARCH-DR-005, ARCH-DR-006 resolved |
 
 ## Revision Entries
 
@@ -74,3 +76,46 @@ None
 - Material classification changes: N/A
 - Recommended recipient: `/implementation_engineer` (primary); `/solution_designer` (informational)
 - Remaining risks or uncertainty: MP-003 occlusion and MP-005 dialog handling (validation items; with a no-op listener, confirm the dialog stays visible and operable); concurrent MCP calls during screencast; allowlist completeness; loopback binding
+
+### ARCH-REV-004 — Isolated-launch capability gate (SR-011) re-review
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/design-review-report.md`
+- Review round and trigger: Round 4; SR-011 responding to implementation Design Impact IMP-DI-001 (`implementation-handoff.md`, `implementation-revision-record.md`)
+- Triggering role, report path, and finding IDs: `/implementation_engineer` → `/solution_designer`; IMP-DI-001
+- Relevant solution revision IDs: SR-011
+- Prior authoritative decision: `Pass` (ARCH-REV-003)
+- Current authoritative decision: `Fail` (Design Impact)
+- What changed: Option B (fail-closed isolated-launch marker gate before any launch work) is accepted as the correct, proportionate enforcement of REQ-002 on the default installed-app path. Options A and C were correctly rejected. The REQ-002 scope note and AC-001 alternate need no renewed approval. New gaps: the marker lookup ignores the Linux AppImage release format (ARCH-DR-005), and ASM-001 plus the Guidance line still carry the superseded "≥1.4.53" basis (ARCH-DR-006).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-DR-001..004 | Resolved | Resolved (unaffected by SR-011) | SR-009, SR-010 | SR-011 touches only the lifecycle start/restart gate, build resources, REQ-002 note and AC-001 alternate |
+
+- New or remaining finding IDs: ARCH-DR-005 (Medium, blocking), ARCH-DR-006 (Low)
+- Material classification changes: N/A
+- Recommended recipient: `/solution_designer`
+- Remaining risks or uncertainty: unchanged from ARCH-REV-003. Manual launches of pre-change binaries remain uncontrollable (accepted by the REQ-002 scope note; document in the guide).
+
+### ARCH-REV-005 — AppImage branch and prerequisite alignment confirmed; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/design-review-report.md`
+- Review round and trigger: Round 5; SR-012 responding to ARCH-REV-004
+- Triggering role, report path, and finding IDs: `/solution_designer`, `handoff-architecture-design-complete.md`; ARCH-DR-005, ARCH-DR-006
+- Relevant solution revision IDs: SR-011, SR-012
+- Prior authoritative decision: `Fail` (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed: The gate now handles packed AppImages explicitly without executing them, and the extracted layout goes through the normal marker gate. The stale ≥1.4.53 basis is removed from ASM-001 and the Guidance.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-DR-005 | Open (Medium) | Resolved | SR-012 | `design-spec.md:407` AppImage branch (magic/suffix detection, no execution, `APPIMAGE_EXTRACTION_REQUIRED` exit 2, recovery text, marker in AppImage `resources/`, tests, docs); `design-spec.md:232` exit-code table |
+| ARCH-DR-006 | Open (Low) | Resolved | SR-012 | `requirements-doc.md:181` ASM-001 and `design-spec.md:489` aligned with the isolated-launch contract; only the removal instruction mentions 1.4.53 |
+
+- New or remaining finding IDs: None
+- Material classification changes: N/A
+- Recommended recipient: `/implementation_engineer` (primary); `/solution_designer` (informational)
+- Remaining risks or uncertainty: Linux Chromium sandbox for directly launched unpacked/extracted builds (validation-time; escalate rather than silently disabling the sandbox); earlier residuals unchanged (MP-003, MP-005, concurrent MCP calls during screencast, allowlist completeness, loopback binding)

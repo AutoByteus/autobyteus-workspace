@@ -2,8 +2,16 @@
 
 - Package identifier: `agent-isolated-app-recording`
 - Result classification: `Architecture Design Complete`
-- Current solution revision: `SR-010` (artifact repair after ARCH-REV-002; design content SR-009; previous revisions SR-007, SR-009)
+- Current solution revision: `SR-012` (AppImage branch + text alignment after ARCH-REV-004; previous SR-011/SR-010/SR-009/SR-007)
 - task_size: `Large`; architectural_risk: `High` (evidence in design-spec §Task Size And Architectural Risk)
+
+## Revision Summary (SR-012, after ARCH-REV-004)
+
+- ARCH-DR-005: packed Linux AppImage → `APPIMAGE_EXTRACTION_REQUIRED` (exit 2) detected by type-2 magic or suffix without execution; extracted `squashfs-root` executable passes through the normal marker gate; tests + docs. ARCH-DR-006: ASM-001 and design Guidance prerequisites aligned with the isolated-launch contract.
+
+## Revision Summary (SR-011, after implementation Design Impact IR-001)
+
+- IMP-DI-001: pre-change installed apps are not isolated. Resolution (option B): packaged builds ship `isolated-launch.json` (`isolatedLaunchContract: 1`) via `extraResources`; lifecycle `start`/`restart` refuse apps without it (`APP_ISOLATION_UNSUPPORTED`, exit 3). REQ-002 scope note and AC-001 alternate added (no intent change). Implementation is complete otherwise (IR-001); implementation package: `implementation-handoff.md`, `implementation-revision-record.md`. Narrow re-review requested: design-spec §Implementation Design Impact Resolution.
 
 ## Revision Summary (SR-010, after ARCH-REV-002)
 
@@ -68,3 +76,5 @@ Independent architecture review of the design against the approved requirements 
 - SR-007 (2026-09-28): rule "Architecture Design Complete with task_size=Large or architectural_risk=High" → `/architecture_reviewer` (ARCH-REV-001: Fail, Design Impact).
 - SR-009 (2026-09-29): get_handoff_rules applied — revised package is Architecture Design Complete, Large/High, requirements explicitly user-approved at SR-009 → `/architecture_reviewer` (re-review). Non-matching: direct implementation (needs Small/Medium + Low); delivery receipt (N/A).
 - SR-010 (2026-09-29): get_handoff_rules applied — Architecture Design Complete, Large/High, requirements explicitly user-approved (SR-009, repaired SR-010) → `/architecture_reviewer` (repair confirmation).
+- SR-011 (2026-09-29): get_handoff_rules applied — revised architecture package, Large/High, requirements approved (SR-009; SR-011 clarification only) → `/architecture_reviewer` (narrow re-review of the capability gate).
+- SR-012 (2026-09-29): get_handoff_rules applied — revised architecture package, Large/High, requirements approved → `/architecture_reviewer` (narrow re-review: AppImage branch + two text lines).

@@ -2,36 +2,36 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: independent architecture review applied (Large/High); ARCH-REV-003 Pass. This round's `get_handoff_rules` result: **Design Impact → `/solution_designer`** (IMP-DI-001). Source review follows after resolution.
-- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/requirements-doc.md` (SR-009 basis, SR-010 repair)
+- Upstream review applicability and handoff-rule result: independent architecture review applied (Large/High); ARCH-REV-005 Pass on SR-012. IR-001 routed Design Impact IMP-DI-001 to `/solution_designer`; it is resolved by SR-011/SR-012 and implemented in IR-002. This round's `get_handoff_rules` result: implementation complete, Large/High → **`/code_reviewer`**.
+- Requirements doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/requirements-doc.md` (SR-009 basis, SR-010 repair, SR-011/SR-012 IMP-DI-001 resolution; user decisions 2026-09-29 on Linux)
 - Investigation notes: `…/tickets/in-progress/agent-isolated-app-recording/investigation-notes.md`
-- Solution revision record: `…/tickets/in-progress/agent-isolated-app-recording/solution-revision-record.md` (SR-001..SR-010 + two evidence-only clarifications: skill-first validation channel; helper hit-testing/`OBSCURED`)
+- Solution revision record: `…/tickets/in-progress/agent-isolated-app-recording/solution-revision-record.md` (SR-001..SR-012 + evidence-only clarifications: skill-first validation channel; helper hit-testing/`OBSCURED`; macOS-only validation and Linux sandbox as a user decision)
 - Design spec: `…/tickets/in-progress/agent-isolated-app-recording/design-spec.md`
 - Supplemental task artifacts: `…/evidence/` (probe images, `screencast_probe.py`; non-normative)
-- Design review report: `…/tickets/in-progress/agent-isolated-app-recording/design-review-report.md` (ARCH-REV-003 Pass)
+- Design review report: `…/tickets/in-progress/agent-isolated-app-recording/design-review-report.md` (ARCH-REV-005 Pass)
 - Architecture review revision record: `…/tickets/in-progress/agent-isolated-app-recording/architecture-review-revision-record.md`
-- Triggering rework report: N/A (initial implementation)
+- Triggering rework report: IMP-DI-001 (IR-001, this file's history) → SR-011/SR-012 → ARCH-REV-005 (ARCH-DR-005 resolved)
 
 (`…` = `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording`)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002 on top of the IR-001 baseline)
 - Implementation revision record: `…/tickets/in-progress/agent-isolated-app-recording/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: SR-009, SR-010 (+ evidence-only clarifications)
-- Related architecture-review revision IDs: ARCH-REV-003
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: SR-009..SR-012 (+ evidence-only clarifications)
+- Related architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004, ARCH-REV-005
 - Related code-review / API-E2E / delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: IMP-DI-001, ARCH-DR-005
 
 Repositories and branches:
 
 | Repo | Worktree | Branch | Base | Commits |
 | --- | --- | --- | --- | --- |
-| workspace | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording` | `codex/agent-isolated-app-recording` | `e6c16d80148b` (`origin/personal` has since advanced 3 commits: 1.4.91-beta.5 release; base is an ancestor, no rebase done) | `6aa97db7f` env policy + disabled updates · `6c05a961e` electron-launch extraction · `73fdd20fd` lifecycle CLI · `0d7ebe672`, `6f8183138` docs + skill |
+| workspace | `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording` | `codex/agent-isolated-app-recording` | `e6c16d80148b` (`origin/personal` has since advanced 3 commits: 1.4.91-beta.5 release; base is an ancestor, no rebase done) | `6aa97db7f` env policy + disabled updates · `6c05a961e` electron-launch extraction · `73fdd20fd` lifecycle CLI · `0d7ebe672`, `6f8183138` docs + skill · `6de47c215` ticket artifacts (IR-001) · `b28eef80b` isolated-launch marker + gate (IR-002) |
 | autobyteus-mcps | `/Users/normy/autobyteus_org/autobyteus_mcps-agent-isolated-app-recording` (new worktree; the main checkout has unrelated untracked user files) | `codex/agent-isolated-app-recording` | `origin/main` `f11098c` | `8d3198d` attach-only + async arrows · `3f83b8a` presentation helper · `038d1b5` recording · `99cc81e` docs · `9b7448c` hit-testing/`OBSCURED` |
 
-Ticket artifacts under `tickets/in-progress/agent-isolated-app-recording/` are not committed yet (they were untracked when received).
+Ticket artifacts are committed as of IR-001 (`6de47c215`). The designer's SR-011/SR-012 updates and this IR-002 handoff are committed together with this round's handoff commit. The build left untracked `autobyteus-application-*/dist/` outputs; they are not committed.
 
 ## Routing Classification (Mandatory)
 
@@ -40,11 +40,15 @@ Ticket artifacts under `tickets/in-progress/agent-isolated-app-recording/` are n
 - Design classification reference: design-spec §Task Size And Architectural Risk
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale: two repos, ~40 source files, security/privacy boundary (server env), cross-invocation process ownership in two tools, public MCP surface +2 tools, shared IPC contract change — exactly as designed.
-- Selected route: `Solution Designer` (Design Impact IMP-DI-001); afterwards `Code Review`.
+- Selected route: `Code Review`.
 - Lightweight implementation self-review for direct route: `Not Applicable`
-- New design impact or escalation trigger: **IMP-DI-001** (below).
+- New design impact or escalation trigger: `None` (IMP-DI-001 resolved in IR-002; the Linux sandbox residual is not a trigger per the user decision, and Linux was not reproduced here).
 
-### IMP-DI-001 — Installed apps that predate this change are not isolated (default `start` path)
+### IMP-DI-001 — Resolved (IR-002, design option B)
+
+- Resolution: every build ships `isolated-launch.json` (`{"isolatedLaunchContract": 1}`) to `<resources>/`. `start`/`restart` gate on it before any port, data-root or spawn work (`APP_ISOLATION_UNSUPPORTED`, exit 3). Packed AppImages are refused without execution (`APPIMAGE_EXTRACTION_REQUIRED`, exit 2, with extraction steps). The E2E harness is unchanged. Validated: installed 1.4.91-beta.5 is refused from an unscrubbed agent shell with nothing launched; the worktree build starts isolated.
+
+Original finding (IR-001, kept for history):
 
 - Protects: REQ-002 ("never … however it is launched"), QR-003, AC-001/AC-002 (default = installed app); design escalation trigger (a).
 - Evidence: the server-env policy and `DisabledAppUpdater` live **inside the desktop app** (as designed). `pnpm isolated-app start` defaults to the installed app. The installed app here is 1.4.91-beta.4; 1.4.91-beta.5 is already on `origin/personal`, and neither contains this change. From this agent shell (which carries production `AUTOBYTEUS_MEMORY_DIR`, `DB_NAME`, `AUTOBYTEUS_AGENT_PACKAGE_ROOTS`, `AUTOBYTEUS_SKILLS_PATHS`, `APP_ENV`, …; probe P-3), the lifecycle overlay passes the caller env to the desktop process, so an **old** app's server still inherits production settings and shows the update toast. That toast is visible in a frame from a recording of the installed app. With the **worktree build**, isolation holds: from the same unscrubbed agent shell the isolated server env contained only Electron-owned values, it had 0 open files under `~/.autobyteus`, showed 2 built-in agents, no toasts, and Settings → Updates showed "Disabled".
@@ -61,7 +65,7 @@ Ticket artifacts under `tickets/in-progress/agent-isolated-app-recording/` are n
 | --- | --- | --- | --- |
 | BEH-001 | `pnpm isolated-app start/list/stop/restart`, JSON, registry, fixed control port 9333; harness preserved | root `package.json` → `autobyteus-web/scripts/isolated-app/cli.mjs` → `instanceLifecycle.mjs` (+ `instanceRegistry.mjs`, `instanceProcess.mjs`, `isolatedAppErrors.mjs`) → `scripts/electron-launch/*` | Done. `restart` keeps id/ports/root/`ownsDataRoot`/`keepDataRoot`; dead-process `stop` branch; identity guard = leader pid carries `--autobyteus-isolated-instance=<id>` (or leaderless live group) |
 | BEH-002 | Launch works from agent shell | `electron-launch/launchEnvironment.mjs` deletes `ELECTRON_RUN_AS_NODE` (also applies to the E2E harness) | Live-verified from an agent shell with `ELECTRON_RUN_AS_NODE=1` |
-| BEH-003 | Isolated server never inherits production settings; importer unchanged + `restart` | `electron/server/serverRuntimeEnv.ts` `buildServerProcessEnv` (`inherit-caller`/`isolated-baseline`, case-insensitive allowlist + `LC_*`), `embeddedServerLaunchConfig.environmentPolicy`, `BaseServerManager.buildServerEnv`, 3 managers; `ElectronApplication` maps profile→policy | Done for builds containing this change; see IMP-DI-001 for older installed apps. Production composition verified identical (key order and values) by test |
+| BEH-003 | Isolated server never inherits production settings; importer unchanged + `restart` | `electron/server/serverRuntimeEnv.ts` `buildServerProcessEnv` (`inherit-caller`/`isolated-baseline`, case-insensitive allowlist + `LC_*`), `embeddedServerLaunchConfig.environmentPolicy`, `BaseServerManager.buildServerEnv`, 3 managers; `ElectronApplication` maps profile→policy | Done. Builds without the isolated-launch marker are refused by the lifecycle gate (IR-002: `appExecutable.mjs` `readIsolatedLaunchContract`, called from `instanceLifecycle.start/restart`; marker `build/isolated-launch/isolated-launch.json` via `build/scripts/isolatedLaunchMarker.ts` in `build.ts` `extraResources`). Production composition verified identical (key order and values) by test |
 | BEH-004 | No update checks/UI in isolated instances | `electron/updater/appUpdateController.ts` (interface + IPC channel constants), `disabledAppUpdater.ts`, `appUpdater.ts implements`, `shared/appUpdateTypes.ts` `'disabled'`, `stores/appUpdateStore.ts`, `AboutSettingsManager.vue`, en/zh-CN messages | Rendered and verified on the worktree build |
 | BEH-005 | Attach-only config; helper in `run_script`, auto-installed on use | mcps `runtime/config.py` (`attach_only`), `runtime/chrome_launcher.py` (attach-only branch under the gate), `application.run_script` → `presentation/helper.py` `ensure_installed` (same session, before the script) → `presentation/demo_helper.js` | Done. Includes the hit-test clarification (`OBSCURED`, events dispatched to the topmost element) |
 | BEH-006 | Visible cursor/captions; exactly two recording tools, background worker | `presentation/demo_helper.js`; `application.start_recording/stop_recording` → `recording/service.py` → `python -m browser_automation.recording.worker` (`sys.executable`, `start_new_session`) → `recording/worker.py` (connect-only CDP screencast, constant-rate frame pump, ffmpeg via `recording/ffmpeg.py`), `recording/state.py` (file layout); MCP `mcp/tools/{start,stop}_recording.py`; CLI `start-recording`/`stop-recording` | Done. Tool inventory = previous 9 + 2 |
@@ -71,7 +75,8 @@ Ticket artifacts under `tickets/in-progress/agent-isolated-app-recording/` are n
 
 ## Key Files Or Areas
 
-- Workspace: `autobyteus-web/electron/server/serverRuntimeEnv.ts`, `baseServerManager.ts`, `{macOS,linux,windows}ServerManager.ts`, `embeddedServerLaunchConfig.ts`, `electron/application/electronApplication.ts`, `electron/updater/{appUpdateController,disabledAppUpdater,appUpdater}.ts`, `stores/appUpdateStore.ts`, `components/settings/AboutSettingsManager.vue`, `scripts/electron-launch/{launchEnvironment,launchPorts,appExecutable,processGroupControl,windowsProcessTree}.mjs`, `scripts/electron-e2e/*` (imports only), `scripts/isolated-app/*`.
+- Workspace (IR-002): `autobyteus-web/build/isolated-launch/isolated-launch.json`, `build/scripts/isolatedLaunchMarker.ts`, `build/scripts/build.ts` (`extraResources`), `scripts/electron-launch/appExecutable.mjs` (gate + AppImage detection), `scripts/isolated-app/instanceLifecycle.mjs` (gate order), `tests/integration/isolated-launch-marker.integration.test.ts`.
+- Workspace (IR-001): `autobyteus-web/electron/server/serverRuntimeEnv.ts`, `baseServerManager.ts`, `{macOS,linux,windows}ServerManager.ts`, `embeddedServerLaunchConfig.ts`, `electron/application/electronApplication.ts`, `electron/updater/{appUpdateController,disabledAppUpdater,appUpdater}.ts`, `stores/appUpdateStore.ts`, `components/settings/AboutSettingsManager.vue`, `scripts/electron-launch/{launchEnvironment,launchPorts,appExecutable,processGroupControl,windowsProcessTree}.mjs`, `scripts/electron-e2e/*` (imports only), `scripts/isolated-app/*`.
 - mcps (`browser-automation/src/browser_automation/`): `runtime/{config,chrome_launcher,session}.py`, `script.py`, `presentation/{helper.py,demo_helper.js}`, `recording/{service,worker,ffmpeg,state}.py`, `application.py`, `cli.py`, `contracts.py`, `errors.py`, `mcp/tools/{start_recording,stop_recording,__init__}.py`, `pyproject.toml` (package data `*.js`).
 
 ## Important Assumptions
@@ -86,9 +91,10 @@ Ticket artifacts under `tickets/in-progress/agent-isolated-app-recording/` are n
 
 ## Known Risks
 
-- IMP-DI-001 (above).
+- Linux is not validated in this ticket (user decision 2026-09-29: macOS-only; the user validates Linux after delivery). That covers the marker inside the AppImage, the extracted-layout launch and the Chromium sandbox on distros restricting unprivileged user namespaces. The lifecycle never adds `--no-sandbox`; the guide's Linux section lists the OS-level remedies as the user's choice.
+- Builds released before this change can still be launched by hand with the `e2e` variables; that is outside product control and documented.
 - While a page `alert`/`confirm` is open, **any** new Playwright connection (every browser-automation command) blocks until it is answered. This is pre-existing behavior; the worker's no-op listener restores it instead of silently dismissing (MP-005). It is documented in the skill and guide.
-- Occluded-window recording (MP-003) was not validated. The switches are passed and asserted in args; the covering scenario is left for API/E2E. Linux is not validated.
+- Occluded-window recording (MP-003) was not validated. The switches are passed and asserted in args; the covering scenario is left for API/E2E.
 - Flaky unrelated Electron vitest specs (`browser/__tests__/browser-shell-controller.spec.ts` collection, one `'installed'` assertion). Different failures across full runs; one full run passed 36/36; the specs pass alone. Not in the touched areas.
 - `demo_helper.js` is 474 effective lines (new file, >220-line delta). It must stay one evaluable function expression, because the page receives it as a single `evaluate` without a bundler. Splitting would need a build step, so it stays below 500 as one cohesive helper.
 
@@ -98,7 +104,7 @@ Ticket artifacts under `tickets/in-progress/agent-isolated-app-recording/` are n
 - Reviewed root-cause classification: Missing Invariant + Duplicated Policy
 - Reviewed refactor decision: `Refactor Needed Now`
 - Implementation matched the reviewed assessment: `Yes` (single `buildServerProcessEnv`; controller strategy; shared `electron-launch/`)
-- If challenged, routed as `Design Impact`: `Yes` — IMP-DI-001 (placement of the isolation invariant vs. the installed-app default path)
+- If challenged, routed as `Design Impact`: `Yes` — IMP-DI-001 in IR-001, resolved by SR-011/SR-012 and implemented in IR-002
 - Evidence / notes: see IMP-DI-001.
 
 ## Legacy / Compatibility Removal Check
@@ -124,6 +130,16 @@ Ticket artifacts under `tickets/in-progress/agent-isolated-app-recording/` are n
 
 ## Local Implementation Checks Run
 
+IR-002 (this round):
+
+- Node tests (`scripts/{isolated-app,electron-launch,electron-e2e}/__tests__`): 55/55. New cases cover the gate (valid, newer, missing, malformed, non-integer, lower contract), AppImage detection by magic and by suffix (proved not executed by a sentinel), an extracted layout with and without the marker, `start` refusing before any port, root or spawn work, `restart` refusing without stopping the instance, and `--from-worktree` with a marker.
+- Marker packaging test (`tests/integration/isolated-launch-marker.integration.test.ts`): 4/4 against the rebuilt macOS bundle. It failed on the pre-marker build, as intended.
+- Electron server/updater vitest 103/103; `tsc -p build/tsconfig.json` OK.
+- Live from this agent shell **without scrubbing**: installed 1.4.91-beta.5 → `APP_ISOLATION_UNSUPPORTED` exit 3, no process launched, no data root created. Worktree build (`--from-worktree`, rebuilt with the marker) → started; its server env had only Electron-owned `AUTOBYTEUS_*`/`DB_*` values, 0 open files under `~/.autobyteus`, and the control port listened on `127.0.0.1` only. `restart` kept `ownsDataRoot`; `stop` removed the root and freed the ports.
+- The rebuild's final zip step failed (7za exit 255) when a session pause interrupted it. The `.app` and DMG were produced; the zip is only a release artifact.
+
+IR-001 (baseline):
+
 - Workspace electron vitest: `electron/server` + `electron/updater` 103/103. Full suite 36/36 files on a clean run, with 2 other runs showing different unrelated flaky failures.
 - Workspace Nuxt vitest: `appUpdateStore.spec.ts`, `AboutSettingsManager.spec.ts` pass.
 - Node tests: `scripts/{isolated-app,electron-launch,electron-e2e}/__tests__` 46/46.
@@ -141,6 +157,8 @@ These are implementation-scoped checks, not API/E2E sign-off.
 
 ## Frontend Rendered-Result Check
 
+IR-002 changes no rendered UI (lifecycle gate, build resources, docs). The IR-001 check below stands and was reconfirmed on the rebuilt worktree bundle, which started isolated.
+
 - Affected surfaces: update notice/toasts (must not appear) and Settings → Updates panel in isolated instances.
 - References: REQ-009/AC-008; design DS-004.
 - Reviewed: `AboutSettingsManager.vue`, `AppUpdateNotice.vue`, `appUpdateStore`; existing panel styling reused (no new styles).
@@ -151,6 +169,7 @@ These are implementation-scoped checks, not API/E2E sign-off.
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
+- IR-002 gate: installed app without the marker → `APP_ISOLATION_UNSUPPORTED` (exit 3, nothing launched); `--from-worktree`/`--build` → starts; `restart` after deleting the marker from the bundle → refused, instance still running. Linux AppImage and extracted layouts are the user's own post-delivery validation.
 - AC-010 skill-first: a fresh agent with only the two skills, using `pnpm --dir <repo> isolated-app start --from-worktree` and `env CHROME_REMOTE_DEBUGGING_PORT=9333 BROWSER_AUTOMATION_ATTACH_ONLY=1 bash <browser skill>/scripts/browser …`.
 - AC-002 via the E2E harness and a manual env launch with production vars present (worktree build).
 - QR-006: 5-minute recording at 2400×1536 (memory is bounded to one frame by construction; verify RSS).

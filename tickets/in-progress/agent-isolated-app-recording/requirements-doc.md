@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-010`
+- Current solution revision ID: `SR-012`
 - Package identifier: `agent-isolated-app-recording`
 - Request / ticket: Agent-driven isolated AutoByteus instances — launch, control, screenshot and record tutorial videos; root-level documentation
 - Requirements owner: Solution Designer
@@ -86,7 +86,7 @@
 | Requirement ID | Requirement | Related Behavior IDs | Priority | Rationale | Source / Decision Reference |
 | --- | --- | --- | --- | --- | --- |
 | REQ-001 | A single agent-usable command starts an isolated instance from the installed AutoByteus app by default or from an explicitly given app/executable, waits until it is ready, and returns machine-readable details: instance id, backend URL, control (debugging) endpoint, data root, process id and log location. The control port is a fixed documented default (overridable) so it matches a browser MCP configured once by the user; if that port is busy, start fails with a clear error. Backend port and data root are chosen automatically unless given. | BEH-001 | Must | "Very easy for agents" | User; P-2 |
-| REQ-002 | An isolated instance never reads or writes the user's production AutoByteus data and does not inherit production-specific server settings (memory, database, agent-package roots, skill roots, featured catalog, etc.) from the launching environment — regardless of whether it is launched by the new command, the existing test harness, or manually with the documented variables. | BEH-003 | Must | Data safety | P-3 |
+| REQ-002 | An isolated instance never reads or writes the user's production AutoByteus data and does not inherit production-specific server settings (memory, database, agent-package roots, skill roots, featured catalog, etc.) from the launching environment — regardless of whether it is launched by the new command, the existing test harness, or manually with the documented variables.  Scope note (SR-011): enforced by app builds that carry the isolated-launch contract; the lifecycle command refuses builds without it, since older binaries cannot be isolated retroactively. | BEH-003 | Must | Data safety | P-3 |
 | REQ-003 | Starting an isolated instance works from an agent shell inside AutoByteus without manual environment cleanup. | BEH-002 | Must | Agents inherit `ELECTRON_RUN_AS_NODE=1` | P-1 |
 | REQ-004 | Agents can list running isolated instances, and stop one: the whole process tree ends, its ports are released, and the main app is never affected. Several isolated instances can run concurrently. Data-root retention follows DEC-003. | BEH-001 | Must | Lifecycle | P-7 |
 | REQ-005 | The browser MCP, configured by the user with the instance's fixed control port, can be set to attach-only: it controls the isolated instance through its existing tools, and when nothing is listening on that port it reports an error and never launches a browser of its own. Attach-only is a configuration setting, not a tool. | BEH-005 | Must | Avoid silently controlling the wrong app | P-4; browser-automation config; DEC-007 |
@@ -105,7 +105,7 @@
 
 | AC ID | Related REQ | Related BEH / SCN | Preconditions / Trigger | Observable Expected Outcome | Alternate Or Failure Outcome | Verification Intent |
 | --- | --- | --- | --- | --- | --- | --- |
-| AC-001 | REQ-001, REQ-003 | BEH-001/002, SCN-001 | Agent shell inside AutoByteus (inherits `ELECTRON_RUN_AS_NODE=1`), installed app present | Start command returns JSON with instance id, backend URL, control endpoint, data root, pid, log path; backend responds; window visible | Missing app / busy requested port / bad data root → JSON error with actionable message, nothing left running | Executable validation on macOS |
+| AC-001 | REQ-001, REQ-003 | BEH-001/002, SCN-001 | Agent shell inside AutoByteus (inherits `ELECTRON_RUN_AS_NODE=1`), installed app present | Start command returns JSON with instance id, backend URL, control endpoint, data root, pid, log path; backend responds; window visible | Missing app / busy requested port / bad data root → JSON error with actionable message, nothing left running; app build without isolated-launch support (predates this change) → `APP_ISOLATION_UNSUPPORTED`, nothing started (SR-011, enforces REQ-002) | Executable validation on macOS |
 | AC-002 | REQ-002 | BEH-003, SCN-005 | Launch from an environment containing production `AUTOBYTEUS_*`, `DATABASE_URL`, `DB_NAME` values | Isolated server's effective memory/db/package/skill/catalog settings resolve only inside its data root (or defaults); no file under production data locations is opened or modified; UI shows no agents from production package roots | — | Env + open-file inspection; repeat via test harness and manual env launch |
 | AC-003 | REQ-004 | BEH-001, SCN-001 | Two isolated instances running beside the main app | List shows both; stopping one ends its process tree and frees its ports; the other and the main app keep working | Stopping an instance whose app was already closed (e.g., the user quit it) → no signals sent, data-root disposition per DEC-003 applied, record removed, result reports `wasRunning:false`; unknown id → clear JSON error | Executable validation |
 | AC-004 | REQ-005, REQ-001 | SCN-003 | MCP configured attach-only with the default control port; instance started with defaults | `list_tabs`/`attach_tab`/`screenshot` operate on the instance with no extra configuration | Instance not running → error; no browser process started; start with the control port busy → clear start error | Executable validation |
@@ -143,7 +143,7 @@
 | QR-001 | REQ-001 / AC-001 | Performance | Installed-app instance ready (backend responding, window loaded) within 60 s | Developer Mac; probe measured ≈8 s | Timed validation |
 | QR-002 | REQ-001, REQ-005 | Security | Control endpoint listens on loopback only and exists only for isolated instances | All hosts | Port binding inspection |
 | QR-003 | REQ-002 | Privacy | Zero reads/writes under production data locations by isolated instances | All launch paths | AC-002 |
-| QR-004 | All | Compatibility | macOS and Linux (Linux with a graphical display, real or virtual) | Windows out of scope (DEC-004) | Validation on macOS; Linux documented and validated where available |
+| QR-004 | All | Compatibility | macOS and Linux (Linux with a graphical display, real or virtual) | Windows out of scope (DEC-004) | Validation on macOS in this ticket; Linux documented, and validated by the user after delivery (user decision 2026-09-29). Linux Chromium-sandbox restrictions (user namespaces) are the user's to resolve at the OS level; the lifecycle does not add `--no-sandbox` |
 | QR-005 | REQ-005..008, 013 | Compatibility | Existing browser-automation commands, schema v1 JSON and exit-code categories unchanged | CLI and MCP | Existing test suite |
 | QR-007 | REQ-005..008 | Compatibility | Browser MCP public surface gains exactly two tools (`start_recording`, `stop_recording`); other changes are the attach-only configuration setting, the async-arrow fix and the built-in presentation helper inside `run_script`; existing tools keep their connect–operate–disconnect behavior and JSON contract | MCP and CLI | Tool-list check + existing suite |
 | QR-006 | REQ-008 | Operability | Recording of ≥5 minutes completes without unbounded memory growth | Window up to Retina 2400×1536 | Long-run validation |
@@ -178,7 +178,7 @@
 
 | ID | Assumption | Why Necessary | Validation Plan / Owner | Status |
 | --- | --- | --- | --- | --- |
-| ASM-001 | The installed AutoByteus app is v1.4.53+ (has the `e2e` profile) | Default launch source | Start command checks and reports | Open |
+| ASM-001 | The app used for isolated launches carries the isolated-launch contract (the first release after this change, or a worktree build); older builds are refused (`APP_ISOLATION_UNSUPPORTED`); Linux AppImage releases are used in extracted form | Default launch source; REQ-002 | Start command checks the contract (SR-011/SR-012) | Resolved by design |
 | ASM-002 | ffmpeg is available (or installable) on hosts that record | MP4 output | Documented prerequisite; clear error if missing | Open |
 | ASM-004 | Script-dispatched (untrusted) DOM events are sufficient for AutoByteus UI interactions used in tutorials | Actions via `run_script` rather than native input | Design verifies representative interactions; limitation documented (native dialogs, OS menus) | Open |
 | ASM-003 | The user grants OS permissions when needed | User statement | — | Accepted |

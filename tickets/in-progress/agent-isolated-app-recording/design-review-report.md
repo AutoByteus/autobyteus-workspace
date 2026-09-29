@@ -9,11 +9,13 @@
 - Supplemental Task Artifacts Reviewed: `evidence/probe-0{1,2,3}*.png`, `evidence/screencast_probe.py` (evidence only)
 - Relevant Solution Revision IDs: SR-006, SR-007, SR-008, SR-009, SR-010
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Architecture Review Revision ID: `ARCH-REV-005`
 - Current Review Round: 3
 - Trigger (round 3): SR-010 repair of ARCH-DR-004 (requirements rows AC-003/007/014, SCN-004/005, UC-006, status lines) plus design Guidance carrying ARCH-REV-002 residuals; no structural design change. Round-2 trigger: Revised `Architecture Design Complete` from `/solution_designer` (SR-009), responding to ARCH-REV-001 and widening scope (helper and recording moved into browser-automation; `import-package` withdrawn; lifecycle reduced to `start | list | stop | restart`)
 - Prior Review Round Reviewed: Round 2 / ARCH-REV-002 (Fail — ARCH-DR-004); Round 1 / ARCH-REV-001 (Fail — ARCH-DR-001..003)
-- Latest Authoritative Round: 3
+- Latest Authoritative Round: 5
+- Round-5 trigger: SR-012 — ARCH-DR-005 resolved with option (b) (packed AppImage detected by type-2 magic `AI\x02` at offset 8 or `.AppImage` suffix, without execution → `APPIMAGE_EXTRACTION_REQUIRED`, exit 2, exact extract + `--app <squashfs-root>/<executable>` recovery; the extracted layout goes through the normal marker gate; the marker sits in the AppImage `resources/` via the same `extraResources` entry; tests + guide/troubleshooting). ARCH-DR-006 resolved (`requirements-doc.md:181` ASM-001 and `design-spec.md:489` Guidance aligned; the only remaining `1.4.53` text, `design-spec.md:409`, is the removal instruction).
+- Round-4 trigger: SR-011 — implementation Design Impact IMP-DI-001 (installed pre-change apps not isolated) resolved by an isolated-launch capability marker + lifecycle fail-closed gate (design-spec §Implementation Design Impact Resolution); REQ-002 scope note; AC-001 alternate. Round-4 evidence: `implementation-handoff.md` IMP-DI-001 (worktree build isolated from an unscrubbed agent shell; installed 1.4.91-beta.4 not), `autobyteus-web/build/scripts/build.ts` (Linux target is `AppImage` only, lines 299-300/386/394/465; `extraResources` line 239), `scripts/electron-launch/appExecutable.mjs` (accepts any explicit executable file; Linux has no installed default; worktree discovery matches `linux*-unpacked/`), `docs/isolated-app-instances.md:85` (Linux: pass `--app`).
 - Current-State Evidence Basis: Round-1 workspace evidence still applies (unchanged code @ `e6c16d801`). New mcps evidence @ `f11098c`: `runtime/session.py` (`tab_id` = CDP `targetId`, stable across connections; `session()` = ensure endpoint → `connect_over_cdp` → `contexts[0]` → yield → stop Playwright client only), `application.py:322-360` (`run_script` = validate → normalize → session → `resolve_page` → `page.evaluate` → strict JSON), `policy.py` (`ArtifactPolicy`: workspace-relative only, `BROWSER_AUTOMATION_WORKSPACE` or cwd, temp sibling + atomic no-overwrite commit), `runtime/chrome_launcher.py:106-108` (per-user runtime dir), `mcp/tools/run_script.py`; `evidence/screencast_probe.py` (Python Playwright `connect_over_cdp` + `new_cdp_session` + `Page.startScreencast` with ack, which is the same mechanism the worker uses); renderer native dialogs (`window.confirm/alert` in `NodeManager.vue:328`, `PhoneAccessCard.vue:264/269`, `ServerLoading.vue:125`).
 
 ## Routing Classification Review
@@ -216,6 +218,17 @@
 - Reachability: `Unclear` (the trigger exists; whether Playwright's auto-dismiss applies to `connect_over_cdp` pages in the worker needs confirmation during implementation)
 - Review consequence: no finding. Residual risk: the implementation should keep the worker's Playwright usage minimal (CDP session for screencast only). Validation should confirm that a dialog raised during recording is not dismissed by the worker. If it is, the worker should use a raw CDP connection to the page target, or the limitation should be documented.
 
+### `MP-006` — A Linux user passes a released AppImage as `--app`
+
+- Related requirement: REQ-001, QR-004
+- Relevant behavior ID(s): BEH-001
+- Initiating basis kind: `User`/`Operational`
+- Independent trigger: a Linux user or agent (a supported platform) with the released AutoByteus AppImage (the only Linux release artifact) follows the guide ("On Linux … pass `--app`") and runs `pnpm isolated-app start --app ~/Apps/AutoByteus.AppImage`.
+- Forward path: `resolveAppExecutable` accepts the file → SR-011 gate → `readIsolatedLaunchContract(executablePath)` looks for `<dir>/resources/isolated-launch.json` next to the AppImage → absent → `APP_ISOLATION_UNSUPPORTED`.
+- Consequence: all released Linux apps are refused, including future releases that carry the marker inside the image, and the remedy in the error message cannot work.
+- Reachability: `Reachable`
+- Review consequence: ARCH-DR-005.
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 | Item | Why It Matters | Required Action | Status |
@@ -224,17 +237,14 @@
 
 ## Review Decision
 
-- **`Pass`** (round 3). The upstream behavior basis is confirmed, all structural checks pass, ARCH-DR-001..004 are resolved, and no in-scope machinery depends on an unsupported premise.
+- **`Pass`** (round 5).
+  - The SR-011 capability gate (accepted in round 4) now covers every supported release format. macOS bundles and Linux unpacked/extracted layouts go through the marker gate. Packed Linux AppImages are recognized without being executed and get an accurate, actionable recovery. `APP_ISOLATION_UNSUPPORTED` now fires only where updating the app can actually fix the lookup.
+  - Rejecting option (a) is reasonable: it would execute the app's runtime just to probe, and it can't be validated on the macOS validation host.
+  - ARCH-DR-001..006 are resolved; no open findings.
 
 ## Findings
 
-None open. Resolved history: ARCH-DR-001..003 (ARCH-REV-002), ARCH-DR-004 (ARCH-REV-003); see `architecture-review-revision-record.md`.
-
-Round-3 verification of ARCH-DR-004:
-- AC-007 (line 114) is an acceptance criterion for SR-009 REQ-008. It adds nothing beyond REQ-008 and the design's interface contract (error codes match the design's interface table).
-- AC-014 (line 121) matches the SR-006 importer criterion reviewed in round 1.
-- SCN-004 and SCN-005 now describe MCP recording and UI import plus the importer. UC-006, Document Status, Readiness Check and the investigation status line are updated.
-- The AC-003 clause removal needs no new approval, because recording on a stopped instance finalizes itself per REQ-008 ("If the tab or app disappears, the recording finalizes itself") and the lifecycle does not own recordings (DEC-006, SR-009).
+None open. Resolution history: ARCH-DR-001..003 (ARCH-REV-002), ARCH-DR-004 (ARCH-REV-003), ARCH-DR-005/006 (ARCH-REV-005). See `architecture-review-revision-record.md`.
 
 ## Classification
 
@@ -242,9 +252,12 @@ N/A (Pass)
 
 ## Recommended Recipient
 
-`/implementation_engineer` (cumulative package); informational notice to `/solution_designer`
+`/implementation_engineer` (cumulative package, implementation round IR-002); informational notice to `/solution_designer`
 
 ## Residual Risks
+
+- Linux (round 5, validation-time): no Chromium sandbox handling exists in `autobyteus-web/electron` or the build scripts (`no-sandbox` not found). Directly launched unpacked Electron builds (worktree `linux-unpacked` and extracted AppImages) can fail to start on distributions that restrict unprivileged user namespaces, because the setuid `chrome-sandbox` loses its permissions. This affected `--from-worktree` on Linux before SR-012 as well. Validate wherever Linux is available (QR-004). If it reproduces, return `Design Impact` rather than adding a silent `--no-sandbox`, because that is a security posture decision.
+- Manual launches of pre-change binaries stay outside product control (REQ-002 scope note). Document this in the guide.
 
 - MP-003 occlusion (switches plus validation; the user's Chrome tabs are not covered by the switches, so document it).
 - MP-004 orphaned worker after a cancelled run (recoverable with `stop_recording` or instance stop; document it).
@@ -257,6 +270,6 @@ N/A (Pass)
 
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001/002 resolved; MP-004 Reachable, covered by the approved contract and now documented; MP-003/MP-005 Unclear → validation items in design Guidance, no speculative machinery)
-- Notes: The design Guidance now covers the ARCH-REV-002 residuals: the worker uses its own interpreter, connects only, and never launches a browser; the worker registers a no-op dialog listener; concurrent-call validation; cancelled-run behavior; `restart` flags and tab id; the occlusion limitation for the user's Chrome. Validation note for MP-005: with a no-op Playwright `dialog` listener the dialog stays pending rather than being dismissed, so confirm that it remains visible and operable in Electron (human or app flow). If it does not, return `Design Impact`.
+- Review Decision: `Pass` (round 5)
+- Material-Premise Gate: `Pass` (MP-006 resolved by the AppImage branch; earlier premises unchanged; MP-003/MP-005 remain validation items)
+- Notes: The cumulative package is ready for implementation round IR-002 (capability marker + gate + AppImage branch + docs), followed by code review.

@@ -14,6 +14,8 @@
 | SR-008 | Mixed | ARCH-REV-001 Fail (Design Impact) | ARCH-DR-001, ARCH-DR-002, ARCH-DR-003 | Design Ready | Requirements delta Ready for Approval; Design revised (pending DR-001 approval) | REQ-006, AC-005, AC-003; BEH-001/005/006 | DR-002/003 + residuals resolved in design; DR-001 option (b) + AC-003 alternate need user approval |
 | SR-009 | Mixed | User responsibility-boundary decisions resolving ARCH-DR-001; recording moved to browser MCP; import-package dropped | ARCH-DR-001..003 | Requirements delta Ready for Approval; design Needs Revision | Requirements Approved; Design Ready (rewritten) | BEH-005/006; REQ-006/007/008/011/012; AC-003/005/006/007/011; QR-007; DEC-006; SCN-004/005 | Re-review requested |
 | SR-010 | Requirements (artifact repair) + Design guidance | ARCH-REV-002 Fail (Requirement Gap) | ARCH-DR-004 | Requirements Approved (SR-009, corrupted rows) | Requirements Approved (repaired); Design Ready | AC-003, AC-007, AC-014; SCN-004, SCN-005; UC-006 | Repair only; no intent change |
+| SR-011 | Design (+ requirement clarification) | Implementation Design Impact IR-001 | IMP-DI-001 | Design Ready (SR-010) | Design Ready (capability gate added) | REQ-002 (scope note), AC-001 (alternate), BEH-001/003 | Option B: fail closed on isolated-launch marker; re-review |
+| SR-012 | Design | ARCH-REV-004 Fail (Design Impact) | ARCH-DR-005, ARCH-DR-006 | Design Ready (SR-011) | Design Ready | REQ-001, QR-004, ASM-001 | AppImage branch (option b); stale ≥1.4.53 text aligned |
 
 ## Revision Entries
 
@@ -182,3 +184,30 @@
 - 2026-09-29: Evidence-only clarification: user direction — skills + CLI are the primary agent path, tools must stay clean ("the agent is smart enough … it's not like we have to build every little tool"; MCP may be deprecated later). Proposed CLI additions (`--port`/`--attach-only` flags, isolated-app skill launcher, `import-keys`, `__abDemo.help()`) were withdrawn before approval. Design-spec validation guidance updated: AC-010 skill-first (no MCP configured). No requirement or design-structure change.
 
 - 2026-09-29: Evidence-only design clarification (no requirement change): in-page popups/modals implemented by the app or website are ordinary DOM and are handled through the helper; to behave like a human with popups open, helper targeting uses hit-testing (topmost element at the target's center) and adds error code `OBSCURED`. Clarifies REQ-006 "visible text" semantics. Native `alert/confirm/prompt` and OS dialogs remain out of scope (documented limitation; possible follow-up ticket).
+
+### SR-011 — Isolated-launch capability gate (IMP-DI-001)
+
+- Phase and classification: Design Impact (with requirement clarification; no intended-behavior change)
+- Trigger: implementation-engineer Design Impact IR-001, finding IMP-DI-001 (`implementation-handoff.md`, `implementation-revision-record.md`): default `start` uses the installed app; builds predating this change (installed 1.4.91-beta.4; beta.5 on origin/personal) are not isolated and show the update toast.
+- Decision: option B — desktop builds ship `isolated-launch.json` (`isolatedLaunchContract: 1`) via `extraResources`; `start`/`restart` refuse apps without it with `APP_ISOLATION_UNSUPPORTED` (exit 3). Options A (docs-only) and C (launcher-side scrub) rejected (design-spec §Implementation Design Impact Resolution).
+- IDs affected: REQ-002 (scope note: enforceable only for builds carrying the contract; lifecycle refuses others), AC-001 (alternate outcome), design interface/file mapping, guide prerequisites.
+- Intended behavior changed: No — enforces approved REQ-002; user-visible consequence (installed pre-change apps refused until the next release) communicated to the user 2026-09-29.
+- Also recorded: implementation notes REQ-002 supersedes AC-014 of the earlier electron-e2e-runtime-isolation ticket (provider-key env not passed to the e2e server; keys come from the vault) — consistent with SR-006; origin/personal advanced 3 commits (beta.5) — rebase is delivery's concern.
+- Classification: Large / High (unchanged)
+- Routing: revised architecture package → architecture reviewer (per handoff rules), then implementation round IR-002.
+- SR-011 user acknowledgment (2026-09-29): user asked whether the capability gate is a hack and proposed releasing a beta first; after explanation (gate is a standard capability check protecting installs where skills/CLI are newer than the installed app; worktree `--build` path already validated; beta release belongs to delivery after review/validation), user confirmed: "if you think the design is good, okay, that's fine." No release before review; continue current routing.
+
+### SR-012 — AppImage branch and prerequisite alignment (ARCH-REV-004)
+
+- Phase and classification: Design Impact (no intended-behavior change)
+- Trigger: ARCH-REV-004 (Fail, Design Impact) — ARCH-DR-005 (packed Linux AppImage always refused by the marker gate; MP-006), ARCH-DR-006 (stale "≥1.4.53" prerequisite in ASM-001 and design Guidance)
+- Resolution: option (b) — detect packed AppImage (type-2 magic at offset 8 or `.AppImage` suffix) without executing it → `APPIMAGE_EXTRACTION_REQUIRED` (exit 2) with exact extract + `--app <squashfs-root>/<executable>` recovery; extracted layout goes through the normal marker gate; marker placed in AppImage `resources/` by the same `extraResources` entry; tests + guide/troubleshooting. Option (a) rejected (executes app runtime to probe; not validatable on macOS host). ASM-001 and design Guidance prerequisites aligned with the isolated-launch contract.
+- Intended behavior changed: No (REQ-001 explicit-executable path; QR-004 Linux support preserved)
+- Classification: Large / High (unchanged)
+- Routing: architecture reviewer (narrow re-review: AppImage branch + two text lines)
+
+#### Review Pass Notification (informational, no new SR round)
+
+- 2026-09-29: ARCH-REV-005 **Pass** on SR-012 (with SR-011); ARCH-DR-005/006 closed, no open findings. Reviewer forwarded the package to `/implementation_engineer` for IR-002. New residual for Linux validation: no Chromium sandbox handling — direct launches of unpacked/extracted builds may fail on distros restricting user namespaces; must return as Design Impact, never a silent `--no-sandbox`. No duplicate forwarding by Solution Designer.
+
+- 2026-09-29: User decisions (verification-scope clarification, no behavior change): (1) Linux Chromium-sandbox/user-namespace restrictions are the user's responsibility ("the user can run no sandbox by themselves") — ARCH-REV-005 residual reclassified from Design Impact trigger to documented Linux note; no pass-through/`--no-sandbox` added (offered as possible follow-up). (2) Validation in this ticket runs on macOS; the user validates Linux after delivery. QR-004 verification intent and design Guidance updated.
