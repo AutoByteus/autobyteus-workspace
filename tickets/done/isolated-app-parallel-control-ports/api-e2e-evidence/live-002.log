@@ -1,0 +1,25 @@
+start-1 cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/add-blogs-module exit=0
+start-0 cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/isolated-app-parallel-control-ports exit=0
+start-2 cwd=/Users/normy/autobyteus_org/autobyteus-worktrees/agent-run-id-rename exit=0
+== instance 0 controlPort=50496 instanceId=iso-50496-54af pid=91471
+listener: n127.0.0.1:50496  pid/pgid: 91471 91471
+{"schema_version":"1","ok":true,"command":"list-tabs","result":{"tabs":[{"tab_id":"C07F5C6F6ABB0288965FB4DE8DAA1FC2","url":"file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents","title":""}]}}
+ list-tabs exit=0
+== instance 1 controlPort=50497 instanceId=iso-50497-ddbf pid=91472
+listener: n127.0.0.1:50497  pid/pgid: 91472 91472
+{"schema_version":"1","ok":true,"command":"list-tabs","result":{"tabs":[{"tab_id":"DD364DA7CF44C09C63D91026275C95ED","url":"file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents","title":""}]}}
+ list-tabs exit=0
+== instance 2 controlPort=50498 instanceId=iso-50498-7cd5 pid=91473
+listener: n127.0.0.1:50498  pid/pgid: 91473 91473
+{"schema_version":"1","ok":true,"command":"list-tabs","result":{"tabs":[{"tab_id":"2D2035AFFAFB8D2411FAD16C136CB5E2","url":"file:///Applications/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/agents","title":""}]}}
+ list-tabs exit=0
+== shared registry list
+[["iso-50496-54af",50496,50499,true],["iso-50497-ddbf",50497,50500,true],["iso-50498-7cd5",50498,50501,true]]
+== stop iso-50496-54af
+{"instanceId":"iso-50496-54af","wasRunning":true,"forced":true,"dataRoot":"/private/tmp/abac2-ZxRT9a/autobyteus-isolated-root-YDfFnc","dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true,"logPath":null}
+== stop iso-50497-ddbf
+{"instanceId":"iso-50497-ddbf","wasRunning":true,"forced":true,"dataRoot":"/private/tmp/abac2-ZxRT9a/autobyteus-isolated-root-AfXZOD","dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true,"logPath":null}
+== stop iso-50498-7cd5
+{"instanceId":"iso-50498-7cd5","wasRunning":true,"forced":true,"dataRoot":"/private/tmp/abac2-ZxRT9a/autobyteus-isolated-root-iLqUkz","dataRootRemoved":true,"controlPortReleased":true,"serverPortReleased":true,"logPath":null}
+remaining records: 0
+private tmp removed

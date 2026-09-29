@@ -1,0 +1,325 @@
+{
+  "startedAt": "2026-09-29T09:44:18.994Z",
+  "platform": "darwin-arm64",
+  "scenarios": {
+    "LC-001": {
+      "id": "LC-001",
+      "title": "Start from an agent-like shell: JSON, readiness, loopback-only, isolated server env, no production files",
+      "startedAt": "2026-09-29T09:44:19.791Z",
+      "details": {
+        "instance": {
+          "instanceId": "iso-49685-8547",
+          "pid": 77729,
+          "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "backendUrl": "http://127.0.0.1:49687",
+          "graphqlUrl": "http://127.0.0.1:49687/graphql",
+          "controlEndpoint": "http://127.0.0.1:49685",
+          "controlPort": 49685,
+          "serverPort": 49687,
+          "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-DokpLW",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "databaseUrl": "file:/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-DokpLW/server-data/db/production.db",
+          "logPath": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-app/iso-49685-8547.log"
+        },
+        "readySeconds": 11.958,
+        "isolation": {
+          "processCount": 5,
+          "listeners": [
+            "127.0.0.1:49690",
+            "127.0.0.1:49685",
+            "127.0.0.1:49782",
+            "*:49687"
+          ],
+          "droppedChecked": [
+            "AUTOBYTEUS_DATA_DIR",
+            "AUTOBYTEUS_MEMORY_DIR",
+            "AUTOBYTEUS_AGENT_PACKAGE_ROOTS",
+            "AUTOBYTEUS_SKILLS_PATHS",
+            "AUTOBYTEUS_SERVER_HOST",
+            "DB_NAME",
+            "DATABASE_URL",
+            "APP_ENV",
+            "OPENAI_API_KEY",
+            "AUTOBYTEUS_PROBE_CALLER_SENTINEL"
+          ],
+          "openFileCount": 224,
+          "productionOpen": []
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T09:44:33.233Z"
+    },
+    "LC-002": {
+      "id": "LC-002",
+      "title": "Second concurrent instance, list, and control-port conflict",
+      "startedAt": "2026-09-29T09:44:33.233Z",
+      "details": {
+        "instanceB": {
+          "instanceId": "iso-49686-e70c",
+          "pid": 79025,
+          "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "backendUrl": "http://127.0.0.1:49800",
+          "graphqlUrl": "http://127.0.0.1:49800/graphql",
+          "controlEndpoint": "http://127.0.0.1:49686",
+          "controlPort": 49686,
+          "serverPort": 49800,
+          "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-14IdmW",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "databaseUrl": "file:/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-14IdmW/server-data/db/production.db",
+          "logPath": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-app/iso-49686-e70c.log"
+        },
+        "listed": {
+          "instances": [
+            {
+              "instanceId": "iso-49685-8547",
+              "pid": 77729,
+              "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+              "backendUrl": "http://127.0.0.1:49687",
+              "graphqlUrl": "http://127.0.0.1:49687/graphql",
+              "controlEndpoint": "http://127.0.0.1:49685",
+              "controlPort": 49685,
+              "serverPort": 49687,
+              "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-DokpLW",
+              "ownsDataRoot": true,
+              "keepDataRoot": false,
+              "databaseUrl": "file:/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-DokpLW/server-data/db/production.db",
+              "logPath": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-app/iso-49685-8547.log",
+              "startedAt": "2026-09-29T09:44:19.861Z",
+              "running": true
+            },
+            {
+              "instanceId": "iso-49686-e70c",
+              "pid": 79025,
+              "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+              "backendUrl": "http://127.0.0.1:49800",
+              "graphqlUrl": "http://127.0.0.1:49800/graphql",
+              "controlEndpoint": "http://127.0.0.1:49686",
+              "controlPort": 49686,
+              "serverPort": 49800,
+              "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-14IdmW",
+              "ownsDataRoot": true,
+              "keepDataRoot": false,
+              "databaseUrl": "file:/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-14IdmW/server-data/db/production.db",
+              "logPath": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-app/iso-49686-e70c.log",
+              "startedAt": "2026-09-29T09:44:33.324Z",
+              "running": true
+            }
+          ]
+        },
+        "conflict": {
+          "code": "CONTROL_PORT_IN_USE",
+          "message": "Control port 49685 is used by isolated instance iso-49685-8547; omit --control-port to use a free port, or pass another port",
+          "details": {
+            "instanceId": "iso-49685-8547"
+          }
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T09:44:44.657Z"
+    },
+    "LC-003": {
+      "id": "LC-003",
+      "title": "Restart keeps id, ports, root and flags; new tab id; still isolated",
+      "startedAt": "2026-09-29T09:44:44.657Z",
+      "details": {
+        "tabBefore": "3026096901397735C38754CA36D107FA",
+        "tabAfter": "05E4569768FBD543A9461A7A3AA2A21C",
+        "restarted": {
+          "instanceId": "iso-49685-8547",
+          "pid": 80310,
+          "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+          "backendUrl": "http://127.0.0.1:49687",
+          "graphqlUrl": "http://127.0.0.1:49687/graphql",
+          "controlEndpoint": "http://127.0.0.1:49685",
+          "controlPort": 49685,
+          "serverPort": 49687,
+          "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-DokpLW",
+          "ownsDataRoot": true,
+          "keepDataRoot": false,
+          "databaseUrl": "file:/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-DokpLW/server-data/db/production.db",
+          "logPath": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-app/iso-49685-8547.log"
+        },
+        "isolation": {
+          "processCount": 5,
+          "listeners": [
+            "127.0.0.1:49685",
+            "127.0.0.1:49906",
+            "127.0.0.1:49975",
+            "*:49687"
+          ],
+          "droppedChecked": [
+            "AUTOBYTEUS_DATA_DIR",
+            "AUTOBYTEUS_MEMORY_DIR",
+            "AUTOBYTEUS_AGENT_PACKAGE_ROOTS",
+            "AUTOBYTEUS_SKILLS_PATHS",
+            "AUTOBYTEUS_SERVER_HOST",
+            "DB_NAME",
+            "DATABASE_URL",
+            "APP_ENV",
+            "OPENAI_API_KEY",
+            "AUTOBYTEUS_PROBE_CALLER_SENTINEL"
+          ],
+          "openFileCount": 218,
+          "productionOpen": []
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T09:45:01.571Z"
+    },
+    "LC-004": {
+      "id": "LC-004",
+      "title": "Stop ends the whole group, frees ports, removes the owned root; others keep running",
+      "startedAt": "2026-09-29T09:45:01.571Z",
+      "details": {
+        "stopped": {
+          "instanceId": "iso-49686-e70c",
+          "wasRunning": true,
+          "forced": false,
+          "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-14IdmW",
+          "dataRootRemoved": true,
+          "controlPortReleased": true,
+          "serverPortReleased": true,
+          "logPath": null
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T09:45:03.487Z"
+    },
+    "LC-005": {
+      "id": "LC-005",
+      "title": "Dead-process stop after the app was ended outside the lifecycle",
+      "startedAt": "2026-09-29T09:45:03.487Z",
+      "details": {
+        "listed": {
+          "instances": [
+            {
+              "instanceId": "iso-49685-8547",
+              "pid": 80310,
+              "executablePath": "/Applications/AutoByteus.app/Contents/MacOS/AutoByteus",
+              "backendUrl": "http://127.0.0.1:49687",
+              "graphqlUrl": "http://127.0.0.1:49687/graphql",
+              "controlEndpoint": "http://127.0.0.1:49685",
+              "controlPort": 49685,
+              "serverPort": 49687,
+              "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-DokpLW",
+              "ownsDataRoot": true,
+              "keepDataRoot": false,
+              "databaseUrl": "file:/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-DokpLW/server-data/db/production.db",
+              "logPath": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-app/iso-49685-8547.log",
+              "startedAt": "2026-09-29T09:44:49.746Z",
+              "running": false
+            }
+          ]
+        },
+        "stopped": {
+          "instanceId": "iso-49685-8547",
+          "wasRunning": false,
+          "forced": false,
+          "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-DokpLW",
+          "dataRootRemoved": true,
+          "controlPortReleased": true,
+          "serverPortReleased": true,
+          "logPath": null
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T09:45:03.956Z"
+    },
+    "LC-006": {
+      "id": "LC-006",
+      "title": "Refusals launch nothing: unknown id, missing marker, packed AppImage, invalid data root",
+      "startedAt": "2026-09-29T09:45:03.956Z",
+      "details": {
+        "notFound": {
+          "code": "INSTANCE_NOT_FOUND",
+          "message": "No isolated instance with id iso-1-dead"
+        },
+        "unsupported": {
+          "code": "APP_ISOLATION_UNSUPPORTED",
+          "message": "/private/tmp/abiso-NZ5WDR/fake-apps/Unmarked.app/Contents/MacOS/AutoByteus does not support isolated launches (no isolated-launch.json in /private/tmp/abiso-NZ5WDR/fake-apps/Unmarked.app/Contents/Resources). Builds before isolated-launch support would pass your production settings to the instance. Use --from-worktree or --build, or update the installed app to a release with isolated-launch support.",
+          "details": {
+            "executablePath": "/private/tmp/abiso-NZ5WDR/fake-apps/Unmarked.app/Contents/MacOS/AutoByteus"
+          }
+        }
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T09:45:05.054Z"
+    },
+    "LC-007": {
+      "id": "LC-007",
+      "title": "Concurrent starts without --control-port get distinct loopback-only control ports",
+      "startedAt": "2026-09-29T09:45:05.054Z",
+      "details": {
+        "perInstance": [
+          {
+            "instanceId": "iso-49999-da3d",
+            "controlPort": 49999,
+            "serverPort": 50000,
+            "tabId": "AECA5A774D78C5F06F86E576821066CC"
+          },
+          {
+            "instanceId": "iso-49997-c74a",
+            "controlPort": 49997,
+            "serverPort": 49998,
+            "tabId": "5CE51B9D5F63E21CF4CB24E24BA2B025"
+          },
+          {
+            "instanceId": "iso-50001-f5c8",
+            "controlPort": 50001,
+            "serverPort": 50003,
+            "tabId": "0386A4FFFCD2C282AEDB0E0EDB523E10"
+          }
+        ],
+        "stops": [
+          {
+            "instanceId": "iso-49999-da3d",
+            "wasRunning": true,
+            "forced": false,
+            "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-rWgOLI",
+            "dataRootRemoved": true,
+            "controlPortReleased": true,
+            "serverPortReleased": true,
+            "logPath": null
+          },
+          {
+            "instanceId": "iso-49997-c74a",
+            "wasRunning": true,
+            "forced": false,
+            "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-eEgOtw",
+            "dataRootRemoved": true,
+            "controlPortReleased": true,
+            "serverPortReleased": true,
+            "logPath": null
+          },
+          {
+            "instanceId": "iso-50001-f5c8",
+            "wasRunning": true,
+            "forced": false,
+            "dataRoot": "/private/tmp/abiso-NZ5WDR/autobyteus-isolated-root-HTKcrw",
+            "dataRootRemoved": true,
+            "controlPortReleased": true,
+            "serverPortReleased": true,
+            "logPath": null
+          }
+        ]
+      },
+      "result": "pass",
+      "completedAt": "2026-09-29T09:45:25.410Z"
+    }
+  },
+  "failures": [],
+  "runRoot": "/private/tmp/abiso-NZ5WDR",
+  "productionBefore": {
+    "productionListenerPids": [
+      "38852"
+    ]
+  },
+  "productionAfter": {
+    "productionListenerPids": [
+      "38852"
+    ]
+  },
+  "completedAt": "2026-09-29T09:45:25.971Z"
+}

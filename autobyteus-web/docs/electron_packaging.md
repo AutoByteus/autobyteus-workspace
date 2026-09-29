@@ -918,8 +918,8 @@ update notice hidden and shows no toast. Settings → Updates shows a neutral
 `scripts/isolated-app/` provides the long-lived agent lifecycle
 (`start|list|stop|restart`, JSON output) on top of the same launch mechanics.
 It launches the app detached as its own process group with
-`--remote-debugging-port=<control port>` (default 9333; Chromium binds it to
-`127.0.0.1`), `--disable-backgrounding-occluded-windows`,
+`--remote-debugging-port=<control port>` (a free port unless `--control-port`
+is given; Chromium binds it to `127.0.0.1`), `--disable-backgrounding-occluded-windows`,
 `--disable-renderer-backgrounding` and an identity marker switch. It records
 the instance under `<OS temp dir>/autobyteus-isolated-app/`, verifies identity
 before signalling, and deletes only the data roots it created. The control

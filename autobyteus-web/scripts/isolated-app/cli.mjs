@@ -10,8 +10,9 @@ export const USAGE = `Usage: pnpm isolated-app <command> [options]
 
 Commands:
   start     Start an isolated AutoByteus instance and wait until it is ready
-            [--app <path>] [--from-worktree] [--build] [--control-port <n>=9333]
+            [--app <path>] [--from-worktree] [--build] [--control-port <n>]
             [--server-port <n>] [--data-root <path>] [--keep]
+            Control and server ports default to free ports; read them from the result.
   list      List recorded isolated instances and whether they are running
   stop      Stop an instance [<instanceId>] [--keep]
   restart   Stop and start an instance again with the same settings [<instanceId>]

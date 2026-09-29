@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | DR-001 | CRR-004 test-code review Pass (reviewed route) → delivery | N/A | Checkpointed and merged the latest `origin/personal@c84b57739`. Post-integration checks pass (known pre-existing failures only), docs synced. Awaiting user verification. | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `autobyteus-server-ts/docs/modules/agent_team_execution.md` |
 | DR-002 | User request "update, rebuild": `origin/personal` advanced to `8778420fc` | DR-001: integrated at `c84b57739`, awaiting verification | Checkpoint `8a4111d29`, merge `13e93fbe4` (docs-only base change). Local personal macOS build succeeded. Awaiting user verification. | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-electron-build.log` |
+| DR-003 | User verification + beta request (2026-09-29) | DR-002: awaiting verification | Finalized into `personal@39e512edd`. `v1.4.91-beta.7` published with all 4 workflows succeeded. Cleanup done. `Delivery Completed`. | `release-deployment-report.md`, `handoff-summary.md`, `delivery-evidence/` |
 
 ## Revision Entries
 
@@ -53,3 +54,31 @@
 - Why this baseline or delivery revision was recorded: the base advanced and the user requested a re-integration and rebuild.
 - Next recipient/action: the user tests the rebuilt app and replies with verification and a release decision.
 - Remaining blockers, rollback concerns, or untested scope: unchanged from DR-001.
+
+### DR-003 — Finalization, beta.7 release and cleanup
+
+- Delivery round and trigger: the user's explicit verification and beta request on 2026-09-29 ("verified. release the beta"), after testing the rebuilt local app from `13e93fbe4`.
+- Triggering upstream report, verification, or evidence: that user message.
+- Prior authoritative result: DR-002, integrated at `8778420fc` and awaiting verification.
+- Current authoritative result: `Delivery Completed`.
+  - The ticket is archived.
+  - `6156a0700` was pushed to `origin/codex/runtime-stop-cleanup-and-org-recovery`.
+  - It was fast-forward merged into `personal`, followed by release commit `39e512edd`.
+  - Tag `v1.4.91-beta.7` was pushed.
+  - All 4 workflows succeeded, and the GitHub pre-release has 17 assets.
+  - Docker `1.4.91-beta.7` and `:beta` are `sha256:4c27319c…`. `:latest` is unchanged.
+- Docs sync report: `docs-sync-report.md`, unchanged.
+- Handoff summary: `handoff-summary.md`
+- Release/publication/deployment report: `release-deployment-report.md`
+- Integration and post-integration verification: the target stayed at `8778420fc` through the merge and push. No re-integration was needed.
+- User verification/finalization state: verified. Finalization and release are complete.
+- Terminal return to `/solution_designer`: `Sent`, immediately after this record was pushed to `personal`.
+- Terminal message/reference: `send_message_to` → `/solution_designer`, `Delivery Completed`
+- Why this baseline or delivery revision was recorded: completion of the finalization, release and cleanup gates.
+- Next recipient/action: Solution Designer verifies the terminal package and returns the result to the user or caller.
+- Remaining blockers, rollback concerns, or untested scope:
+  - None blocking.
+  - Documented limits: DEC-001, DEC-002, DEC-003, SIGTERM-ignoring daemons at quit, a hard-killed app, CR-C1 and R-6.
+  - Live suites: opt-in, single model, macOS only.
+  - 12 pre-existing unit failures.
+  - N-T1 and N-T2 test notes.

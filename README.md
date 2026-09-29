@@ -335,8 +335,12 @@ take screenshots and record MP4 video:
 ```bash
 pnpm isolated-app start            # installed app; --from-worktree / --build for this worktree
 pnpm isolated-app list
-pnpm isolated-app stop
+pnpm isolated-app stop <instanceId>
 ```
+
+`start` picks free ports and reports `instanceId` and `controlPort`; pass that
+`controlPort` to browser-automation and that `instanceId` to `stop`/`restart`,
+so several worktrees can run instances in parallel.
 
 For when to use an isolated instance in validation, see [TESTING.md](TESTING.md).
 See the [isolated app instances guide](docs/isolated-app-instances.md) and the
