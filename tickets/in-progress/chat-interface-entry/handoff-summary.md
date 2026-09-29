@@ -2,19 +2,20 @@
 
 ## Status
 
-- Stage: Delivery round 3 (DR-003). The UVF-001 rework has been re-integrated and checked. **Waiting for renewed user verification.** Nothing has been pushed, merged into `personal`, or released.
+- Stage: Delivery round 4 (DR-004). The UVF-001 rework is integrated with `origin/personal@c84b57739` and checked. **Waiting for renewed user verification.** Nothing has been pushed, merged into `personal`, or released.
 - Classification (preserved): `task_size=Large`, `architectural_risk=High`, route `Reviewed`. The latest chain is SR-011/SR-012 → ARCH-REV-008 → IR-004 (D-16) → CRR-005 Pass → API-REV-003 Pass 95% → CRR-006 Pass.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
-- Ticket branch: `codex/chat-interface-entry` at `a1f2a26d2` (local only; not pushed yet)
+- Ticket branch: `codex/chat-interface-entry` at `20d1ec13f` (local only; not pushed yet). `20d1ec13f` merges `origin/personal@8778420fc`, which contains ticket records only, so the code is identical to the r3 build at `97c169c71`.
 - Finalization target: `personal` (remote `origin`)
-- Delivery revision: DR-003 (`delivery-revision-record.md`)
+- Delivery revision: DR-004 (`delivery-revision-record.md`)
 
 ## Integrated State For Verification
 
 - Bootstrap base `origin/personal@fcd3e83a4`.
   - Refresh 1 (DR-001) merged `e6c16d801`.
   - Refresh 2 (DR-003, 2026-09-29) merged `origin/personal@5d6179797`, 4 more commits: the AGY background-task turn-liveness fix and the `1.4.91-beta.5` release bump.
-- Integration method: `Merge`. Both merges were clean with no conflicts.
+  - Refresh 3 (DR-004, 2026-09-29, at the user's request) merged `origin/personal@c84b57739`, 13 more commits: the isolated-app instance work (Electron server env, updater, build marker, `isolated-app` CLI) and the `1.4.91-beta.6` release bump.
+- Integration method: `Merge`. All three merges were clean with no conflicts.
 - Ticket and delivery commits since the reviewed IR-003 HEAD `e5eac067d`:
   - `a4b22fc27` delivery checkpoint (live probe, CR-001, review/validation artifacts)
   - `7aa53519b` merge `origin/personal@e6c16d801`
@@ -23,6 +24,8 @@
   - `e9f2ce399` IR-004 ticket docs
   - `030bab78d` delivery checkpoint: probe C16 and model-row selector, the delivery docs-sync edits, and the UVF-001 review/validation artifacts
   - `a1f2a26d2` merge `origin/personal@5d6179797`
+  - `46c8d98fc` DR-003 delivery artifacts checkpoint
+  - `97c169c71` merge `origin/personal@c84b57739`
 - Uncommitted: only the delivery artifacts in this folder (committed at finalization).
 - Excluded untracked build output: `autobyteus-application-backend-sdk/dist/`, `autobyteus-application-sdk-contracts/dist/`.
 
@@ -37,6 +40,13 @@
 | Web `pnpm test:nuxt run` | 3349 passed, 4 failed files. These are the same 4 baseline files: `WorkspaceAgentRunsTreePanel.regressions` (2 team tests), `StartupDelayLifecycle`, `org-definition-navigation`, `app-font-size-fixed-px-audit` |
 | Web `pnpm test:electron run` | 177 passed |
 | Web `guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` | all exit 0 |
+
+**Refresh 3 checks (on `97c169c71`):**
+- web `pnpm test:nuxt run`: 3364 passed. The 4 baseline files fail as before.
+- The new upstream `isolated-launch-marker.integration.test.ts` "present in packaged output" case failed only against the stale pre-merge `electron-dist`. It passed 4/4 after the rebuild.
+- web `pnpm test:electron run`: 187 passed.
+- guards and audit: exit 0.
+- Server-side, the refresh changed only `docs/modules/secret_management.md`, so the server checks were not rerun.
 
 The second merge touches AGY server files, two web spec files (`toolLifecycleHandler.spec.ts`, `runProjectionConversation.spec.ts`) and the web version. No web source overlaps this ticket, so the API-REV-003 live and browser evidence (C01–C16) stays authoritative.
 
@@ -95,6 +105,7 @@ The second merge touches AGY server files, two web spec files (`toolLifecycleHan
 ## User Verification
 
 - **Renewed verification pending (DR-003).** The UVF-001 rework (D-16) is integrated and checked. A new local build is below. Please check O-1 as well.
-- 2026-09-29 (DR-003): rebuilt the local unsigned macOS ARM64 personal-flavor app from `a1f2a26d2`. The log is `delivery-evidence/delivery-electron-build-r2.log` (exit 0, "Resolved build flavor: personal"). Outputs are `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.91-beta.5.dmg` / `.zip` and `mac-arm64/AutoByteus.app`. The version string is the merged base's `1.4.91-beta.5`; it is not the published beta.5.
+- 2026-09-29 (DR-004, at the user's request after `personal` advanced): rebuilt the local unsigned macOS ARM64 personal-flavor app from `97c169c71`. The log is `delivery-evidence/delivery-electron-build-r3.log` (exit 0, personal). Outputs are `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.91-beta.6.dmg` / `.zip` and `mac-arm64/AutoByteus.app`, which contains `Resources/isolated-launch.json`. The version string is the merged base's `1.4.91-beta.6`; it is not the published beta.6. **This is the current test build.**
+- Superseded: 2026-09-29 (DR-003) rebuilt the local unsigned macOS ARM64 personal-flavor app from `a1f2a26d2`. The log is `delivery-evidence/delivery-electron-build-r2.log` (exit 0, "Resolved build flavor: personal"). Outputs are `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.91-beta.5.dmg` / `.zip` and `mac-arm64/AutoByteus.app`. The version string is the merged base's `1.4.91-beta.5`; it is not the published beta.5.
 - Earlier result: **not verified; blocked by UVF-001** (`user-verification-finding-001.md`, DR-002). The Chat model menu labels models by raw identifier (`opus`), where the launch form shows `claude-opus-5-5`, "Opus 5.5" and the Recommended badge. No model is missing. This was routed as a Requirement Gap to `/software_engineering_team/solution_designer` on 2026-09-29.
 - 2026-09-29: at the user's request, built a local unsigned macOS ARM64 personal-flavor desktop app from this integrated state (`4b440e719`). Command: README "macOS Build With Logs (No Notarization)" plus `AUTOBYTEUS_BUILD_FLAVOR=personal`. The log is `delivery-evidence/delivery-electron-build.log` (exit 0, "Resolved build flavor: personal"). Outputs are in `autobyteus-web/electron-dist/`: `AutoByteus_personal_macos-arm64-1.4.91-beta.4.dmg` / `.zip` and `mac-arm64/AutoByteus.app`. The version string is the merged base's `1.4.91-beta.4`, because no release bump has been made.

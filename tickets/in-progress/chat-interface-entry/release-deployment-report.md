@@ -10,7 +10,7 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/delivery-revision-record.md`
-- Current delivery revision ID: `DR-003`
+- Current delivery revision ID: `DR-004`
 - Notes: the UVF-001 rework is re-integrated; waiting for renewed user verification.
 
 ## Initial Delivery Integration Refresh
@@ -52,6 +52,20 @@
 - Post-integration verification result: `Passed`
 - Handoff state current with latest tracked remote base: `Yes` (as of 2026-09-29)
 
+### Third Integration Refresh (DR-004, at the user's request)
+
+- Latest tracked remote base reference checked: `origin/personal@c84b57739`. It had advanced 13 commits: the isolated-app instance work and the `1.4.91-beta.6` release bump.
+- Local checkpoint commit result: `Completed`, `46c8d98fc` (the DR-003 delivery artifacts).
+- Integration method: `Merge`, `97c169c71`, no conflicts. The `test:e2e:chat-entry-live` script was preserved next to the upstream `test:e2e:isolated-app`.
+- Post-integration checks:
+  - web nuxt: 3364 passed; the 4 baseline files fail. The upstream marker test failed only against the stale pre-merge build and passed 4/4 after the rebuild.
+  - web electron: 187 passed.
+  - guards: exit 0.
+  - local build `delivery-evidence/delivery-electron-build-r3.log`: exit 0.
+  - Server: the refresh changed only a server doc, so there was no rerun.
+- Post-integration verification result: `Passed`
+- Handoff state current with latest tracked remote base: `Yes` (as of 2026-09-29)
+
 ## User Verification
 
 - Initial explicit user completion/verification received: `No` (pending)
@@ -74,7 +88,7 @@
 
 ## Version / Tag / Release Commit
 
-- Pending the user's decision. The documented method is `bash scripts/desktop-release.sh beta --branch <finalize-branch> --no-push`, then pushing the tag. The next version would be `1.4.91-beta.6`, because `origin/personal` has already released beta.5.
+- Pending the user's decision. The documented method is `bash scripts/desktop-release.sh beta --branch <finalize-branch> --no-push`, then pushing the tag. The next version would be `1.4.91-beta.7`, because `origin/personal` has already released beta.6.
 
 ## Repository Finalization
 

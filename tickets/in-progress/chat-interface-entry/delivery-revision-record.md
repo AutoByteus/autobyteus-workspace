@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery handoff from `code_reviewer` after CRR-004 Pass (2026-09-29) | N/A | Integrated, checked, docs synced; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/` |
+| DR-004 | User asked for a rebuild after `personal` advanced | DR-003 waiting for renewed verification | Re-integrated `origin/personal@c84b57739` (`97c169c71`), checked, rebuilt; waiting for renewed verification | `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/delivery-electron-build-r3.log` |
 | DR-003 | `code_reviewer` delivery handoff after the UVF-001 rework (CRR-006 Pass) | DR-002 `Blocked` | Re-integrated (`a1f2a26d2`), checked, docs verified, local build rebuilt; waiting for renewed verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` (addendum), `release-notes.md`, `delivery-evidence/delivery-electron-build-r2.log` |
 | DR-002 | User verification of the local build: model menu labels (UVF-001) | DR-001 waiting for verification | `Blocked`: Requirement Gap routed to `/software_engineering_team/solution_designer` | `user-verification-finding-001.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/catalog-*.json`, `delivery-evidence/delivery-electron-build.log` |
 
@@ -86,3 +87,25 @@
 - Why this baseline or delivery revision was recorded: delivery resumed after the upstream rework.
 - Next recipient/action: the user re-verifies (UVF-001 steady state, O-1) and decides on a beta release. If the user objects to O-1, it goes to `/software_engineering_team/solution_designer` as a small follow-up.
 - Remaining blockers, rollback concerns, or untested scope: user verification pending. The residual risks are listed in the handoff summary.
+
+### DR-004: Third integration refresh and rebuild at the user's request
+
+- Delivery round and trigger: the user reported that `personal` had advanced and asked for a new Electron build (2026-09-29).
+- Triggering upstream report, verification, or evidence: `origin/personal@c84b57739`, 13 new commits (isolated-app instances; release `1.4.91-beta.6`).
+- Prior authoritative result: DR-003, waiting for renewed verification.
+- Current authoritative result: re-integrated (checkpoint `46c8d98fc`, merge `97c169c71`, clean), checked and rebuilt. Waiting for renewed user verification.
+- Docs sync report: no change. The merged base adds its own docs; none overlap this ticket's docs.
+- Handoff summary: updated.
+- Release/publication/deployment report: updated. A release of this work would now be `1.4.91-beta.7`.
+- Integration and post-integration verification:
+  - web nuxt: 3364 passed; 4 baseline files fail. The upstream marker packaging test passed 4/4 after the rebuild.
+  - web electron: 187 passed.
+  - guards: passed.
+  - build r3: exit 0, personal flavor.
+- User verification/finalization state: renewed verification pending (the UVF-001 steady state and O-1). Nothing was pushed, merged or released.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Terminal message/reference: —
+- Why this baseline or delivery revision was recorded: the base advanced and the test build changed.
+- Next recipient/action: the user verifies the r3 build and decides on a beta release.
+- Remaining blockers, rollback concerns, or untested scope: user verification pending.
+- DR-004 addendum (2026-09-29): the user asked for another rebuild after `personal` advanced to `8778420fc`. That commit only touches `tickets/done/agent-isolated-app-recording/` (the beta.6 delivery records). It was merged as `20d1ec13f` with no conflicts, and there is no diff outside `tickets/` compared with `97c169c71`. No rebuild was needed: the r3 build is identical in code, and the user was told this and offered a rebuild on request.
