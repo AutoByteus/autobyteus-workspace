@@ -138,8 +138,8 @@ shape, redacted-content variant, turn identity, or compatibility alias.
   failure. Root `TEAM_RUN_LIFECYCLE { is_active }` represents that manager
   ownership and stays true until exact unregister. It is separate from exact
   leaf `AGENT_STATUS`; an all-`offline` member projection does not make the root
-  inactive. Connection state, root liveness, Agent lifecycle, task lifecycle,
-  and open-work settlement must not be inferred from one another.
+  inactive. Connection state, root liveness, Agent lifecycle, delegated-child
+  liveness, and open work must not be inferred from one another.
 - Stop is a non-destructive exact-root lifecycle operation: it interrupts and
   terminates the admitted recursive runtime, retains Team history, and only
   then emits terminal inactive. Permanent Delete is not a WebSocket command.

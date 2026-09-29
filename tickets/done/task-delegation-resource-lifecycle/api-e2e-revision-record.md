@@ -103,3 +103,18 @@ None.
   - **Writer not stopped during the copy:** no root changed during it.
   - **Stale pre-existing e2e files needing an owner:** `hierarchical-team-run-config-graphql` and `team-run-v1-production-upgrade`.
   - **Unit/integration-only proof:** AC-005 and AC-011 are proven in unit and integration tests only.
+- **Addendum (same round, after the handoff).**
+  - `TESTING.md` arrived upstream after round 1, and the round-2 investigation had carried the stale "No project testing guideline found" line. It is now corrected, with a compliance table.
+  - The Electron main-process layer (`test:electron`) was added and passes: 36 files / 187 tests.
+  - Deviations disclosed:
+    - read-only GraphQL queries to the user's running app, used as the comparison baseline (rule 2);
+    - the live suite ran through its `RUN_*` gates rather than the `pnpm test:e2e:real` wrapper.
+  - Result and confidence are unchanged.
+- **Addendum 2 (user-requested; same round).** The Org-root resume in the real desktop app, using the user's "Nested Classroom Test Org" package with a Claude Teacher and a Codex student Team, passes on both paths:
+  - **Org stop, then continue the chat from the UI:** the Teacher recalled its code; the delegated student woke with its task context and replied `NESTED_CLASSROOM_OK` + `RESUME_ACK_1`.
+  - **Full application shutdown and restart, then continue the chat from the UI:** the same checks passed with `RESTART_ACK_2`.
+  - Ledger events: R4-1 … R4-6.
+- **Observations:**
+  - The package still uses the removed `submit_task_result`/`review_task_result`, so delegated results do not reach the Teacher unprompted. This is package content for the user to update.
+  - Claude pre-allows agent-tools MCP tools, while Codex gates them when `autoExecuteTools` is false. This is pre-existing; the ticket does not change either backend.
+- **Not run:** resuming a child that was launched with auto-approve on (the run was prepared; the user accepted the result without it).

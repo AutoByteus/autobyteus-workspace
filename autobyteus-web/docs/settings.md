@@ -454,20 +454,24 @@ logical member and sets `taskAgentRunId`; a task-Team child appends the concrete
 child TeamRun id to ordered `taskTeamRunIds` and carries the rooted child Agent
 address. The strict contract contains no task instance ids, execution-kind
 aliases, member/source path or route-key fallbacks, represented-subteam fields,
-or generated-run-id inference. Complete task snapshots and live events reconcile
+or generated-run-id inference. Complete snapshots and live events reconcile
 through the same execution model and exact serialized address.
 
-Delegated task visibility is intentionally split across two surfaces. The
-global Workspaces/run-history tree owns live execution identity and hierarchy:
-it composes stable history rows with pure renderer-only transient display rows
-from the V2 execution view in `AgentTeamContext.view`, keeps durable members
-visually solid, and renders task-agent, task-team root, and task-team child
-executions inline with explicit transient row kinds. Stable configured Team
-rows use an unboxed filled user-group icon and semibold name, while stable Agent
-rows retain their circular avatar. A transient task-Team row uses one dashed
-indigo row treatment plus a bordered bolt icon; a transient task-Agent keeps the
-eight-dot `StatusDot` variant so its exact status color remains visible. Neither
-role adds visible `Temp` / `Temporary` copy to the row body.
+Delegated children are shown only in the global Workspaces/run-history tree,
+as ordinary rows. That tree composes stable history rows with pure
+renderer-only transient display rows from the execution view in
+`AgentTeamContext.view`, keeps durable members visually solid, and renders
+task-agent, task-team root, and task-team child executions inline with explicit
+transient row kinds. AgentOrg mounted-Team rows use an unboxed filled user-group
+icon and semibold name, while configured Agent rows retain their circular
+avatar. A transient task-Team row uses one dashed indigo row treatment plus a
+bordered bolt icon; a transient task-Agent keeps the eight-dot `StatusDot`
+variant so its exact status color remains visible. Neither role adds visible
+`Temp` / `Temporary` or `Task:` copy to the row body. A direct delegated
+task-Agent or task-Team row shows a secondary "Started by <delegator>" line
+(also in its aria-label) resolved through the tree; a child without a recorded
+`delegatorAgentRunId` (created before the resource lifecycle) shows no starter
+line. Task-Team members show no starter line.
 
 `WorkspaceTeamExecutionTree.vue` applies the existing local disclosure state to
 the depth-first execution projection and derives sibling continuation metadata.
@@ -484,9 +488,7 @@ and the view's exact focused AgentRun matches that row. An address alone must no
 select the same placement in another historical TeamRun, and navigation code must
 not patch a second focus value. Stable and transient current rows expose the
 single `aria-current="true"` navigation state, while focus, hover, status, and
-transient presentation remain separate visual states. The right-side Team tab
-owns task detail/content through its Tasks section; it is not the primary
-execution hierarchy or status surface.
+transient presentation remain separate visual states.
 
 Mounted task contexts are not automatically retained-projection authority. A
 live activation may materialize the exact task AgentRun with default empty and
@@ -504,22 +506,24 @@ Fresh Team open follows the same invariant: an explicitly requested focus must
 exist and its exact projection is fail-fast, while nonfocused projections remain
 best effort. The open coordinator commits the staged projection and Activity
 batch before mounting, selecting, or connecting the stream. Snapshot/reconnect
-processing invalidates retained-projection authority. Task settlement preserves
-focus when it remains visible; when focus repair chooses a different AgentRun,
+processing invalidates retained-projection authority. Delegated children never
+leave the tree, so idle shutdown preserves focus; when focus repair chooses a
+different AgentRun,
 the stream path immediately reconciles that fallback's exact projection before
 its monitor is treated as authoritative.
 
-The retained projection is only the exact first-inspection baseline. For a
-newly delegated task Agent, the root Team stream publishes
-`TASK_AGENT_ACTIVATED` before every exact task-Agent frame. The server buffers
-pre-activation Agent events behind a registry-owned durability gate, drains them
-FIFO after durable activation, including synchronous reentrant events, and then
-forwards later status, turn, content, tool, and segment events exactly once.
-Abort/disposal publishes nothing and starts no assignment work. The frontend
-routes released frames by exact `agent_execution`, allowing an already-selected
-task monitor, Activity, and execution status to advance without reload/refocus
-while repeated same-address task runs remain isolated. Reconnect snapshots are a
-recovery authority, not the normal continuation path.
+For a newly delegated child, the root Team stream publishes
+`TASK_EXECUTION_STARTED` before every exact Agent frame. The server's
+registry-owned durability gate retains pre-activation Agent events, drains them
+FIFO after the durable tree write (including synchronous reentrant events), then
+forwards later status, turn, content, tool, and segment events exactly once
+through the unchanged root publisher before assignment work can start. Abort or
+disposal releases neither events nor work. The frontend inserts the child into
+the view's execution tree from that event, then routes all later frames by
+`agent_execution`; an already-selected child therefore advances its
+conversation, Activity, and execution status without refocus or reload, and two
+same-address task runs cannot share updates. Snapshot/reconnect remains the
+recovery path rather than the normal live-update mechanism.
 
 The expanded execution subtree exposes localized `tree` and `treeitem`
 semantics. Every row reports its localized role, name, exact address, level,
@@ -534,116 +538,66 @@ keyboard focus. Selected execution rows keep a straight 2px indigo inset rule,
 `#eef2ff` background, and zero corner radius so selection does not erase the
 tree grammar or node role.
 
-`TeamOverviewPanel` owns the local Messages/Tasks accordion state. Messages
-remains the default for a selected team run with no delegated task entries, but
-the panel opens Tasks automatically when the selected team run already has
-persisted delegated task entries or when a new delegated-task identity appears
-while the same run is mounted. The auto-open signature is derived from the same
-`deriveDelegatedTaskEntries(...)` entries consumed by
-`TeamDelegatedTasksSection`, keyed by persisted task id and live execution
-identity when available, so unrelated messages or refreshes do not open Tasks. A
-user may still collapse Tasks for the same task set; the panel reopens only for
-a different delegated-task signature or a selected-run change to a run that has
-delegated tasks. When the selected team run changes and there are no delegated
-tasks, the panel opens Messages.
+`CollaborationOverviewPanel` renders only the Messages section
+(`CollaborationMessagesSection`). There is no Tasks section, task navigator,
+task detail pane, task reference viewer, `taskDelegationStore`, or
+`getTaskDelegationRecords` hydration; everything exchanged with a delegated
+child is ordinary conversation and Messages history. Old conversations that
+contain task notifications or submit/review tool calls still render as
+history.
 
-`TeamDelegatedTasksSection` derives entries from persisted task-delegation
-records in `taskDelegationStore`, filtered by the focused sender/receiver
-address perspective. Live task-agent/task-team projection nodes in
-`AgentTeamContext` are optional enrichment for matching records and provisional
-visibility for not-yet-refreshed live tasks; they are not the durable display
-source. Opening or reloading active and historical team runs hydrates records via
-`getTaskDelegationRecords(teamRunId)`, and live task-delegation websocket events
-schedule a debounced records refresh.
-
-Inside that section, `deriveDelegatedTaskEntries(...)` projects every current-
-schema task record into one ordered conversation: the assignment root followed
-by every submission, review, and interruption in the record's durable update
-order. Submission ordinals and review-to-submission linkage are derived from the
-strict record instead of inferred from display text. A task-Team submission is
-attributed to the readable task Team because the record does not identify a
-more specific submitting member; the UI must not invent one.
-
-`TeamDelegatedTaskNavigator` keeps that complete conversation on the left. The
-assignment row shows its description, readable delegator-to-assignee direction,
-last-activity time, and one human lifecycle badge: In progress, Awaiting review,
-Revision requested, Accepted, or Interrupted. Each update appears exactly once
-below the assignment as a selectable message-style row with a localized event
-label, result ordinal when applicable, readable direction or system attribution,
-timestamp, content preview, and only that item's reference rows. Assignment and
-update references have visible selected state and no separate visible
-`References` heading.
-
-Assignment, update, and reference clicks update only exact section-local
-selection keys. A live full-record replacement retains the selected item or
-reference while its stable identity still exists; otherwise selection falls
-back to that task's assignment. These actions must not focus the center
-conversation/composer, replace it with a task team card, or repeat the Workspaces
-execution hierarchy. The Tasks UI does not render raw task/run ids, routing JSON,
-target-kind metadata, raw arguments, a Technical details disclosure, responsible
-actor/member hierarchy rows, `Focus agent` / `Focus team` controls, or approval
-controls. Exact ids remain internal selection and reference-routing keys only.
-
-`TeamDelegatedTaskDetailPane` renders exactly one selected assignment/update
-detail or one selected task-owned reference preview. Item detail uses a readable
-localized title, direction, timestamp, Markdown content, and the assignment's
-current human status when the assignment is selected. The right pane does not
-duplicate the lifecycle timeline, reference navigation, actor roster, focus
-controls, or removed technical metadata. Messages remains an independent,
-unchanged message-owned surface.
+The Org index (`AgentOrgExecutionViewIndex`) records configured and delegated
+executions with their actual host binding, captured launch configuration, and
+delegation binding (`executionRunId`, nullable `delegatorAgentRunId`). Every
+recorded placement is navigable. Participant links select the exact AgentRun,
+never another run at the same address. Read-only `getAgentOrgRunInspection`
+uses the existing root transition lane and package families without
+activating, restoring, or repairing them. Missing history is not replaced with
+fabricated emptiness. The unified Workspaces collection is the history owner;
+the parallel `AgentOrgRunHistoryPanel.vue` was removed.
 
 The global Workspaces/run-history tree remains the navigation and execution-focus
-surface for workspaces, runs, teams, durable members, and live transient
-execution identities. `runHistoryStore` owns one cached, indexed navigation read
-model that includes completed stable-plus-transient `executionRows`; its
-focused-member presentation is derived from the owning
-`AgentTeamContext.view`. Components consume those rows rather than reading live
-contexts or rebuilding rows per workspace, but the cached projection is never an
-independent focus authority. The
-projection may reuse the shared status-dot presentation for workspace rows and
-stable member rows, but transient task executions remain navigation-only rows
-rather than ordinary durable `TeamMemberTreeRow` history rows. Transient
-task-team roots with child rows are collapsed by default; their
-user-controlled disclosure state is keyed by the transient execution row identity
-so simultaneous task-team executions do not accidentally share expansion state.
-When a transient task-team row has children, activating the row body toggles that
-identity-keyed disclosure state while also selecting/focusing the transient row;
+surface for workspaces, runs, teams, durable members, and task execution
+identities. `runHistoryStore` owns one cached, indexed navigation read model that
+includes completed stable-plus-transient `executionRows`; its focused-member
+presentation is derived from the owning `AgentTeamContext.view`. Components
+consume those rows rather than reading live contexts or rebuilding rows per
+workspace, but the cached projection is never an independent focus authority.
+
+`TeamExecutionViewState` treats every placement in the execution tree,
+including shut-down delegated children, as navigable; there is no separate
+live-versus-historical navigation purpose or retained-inspection mode. Focus
+repair only runs when the focused AgentRun leaves the tree. Every snapshot must
+carry a status for every placement; shut-down children report `offline`. The
+shut-down state reuses the standard `offline` status with no separate label.
+In an active root, selecting a shut-down child keeps the composer usable, and
+sending wakes the child on the server (restoring its conversation) before the
+message is delivered.
+
+The projection may reuse the shared status-dot presentation for workspace rows
+and stable member rows, but task executions remain navigation-only rows rather
+than ordinary durable `TeamMemberTreeRow` history rows. Task-team roots with
+child rows are collapsed by default; their user-controlled disclosure state is
+keyed by the execution row identity so simultaneous task-team executions do not
+accidentally share expansion state. When a task-team row has children,
+activating the row body toggles that identity-keyed disclosure state while also
+selecting/focusing the row;
 the explicit disclosure control remains a stopped toggle-only target.
-Each task-Agent row also renders a textual task-lifecycle label alongside the
-exact Agent execution-status label. The selected task header exposes the same
-two independent dimensions plus a visible Task marker. Lifecycle values come
-only from the task record (`In progress`, `Awaiting review`, `Revision
-requested`, `Accepted`, or `Interrupted`); execution values come only from the
-Agent status (`Initializing`, `Running`, `Idle`, `Error`, or `Offline`). Message
-wording, Activity, ordinary handoffs, and idle status never imply task
-completion.
+Delegated rows show only the exact Agent execution status (`Initializing`,
+`Running`, `Idle`, `Error`, or `Offline`); there is no task-lifecycle label.
 Workspaces must not render delegated-task summary blocks, task reference rows,
 raw task arguments, approval controls, or delegated-task Technical details.
-Tasks is not an approval action surface: pending approval can appear only as
-non-actionable human task context there, and Activity remains the owner for
-Approve/Deny controls and approval command routing. Task reference
-files come from persisted task-delegation records and open in the Tasks right
-pane through the task-owned reference route; Messages remains message-owned and
-its content/reference UX is not routed through task identity.
-The center workspace remains the focused conversation/event/composer surface and
-must not render `TeamActiveTaskExecutionsBar` or any replacement center list.
+Activity remains the owner for Approve/Deny controls and approval command
+routing. The center workspace remains the focused conversation/event/composer
+surface and must not render `TeamActiveTaskExecutionsBar` or any replacement
+center list.
 
-Running and awaiting-acceptance task executions must remain visible as
-Workspaces transient identity rows and as Team → Tasks detail entries after
-active team reopen/hydration when live projection is present. Persisted delegated
-task records must remain visible in Team → Tasks for active, accepted,
-awaiting-review, and historical tasks even after those transient runtime rows
-settle, disappear, or the backend restarts. Run-open hydration therefore loads
-root-run task records and uses live projection/identity only as enrichment
-instead of collapsing tasks into the logical member or team parent.
-Stream routing is projection-first: task-team root/scoped child identity wins before
-task-agent identity, then exact logical route/path identity, then compatible
-run-id fallback. The frontend must not recreate the removed `isTaskAgentRunId`
-generated-run-id heuristic or any other run-id-format parser as a routing
-authority. After delegator acceptance and backend settlement or offline cleanup,
-the frontend removes the transient task execution root, scoped children, and
-nested task-agent projections while preserving the structural member/team
-topology and the history that records the delegated task completion.
+Stream routing is projection-first: task-team root/scoped child identity wins
+before task-agent identity, then exact logical route/path identity, then
+compatible run-id fallback. The frontend must not recreate the removed
+`isTaskAgentRunId` generated-run-id heuristic or any other run-id-format parser
+as a routing authority. Idle shutdown does not remove delegated rows; they stay
+in the tree with `offline` status, in active and historical views alike.
 
 When a single-agent run is terminated successfully, the backend publishes
 `AGENT_STATUS { status: "offline", can_interrupt: false }` to the already-open

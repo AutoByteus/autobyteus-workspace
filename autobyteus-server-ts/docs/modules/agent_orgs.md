@@ -127,8 +127,8 @@ rejects invalid/self-resolving endpoints and duplicate effective pairs.
 Runtime collaboration tools operate only inside the active root scope.
 `get_handoff_rules` exposes the current Agent's eligible rules,
 `send_message_to` targets an already existing execution, and
-`delegate_task` creates a separately tracked task execution. Logical addresses
-never discover unrelated roots.
+`delegate_task` spawns a fresh delegated child (a task Agent or task Team) and
+returns its run ID. Logical addresses never discover unrelated roots.
 
 ## Launch Configuration And Admission
 
@@ -179,8 +179,10 @@ verified no-conversation replacement commits through
 `AgentOrgRun.commitAgentPlatformBindingChange` against its current durable tree
 before cache update, runtime publication or accepted input. Expected-old
 replacement checks and indeterminate/nonretryable failure semantics are retained.
-Task-execution preparation still stages its assigned execution before durable
-publication and work release; settled tasks are not relaunched by scope restore.
+Task-execution preparation still stages its assigned execution before the
+single durable tree write, publication, and work release. Scope restore never
+relaunches delegated children; they come back shut down and are woken on
+demand.
 
 Org message receiver admission checks exact published membership, allowing an
 unused configured recipient to receive its first work. Sender and task-origin
@@ -210,25 +212,30 @@ parent message id, origin, and committed time.
 Rejected, failed, self-targeted, cross-root, or uncommitted sends publish no
 receiver input event.
 
-Task-system notification presentation is separate from ordinary communication.
-The shared `task-system-input-presentation.ts` helper marks genuine SYSTEM
-notification provenance, display content, and backend-response suppression.
-Existing execution-handle acceptance controls recipient presentation; task
-records do not fabricate accepted inputs. A committed task update remains durable
-if its notification is rejected, with an explicit warning rather than a false
-receipt. There is no additional notification ledger, retry queue, or provider
-failure inferred from a controlled notification rejection.
+The delegation work packet is the only task-system input. The shared
+`task-system-input-presentation.ts` helper marks its SYSTEM provenance, display
+content, and backend-response suppression. There are no later task
+notifications (submission, review, interruption); older conversations that
+contain them still render as history. There is no notification ledger or retry
+queue.
 
-## Tasks, Status, And Lifecycle
+## Delegated Children, Status, And Lifecycle
 
 - Direct Org Agents and mounted-Team Agents can message and delegate through
   canonical addresses.
-- Task Agents and task Teams are transient execution projections with durable
-  task records; they do not alter configured topology.
+- Task Agents and task Teams are delegated children recorded in the execution
+  tree (with `delegatorAgentRunId` for children created since the resource
+  lifecycle); they do not alter configured topology. There are no task records.
+- Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
+  through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
+  same-root wake-on-message in `restore` mode, one liveness predicate
+  (`AgentOrgRootAgentExecutionRegistry.isTaskLive` or the hosting Team
+  registry), and open work counting only `initializing`/`running` children. See
+  [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
 - Each Agent owns its exact five-state runtime status.
 - Status snapshots start only from structural Org execution roots: direct Org
-  Agent handles, directly mounted configured TeamRuns, and unsettled root-hosted
-  task TeamRuns. Each TeamRun recursively projects its own descendants. The flat
+  Agent handles, directly mounted configured TeamRuns, and live root-hosted
+  task TeamRuns. Shut-down task Agents report `offline`. Each TeamRun recursively projects its own descendants. The flat
   Team execution directory remains an exact lookup/lifecycle index and is not
   walked as a second set of recursive roots, preventing duplicate Agent status
   identities for nested task Teams.
@@ -236,8 +243,8 @@ failure inferred from a controlled notification rejection.
   Agent statuses with precedence
   `running > initializing > error > idle > offline`. The aggregate is not a
   persisted Team status or lifecycle authority.
-- Root lifecycle, WebSocket connection, Agent status, task status, and command
-  overlays are separate facts.
+- Root lifecycle, WebSocket connection, Agent status, delegated-child liveness,
+  and command overlays are separate facts.
 - Stop Org fences new work, drains or interrupts admitted work according to the
   root shutdown contract, terminates the entire materialized scope, and retains
   durable history. Restore uses stored run identities and provider bindings,
@@ -261,18 +268,22 @@ AgentOrg has its own durable family:
 memory/agent_org_run_history_index.json
 memory/agent_orgs/<org-run-id>/
   agent_org_run_execution_tree.json
-  agent_org_task_delegation_records.json
   agent_org_communication_messages.json
   <rooted member memory...>
 ```
 
-`AgentOrgRunExecutionTreeFileV1` has `schemaVersion: 1`,
-`subjectKind: "agent_org"`, and a coordinator-free `rootOrg`. It stores
-direct Agent placements, direct mounted-Team placements with their Agent
-members, compiled handoffs, effective launch configurations, concrete local and
-provider identities, application binding, timestamps, and task snapshots.
+`AgentOrgRunExecutionTreeFile` has `subjectKind: "agent_org"` and a
+coordinator-free `rootOrg`. It stores direct Agent placements, direct
+mounted-Team placements with their Agent members, compiled handoffs, effective
+launch configurations, concrete local and provider identities, application
+binding, timestamps, and delegated child executions. Like the Team tree it is
+read tolerantly (known required fields and invariants checked, `schemaVersion`,
+`settledAt`, and unknown keys ignored) and written exactly with no
+`schemaVersion`. Older packages may still hold an
+`agent_org_task_delegation_records.json`; it is neither required nor read and
+stays untouched.
 
-Native standalone Teams remain byte/path native Team V2 under
+Native standalone Teams remain byte/path native Team packages under
 `memory/agent_teams/<team-run-id>/team_run_execution_tree.json`. Generic
 history uses an explicit `agent_team | agent_org` root union; it does not force
 both families into one persisted generic root. `listCollaborationRootHistory`
@@ -305,27 +316,27 @@ ownership.
 `getAgentOrgRunInspection` returns the existing execution-view DTO through the
 run service and manager's existing per-root transition lane. For an active root,
 the manager captures and closes a coherent package snapshot connection. For an
-inactive root, it strictly reads and jointly validates the execution tree, task
-records, and communication sidecar. Missing or unreadable families fail instead
+inactive root, it reads and jointly validates the execution tree and
+communication sidecar. Missing or unreadable families fail instead
 of becoming empty history. Inactive views have no live statuses; retained client
 contexts initialize offline.
 
 Inspection does not activate providers, Restore, rewrite packages, migrate, or
-repair data. Exact retained task Agent/Team identity survives settlement and
+repair data. Exact retained task Agent/Team identity survives idle shutdown and
 distinguishes repeated runs at one logical address. Member projections use the
 actual retained physical execution/provider binding, not the configured source's
 memory directory or an Org-root fallback. Configuration derives from captured
-launch data rather than current mutable definitions. The existing tree and task
-record families are sufficient; this inspection query adds no persisted family
-or migration. Live settlement publishes the complete updated view, retiring live
-task rows without discarding retained inspection or introducing a second cache.
+launch data rather than current mutable definitions. The existing tree and
+communication families are sufficient; this inspection query adds no persisted
+family or migration. Idle shutdown keeps delegated rows in the view with
+`offline` status; it does not retire them.
 
 ### Stopped History Archive And Delete
 
 Stopped top-level AgentOrg history roots support two subject-explicit commands:
 
 - `archiveStoredAgentOrgRun(orgRunId)` records one canonical archive timestamp
-  in the V1 execution tree and projects it into the AgentOrg history index. The
+  in the execution tree and projects it into the AgentOrg history index. The
   complete package remains on disk and the inactive row leaves the default
   history view.
 - `deleteStoredAgentOrgRun(orgRunId)` permanently removes only the confirmed
@@ -402,8 +413,8 @@ Before restoring an Org runtime, `TokenUsageRunStore.assertAgentOrgRecordsReady`
 checks existing records for the exact tree Agent IDs, in batches, before scope
 construction/provider startup. Incompatible ownership is rejected with
 `AGENT_ORG_TOKEN_OWNERSHIP_NOT_READY`; absent usage records are not fabricated.
-Normal root-package readiness remains strict for current family, manifest,
-tree, task and message authorities, but does not repeat the migration's
+Normal root-package readiness checks the current family, manifest, the
+tolerantly read tree, and message authorities, but does not repeat the migration's
 whole-history attachment-locator audit or read raw-trace payloads. Candidate-only
 migration I/O remains owned by the one-time transition.
 
@@ -498,8 +509,8 @@ Run GraphQL operations:
 - `listCollaborationRootHistory`
 
 Reference-content REST routes are rooted below
-`/agent-org-runs/:orgRunId/communication/messages/...` and
-`/agent-org-runs/:orgRunId/task-delegations/...`.
+`/agent-org-runs/:orgRunId/communication/messages/...`. The former
+`/agent-org-runs/:orgRunId/task-delegations/...` route is removed.
 
 ## Key Source
 
@@ -525,14 +536,14 @@ Reference-content REST routes are rooted below
 lane as restore and resolves explicit Org, mounted-Team, and configured-Agent
 scope addresses before validating any selection. Managed roots (including
 fail-stopped), archived/unadmitted roots and application bindings cannot be
-edited. Runtime, topology, handoffs, tasks, application/archive metadata and
+edited. Runtime, topology, handoffs, delegated children, application/archive metadata and
 identities are not patched.
 
 A workspace patch may target only an exact configured mounted-Team address. Its
 path is canonicalized and admitted through the workspace service, then applied
 to the Team default and every directly configured child, including a child with
 a previously distinct path or model/runtime override. The Org root, direct Org
-Agents, sibling Teams, historical task snapshots and project files remain
+Agents, sibling Teams, delegated child records and project files remain
 unchanged. Workspace registration is a non-destructive registry side effect
 outside the execution-tree commit: a descriptor admitted before a later failed
 tree write may remain registered, but that does not represent partial run

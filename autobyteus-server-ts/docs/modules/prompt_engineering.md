@@ -163,11 +163,13 @@ and then renders two sibling sections from the validated current member context:
 native `Working Environment`. The first teaches one canonical absolute non-root
 address grammar and the member's exact address. The second explains universal
 same-root collaboration through an intent-first distinction: `send_message_to`
-contacts an already existing mounted execution, while `delegate_task` spawns one
-fresh independently tracked task execution and delivers its complete assignment.
-It also explains exact returned ingress identities, genuine later
-clarification, duplicate-dispatch prohibition, formal task result/review tools,
-Agent-side evaluation of possible `get_handoff_rules` conditions, selection of
+contacts an existing execution, while `delegate_task` starts a fresh instance of
+an Agent or AgentTeam and delivers its complete assignment as the first message.
+A "Delegated Agents" subsection explains the returned `target_agent_run_id` (or
+null plus `message` when nothing started), two-way follow-up only through
+`send_message_to` with that run ID, and that a quiet delegated agent is shut
+down and restored with its conversation on the next message. The section also
+covers duplicate-dispatch prohibition, Agent-side evaluation of possible `get_handoff_rules` conditions, selection of
 the single rule whose condition most specifically applies, notification of only
 that rule's recipient, no-rule completion, and delivery confirmation. The
 renderer contains no flat recipient or delegation-target roster.
@@ -186,13 +188,27 @@ Your Agent address is:
 ## AgentTeam Collaboration
 
 Choose the collaboration mode based on your primary intent.
-`send_message_to` communicates with an already existing execution.
-`delegate_task` spawns a fresh task execution that independently owns a unit of work.
-These operations are not interchangeable. Never use both to deliver the same work.
+`send_message_to` communicates with an existing execution.
+`delegate_task` starts a fresh instance of an Agent or AgentTeam with new work.
+Never use both to deliver the same work.
 
-After successful delegation, genuinely new clarification may be sent to the exact
-active task ingress using the returned `target_agent_run_id`. Formal task output
-and review use `submit_task_result` and `review_task_result`.
+### Delegated Agents
+
+Use `delegate_task` to start a fresh instance of a mounted Agent or AgentTeam
+for new work. The `recipient_address` identifies the definition to
+instantiate; it is not an alias for the new instance.
+
+- The work description and reference files become the new instance's first
+  message, together with your address and AgentRun ID.
+- On success, `target_agent_run_id` is the new instance (for an AgentTeam, its
+  coordinator). If `target_agent_run_id` is null, nothing was started and
+  `message` explains why; correct the problem and delegate again, or report
+  the failure.
+
+After delegation, communicate with the instance only through `send_message_to`
+with its `target_agent_run_id`, in both directions. A delegated agent that
+stays quiet is shut down after a while; a message to its run ID restores it
+with its conversation, so follow-ups remain possible at any time.
 
 ### Rule-Based Handoffs
 
@@ -256,9 +272,8 @@ rules, and result shape.
   `get_handoff_rules`, `send_message_to`, and `delegate_task` into runtime
   exposure, even when the selected agent definition omitted those names.
   Duplicate configured names are normalized and deduplicated.
-- Other task lifecycle tools such as `submit_task_result` and
-  `review_task_result`, and browser/media/publishing/configured MCP tools, remain
-  explicitly configured and availability-gated.
+- Browser, media, publishing, and configured MCP tools remain explicitly
+  configured and availability-gated. There are no task result/review tools.
 
 Concrete team tool calls still follow their out-of-band schemas:
 
@@ -274,13 +289,14 @@ delegate_task({
 })
 ```
 
-`send_message_to` accepts exactly one of `recipient_address` or an exact currently
-active `target_agent_run_id`. `recipient_address` is a canonical absolute
+`send_message_to` accepts exactly one of `recipient_address` or an exact
+`target_agent_run_id` (any AgentRun in the sender's root, including a shut-down
+delegated agent, or a currently active AgentRun elsewhere). `recipient_address` is a canonical absolute
 non-root logical address; relative addresses and `/` are invalid. Accepted
 messaging returns the exact existing receiver as flat `target_agent_run_id`,
-while rejection returns null identity. Successful delegation returns `task_id`,
-`status:"active"`, and the fresh task ingress as `target_agent_run_id`;
-`not_started` omits that identity. Delegation references are absolute local paths.
+while rejection returns null identity. Successful delegation returns only the
+fresh child ingress as `target_agent_run_id`; if nothing started,
+`target_agent_run_id` is null and `message` explains why. Delegation references are absolute local paths.
 The runtime exposes native AutoByteus schemas locally and routes Codex/Claude
 through the session-scoped `autobyteus_agent_tools` MCP descriptor. Provider
 wire names are normalized back to canonical application tool names.

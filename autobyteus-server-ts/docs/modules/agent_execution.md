@@ -660,8 +660,9 @@ Family-specific execution ownership stays below the Agent Tools MCP adapter:
 
 - `send_message_to` still runs through the shared
   `src/agent-communication` dispatcher, so `recipient_address` stays a
-  team-context route and `target_agent_run_id` remains the global live-only exact
-  active-run route.
+  team-context route and `target_agent_run_id` is the exact run-ID route
+  (same-root targets go through the root and may wake a shut-down delegated
+  child; other targets must be active).
 - Browser tools use the shared browser service and normalize successful results
   into the standard browser result object before terminal lifecycle events are
   emitted.

@@ -85,7 +85,9 @@ All ticket artifacts are in `/Users/normy/autobyteus_org/autobyteus-worktrees/ta
 
 - Assigned task worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-resource-lifecycle` (branch `codex/task-delegation-resource-lifecycle`, base `8bffda045`, uncommitted)
 - Project type and runtime stack: pnpm monorepo. The server is TypeScript on Node with Fastify, Mercurius GraphQL, Prisma/SQLite and vitest (forks, no file parallelism). The web app is Nuxt 3 with vitest and Electron.
-- Project testing guideline: `No project testing guideline found` (no `TESTING*.md` at the root or in the packages).
+- Project testing guideline:
+  - **Round 1** (base `8bffda045`): `No project testing guideline found`. That was correct then: `TESTING.md` arrived upstream later, in commits `1a035ed15` and `509e62f8f`.
+  - **Round 2** (rebased basis): `TESTING.md` at the worktree root applies. The round-2 investigation first carried the stale round-1 line and was corrected after execution. The mapping below shows that the executed plan follows the guideline, with the deviations listed.
 - Conflicting, missing or unclear instructions:
   - My shell inherits the user's running AutoByteus desktop server environment: `DATABASE_URL` (production DB), `AUTOBYTEUS_DATA_DIR`, `AUTOBYTEUS_MEMORY_DIR` (`~/.autobyteus/server-data`), definition and skill paths, and Claude Code session variables.
   - `tests/setup/prisma-env.ts` overrides only `DATABASE_URL`, and the e2e harness sets only the app data dir. An inherited `AUTOBYTEUS_MEMORY_DIR` would point memory writes at the user's real data.
@@ -303,6 +305,23 @@ All ticket artifacts are in `/Users/normy/autobyteus_org/autobyteus-worktrees/ta
 | `tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` › LIVE-002 | `Needs Update` → updated | After the rebase, members may call `get_handoff_rules`, which under `autoExecuteTools: false` also waits for approval. That is correct AC-006 behavior, but it kept the child busy. The test now denies any extra approval request from the gate children after the planned approval |
 | Same file, tree assertions | Still Valid (the implementation updated them in IR-004 to `not.toHaveProperty("schemaVersion")`) | Matches AC-021 |
 | `tests/e2e/app-data-migrations/hierarchical-team-run-config-graphql.e2e.test.ts`, `team-run-v1-production-upgrade.e2e.test.ts` | Out Of Scope (pre-existing failures) | Both already fail at base. They need an owner outside this ticket |
+
+### `TESTING.md` compliance (round 2)
+
+| Guideline item | What was done | Status |
+| --- | --- | --- |
+| Server tests (backend logic, persistence, runtimes) | Server unit, architecture, integration and e2e via vitest (the same suites as `pnpm -C autobyteus-server-ts test` and `pnpm test:e2e`) | Done |
+| Web unit tests (`test:nuxt`) | `NUXT_TEST=true vitest run` | Done |
+| Electron main-process tests (`test:electron`) | `pnpm -C autobyteus-web test:electron --run`: 36 files / 187 tests pass (run after the handoff; the shell is unchanged by the ticket) | Done |
+| Real-provider E2E | Ran the gated live suite directly with `RUN_LMSTUDIO_E2E`, `RUN_CODEX_E2E` and `RUN_CLAUDE_E2E`, with provider keys imported by the harness from the env. I did not use the `pnpm test:e2e:real` wrapper or its preflight | Equivalent layer; the wrapper was not used |
+| Rule 1: worktree build in an isolated desktop instance for the full product journey and embedded-server startup | `pnpm -C autobyteus-web build:electron:mac`, then `pnpm isolated-app start --from-worktree` (1.4.91-beta.7), driven with browser-automation (attach-only, reported control port) | Done |
+| Rule 2: never test against the user's running AutoByteus or its data | Every test target was an isolated instance, a standalone server or a test-owned DB on **copies**. The design (item 4) explicitly requires an installed-data copy, so `~/.autobyteus/server-data` was read once to clone it and was never written. **Deviation:** the user's running app received read-only GraphQL queries (the root listing and member projections) as the comparison baseline. Nothing was written, and nothing was started or stopped | Deviation (read-only), disclosed |
+| Rule 3: use the ports `start` reports | Yes | Done |
+| Rule 4: credentials through the importer | Not needed: the copies carry the install's own vault, and the Codex/Claude CLIs use `HOME` auth | N/A |
+| Rule 5: stop what you started; `isolated-app list` empty | 4 instances stopped via `isolated-app stop`; `pnpm --silent isolated-app list` → `[]` | Done |
+| Rule 6: assertions first | DOM text and aria-label checks, API results and hashes; screenshots are supporting only | Done |
+| Packaged Electron harness (`test:e2e:electron`, `:isolation`, `:isolated-app`) | Not run: the ticket changes no launch-profile, isolation or packaged-launch mechanics, and the packaged worktree app was launched successfully 4 times | Not required (by the guideline's selection table) |
+| Browser dev-path probes | Not run this round: the real desktop instance is the stronger surface for the same renderer journey | Superseded by the isolated instance |
 
 ### Environment and safety decisions (round 2)
 

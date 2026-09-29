@@ -10,9 +10,10 @@ identity, or request-time migration fallback.
 ## Current Healthy Boundary
 
 ```text
-TaskDelegationService
-  owns durable delegated-task records, target selection, review/settlement
-  policy, activation bindings, and task-owned reference files.
+RootTaskExecutionLifecycle (+ Team / Org task-execution adapters)
+  owns delegated-child spawn, the per-root activation/wake/shutdown FIFO,
+  idle-shutdown scheduling, and live leases. The execution tree is the only
+  persisted authority for delegated children (no task records).
 
 MixedTeamManager / TeamRun backends
   own runtime lifecycle, exact execution lookup, delivery, interrupt, and
@@ -58,7 +59,7 @@ carry runtime policy, task policy, legacy route aliases, or a second identity.
 ### 2. Keep The Frontend Execution Model Decomposed
 
 As the Team execution model grows, keep topology indexing, active execution
-reconciliation, focus, task snapshot reconciliation, and Agent-context ownership
+reconciliation, focus, delegated-child reconciliation, and Agent-context ownership
 in small collaborators. The public store boundary should still expose exact
 address operations and immutable snapshots rather than leaking internal maps.
 
@@ -79,7 +80,7 @@ identity. Do not add provider-specific identity repair in the mapper or client.
 
 ### 4. Split Orchestrators Before Adding Policy
 
-`MixedTeamManager`, task activation/settlement coordinators, and the frontend
+`MixedTeamManager`, the task-execution lifecycle and adapters, and the frontend
 Team execution model are appropriate integration boundaries, but should not
 accumulate unrelated persistence, presentation, or authorization policy. Extract
 cohesive collaborators before a new behavior would require cross-cutting
@@ -87,9 +88,10 @@ conditionals in those owners.
 
 ### 5. Evolve Recovery Through Canonical Records
 
-If recovery requirements expand, extend schema-versioned Team metadata and task
-records transactionally. Recovery must reconstruct exact addresses from those
-canonical records and runtime-owned evidence. It must not infer task identity
+If recovery requirements expand, extend the execution tree following the
+tolerant-read / exact-write rules of the data migration guideline (no schema
+version field; never reuse a field name). Recovery must reconstruct exact
+addresses from the tree and runtime-owned evidence. It must not infer task identity
 from generated AgentRun strings, display names, or directory suffixes.
 
 ### 6. Preserve Clean Protocol Naming

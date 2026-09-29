@@ -15,7 +15,9 @@ owning provider-specific selector or result semantics.
 
 - `recipient_address`: a canonical absolute non-root logical Agent-or-Team
   address beginning with `/` in the caller's collaboration root.
-- `target_agent_run_id`: an exact, currently active `AgentRun.runId`.
+- `target_agent_run_id`: an exact `AgentRun.runId` — any AgentRun in the
+  sender's own collaboration root (including a shut-down delegated child), or a
+  currently active AgentRun elsewhere.
 
 Callers must not provide both selectors, omit both selectors, or use selector
 aliases such as `recipient`, `recipientName`, or `targetAgentRunId`. `content`
@@ -141,14 +143,26 @@ that same object; it is not wrapped in an operation result.
 
 ## `target_agent_run_id` Global Direct Route
 
-`target_agent_run_id` is a live-only global direct route. The value must be the
-canonical server-side `AgentRun.runId` of a run that is active at delivery time.
+`target_agent_run_id` has two paths, chosen by `GlobalAgentRunMessageRouter`.
+
+**Same-root path.** When the sender has a member collaboration context and the
+target AgentRun is recorded in the sender's own active root
+(`hasAgentExecution`), delivery goes through that root's
+`deliverExactAgentMessage`. The root takes a live lease on the target's chain,
+wakes a shut-down delegated child in `restore` mode (rejecting with
+`TASK_EXECUTION_CONTEXT_UNAVAILABLE` or `TASK_EXECUTION_RESTORE_FAILED` when
+that is impossible), and delivers as ordinary root communication. An unknown
+run ID in that root is `TARGET_AGENT_RUN_NOT_FOUND`. Root-less senders never
+use this path.
+
+**Global live-only path.** Every other target must be the canonical
+server-side `AgentRun.runId` of a run that is active at delivery time.
 Dispatch flows through:
 
 `SendMessageToDispatcher -> GlobalAgentRunMessageRouter -> AgentRunManager.getActiveRun(...) -> AgentRun.postUserMessage(...)`
 
 If `AgentRunManager.getActiveRun(targetAgentRunId)` returns no active run, the
-delivery fails closed with `TARGET_AGENT_RUN_NOT_ACTIVE`. The route must not
+delivery fails closed with `TARGET_AGENT_RUN_NOT_ACTIVE`. This path must not
 search team rosters, scan `AgentTeamRunManager`, consult task-agent recovery
 caches, use metadata-only lookup, resurrect inactive runs, or lazy-start
 preallocated members.
@@ -233,19 +247,20 @@ context.
 
 ## Communication Versus Task Execution
 
-`send_message_to` communicates with an already existing execution. It creates
-no task, Agent, AgentTeam, or task lifecycle transition. `delegate_task` instead
-spawns one fresh independently tracked task Agent or task AgentTeam execution
-and delivers the complete work packet during that same call. The original
+`send_message_to` communicates with an existing execution. It creates no Agent
+or AgentTeam. `delegate_task` instead spawns one fresh delegated task Agent or
+task AgentTeam and delivers the complete work packet during that same call. The original
 logical `recipient_address` continues to identify the mounted definition; it is
 not an alias for the spawned task execution, and callers must not repeat one
 assignment through both operations.
 
-After successful delegation, genuinely new clarification may be sent to the
-fresh task ingress using the returned exact `target_agent_run_id` while that run
-is active. Formal task submission and review still use `submit_task_result` and
-`review_task_result`; message wording never submits, accepts, revises, or
-finalizes a task.
+After delegation, parent and child communicate only through `send_message_to`
+with exact run IDs, in both directions. There is no task submission, review, or
+acceptance. A run-ID target in the sender's own collaboration root is routed
+through that root, which wakes a shut-down delegated child (restoring its
+conversation) before delivery; a target outside the sender's root must be
+active. See
+[Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
 
 ## Out Of Scope
 

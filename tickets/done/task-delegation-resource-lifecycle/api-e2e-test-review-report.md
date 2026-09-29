@@ -78,3 +78,13 @@ Non-blocking note (no action required): LIVE-003 builds the Org tree path by han
     - commit only the intended `dist/`;
     - the DEC-008 project-wide follow-up.
   - Agent-shell server test runs must use the sanitized env.
+- **Addendum acknowledged (API-REV-002 addendum, ledger R3-19; not a new review result):**
+  - It corrects the `TESTING.md` line and adds a compliance table.
+  - It adds an execution-only run of the existing Electron main-process tests (`pnpm -C autobyteus-web test:electron --run`: 36 files, 187 tests passed).
+  - It discloses deviations: a read-only baseline against the running app, live suites run through their `RUN_*` gates, and the packaged Electron harness not run because nothing packaged or launch-related changed.
+  - No durable test file changed after this review: no test or spec file is newer than this report, and `autobyteus-web/electron` has no diff. This `Pass` stands unchanged.
+- **Second addendum acknowledged (ledger R4-1 to R4-6; not a new review result):**
+  - A user-requested Org-root resume check ran in a real isolated desktop build. Both stop → continue and full app restart → continue passed; the persisted tree was version-less with the delegator and no records file.
+  - After both addenda, no source-tree test or spec file is newer than this report. The only newer test files are build copies inside the git-ignored `autobyteus-web/electron-dist/`, which are not durable tests and not committed. The Claude and Codex backends have no diff. This `Pass` stands.
+  - **For Delivery (not a product defect):** the user's own "Nested Classroom Test Org" package still tells agents to use the removed `submit_task_result` / `review_task_result`, so delegated results don't reach the Teacher unprompted. The package instructions need updating to the spawn-then-`send_message_to` model.
+  - The runtime approval-gating difference (Codex gates agent-tools MCP calls under `autoExecuteTools=false`; Claude pre-allows them) is pre-existing and unchanged by this ticket.

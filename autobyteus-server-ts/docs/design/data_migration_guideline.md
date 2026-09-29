@@ -1,415 +1,408 @@
 # Data Migration Guideline
 
-The single canonical policy for production app-data migrations. Read this before
-migration design; use the final checklist in the task's design spec. Task-specific
-schemas, algorithms, measurements and delivery status belong in their owning
-modules/tickets, not in this guideline. This is normative guidance, not a claim
-that every released implementation already complies.
+The single canonical policy for production app-data migrations. Read it before
+designing a migration and answer the checklist in section 2 in the task's design
+spec.
+
+This guideline holds policy only. Implementation technique is learned from the
+existing migrations listed in section 10. Task-specific schemas, algorithms,
+measurements and delivery status belong in their owning code and tickets. The
+guidance is normative; it does not claim that every released migration already
+complies.
 
 ## 1. Critical Rule: Historical Data Must Not Lock Users Out
 
-**CRITICAL: reject any design that makes desktop startup or new work conditional
-on successfully loading or migrating all historical data.**
+**Reject any design that makes application startup or new work depend on
+successfully loading or migrating all historical data.**
 
-An unreadable old run is a data-availability issue, not proof the application
-cannot operate. Preserve and exclude unusable history; open the application and
-allow new work even if **no historical run is usable**. A missing Team execution
-tree prevents loading that Team, not creating an unrelated conversation.
+An unreadable old run is a data-availability problem, not proof that the
+application cannot operate. Preserve and exclude unusable history. Open the
+application and allow new work even when **no** historical run is usable. For
+example, a missing Team execution tree prevents loading that Team; it does not
+prevent creating an unrelated conversation.
 
-### Consequences
+Lockout is severe because it removes every workflow at once, including the
+in-app update path users need to install a corrected release. "We can ship
+another version" does not justify a startup-blocking migration.
 
-Turning a historical-data problem into startup failure removes every usable
-workflow. Users lose access to unrelated work, cannot diagnose the problem, and
-may lose trust, abandon the product or cancel paid use. Customer loss and recovery/
-support costs can cause serious financial loss. These are foreseeable risks,
-not a measured loss estimate for a particular incident.
+- **Preserve.** Never delete incomplete history, guess its ownership, expose it
+  as valid, or reset the database to get an empty working application.
+- **Gate narrowly.** Gate only the run or capability whose current prerequisites
+  cannot validate.
+- **Keep status and admission separate.** A `FAILED` attempt does not mean
+  startup failure. A success label proves neither that every directory is current
+  nor that every reference is usable.
+- **Prove platform prerequisites.** An application-wide prerequisite is only
+  valid when its owner names the concrete dependency and shows that a narrower
+  gate cannot work. A missing old tree or an empty history list is never such a
+  prerequisite. Never bypass current schema or security invariants, and never
+  add legacy runtime readers to make the platform look ready.
 
-**Lockout can also block recovery.** If the in-app updater requires normal startup,
-users cannot reach it to install our corrective release. Publishing a new version
-does not itself rescue them. Do not assume an independent updater or external
-installer is accessible or understandable to every customer. Requiring manual
-recovery shifts our release failure onto the user and increases abandonment risk.
-Review the actual upgrade path; "we can ship another version" is not justification
-for a startup-blocking migration.
+## 2. Mandatory Design and Review Checklist
 
-### Availability and integrity together
+Record concise answers in the task design. Do not build a new framework to
+answer them.
 
-- Preserve incomplete historical data; never delete it, guess ownership, expose
-  it as valid, or reset the database merely to get an empty working application.
-- Gate only the run/capability whose current prerequisites cannot validate.
-  Historical failure must not block unrelated work.
-- Separate migration audit status from runtime admission. A `FAILED` attempt
-  does not automatically mean startup failure; a success label proves neither
-  that every directory is current nor that every reference is usable.
-- A genuinely unavailable application-wide platform prerequisite is different.
-  Its owner must identify the concrete dependency and prove that a narrower gate
-  cannot suffice. Never relabel a missing old tree or empty history list as a
-  "core" prerequisite. Do not bypass actual current schema/security invariants
-  or introduce legacy runtime readers to pretend the platform is ready.
+1. **Need:** is a migration needed at all? Can a tolerant reader absorb the
+   change (section 3)? Migrate only for a change of meaning or a new required
+   fact that only old data can supply.
+2. **Availability:** can users open the application, create new work and reach
+   recovery when all history is unavailable? Identify any real platform
+   dependency separately.
+3. **Source and target:** which released source shapes did you actually
+   inspect? Include predecessor migrations' skipped, warning and preserved items,
+   and representative released data. Which owner admits the fixed target?
+4. **Disposition:** what happens to each converted, already-current, excluded,
+   dependent and failed item? Why does the aggregate status stay separate from
+   current admission?
+5. **Commit and retry:** which existing transaction, atomic writer or marker is
+   sufficient? Justify every backup, hash and journal. Preserve released
+   originals and supported partial states.
+6. **Current-only boundary:** where does legacy interpretation end? Confirm that
+   the migration uses frozen copies of its source shapes (section 4). Verify
+   schema ordering, source retirement and same-ID versus new-migration
+   applicability.
+7. **Cost:** which files, bytes, passes and syncs are required? Does another
+   consumer repeat a proof that is already established? Confirm that startup and
+   new work do not audit every historical trace.
+8. **References:** which typed references cross package or feature boundaries
+   into or out of the changed data, and where is each validated?
+9. **Evidence:** which tests (section 9) prove the intended behavior? What
+   remains unverified?
+10. **Lessons and review:** which existing migrations and lessons (section 10) did
+   you consult, which rejected mechanisms did you avoid, and who independently
+   reviews the risk?
 
-## 2. Deterministic Scope and Operating Assumptions
+Stop and revise if an answer requires guessing identity, deleting retained data,
+fabricating success, adding old-runtime fallbacks or causing unnecessary
+whole-application lockout.
 
-Map investigated, supported released source shapes to one fixed current target.
-The same validated input must produce the same target or explicit unsupported
-outcome. Inspect predecessor skips/warnings and retained data, not just happy-path
-schemas. Unsupported source data stays intact with a truthful disposition.
+## 3. Persisted Formats: Avoid Migrations by Design
 
-Normal attempts assume one migration writer, a stable process/device, sufficient
-permissions/storage, and normal SQLite/filesystem behavior. User Quit, process
-kill, shutdown and power loss form one unfinished-attempt category: use the
-established commit boundary and ordinary restart/idempotence, not separate
-recovery state machines for each label. This is not a promise to repair arbitrary
-physical corruption or violations of storage guarantees.
+Most format changes should not need a migration. Design persisted formats so
+that ordinary evolution is absorbed by the reader.
 
-Any additional backup, fallback, repair or recovery branch must name an independent
-supported user/system action or approved operational/security contract. Show the
-path from that trigger to the persisted state and consequence:
+- **Read tolerantly.** A reader requires the fields it actually uses, validates
+  their types and invariants, and ignores unknown or obsolete fields. Parse into a
+  projection of known fields, so unknown fields never reach memory or later
+  writes.
+- **Write exactly.** A writer emits the exact current shape. Tests assert the
+  written key set.
+- **No schema version fields** in new or changed formats. Recognize a shape by
+  its structure (required fields, enum values, identity invariants), not by a
+  number. Old files may still contain a version field; readers ignore it.
+- **Compatible changes need no migration:**
+  - adding an optional field, provided its absence has a truthful meaning;
+  - removing an obsolete field, which is ignored on read and dropped on the next
+    ordinary save.
+- **Never reuse a field name with a different meaning.** Add a new field instead.
+  Two cases do justify a migration:
+  - a change of meaning;
+  - a new required fact that only old data can supply.
+- **Tolerant reading is not a compatibility branch.** Current code must not
+  contain old-shape decoders, version switches or fallback reads of other files.
+- **Released migrations keep strict classifiers.** A released migration that uses
+  a validator to tell shapes apart ("is this already current?") must use a frozen
+  strict copy of the validator it was released with, never the current tolerant
+  reader.
+- **Convert strict readers when you touch them.** Some existing readers still
+  require exact keys and versions. When a change touches one of those formats,
+  convert its reader in the same change rather than adding a migration.
 
-- **Reachable:** add only the smallest necessary mechanism.
-- **Not reachable:** do not add machinery or dedicated failure matrices.
-- **Unclear:** investigate or obtain a scope decision; do not invent a fallback.
+## 4. Deterministic Scope and Current-Only Runtime
+
+### Known source to one fixed target
+
+- Map investigated, supported released source shapes to one fixed current
+  target. The same validated input must always produce the same target, or the
+  same explicit unsupported outcome.
+- Inspect predecessor skips, warnings and retained data, not just the happy-path
+  schema.
+- Leave unsupported source data intact and give it a truthful disposition.
+- **Supported upgrade range:** every released source shape stays supported until
+  a release explicitly declares a minimum upgrade-from version. Only then may
+  migrations for older shapes be retired.
+
+### Current-only runtime
+
+- Old schemas, selectors, file decoders, classification and transformation live
+  only inside registered migrations. Current services, repositories and readers
+  use only current contracts. That rules out:
+  - reading the old shape when the new one is missing;
+  - dual readers or writers;
+  - legacy SQL adapters or optional old columns;
+  - runtime reconciliation against historical storage.
+- **Freeze source shapes inside the migration.** A migration may import current
+  code only to validate its output. Its source types and validators are frozen,
+  migration-owned copies. Before changing a current schema, repoint any released
+  migration that still imports it.
+- The boundary is:
+
+  `current schema expansion → migration-owned conversion and validation → current runtime`
+
+- **Deployment order:** in this repository the Prisma schema is deployed before
+  app-data migrations run. Dropping migration inputs first can make conversion
+  impossible, so verify the order before retiring source fields.
+- Availability comes from scoped admission, never from restoring an old-runtime
+  compatibility path.
+
+## 5. Operating Assumptions and Reachability
+
+A normal attempt may assume:
+
+- one migration writer;
+- a stable process and device;
+- sufficient permissions and storage;
+- normal SQLite and filesystem behavior.
+
+User Quit, process kill, OS shutdown and power loss are one category: an
+unfinished attempt. Handle it with the established commit boundary and ordinary
+restart and idempotence (section 7), not a separate state machine per label. This
+is not a promise to repair arbitrary physical corruption or violations of storage
+guarantees.
+
+Any extra backup, fallback, repair or recovery branch needs an independent basis:
+a supported user or system action, or an approved operational or security
+contract. Trace the path from that trigger to the persisted state and its
+consequence:
+
+| Reachability | Required response |
+| --- | --- |
+| Reachable | Add only the smallest necessary mechanism. |
+| Not reachable | Add no machinery and no dedicated failure matrix. |
+| Unclear | Investigate or get a scope decision. Do not invent a fallback. |
 
 Hypothetical hostile tampering, compromised processes, adversarial writers,
-arbitrary corruption and kernel/device failures do not independently authorize
-new migration infrastructure. A proposed recovery mechanism cannot justify itself.
+arbitrary corruption and kernel or device failures do not by themselves justify
+new migration infrastructure. A proposed recovery mechanism cannot justify
+itself.
 
-## 3. Current-Only Runtime
+## 6. Dispositions, Admission and Residue
 
-Keep old schemas, selectors, file decoders, classification and transformation
-inside registered migrations retained for supported direct/skip-version upgrades.
-Current services, repositories and readers use only current contracts: no
-read-old-if-new-missing, dual readers/writers, legacy SQL adapters, optional old
-columns or runtime reconciliation against historical storage.
+Determine **two outcomes separately**:
 
-The boundary is:
-
-`current schema expansion → migration-owned conversion/validation → current runtime`
-
-Verify actual deployment order before retiring source fields. In this repository
-Prisma schema deployment precedes app-data execution; dropping migration inputs
-first can make conversion impossible. Availability comes from scoped admission,
-not restoring an old-runtime compatibility path.
-
-## 4. Dispositions, Admission and Cleanup
-
-Determine **two outcomes separately**: whether the migration completed its defined
-work, and which current operations have independently valid prerequisites.
+1. whether the migration completed its defined work; and
+2. which current operations have independently valid prerequisites.
 
 | Migration result | Meaning | Runtime consequence |
 | --- | --- | --- |
-| `SUCCEEDED` | Required target/validation completed without warnings. | Conversion is complete; do not re-audit it on startup. Normal operation-specific checks remain. |
-| `SUCCEEDED_WITH_WARNINGS` | Work completed with explicit bounded nonfatal dispositions; every admitted target validates. | Preserve/exclude incomplete history and allow independent work, including when all old runs are excluded. |
-| `FAILED` | A required transformation/commit did not establish its target. | Record actionable evidence; isolate affected operations. Do not infer global startup failure. |
+| `SUCCEEDED` | The required target and validation completed with no warnings. | Conversion is complete; don't re-audit it at startup. Normal operation-specific checks still apply. |
+| `SUCCEEDED_WITH_WARNINGS` | The work completed with explicit, bounded, nonfatal dispositions, and every admitted target validates. | Preserve and exclude incomplete history. Allow independent work, even when all old runs are excluded. |
+| `FAILED` | A required transformation or commit did not establish its target. | Record actionable evidence and isolate the affected operations. Don't infer a global startup failure. |
 
-A known missing historical tree is a skip/preserved exclusion, not a failed
-transformation. An otherwise completed attempt with such exclusions uses warning
-success. Do not choose status by a majority or require a minimum number of valid
-old runs. Item diagnostic names in historical implementations may differ; their
-explicit aggregate policy, not a substring or raw count, determines the outcome.
-Never fabricate a successful ledger record or turn every exception into a warning.
+Rules for choosing the status:
+
+- A known missing historical tree is a preserved exclusion (a skip), not a failed
+  transformation. An otherwise completed attempt with such exclusions is a warning
+  success.
+- Never decide the status by majority, and never require a minimum number of
+  valid old runs.
+- The migration's explicit aggregate policy decides the outcome, not a substring
+  of an item diagnostic or a raw count.
+- Never fabricate a successful ledger record, and never turn every exception
+  into a warning.
 
 ### Run and reference admission
 
-A discovered directory is only a candidate. Reuse current structural validation;
-exclude incomplete packages from usable lists **and direct load/restore/file paths**.
-Evaluate structural admission independently of old ledger/log results at the
-appropriate discovery/import boundary. Do not make startup or unrelated new work
-wait for exhaustive historical attachment-reference validation. Validate the
-requested historical operation at its relevant access boundary; a broken old
-reference must not prevent the application from opening.
+- **A discovered directory is only a candidate.** Reuse current structural
+  validation. Exclude incomplete packages from usable lists **and** from direct
+  load, restore and file paths.
+- **Evaluate admission from current data**, not from old ledger or log results.
+- **Don't validate history at startup.** Startup and unrelated new work must not
+  wait for exhaustive validation of historical references. Validate a historical
+  operation when it is actually requested.
+- **Check both ends of a typed reference.** For a reference A → B, leaving out B
+  doesn't prove A is usable. Validate the exact owner, execution scope and
+  physical file; a matching filename or the referring author is not ownership.
+  Isolate the dependent operation or package, but don't block an independent
+  package C.
+- Interpreting legacy selectors happens only inside the migration. Never accept a
+  success label or stale, unvalidated cached evidence in place of current proof.
 
-For a typed reference A→B, omitting B does not prove A usable. Validate exact owner,
-execution scope and physical file; a matching filename or the referring author is
-not ownership. Isolate the dependent operation/package without blocking independent
-C. Legacy selector interpretation stays migration-only. Never adopt success labels
-or stale/unvalidated cached evidence as a substitute for the required current proof.
+### Residue
 
-### Cleanup and residue
+Classify residue by the final state and its actual readers:
 
-Classify by final state and actual readers, not merely the cleanup statement:
+- **Inert residue:** a validated target plus inert, nonrequired old columns,
+  files or attributes may succeed with warnings. Nullable data is acceptable only
+  when the current contract explicitly allows it. Never fill gaps from an old
+  runtime field.
+- **Rolled-back cleanup:** if cleanup rolled back target creation, the target
+  was not established.
+- **Ambiguous residue:** if discovery can see both shapes, or could duplicate or
+  ambiguously choose ownership, the residue isn't inert. Isolate the affected
+  capability.
+- **Removal obligations:** security, privacy, retention and storage-removal
+  obligations still apply; a valid target does not waive them.
+- **Approved exception:** observable residue is acceptable only when the product
+  explicitly approves it. The current example is nested Team-memory repair under
+  Memory Sync v1's replace-only mirroring: the canonical target validates and
+  every semantic reader selects it. This does not authorize generic residue,
+  legacy readers, tombstones, remote cleanup or migration-status sync gates.
 
-- Complete validated target plus inert, nonrequired old columns/files/attributes
-  may succeed with warnings. Nullable data is acceptable only if the current
-  contract explicitly allows it; never fill gaps from an old runtime field.
-- If cleanup rolled back target creation, the target was not established.
-- If discovery can select both shapes, duplicate or ambiguously choose ownership,
-  the residue is not inert: isolate the affected capability.
-- Security/privacy/retention/storage-removal obligations still apply. A valid
-  target alone does not waive them.
+## 7. Persistence and Proportionate Retry
 
-**Bounded mirror exception:** nested Team-memory repair permits sync-visible flat
-residue only when the canonical target validates, every semantic local/imported
-reader selects that target, the existing mirror permits source-deleted files to
-remain, no independent removal contract applies, and the product explicitly
-accepts the storage consequence. Memory Sync v1 replace-only mirroring explains
-this case; it does not authorize generic residue acceptance, legacy readers,
-tombstones, remote cleanup or migration-status sync gates. Invalid/missing targets
-remain unavailable and are not made valid by the exception.
-
-## 5. Persistence and Proportionate Retry
-
-Writing a target is not the same as creating a backup or migration journal.
+Writing the target is not the same as creating a backup or a journal.
 
 | Persistence | Purpose and boundary |
 | --- | --- |
-| Target | Existing SQLite transaction, atomic file writer or appropriate same-filesystem rename establishes current state. |
-| Runner audit | Existing migration record, summary and attempt log report execution; not a second data store. |
-| Original preservation | A narrowly justified backup/retained source serves a demonstrated transition or rollback contract. Not "copy everything just in case." |
-| Progress journal | Exceptional: justify why source/target recognition and ordinary retry cannot resolve the actual multi-step state. Interruption alone is insufficient justification. |
+| Target | The existing SQLite transaction, atomic file writer or same-filesystem rename establishes current state. |
+| Runner audit | The existing migration record and attempt log report the execution. They are not a second data store. |
+| Original preservation | Only for a demonstrated transition or rollback contract, not "copy everything just in case". |
+| Progress journal | Exceptional. Justify why source/target recognition plus ordinary retry cannot resolve the real multi-step state. Interruption alone is not a justification. |
 
-Prefer transactional commit/rollback for database changes; prefer existing atomic
-replacement/rename plus deterministic current-target recognition for files.
-An atomic file rename does **not** make a coupled multi-file package transactional:
-identify its actual admission/marker boundary. Validate before destructive cleanup.
-A temporary replacement file or domain layout manifest is not a backup journal.
+- **Databases:** prefer transactional commit and rollback.
+- **Files:** use atomic replacement per file. Keep sources unchanged until the
+  target validates. On retry, recognize already-current files and re-derive
+  targets from the remaining sources.
+- **Multi-file packages:** an atomic rename does not make a coupled multi-file
+  package transactional. Identify its real admission or marker boundary.
+- **Validate before any destructive cleanup.** A temporary replacement file or
+  domain manifest is not a backup journal.
+- **Justify every backup, hash or progress record** by its reader, the supported
+  retry state it serves, why existing primitives are insufficient, and its cost
+  in bytes, passes and syncs. Repeated validation must prove a distinct required
+  invariant.
+- **No speculative machinery:** no bespoke restoration engines, parallel recovery
+  formats, per-syscall matrices or infrastructure-failure simulation without an
+  approved, reachable need.
+- **Originals:** retain existing originals; never overwrite them with newer
+  history or restore them over later writes.
+- **Don't copy by default:** don't reuse a mechanism from an older migration just
+  because it exists.
 
-For each proposed backup/hash/progress record, explain its reader, supported retry
-state, necessity beyond existing primitives, and bytes/passes/sync cost. Repeated
-validation must establish a distinct required invariant, not repeat the same proof.
-Do not add bespoke restoration engines, parallel recovery formats, per-syscall
-matrices or infrastructure-failure simulation without approved reachable need.
-
-Retain existing originals; never overwrite them with newer history or restore them
-over later writes. A redesign may leave released artifacts inert only after proving
-retry from supported partial source/current states. Do not copy every mechanism
-from an older migration merely because it exists.
-
-Worked anti-pattern comparisons and ordinary retry examples are in section 9.
+**Retry example:** file A was atomically converted before an interruption and
+file B was not. The next eligible attempt leaves the current A unchanged and
+converts B. There is no restore from a saved original and no journal. If the
+runner already recorded terminal completion, neither file is reprocessed.
 
 ### Completed means completed
 
-Once a migration has completed its defined conversion and validation, ordinary
-startup must skip that work. Do not rerun its proof under another name such as
-"readiness," "integrity check" or "post-migration validation." Terminal warning
-success also stays terminal; preserved exclusions are not a reason to audit the
-whole corpus again. Manual retry eligibility is separate; use the runner policy
-in section 7 rather than inferring it from automatic startup selection.
-Normal checks for an actually requested read, write or import remain distinct:
-completion is not blanket authorization for arbitrary later access.
+- Once a migration has completed its conversion and validation, ordinary startup
+  skips that work. Do not rerun its proof under another name, such as
+  "readiness", "integrity check" or "post-migration validation".
+- A terminal warning success is also terminal. Preserved exclusions are not a
+  reason to re-audit the whole corpus.
+- Checks for a specific requested read, write or import are still separate:
+  completion is not blanket authorization for any later access.
 
 ### Correcting a released migration
 
-A same-ID **app-data definition** repair can fix pending/failed installations;
-ordinary terminal `SUCCEEDED`/`SUCCEEDED_WITH_WARNINGS` records remain skipped.
-Do not reset the ledger or force successful users to replay a conversion. A repair
-to a skipped converter alone cannot remove recurring runtime validation cost;
-investigate that runtime path separately. If successful installations need another persisted transformation, investigate that
-as a separate migration decision. This is not permission to rewrite already-applied
-Prisma SQL history. Coordinated client/server and stopped-writer requirements belong
-in the task's rollout plan; backup retention is not automatic rollback authority.
+- A same-ID repair to an app-data definition fixes pending or failed
+  installations. Terminal `SUCCEEDED` / `SUCCEEDED_WITH_WARNINGS` records stay
+  skipped.
+- Don't reset the ledger or force successful users to replay a conversion.
+- If successful installations need another persisted transformation, decide that
+  as a separate new migration.
+- Repairing a skipped converter does not remove recurring runtime validation
+  cost; fix that runtime path separately.
+- None of this permits rewriting already-applied Prisma SQL history. Coordinated
+  client/server and stopped-writer requirements belong in the task's rollout
+  plan. Keeping a backup does not grant rollback authority.
 
-## 6. Database Transport Must Be Validated
+## 8. Use the Runner's Contracts
 
-SQL meaning, SQLite storage type, ORM metadata and JavaScript runtime type differ.
-A TypeScript `$queryRaw` annotation does not validate or convert returned values.
-The token migration encountered decimal strings after leading `NULL` results;
-this is evidence for real-driver tests, not a universal claim about every query.
+The migration runner already owns:
 
-Use a deterministic transport when inference is unstable, validate its grammar and
-source type, then convert and check the actual target domain. Avoid unchecked
-casts or coercions that silently accept malformed or out-of-range values. For
-**nonnegative token integers**, reject negatives, fractions, exponent notation and
-unsafe ranges; these restrictions are not a ban on signed/decimal fields in other
-migrations. Exact parsing before safe narrowing is illustrated by
-`legacy-token-usage-row.ts` under `token-usage-run-records-v1/`.
+- status, the summary sentence and attempt counts;
+- the attempt log;
+- execution policy and recovery actions: manual retry versus restart-to-retry.
 
-Regression fixtures must use the production adapter, including the observed
-leading-`NULL` ordered batch and that domain's invalid types/ranges. A mocked
-correctly typed row is not evidence of driver correctness.
+A migration definition returns its aggregate counts and item details. It does not
+format status text, add persisted count fields, or put item arrays, source rows
+or exception dumps into database, API or UI status fields; full details belong in
+the attempt log. Group warnings with counts and capped examples. Clients show
+the recovery action the runner provides and must not infer it. For the exact
+formats, read `src/app-data-migrations/app-data-migration-runner.ts` and
+`src/app-data-migrations/domain/app-data-migration-types.ts`.
 
-## 7. Audit Records and Executable Recovery Actions
+Database values must be validated through the real driver. A TypeScript type on a
+raw query does not convert or validate the returned value. Section 10 lists the
+example to learn from.
 
-`app_data_migration_records.summary` is nullable opaque text containing only the
-runner-formatted terminal sentence:
+## 9. Performance and Acceptance Evidence
 
-`Scanned N; migrated N; skipped N; failed N.`
+### Measure the real cost
 
-The runner owns aggregate formatting, status, attempts, timestamps, concise error
-and `log_path`; thrown definitions use its existing zero-count summary and separate
-error. Do not parse the sentence into domain state, add duplicate persisted counts,
-or place item arrays/source rows/exception dumps in database/API/UI status fields.
-Full details belong in the referenced attempt log. Grouped warnings use counts and
-capped examples. Existing detail logs can grow; global retention/compaction or
-historical log rewriting is separate scope, not a silently added requirement.
+- Record candidate and changed counts, bytes, largest file, and the full-file
+  read, parse, transform, hash and write passes and sync operations. A tiny
+  locator edit can still cost a whole-trace rewrite.
+- Measure first conversion, failed-attempt retry and startup after a terminal
+  migration separately. A skipped migration does not imply cheap readiness.
+- Reuse established same-process validation while its authority is still valid.
+- Before replacing redundant work with a persistent cache or index, show why a
+  simpler bounded pass or the existing owner is not enough. Don't answer a
+  removed scan with a background audit, new journal or longer startup timeout
+  without a demonstrated, approved need.
+- Changes to validation timing, admission or freshness need explicit behavior
+  approval.
+- Compare before and after on the same data. Don't invent a universal
+  millisecond target.
 
-The released `summary_json`→`summary` transition lives in Prisma migration
-`20260820090000_redesign_app_data_migration_summary`: it validates the four known
-nonnegative counts, builds the sentence and renames the column transactionally.
-Other metadata/log paths remain unchanged; no runtime legacy summary decoder.
+### Acceptance for historical-run migration or startup work
 
-The runner also owns the nonpersisted recovery action:
+1. **Released shapes:** known predecessor shapes and warnings; valid history
+   alongside empty and nonempty missing-tree roots; and **all historical roots
+   excluded, with new work still usable**.
+2. **Identity and dependencies:** exact identity, unavailable cross-root
+   dependencies next to independent runs, across listings, direct-ID load and
+   restore, and applicable synchronous file reads.
+3. **Retry:** ordinary retry and idempotence, supported partial commits, and
+   already-terminal ledger cases. Originals are preserved and non-target content
+   is unchanged.
+4. **Startup:** the real startup entrypoints, and repeat startup. For a desktop
+   startup issue, verify the desktop boundary, not just browser access to a warm
+   server.
+5. **Released data:** faithful released-data fixtures committed with the
+   migration's tests, including predecessor residue. When safely available, add a
+   stopped-writer disposable copy of an installed dataset with all problematic
+   roots retained. Never run automated replay or mutations against a live
+   profile.
+6. **Recovery and user verification:** actual recovery and update
+   accessibility, and explicit user verification before any delivery recovery
+   claim. Never bury an untested required boundary under test totals or
+   confidence percentages.
 
-| Action | Meaning |
+These don't count as evidence:
+
+- a current-generated fixture with old field values (not released-data
+  fidelity);
+- a copy with problem roots removed (that is diagnosis, not acceptance);
+- migration-only success (that is not startup success).
+
+Keep real current-platform controls so that "availability" cannot turn into
+"ignore every failure".
+
+## 10. Learn From Existing Migrations and Past Mistakes
+
+Before designing, read the closest existing migration. The examples below are
+lessons, not templates. Reuse only the mechanisms your actual data needs. Paths
+are relative to `src/app-data-migrations/migrations/` unless prefixed `tickets/`.
+For those, read the final ticket decisions; rejected drafts are evidence of
+mistakes, not approved designs.
+
+### Existing migrations to learn from
+
+| Source | Lesson |
 | --- | --- |
-| `MANUAL_RETRY` | Policy permits a manual attempt; duplicate-run and prerequisite guards still apply. |
-| `RESTART_TO_RETRY` | Required-on-startup `STARTUP_ONLY` work is pending, failed or stale-running; startup can attempt it subject to guards. |
-| `NONE` | No retry offered: active attempts, clean success, or terminal warning for `STARTUP_ONLY` work. |
-
-`ANYTIME` warning success can offer `MANUAL_RETRY`; it is still skipped by automatic
-startup. Derive `canRetry` only from the runner-provided `MANUAL_RETRY`, not status
-alone. Reject manual invocation of `STARTUP_ONLY` definitions. Carry the action through API/client state; the UI must not infer it
-from IDs or local status combinations, nor send a disabled manual retry. Status
-presentation must not become a migration-framework redesign.
-
-## 8. Performance and Acceptance Evidence
-
-Record candidate/changed counts, bytes, largest file, full-file read/parse/transform/
-hash/write passes and sync operations. A tiny locator edit can still cost a whole
-trace rewrite. Measure first conversion, failed-attempt retry and terminal-migration
-startup separately; a skipped migration does not imply cheap readiness.
-
-Reuse established same-process validation when its authority remains valid. Do not
-replace redundant work with a persistent cache/index protocol before demonstrating
-why a simpler bounded pass or existing owner cannot suffice. Nor should removing
-a scan default to a background audit, new journal or longer startup timeout.
-Such mechanisms need a demonstrated need and separately approved scope. Changes to validation
-timing, admission or freshness require explicit behavior approval. Compare before/
-after on the same corpus; do not invent a universal millisecond SLA.
-
-For historical-run migration/startup work, acceptance must cover:
-
-1. Known predecessor shapes and warnings; valid history alongside empty/nonempty
-   missing-tree roots; **all historical roots excluded with new work still usable**.
-2. Exact identity, unavailable cross-root dependencies and independent runs;
-   listings, direct-ID load/restore and applicable synchronous file reads.
-3. Ordinary retry/idempotence, supported partial commits and already-terminal
-   ledger cases; preserved originals and unchanged non-target content.
-4. Real applicable startup entrypoints and repeat startup. For an Electron startup
-   incident, verify the desktop boundary, not just browser access to a warm server.
-5. Faithful released-data fixtures and, when safely available, a stopped-writer
-   disposable installed-data copy with all problematic roots retained. No automated
-   replay or mutations on the live profile.
-6. Actual recovery/update accessibility and explicit user verification before a
-   delivery recovery claim. Do not bury an untested required boundary under test
-   totals or confidence percentages.
-
-A current-generated fixture with old URLs is not proof of released-data fidelity.
-Removing problematic roots from a copy is diagnosis, not acceptance. CPU samples
-show activity, not exact time attribution. Migration-only success is not startup
-success. Keep genuine current-platform controls so "availability" cannot become
-"ignore every failure."
-
-## 9. Historical Practices and Anti-Patterns
-
-Paths below are relative to this server package unless prefixed `tickets/`, which
-are repository-relative. Read final ticket decisions; rejected drafts are evidence
-of mistakes, not approved templates. Examples illustrate the rules, not a blanket
-requirement to reproduce their mechanisms.
-
-### Historical examples: lessons, not templates
-
-| Example source under `src/app-data-migrations/migrations/` | Lesson |
-| --- | --- |
-| `token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.ts` | Bounded fold in one SQLite transaction; validate coverage/totals before source deletion. Empty-source retry is a no-op, without custom snapshot/hash journals. |
-| `team-run-execution-tree-v2-app-data-migration.ts` | Known V1/current V2/missing classification, atomic replacement and current reread. `SKIPPED_MISSING` does not promise a tree exists for the next migration. |
-| `team-agent-memory-layout-app-data-migration.ts` | Rename the directory rather than copy/rehash history; explicit preserved conflict/residue dispositions. |
-| `team-run-metadata-member-tree-migration.ts`, `remove-global-skill-discovery-mode-migration.ts`, `team-communication-projection-address-migration.ts` | These older implementations back up changed metadata/sidecars before atomic replacement. This records past behavior, not a recommendation to create backups for every similar rewrite. |
-| `team-run-execution-tree-v1/team-run-v1-package-promoter.ts` | Coupled authority files retain selected predecessor files and a promotion marker, not a per-trace hash/progress journal. This is a scope distinction, not a claim those files are always small. |
-| `raw-trace-rotation-layout-migration-run.ts` | Preserve pending segments, publish/validate domain manifest, then clean old layout; its runtime manifest is not duplicate recovery bookkeeping. |
-| `agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts` and migration entry | Explicit missing-tree warnings preserve sources. Prerequisite warning success certifies stated outcomes, not every directory's validity. |
-| `remove-external-messaging-data-migration.ts` | No-backup deletion follows explicit feature-removal approval, never a general permission to delete history for speed. |
+| `team-run-execution-tree-v2-app-data-migration.ts` | Known old/current/missing classification, atomic replacement and a current reread. `SKIPPED_MISSING` doesn't promise the next migration a tree. |
+| `agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts` and its migration entry | Explicit missing-tree warnings preserve sources. A prerequisite's warning success certifies its stated outcomes, not every directory. A frozen released schema lives in `released-team-run-v2-schema.ts`. |
+| `src/app-data-migrations/legacy/released-run-package-shapes/` | Shared frozen strict copies (Team tree v2, Org tree v1, task-records v1, Org state-package v1) that let released migrations keep their classifiers after the current execution-tree readers became tolerant and the records runtime was deleted. Current runtime code never imports it. |
+| `agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.ts` | Cross-root references need exact ownership proof and physical file proof. |
+| `token-usage-run-records-v1/token-usage-run-records-v1-app-data-migration.ts` | A bounded fold in one SQLite transaction, with coverage and totals validated before source deletion. An empty-source retry is a no-op. |
+| `token-usage-run-records-v1/legacy-token-usage-row.ts` | Real-driver value handling: SQLite values arrived as decimal strings after leading `NULL` rows. Validate exactly, test through the production adapter, and never use permissive coercion. |
+| `team-agent-memory-layout-app-data-migration.ts` | Rename the directory instead of copying and rehashing history. Explicit dispositions for preserved conflicts and residue. |
+| `team-run-execution-tree-v1/team-run-v1-package-promoter.ts` | Coupled authority files use retained predecessor files plus a promotion marker, not a per-trace journal. |
+| `raw-trace-rotation-layout-migration-run.ts` | Preserve pending segments, publish and validate the domain manifest, then clean up the old layout. |
+| `remove-external-messaging-data-migration.ts` | Deletion without a backup followed an explicit feature-removal approval. It is not general permission to delete history. |
+| `team-run-metadata-member-tree-migration.ts`, `remove-global-skill-discovery-mode-migration.ts`, `team-communication-projection-address-migration.ts` | These back up changed files before replacing them. That records past behavior; it is not a default for similar rewrites. |
 
 ### Mistakes not to repeat
 
-| Historical evidence | Mistake and lesson |
+| Where it happened | Lesson |
 | --- | --- |
-| `tickets/done/canonical-identity-startup-recovery/solution-revision-record.md`, SR-011–013 | User rejected proposed hash/phase records, restoration and per-syscall recovery. Later revisions also rejected fatal-only handling. Simplify without reintroducing user lockout. |
-| `tickets/done/token-usage-one-row-per-agent-run/solution-revision-record.md`, SR-004–006 | Speculative recovery and runtime legacy-overlap machinery were replaced by current-only admission and transactional conversion. Driver assumptions also required real-adapter regression, not permissive parsing. |
-| `tickets/done/migration-startup-scope-recovery/investigation-notes.md` | Repeated whole-history transforms/hashes and a separate startup scan were identified. Final ticket scope fixed only the Electron timeout; deferred scanner proposals were not implemented fixes or approved designs. |
-| `tickets/done/org-history-startup-latency` | Warm tests missed a measured 26.657-second duplicate cold readiness rebuild. Reusing the established in-process generation fixed first-read latency without weakening admission. |
-| `tickets/done/team-attachment-exact-execution`, D1/D2 and DR-007/009 | Whole-record originals plus repeated parse/hash/manifest sync caused substantial work: 363 originals, about 722.23 MiB; recorded attempt 154.845 seconds. Repeat startup was separately 33.846 seconds with conversion skipped. These observations do not isolate hashing's share; preserved evidence is not permission to repeat every mechanism. |
-
-### Worked comparison: attachment migration before and approved correction
-
-**Status:** the left column describes the released implementation. The right column
-is the user-approved correction in `tickets/in-progress/startup-performance`
-(R1/D1), not proof of completion. Local source/check status is recorded in that
-ticket's `implementation-handoff.md` (IR-001); independent validation and release
-remain separate gates. Do not copy the old mechanisms merely because they shipped.
-
-| Previous approach / original rationale | Approved correction | Why change it? |
-| --- | --- | --- |
-| Copy each entire changed history file to `.original` to preserve a pre-conversion snapshot. | Read the source, construct its target and atomically replace only if changed; create no new retained backup. Keep existing originals untouched. | Replacing one locator is not a demonstrated requirement to retain a second large trace. A temporary atomic-write file is not a historical backup. |
-| Hash original, target and current bytes to recognize planned/retried states. | Recognize supported old/current structure and preserve already-current content. | A matching fingerprint cannot establish correct attachment ownership or correct transformation. These shapes are recognizable without hashes. |
-| Transform during validation, preflight, execution planning, target reconstruction and later rechecks. | Convert each source once and use that computed target for the write. | Regenerating the same target repeats work; it is not independent evidence that the algorithm is correct. Test expected semantics and non-target preservation instead. |
-| Persist mappings, hashes and per-file completion in a custom manifest, saving it after each file. | Keep the existing runner's attempt status/log; retry remaining old files from their actual contents. | The unchanged owner trees and old/current records already contain this conversion's inputs. A second progress store adds writes and competing state. |
-| After terminal migration success, scan all historical references before server readiness to pre-detect unavailable history. | Skip completed conversion/validation; check the requested attachment at actual use. | One-time upgrade work became a permanent startup cost and blocked unrelated work. The next subsection records the measured consequence. |
-
-**Concrete source/target example:**
-`/rest/team-runs/T/members/writer/context-files/f.png` becomes
-`/rest/team-runs/T/agent-runs/E/context-files/f.png` only when the existing owner
-facts uniquely prove execution `E`. Unsupported or ambiguous ownership stays
-unchanged with an actionable diagnostic; "simple conversion" never means guessing.
-
-**Ordinary retry example:** if file A was atomically converted before interruption
-and file B was not, leave current A unchanged and convert old B on the next eligible
-attempt. Do not restore A from a saved original or require a journal to recognize
-it. This is per-file retry, not a multi-file transaction. If the runner already
-records terminal completion, neither file is reprocessed at ordinary startup.
-
-These examples are specific to the investigated conversion, not a blanket ban on
-backups required by a different approved transition. Reuse the simpler historical
-transaction/rename/shape-recognition patterns above according to the actual data.
-
-### Measured consequence of the startup-audit anti-pattern
-
-The v1.4.88 recovery scanned active, rotated and archived traces through a no-op
-locator transform even when conversion was skipped. An installed-code read-only
-probe measured **24.64 seconds** for readiness, including **24.18 seconds** in
-reference validation, **6.39 GB** of instrumented reads and **1.07 million JSON
-parses**. These are isolated probe measurements, not an end-to-end startup benchmark.
-Evidence: `tickets/in-progress/startup-performance/evidence/readiness-profile-analysis.md`.
-The preceding comparison owns the mistake and correction; section 1 owns the
-customer/recovery consequences. This repeats the earlier whole-history and duplicate
-readiness mistakes cited above, rather than establishing a new validation need.
-
-### Critical release failure: v1.4.87 attachment migration
-
-The exact-execution attachment fix unconditionally read every discovered Team tree,
-then required aggregate `SUCCEEDED` in both startup entrypoints. Eight of 553 Team
-roots in the investigated installation legitimately lacked trees (five empty, three
-retaining history), as predecessor migrations had preserved them. The result was:
-
-`retained historical root → ENOENT → migration FAILED → blanket gate → app lockout`
-
-The defect combined a false source assumption with a false global dependency.
-Architecture/review accepted it; 202 passing tests and browser send evidence did
-not cover that installed source state. The purported copied-upgrade fixture was
-current-generated history with old locators, not representative released residue.
-
-Apply the disposition/admission rules in sections 1 and 4 and acceptance evidence
-in section 8. Neither a catch-all warning nor deleting the eight roots is a valid
-fix; the defect was not merely a missing exception handler.
-
-This is a **historical incident**, not a statement that the released recovery is
-still pending. Cumulative evidence and completion are owned by
-`tickets/done/team-attachment-exact-execution` (`API-REV-002` incident,
-`API-REV-003` recovery validation, `DR-009` v1.4.88 delivery). Performance remained
-a separate follow-up; publication/installation status is not owned by this guide.
-
-## 10. Mandatory Design and Review Checklist
-
-Record concise answers in the task design, not a new framework:
-
-1. **Availability:** can users open the app, create new work and reach recovery
-   when all history is unavailable? Identify any real platform dependency separately.
-2. **Source/target:** what released shapes, predecessor exclusions and current
-   invariants were actually investigated? Which owner admits the fixed target?
-3. **Disposition:** what happens to each converted/current/excluded/dependent/
-   failed item? Why does aggregate status remain separate from current admission?
-4. **Commit/retry:** which existing transaction/atomic writer/marker suffices?
-   Justify every backup/hash/journal and preserve released originals/partial states.
-5. **Current-only boundary:** where does legacy interpretation end? Verify schema
-   ordering, source retirement and same-ID versus new-migration applicability.
-6. **Cost:** what files/bytes/passes/syncs are required and measured? Does another
-   consumer repeat proof already established? Confirm startup/new work does not
-   audit every historical trace. Do not substitute a cache by reflex.
-7. **Boundary contracts:** are database values validated through the real adapter,
-   audit/log storage separated, and advertised recovery actions executable?
-8. **Evidence:** which representative upgrade, retry, cold-start, dependency and
-   new-work tests prove the intended behavior? What remains unverified?
-9. **History/review:** which final historical lessons were consulted, what rejected
-   mechanisms were avoided, and who independently reviews applicable risk?
-
-Stop and revise if the answers require guessing identity, deleting retained data,
-fabricating success, old-runtime fallbacks or unnecessary whole-application lockout.
+| v1.4.87 attachment migration: `tickets/done/team-attachment-exact-execution` (API-REV-002 incident) | **Critical lockout.** The migration read every discovered Team tree unconditionally, although predecessors had legitimately preserved roots without trees. Both startup entrypoints then required aggregate `SUCCEEDED`. Two false assumptions (source shape and global dependency) combined into a user lockout. Review and a current-generated "upgrade" fixture didn't catch it. The fix is disposition plus narrow admission (sections 1 and 6), not a catch-all warning or deleting roots. |
+| Same ticket, D1/D2 and DR-007/009; correction in `tickets/done/startup-performance` | Whole-file `.original` copies, repeated hashing and multi-pass transforms, per-file manifests, and a post-migration scan of all history at startup made one-time upgrade work into a large permanent startup cost. The correction: convert each source once, replace atomically, recognize the current shape, and check a reference only when it is used. |
+| `tickets/done/canonical-identity-startup-recovery` (SR-011–013) | The user rejected hash/phase records, restoration and per-syscall recovery, and later also rejected fatal-only handling. Simplify without reintroducing lockout. |
+| `tickets/done/token-usage-one-row-per-agent-run` (SR-004–006) | Speculative recovery and runtime legacy-overlap machinery were replaced by current-only admission and a transactional conversion. |
+| `tickets/done/org-history-startup-latency` | Warm tests missed a cold-start duplicate readiness rebuild. Reusing the established in-process result fixed it without weakening admission. |

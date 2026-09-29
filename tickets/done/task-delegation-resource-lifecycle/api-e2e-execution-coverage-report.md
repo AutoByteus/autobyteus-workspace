@@ -49,6 +49,15 @@ All ticket artifacts are in `/Users/normy/autobyteus_org/autobyteus-worktrees/ta
   - The shared e2e helper was updated because R-13 removed `schema_version`.
   - LIVE-002 now denies any extra approval request. After the rebase a child may call `get_handoff_rules`, which also waits for approval.
 - Reroute required before or during execution: `No`
+- Project testing guideline:
+  - Guideline: `TESTING.md` at the worktree root. It arrived upstream after round 1; its layer-by-layer compliance table is in the investigation under "`TESTING.md` compliance (round 2)".
+  - Guideline paths followed:
+    - a worktree build in an isolated desktop instance (`build:electron:mac` plus `isolated-app start --from-worktree`), driven with browser-automation on the reported control port;
+    - server, web and Electron main-process tests.
+    - `isolated-app list` is empty afterwards.
+  - Deviations:
+    - **Rule 2 (read-only):** the user's running app answered read-only GraphQL queries as the comparison baseline. The installed-data copy that design item 4 requires was cloned from `~/.autobyteus/server-data`, which was never written.
+    - **Real-provider wrapper:** the live suite ran through its `RUN_*` gates rather than the `pnpm test:e2e:real` wrapper.
 - Environment:
   - Tests ran under `/tmp/tdrl-api-e2e/senv.sh`, a sanitized `env -i`; the agent shell carries the user's live production env.
   - Standalone servers ran under `env -i HOME USER LOGNAME SHELL LANG PATH TMPDIR`. `USER` and `LOGNAME` are needed for Claude authentication.
@@ -110,6 +119,7 @@ All ticket artifacts are in `/Users/normy/autobyteus_org/autobyteus-worktrees/ta
 | 3 | `RUN_LMSTUDIO_E2E=1 RUN_CODEX_E2E=1 RUN_CLAUDE_E2E=1 AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS=60000 CODEX_APP_SERVER_APPROVAL_POLICY=untrusted … vitest run tests/e2e/runtime/mixed-task-delegation.e2e.test.ts` | Same | LIVE-001…005 | Pass (4 tests, 531 s) | `/tmp/tdrl-api-e2e/r3-live.log` |
 | 4 | `RUN_R3_WAKE_PROBES=1 … vitest run tests/e2e/runtime/tmp-r3-wake-path.probe.e2e.test.ts` (temporary; deleted after the run) | Same | QR-002, C-11 | Pass (2 tests, 198 s) | `/tmp/tdrl-api-e2e/r3-probes.log` |
 | 5 | `NUXT_TEST=true pnpm exec vitest run` | `autobyteus-web`, `env -i` | Web regression | 501 passed / 5 failed / 2 skipped files. The 5 failures are exactly the baseline set (IR-004: 500 / 5): `app-font-size-fixed-px-audit`, `workspace-history-draft-send`, `WorkspaceAgentRunsTreePanel.regressions`, `org-definition-navigation`, `StartupDelayLifecycle` | `/tmp/tdrl-api-e2e/r3-web-unit.log` |
+| 7 | `pnpm -C autobyteus-web test:electron --run` (`TESTING.md` layer "Electron main-process tests"; run after the initial handoff) | `autobyteus-web`, `env -i` | Electron main, preload and server manager | Pass: 36 files / 187 tests (1 skipped) | `/tmp/tdrl-api-e2e/r3-electron-main.log` |
 | 6 | `/tmp/tdrl-api-e2e/repo-003.sh`: `vitest run tests/unit tests/architecture`, then `tests/integration`, then `tests/e2e` (live suites skip without `RUN_*`) | `autobyteus-server-ts`, sanitized | Server regression | **Pass (0 regressions).** Every failing file is in the round-1 base lists (`/tmp/tdrl-api-e2e/failing-*.txt`, base `8bffda045`). **unit + architecture:** 541 passed / 27 failed files (3,793 / 76 tests), versus IR-004's 539 / 29; one base failure (`codex-app-server-client.test.ts`) is now fixed upstream. **integration:** 51 passed / 17 failed (267 / 46 tests), identical to the base set and IR-004. **e2e:** 54 passed / 11 failed / 27 skipped (188 / 41 tests), identical to the base set and IR-004. `task-delegation-api-surface` (3), `team-task-event-current-contract` (2) and `stopped-org-workspace-graphql` (1) pass | `/tmp/tdrl-api-e2e/r3-repo-003-*.log`, `r3-failing-{unit,integration,e2e}.txt` |
 
 ## Validation Confidence Scorecard
