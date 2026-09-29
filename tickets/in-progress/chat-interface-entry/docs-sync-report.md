@@ -65,3 +65,11 @@
 - Result: `Pass`
 - Next delivery action: handoff summary and user-verification hold
 - Notes: `autobyteus-web/generated/graphql.ts` has a hand-applied `skillScope` delta, because full codegen produced unrelated drift. This is recorded in the handoff summary. No doc claims codegen parity.
+
+## Round 2 Addendum (DR-003, UVF-001 rework)
+
+- Integrated base used: `origin/personal@5d6179797`, merged into the ticket branch as `a1f2a26d2`. The code under review is IR-004 `9d65adf6e`.
+- `autobyteus-web/docs/chat.md` § Model labels (added by IR-004): checked against the code. `toChatModelOption` and `matchesModelQuery` are in `composables/chat/useChatModelCatalog.ts`, `existingRunChoiceLabelInput` is in `utils/modelSelectionLabel.ts` (also used by `RuntimeModelConfigFields.vue`), and `compareRecommendedFirstBy` is in `utils/modelSelectionOptions.ts`. The per-runtime label/secondary table matches `getModelSelectionOptionLabel` / `getModelSelectionOptionDescription`. Result: `No change`.
+- Delivery's round-1 corrections to `settings.md`, `agent_execution_architecture.md` and `antigravity_cli_runtime.md` are committed in `030bab78d`. The merged upstream edit to `antigravity_cli_runtime.md` merged cleanly with them, and the weak-request exception text is still present.
+- O-1 (a raw identifier shows on the trigger until the catalog loads) is transient loading behavior. It is not documented as a contract; the doc describes the steady-state label.
+- Result: `Pass`

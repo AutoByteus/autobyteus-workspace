@@ -5,6 +5,7 @@
 | Revision ID | Entry Point / Trigger | Prior Result | Current Result | Affected Canonical Artifacts |
 | --- | --- | --- | --- | --- |
 | DR-001 | Delivery handoff from `code_reviewer` after CRR-004 Pass (2026-09-29) | N/A | Integrated, checked, docs synced; waiting for user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`, `delivery-evidence/` |
+| DR-003 | `code_reviewer` delivery handoff after the UVF-001 rework (CRR-006 Pass) | DR-002 `Blocked` | Re-integrated (`a1f2a26d2`), checked, docs verified, local build rebuilt; waiting for renewed verification | `handoff-summary.md`, `release-deployment-report.md`, `docs-sync-report.md` (addendum), `release-notes.md`, `delivery-evidence/delivery-electron-build-r2.log` |
 | DR-002 | User verification of the local build: model menu labels (UVF-001) | DR-001 waiting for verification | `Blocked`: Requirement Gap routed to `/software_engineering_team/solution_designer` | `user-verification-finding-001.md`, `handoff-summary.md`, `release-deployment-report.md`, `delivery-evidence/catalog-*.json`, `delivery-evidence/delivery-electron-build.log` |
 
 ## Revision Entries
@@ -59,3 +60,29 @@
 - Why this baseline or delivery revision was recorded: user verification found a user-facing gap.
 - Next recipient/action: `/software_engineering_team/solution_designer` decides the Chat model-label requirement and routes the rework. Delivery then resumes with a new integration refresh, docs check, a new build and renewed user verification.
 - Remaining blockers, rollback concerns, or untested scope: UVF-001.
+
+### DR-003: Resume after the UVF-001 rework: second integration refresh and renewed verification hold
+
+- Delivery round and trigger: the `code_reviewer` delivery message after SR-011/SR-012 → ARCH-REV-008 → IR-004 (D-16) → CRR-005 → API-REV-003 (95%) → CRR-006, all Pass.
+- Triggering upstream report, verification, or evidence: `code-review-report.md` (round 4), `api-e2e-execution-coverage-report.md` (Round 3), `api-e2e-test-review-report.md` (round 2), `api-e2e-evidence/round3/`
+- Prior authoritative result: DR-002 `Blocked` (UVF-001, Requirement Gap)
+- Current authoritative result: re-integrated and checked; waiting for renewed user verification.
+  - Checkpoint `030bab78d`: probe C16, the delivery docs edits and the ticket artifacts.
+  - Merged `origin/personal@5d6179797` as `a1f2a26d2`, cleanly. The base had advanced 4 commits, including the published `1.4.91-beta.5`.
+  - Local build rebuilt.
+- Docs sync report: addendum (round 2). `chat.md` § Model labels was verified; no change.
+- Handoff summary: updated (status, integration, D-16, O-1, risks, build).
+- Release/publication/deployment report: updated (second refresh, renewed verification required, escalation resolved, next beta would be `1.4.91-beta.6`).
+- Integration and post-integration verification:
+  - Server build tsc and `build:full`: passed.
+  - Server units: 840 passed; 4 failures, all baseline.
+  - Web nuxt: 3349 passed; 4 baseline files.
+  - Web electron: 177 passed.
+  - Guards: passed.
+  - Local build (`delivery-evidence/delivery-electron-build-r2.log`): exit 0.
+- User verification/finalization state: renewed verification pending, and O-1 needs the user's judgement. Nothing was pushed, merged or released.
+- Terminal return to `/solution_designer`: `Not yet eligible`
+- Terminal message/reference: —
+- Why this baseline or delivery revision was recorded: delivery resumed after the upstream rework.
+- Next recipient/action: the user re-verifies (UVF-001 steady state, O-1) and decides on a beta release. If the user objects to O-1, it goes to `/software_engineering_team/solution_designer` as a small follow-up.
+- Remaining blockers, rollback concerns, or untested scope: user verification pending. The residual risks are listed in the handoff summary.

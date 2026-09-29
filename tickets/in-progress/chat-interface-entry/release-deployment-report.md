@@ -10,8 +10,8 @@
 - Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/delivery-revision-record.md`
-- Current delivery revision ID: `DR-001`
-- Notes: waiting for user verification.
+- Current delivery revision ID: `DR-003`
+- Notes: the UVF-001 rework is re-integrated; waiting for renewed user verification.
 
 ## Initial Delivery Integration Refresh
 
@@ -36,12 +36,28 @@
 - Handoff state current with latest tracked remote base: `Yes` (as of 2026-09-29)
 - Blocker: None
 
+### Second Integration Refresh (DR-003, after the UVF-001 rework)
+
+- Latest tracked remote base reference checked: `origin/personal@5d6179797` (fetched 2026-09-29). It had advanced 4 commits: `5dd87a33f`, `351104bdc`, `d7bac3957` (release `1.4.91-beta.5`), `5d6179797`.
+- Local checkpoint commit result: `Completed`, `030bab78d`. It holds probe C16, the delivery docs-sync edits and the UVF-001 review/validation artifacts.
+- Integration method: `Merge`, `a1f2a26d2`, no conflicts. The delivery edit to `antigravity_cli_runtime.md` auto-merged with the upstream AGY doc update.
+- Post-integration checks on `a1f2a26d2`:
+  - server `tsc -p tsconfig.build.json`: exit 0
+  - `pnpm build:full`: exit 0, smoke passed
+  - new upstream AGY tests make no `createAgyRunCapsule` calls, so there is no C-12 recurrence
+  - server units: 840 passed; 4 failures, all baseline `codex-tool-log-correlation`
+  - web nuxt: 3349 passed; the same 4 baseline files fail
+  - web electron: 177 passed
+  - guards and audit: exit 0
+- Post-integration verification result: `Passed`
+- Handoff state current with latest tracked remote base: `Yes` (as of 2026-09-29)
+
 ## User Verification
 
 - Initial explicit user completion/verification received: `No` (pending)
 - Initial verification / acceptance reference: —. The test build is a local unsigned macOS ARM64 personal-flavor app built from `4b440e719` (`delivery-evidence/delivery-electron-build.log`, exit 0; `autobyteus-web/electron-dist/AutoByteus_personal_macos-arm64-1.4.91-beta.4.dmg`).
-- Renewed verification required after later re-integration: `No` (to be re-evaluated at finalization)
-- Renewed verification received: `Not needed`
+- Renewed verification required after later re-integration: `Yes`. UVF-001 (DR-002) blocked the first verification. The D-16 rework and the second base refresh (DR-003) need renewed verification, including O-1.
+- Renewed verification received: `No` (pending)
 - Renewed verification / acceptance reference: —
 
 ## Docs Sync Result
@@ -58,7 +74,7 @@
 
 ## Version / Tag / Release Commit
 
-- Pending the user's decision. The documented method is `bash scripts/desktop-release.sh beta --branch <finalize-branch> --no-push`, then pushing the tag. The next version would be `1.4.91-beta.5`.
+- Pending the user's decision. The documented method is `bash scripts/desktop-release.sh beta --branch <finalize-branch> --no-push`, then pushing the tag. The next version would be `1.4.91-beta.6`, because `origin/personal` has already released beta.5.
 
 ## Repository Finalization
 
@@ -97,6 +113,7 @@
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
+- Status: **Resolved upstream.** SR-011/SR-012 (REQ-021 / AC-018 / DEC-015, user-approved) → ARCH-REV-008 → IR-004 (D-16) → CRR-005 → API-REV-003 → CRR-006, all Pass. Delivery resumed in DR-003.
 - Classification: `Requirement Gap` (UVF-001, DR-002)
 - Recommended recipient: `/software_engineering_team/solution_designer`
 - Why final handoff could not complete: while verifying the local build, the user found that the Chat footer model menu labels models by raw `modelIdentifier` (`opus`, `sonnet`, `haiku`, `gpt-6-astra`). The launch form uses the shared label policy: `claude-opus-5-5` with "Opus 5.5 ·" and the Recommended badge, and `GPT-6-Astra (default reasoning: medium)`. No model is missing. The requirements never required label parity, and the "never wrap" rule needs a product decision. See `user-verification-finding-001.md`.
