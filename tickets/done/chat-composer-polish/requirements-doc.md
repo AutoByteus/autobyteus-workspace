@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-003`
+- Current solution revision ID: `SR-004`
 - Package identifier: `chat-composer-polish`
 - Request / ticket: User chat request of 2026-09-29 (3 screenshots/notes about the new-chat composer)
 - Requirements owner: Solution Designer
@@ -76,7 +76,7 @@ Standard: blocking findings must cite a REQ/AC/BEH ID above; new behavior is a R
 | REQ-008 | (DEC-002 = Yes) In the run-configuration form, changing a dependent thinking setting under "Advanced" while the Thinking toggle is off also turns the toggle on. The form layout is otherwise unchanged. | BEH-001 | Should | Same rule on both surfaces | Designer recommendation |
 | REQ-005 | The workspace menu has a search box, focused when the menu opens, that filters the temp workspace and user workspaces by case-insensitive match on name or path. It shows an empty-state message when nothing matches. | BEH-005 | Must | User report 2 | User report 2 |
 | REQ-006 | Keyboard use works with search: typing filters, ArrowDown moves from the search box into the results, Enter picks the highlighted/first match, Escape closes the menu. "Open another folder…" stays available. | BEH-005 | Must | Keyboard parity with the model menu | `ChatModelMenu.vue` pattern |
-| REQ-007 | On the new-chat page, the composer sits slightly lower than today. (DEC-003) Reduce the upward bias from 14vh to about 6vh of bottom padding, so the block moves down ~4vh but stays at the optical center, slightly above the geometric middle. Nothing may overlap at small window heights. | BEH-006 | Should | User report 3 | User report 3 |
+| REQ-007 | On the new-chat page, the composer sits slightly lower than today. (DEC-003) Reduce the upward bias from 14vh to about 6vh of bottom padding, so the block moves down ~4vh but stays at the optical center, slightly above the geometric middle. Nothing may overlap at small window heights. The agent/running conversation view does not move. | BEH-006 | Should | User report 3 | User report 3; SR-004 (proposal withdrawn, user accepted as is) |
 | REQ-009 | The workspace search box uses the same visual treatment as the model menu search (magnifier icon, borderless input on a bottom divider). It is always shown, for consistency with the model menu. | BEH-005 | Should | Visual consistency across composer menus | Designer recommendation |
 
 ## Acceptance Criteria
@@ -92,7 +92,7 @@ Standard: blocking findings must cite a REQ/AC/BEH ID above; new behavior is a R
 | AC-006 | Preserved | SCN-001 | OpenAI/Gemini/GLM schemas | Menu behavior and stored values are unchanged from today | — | Existing + new tests |
 | AC-007 | REQ-005 | SCN-003 | Open the workspace menu, type "mcps" | Only workspaces whose name/path contains "mcps" are listed; the temp workspace is hidden unless it matches; typing "zzz" shows the empty state | — | Component test + manual |
 | AC-008 | REQ-006 | SCN-003 | Type a query, ArrowDown, Enter | The highlighted workspace is selected and the menu closes; Escape closes without changing the selection | — | Component test |
-| AC-009 | REQ-007 | SCN-004 | Open the new-chat page | The composer is visibly lower than on `personal` today; nothing overlaps or is clipped at ~700px height | — | Manual user verification |
+| AC-009 | REQ-007 | SCN-004 | Open the new-chat page | The composer is visibly lower than on `personal` today; nothing overlaps or is clipped at ~700px height; the agent/running view is unchanged | — | Manual user verification (user accepted the delivered position, 2026-09-29) |
 
 ## Relevant Scenarios And Journeys
 
@@ -146,7 +146,7 @@ None.
 | --- | --- | --- | --- | --- | --- |
 | DEC-001 | Menu shape for the thinking control | Determines how much UI changes | A: keep two groups + auto-enable. **B (chosen):** one merged list, Off · efforts | Designer (delegated by user) | Approved: B |
 | DEC-002 | Apply the auto-enable rule to the run-config form? | Consistency | **Yes (chosen)** | Designer (delegated) | Approved: Yes |
-| DEC-003 | How much lower should the composer sit? | Visual target | **14vh → ~6vh bottom bias (chosen)**: ~4vh lower, keeping the optical center | Designer (delegated) | Approved; tune at verification |
+| DEC-003 | How much lower should the composer sit? | Visual target | 14vh → ~6vh bias (implemented). SR-004 proposed ~60% of height; the user declined the further move and accepted the delivered position ("that's fine for now … I can accept that", 2026-09-29) | User | Approved: 6vh (as delivered) |
 
 ## Traceability
 
