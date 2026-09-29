@@ -1,6 +1,6 @@
 <template>
   <div class="flex min-w-0 flex-1 flex-col overflow-y-auto bg-white" data-test="chat-new">
-    <div class="flex flex-1 flex-col items-center justify-center px-4 pb-[14vh] pt-10 sm:px-6">
+    <div class="flex flex-1 flex-col items-center justify-center px-4 pb-[6vh] pt-10 sm:px-6">
       <h1 class="text-center text-[1.75rem] font-semibold tracking-tight text-gray-900">{{ $t('chat.new.heading') }}</h1>
       <p v-if="team" class="mt-2 max-w-xl text-center text-sm text-gray-500" data-test="chat-new-subtitle">
         {{ $t('chat.new.subtitleTeam', { team: team.name }) }}

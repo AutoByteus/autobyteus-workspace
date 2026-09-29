@@ -1,5 +1,5 @@
 <template>
-  <div v-if="parameters.length" ref="rootRef" class="relative">
+  <div v-if="menu.mode !== 'hidden'" ref="rootRef" class="relative">
     <button
       ref="triggerRef"
       type="button"
@@ -8,12 +8,18 @@
       :class="['hover:bg-gray-100 hover:text-gray-700', popover.open.value ? 'bg-gray-100 text-gray-700' : '']"
       :aria-expanded="popover.open.value ? 'true' : 'false'"
       aria-haspopup="menu"
-      :aria-label="$t('chat.thinking.triggerAria', { value: summary })"
+      :aria-label="$t('chat.thinking.triggerAria', { value: menu.summary })"
       :title="$t('chat.thinking.title')"
       @click="toggle()"
     >
-      <Icon icon="heroicons:light-bulb" class="h-3.5 w-3.5" aria-hidden="true" />
-      <span class="whitespace-nowrap">{{ summary }}</span>
+      <Icon
+        icon="heroicons:light-bulb"
+        class="h-3.5 w-3.5"
+        :class="menu.active ? '' : 'text-gray-300'"
+        data-test="chat-thinking-bulb"
+        aria-hidden="true"
+      />
+      <span class="whitespace-nowrap">{{ menu.summary }}</span>
       <Icon icon="heroicons:chevron-down" class="h-3 w-3 text-gray-400" aria-hidden="true" />
     </button>
 
@@ -30,34 +36,51 @@
         : ['absolute right-0 w-44', popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
       @keydown="onKeydown"
     >
-      <template v-for="parameter in parameters" :key="parameter.key">
+      <template v-if="menu.mode === 'merged'">
+        <p class="px-2 pb-0.5 pt-1 text-[0.6875rem] font-medium text-gray-400">{{ menu.title }}</p>
+        <button
+          v-for="option in menu.primary"
+          :key="option.id"
+          type="button"
+          role="menuitemradio"
+          :aria-checked="option.checked ? 'true' : 'false'"
+          :data-test="`chat-thinking-option-primary-${option.id}`"
+          class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
+          @click="choose(option.next)"
+        >
+          <span class="flex-1">{{ option.label }}</span>
+          <Icon v-if="option.checked" icon="heroicons:check" class="h-4 w-4 text-blue-600" aria-hidden="true" />
+        </button>
+        <div v-if="groups.length" class="mx-1 my-1 border-t border-gray-100" role="separator"></div>
+      </template>
+
+      <template v-for="parameter in groups" :key="parameter.key">
         <p class="px-2 pb-0.5 pt-1 text-[0.6875rem] font-medium text-gray-400">{{ parameter.label }}</p>
-        <template v-if="parameter.kind === 'number'">
-          <div class="px-2 py-1">
-            <input
-              type="number"
-              class="w-full rounded-md border border-gray-200 px-2 py-1 text-[0.8125rem] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
-              :min="parameter.minimum ?? undefined"
-              :max="parameter.maximum ?? undefined"
-              :value="parameter.value"
-              :aria-label="parameter.label"
-              @change="setNumber(parameter.key, ($event.target as HTMLInputElement).value)"
-            >
-          </div>
-        </template>
+        <div v-if="parameter.kind === 'number'" class="px-2 py-1">
+          <input
+            type="number"
+            class="w-full rounded-md border border-gray-200 px-2 py-1 text-[0.8125rem] text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+            :min="parameter.minimum ?? undefined"
+            :max="parameter.maximum ?? undefined"
+            :value="parameter.value"
+            :aria-label="parameter.label"
+            :data-test="`chat-thinking-input-${parameter.key}`"
+            @change="setNumber(parameter, ($event.target as HTMLInputElement).value)"
+          >
+        </div>
         <button
           v-for="option in parameter.options"
           v-else
-          :key="String(option.value)"
+          :key="option.id"
           type="button"
           role="menuitemradio"
-          :aria-checked="Object.is(option.value, parameter.value) ? 'true' : 'false'"
-          :data-test="`chat-thinking-option-${parameter.key}-${String(option.value)}`"
+          :aria-checked="option.checked ? 'true' : 'false'"
+          :data-test="`chat-thinking-option-${parameter.key}-${option.id}`"
           class="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-[0.8125rem] text-gray-900 hover:bg-gray-100 focus:bg-gray-100 focus:outline-none"
-          @click="setValue(parameter.key, option.value)"
+          @click="choose(option.next)"
         >
           <span class="flex-1">{{ option.label }}</span>
-          <Icon v-if="Object.is(option.value, parameter.value)" icon="heroicons:check" class="h-4 w-4 text-blue-600" aria-hidden="true" />
+          <Icon v-if="option.checked" icon="heroicons:check" class="h-4 w-4 text-blue-600" aria-hidden="true" />
         </button>
       </template>
     </div>
@@ -69,12 +92,13 @@ import { computed, nextTick, ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import { useAnchoredPopover } from '~/composables/popover/useAnchoredPopover'
 import { useLocalization } from '~/composables/useLocalization'
-import { applyThinkingToggle, getThinkingParamKeys, getThinkingToggleOwnedParamKeys } from '~/utils/llmThinkingConfigAdapter'
-import { resolveEffectiveConfigValue, type UiModelConfigSchema } from '~/utils/llmConfigSchema'
+import { buildChatThinkingMenu, type ChatThinkingParameter } from '~/components/chat/chatThinkingMenu'
+import type { UiModelConfigSchema } from '~/utils/llmConfigSchema'
 
 /**
  * Thinking follows the selected model's config schema (DEC-009): only the parameters the model
- * exposes (on/off, effort, budget or level) are offered, and the control is hidden when there are none.
+ * exposes are offered, and the control is hidden when there are none. Models with an on/off switch
+ * get one merged list (Off · effort levels); picking any dependent setting turns thinking on.
  */
 const props = defineProps<{
   schema: UiModelConfigSchema | null
@@ -88,52 +112,11 @@ const triggerRef = ref<HTMLElement | null>(null)
 const menuRef = ref<HTMLElement | null>(null)
 const popover = useAnchoredPopover(rootRef, triggerRef, 240)
 
-type ThinkingOption = { value: unknown; label: string }
-type ThinkingParameter = {
-  key: string
-  label: string
-  kind: 'choice' | 'number'
-  value: unknown
-  options: ThinkingOption[]
-  minimum: number | null
-  maximum: number | null
-}
-
-const humanize = (value: string): string => {
-  const text = value.replace(/[_-]+/g, ' ').trim()
-  return text ? `${text.charAt(0).toUpperCase()}${text.slice(1)}` : text
-}
-const optionLabel = (value: unknown): string => {
-  if (value === true) return t('chat.thinking.on')
-  if (value === false) return t('chat.thinking.off')
-  return humanize(String(value))
-}
-
-const parameters = computed<ThinkingParameter[]>(() => {
-  const schema = props.schema
-  if (!schema) return []
-  return getThinkingParamKeys(schema).flatMap((key): ThinkingParameter[] => {
-    const param = schema[key]
-    if (!param) return []
-    const value = resolveEffectiveConfigValue(param, props.llmConfig?.[key])
-    const label = param.title?.trim() || humanize(key)
-    if (Array.isArray(param.enum) && param.enum.length) {
-      return [{ key, label, kind: 'choice', value, options: param.enum.map((entry) => ({ value: entry, label: optionLabel(entry) })), minimum: null, maximum: null }]
-    }
-    if (param.type === 'boolean') {
-      return [{ key, label, kind: 'choice', value: value === true, options: [true, false].map((entry) => ({ value: entry, label: optionLabel(entry) })), minimum: null, maximum: null }]
-    }
-    if (param.type === 'integer' || param.type === 'number') {
-      return [{ key, label, kind: 'number', value: typeof value === 'number' ? value : '', options: [], minimum: param.minimum ?? null, maximum: param.maximum ?? null }]
-    }
-    return []
-  })
-})
-
-const summary = computed(() => {
-  const primary = parameters.value.find((parameter) => parameter.kind === 'choice')
-  if (!primary) return t('chat.thinking.title')
-  return primary.value === undefined ? t('chat.thinking.default') : optionLabel(primary.value)
+const menu = computed(() => buildChatThinkingMenu(props.schema, props.llmConfig, (key) => t(key)))
+const groups = computed<ChatThinkingParameter[]>(() => {
+  if (menu.value.mode === 'merged') return menu.value.secondary
+  if (menu.value.mode === 'parameters') return menu.value.parameters
+  return []
 })
 
 const toggle = async () => {
@@ -145,20 +128,15 @@ const toggle = async () => {
   }
 }
 
-const setValue = (key: string, value: unknown) => {
-  const schema = props.schema
-  if (typeof value === 'boolean' && getThinkingToggleOwnedParamKeys(schema).includes(key)) {
-    emit('update', applyThinkingToggle(schema, value, props.llmConfig))
-  } else {
-    emit('update', { ...(props.llmConfig ?? {}), [key]: value })
-  }
+const choose = (next: Record<string, unknown> | null) => {
+  emit('update', next)
   popover.close(true)
 }
 
-const setNumber = (key: string, raw: string) => {
+const setNumber = (parameter: ChatThinkingParameter, raw: string) => {
   const parsed = Number(raw)
   if (!raw.trim() || !Number.isFinite(parsed)) return
-  emit('update', { ...(props.llmConfig ?? {}), [key]: parsed })
+  emit('update', parameter.applyNumber(parsed))
 }
 
 const onKeydown = (event: KeyboardEvent) => {

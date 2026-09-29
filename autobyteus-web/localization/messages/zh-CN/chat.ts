@@ -42,6 +42,8 @@ const chatMessages = {
   'chat.workspace.cancel': '取消',
   'chat.workspace.useFolder': '使用文件夹',
   'chat.workspace.absolutePathRequired': '请输入绝对文件夹路径。',
+  'chat.workspace.search': '搜索工作区',
+  'chat.workspace.noMatch': '没有匹配“{{query}}”的工作区',
   'chat.model.recommended': '推荐',
   'chat.model.search': '搜索模型',
   'chat.model.runtimes': '运行时',

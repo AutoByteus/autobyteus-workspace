@@ -43,6 +43,8 @@ const chatMessages = {
   'chat.workspace.cancel': 'Cancel',
   'chat.workspace.useFolder': 'Use folder',
   'chat.workspace.absolutePathRequired': 'Enter an absolute folder path.',
+  'chat.workspace.search': 'Search workspaces',
+  'chat.workspace.noMatch': 'No workspaces match “{{query}}”',
   'chat.model.recommended': 'Recommended',
   'chat.model.search': 'Search models',
   'chat.model.runtimes': 'Runtimes',
