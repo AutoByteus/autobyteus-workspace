@@ -14,7 +14,7 @@
 - Handoff summary artifact: `tickets/done/project-testing-guideline/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-001` (DR-002 is added at completion)
+- Current delivery revision ID: `DR-002`
 - Notes: the user verified before the handoff summary was presented; see User Verification.
 
 ## Initial Delivery Integration Refresh
@@ -64,7 +64,10 @@
 
 ## Version / Tag / Release Commit
 
-- See the Release section; filled in after publication.
+- Method: `bash scripts/desktop-release.sh beta --branch finalize/project-testing-guideline --no-push`, run in the finalization worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-testing-guideline-finalize`.
+- Version: `1.4.91-beta.8`. `autobyteus-web/package.json` was bumped from `1.4.91-beta.7`.
+- Release commit: `8c474e37a3d069e2aad9da344025066f14588a5c` ("chore(release): bump workspace release version to 1.4.91-beta.8")
+- Tag: annotated `v1.4.91-beta.8` (tag object `d0cbca9413612d452a0dd23ff284c2109278cfcb`), pointing at `8c474e37a`
 
 ## Repository Finalization
 
@@ -74,18 +77,52 @@
 - Target advanced after verification / acceptance: `No` (re-fetched: `personal@8f57d16d1`, `main@291188d`)
 - Delivery-owned edits protected before re-integration: `Not needed`
 - Re-integration before final merge result: `Not needed`
-- Repository finalization status and push results: see DR-002 and the Final Status.
+- Ticket branch commit/push:
+  - Workspace: `509e62f8f` (docs sync + archive) on top of `4f2caa92e` (checkpoint) and `5039ad9f5` (base merge), pushed as `origin/codex/project-testing-guideline`. The artifact hygiene check passed, and the SDK `dist/` outputs were excluded.
+  - mcps: `11fe184` (SKILL.md sync) on top of `d4ecf13` and `9ac9770`, pushed as `origin/codex/project-testing-guideline`.
+- Merge into target:
+  - Workspace: `git merge --ff-only` in the finalization worktree (from `origin/personal@8f57d16d1`) to `509e62f8f`, with the release commit `8c474e37a` on top.
+  - mcps: `git merge --no-ff`, following the repository convention, in a detached worktree from `origin/main@291188d`, giving `c6a6528f4025cefa837220d9de188d8a3f65a5c2`.
+- Push target branch:
+  - Workspace: `git push origin HEAD:personal` moved `8f57d16d1..8c474e37a`.
+  - mcps: `git push origin HEAD:main` moved `291188d..c6a6528`.
+  - Both confirmed with `git ls-remote`.
+- Repository finalization status: `Completed`
+- Later target movement (not ours): `personal` has since advanced to the unrelated `v1.4.91-beta.9` (`cd4ad898b`, task-delegation-resource-lifecycle), which contains beta.8. This record is committed on top of it.
 
 ## Release / Publication / Deployment
 
 - Applicable: `Yes` (new beta requested). mcps has no release process; merging into `main` is its publication.
 - Method: `Git Tag Method` via `scripts/desktop-release.sh beta --no-push` in a finalization worktree, followed by pushing `personal` and the tag. Same as beta.5, beta.6 and beta.7.
+- Workflows at `8c474e37a`: all `completed / success` (`delivery-evidence/release-workflows.json`)
+  - Desktop Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36554483998
+  - Android APK Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36554484020
+  - iOS App Store Connect Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36554484084
+  - Server Docker Release: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/36554483990
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.91-beta.8 (pre-release, not a draft, published 2026-09-29T10:19:23Z, 17 assets; `delivery-evidence/github-release.json`)
+- Docker Hub (`delivery-evidence/docker-digests-{before,after}-beta8.txt`):
+  - `autobyteus/autobyteus-server:1.4.91-beta.8` is `sha256:625b95d5…` (amd64, arm64).
+  - `:beta` moved from beta.7 (`sha256:4c27319c…`) to beta.8, and later to beta.9 (`sha256:dfb17408…`, released by another ticket).
+  - `:latest` is unchanged (`sha256:154f2c2b…`).
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` (generated notes for beta tags)
+- Not exercised by delivery: the published installers were not installed or run.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree paths:
   - `/Users/normy/autobyteus_org/autobyteus-worktrees/project-testing-guideline`;
   - `/Users/normy/autobyteus_org/autobyteus_mcps-project-testing-guideline`.
+- Worktree cleanup result: `Completed`.
+  - Both ticket worktrees were removed; their leftover content was only untracked SDK `dist/` and git-ignored build outputs.
+  - The mcps detached finalization worktree was removed.
+  - No reference to the paths was found in `~/.claude.json`, `~/.claude/settings.json`, `~/.codex/config.toml` or `~/.autobyteus` JSON.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`.
+  - Workspace: `git branch -d`.
+  - mcps: `git branch -D`, after verifying `11fe184` is an ancestor of `origin/main`. The user's own `autobyteus_mcps` checkout is on a stale local `main` and was left untouched.
+- Finalization worktree and branch: `project-testing-guideline-finalize` / `finalize/project-testing-guideline`. Both are removed right after this record is pushed.
+- Remote branch cleanup result: `Not required`. The merged remote ticket branches are kept, following precedent.
 
 ## Escalation / Reroute (Use Only If Final Handoff Cannot Complete)
 
@@ -123,4 +160,11 @@ Delivery reruns on the integrated state, 2026-09-29, logs in `delivery-evidence/
 
 ## Final Status
 
-- Filled in by DR-002 at completion.
+- Explicit user testing/verification complete: `Yes` (2026-09-29, "finalize directly and release a new beta version")
+- Repository finalization complete: `Yes` (workspace `personal@8c474e37a`, then this record; mcps `main@c6a6528`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`v1.4.91-beta.8` published; 4/4 workflows succeeded)
+- Applicable safe cleanup complete or not required: `Yes` (the finalization worktree is removed after this push)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent immediately after this record was pushed. See DR-002.
+- Terminal message/reference: `send_message_to` → `/solution_designer` (`Delivery Completed`)
