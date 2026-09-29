@@ -15,7 +15,7 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
 
 // Real AGY: AutoByteus-initiated stops also stop AGY's background process groups, and Agent Org / Agent Team
 // roots recover from a member whose AGY runtime died (crash via kill -9, or user Stop).
-// Opt-in (about 15 minutes; uses the local `agy` login):
+// Opt-in (about 4 minutes; uses the local `agy` login):
 //   RUN_AGY_RECOVERY_E2E=1 [AGY_RECOVERY_EVIDENCE_DIR=<dir>] vitest run tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts
 const live = process.env["RUN_AGY_RECOVERY_E2E"] === "1" &&
   spawnSync("agy", ["--version"], { stdio: "ignore" })["status"] === 0;

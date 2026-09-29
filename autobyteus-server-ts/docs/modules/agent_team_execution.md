@@ -111,9 +111,10 @@ After the handle has published an AgentRun once, any later re-activation plans
 as `restore`, for example a message to a member whose runtime died. The planner
 receives the mode per attempt. A crashed external member therefore continues its
 persisted provider conversation, and a native member restores its context. A
-failed first activation keeps the original mode. Before a candidate is built, a handle canonicalizes and
-reactivates the persisted workspace through
-`WorkspaceManager.ensureWorkspaceByRootPath(...)`.
+failed first activation keeps the original mode.
+
+Before a candidate is built, a handle canonicalizes and reactivates the
+persisted workspace through `WorkspaceManager.ensureWorkspaceByRootPath(...)`.
 
 Each configured Agent handle owns one readiness attempt. Concurrent commands
 join that attempt. `AgentRunManager` returns a private activation candidate that
