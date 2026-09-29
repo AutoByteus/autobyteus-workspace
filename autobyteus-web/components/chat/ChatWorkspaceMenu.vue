@@ -27,9 +27,23 @@
         : ['absolute left-0 w-96 max-w-[calc(100vw-1.5rem)]', popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
       :style="popover.narrow.value ? undefined : { maxHeight: `${popover.maxHeight.value}px` }"
     >
+      <div class="flex flex-shrink-0 items-center gap-2 border-b border-gray-100 px-3 py-2">
+        <Icon icon="heroicons:magnifying-glass" class="h-3.5 w-3.5 flex-shrink-0 text-gray-400" aria-hidden="true" />
+        <input
+          ref="searchRef"
+          v-model="query"
+          data-test="chat-workspace-search"
+          type="text"
+          class="w-full border-0 bg-transparent p-0 text-[0.8125rem] text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-0"
+          :placeholder="$t('chat.workspace.search')"
+          :aria-label="$t('chat.workspace.search')"
+          @keydown.down.prevent="focusOption(0)"
+          @keydown.enter="chooseFirstMatch"
+        >
+      </div>
       <div ref="listRef" role="listbox" :aria-label="$t('chat.workspace.menuAria')" class="min-h-0 flex-1 overflow-y-auto pb-1 pt-1.5" @keydown="onKeydown">
         <button
-          v-if="tempWorkspace"
+          v-if="tempVisible && tempWorkspace"
           type="button"
           role="option"
           data-option
@@ -49,10 +63,10 @@
           <Icon v-if="isSelected(tempWorkspace.workspaceId)" icon="heroicons:check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" aria-hidden="true" />
         </button>
 
-        <template v-if="userWorkspaces.length">
+        <template v-if="filteredUserWorkspaces.length">
           <h4 class="px-3 pb-1 pt-2 text-[0.6875rem] font-semibold uppercase tracking-wide text-gray-400">{{ $t('chat.workspace.yourWorkspaces') }}</h4>
           <button
-            v-for="item in userWorkspaces"
+            v-for="item in filteredUserWorkspaces"
             :key="item.workspaceId"
             type="button"
             role="option"
@@ -72,7 +86,7 @@
         </template>
 
         <button
-          v-if="pendingFolder"
+          v-if="pendingVisible && pendingFolder"
           type="button"
           role="option"
           data-option
@@ -87,6 +101,10 @@
           </span>
           <Icon icon="heroicons:check" class="mt-0.5 h-4 w-4 flex-shrink-0 text-blue-600" aria-hidden="true" />
         </button>
+
+        <p v-if="noMatches" class="px-3 py-3 text-center text-[0.8125rem] text-gray-500" data-test="chat-workspace-search-empty">
+          {{ $t('chat.workspace.noMatch', { query: query.trim() }) }}
+        </p>
       </div>
 
       <form v-if="adding" class="space-y-2 border-t border-gray-100 px-3 py-2.5" data-test="chat-workspace-folder-form" @submit.prevent="confirmFolder">
@@ -126,6 +144,7 @@ import { useWorkspaceStore } from '~/stores/workspace'
 import type { ChatDraftWorkspace } from '~/stores/chatDraftStore'
 import { isAbsoluteFolderPath } from '~/utils/chat/chatDefaults'
 import { useLocalization } from '~/composables/useLocalization'
+import { filterWorkspaceOptions } from '~/components/chat/chatComposerMenus'
 
 const props = defineProps<{ workspace: ChatDraftWorkspace }>()
 const emit = defineEmits<{ (event: 'select', value: ChatDraftWorkspace): void }>()
@@ -136,10 +155,12 @@ const rootRef = ref<HTMLElement | null>(null)
 const triggerRef = ref<HTMLElement | null>(null)
 const listRef = ref<HTMLElement | null>(null)
 const pathRef = ref<HTMLInputElement | null>(null)
+const searchRef = ref<HTMLInputElement | null>(null)
 const popover = useAnchoredPopover(rootRef, triggerRef, 420)
 const adding = ref(false)
 const path = ref('')
 const error = ref('')
+const query = ref('')
 
 const tempWorkspace = computed(() => workspaceStore.tempWorkspace)
 const userWorkspaces = computed(() => workspaceStore.allWorkspaces
@@ -149,6 +170,17 @@ const userWorkspaces = computed(() => workspaceStore.allWorkspaces
 
 const folderName = (rootPath: string) => rootPath.replace(/[/\\]+$/, '').split(/[/\\]/).pop() || rootPath
 const pendingFolder = computed(() => (props.workspace.kind === 'folder' ? props.workspace.rootPath : null))
+const matches = (candidates: { name: string; path: string }[]) => filterWorkspaceOptions(candidates, query.value).length > 0
+const tempVisible = computed(() => !!tempWorkspace.value && matches([
+  { name: t('chat.workspace.temp'), path: tempWorkspace.value.absolutePath ?? '' },
+  { name: t('chat.workspace.tempDescription'), path: '' },
+]))
+const filteredUserWorkspaces = computed(() => filterWorkspaceOptions(
+  userWorkspaces.value.map((workspace) => ({ name: workspace.name, path: workspace.absolutePath ?? '', workspace })),
+  query.value,
+).map((option) => option.workspace))
+const pendingVisible = computed(() => !!pendingFolder.value && matches([{ name: folderName(pendingFolder.value), path: pendingFolder.value }]))
+const noMatches = computed(() => !tempVisible.value && !filteredUserWorkspaces.value.length && !pendingVisible.value)
 const isSelected = (workspaceId: string) => props.workspace.kind === 'existing' && props.workspace.workspaceId === workspaceId
 const selectedName = computed(() => {
   if (props.workspace.kind === 'folder') return folderName(props.workspace.rootPath)
@@ -162,12 +194,20 @@ const selectedPath = computed(() => (props.workspace.kind === 'folder'
 
 const toggle = async () => {
   adding.value = false
+  if (!popover.open.value) query.value = ''
   await popover.toggle()
   if (popover.open.value) {
     await nextTick()
-    listRef.value?.querySelector<HTMLElement>('[aria-selected="true"]')?.focus()
-      ?? listRef.value?.querySelector<HTMLElement>('[data-option]')?.focus()
+    searchRef.value?.focus()
   }
+}
+
+const options = () => Array.from(listRef.value?.querySelectorAll<HTMLElement>('[data-option]') ?? [])
+const focusOption = (index: number) => options()[index]?.focus()
+const chooseFirstMatch = (event: KeyboardEvent) => {
+  if (event.isComposing) return // Enter confirms an IME composition, not a pick.
+  event.preventDefault()
+  options()[0]?.click()
 }
 
 const chooseExisting = (workspaceId: string) => {
@@ -197,10 +237,13 @@ const confirmFolder = () => {
 
 const onKeydown = (event: KeyboardEvent) => {
   if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return
-  const options = Array.from(listRef.value?.querySelectorAll<HTMLElement>('[data-option]') ?? [])
-  const index = options.indexOf(document.activeElement as HTMLElement)
+  const items = options()
+  const index = items.indexOf(document.activeElement as HTMLElement)
   event.preventDefault()
-  const next = event.key === 'ArrowDown' ? Math.min(options.length - 1, index + 1) : Math.max(0, index - 1)
-  options[next]?.focus()
+  if (event.key === 'ArrowUp' && index <= 0) {
+    searchRef.value?.focus()
+    return
+  }
+  items[event.key === 'ArrowDown' ? Math.min(items.length - 1, index + 1) : index - 1]?.focus()
 }
 </script>

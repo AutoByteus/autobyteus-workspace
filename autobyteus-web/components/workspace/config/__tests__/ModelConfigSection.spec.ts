@@ -649,4 +649,54 @@ describe('ModelConfigSection', () => {
     expect(wrapper.find('select').exists()).toBe(false);
     expect(wrapper.emitted('update:config')).toBeUndefined();
   });
+
+  describe('thinking-dependent Advanced edits (chat-composer-polish REQ-008)', () => {
+    const claudeSchema = {
+      thinking_enabled: { type: 'boolean', default: false },
+      reasoning_effort: { type: 'string', title: 'Reasoning Effort', enum: ['low', 'medium', 'high'], default: 'medium' },
+      temperature: { type: 'number', minimum: 0, maximum: 1, default: 0.7 },
+    };
+
+    it('turns the Thinking toggle on when an Advanced effort is changed while off (AC-010)', async () => {
+      const wrapper = mount(ModelConfigSection, {
+        props: { modelConfig: { thinking_enabled: false }, schema: claudeSchema },
+      });
+      await wrapper.get('select#config-reasoning_effort').setValue('high');
+      expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({ thinking_enabled: true, reasoning_effort: 'high' });
+
+      await wrapper.setProps({ modelConfig: { thinking_enabled: true, reasoning_effort: 'high' } });
+      expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(true);
+    });
+
+    it('turns DeepSeek thinking_type on when its Advanced effort is changed while disabled', async () => {
+      const wrapper = mount(ModelConfigSection, {
+        props: {
+          modelConfig: { thinking_type: 'disabled' },
+          schema: {
+            thinking_type: { type: 'string', enum: ['enabled', 'disabled'], default: 'enabled' },
+            reasoning_effort: { type: 'string', enum: ['high', 'max'], default: 'high' },
+          },
+        },
+      });
+      await wrapper.get('select#config-reasoning_effort').setValue('max');
+      expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({ thinking_type: 'enabled', reasoning_effort: 'max' });
+    });
+
+    it('leaves thinking off for unrelated Advanced edits and for automatic default writes', async () => {
+      const wrapper = mount(ModelConfigSection, {
+        props: { modelConfig: { thinking_enabled: false }, schema: claudeSchema, applyDefaults: true, trackAutomaticChanges: true },
+      });
+      await wrapper.vm.$nextTick();
+      const automatic = (wrapper.emitted('update:config') ?? []).filter((args) => args[1] === true);
+      expect(automatic.length).toBeGreaterThan(0);
+      expect(automatic.every((args) => (args[0] as Record<string, unknown>).thinking_enabled === false)).toBe(true);
+
+      await wrapper.setProps({ applyDefaults: false });
+      const temperature = wrapper.get('input#config-temperature');
+      await temperature.setValue('0.5');
+      const last = wrapper.emitted('update:config')?.at(-1)?.[0] as Record<string, unknown>;
+      expect(last.temperature).toBe(0.5);
+      expect(last.thinking_enabled).toBe(false);
+    });
+  });
 });

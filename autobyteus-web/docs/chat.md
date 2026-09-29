@@ -54,7 +54,41 @@ then model/thinking controls, mic and the primary send/stop action last.
 - `@` opens the target menu: shared agents (except Daily Assistant) and shared
   teams.
 - The workspace menu accepts an existing workspace or an absolute folder path
-  (`~` is rejected); the folder is loaded at send time.
+  (`~` is rejected); the folder is loaded at send time. Its search box (the
+  model-menu search styling, placeholder "Search workspaces") is always shown and
+  focused on open, and sits outside the listbox. `filterWorkspaceOptions`
+  (`chatComposerMenus.ts`) filters the temp workspace and user workspaces by
+  case-insensitive name or path. No match shows an empty state, while "Open
+  another folder…" stays available. ArrowDown moves from the search box into the
+  results, ArrowUp moves back, Enter picks the highlighted or first match (never
+  during IME composition), and Escape closes without changing the selection. The
+  query resets each time the menu opens.
+
+### Thinking menu
+
+`ChatThinkingControl.vue` renders the menu model built by `buildChatThinkingMenu`
+(`components/chat/chatThinkingMenu.ts`). The rule that some settings only apply
+while thinking is on is owned by `utils/llmThinkingConfigAdapter.ts`:
+`hasThinkingSwitch`, `getThinkingDependentParamKeys`, `applyThinkingParamChoice`
+(menu choices) and `applyThinkingDependentEdit` (form edits).
+
+- **Schema with an on/off switch** (Claude `thinking_enabled`, DeepSeek-style
+  `thinking_type`): one "Thinking" list. It is `Off` followed by each effort
+  level (for example Off · Low · Medium · High · Xhigh · Max), or `Off · On` when
+  there is no effort list. Exactly one row is checked, and it matches what will
+  be sent. Picking a level turns thinking on at that level in one action.
+  Re-picking the stored level while Off also turns thinking on. Other dependent
+  settings (budget, display) appear below a divider, and changing one also turns
+  thinking on.
+- **Trigger.** It reads "Off" when thinking is off, the active level when the
+  model has an effort setting, and "On" otherwise. The bulb is muted when off.
+- **Other schemas** (for example Codex `reasoning_effort` with no switch) keep
+  the per-parameter menu, and a pick changes only that parameter.
+
+### New chat placement
+
+`ChatNewSurface.vue` centres the composer block with a small upward optical bias
+(`pb-[6vh]`, previously `14vh`).
 
 ### Model labels
 
@@ -136,6 +170,9 @@ the first message (`chatDraftModelControls.ts`).
 - `services/chat/__tests__/chatLaunchService.spec.ts`
 - `composables/chat/__tests__/useChatRouteRunSync.spec.ts`
 - `components/chat/__tests__/ChatComposer.spec.ts`, `chatComposerMenus.spec.ts`
+- `components/chat/__tests__/ChatThinkingControl.spec.ts`, `chatThinkingMenu.spec.ts`,
+  `ChatWorkspaceMenu.spec.ts`; `utils/__tests__/llmThinkingConfigAdapter.spec.ts`
+- Browser probe: `pnpm test:e2e:chat-composer-polish` (`tests/e2e/chat-composer-polish-probe.mjs`)
 - `composables/chat/__tests__/useChatModelCatalog.spec.ts`
 - `components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts`
 - `components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts`

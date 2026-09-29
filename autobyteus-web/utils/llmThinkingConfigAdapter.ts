@@ -304,6 +304,66 @@ export const getThinkingToggleOwnedParamKeys = (
   schema: UiModelConfigSchema | null,
 ): string[] => getThinkingControlState(schema, null).toggleOwnedKeys;
 
+const DEPENDENT_KEYS: Partial<Record<ThinkingProvider, string[]>> = {
+  claude: ['reasoning_effort', 'thinking_budget_tokens', 'thinking_display'],
+  typed: ['reasoning_effort'],
+};
+
+/**
+ * Whether the schema has an on/off thinking switch that can both enable and disable thinking:
+ * Claude `thinking_enabled`, or a typed `thinking_type` offering both `enabled` and `disabled`.
+ */
+export const hasThinkingSwitch = (schema: UiModelConfigSchema | null): boolean => {
+  const provider = detectThinkingProvider(schema);
+  if (!provider || !DEPENDENT_KEYS[provider]) return false;
+  const state = getThinkingControlState(schema, null);
+  return state.canEnable && state.canDisable;
+};
+
+/** Keys that only apply while the thinking switch is on. Empty unless `hasThinkingSwitch`. */
+export const getThinkingDependentParamKeys = (
+  schema: UiModelConfigSchema | null,
+): string[] => {
+  const provider = detectThinkingProvider(schema);
+  if (!provider || !hasThinkingSwitch(schema)) return [];
+  return (DEPENDENT_KEYS[provider] ?? []).filter((key) => hasKey(schema, key));
+};
+
+/**
+ * The user explicitly chose `value` for thinking parameter `key` (for example a menu item). A
+ * dependent key also turns thinking on, keeping the chosen value; other keys are written as is.
+ */
+export const applyThinkingParamChoice = (
+  schema: UiModelConfigSchema | null,
+  config: ThinkingConfig | null | undefined,
+  key: string,
+  value: unknown,
+): ThinkingConfig | null => {
+  const next: ThinkingConfig = { ...(config ?? {}), [key]: value };
+  return getThinkingDependentParamKeys(schema).includes(key)
+    ? applyThinkingToggle(schema, true, next)
+    : next;
+};
+
+/**
+ * A form emitted `next` after a user edit of `previous`. Choosing a new value for a dependent setting
+ * while thinking is off turns thinking on and keeps the chosen value. Every other edit, including
+ * clearing a dependent value, passes through unchanged.
+ */
+export const applyThinkingDependentEdit = (
+  schema: UiModelConfigSchema | null,
+  previous: ThinkingConfig | null | undefined,
+  next: ThinkingConfig | null | undefined,
+): ThinkingConfig | null => {
+  const dependentKeys = getThinkingDependentParamKeys(schema);
+  if (dependentKeys.length === 0) return next ?? null;
+  if (getThinkingControlState(schema, previous).enabled) return next ?? null;
+  if (getThinkingControlState(schema, next).enabled) return next ?? null;
+  const chosen = dependentKeys.some((key) =>
+    next?.[key] !== undefined && !Object.is(previous?.[key], next[key]));
+  return chosen ? applyThinkingToggle(schema, true, next) : next ?? null;
+};
+
 /**
  * The model's default thinking parameters, written explicitly: each thinking key the schema
  * declares at its effective default (what the thinking control shows for an empty config). A

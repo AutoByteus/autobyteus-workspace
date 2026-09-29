@@ -1,0 +1,62 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/thinking-selector-auto-enable/autobyteus-web
+
+stderr | components/chat/__tests__/chatThinkingMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | utils/__tests__/llmThinkingConfigAdapter.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatThinkingControl.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/chatComposerMenus.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatThinkingControl.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/chatThinkingMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/config/__tests__/ModelConfigSection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | utils/__tests__/llmThinkingConfigAdapter.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/chatComposerMenus.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/llmThinkingConfigAdapter.spec.ts (10 tests) 5ms
+ ✓ components/chat/__tests__/chatComposerMenus.spec.ts (4 tests) 3ms
+ ✓ components/chat/__tests__/chatThinkingMenu.spec.ts (9 tests) 6ms
+ ✓ components/chat/__tests__/ChatThinkingControl.spec.ts (6 tests) 60ms
+ ✓ components/workspace/config/__tests__/ModelConfigSection.spec.ts (23 tests) 111ms
+ ✓ components/chat/__tests__/ChatWorkspaceMenu.spec.ts (5 tests) 67ms
+
+ Test Files  6 passed (6)
+      Tests  57 passed (57)
+   Start at  20:01:05
+   Duration  5.26s (transform 2.98s, setup 26.65s, collect 616ms, tests 252ms, environment 1.09s, prepare 831ms)
+

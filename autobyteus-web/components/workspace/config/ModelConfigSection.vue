@@ -62,7 +62,7 @@
         :missing-historical-config-label="$t('workspace.components.workspace.config.ModelConfigSection.not_recorded_for_this_historical_run')"
         :control-variant="controlVariant"
         :validation-errors="validationErrors"
-        @update:config="emitConfig"
+        @update:config="onAdvancedConfig"
       />
     </div>
     <HistoricalModelConfigFallback
@@ -84,6 +84,7 @@ import {
   type HistoricalModelConfigResidualField,
 } from '~/utils/historicalModelConfigFields';
 import {
+  applyThinkingDependentEdit,
   applyThinkingToggle,
   getThinkingControlState,
   getThinkingToggleOwnedParamKeys,
@@ -214,6 +215,12 @@ const emitConfig = (nextConfig: Record<string, unknown> | null, automatic = fals
   if (props.readOnly) return;
   if (props.trackAutomaticChanges) emit('update:config', nextConfig ?? null, automatic);
   else emit('update:config', nextConfig ?? null);
+};
+
+// Advanced fields are user edits: choosing a thinking-dependent value while thinking is off turns it on.
+// Automatic default/sanitize writes go straight through `emitConfig` and never auto-enable.
+const onAdvancedConfig = (nextConfig: Record<string, unknown> | null) => {
+  emitConfig(applyThinkingDependentEdit(presentedSchema.value, presentedModelConfig.value, nextConfig));
 };
 
 const configsEqual = (

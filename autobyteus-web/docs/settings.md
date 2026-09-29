@@ -1155,6 +1155,14 @@ or DeepSeek `reasoning_effort: "high"`. Effective **Thinking** OFF or
 unavailable leaves **Advanced** collapsed initially, but still openable.
 Toggling a supported **Thinking** control ON opens **Advanced** automatically;
 toggling OFF after inspection does not force-collapse the section.
+When the schema has a thinking on/off switch, a user edit to a setting that only
+applies while thinking is on (for example `reasoning_effort`,
+`thinking_budget_tokens` or `thinking_display`) made under **Advanced** while
+**Thinking** is OFF also turns **Thinking** ON and keeps the edited value.
+`ModelConfigSection` routes these edits through `applyThinkingDependentEdit`
+(`utils/llmThinkingConfigAdapter.ts`), the same owner the Chat thinking menu uses.
+Automatic default and sanitize writes do not go through it and never turn
+thinking on.
 
 Editable launch forms intentionally do not expose a skill-access dropdown.
 Standalone runs inherit the selected agent definition's configured skills, and

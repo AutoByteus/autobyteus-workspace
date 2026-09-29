@@ -62,6 +62,7 @@
     "test:e2e:standalone-agent-error-stop": "node tests/e2e/standalone-agent-error-stop-probe.mjs",
     "test:e2e:projects": "node tests/e2e/projects-feature-probe.mjs",
     "test:e2e:chat-entry-live": "node tests/e2e/chat-entry-live-probe.mjs",
+    "test:e2e:chat-composer-polish": "node tests/e2e/chat-composer-polish-probe.mjs",
     "test:e2e:electron": "node scripts/run-electron-e2e.mjs",
     "test:e2e:electron:isolation": "node tests/e2e/electron-launch-profile-probe.mjs",
     "test:e2e:isolated-app": "node tests/e2e/isolated-app-lifecycle-probe.mjs"

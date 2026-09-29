@@ -31,3 +31,18 @@ describe('chatComposerMenus', () => {
     expect(filterTargets(targets, 'codex').map((target) => target.id)).toEqual(['codex'])
   })
 })
+
+describe('filterWorkspaceOptions', () => {
+  it('matches name or path case-insensitively and returns everything for a blank query', async () => {
+    const { filterWorkspaceOptions } = await import('../chatComposerMenus')
+    const items = [
+      { name: 'autobyteus_mcps', path: '/Users/me/autobyteus_mcps' },
+      { name: 'web', path: '/Users/me/MCPS-tools/web' },
+      { name: 'notes', path: '/Users/me/notes' },
+    ]
+    expect(filterWorkspaceOptions(items, 'mcps').map((item) => item.name)).toEqual(['autobyteus_mcps', 'web'])
+    expect(filterWorkspaceOptions(items, '  NOTES ')).toEqual([items[2]])
+    expect(filterWorkspaceOptions(items, '   ')).toEqual(items)
+    expect(filterWorkspaceOptions(items, 'zzz')).toEqual([])
+  })
+})
