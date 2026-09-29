@@ -5,21 +5,14 @@
       type="button"
       data-test="chat-thinking-trigger"
       class="inline-flex items-center gap-1 rounded-md px-2 py-1 text-[0.8125rem] leading-5 text-gray-500 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
-      :class="[
-        lockedReason ? 'cursor-default text-gray-400' : 'hover:bg-gray-100 hover:text-gray-700',
-        popover.open.value ? 'bg-gray-100 text-gray-700' : '',
-      ]"
+      :class="['hover:bg-gray-100 hover:text-gray-700', popover.open.value ? 'bg-gray-100 text-gray-700' : '']"
       :aria-expanded="popover.open.value ? 'true' : 'false'"
       aria-haspopup="menu"
-      :aria-disabled="lockedReason ? 'true' : undefined"
-      :aria-label="lockedReason
-        ? $t('chat.thinking.triggerLockedAria', { value: summary, reason: lockedReason })
-        : $t('chat.thinking.triggerAria', { value: summary })"
-      :title="lockedReason || $t('chat.thinking.title')"
-      :data-locked="lockedReason ? 'true' : undefined"
-      @click="!lockedReason && toggle()"
+      :aria-label="$t('chat.thinking.triggerAria', { value: summary })"
+      :title="$t('chat.thinking.title')"
+      @click="toggle()"
     >
-      <Icon :icon="lockedReason ? 'heroicons:lock-closed' : 'heroicons:light-bulb'" class="h-3.5 w-3.5" aria-hidden="true" />
+      <Icon icon="heroicons:light-bulb" class="h-3.5 w-3.5" aria-hidden="true" />
       <span class="whitespace-nowrap">{{ summary }}</span>
       <Icon icon="heroicons:chevron-down" class="h-3 w-3 text-gray-400" aria-hidden="true" />
     </button>
@@ -86,7 +79,6 @@ import { resolveEffectiveConfigValue, type UiModelConfigSchema } from '~/utils/l
 const props = defineProps<{
   schema: UiModelConfigSchema | null
   llmConfig: Record<string, unknown> | null
-  lockedReason?: string | null
 }>()
 const emit = defineEmits<{ (event: 'update', value: Record<string, unknown> | null): void }>()
 

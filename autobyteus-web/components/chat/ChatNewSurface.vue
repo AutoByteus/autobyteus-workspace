@@ -108,7 +108,7 @@ import ChatWorkspaceMenu from '~/components/chat/ChatWorkspaceMenu.vue'
 import ChatApprovalToggle from '~/components/chat/ChatApprovalToggle.vue'
 import ChatModelMenu from '~/components/chat/ChatModelMenu.vue'
 import ChatThinkingControl from '~/components/chat/ChatThinkingControl.vue'
-import { useChatRunModelControls } from '~/components/chat/chatRunModelControls'
+import { useChatDraftModelControls } from '~/components/chat/chatDraftModelControls'
 import { initialsFor } from '~/components/chat/chatComposerMenus'
 import { createChatDraftComposerTarget } from '~/composables/chat/chatDraftComposerTarget'
 import { useChatComposerOptions } from '~/composables/chat/useChatComposerOptions'
@@ -137,7 +137,7 @@ const target = computed(() => (draft.value
 
 const agentDefinitionId = computed(() => (draft.value?.target.kind === 'agent' ? draft.value.target.agentDefinitionId : null))
 const options = useChatComposerOptions(agentDefinitionId)
-const controls = useChatRunModelControls(draftContext)
+const controls = useChatDraftModelControls()
 
 const team = computed(() => {
   const current = draft.value?.target

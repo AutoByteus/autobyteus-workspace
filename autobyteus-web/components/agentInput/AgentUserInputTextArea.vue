@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col bg-white">
-    <div class="relative flex-grow">
+    <div ref="rootRef" class="relative flex-grow">
       <textarea
         :value="internalRequirement"
         @input="handleInput"
@@ -11,8 +11,9 @@
           minHeight: `${MIN_TEXTAREA_HEIGHT}px`,
           maxHeight: `${MAX_TEXTAREA_HEIGHT}px`
         }"
-        :placeholder="$t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
+        :placeholder="skillTagging?.placeholder || $t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
         @keydown="handleKeyDown"
+        @click="skillMenu.detect"
         :disabled="!target"
         @dragover.prevent
         @drop.prevent="handleDrop"
@@ -27,6 +28,29 @@
         :disabled="isActionDisabled"
         @activate="handlePrimaryAction"
       />
+
+      <!-- `/` skill menu: standalone runs only (skillTagging). -->
+      <template v-if="skillTagging && skillMenu.open.value">
+        <div v-if="skillMenu.popover.narrow.value" class="fixed inset-0 z-40 bg-black/20" aria-hidden="true"></div>
+        <div
+          class="z-50"
+          :class="skillMenu.popover.narrow.value
+            ? 'fixed inset-x-2 bottom-2 [&>div]:w-auto'
+            : ['absolute left-2', skillMenu.popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
+        >
+          <ChatSkillMenu
+            :list-id="skillMenuListId"
+            :query="skillMenu.query.value"
+            :skills="skillMenu.filteredSkills.value"
+            :has-any-skills="skillTagging.skills.length > 0"
+            :selected="targetContext?.requestedSkillNames ?? []"
+            :highlight="skillMenu.highlight.value"
+            :all-installed="skillTagging.allInstalled"
+            @highlight="skillMenu.highlight.value = $event"
+            @choose="skillMenu.choose"
+          />
+        </div>
+      </template>
     </div>
 
     <VoiceInputStatusRow class="mx-3 mb-2" />
@@ -34,7 +58,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue';
+import { ref, computed, onMounted, nextTick, watch, onUnmounted, toRef, useId } from 'vue';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
 import { useComposerFilePathDrop } from '~/composables/agentInput/useComposerFilePathDrop';
 import type { AgentContext } from '~/types/agent/AgentContext';
@@ -44,10 +68,15 @@ import type { ComposerTarget } from '~/composables/agentInput/useComposerTarget'
 import VoiceInputButton from '~/components/agentInput/VoiceInputButton.vue';
 import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue';
 import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue';
+import ChatSkillMenu from '~/components/chat/ChatSkillMenu.vue';
+import { useSkillTagMenu, type SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
+import { hasSendableDraft } from '~/services/runSubmission/agentPrimaryAction';
 
 const props = defineProps<{
   target: ComposerTarget | null;
   beforeSend?: () => void | Promise<void>;
+  /** `/` skill tags; supplied only for standalone agent runs. */
+  skillTagging?: SkillTaggingCapability | null;
 }>();
 
 const contextFileUploadStore = useContextFileUploadStore();
@@ -62,7 +91,10 @@ const primaryAction = computed(() => resolveAgentPrimaryAction({
   status: targetContext.value?.state.currentStatus ?? AgentStatus.Offline,
   submissionPending: submissionPending.value,
   isUploading: contextFileUploadStore.isUploading,
-  hasDraft: Boolean(internalRequirement.value.trim()),
+  // With skill tagging (a standalone run), a skill tag or a context file also makes a draft, as in Chat.
+  hasDraft: props.skillTagging && targetContext.value
+    ? Boolean(internalRequirement.value.trim()) || hasSendableDraft(targetContext.value, { attachmentsAreSendable: true })
+    : Boolean(internalRequirement.value.trim()),
 }));
 const isActionDisabled = computed(() => !primaryAction.value.enabled
   || props.target?.access === 'read_only');
@@ -72,6 +104,8 @@ const textarea = ref<HTMLTextAreaElement | null>(null);
 const MIN_TEXTAREA_HEIGHT = 56;
 const MAX_TEXTAREA_HEIGHT = 220;
 const textareaHeight = ref(MIN_TEXTAREA_HEIGHT);
+const rootRef = ref<HTMLElement | null>(null);
+const skillMenuListId = `agent-skill-menu-${useId()}`;
 let pendingLocalAcknowledgementContext: AgentContext | null = null;
 
 const adjustTextareaHeight = () => {
@@ -126,15 +160,27 @@ watch(submissionPending, (pending) => {
   }
 }, { flush: 'sync' });
 
-const handleInput = (event: Event) => {
-  const target = event.target as HTMLTextAreaElement;
-  internalRequirement.value = target.value;
+const setRequirement = (text: string) => {
+  internalRequirement.value = text;
   nextTick(adjustTextareaHeight);
   // The exact AgentContext owns every unsent edit, including deliberate clearing.
   // Do not buffer local-only state past submission or verified context replacement.
   if (targetContext.value) {
-    targetContext.value.requirement = target.value;
+    targetContext.value.requirement = text;
   }
+};
+
+const skillMenu = useSkillTagMenu({
+  rootRef,
+  textareaRef: textarea,
+  context: targetContext,
+  capability: toRef(props, 'skillTagging'),
+  setText: setRequirement,
+});
+
+const handleInput = (event: Event) => {
+  setRequirement((event.target as HTMLTextAreaElement).value);
+  nextTick(skillMenu.detect);
 };
 
 const handleSend = async () => {
@@ -219,6 +265,7 @@ const handleDrop = async (event: DragEvent) => {
 };
 
 const handleKeyDown = (event: KeyboardEvent) => {
+  if (skillMenu.onKeydown(event)) return;
   if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.altKey) {
     event.preventDefault();
     handlePrimaryAction();

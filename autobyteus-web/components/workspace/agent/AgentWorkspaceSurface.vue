@@ -13,7 +13,7 @@
           <span v-else class="text-[0.625rem] font-semibold tracking-wide text-slate-600">{{ initials }}</span>
         </div>
         <CollaborationTaskHeading v-if="'task' in target" :name="agentName" :agent-run-id="target.context.state.runId" :task="target.task" :status="target.context.state.currentStatus" />
-        <h4 v-else class="truncate text-base font-medium text-gray-800" :title="headerTitle">{{ headerTitle }}</h4>
+        <h4 v-else class="truncate text-base font-medium text-gray-800" :title="headerFullTitle" data-test="agent-workspace-title">{{ headerTitle }}</h4>
         <AgentStatusDisplay v-if="!('task' in target)" :status="target.context.state.currentStatus" />
       </div>
       <WorkspaceHeaderActions
@@ -37,6 +37,7 @@
         :presentation-revision="target.context.state.eventMonitorPresentationRevision"
         :has-earlier-active-trace-events="target.context.state.hasEarlierActiveTraceEvents"
         :browse-subject="target.browse"
+        :skill-tagging="skillTagging"
         class="h-full"
       >
         <template v-if="skillTarget" #composerContext>
@@ -58,12 +59,16 @@ import WorkspaceRecoveryNotice from '~/components/workspace/common/WorkspaceReco
 import SkillImprovementComposerCta from '~/components/workspace/skill-improvement/SkillImprovementComposerCta.vue'
 import type { SkillImprovementComposerCtaTarget } from '~/components/workspace/skill-improvement/skillImprovementComposerCtaTarget'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
+import { useStandaloneRunTitle } from '~/composables/chat/useStandaloneRunTitle'
+import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu'
 
 const props = withDefaults(defineProps<{
   target: ActiveAgentWorkspaceTarget
   showHeaderActions?: boolean
   recoveryNotice?: string | null
-}>(), { showHeaderActions: false, recoveryNotice: null })
+  /** `/` skill tags in the box; supplied only for standalone agent runs. */
+  skillTagging?: SkillTaggingCapability | null
+}>(), { showHeaderActions: false, recoveryNotice: null, skillTagging: null })
 defineEmits<{ (event: 'new-agent'): void; (event: 'edit-config'): void }>()
 
 const definitions = useAgentDefinitionStore()
@@ -75,11 +80,16 @@ const avatarUrl = computed(() => props.target.context.config.agentAvatarUrl?.tri
 const showAvatar = computed(() => Boolean(avatarUrl.value) && !avatarFailed.value)
 const initials = computed(() => agentName.value.split(/\s+/).filter(Boolean).slice(0, 2)
   .map((part) => part[0]?.toUpperCase() ?? '').join('') || 'AI')
-const headerTitle = computed(() => {
+// A standalone run is titled by its run summary (the first message), like its Workspaces tree row.
+const standaloneRunTitle = useStandaloneRunTitle(computed(() =>
+  props.target.kind === 'standalone_agent' ? props.target.context : null))
+const fallbackTitle = computed(() => {
   if (props.target.context.state.runId.startsWith('temp-')) return `New - ${agentName.value}`
   const suffix = props.target.context.state.runId.slice(-4).toUpperCase()
   return `${agentName.value} - ${suffix}`
 })
+const headerTitle = computed(() => standaloneRunTitle.title.value ?? fallbackTitle.value)
+const headerFullTitle = computed(() => standaloneRunTitle.fullTitle.value ?? fallbackTitle.value)
 const senderNameByAgentRunId = computed(() => 'collaborationMessages' in props.target
   ? Object.freeze(Object.fromEntries(Object.entries(
       props.target.collaborationMessages.memberIdentityByAgentRunId(),

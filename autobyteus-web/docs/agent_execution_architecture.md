@@ -1142,13 +1142,11 @@ canonicalizing the supplied absolute path.
 
 ### Existing Run Model Configuration
 
-`RunConfigPanel.vue` routes a selected persisted Team to
-`ExistingRunConfigEditor.vue` instead of reusing the new-run launch buffer.
-`WorkspaceAdaptiveLayout` shows the selected-run configuration mode for Team
-runs only; a persisted standalone Agent run is edited from the Chat footer
-(`components/chat/chatRunModelControls.ts`), which uses the same
-`existingRunConfigStore` load/save path for the model and thinking settings
-only, locked while the run is live (see `chat.md`). The
+`RunConfigPanel.vue` routes a selected persisted Agent or Team run to
+`ExistingRunConfigEditor.vue` instead of reusing the new-run launch buffer, and
+a selected standalone `temp-*` draft to `DraftRunConfigEditor.vue`, which edits
+the draft context's config locally without an existing-run load (see `chat.md`).
+The
 editor and `existingRunConfigStore` own a Settings-scoped canonical network
 load, local draft, schema readiness, mutation state, and reconciliation. Cached
 history lifecycle state may conservatively relock the current target but cannot

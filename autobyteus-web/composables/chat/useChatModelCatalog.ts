@@ -5,9 +5,7 @@ import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import { runtimeShortLabel } from '~/utils/chat/chatDefaults'
 import type { UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import type { ModelInfo } from '~/stores/llmProviderConfigSupport'
-import type { ExistingRunModelChoice } from '~/types/agent/ExistingRunModelConfigDraft'
 import {
-  existingRunChoiceLabelInput,
   getModelSelectionOptionDescription,
   getModelSelectionOptionLabel,
   isClaudeAgentSdkRuntime,
@@ -46,24 +44,19 @@ export interface ChatModelOptionInput {
   runtimeKind: string
   llmModelIdentifier: string
   providerName: string
-  /** The runtime catalog record; preferred when present (it carries every label field). */
+  /** The runtime catalog record; without it the row is labeled by its identifier. */
   catalogModel?: ModelInfo | null
-  /** An existing run's model choice, for models the catalog no longer offers. */
-  runChoice?: ExistingRunModelChoice | null
 }
 
 /** The only place Chat builds `{ label, secondary, recommended }`. */
 export const toChatModelOption = (input: ChatModelOptionInput): ChatModelOption => {
-  const labelInput: ModelSelectionLabelModel = input.catalogModel
-    ?? (input.runChoice ? existingRunChoiceLabelInput(input.runChoice) : { modelIdentifier: input.llmModelIdentifier })
+  const labelInput: ModelSelectionLabelModel = input.catalogModel ?? { modelIdentifier: input.llmModelIdentifier }
   return {
     runtimeKind: input.runtimeKind,
     llmModelIdentifier: input.llmModelIdentifier,
     label: getModelSelectionOptionLabel(labelInput, input.runtimeKind),
     secondary: getModelSelectionOptionDescription(labelInput, input.runtimeKind),
-    recommended: input.catalogModel
-      ? input.catalogModel.selectionPresentation?.recommended === true
-      : input.runChoice?.recommended === true,
+    recommended: input.catalogModel?.selectionPresentation?.recommended === true,
     providerName: input.providerName,
     displayName: labelInput.name?.trim() || null,
     canonicalName: labelInput.canonicalName?.trim() || null,
@@ -127,15 +120,6 @@ export function useChatModelCatalog() {
       }))),
     }))
 
-  /** The runtime catalog record for a model, when the catalog offers it. */
-  const catalogModelFor = (runtimeKind: string, llmModelIdentifier: string): ModelInfo | null => {
-    for (const { models } of catalogs.providersWithModelsForSelection(runtimeKind)) {
-      const match = models.find((model) => model.modelIdentifier === llmModelIdentifier)
-      if (match) return match
-    }
-    return null
-  }
-
   const modelCount = (runtimeKind: string): number =>
     modelGroups(runtimeKind).reduce((total, group) => total + group.models.length, 0)
 
@@ -162,12 +146,6 @@ export function useChatModelCatalog() {
       : modelGroups(runtimeKind).flatMap((group) => group.models).filter((model) => matchesModelQuery(model, terms)))
   }
 
-  /** The same predicate over a given option list (a persisted run's fixed list). */
-  const filterOptions = (query: string, options: readonly ChatModelOption[]): ChatModelOption[] => {
-    const terms = toQueryTerms(query)
-    return terms.length ? options.filter((model) => matchesModelQuery(model, terms)) : []
-  }
-
   const isSearching = (runtimeKinds: readonly string[]): boolean =>
     runtimeKinds.some((runtimeKind) => {
       const state = catalogState(runtimeKind)
@@ -183,11 +161,9 @@ export function useChatModelCatalog() {
     modelGroups,
     modelCount,
     findModel,
-    catalogModelFor,
     modelLabel,
     schemaFor,
     search,
-    filterOptions,
     isSearching,
   }
 }

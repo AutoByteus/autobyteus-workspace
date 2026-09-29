@@ -41,6 +41,7 @@ vi.mock('@novnc/novnc', () => ({
   default: class {},
 }));
 
+const AgentWorkspaceViewValue = { template: '<div class="agent-view"></div>' };
 const TeamWorkspaceViewValue = { template: '<div class="team-view"></div>' };
 const RunConfigPanelValue = { template: '<div class="run-config-view"></div>' };
 
@@ -131,6 +132,7 @@ describe('WorkspaceAdaptiveLayout', () => {
             template: '<button data-test="workspace-right-tool-strip" :data-strip-behavior="stripBehavior" :data-strip-activation="stripActivation" @click="$emit(stripActivation === \'redock-panel\' ? \'request-redock\' : \'request-open\')">Tools strip</button>',
           },
           WorkspaceRightToolDrawer: { template: '<div data-test="workspace-right-tool-drawer"></div>' },
+          AgentWorkspaceView: AgentWorkspaceViewValue,
           TeamWorkspaceView: TeamWorkspaceViewValue,
           RunConfigPanel: RunConfigPanelValue,
           AgentOrgRunConfigPanel: { template: '<div class="org-config-view"></div>' },
@@ -146,15 +148,15 @@ describe('WorkspaceAdaptiveLayout', () => {
     return wrapper;
   };
 
-  it('does not render a standalone agent run: single-agent runs open in the chat view', async () => {
+  it('renders AgentWorkspaceView when agent is selected', async () => {
     const wrapper = await mountComponent({
       agentSelection: { subject: { kind: 'agent_run', runId: '123' } },
       workspaceCenterView: { mode: 'chat' },
     });
 
+    expect(wrapper.find('.agent-view').exists()).toBe(true);
     expect(wrapper.find('.team-view').exists()).toBe(false);
     expect(wrapper.find('.run-config-view').exists()).toBe(false);
-    expect(wrapper.find('[data-test="workspace-empty-state"]').exists()).toBe(true);
   });
 
   it('renders TeamWorkspaceView when team is selected', async () => {
@@ -164,6 +166,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     });
 
     expect(wrapper.find('.team-view').exists()).toBe(true);
+    expect(wrapper.find('.agent-view').exists()).toBe(false);
     expect(wrapper.find('.run-config-view').exists()).toBe(false);
   });
 
@@ -183,6 +186,7 @@ describe('WorkspaceAdaptiveLayout', () => {
     });
 
     expect(wrapper.find('.run-config-view').exists()).toBe(true);
+    expect(wrapper.find('.agent-view').exists()).toBe(false);
     expect(wrapper.find('.team-view').exists()).toBe(false);
   });
 
@@ -329,23 +333,15 @@ describe('WorkspaceAdaptiveLayout', () => {
     expect(wrapper.get('[data-test="workspace-center-pane"]').attributes('style')).toContain('min-width: 200px');
   });
 
-  it('renders RunConfigPanel for a selected team run when config view mode is active', async () => {
-    const wrapper = await mountComponent({
-      agentSelection: { subject: { kind: 'team_run', rootTeamRunId: '456' } },
-      workspaceCenterView: { mode: 'config' },
-    });
-
-    expect(wrapper.find('.run-config-view').exists()).toBe(true);
-    expect(wrapper.find('.team-view').exists()).toBe(false);
-  });
-
-  it('has no standalone agent configuration mode', async () => {
+  it('renders RunConfigPanel for selected run when config view mode is active', async () => {
     const wrapper = await mountComponent({
       agentSelection: { subject: { kind: 'agent_run', runId: '123' } },
       workspaceCenterView: { mode: 'config' },
     });
 
-    expect(wrapper.find('.run-config-view').exists()).toBe(false);
+    expect(wrapper.find('.run-config-view').exists()).toBe(true);
+    expect(wrapper.find('.agent-view').exists()).toBe(false);
+    expect(wrapper.find('.team-view').exists()).toBe(false);
   });
 
   it('shows a center loading overlay while a historical run is opening', async () => {
@@ -472,7 +468,7 @@ describe('WorkspaceAdaptiveLayout', () => {
       'utf8',
     );
     const source = `${layoutSource}\n${shellSource}`;
-    expect(layoutSource).toContain('<WorkspaceToolShell scope="workspace"');
+    expect(layoutSource).toContain('<WorkspaceToolShell data-test="workspace-adaptive-layout"');
 
     expect(source).not.toContain('showToolsTrigger');
     expect(source).not.toContain('showRightToolsTrigger');

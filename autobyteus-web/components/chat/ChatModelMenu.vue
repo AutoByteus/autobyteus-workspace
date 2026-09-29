@@ -5,19 +5,14 @@
       type="button"
       data-test="chat-model-trigger"
       class="inline-flex max-w-[20rem] items-center gap-1.5 rounded-md px-2 py-1 text-[0.8125rem] leading-5 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
-      :class="[lockedReason ? 'cursor-default' : 'hover:bg-gray-100', popover.open.value ? 'bg-gray-100' : '']"
-      :aria-disabled="lockedReason ? 'true' : undefined"
+      :class="['hover:bg-gray-100', popover.open.value ? 'bg-gray-100' : '']"
       :aria-expanded="popover.open.value ? 'true' : 'false'"
       aria-haspopup="menu"
-      :aria-label="lockedReason
-        ? $t('chat.model.triggerLockedAria', { model: modelLabel, runtime: runtimeLabel, reason: lockedReason })
-        : $t('chat.model.triggerAria', { model: modelLabel, runtime: runtimeLabel })"
-      :title="lockedReason || `${modelLabel} · ${runtimeLabel}`"
-      :data-locked="lockedReason ? 'true' : undefined"
+      :aria-label="$t('chat.model.triggerAria', { model: modelLabel, runtime: runtimeLabel })"
+      :title="`${modelLabel} · ${runtimeLabel}`"
       @click="onToggle"
     >
-      <Icon v-if="lockedReason" icon="heroicons:lock-closed" class="h-3.5 w-3.5 flex-shrink-0 text-gray-400" aria-hidden="true" />
-      <span class="truncate whitespace-nowrap font-medium" :class="lockedReason ? 'text-gray-500' : 'text-gray-800'">{{ modelLabel || $t('chat.model.chooseModel') }}</span>
+      <span class="truncate whitespace-nowrap font-medium text-gray-800">{{ modelLabel || $t('chat.model.chooseModel') }}</span>
       <span class="truncate whitespace-nowrap text-gray-400 max-sm:hidden">{{ runtimeShortLabel }}</span>
       <Icon icon="heroicons:chevron-down" class="h-3.5 w-3.5 flex-shrink-0 text-gray-400" aria-hidden="true" />
     </button>
@@ -62,7 +57,7 @@
       </div>
 
       <!-- Browsing runtimes must not clip the side submenu; lists scroll. -->
-      <div class="p-1" :class="query.trim() || drilledRuntime || fixed ? 'max-h-[22rem] overflow-y-auto' : ''">
+      <div class="p-1" :class="query.trim() || drilledRuntime ? 'max-h-[22rem] overflow-y-auto' : ''">
         <!-- Narrow drill-in: one runtime's models -->
         <ChatModelList
           v-if="drilledRuntime"
@@ -101,17 +96,6 @@
             {{ $t('chat.model.searchingAll') }}
           </p>
         </template>
-
-        <!-- Persisted run: runtime fixed, one level -->
-        <ChatModelList
-          v-else-if="fixed"
-          :runtime-kind="runtimeKind"
-          :state="fixed.status === 'ready' ? 'ready' : fixed.status === 'loading' ? 'loading' : 'error'"
-          :groups="fixed.groups"
-          :current-model-identifier="llmModelIdentifier"
-          @choose="choose"
-          @retry="emit('retry-fixed')"
-        />
 
         <!-- Browse runtimes -->
         <template v-else>
@@ -174,9 +158,6 @@
         </template>
       </div>
 
-      <p v-if="fixed && !query.trim()" class="rounded-b-lg border-t border-gray-100 px-3 py-2 text-xs text-gray-400" data-test="chat-runtime-fixed-note">
-        {{ $t('chat.model.runtimeFixed', { runtime: runtimeLabel }) }}
-      </p>
     </div>
   </div>
 </template>
@@ -189,7 +170,6 @@ import ChatModelOptionLabel from '~/components/chat/ChatModelOptionLabel.vue'
 import { chatModelOptionFullText as optionFullText } from '~/components/chat/chatModelOptionText'
 import { useChatPopover } from '~/composables/chat/useChatPopover'
 import { useChatModelCatalog, type ChatModelOption } from '~/composables/chat/useChatModelCatalog'
-import type { ChatFixedModelList } from '~/components/chat/chatRunModelControls'
 import type { ChatModelSelection } from '~/stores/chatDraftStore'
 import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import { runtimeShortLabel as toRuntimeShortLabel } from '~/utils/chat/chatDefaults'
@@ -198,14 +178,9 @@ const props = defineProps<{
   runtimeKind: string
   llmModelIdentifier: string
   modelLabel: string
-  /** A persisted run: only its own runtime's models are offered ("Runtime fixed"). */
-  fixed?: ChatFixedModelList | null
-  /** Set while the run is live; the control is inert and explains why. */
-  lockedReason?: string | null
 }>()
 const emit = defineEmits<{
   (event: 'select', value: ChatModelSelection): void
-  (event: 'retry-fixed'): void
 }>()
 
 const SUBMENU_HOVER_INTENT_MS = 90
@@ -229,7 +204,6 @@ const isCurrent = (model: ChatModelOption) =>
   model.runtimeKind === props.runtimeKind && model.llmModelIdentifier === props.llmModelIdentifier
 
 const onToggle = async () => {
-  if (props.lockedReason) return
   if (!popover.open.value) {
     query.value = ''
     submenuRuntime.value = null
@@ -284,16 +258,13 @@ const choose = (model: ChatModelOption) => {
   popover.close(true)
 }
 
-// Search across enabled runtimes, or only the fixed runtime of a persisted run.
-const searchRuntimeKinds = computed(() => (props.fixed ? [props.runtimeKind] : catalog.enabledRuntimeKinds.value))
+// Search across enabled runtimes.
+const searchRuntimeKinds = computed(() => catalog.enabledRuntimeKinds.value)
 watch(query, (value) => {
-  if (value.trim() && !props.fixed) searchRuntimeKinds.value.forEach((runtimeKind) => catalog.ensureCatalog(runtimeKind))
+  if (value.trim()) searchRuntimeKinds.value.forEach((runtimeKind) => catalog.ensureCatalog(runtimeKind))
 })
-const searchLoading = computed(() => !props.fixed && catalog.isSearching(searchRuntimeKinds.value))
-const searchResults = computed<ChatModelOption[]>(() => {
-  if (!props.fixed) return catalog.search(query.value, searchRuntimeKinds.value)
-  return catalog.filterOptions(query.value, props.fixed.groups.flatMap((group) => group.models))
-})
+const searchLoading = computed(() => catalog.isSearching(searchRuntimeKinds.value))
+const searchResults = computed<ChatModelOption[]>(() => catalog.search(query.value, searchRuntimeKinds.value))
 
 // Keyboard: arrows move within the current level; Right opens a runtime; Left returns.
 const SUBMENU_SELECTOR = '[data-test="chat-model-submenu"]'

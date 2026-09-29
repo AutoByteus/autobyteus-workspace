@@ -13,23 +13,7 @@
       <div class="flex flex-col bg-white">
         <div v-if="hasChips()" class="flex flex-wrap items-center gap-1.5 px-3 pt-2.5" data-test="chat-composer-chips">
           <slot name="chips" />
-          <span
-            v-for="name in requestedSkillNames"
-            :key="name"
-            class="inline-flex max-w-full items-center gap-1 rounded-md border border-indigo-200 bg-indigo-50 py-0.5 pl-1.5 pr-1 text-xs font-medium text-indigo-700"
-            :data-test="`chat-skill-chip-${name}`"
-          >
-            <Icon icon="heroicons:sparkles" class="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
-            <span class="truncate">/{{ name }}</span>
-            <button
-              type="button"
-              class="rounded p-0.5 text-indigo-400 hover:bg-indigo-100 hover:text-indigo-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40"
-              :aria-label="$t('chat.composer.removeSkill', { name })"
-              @click="removeSkill(name)"
-            >
-              <Icon icon="heroicons:x-mark" class="h-3 w-3" aria-hidden="true" />
-            </button>
-          </span>
+          <SkillTagChips :names="requestedSkillNames" @remove="removeSkill" />
         </div>
 
         <ChatMessageInput
@@ -72,12 +56,12 @@
 
 <script setup lang="ts">
 import { computed, ref, useSlots } from 'vue'
-import { Icon } from '@iconify/vue'
 import ContextFilePathInputArea from '~/components/agentInput/ContextFilePathInputArea.vue'
 import VoiceInputButton from '~/components/agentInput/VoiceInputButton.vue'
 import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue'
 import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue'
 import ChatMessageInput from '~/components/chat/ChatMessageInput.vue'
+import SkillTagChips from '~/components/chat/SkillTagChips.vue'
 import type { ChatSkillOption, ChatTargetOption } from '~/components/chat/chatComposerMenus'
 import type { ComposerTarget } from '~/composables/agentInput/useComposerTarget'
 import type { ChatTarget } from '~/stores/chatDraftStore'

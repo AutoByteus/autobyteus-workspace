@@ -54,7 +54,7 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { setActiveRightPanelScope, useRightPanel, type RightPanelScope } from '~/composables/useRightPanel';
+import { useRightPanel } from '~/composables/useRightPanel';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
 import { useResponsiveWorkspaceShellState } from '~/composables/layout/useResponsiveWorkspaceShell';
 import RightSideTabs from './RightSideTabs.vue';
@@ -66,9 +66,6 @@ import { LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX } from '~/utils/layout/responsiveLayo
  * The right tool shell (dock, strip, drawer, resize) around a center slot.
  * It owns no center-view selection; the caller renders the center content.
  */
-const props = defineProps<{
-  scope: RightPanelScope
-}>();
 
 const { t } = useLocalization();
 const {
@@ -84,8 +81,6 @@ const workspaceFlowRef = ref<HTMLElement | null>(null);
 let workspaceFlowResizeObserver: ResizeObserver | null = null;
 
 // The mounted shell decides which visibility preference the right panel uses.
-setActiveRightPanelScope(props.scope);
-watch(() => props.scope, (scope) => setActiveRightPanelScope(scope));
 
 const registerWorkspaceFlowWidth = (width: number): void => {
   const effectiveLeftHandleOverlap = LEFT_PANEL_RESIZE_HANDLE_WIDTH_PX / 2;

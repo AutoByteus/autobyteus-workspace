@@ -1,9 +1,10 @@
 <template>
-  <WorkspaceToolShell scope="workspace" data-test="workspace-adaptive-layout">
+  <WorkspaceToolShell data-test="workspace-adaptive-layout">
     <div data-test="workspace-center-content-shell" class="relative flex-1 min-h-0 overflow-hidden">
       <AgentOrgRunConfigPanel v-if="showAgentOrgRunConfig" />
       <AgentOrgWorkspaceView v-else-if="showAgentOrgActive" />
-      <RunConfigPanel v-else-if="showSelectedTeamRunConfig" />
+      <RunConfigPanel v-else-if="showSelectedRunConfig" />
+      <AgentWorkspaceView v-else-if="isAgentSelected" />
       <TeamWorkspaceView v-else-if="isTeamSelected" />
       <RunConfigPanel v-else-if="hasPendingRunConfig" />
       <div
@@ -49,6 +50,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
 import { useLeftPanel } from '~/composables/useLeftPanel';
 import { useResponsiveWorkspaceShellState } from '~/composables/layout/useResponsiveWorkspaceShell';
+import AgentWorkspaceView from '~/components/workspace/agent/AgentWorkspaceView.vue';
 import TeamWorkspaceView from '~/components/workspace/team/TeamWorkspaceView.vue';
 import RunConfigPanel from '~/components/workspace/config/RunConfigPanel.vue';
 import AgentOrgRunConfigPanel from '~/components/workspace/config/AgentOrgRunConfigPanel.vue';
@@ -85,9 +87,8 @@ const showAgentOrgRunConfig = computed(() => route.query?.rootSubjectKind === 'a
 const showAgentOrgActive = computed(() => route.query?.rootSubjectKind === 'agent_org'
   && (route.query.mode === 'active' || route.query.mode === 'history')
   && Boolean(route.query.orgRunId));
-// Standalone agent runs open in the chat view; the selected-run configuration mode is Team-only.
-const showSelectedTeamRunConfig = computed(() =>
-  isTeamSelected.value && Boolean(selectionStore.selectedRunId) && workspaceCenterViewStore.isConfigMode,
+const showSelectedRunConfig = computed(() =>
+  Boolean(selectionStore.selectedRunId) && workspaceCenterViewStore.isConfigMode,
 );
 const isCenterLoading = computed(() => runHistoryStore.openingRun);
 

@@ -66,16 +66,12 @@ describe('useChatModelCatalog labels (D-16)', () => {
     expect(api.search('Opus 5.5', ['claude_agent_sdk']).map((model) => model.llmModelIdentifier)).toEqual(['opus'])
     expect(api.search('claude-haiku', ['claude_agent_sdk']).map((model) => model.llmModelIdentifier)).toEqual(['haiku'])
     expect(api.search('sonnet claude', ['claude_agent_sdk']).map((model) => model.llmModelIdentifier)).toEqual(['sonnet'])
+    expect(api.search('   ', ['claude_agent_sdk'])).toEqual([])
     const options = api.modelGroups('claude_agent_sdk')[0]!.models
-    expect(api.filterOptions('opus 5.5', options).map((model) => model.llmModelIdentifier)).toEqual(['opus'])
-    expect(api.filterOptions('   ', options)).toEqual([])
     expect(matchesModelQuery(options[0]!, ['anthropic', 'claude agent sdk'])).toBe(true)
   })
 
-  it('falls back to the existing-run choice, then to the bare identifier', () => {
-    const fromChoice = toChatModelOption({ runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-opus-4-6', providerName: 'Anthropic',
-      runChoice: { llmModelIdentifier: 'claude-opus-4-6', providerName: 'Anthropic', displayName: 'Opus 4.6', canonicalName: 'claude-opus-4-6', description: null, configSchema: null, recommended: false } })
-    expect(fromChoice).toMatchObject({ label: 'claude-opus-4-6', secondary: 'Opus 4.6', recommended: false })
+  it('labels a model without a catalog record by its identifier', () => {
     const bare = toChatModelOption({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-legacy', providerName: 'OpenAI' })
     expect(bare).toMatchObject({ label: 'gpt-legacy', secondary: null, recommended: false })
   })

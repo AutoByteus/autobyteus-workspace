@@ -101,7 +101,7 @@ const props = withDefaults(defineProps<{
 const activeContextStore = useActiveContextStore();
 const todoStore = useAgentTodoStore();
 
-const { activeTab, visibleTabs: baseVisibleTabs, setActiveTab } = useRightSideTabs();
+const { activeTab, visibleTabs: baseVisibleTabs, setActiveTab, selectTabExplicitly, useContextualDefaultTab } = useRightSideTabs();
 const { toggleRightPanel } = useRightPanel();
 
 const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
@@ -121,9 +121,6 @@ const activeMessagesView = computed(() => {
   const target = activeContextStore.activeWorkspaceTarget;
   return target && 'collaborationMessages' in target ? target.collaborationMessages : null;
 });
-const activeMessagesScopeKey = computed(() => activeMessagesView.value
-  ? `${activeMessagesView.value.rootKind}:${activeMessagesView.value.rootRunId}`
-  : null);
 const filesTabEnabled = computed(() => props.mode !== 'mobile-tools');
 const fileExplorerLayout = computed(() => props.mode === 'desktop' ? 'split' : 'stacked');
 const showPanelToggle = computed(() => props.mode === 'desktop');
@@ -149,25 +146,20 @@ const handleTabSelect = (tabName: string) => {
   if (!filesTabEnabled.value && tabName === 'files') {
     return;
   }
-  setActiveTab(tabName as any);
+  selectTabExplicitly(tabName as any);
 };
 
-// Keep the contextual collaboration tool aligned with the selected tagged root.
-watch(activeMessagesScopeKey, (scopeKey) => {
-  if (scopeKey) {
-    setActiveTab('teamMembers');
-  } else if (activeContextStore.activeWorkspaceTarget?.kind === 'standalone_agent') {
-    setActiveTab('progress');
-  }
-}, { immediate: true });
+// Contextual default (Team members / Activity) on mount and on scope change; an explicit strip
+// or tab-bar choice wins.
+useContextualDefaultTab();
 
-// Watch for changes in visible tabs to ensure the active tab is always valid
+// Keep the active tab valid, on mount as well: an invisible tab falls back to the first visible one.
 watch(visibleTabs, (newVisibleTabs) => {
   const isCurrentTabVisible = newVisibleTabs.some(tab => tab.name === activeTab.value);
   if (!isCurrentTabVisible && newVisibleTabs.length > 0) {
     setActiveTab(newVisibleTabs[0].name);
   }
-});
+}, { immediate: true });
 
 watch(isFilesTabActive, (isActive) => {
   if (isActive) {

@@ -5,19 +5,16 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, watch } from 'vue';
+import { onMounted, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { useFileExplorerStore } from '~/stores/fileExplorer';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { buildAgentRunChatRoute } from '~/services/workspace/workspaceNavigationService';
 import { useServerSettingsStore } from '~/stores/serverSettings';
-import { useWorkspaceStore } from '~/stores/workspace';
 import { useWorkspaceRouteSelection } from '~/composables/workspace/useWorkspaceRouteSelection';
+import { useWorkspaceFileContentVisible } from '~/composables/workspace/useWorkspaceFileContentVisible';
 import WorkspaceAdaptiveLayout from '~/components/layout/WorkspaceAdaptiveLayout.vue';
 
-const fileExplorerStore = useFileExplorerStore();
 const serverSettingsStore = useServerSettingsStore();
-const workspaceStore = useWorkspaceStore();
 
 useWorkspaceRouteSelection();
 
@@ -35,10 +32,7 @@ watch(
   },
 );
 
-const showFileContent = computed(() => {
-    const wsId = workspaceStore.activeWorkspace?.workspaceId || workspaceStore.activeWorkspaceMetadata?.workspaceId;
-    return wsId ? fileExplorerStore.getOpenFiles(wsId).length > 0 : false;
-});
+const showFileContent = useWorkspaceFileContentVisible();
 
 onMounted(() => {
   console.log('Workspace.vue: Mounted. Fetching server settings and loading profiles...');

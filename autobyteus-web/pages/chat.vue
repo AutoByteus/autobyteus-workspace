@@ -14,7 +14,10 @@
         @click="startNewChat"
       >{{ $t('chat.missing.newChat') }}</button>
     </div>
-    <ChatRunView v-else-if="displayedContext" :context="displayedContext" />
+    <!-- The chat run view is the product agent run view in the workspace frame (D-17). -->
+    <div v-else-if="displayedContext" class="flex h-full min-h-0 w-full flex-col bg-gray-100" data-test="chat-run-frame">
+      <WorkspaceAdaptiveLayout :show-file-content="showFileContent" />
+    </div>
     <div v-else class="flex flex-1 items-center justify-center" data-test="chat-opening">
       <span class="h-6 w-6 animate-spin rounded-full border-2 border-gray-200 border-t-blue-600 motion-reduce:animate-none" :aria-label="$t('chat.run.opening')"></span>
     </div>
@@ -25,7 +28,8 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import ChatNewSurface from '~/components/chat/ChatNewSurface.vue'
-import ChatRunView from '~/components/chat/ChatRunView.vue'
+import WorkspaceAdaptiveLayout from '~/components/layout/WorkspaceAdaptiveLayout.vue'
+import { useWorkspaceFileContentVisible } from '~/composables/workspace/useWorkspaceFileContentVisible'
 import { useChatRouteRunSync } from '~/composables/chat/useChatRouteRunSync'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
@@ -34,8 +38,8 @@ import { buildAgentRunChatRoute, openWorkspaceExecutionLink } from '~/services/w
 import { isTemporaryRunId } from '~/utils/chat/chatDefaults'
 
 /**
- * `/chat` shows the New chat surface; `/chat?id=<runId>` shows that single-agent run in the chat
- * view, opening it first when it is not mounted. An id that is neither registered nor openable
+ * `/chat` shows the New chat surface; `/chat?id=<runId>` shows that single-agent run in the
+ * workspace frame (the product agent run view), opening it first when it is not mounted. An id that is neither registered nor openable
  * shows the missing-chat state; a `temp-*` id that is no longer registered returns to New chat.
  */
 const route = useRoute()
@@ -43,6 +47,7 @@ const router = useRouter()
 const agentContextsStore = useAgentContextsStore()
 const selectionStore = useAgentSelectionStore()
 const chatDraftStore = useChatDraftStore()
+const showFileContent = useWorkspaceFileContentVisible()
 
 const routeRunId = computed(() => {
   const value = route.query.id

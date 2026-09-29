@@ -9,7 +9,7 @@ standalone agent runs. Teams and Agent Orgs keep their own `/workspace` views.
 | --- | --- |
 | `/` | Redirects to `/chat` ("Opening Chat..."). |
 | `/chat` | New chat surface (`ChatNewSurface.vue`). |
-| `/chat?id=<runId>` | Chat run view (`ChatRunView.vue`) for a standalone agent run, including an unsent-yet-registered `temp-*` run. |
+| `/chat?id=<runId>` | Chat run view: the product workspace frame (`WorkspaceAdaptiveLayout`) with the standalone agent run view (`AgentWorkspaceView`), including an unsent-yet-registered `temp-*` run. |
 | `/workspace` | Team and Agent Org runs. A committed standalone-agent selection change redirects to `/chat?id=<runId>`; the redirect never fires on mount or while an Agent Org route is shown. |
 
 `pages/chat.vue` resolves the id: a mounted context is selected and shown; an
@@ -56,10 +56,10 @@ Chat names models exactly as the launch form does (D-16). `useChatModelCatalog.t
 | AutoByteus | identifier | description |
 | Other runtimes (Codex and the rest) | display name | description |
 
-- **Label source.** The runtime catalog record is preferred. For a persisted run, a model the catalog no longer offers falls back to `existingRunChoiceLabelInput` (shared with the gear editor).
+- **Label source.** The runtime catalog record; a model without one is labeled by its identifier. (The run settings editor labels existing-run choices with the shared `existingRunChoiceLabelInput`.)
 - **Order.** Claude Agent SDK rows are Recommended first (`compareRecommendedFirstBy`).
 - **Layout.** The label and the Recommended badge share one line, with `secondary` in gray below. Rows and the footer trigger never wrap; the full text is in `title` / `aria-label`.
-- **Search.** One predicate, `matchesModelQuery`, matches the identifier, label, display and canonical names, the secondary text, the provider and the runtime. It serves both the cross-runtime search and a persisted run's fixed list.
+- **Search.** One predicate, `matchesModelQuery`, matches the identifier, label, display and canonical names, the secondary text, the provider and the runtime, across the enabled runtimes.
 - **Selection.** The stored selection is always `llmModelIdentifier`.
 
 ## Launch
@@ -85,25 +85,51 @@ the New chat stays intact.
 `/chat?id=temp-*` with the permanent id whenever the displayed context is
 promoted, on every send path.
 
-## Run View
+## Run View (D-17)
 
-`ChatRunView.vue` renders the run header, the conversation and the chat
-composer inside `WorkspaceToolShell` with scope `chat` (right tools collapsed by
-default; the visibility preference is separate from `/workspace`).
+After the first message a chat is a normal agent run. `/chat?id` renders the
+product workspace frame, `WorkspaceAdaptiveLayout` in `WorkspaceToolShell`, the
+same as the Team and Org views: a full-height right tabs column, the resize
+handle, the strip and the drawer, and a 57px header line. The center pane is
+`AgentWorkspaceView` → `AgentWorkspaceSurface`.
 
-Model and thinking controls on a run (`chatRunModelControls.ts`) choose the
-mode by run id, never by `config.isLocked`:
+- **Header.** Avatar, the run title (the run summary: the first message, else
+  the history summary, truncated to 42 characters via `useStandaloneRunTitle`),
+  `AgentStatusDisplay`, ⚙ and ＋.
+  - ＋ calls `chatDraftStore.startNewChat({ agentDefinitionId, workspaceRootPath })`
+    and routes to `/chat`.
+- **Box.** The product `AgentUserInputForm`, with mic and send/stop inside the
+  textarea. `AgentWorkspaceView` passes a `skillTagging` capability
+  (`composables/agentInput/useSkillTagMenu.ts`): `/` opens `ChatSkillMenu`, and
+  a chip row (`SkillTagChips`) edits `requestedSkillNames`. Team and Org boxes
+  receive no capability and are unchanged.
+- **⚙ run settings** (`RunConfigPanel`).
+  - A permanent id uses `ExistingRunConfigEditor`: runtime and workspace are
+    fixed; model and thinking are locked while the run is live and editable
+    when it is Offline; Save applies at the next resume.
+  - A `temp-*` draft (a catalog "Run agent" draft, or a New chat whose first
+    send failed) uses `DraftRunConfigEditor`. It edits `context.config`
+    directly (runtime, model, thinking, Auto approve tools), shows the workspace
+    fixed, and makes no server call; the next send uses the edited config.
+- **Right panel.** `useRightPanel` keeps one visibility preference, open by
+  default and shared with the Team and Org views. The contextual default tab
+  is owned by `useRightSideTabs`: Activity for a standalone run, Team members
+  for a collaboration scope. It is applied only when the scope differs from the
+  last one it was applied for, and a strip click opens exactly the clicked tab.
 
-- `temp-*` id: edits the context config directly; the runtime is selectable.
-- permanent id: loads and saves through `existingRunConfigStore`; locked while
-  the run is live (Running, Idle, Initializing); when Offline the runtime is
-  fixed and only that runtime's models are offered.
+The New chat footer (model, thinking, workspace, approval) exists only before
+the first message (`chatDraftModelControls.ts`).
 
 ## Tests
 
 - `stores/__tests__/chatDraftStore.spec.ts`
 - `services/chat/__tests__/chatLaunchService.spec.ts`
 - `composables/chat/__tests__/useChatRouteRunSync.spec.ts`
-- `components/chat/__tests__/ChatComposer.spec.ts`,
-  `chatComposerMenus.spec.ts`, `chatRunModelControls.spec.ts`
+- `components/chat/__tests__/ChatComposer.spec.ts`, `chatComposerMenus.spec.ts`
+- `composables/chat/__tests__/useChatModelCatalog.spec.ts`
+- `components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts`
+- `components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts`
+- `components/workspace/config/__tests__/RunConfigPanel.spec.ts` (draft branch),
+  `ExistingRunConfigEditor.workspace.spec.ts`
+- `composables/__tests__/useRightSideTabs.contextualDefault.spec.ts`
 - `pages/__tests__/chat.spec.ts`, `pages/__tests__/workspace-chat-redirect.spec.ts`

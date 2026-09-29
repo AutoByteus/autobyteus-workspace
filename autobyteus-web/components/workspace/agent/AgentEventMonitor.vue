@@ -32,7 +32,7 @@
       </p>
       <slot name="composerContext" />
       <slot name="composer">
-        <AgentUserInputForm :before-send="beforeSend" />
+        <AgentUserInputForm :before-send="beforeSend" :skill-tagging="skillTagging" />
       </slot>
     </div>
   </div>
@@ -42,6 +42,7 @@
 import { computed, ref, toRef } from 'vue';
 import type { Conversation } from '~/types/conversation';
 import AgentUserInputForm from '~/components/agentInput/AgentUserInputForm.vue';
+import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
 import AgentConversationFeed from '~/components/workspace/agent/AgentConversationFeed.vue';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absoluteFilePathAction';
@@ -63,6 +64,8 @@ const props = defineProps<{
   presentationRevision?: number;
   hasEarlierActiveTraceEvents?: boolean;
   browseSubject: EventMonitorActiveTraceBrowseSubject;
+  /** `/` skill tags in the box; standalone agent runs only. */
+  skillTagging?: SkillTaggingCapability | null;
 }>();
 
 const activityStore = useAgentActivityStore();

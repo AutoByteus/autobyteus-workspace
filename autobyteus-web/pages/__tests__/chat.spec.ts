@@ -35,7 +35,8 @@ const mountPage = () => mount(ChatPage, {
   global: {
     stubs: {
       ChatNewSurface: { template: '<div data-test="stub-new" />' },
-      ChatRunView: { props: ['context'], template: '<div data-test="stub-run">{{ context.state.runId }}</div>' },
+      // The chat run view is the workspace frame over the selected standalone run (D-17).
+      WorkspaceAdaptiveLayout: { template: '<div data-test="stub-frame" />' },
     },
     mocks: { $t: (key: string) => key },
   },
@@ -61,7 +62,7 @@ describe('pages/chat.vue', () => {
     const wrapper = mountPage()
     await flushPromises()
 
-    expect(wrapper.find('[data-test="stub-run"]').text()).toBe('run-1')
+    expect(wrapper.find('[data-test="stub-frame"]').exists()).toBe(true)
     expect(useAgentSelectionStore().selectedRunId).toBe('run-1')
     expect(routing.open).not.toHaveBeenCalled()
   })
@@ -73,7 +74,8 @@ describe('pages/chat.vue', () => {
     await flushPromises()
 
     expect(routing.open).toHaveBeenCalledWith({ kind: 'agent', runId: 'run-2' })
-    expect(wrapper.find('[data-test="stub-run"]').text()).toBe('run-2')
+    // The open path (mocked here) selects the run; the page then shows the frame.
+    expect(wrapper.find('[data-test="stub-frame"]').exists()).toBe(true)
   })
 
   it('shows the missing-chat state for an id that cannot be opened', async () => {
@@ -105,6 +107,7 @@ describe('pages/chat.vue', () => {
 
     expect(routing.replace).toHaveBeenCalledWith({ path: '/chat', query: { id: 'run-3' } })
     expect(routing.replace).not.toHaveBeenCalledWith('/chat')
-    expect(wrapper.find('[data-test="stub-run"]').text()).toBe('run-3')
+    expect(wrapper.find('[data-test="stub-frame"]').exists()).toBe(true)
+    expect(useAgentSelectionStore().selectedRunId).toBe('run-3')
   })
 })

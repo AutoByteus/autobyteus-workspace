@@ -113,22 +113,15 @@ describe('useRightPanel', () => {
     expect(panel.rightPanelWidth.value).toBe(450)
   })
 
-  it('keeps one visibility preference per tool-shell scope: workspace docked, chat collapsed by default', async () => {
-    const { useRightPanel, setActiveRightPanelScope } = await loadSubject()
-    const panel = useRightPanel()
+  it('shares one visibility preference, open by default, across the Team, Org and chat views', async () => {
+    const { useRightPanel } = await loadSubject()
+    const teamView = useRightPanel()
+    const chatView = useRightPanel()
 
-    expect(panel.isRightPanelVisible.value).toBe(true)
-
-    setActiveRightPanelScope('chat')
-    expect(panel.isRightPanelVisible.value).toBe(false)
-    panel.openRightPanel()
-    expect(panel.isRightPanelVisible.value).toBe(true)
-
-    setActiveRightPanelScope('workspace')
-    panel.setRightPanelVisible(false)
-    expect(panel.isRightPanelVisible.value).toBe(false)
-
-    setActiveRightPanelScope('chat')
-    expect(panel.isRightPanelVisible.value).toBe(true)
+    expect(teamView.isRightPanelVisible.value).toBe(true)
+    teamView.setRightPanelVisible(false)
+    expect(chatView.isRightPanelVisible.value).toBe(false)
+    chatView.openRightPanel()
+    expect(teamView.isRightPanelVisible.value).toBe(true)
   })
 })

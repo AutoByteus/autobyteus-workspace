@@ -28,6 +28,7 @@ const messages = {
   'workspace.components.progress.ToolActivityItem.error': '错误',
   'workspace.components.progress.ToolActivityItem.result': '结果',
   'workspace.components.workspace.agent.AgentStatusDisplay.agent_status': '`智能体状态：${visuals.text}`',
+  'workspace.components.workspace.agent.AgentWorkspaceView.select_an_agent_or_start_a': '选择一个智能体或开始新的智能体。',
   'workspace.components.workspace.agent.ArtifactContentViewer.edit_mode': '编辑模式',
   'workspace.components.workspace.agent.ArtifactContentViewer.file_not_found': '找不到文件',
   'workspace.components.workspace.agent.ArtifactContentViewer.loading_content': '正在加载内容...',
