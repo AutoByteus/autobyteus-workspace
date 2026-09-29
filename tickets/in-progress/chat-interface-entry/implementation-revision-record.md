@@ -15,6 +15,7 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
 | IR-007 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-011 pass (SR-015; CRR-010 failure origin of API-REV-005) | CR-007 / UF-04, CR-008 / UF-03, IC-3 | Design execution (D-15 Rule 3 server, D-18 web) | SR-015; ARCH-REV-011; CRR-009, CRR-010; API-REV-005; DR N/A | Stopped by the user at `f4864638b` before handoff. D-18 stands (IC-3 verified); the Rule 3 part is removed by IR-008 (D-19) |
 | IR-008 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-013 pass (SR-016 DEC-017; SR-017 for ARCH-REV-012) | REQ-022–024 / AC-019–021, AR-013, R-3 | Design execution (D-19; includes removal of D-15 Rules 2–3 and the IR-007 Rule 3) | SR-016, SR-017; ARCH-REV-012, ARCH-REV-013; CRR-010; API-REV-005; DR N/A | One skill per name at load; duplicates rejected before commit on every import path with the pop-up; banner for out-of-band duplicates; Codex path match; V-F passes with no special rule |
 | IR-009 | architecture_reviewer / `architecture-review-handoff.md` / ARCH-REV-015 pass (SR-018 DEC-017a; SR-019 for ARCH-REV-014) | CRR-012 CR-009 (Design Impact), AR-014 | Design execution (D-19 Agent Org amendment) | SR-018, SR-019; ARCH-REV-014, ARCH-REV-015; CRR-011, CRR-012; API-REV N/A; DR N/A | Agent Org layouts are in tier 2 through a pure correlation core shared by async and sync readers; org agents and org team-local agents run with their own skills on Codex, Claude, Grok and AGY; duplicate org import rejected |
+| IR-010 | code_reviewer / `code-review-report.md` / CRR-014 failure-origin review (round 10) of API-REV-006 | CR-010 / UF-05 | `Local Fix` | SR-019; ARCH-REV-015; CRR-011, CRR-013, CRR-014; API-REV-006; DR N/A | The global toast layer sits above every dialog overlay; the tier-4 notice is visible above the Skill sources dialog (U6), with a spec guarding the layer |
 
 ## Revision Entries
 
@@ -427,4 +428,31 @@ The current code on `codex/chat-interface-entry` and `implementation-handoff.md`
   - The AutoByteus native runtime is covered by `resolveConfiguredSkillsForAgent` unit tests, not live (it needs a native model API key).
   - The Skills page listing was checked through its GraphQL `skills` data, not rendered again; the page renders that list unchanged.
   - Org-owned definitions are not in the shared `agentDefinitions` listing (unchanged); the probe runs them by their exact ids.
+
+### IR-010 — CRR-014 Local Fix: CR-010 / UF-05 (tier-4 notice beneath the Skill sources dialog)
+
+- Triggering role, report path, and round: code_reviewer, `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/code-review-report.md` ("API/E2E Failure-Origin Review (Round 10)"), CRR-014, for API/E2E round 6 (API-REV-006, C22e).
+- Triggering finding IDs: CR-010 / UF-05 (Low, blocking).
+- Classification: `Local Fix`. The package stays Large/High.
+- Prior authoritative result: IR-009 (`0be1dd47e`, `a65f58463`); CRR-013 Pass.
+- Current authoritative result: commit `a98a15d05`.
+- Related solution revision IDs: SR-019 (D-19 web, unchanged)
+- Related architecture-review revision IDs: ARCH-REV-015
+- Related code-review revision IDs: CRR-013, CRR-014
+- Related API/E2E revision IDs: API-REV-006
+- Related delivery revision IDs: N/A
+- Why this implementation revision is recorded: the fix for CR-010.
+- Approved behavior or requirement IDs affected: REQ-023 / AC-020 alternate (a runtime default duplicate is accepted with a visible notice).
+- Implementation delta:
+  - `components/common/ToastContainer.vue`: the global toast layer moves from `z-[100]` to `z-[10000]`, above every overlay in the app. Dialog overlays go up to 9999: the file-explorer dialogs, the server loading/shutdown screens and the context menu; the Skill sources dialog is at 1000. Toasts are transient, top-most notifications, so a notice raised from inside a dialog stays readable. This is the reviewer's preferred approach.
+  - A `data-testid="toast-container"` was added for checks.
+  - The explanatory comment sits inside the root element, so the component stays single-root.
+- Tests: new `components/common/__tests__/ToastContainer.spec.ts`. It scans every `.vue` file in `components`, `pages`, `layouts` and `app.vue` and fails if any overlay's z-index reaches the toast layer; it fails against the old `z-[100]`. It also renders a toast in that layer.
+- Local validation and result:
+  - `pnpm test:nuxt run`: 3404 passed; the only failing files are the 4 baseline ones.
+  - `guard:web-boundary` and `audit:localization-literals` pass.
+  - Rendered check `implementation-evidence/ir10-toast-check.mjs` (U6) on the dev env, with `CODEX_HOME=/tmp/cie-t4/.codex` so its `skills` folder is the Codex runtime default and the real `~/.codex` is untouched. Skills → Sources → add that folder, holding `ui-t4`, which also exists in the skills folder. "Ignored 1 skill from the Codex default folder because your own copy takes precedence." renders above the open dialog: `elementFromPoint` at the toast centre is the toast, with toast z 10000 over dialog z 1000.
+  - The added source, the fixtures and the temp folder were removed, and the dev `.env` line that the add/remove wrote was deleted.
+- Next recipient or routing: code reviewer, via `get_handoff_rules`; then the API/E2E C22e rerun.
+- Remaining limitations or risks: the toast now also appears above full-screen server loading/shutdown overlays. This is acceptable for transient notices and no toast is raised there today.
 

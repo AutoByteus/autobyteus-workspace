@@ -32,13 +32,14 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/tickets/in-progress/chat-interface-entry/implementation-revision-record.md`
-- Current implementation revision ID: `IR-009` (IR-008: D-19; IR-007: D-18, and a Rule 3 now removed; IR-006: CR-005/CR-006; IR-005: D-17; IR-004: D-16 labels; IR-003: D-14 marker; IR-002: CR-002 and D-15; IR-001: baseline)
+- Current implementation revision ID: `IR-010` (CRR-014 Local Fix CR-010; IR-009: D-19 Agent Orgs; IR-008: D-19; IR-007: D-18, and a Rule 3 now removed; IR-006: CR-005/CR-006; IR-005: D-17; IR-004: D-16 labels; IR-003: D-14 marker; IR-002: CR-002 and D-15; IR-001: baseline)
 - Related solution revision IDs: SR-003, SR-004, SR-007 through SR-019
 - Related architecture-review revision IDs: ARCH-REV-003 through ARCH-REV-006, ARCH-REV-008, ARCH-REV-010 through ARCH-REV-015
-- Related code-review revision IDs: CRR-001, CRR-002, CRR-003, CRR-005, CRR-008 through CRR-012
-- Related API/E2E revision IDs: API-REV-001, API-REV-005
+- Related code-review revision IDs: CRR-001, CRR-002, CRR-003, CRR-005, CRR-008 through CRR-014
+- Related API/E2E revision IDs: API-REV-001, API-REV-005, API-REV-006
 - Related delivery revision IDs: DR-002
 - Triggering finding IDs:
+  - IR-010: CRR-014 CR-010 / UF-05 (Local Fix).
   - IR-009: CRR-012 CR-009 (Design Impact) and AR-014; DEC-017a.
   - IR-008: D-19 (REQ-022–024, AC-019–021, DEC-017), AR-013 and R-3.
   - IR-007: CR-007 / UF-04, CR-008 / UF-03, and IC-3.
@@ -55,6 +56,7 @@ Commits (in design change-sequence order):
 | `360de94a9` | 5 | Skill-request instruction codec, `requestedSkillNames`, message chips |
 | `797d49d6a` | 6–9 | Chat draft/launch/routing, Chat components and pages, removals, localization, docs |
 | `717603e61` | — | Ticket package (IR-001) |
+| `a98a15d05` | IR-010 | CR-010: the global toast layer `z-[10000]`, above every dialog overlay; a spec guards the layer |
 | `0be1dd47e` | IR-009 | D-19 Agent Org layouts: pure `correlateAgentOrgOwnedMembers` core; async readers delegate unchanged; new `listAgentOrgOwnedDefinitionSourcesSync`; tier 2 per root `agents/*` → `agent-teams/*` → `agent-orgs/*` (org agents, then org teams: shared, then team-local agents); app-data Orgs from `config.getAgentOrgsDir()`. Tests, docs |
 | `ec31ff371` | IR-008 | D-19 server: tiered one-per-name catalog (`skill-catalog.ts`, `runtime-default-skill-folders.ts`), `listSkillNameIssues`, `resolveCatalogRecord` for every scope and every name-based operation (AR-013), `validateIncomingSkillNames` in add folder / create skill / package import, update and reload (`SKILL_NAME_CONFLICT`), `skillNameIssues` query, Codex path match (`codex-runtime-duplicate`); D-15 Rules 2–3, request strength and the IC-2 fallback removed (Rule 1 as `workspaceCollisionPolicy`). Docs |
 | `be6c8977d` | IR-008 | D-19 web: `SkillNameConflictDialog`, `skillNamesStore` (issues, conflict state, tier-4 toast), `SkillNameIssuesBanner`, conflict parsing in the skill, source and package stores. Docs, localization |
@@ -64,6 +66,13 @@ Commits (in design change-sequence order):
 | `9d65adf6e` | IR-004 | D-16 Chat model labels (UVF-001): the shared label policy via `toChatModelOption`, Recommended-first order, one search predicate, label + badge + secondary rows; `existingRunChoiceLabelInput` and `compareRecommendedFirstBy` moved into the shared utils |
 | `5f11d52f6` | IR-003 | D-14 activation-pending marker (SR-010): mark/clear in `agentRunStore`, `onSendMessageCommandAck`, reconcile skip + clear on active snapshot, SR-008 guard removed; R-2 workspace request generation; web execution doc |
 | `da1033860` | IR-002 | CR-002 footer thinking source; D-14 `submissionPending` reconcile guard; D-15 request strength (Rule 1, Rule 2 A/B, IC-1, IC-2) across Codex/Claude/ACP-Grok/AGY; `workspace-skill-links.ts` split; server skills doc |
+
+### IR-010 outcome (CRR-014 Local Fix CR-010 / UF-05)
+
+- The tier-4 notice ("Ignored 1 skill from the Codex default folder because your own copy takes precedence.") now renders above the Skill sources dialog.
+  - The global toast layer moved from `z-[100]` to `z-[10000]`, above every overlay in the app (the highest is 9999).
+  - `ToastContainer.spec.ts` guards that no component overlay reaches the toast layer.
+- Rendered check U6 (`ir10-toast-check.mjs`, `ir10-toast/`): the toast is the top element at its centre over the open dialog.
 
 ### IR-009 outcome (SR-018/SR-019, ARCH-REV-015; CRR-012 CR-009)
 
@@ -265,7 +274,7 @@ Web (`autobyteus-web`):
 - IR-008 (D-19) residuals:
   - ~~Org-owned agents' private skills~~ — resolved in IR-009 (CRR-012 CR-009, SR-018/SR-019): Agent Org layouts are part of tier 2.
   - GitHub import and update rejection are covered by unit tests with a mock installer, not by a live GitHub repository.
-  - The tier-4 toast is unit-tested; it was not rendered live, because that needs a runtime default folder with a duplicate, and the dev env's only one is the user's real `~/.codex/skills`.
+  - ~~The tier-4 toast was not rendered live~~ — rendered in IR-010 (U6) with a temp `CODEX_HOME`; API/E2E round 6 found it beneath the dialog (CR-010), fixed by lifting the toast layer.
   - Codex may still show both copies inside a Codex run when a stale runtime-default copy exists (outside AutoByteus, openai/codex#25324); the banner recommends removing it.
   - The catalog is rescanned on every name lookup (no cache). With the real 78-skill catalog this was not noticeable in the live checks.
 - RSK-007 / D-14 is resolved in IR-003; the stale reproductions pass for a first send and an Offline resume. Residual: the marker has no timeout. A send the server accepts but never activates stays out of reconcile teardown until terminate, close, a failure or a rejected ack.
@@ -315,6 +324,10 @@ Web (`autobyteus-web`):
 - Dev env: `pnpm dev` from the worktree (backend :8000, web :3000, data root `.autobyteus/development`). It is stopped after IR-008.
 
 ## Local Implementation Checks Run
+
+IR-010 (HEAD `a98a15d05`):
+- Web: `pnpm test:nuxt run` 3404 passed; the only failing files are the 4 baseline ones. New `ToastContainer.spec.ts` (2). `guard:web-boundary` and `audit:localization-literals` pass.
+- Rendered: U6 passes (`implementation-evidence/ir10-toast-check.mjs`; dev env with a temp `CODEX_HOME`, all fixtures and the added source removed).
 
 IR-009 (HEAD `0be1dd47e`):
 - **Server**
@@ -401,7 +414,7 @@ IR-008 (D-19):
 - Pop-up from Create skill (U3): OK closes it and the create dialog stays open with the name, for a rename; nothing is created.
 - Pop-up from Settings → Agent Packages → Import (U4): a backdrop click closes it; the package is not listed; no success or inline error message.
 - Narrow 390×844 (U5): the dialog fits the viewport and long paths truncate with tooltips.
-- Not rendered live: the tier-4 toast (see Known Risks).
+- The tier-4 toast is rendered live in IR-010 (U6), above the Skill sources dialog.
 
 IR-007 (D-18):
 - Surface: the dev env (`pnpm dev`, real Chrome at 1440×900). A New chat was sent on Codex `gpt-5.5` and on Claude SDK `sonnet` with thinking untouched. The run's ⚙ was then opened while the run was live.

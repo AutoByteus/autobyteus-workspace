@@ -208,3 +208,13 @@ The runs use the exact ids `agent-org-owned-agent:org-desk:org-writer` and `team
 | O2 — duplicate org import | Pass. A second package whose org team ships `org-writer-skill` is rejected with `SKILL_NAME_CONFLICT` (the existing org path vs the incoming org path); the package list is unchanged. |
 
 The AutoByteus native runtime is covered by unit tests (`resolveConfiguredSkillsForAgent`), not live, because it needs a native model API key.
+
+## CR-010 / UF-05 — tier-4 notice above the Skill sources dialog (IR-010)
+
+Script: `ir10-toast-check.mjs` (U6) on the dev env. The env was started with `CODEX_HOME=/tmp/cie-t4/.codex`, so that folder's `skills` is the Codex runtime default folder and the real `~/.codex` is untouched. Results and screenshot: `ir10-toast/`.
+
+| Check | Result |
+| --- | --- |
+| U6 — Skills → Sources → add the Codex default folder, whose `ui-t4` also exists in the skills folder | Pass. "Ignored 1 skill from the Codex default folder because your own copy takes precedence." renders above the open Skill sources dialog. `elementFromPoint` at the toast centre is inside the toast container, with computed z-index 10000 over the dialog overlay's 1000 (`U6-tier4-toast-above-sources-dialog.png`). |
+
+Cleanup: the added source was removed through `removeSkillSource`, and the fixtures and `/tmp/cie-t4` were deleted. The add/remove had written an `AUTOBYTEUS_SKILLS_PATHS` line into the dev `.env` (the values came from the inherited environment); that line was deleted, so the file matches its state before the check.
