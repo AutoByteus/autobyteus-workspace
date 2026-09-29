@@ -1,0 +1,25 @@
+{
+ "r": {
+  "ok": true,
+  "action": "click",
+  "target": {
+   "text": "Updates"
+  }
+ },
+ "text": "Back to Workspace\nAPI Keys\nToken Statistics\nDisplay\nLanguage\nLocal Tools\nMCP Servers\nApplication Packages\nAgent Packages\nServer Settings\nExtensions\nUpdates\nAutoByteus Updates\n\nVersion details and desktop app update controls.\n\nCurrent Version\n1.4.91-beta.4\nBeta\nUpdate Status\nDisabled\nLast Checked\nNever\n\nUpdates are turned off for this isolated app instance.",
+ "buttons": [
+  "Back to Workspace",
+  "API Keys",
+  "Token Statistics",
+  "Display",
+  "Language",
+  "Local Tools",
+  "MCP Servers",
+  "Application Packages",
+  "Agent Packages",
+  "Server Settings",
+  "Extensions",
+  "Updates"
+ ],
+ "checkboxes": 0
+}

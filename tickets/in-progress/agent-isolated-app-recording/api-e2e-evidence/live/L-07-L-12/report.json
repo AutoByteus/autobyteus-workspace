@@ -1,0 +1,130 @@
+{
+ "tools": [
+  "attach_tab",
+  "close_tab",
+  "dom_snapshot",
+  "list_tabs",
+  "navigate_to",
+  "open_tab",
+  "read_page",
+  "run_script",
+  "screenshot",
+  "start_recording",
+  "stop_recording"
+ ],
+ "list_tabs": {
+  "tabs": [
+   {
+    "tab_id": "763F187A639CED13C79BAF7AD11BE8B9",
+    "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+    "title": ""
+   }
+  ]
+ },
+ "attach_tab": {
+  "tab_id": "763F187A639CED13C79BAF7AD11BE8B9",
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+  "title": ""
+ },
+ "screenshot": {
+  "tab_id": "763F187A639CED13C79BAF7AD11BE8B9",
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+  "artifact": {
+   "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/api-e2e-evidence/live/L-07-L-12/mcp-shot.png",
+   "media_type": "image/png",
+   "bytes_written": 198715
+  }
+ },
+ "helper_nav": {
+  "tab_id": "763F187A639CED13C79BAF7AD11BE8B9",
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+  "output_mode": "inline",
+  "result": {
+   "ok": false,
+   "action": "click",
+   "error": {
+    "code": "NOT_FOUND",
+    "message": "No visible element matches the target.",
+    "target": {
+     "text": "Agents"
+    }
+   }
+  }
+ },
+ "start_recording": {
+  "tab_id": "763F187A639CED13C79BAF7AD11BE8B9",
+  "output_file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/api-e2e-evidence/live/L-07-L-12/mcp-concurrent.mp4",
+  "fps": 25,
+  "started_at": "2026-09-29T04:07:11.086533+00:00"
+ },
+ "start_again": {
+  "isError": true,
+  "text": "Error executing tool start_recording: RECORDING_ALREADY_ACTIVE: A recording of this tab is already running; stop it first. details={\"tab_id\":\"763F187A639CED13C79BAF7AD11BE8B9\"}"
+ },
+ "concurrent": [
+  {
+   "round": 0,
+   "seconds": 1.49,
+   "errors": []
+  },
+  {
+   "round": 1,
+   "seconds": 1.44,
+   "errors": []
+  },
+  {
+   "round": 2,
+   "seconds": 1.61,
+   "errors": []
+  }
+ ],
+ "hide": {
+  "tab_id": "763F187A639CED13C79BAF7AD11BE8B9",
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+  "output_mode": "inline",
+  "result": {
+   "ok": true,
+   "action": "hideCaption"
+  }
+ },
+ "first_session_closed_at": 1790654839.789579,
+ "stop_from_second_process": {
+  "tab_id": "763F187A639CED13C79BAF7AD11BE8B9",
+  "artifact": {
+   "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agent-isolated-app-recording/tickets/in-progress/agent-isolated-app-recording/api-e2e-evidence/live/L-07-L-12/mcp-concurrent.mp4",
+   "media_type": "video/mp4",
+   "bytes_written": 215854
+  },
+  "duration_seconds": 10.68,
+  "frames": 267,
+  "end_reason": "stopped"
+ },
+ "stop_again": {
+  "isError": true,
+  "text": "Error executing tool stop_recording: RECORDING_NOT_ACTIVE: No recording of this tab is active. details={\"tab_id\":\"763F187A639CED13C79BAF7AD11BE8B9\"}"
+ },
+ "ffprobe": {
+  "programs": [],
+  "stream_groups": [],
+  "streams": [
+   {
+    "codec_name": "h264",
+    "width": 2400,
+    "height": 1536,
+    "nb_frames": "267"
+   }
+  ],
+  "format": {
+   "duration": "10.680000"
+  }
+ },
+ "dead_tools": 11,
+ "dead_list_tabs": {
+  "isError": true,
+  "text": "Error executing tool list_tabs: BROWSER_UNAVAILABLE: Nothing is listening at http://127.0.0.1:9399 and BROWSER_AUTOMATION_ATTACH_ONLY is set, so no browser is launched. Start the browser or app with that remote-debugging port first."
+ },
+ "dead_browser_processes": {
+  "before": [],
+  "after": []
+ }
+}

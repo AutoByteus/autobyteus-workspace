@@ -1,0 +1,2 @@
+DATABASE_URL=file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-4LOniw/server-data/db/production.db
+AUTOBYTEUS_DATA_DIR=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-4LOniw/server-data
