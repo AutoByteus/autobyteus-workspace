@@ -153,9 +153,9 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry`
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
+- Worktree cleanup result: `Completed`. The ticket worktree (only ignored build output and a dev `.autobyteus/` data root; no external references found) and the finalization worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry-finalize` were removed
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` (`codex/chat-interface-entry` and `finalize/chat-interface-entry` deleted after verifying they are ancestors of `origin/personal`)
 - Remote branch cleanup result: `Not required` (remote ticket branch kept)
 - Blocker (if applicable): —
 
@@ -233,3 +233,31 @@
 - The user said: "lets release a stable version. the beta is great" (2026-09-29, after beta.10 was published).
 - Version: `1.4.91`, the stable version of the `1.4.91-beta.*` line; the last stable is `v1.4.90`.
 - Curated notes: `tickets/done/chat-interface-entry/release-notes-v1.4.91.md`. It covers all 12 tickets archived since `v1.4.90`, with user-facing content only, and it is synced by the helper to `.github/release-notes/release-notes.md`.
+
+### Stable release v1.4.91 (completed)
+
+- Method: `bash scripts/desktop-release.sh release 1.4.91 --release-notes tickets/done/chat-interface-entry/release-notes-v1.4.91.md --branch finalize/chat-interface-entry --no-push`, then `git push origin HEAD:personal` (`73b5865da..c8c7351e5`) and `git push origin v1.4.91`.
+- Release commit `c8c7351e5` ("chore(release): bump workspace release version to 1.4.91"): `1.4.91-beta.10` → `1.4.91`, and the curated notes were synced to `.github/release-notes/release-notes.md`. The tag is annotated `v1.4.91` (tag object `6474957f5`).
+- Code identity: `v1.4.91` differs from `v1.4.91-beta.10` only by the delivery-record commit `f2d815a37` (ticket docs) and the version/notes release commit. The app code is the user-tested beta.10.
+- Workflows at `c8c7351e5`, all `completed / success`:
+  - Android APK Release: 36600726017
+  - iOS App Store Connect Release: 36600725797
+  - Desktop Release: 36600726079
+  - Server Docker Release: 36600725935
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.91. It was published 2026-09-29T16:55:02Z as a full release (not a pre-release, not a draft), with the curated notes body and 17 assets: macOS ARM64/x64 DMG and ZIP with blockmaps, the Windows EXE, the Linux x64/ARM64 AppImages, the Android APK with its checksum, and the updater metadata. `releases/latest` = `v1.4.91` (`delivery-evidence/github-release-v1.4.91.json`).
+- Docker (`delivery-evidence/docker-digests-{before,after}-v1.4.91.txt`):
+  - `1.4.91` = `:latest` = `sha256:a529eb86…` (amd64, arm64)
+  - `:latest` moved from `154f2c2b…` (1.4.90)
+  - `:beta` also moved to `a529eb86…`, because the README rule moves `:beta` to the newest release, stable or beta.
+- Channels: stable desktop installs are offered 1.4.91; beta-channel installs are also offered it as the newest build.
+- Release/publication/deployment result: `Completed`. Release notes handoff: `Used` (curated notes).
+- Not exercised: the published installers and images were not downloaded or started locally. The user verified the local r5 build of the same source state before the version bumps.
+
+## Final Status (DR-008)
+
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes` (`personal@c8c7351e5`, plus this record commit)
+- Applicable release/deployment/rollout complete: `Yes` (`v1.4.91-beta.10` and stable `v1.4.91`)
+- Applicable safe cleanup complete: see Post-Finalization Cleanup (completed right after this record is pushed)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
