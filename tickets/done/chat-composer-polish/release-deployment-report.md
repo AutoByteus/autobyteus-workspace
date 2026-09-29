@@ -3,7 +3,7 @@
 ## Release / Publication / Deployment Scope
 
 - Classification preserved: `task_size=Medium`, `architectural_risk=Low`, route `Direct`.
-- Scope: repository finalization of `codex/thinking-selector-auto-enable` into `personal`. A beta or stable release through the documented helper happens only if the user asks for one.
+- Scope: repository finalization of `codex/thinking-selector-auto-enable` into `personal`. A beta or stable release through the documented helper happens only if the user asks for one. DR-002: the user asked for a beta, and `v1.4.92-beta.1` was released (see "Beta release v1.4.92-beta.1 (DR-002)").
 
 ## Handoff Summary
 
@@ -117,3 +117,48 @@
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to `/solution_designer`: `Yes` (see `delivery-revision-record.md` DR-001)
 - Terminal message/reference: `Delivery Completed` message to `/solution_designer` via `send_message_to`
+
+## Beta release v1.4.92-beta.1 (DR-002)
+
+- Request: on 2026-09-29, after DR-001 finalization, the user said "finalize and release the beta". Repository finalization was already `Completed` (`personal@a7b11ca1b`), so it was not replayed.
+- Version: `1.4.92-beta.1`. `scripts/release_versions.py next-beta` gives this because the highest stable tag is `v1.4.91`. It is the first beta of the 1.4.92 line.
+- Contents since `v1.4.91`: the chat-composer-polish change set only (`3c7ad1ad0`, `641bacc03`, plus the ticket records).
+- Method (same as the beta.10 precedent):
+  - Clean worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-polish-beta-release` on branch `finalize/chat-composer-polish-beta` from `origin/personal@a7b11ca1b`. The shared checkout has untracked build output, and the helper requires a clean tree.
+  - Run `bash scripts/desktop-release.sh beta --branch finalize/chat-composer-polish-beta --no-push`.
+  - Re-fetch `origin/personal`; it was unchanged at `a7b11ca1b`.
+  - Run `git push origin HEAD:personal` (`a7b11ca1b..aeb018ee6`) and `git push origin v1.4.92-beta.1`.
+- Release commit: `aeb018ee6` ("chore(release): bump workspace release version to 1.4.92-beta.1"), `1.4.91` → `1.4.92-beta.1`. The tag is annotated `v1.4.92-beta.1`.
+- Workflows at `aeb018ee6`, all `completed / success`:
+  - Desktop Release: 36615555183
+  - Android APK Release: 36615555334
+  - Server Docker Release: 36615555210
+  - iOS App Store Connect Release: 36615555336
+- GitHub pre-release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.1
+  - Published 2026-09-29T18:59:35Z as a pre-release, not a draft.
+  - 17 assets: macOS ARM64/x64 DMG and ZIP with blockmaps, the Windows EXE, the Linux x64/ARM64 AppImages, the Android APK with its sha256, and `latest*.yml` updater metadata.
+  - `releases/latest` stays `v1.4.91` (`delivery-evidence/github-release-v1.4.92-beta.1.json`).
+- Docker (`delivery-evidence/docker-digests-v1.4.92-beta.1.txt`):
+  - `1.4.92-beta.1` = `:beta` = `sha256:1e721a38…` (linux/amd64, linux/arm64). `:beta` moved from `a529eb86…` (1.4.91).
+  - `:latest` is unchanged at `a529eb86…` (stable 1.4.91).
+- Channels:
+  - Desktop installs with **Receive beta updates** on are offered 1.4.92-beta.1.
+  - Stable-channel installs stay on 1.4.91.
+- Release notes: pre-release tags use GitHub-generated notes. `release-notes.md` stays archived for the next stable release.
+- Release/publication/deployment result: `Completed`
+- Not exercised: the published installers and images were not downloaded or started locally. The user verified a local build of the same app code (`641bacc03`) before finalization.
+- Rollback: delete or unpublish the pre-release, or ship a newer beta or stable build. Beta installs never downgrade automatically. `:latest` was not moved.
+
+### Post-release cleanup (DR-002)
+
+- Release worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-polish-beta-release` and local branch `finalize/chat-composer-polish-beta`: removed right after this record is pushed to `personal`. The branch was never pushed as a remote branch.
+- Shared checkout `personal`: fast-forwarded to the pushed record commit.
+
+## Final Status (DR-002)
+
+- Explicit user testing/verification complete: `Yes` (DR-001)
+- Repository finalization complete: `Yes` (`personal@aeb018ee6`, plus this record commit)
+- Applicable release/deployment/rollout complete: `Yes` (`v1.4.92-beta.1`)
+- Applicable safe cleanup complete: see Post-release cleanup (DR-002)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
