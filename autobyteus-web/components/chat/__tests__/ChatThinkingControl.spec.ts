@@ -38,6 +38,8 @@ const checked = (control: VueWrapper) => control.findAll('[role="menuitemradio"]
 afterEach(() => {
   wrapper?.unmount()
   wrapper = null
+  vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 })
 
 describe('ChatThinkingControl', () => {
@@ -109,5 +111,51 @@ describe('ChatThinkingControl', () => {
   it('is hidden when the model has no thinking parameters', () => {
     const control = mountControl({ temperature: { type: 'number', default: 1 } }, null)
     expect(control.find('[data-test="chat-thinking-trigger"]').exists()).toBe(false)
+  })
+})
+
+describe('ChatThinkingControl placement', () => {
+  const placeRootAt = (control: VueWrapper, top: number) => {
+    vi.spyOn(window, 'getComputedStyle').mockImplementation(() => ({ position: 'relative' }) as CSSStyleDeclaration)
+    vi.spyOn(control.element, 'getBoundingClientRect').mockReturnValue({ top, bottom: top + 28, left: 0, right: 80, width: 80, height: 28, x: 0, y: top, toJSON: () => ({}) } as DOMRect)
+  }
+
+  it('opens above its trigger even when there is room below (AC-002)', async () => {
+    vi.stubGlobal('innerWidth', 1512)
+    vi.stubGlobal('innerHeight', 2000)
+    const control = mountControl(claudeSdkSchema, null)
+    placeRootAt(control, 604)
+    await open(control)
+
+    const menu = control.get('[data-test="chat-thinking-menu"]')
+    expect(menu.classes()).toEqual(expect.arrayContaining(['absolute', 'right-0', 'bottom-full', 'mb-1.5', 'overflow-y-auto']))
+    expect(menu.classes()).not.toContain('top-full')
+    expect((menu.element as HTMLElement).style.maxHeight).toBe('240px')
+  })
+
+  it('shrinks to the space above in a short window (AC-004)', async () => {
+    vi.stubGlobal('innerWidth', 1024)
+    vi.stubGlobal('innerHeight', 440)
+    const control = mountControl(claudeSdkSchema, null)
+    placeRootAt(control, 200)
+    await open(control)
+
+    const menu = control.get('[data-test="chat-thinking-menu"]')
+    expect(menu.classes()).toContain('bottom-full')
+    expect((menu.element as HTMLElement).style.maxHeight).toBe('178px')
+  })
+
+  it('keeps the bottom sheet below 640px wide (AC-005)', async () => {
+    vi.stubGlobal('innerWidth', 390)
+    vi.stubGlobal('innerHeight', 844)
+    const control = mountControl(claudeSdkSchema, null)
+    placeRootAt(control, 700)
+    await open(control)
+
+    const menu = control.get('[data-test="chat-thinking-menu"]')
+    expect(menu.classes()).toEqual(expect.arrayContaining(['fixed', 'inset-x-2', 'bottom-2']))
+    expect(menu.classes()).not.toContain('bottom-full')
+    expect(menu.classes()).not.toContain('overflow-y-auto')
+    expect((menu.element as HTMLElement).style.maxHeight).toBe('')
   })
 })

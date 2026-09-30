@@ -42,6 +42,8 @@ beforeEach(() => {
 afterEach(() => {
   wrapper?.unmount()
   wrapper = null
+  vi.restoreAllMocks()
+  vi.unstubAllGlobals()
 })
 
 describe('ChatWorkspaceMenu search', () => {
@@ -124,5 +126,51 @@ describe('ChatWorkspaceMenu search', () => {
     await openMenu(menu)
     expect((menu.get('[data-test="chat-workspace-search"]').element as HTMLInputElement).value).toBe('')
     expect(optionTests(menu)).toHaveLength(4)
+  })
+})
+
+describe('ChatWorkspaceMenu placement', () => {
+  const placeRootAt = (menu: VueWrapper, top: number) => {
+    vi.spyOn(window, 'getComputedStyle').mockImplementation(() => ({ position: 'relative' }) as CSSStyleDeclaration)
+    vi.spyOn(menu.element, 'getBoundingClientRect').mockReturnValue({ top, bottom: top + 28, left: 0, right: 200, width: 200, height: 28, x: 0, y: top, toJSON: () => ({}) } as DOMRect)
+  }
+
+  it('opens above its trigger even when there is room below (AC-002)', async () => {
+    vi.stubGlobal('innerWidth', 1512)
+    vi.stubGlobal('innerHeight', 2000)
+    const menu = mountMenu()
+    placeRootAt(menu, 604)
+    await openMenu(menu)
+
+    const box = menu.get('[data-test="chat-workspace-menu"]')
+    expect(box.classes()).toEqual(expect.arrayContaining(['absolute', 'left-0', 'bottom-full', 'mb-1.5']))
+    expect(box.classes()).not.toContain('top-full')
+    expect((box.element as HTMLElement).style.maxHeight).toBe('420px')
+  })
+
+  it('shrinks to the space above in a short window and keeps the list scrollable (AC-004)', async () => {
+    vi.stubGlobal('innerWidth', 1024)
+    vi.stubGlobal('innerHeight', 440)
+    const menu = mountMenu()
+    placeRootAt(menu, 300)
+    await openMenu(menu)
+
+    const box = menu.get('[data-test="chat-workspace-menu"]')
+    expect(box.classes()).toContain('bottom-full')
+    expect((box.element as HTMLElement).style.maxHeight).toBe('278px')
+    expect(box.get('[role="listbox"]').classes()).toEqual(expect.arrayContaining(['min-h-0', 'flex-1', 'overflow-y-auto']))
+  })
+
+  it('keeps the bottom sheet below 640px wide (AC-005)', async () => {
+    vi.stubGlobal('innerWidth', 390)
+    vi.stubGlobal('innerHeight', 844)
+    const menu = mountMenu()
+    placeRootAt(menu, 700)
+    await openMenu(menu)
+
+    const box = menu.get('[data-test="chat-workspace-menu"]')
+    expect(box.classes()).toEqual(expect.arrayContaining(['fixed', 'inset-x-2', 'bottom-2', 'max-h-[80vh]']))
+    expect(box.classes()).not.toContain('bottom-full')
+    expect((box.element as HTMLElement).style.maxHeight).toBe('')
   })
 })
