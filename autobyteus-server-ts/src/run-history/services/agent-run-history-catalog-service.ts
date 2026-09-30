@@ -12,6 +12,12 @@ import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalize
 import { AgentRunHistoryIdentityResolver } from "./agent-run-history-identity.js";
 import { compactSummary } from "./run-history-service-helpers.js";
 import {
+  createStandaloneRunLiveness,
+  type AgentRunActivityLookup,
+  type StandaloneRunCollaborationRoots,
+  type StandaloneRunLiveness,
+} from "./standalone-run-liveness.js";
+import {
   commitAgentRunModelConfig,
   type AgentRunModelConfigCommitResult,
 } from "./agent-run-model-config-commit.js";
@@ -36,10 +42,6 @@ type AgentDefinitionLookup = {
   getAgentDefinitionById(
     agentDefinitionId: string,
   ): Promise<{ name?: string | null } | null>;
-};
-
-type AgentRunActivityLookup = {
-  hasActiveRun(runId: string): boolean | Promise<boolean>;
 };
 
 const catalogStates = new Map<string, CatalogState>();
@@ -103,7 +105,7 @@ export class AgentRunHistoryCatalogService {
   private readonly metadataStore: AgentRunMetadataStore;
   private readonly identityResolver: AgentRunHistoryIdentityResolver;
   private readonly agentDefinitionService: AgentDefinitionLookup;
-  private readonly agentRunManager: AgentRunActivityLookup;
+  private readonly liveness: StandaloneRunLiveness;
   private readonly state: CatalogState;
   private readonly definitionNameCache = new Map<string, string>();
 
@@ -115,6 +117,7 @@ export class AgentRunHistoryCatalogService {
       identityResolver?: AgentRunHistoryIdentityResolver;
       agentDefinitionService?: AgentDefinitionLookup;
       agentRunManager?: AgentRunActivityLookup;
+      collaborationRoots?: StandaloneRunCollaborationRoots;
     } = {},
   ) {
     this.indexStore =
@@ -132,15 +135,7 @@ export class AgentRunHistoryCatalogService {
           return AgentDefinitionService.getInstance().getAgentDefinitionById(agentDefinitionId);
         },
       };
-    this.agentRunManager =
-      dependencies.agentRunManager ?? {
-        hasActiveRun: async (runId: string) => {
-          const { AgentRunManager } = await import(
-            "../../agent-execution/services/agent-run-manager.js"
-          );
-          return AgentRunManager.getInstance().hasActiveRun(runId);
-        },
-      };
+    this.liveness = createStandaloneRunLiveness(dependencies);
     this.state = getState(memoryDir);
     this.readiness = new RootRunPackageReadinessIndex(memoryDir);
   }
@@ -302,7 +297,7 @@ export class AgentRunHistoryCatalogService {
     if (!identity) {
       return { success: false, message: "Invalid run ID path." };
     }
-    if (await this.agentRunManager.hasActiveRun(identity.runId)) {
+    if (await this.liveness.isLive(identity.runId)) {
       return {
         success: false,
         message: "Run is active. Terminate it before deleting history.",
@@ -317,7 +312,7 @@ export class AgentRunHistoryCatalogService {
     if (!identity) {
       return { success: false, message: "Invalid run ID path." };
     }
-    if (await this.agentRunManager.hasActiveRun(identity.runId)) {
+    if (await this.liveness.isLive(identity.runId)) {
       return {
         success: false,
         message: "Prepared run already has an active runtime.",
@@ -374,7 +369,7 @@ export class AgentRunHistoryCatalogService {
     if (!identity) {
       return { success: false, message: "Invalid run ID path." };
     }
-    if (await this.agentRunManager.hasActiveRun(identity.runId)) {
+    if (await this.liveness.isLive(identity.runId)) {
       return {
         success: false,
         message: "Run is active. Terminate it before archiving history.",

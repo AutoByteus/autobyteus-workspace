@@ -328,6 +328,32 @@ describe("AgentRunHistoryCatalogService", () => {
     expect(getPersistedIndex()).toEqual([row]);
   });
 
+  it("treats a run whose Agent root is still registered as live: delete and archive are refused (CR-001)", async () => {
+    const row = buildIndexRow();
+    await buildServiceWithIndexStore([row]);
+    const childMemory = path.join(memoryDir, "agents", "run-1", "collaboration", "child-run", "raw_traces_active.jsonl");
+    await fs.mkdir(path.dirname(childMemory), { recursive: true });
+    await fs.writeFile(childMemory, "");
+    const { AgentRunHistoryCatalogService } = await import(
+      "../../../../src/run-history/services/agent-run-history-catalog-service.js"
+    );
+    let rootRegistered = true;
+    const service = new AgentRunHistoryCatalogService(memoryDir, {
+      agentDefinitionService: { getAgentDefinitionById: vi.fn().mockResolvedValue({ name: "Agent One" }) } as never,
+      agentRunManager: { hasActiveRun: vi.fn().mockReturnValue(false) },
+      collaborationRoots: { hasRoot: vi.fn(() => rootRegistered) },
+    });
+    await expect(service.deleteRun("run-1")).resolves.toEqual({
+      success: false, message: "Run is active. Terminate it before deleting history.",
+    });
+    await expect(service.archiveRun("run-1")).resolves.toMatchObject({ success: false });
+    await expect(fs.access(childMemory)).resolves.toBeUndefined();
+
+    rootRegistered = false;
+    await expect(service.deleteRun("run-1")).resolves.toMatchObject({ success: true });
+    await expect(fs.access(path.join(memoryDir, "agents", "run-1"))).rejects.toThrow();
+  });
+
   it("rolls back cancel state and leaves prepared metadata when the index flush fails", async () => {
     const row = buildIndexRow();
     const runDirPath = path.join(memoryDir, "agents", "run-1");

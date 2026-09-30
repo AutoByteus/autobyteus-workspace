@@ -77,6 +77,10 @@ export class AgentRunCollaborationRootManager implements StandaloneAgentRunColla
   static releaseProcessInstance(instance: AgentRunCollaborationRootManager): void {
     if (this.instance === instance) this.instance = null;
   }
+  /** A root is registered (or loading) for the host, whether or not the host's runtime is up. */
+  static hasRegisteredRoot(hostRunId: string): boolean {
+    return this.instance?.hasRoot(hostRunId) ?? false;
+  }
 
   private readonly layout: AgentMemoryLayout;
   private readonly store: AgentRunCollaborationPackageStore;
@@ -110,6 +114,11 @@ export class AgentRunCollaborationRootManager implements StandaloneAgentRunColla
   getActive(hostRunId: string): AgentRunCollaborationRoot | null {
     const root = this.active.get(hostRunId.trim()) ?? null;
     return root?.isActive() ? root : null;
+  }
+
+  hasRoot(hostRunIdInput: string): boolean {
+    const hostRunId = hostRunIdInput.trim();
+    return this.active.has(hostRunId) || this.pending.has(hostRunId);
   }
 
   getActiveTree(hostRunId: string): AgentRunCollaborationTreeSnapshot | null {

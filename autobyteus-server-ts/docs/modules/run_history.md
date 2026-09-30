@@ -442,6 +442,10 @@ AgentOrg persisted files:
 
 Important identity/storage rules:
 
+- A standalone run is live for history while its host runtime is active **or** its Agent root is
+  still registered (a host that went down on its own leaves its children running). Delete, archive
+  and prepared-run cancel check `StandaloneRunLiveness` and refuse a live run; only an explicit Stop
+  ends the root. See [Agent Run Collaboration](./agent_run_collaboration.md#root-lifetime).
 - `AgentRunHistoryCatalogService` is the normal semantic owner for standalone
   catalog mutations: prepare/create, first/explicit summary update,
   archive/unarchive, terminate, delete/cancel, and catalog flush
