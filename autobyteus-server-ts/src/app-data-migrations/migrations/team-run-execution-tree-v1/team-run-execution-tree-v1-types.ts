@@ -1,4 +1,4 @@
-import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { ReleasedSkillAccessMode } from "../../legacy/released-skill-access-mode.js";
 import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../../agent-collaboration/domain/collaboration-handoff.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
@@ -43,7 +43,7 @@ export type AgentLaunchConfiguration = Readonly<{
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
+  skillAccessMode: ReleasedSkillAccessMode;
   workspaceRootPath: string | null;
 }>;
 

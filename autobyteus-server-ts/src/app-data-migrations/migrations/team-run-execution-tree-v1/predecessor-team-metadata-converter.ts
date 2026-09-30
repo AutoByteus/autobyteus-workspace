@@ -12,7 +12,7 @@ import {
   isLegacyFlatTeamRunMetadata,
 } from "../team-run-member-tree-prerequisite-converter.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { isReleasedSkillAccessMode, type ReleasedSkillAccessMode } from "../../legacy/released-skill-access-mode.js";
 
 const object = (value: unknown, label: string): Record<string, unknown> => {
   if (!value || typeof value !== "object" || Array.isArray(value)) throw new Error(`${label} must be an object.`);
@@ -51,11 +51,11 @@ const runtimeKindValue = (value: unknown, label: string): RuntimeKind => {
   }
   return value as RuntimeKind;
 };
-const skillAccessModeValue = (value: unknown, label: string): SkillAccessMode => {
-  if (!Object.values(SkillAccessMode).includes(value as SkillAccessMode)) {
+const skillAccessModeValue = (value: unknown, label: string): ReleasedSkillAccessMode => {
+  if (!isReleasedSkillAccessMode(value)) {
     throw new Error(`${label} is unsupported.`);
   }
-  return value as SkillAccessMode;
+  return value;
 };
 const applicationExecutionContext = (
   record: Record<string, unknown>,

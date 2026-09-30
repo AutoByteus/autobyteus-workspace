@@ -1,4 +1,4 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { isReleasedSkillAccessMode } from "../../legacy/released-skill-access-mode.js";
 import {
   assertAgentTeamAddress,
   getParentAgentTeamAddress,
@@ -87,7 +87,7 @@ const validateLaunchConfiguration = (value: unknown, label: string): void => {
   if (typeof launch.autoExecuteTools !== "boolean") {
     throw new Error(`${label}.autoExecuteTools must be boolean.`);
   }
-  if (!Object.values(SkillAccessMode).includes(launch.skillAccessMode as SkillAccessMode)) {
+  if (!isReleasedSkillAccessMode(launch.skillAccessMode)) {
     throw new Error(`${label}.skillAccessMode is unsupported.`);
   }
   if (launch.workspaceRootPath !== null) {

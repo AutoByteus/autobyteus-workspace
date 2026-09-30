@@ -1,7 +1,7 @@
 // Frozen verbatim copy (import paths remapped only) of `src/agent-org-execution/domain/agent-org-run-execution-tree.ts` as released at
 // origin/personal@f2924a2b0. Owned by released app-data migrations; current runtime must not import it.
 import type { CollaborationHandoff } from "../../../agent-collaboration/domain/collaboration-handoff.js";
-import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
+import type { ReleasedAgentLaunchConfiguration } from "../released-team-run-config.js";
 import type {
   ConfiguredExecutionNode,
   IsoTimestamp,
@@ -14,7 +14,7 @@ export type RootConfiguredAgentOrgExecutionNode = Readonly<{
   orgDefinitionId: string;
   orgDefinitionName: string;
   orgRunId: string;
-  defaultLaunchConfiguration: AgentLaunchConfiguration;
+  defaultLaunchConfiguration: ReleasedAgentLaunchConfiguration;
   members: readonly ConfiguredExecutionNode[];
   taskExecutions: readonly TaskExecution[];
 }>;

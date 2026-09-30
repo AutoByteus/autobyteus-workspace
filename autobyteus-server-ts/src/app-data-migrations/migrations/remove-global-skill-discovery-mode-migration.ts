@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import type { ReleasedSkillAccessMode } from "../legacy/released-skill-access-mode.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
@@ -10,7 +10,7 @@ import type {
 
 const MIGRATION_ID = "20260706_remove_global_skill_discovery_mode";
 const LEGACY_MODE = "GLOBAL_DISCOVERY";
-const TARGET_MODE = SkillAccessMode.PRELOADED_ONLY;
+const TARGET_MODE: ReleasedSkillAccessMode = "PRELOADED_ONLY";
 const CANDIDATE_JSON_FILE_NAMES = new Set([
   "run_metadata.json",
   "team_run_metadata.json",
