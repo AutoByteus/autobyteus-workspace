@@ -122,8 +122,13 @@ export class WorkingContextCompactionOutputValidator {
 export const assertWorkingContextMessagesStructurallyValid = (
   messages: readonly Message[],
 ): void => {
-  messages.forEach((message, index) => assertValidMessage(message, index));
+  assertWorkingContextMessageShapesValid(messages);
   assertCompleteToolProtocol(messages);
+};
+
+// Safe snapshot decode admits unfinished batches; dispatch validation above does not.
+export const assertWorkingContextMessageShapesValid = (messages: readonly Message[]): void => {
+  messages.forEach((message, index) => assertValidMessage(message, index));
 };
 
 const takeLeadingSystemMessages = (messages: Message[]): Message[] => {

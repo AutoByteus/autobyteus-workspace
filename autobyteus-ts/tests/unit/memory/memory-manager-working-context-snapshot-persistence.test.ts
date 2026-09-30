@@ -9,7 +9,7 @@ import { Message, MessageRole } from '../../../src/llm/utils/messages.js';
 import { ToolInvocation } from '../../../src/agent/tool-invocation.js';
 import { ToolResultEvent } from '../../../src/agent/events/agent-events.js';
 import { WorkingContextSnapshotSerializer } from '../../../src/memory/working-context-snapshot-serializer.js';
-import { WorkingContextFinalizer } from '../../../src/memory/working-context-finalizer.js';
+import { WorkingContextFinalizer, createCompactedMemoryUserMessage } from '../../../src/memory/working-context-finalizer.js';
 import { getWorkingContextMessageProvenance } from '../../../src/memory/working-context-provenance.js';
 
 const makeTempDir = () => fs.mkdtempSync(path.join(os.tmpdir(), 'memory-manager-snapshot-'));
@@ -110,4 +110,31 @@ describe('MemoryManager working context snapshot persistence', () => {
       fs.rmSync(tempDir, { recursive: true, force: true });
     }
   });
+  it('writes exact current keys throughout a summary plus tool batch, including raw-ahead persistence', () => {
+    const tempDir = makeTempDir();
+    try {
+      const agentId = 'writer-cuts';
+      const snapshots = new WorkingContextSnapshotStore(tempDir, agentId);
+      const manager = new MemoryManager({ store: new FileMemoryStore(tempDir, agentId), workingContextSnapshotStore: snapshots, agentId });
+      manager.replaceWorkingContext(finalized(createCompactedMemoryUserMessage('Checkpoint 🧠')));
+      const turn = manager.startTurn();
+      manager.ingestToolIntents(['a', 'b'].map((id) => new ToolInvocation('inspect', {}, id, turn)), turn);
+      for (const complete of [false, false, true]) {
+        const saved = snapshots.read(agentId)!;
+        expect(Object.keys(saved)).toEqual(['agent_id', 'messages']);
+        expect(WorkingContextSnapshotSerializer.validateEnvelope(saved)).toBe(true);
+        expect(WorkingContextSnapshotSerializer.validate(saved)).toBe(complete);
+        expect(JSON.stringify(saved)).toContain('Checkpoint 🧠');
+        if (!complete) {
+          const id = (saved.messages as any[]).filter((m) => m.role === 'tool').length ? 'b' : 'a';
+          manager.ingestToolResults([new ToolResultEvent('inspect', { id }, id, undefined, {}, turn)], turn);
+        }
+      }
+      manager.ingestToolIntents([new ToolInvocation('inspect', {}, 'c', turn)], turn);
+      const before = snapshots.read(agentId);
+      manager.ingestToolResults([new ToolResultEvent('inspect', 'raw only', 'c', undefined, {}, turn)], turn, { appendToWorkingContext: false });
+      expect(snapshots.read(agentId)).toEqual(before);
+    } finally { fs.rmSync(tempDir, { recursive: true, force: true }); }
+  });
+
 });

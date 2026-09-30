@@ -58,6 +58,8 @@ describe("application platform runtime isolation", () => {
         autoByteus: {} as never,
         codex: {} as never,
         claude: {} as never,
+        antigravity: {} as never,
+        grok: {} as never,
       })),
     };
     const buildRuntime = async (applicationId: string) => {
@@ -65,6 +67,11 @@ describe("application platform runtime isolation", () => {
         path.join(os.tmpdir(), `autobyteus-runtime-${applicationId}-`),
       );
       tempRoots.push(root);
+      const legacyPath = path.join(root, 'agents', 'autobyteus-memory-compactor', 'agent-config.json');
+      await fs.mkdir(path.dirname(legacyPath), { recursive: true });
+      // Both legacy and current settings must be irrelevant to platform preparation.
+      const legacyBytes = applicationId === 'app-a' ? '{malformed legacy' : JSON.stringify({ defaultLaunchConfig: { llmModelIdentifier: 'retired-override' } });
+      await fs.writeFile(legacyPath, legacyBytes);
       const snapshot = createCatalogSnapshot(applicationId);
       const bundleService = {
         getCatalogSnapshot: vi.fn(async () => snapshot),
@@ -72,7 +79,9 @@ describe("application platform runtime isolation", () => {
           candidateId === applicationId ? snapshot.applications[0] : null),
         getDiagnosticByApplicationId: vi.fn(async () => null),
       };
-      return buildApplicationPlatformRuntime({
+      const get = vi.fn(() => '{malformed current setting');
+      const setDurably = vi.fn();
+      const runtime = buildApplicationPlatformRuntime({
         contextFilePathEnvironment: {
           appDataDir: root,
           baseUrl: "http://localhost:8000",
@@ -81,9 +90,11 @@ describe("application platform runtime isolation", () => {
           getAppDataDir: () => root,
           getMemoryDir: () => path.join(root, "memory"),
           getSkillsDir: () => path.join(root, "skills"),
+          getAgentsDir: () => path.join(root, 'agents'),
+          get, setDurably,
         } as never,
         bundleService: bundleService as never,
-        agentDefinitionService: {} as never,
+        agentDefinitionService: { getFreshAgentDefinitionById: vi.fn(async () => null) } as never,
         agentTeamDefinitionService: {} as never,
         agentToolMcpSessionAuthorities:
           agentToolsMcpHost.sessionAuthorities,
@@ -101,6 +112,21 @@ describe("application platform runtime isolation", () => {
         staticAdapterToolNames: agentToolsMcpHost.staticAdapterToolNames,
         selectedApplicationIds: new Set([applicationId]),
       });
+      // Exercise the real startup composition callback, not a mock importer or a
+      // full application launch (the latter belongs to API/E2E).
+      const read = vi.spyOn(fs, 'readFile');
+      const unlink = vi.spyOn(fs, 'unlink');
+      const write = vi.spyOn(fs, 'writeFile');
+      try {
+        await (runtime.lifecycle as any).dependencies.preparation.bootstrapBuiltInAgents();
+        expect(get).not.toHaveBeenCalled();
+        expect(setDurably).not.toHaveBeenCalled();
+        expect(read.mock.calls.some(([file]) => String(file) === legacyPath)).toBe(false);
+        expect(unlink.mock.calls.some(([file]) => String(file) === legacyPath)).toBe(false);
+        expect(write.mock.calls.some(([file]) => String(file) === legacyPath)).toBe(false);
+      } finally { read.mockRestore(); unlink.mockRestore(); write.mockRestore(); }
+      expect(await fs.readFile(legacyPath, 'utf8')).toBe(legacyBytes);
+      return runtime;
     };
 
     const runtimeA = await buildRuntime("app-a");
@@ -169,6 +195,8 @@ describe("application platform runtime isolation", () => {
         autoByteus: {} as never,
         codex: {} as never,
         claude: {} as never,
+        antigravity: {} as never,
+        grok: {} as never,
       })),
     };
     const processOwners = {

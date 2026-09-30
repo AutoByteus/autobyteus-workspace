@@ -15,8 +15,7 @@ export const parseCompactionModelSettings = (value: string): CompactionModelSett
   const parsed: unknown = JSON.parse(value);
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) throw new Error('Compaction model settings must be an object.');
   const input = parsed as Record<string, unknown>;
-  if (Object.keys(input).some((key) => key !== 'modelIdentifier' && key !== 'llmConfig') ||
-      !(input.modelIdentifier === null || typeof input.modelIdentifier === 'string' && input.modelIdentifier.trim()) ||
+  if (!(input.modelIdentifier === null || typeof input.modelIdentifier === 'string' && input.modelIdentifier.trim()) ||
       !(input.llmConfig === null || input.llmConfig && typeof input.llmConfig === 'object' && !Array.isArray(input.llmConfig))) {
     throw new Error('Compaction settings require modelIdentifier (nonempty string or null) and llmConfig (object or null).');
   }

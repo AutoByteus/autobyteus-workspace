@@ -1,7 +1,10 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { ToolInvocation } from "autobyteus-ts/agent/tool-invocation.js";
+import { ToolResultEvent } from "autobyteus-ts/agent/events/agent-events.js";
+import { ReleasedNativeSnapshotV5Codec } from "autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.js";
 import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
 import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import { MemoryManager } from "autobyteus-ts/memory/memory-manager.js";
@@ -12,9 +15,10 @@ import {
   RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from "autobyteus-ts/memory/store/memory-file-names.js";
-import { createNaturalUserMessageProvenance, WorkingContextFinalizer } from "autobyteus-ts/memory/working-context-finalizer.js";
+import { createNaturalUserMessageProvenance, createCompactedMemoryUserMessage, WorkingContextFinalizer } from "autobyteus-ts/memory/working-context-finalizer.js";
 import { WorkingContextSnapshotSerializer } from "autobyteus-ts/memory/working-context-snapshot-serializer.js";
 import { WorkingContextSnapshotStore } from "autobyteus-ts/memory/store/working-context-snapshot-store.js";
+import { TeamContextFileExecutionLocatorsV1AppDataMigration } from "../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
 import type {
@@ -145,7 +149,7 @@ const strictV5 = (agentId: string, rawId: string, content: string) => {
       { kind: "retained_user", rawTraceIds: [rawId], turnId: "turn-1" },
     )],
   });
-  return WorkingContextSnapshotSerializer.serialize(workingContext, { agent_id: agentId });
+  return ReleasedNativeSnapshotV5Codec.serialize(workingContext, { agent_id: agentId });
 };
 
 const seedObsolete = async (runDir: string): Promise<Record<string, Buffer>> => {
@@ -348,10 +352,9 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
     expect(layoutIndex).toBe(v1Index + 1);
     expect(v2Index).toBe(layoutIndex + 1);
     expect(externalIndex).toBeGreaterThan(v2Index);
-    expect([rotationIndex, activeNameIndex, nativeIndex]).toEqual([
-      externalIndex + 1,
-      externalIndex + 2,
-      externalIndex + 3,
+    const locatorIndex = defaultDefinitions.findIndex((item) => item instanceof TeamContextFileExecutionLocatorsV1AppDataMigration);
+    expect([rotationIndex, activeNameIndex, locatorIndex, nativeIndex]).toEqual([
+      externalIndex + 1, externalIndex + 2, externalIndex + 3, externalIndex + 4,
     ]);
 
     const runId = "ordinary-runner-direct-upgrade";
@@ -442,4 +445,115 @@ describe("MigrateNativeWorkingContextSnapshotsV5Migration", () => {
     }]);
     expect(JSON.stringify(continued)).toContain("Legacy filename retains this exact user message");
   });
+  const locationBytes = async (dir: string): Promise<Record<string, string>> => {
+    const files: Record<string, string> = {};
+    const walk = async (current: string) => {
+      for (const entry of await fs.readdir(current, { withFileTypes: true })) {
+        const file = path.join(current, entry.name);
+        if (entry.isDirectory()) await walk(file);
+        else files[path.relative(dir, file)] = (await fs.readFile(file)).toString('base64');
+      }
+    };
+    await walk(dir);
+    return files;
+  };
+
+  const writerCut = (runId: string, results: number, rawAhead = false) => {
+    const snapshots = new WorkingContextSnapshotStore(memoryDir, runId);
+    const manager = new MemoryManager({ store: new FileMemoryStore(memoryDir, runId), workingContextSnapshotStore: snapshots, agentId: runId });
+    manager.replaceWorkingContext(new WorkingContextFinalizer().finalize({ messages: [
+      new Message(MessageRole.SYSTEM, { content: 'System' }), createCompactedMemoryUserMessage('Keep checkpoint 🧠; approval pending.'),
+    ] }));
+    const turn = manager.startTurn();
+    const native = { provider: 'openai_responses' as const, functionCallItem: { opaque: { retained: true } } };
+    manager.ingestToolIntents(['a', 'b'].map((id) => new ToolInvocation('inspect', { id }, id, turn, native)), turn);
+    for (let i = 0; i < results; i++) manager.ingestToolResults([
+      new ToolResultEvent('inspect', { committed: i }, ['a', 'b'][i]!, undefined, {}, turn),
+    ], turn, { appendToWorkingContext: !rawAhead });
+    return snapshots.read(runId)!;
+  };
+
+  const forbiddenMigrationCalls = (migration: MigrateNativeWorkingContextSnapshotsV5Migration) => [
+    vi.spyOn((migration as any).converter, 'convert'),
+    vi.spyOn(migration as any, 'loadActiveReferenceFacts'),
+    vi.spyOn(migration as any, 'hasObsoleteFiles'),
+    vi.spyOn(migration as any, 'removeObsoleteFiles'),
+    vi.spyOn(WorkingContextSnapshotStore.prototype, 'write'),
+    vi.spyOn(MemoryManager.prototype, 'ensureWorkingContextToolProtocolSafeForNextLlm'),
+    vi.spyOn(WorkingContextFinalizer.prototype, 'finalize'),
+  ];
+
+  it.each([{ results: 0 }, { results: 1 }, { results: 2 }, { results: 2, rawAhead: true }])(
+    'preserves the complete location for an actual versionless writer cut: %j', async ({ results, rawAhead = false }) => {
+      const runId = 'current-writer-cut';
+      await writeStandaloneMetadata(runId);
+      const snapshot = writerCut(runId, results, rawAhead);
+      expect(Object.keys(snapshot)).toEqual(['agent_id', 'messages']);
+      expect(WorkingContextSnapshotSerializer.validate(snapshot)).toBe(results === 2 && !rawAhead);
+      await seedObsolete(standaloneDir(runId));
+      await writeText(path.join(standaloneDir(runId), 'raw_archive', 'keep.jsonl'), 'archived fixture bytes\n');
+      const before = await locationBytes(standaloneDir(runId));
+      const migration = new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir);
+      const forbidden = forbiddenMigrationCalls(migration);
+      try {
+        const result = await migration.execute();
+        expect(result.status).toBe('SUCCEEDED');
+        expect(result.summary).toMatchObject({ migratedCount: 0, skippedCount: 1, failedCount: 0 });
+        expect(result.summary.details[0]?.message).toContain('Versionless current snapshot recognized');
+        expect(await locationBytes(standaloneDir(runId))).toEqual(before);
+        forbidden.forEach((spy) => expect(spy).not.toHaveBeenCalled());
+      } finally { vi.restoreAllMocks(); }
+    },
+  );
+
+  it.each([
+    ['wrong agent', (p: any) => { p.agent_id = 'wrong'; }],
+    ['missing messages', (p: any) => { delete p.messages; }],
+    ['invalid entry', (p: any) => { p.messages[0] = null; }],
+    ['missing provenance', (p: any) => { p.messages[0].metadata = {}; }],
+    ['bad range', (p: any) => { p.messages[1].metadata.autobyteus_memory_provenance.constituents[0].textRange.end = 999; }],
+    ['invalid call', (p: any) => { p.messages[2].tool_payload.tool_calls[0].id = 4; }],
+    ['missing arguments', (p: any) => { delete p.messages[2].tool_payload.tool_calls[0].arguments; }],
+    ['duplicate ids', (p: any) => { p.messages[2].tool_payload.tool_calls[1].id = 'a'; }],
+    ['invalid native', (p: any) => { p.messages[2].tool_payload.tool_calls[0].nativeToolCallContext = { provider: 'unknown' }; }],
+    ['arbitrary root', (p: any) => { delete p.agent_id; delete p.messages; p.arbitrary = true; }],
+  ])('preserves and fails %s without destructive legacy fallthrough', async (_name, mutate) => {
+    const runId = 'invalid-current';
+    await writeStandaloneMetadata(runId);
+    const snapshot = writerCut(runId, 0);
+    mutate(snapshot);
+    await writeJson(snapshotPath(standaloneDir(runId)), snapshot);
+    await seedObsolete(standaloneDir(runId));
+    const before = await locationBytes(standaloneDir(runId));
+    const migration = new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir);
+    const forbidden = forbiddenMigrationCalls(migration);
+    try {
+      const result = await migration.execute();
+      expect(result.status).toBe('FAILED');
+      expect(result.summary).toMatchObject({ migratedCount: 0, skippedCount: 0, failedCount: 1 });
+      expect(await locationBytes(standaloneDir(runId))).toEqual(before);
+      forbidden.forEach((spy) => expect(spy).not.toHaveBeenCalled());
+    } finally { vi.restoreAllMocks(); }
+  });
+
+  it.each(['SUCCEEDED', 'SUCCEEDED_WITH_WARNINGS'] as const)('does not replay a terminal %s migration', async (status) => {
+    const migration = new MigrateNativeWorkingContextSnapshotsV5Migration(memoryDir);
+    const repository = new InMemoryMigrationRepository();
+    await repository.complete({ migrationId: migration.id, displayName: migration.displayName,
+      status, completedAt: new Date(), summary: JSON.stringify({ scannedCount: 0, migratedCount: 0, skippedCount: 0, failedCount: 0, details: [] }), errorMessage: null, logPath: null });
+    const prerequisite = { id: migration.prerequisiteMigrationIds[0], displayName: 'Satisfied layout fixture',
+      description: 'Terminal prerequisite; must not execute.', requiredOnStartup: true,
+      execute: async (): Promise<never> => { throw new Error('Terminal prerequisite replayed'); } };
+    await repository.complete({ migrationId: prerequisite.id, displayName: prerequisite.displayName, status: 'SUCCEEDED',
+      completedAt: new Date(), summary: JSON.stringify({ scannedCount: 0, migratedCount: 0, skippedCount: 0, failedCount: 0, details: [] }), errorMessage: null, logPath: null });
+    const before = structuredClone([...repository.records]);
+    const execute = vi.spyOn(migration, 'execute');
+    try {
+      await new AppDataMigrationRunner(new AppDataMigrationRegistry([prerequisite, migration]), repository,
+        { logsDir: path.join(memoryDir, 'migration-logs') }).runPending();
+      expect(execute).not.toHaveBeenCalled();
+      expect([...repository.records]).toEqual(before);
+    } finally { vi.restoreAllMocks(); }
+  });
+
 });
