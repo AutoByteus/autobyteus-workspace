@@ -1,6 +1,7 @@
 {
   "toolNames": [
     "run_bash",
+    "read_file",
     "read_url",
     "search_web",
     "close_tab",

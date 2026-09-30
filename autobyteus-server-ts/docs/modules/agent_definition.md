@@ -114,16 +114,15 @@ Every agent definition carries `skillScope` (`AgentSkillScope`), persisted in `a
 
 Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-agents/`. This subsystem owns platform built-in agent templates, syncs the registry-defined built-in agent ids into the normal runtime agent folder under `<appDataDir>/agents/`, resolves them through `AgentDefinitionService`, and initializes server settings that select infrastructure agents when required.
 
-Built-in templates are centralized under `src/built-in-agents/templates/`, and each registry entry declares a `syncPolicy`:
+Built-in templates are centralized under `src/built-in-agents/templates/`. Every built-in agent is platform-owned:
 
-- `memory-compactor/` syncs the shared `agents/autobyteus-memory-compactor/` definition with display name **Memory Compactor** (`overwrite`).
-- `retrospective-skill-improver/` syncs the shared `agents/autobyteus-retrospective-skill-improver/` definition with display name **Retrospective Skill Improver** (`overwrite`). The persisted clean-state definition id is `autobyteus-retrospective-skill-improver`.
-- `daily-assistant/` seeds the shared `agents/autobyteus-daily-assistant/` definition with display name **Daily Assistant** (`seedIfMissing`). It is the default agent of the web Chat entry, ships with the general tool set and `skillScope: ALL_INSTALLED`, and is exported as `DAILY_ASSISTANT_AGENT_DEFINITION_ID`.
+- `memory-compactor/` syncs the shared `agents/autobyteus-memory-compactor/` definition with display name **Memory Compactor**.
+- `retrospective-skill-improver/` syncs the shared `agents/autobyteus-retrospective-skill-improver/` definition with display name **Retrospective Skill Improver**. The persisted clean-state definition id is `autobyteus-retrospective-skill-improver`.
+- `daily-assistant/` syncs the shared `agents/autobyteus-daily-assistant/` definition with display name **Daily Assistant**. It is the default agent of the web Chat entry, ships with the general tool set (including `read_file`, so it can read cataloged `SKILL.md` files) and `skillScope: ALL_INSTALLED`, and is exported as `DAILY_ASSISTANT_AGENT_DEFINITION_ID`.
 
 The built-in-agent bootstrapper owns this lifecycle:
 
-- `overwrite` built-ins have their `agent.md` and `agent-config.json` rewritten from the template on every startup; app-data edits to those ids are product-managed and do not survive restart;
-- `seedIfMissing` built-ins are copied from the template only for files or folders that do not exist yet, so user edits to the Daily Assistant (prompt, tools, model defaults, skill scope) persist across restarts and upgrades; deleting a file restores the template copy on the next startup;
+- every built-in has its `agent.md` and `agent-config.json` rewritten from the template on every startup, and its `skills/` folder mirrored from the template (removed when the template has none); app-data edits to those ids, including edits to the Daily Assistant's prompt, tools, model defaults, skill scope or agent-local skills, do not survive restart;
 - standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
 - the Memory Compactor is synchronized at fixed id `autobyteus-memory-compactor` without creating a user-selectable server-setting default;
 - `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-retrospective-skill-improver` only when the setting is blank; and

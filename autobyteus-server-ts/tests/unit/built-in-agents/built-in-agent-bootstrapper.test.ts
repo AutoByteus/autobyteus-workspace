@@ -393,10 +393,10 @@ describe("BuiltInAgentBootstrapper", () => {
     await expect(fs.stat(dailyAssistantAgentDir())).rejects.toMatchObject({ code: "ENOENT" });
   });
 
-  describe("Daily Assistant (seedIfMissing)", () => {
+  describe("Daily Assistant (platform-owned)", () => {
     const builtInDailyAssistantDir = (): string => agentDir(DAILY_ASSISTANT_AGENT_DEFINITION_ID);
 
-    it("seeds the Daily Assistant with all installed skills and makes it a normal visible agent", async () => {
+    it("creates the Daily Assistant from the template with read_file and all installed skills", async () => {
       const services = createServices();
 
       const result = await bootstrapBuiltInAgents(services);
@@ -406,70 +406,63 @@ describe("BuiltInAgentBootstrapper", () => {
         agentDir: builtInDailyAssistantDir(),
         syncedAgentMd: true,
         syncedAgentConfig: true,
-        syncedSkills: false,
+        syncedSkills: true,
         resolved: true,
         initializedSetting: false,
       });
-      expect(await readJson(path.join(builtInDailyAssistantDir(), "agent-config.json"))).toMatchObject({
+      const config = await readJson(path.join(builtInDailyAssistantDir(), "agent-config.json"));
+      expect(config).toMatchObject({
         skillNames: [],
         skillScope: "ALL_INSTALLED",
         defaultLaunchConfig: null,
       });
+      expect(config.toolNames).toContain("read_file");
       const visibleDefinitions = await services.agentDefinitionService.getVisibleAgentDefinitions();
-      expect(visibleDefinitions.find((definition) => definition.id === DAILY_ASSISTANT_AGENT_DEFINITION_ID))
-        .toMatchObject({ name: "Daily Assistant", skillScope: "ALL_INSTALLED", ownershipScope: "shared" });
+      const visible = visibleDefinitions.find((definition) => definition.id === DAILY_ASSISTANT_AGENT_DEFINITION_ID);
+      expect(visible).toMatchObject({ name: "Daily Assistant", skillScope: "ALL_INSTALLED", ownershipScope: "shared" });
+      expect(visible?.toolNames).toContain("read_file");
     });
 
-    it("preserves user edits across startups", async () => {
+    it("replaces edited files and agent-local skills from the template on the next startup", async () => {
       const services = createServices();
       await bootstrapBuiltInAgents(services);
       await services.agentDefinitionService.updateAgentDefinition(DAILY_ASSISTANT_AGENT_DEFINITION_ID, {
         instructions: "USER EDITED DAILY ASSISTANT",
         skillScope: "CONFIGURED",
         skillNames: ["my-skill"],
+        toolNames: ["run_bash"],
         defaultLaunchConfig: {
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           llmModelIdentifier: "codex:gpt-5.4",
           llmConfig: null,
         },
       });
+      await fs.mkdir(path.join(builtInDailyAssistantDir(), "skills", "local-skill"), { recursive: true });
+      await fs.writeFile(path.join(builtInDailyAssistantDir(), "skills", "local-skill", "SKILL.md"), "# local", "utf-8");
 
       const result = await bootstrapBuiltInAgents(services);
 
       expect(resultFor(result, DAILY_ASSISTANT_AGENT_DEFINITION_ID)).toMatchObject({
-        syncedAgentMd: false,
-        syncedAgentConfig: false,
-        syncedSkills: false,
+        syncedAgentMd: true,
+        syncedAgentConfig: true,
+        syncedSkills: true,
         resolved: true,
       });
       await expect(fs.readFile(path.join(builtInDailyAssistantDir(), "agent.md"), "utf-8"))
-        .resolves.toContain("USER EDITED DAILY ASSISTANT");
-      expect(await readJson(path.join(builtInDailyAssistantDir(), "agent-config.json"))).toMatchObject({
-        skillScope: "CONFIGURED",
-        skillNames: ["my-skill"],
-        defaultLaunchConfig: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "codex:gpt-5.4" },
-      });
+        .resolves.toBe(await readTemplate("daily-assistant", "agent.md"));
+      expect(await readJson(path.join(builtInDailyAssistantDir(), "agent-config.json")))
+        .toEqual(JSON.parse(await readTemplate("daily-assistant", "agent-config.json")));
+      await expect(fs.stat(path.join(builtInDailyAssistantDir(), "skills"))).rejects.toMatchObject({ code: "ENOENT" });
     });
 
-    it("re-seeds only the files that are missing", async () => {
+    it("recreates a missing file from the template", async () => {
       const services = createServices();
       await bootstrapBuiltInAgents(services);
-      await fs.writeFile(
-        path.join(builtInDailyAssistantDir(), "agent.md"),
-        "---\nname: Daily Assistant\ndescription: Mine\n---\n\nKEEP ME\n",
-        "utf-8",
-      );
       await fs.rm(path.join(builtInDailyAssistantDir(), "agent-config.json"));
 
       const result = await bootstrapBuiltInAgents(services);
 
-      expect(resultFor(result, DAILY_ASSISTANT_AGENT_DEFINITION_ID)).toMatchObject({
-        syncedAgentMd: false,
-        syncedAgentConfig: true,
-        resolved: true,
-      });
-      await expect(fs.readFile(path.join(builtInDailyAssistantDir(), "agent.md"), "utf-8"))
-        .resolves.toContain("KEEP ME");
+      expect(resultFor(result, DAILY_ASSISTANT_AGENT_DEFINITION_ID)).toMatchObject({ syncedAgentConfig: true, resolved: true });
       expect(await readJson(path.join(builtInDailyAssistantDir(), "agent-config.json")))
         .toEqual(JSON.parse(await readTemplate("daily-assistant", "agent-config.json")));
     });
