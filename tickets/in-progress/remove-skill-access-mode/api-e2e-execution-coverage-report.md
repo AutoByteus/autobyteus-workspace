@@ -12,19 +12,66 @@ All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/rem
 - Design Review Report: `design-review-report.md`
 - Architecture Review Revision Record: `architecture-review-revision-record.md` (`ARCH-REV-003`)
 - Implementation Handoff: `implementation-handoff.md`
-- Implementation Revision Record: `implementation-revision-record.md` (`IR-002`)
-- Code Review Report: `code-review-report.md`
-- Code Review Revision Record: `code-review-revision-record.md` (`CRR-002`)
-- Delivery Revision Record / IDs: `N/A`
+- Implementation Revision Record: `implementation-revision-record.md` (`IR-003`)
+- Code Review Report: `code-review-report.md` (round 3); test review: `api-e2e-test-review-report.md` (`CRR-003`, Pass)
+- Code Review Revision Record: `code-review-revision-record.md` (`CRR-004`)
+- Delivery Revision Record / IDs: `delivery-revision-record.md` (`DR-001`, `DR-002`)
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - API/E2E Test-Case Ledger: `api-e2e-test-case-ledger.md`
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Execution Round: 1
-- Trigger: `/code_reviewer` pass handoff `CRR-002`
-- Prior Round Reviewed: None
-- Latest Authoritative Round: 1
-- Code under validation: branch `codex/remove-skill-access-mode` @ `1595b8b2c`, base `57df63f07`
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Execution Round: 2
+- Trigger: `/code_reviewer` `CRR-004` (round 3, Pass) after delivery re-entry `DR-002` and Local Fix `IR-003`
+- Prior Round Reviewed: round 1 (`API-REV-001`, Pass, 95%)
+- Latest Authoritative Round: 2
+- Code under validation: branch `codex/remove-skill-access-mode` @ `0180457ae` (merged with `origin/personal` @ `e9aa4a74c`), comparison base `e9aa4a74c`. Round 1 validated `1595b8b2c` against `57df63f07`.
+
+## Round 2 Result (latest, authoritative)
+
+Round 2 validated the merged state. The sections after this one are the round-1 record and remain valid for what they describe; evidence for round 2 is under `api-e2e-evidence/rev-002/`.
+
+- Result: `Pass`. Final confidence 95% (88% after repository checks). No category below 90%.
+- Prior failures to recheck: none (round 1 passed).
+- Durable coverage changed in round 2: `No`. Proportional test-code review: `Not Applicable` for this round (the round-1 changes were reviewed in `CRR-003`; the three `IR-003` files are implementation-owned and were reviewed in `CRR-004`).
+
+### Round 2 evidence matrix
+
+| Scenario ID | Scenario / AC | Execution Surface | Evidence Type | Result | Evidence (`rev-002/`) |
+| --- | --- | --- | --- | --- | --- |
+| TC-01 | AC-001, merged tree | grep gate | Durable gate | Pass | ledger R2-1 |
+| TC-04 / TC-05 | all; full server suite vs base `e9aa4a74c` | vitest, per-test comparison | Durable | Pass — 0 branch-only failures (branch 4,447 passed / 149 failed; base 4,427 / 151) | `04-server-full-comparison.txt` |
+| TC-06 / TC-07 | AC-001, AC-002 | autobyteus-ts 53/53; sdk-contracts 6/6; backend-sdk 10/10; team-stream 3/3; collaboration-stream same 7 failures as base | Durable | Pass | `06-*`, `07-*` |
+| TC-08 | BEH-003 | web suite: 3,413 passed, 4 failed tests and 1 file that fails to load; identical on base | Durable | Pass (no regression) | `08-*` |
+| TC-18 | the three `IR-003` files | Claude team-member background-task live E2E 1/1; AGY background-task live E2E 5/5; background-tasks-panel browser probe passed | Durable, live | Pass | `18-*` |
+| TC-02 | R-1 | upgrade probe, branch vs base: identical, and identical to round 1 | Temporary | Pass | `03-*` |
+| TC-10 | AC-001 | served schema: 291 types, no such name; web codegen against the running server: only three scalar comments differ | Live | Pass | `10-*` |
+| TC-11 | AC-002, AC-005 | lifecycle for agent, team, org 58/58; Daily Assistant catalog = 80 enabled installed skills, `read_file` offered | Live | Pass | `11-*` |
+| TC-12 / TC-13 | AC-004, AC-006, AC-007 | restart over edited built-ins: equal templates; stored-key history 27/27 | Live | Pass | `12-*` |
+| TC-15 / TC-16 | AC-003 | Codex, Claude, AGY applied a configured skill | Live | Pass | `15-live-runtimes.json` |
+| TC-19 | SCN-001 with the merged Background Tasks feature | Claude run created without the field → background Bash task → `BACKGROUND_TASK_UPDATED` running → completed (API); same from the browser chat entry, shown in the Activity tab | Live + Browser | Pass | `19-*` |
+| TC-14 | BEH-003, SCN-002 | browser: chat-entry launch on Claude; stored-`NONE` team history restored and continued | Browser | Pass | ledger R2-11 |
+
+### Round 2 confidence
+
+| Confidence Category | Post-Repository | Final | Residual Uncertainty |
+| --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 92% | 97% | ACP not live |
+| Changed-boundary execution directness | 90% | 96% | browser GraphQL bodies not captured |
+| Cross-boundary integration realism and mock gap | 85% | 95% | AutoByteus turns use a stub model endpoint |
+| Environment, configuration, identity, and fixture fidelity | 88% | 93% | dev frontend, not the packaged app; stored-key records derived from current-written records |
+| Failure, edge-case, lifecycle, and recovery evidence | 88% | 95% | — |
+| User-surface, browser, and desktop-shell confidence | 80% | 95% | launch forms not repeated in the browser this round (source unchanged since round 1); 400 px tab |
+| Durable regression coverage quality and relevance | 94% | 94% | stale E2E suites on base |
+
+- Overall: 88% post-repository → 95% final (665 / 7). Every critical acceptance criterion directly proven: `Yes`. Target met: `Yes`.
+- Broader validation: `Required`, executed (dev stack twice, browser, live runtimes).
+
+### Round 2 corrections and notes
+
+- Correction to round 1: the web suite also had one file that fails to load (`electron/server/__tests__/StartupDelayLifecycle.spec.ts`). It was already in the round-1 branch report and fails the same way on both bases; my round-1 summary listed only failed tests.
+- The Daily Assistant probe first stopped on an error in my script; fixed and rerun.
+- Cleanup: everything this round started is stopped and removed (ledger R2-12). Live runs left Codex / Claude / AGY sessions in the user's CLI session stores.
+- The pre-existing stale suites listed under "Out-Of-Scope Observations" are unchanged on the merged base.
 
 ## Routing Classification
 
@@ -247,15 +294,15 @@ None by this round.
 
 ## Recommended Recipient
 
-`/code_reviewer` for proportional test-code review (from `get_handoff_rules`).
+Round 2: `/code_reviewer` (reviewed-route pass; no durable test changed in this round). Round 1: `/code_reviewer` for proportional test-code review.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
+- Result: `Pass` (round 2, `API-REV-002`, merged state `0180457ae`)
 - Final validation confidence: 95%
 - Default `95%` confidence target met: `Yes`
 - Any final applicable confidence category below `90%`: `No`
 - Broader validation decision: `Required` — executed (live API, browser, live runtimes, lifecycle)
 - Critical acceptance criteria lacking direct proof: none
-- Next recipient from `get_handoff_rules`: see "Recommended Recipient"
-- Notes: two durable test changes are uncommitted in the worktree, as are the ticket documents.
+- Next recipient from `get_handoff_rules`: `/code_reviewer` (reviewed route)
+- Notes: no durable test changed in round 2. Round 1 (`API-REV-001`) was `Pass` at 95% on `1595b8b2c`.

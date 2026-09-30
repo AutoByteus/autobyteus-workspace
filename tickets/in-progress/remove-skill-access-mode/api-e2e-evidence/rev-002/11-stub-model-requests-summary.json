@@ -1,0 +1,250 @@
+[
+ {
+  "n": 1,
+  "at": "2026-09-30T09:38:33.485Z",
+  "lastUserMessage": "Say hello.",
+  "systemPromptChars": 2658,
+  "rsamCatalogEntries": [],
+  "catalogEntriesTotal": 0,
+  "hasSkillsSection": false,
+  "toolCount": 4
+ },
+ {
+  "n": 2,
+  "at": "2026-09-30T09:38:36.931Z",
+  "lastUserMessage": "First message.",
+  "systemPromptChars": 3460,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 4
+ },
+ {
+  "n": 3,
+  "at": "2026-09-30T09:38:40.303Z",
+  "lastUserMessage": "Second message after restore.",
+  "systemPromptChars": 3460,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 4
+ },
+ {
+  "n": 4,
+  "at": "2026-09-30T09:38:44.045Z",
+  "lastUserMessage": "Team first message.",
+  "systemPromptChars": 7399,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 5,
+  "at": "2026-09-30T09:38:47.343Z",
+  "lastUserMessage": "Team second message after restore.",
+  "systemPromptChars": 7399,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 6,
+  "at": "2026-09-30T09:38:51.028Z",
+  "lastUserMessage": "Org first message.",
+  "systemPromptChars": 7392,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 7,
+  "at": "2026-09-30T09:38:54.361Z",
+  "lastUserMessage": "Org second message after restore.",
+  "systemPromptChars": 7392,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 8,
+  "at": "2026-09-30T09:38:57.719Z",
+  "lastUserMessage": "First message.",
+  "systemPromptChars": 3460,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 4
+ },
+ {
+  "n": 9,
+  "at": "2026-09-30T09:39:01.097Z",
+  "lastUserMessage": "Second message after restore.",
+  "systemPromptChars": 3460,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 4
+ },
+ {
+  "n": 10,
+  "at": "2026-09-30T09:39:04.825Z",
+  "lastUserMessage": "Team first message.",
+  "systemPromptChars": 7399,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 11,
+  "at": "2026-09-30T09:39:08.133Z",
+  "lastUserMessage": "Team second message after restore.",
+  "systemPromptChars": 7399,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 12,
+  "at": "2026-09-30T09:39:11.867Z",
+  "lastUserMessage": "Org first message.",
+  "systemPromptChars": 7392,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 13,
+  "at": "2026-09-30T09:39:15.139Z",
+  "lastUserMessage": "Org second message after restore.",
+  "systemPromptChars": 7392,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 14,
+  "at": "2026-09-30T09:39:29.246Z",
+  "lastUserMessage": "Hello.",
+  "systemPromptChars": 35446,
+  "rsamCatalogEntries": [],
+  "catalogEntriesTotal": 80,
+  "hasSkillsSection": true,
+  "toolCount": 21
+ },
+ {
+  "n": 15,
+  "at": "2026-09-30T09:42:03.994Z",
+  "lastUserMessage": "Message after restart and restore.",
+  "systemPromptChars": 3460,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 4
+ },
+ {
+  "n": 16,
+  "at": "2026-09-30T09:42:07.380Z",
+  "lastUserMessage": "Team message after restart and restore.",
+  "systemPromptChars": 7399,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 17,
+  "at": "2026-09-30T09:42:10.714Z",
+  "lastUserMessage": "Org message after restart and restore.",
+  "systemPromptChars": 7392,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 18,
+  "at": "2026-09-30T09:42:14.060Z",
+  "lastUserMessage": "Message after restart and restore.",
+  "systemPromptChars": 3460,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 4
+ },
+ {
+  "n": 19,
+  "at": "2026-09-30T09:42:17.568Z",
+  "lastUserMessage": "Team message after restart and restore.",
+  "systemPromptChars": 7399,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 20,
+  "at": "2026-09-30T09:42:20.864Z",
+  "lastUserMessage": "Org message after restart and restore.",
+  "systemPromptChars": 7392,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ },
+ {
+  "n": 21,
+  "at": "2026-09-30T09:43:19.682Z",
+  "lastUserMessage": "Browser round 2: continue a stored-key team run.",
+  "systemPromptChars": 7399,
+  "rsamCatalogEntries": [
+   "rsam_skill_rsamb1790761111692"
+  ],
+  "catalogEntriesTotal": 1,
+  "hasSkillsSection": true,
+  "toolCount": 7
+ }
+]

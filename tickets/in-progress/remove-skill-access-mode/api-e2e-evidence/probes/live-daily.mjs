@@ -6,7 +6,7 @@ const gql = async (query, variables = {}) => { const res = await fetch('http://1
 const requests = () => fs.readFileSync(recordFile, 'utf8').trim().split('\n').map((l) => JSON.parse(l)).filter((r) => r.body);
 const ws = path.join(dataRoot, 'rsam-workspaces', 'daily'); fs.mkdirSync(ws, { recursive: true });
 const skills = (await gql(`{ skills { name isDisabled } }`)).skills;
-const victim = skills.find((s) => /^rsam_skill_rsam\d/.test(s.name));
+const victim = skills.find((s) => /^rsam_skill_rsam/.test(s.name));
 await gql(`mutation($n:String!){ disableSkill(name:$n){ name isDisabled } }`, { n: victim.name });
 const enabled = (await gql(`{ skills { name isDisabled } }`)).skills.filter((s) => !s.isDisabled).map((s) => s.name).sort();
 const def = (await gql(`{ agentDefinition(id:"autobyteus-daily-assistant"){ skillScope skillNames toolNames } }`)).agentDefinition;

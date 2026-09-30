@@ -17,11 +17,11 @@ All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/rem
 - Code Review Revision Record: `code-review-revision-record.md` (`CRR-002`)
 - Delivery Revision Record / IDs: `N/A`
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
+- Current API/E2E Revision ID: `API-REV-002`
 - API/E2E Test-Case Ledger: `api-e2e-test-case-ledger.md`
-- Current Investigation Round: 1
-- Trigger: `/code_reviewer` pass handoff `CRR-002`
-- Prior Investigation Reviewed: None
+- Current Investigation Round: 2 (round 1 content below is kept; the round 2 section at the end is the delta)
+- Trigger: round 1 `/code_reviewer` pass handoff `CRR-002`; round 2 `/code_reviewer` `CRR-004` after delivery re-entry `DR-002` and Local Fix `IR-003`
+- Prior Investigation Reviewed: round 1 (this document)
 - Latest Authoritative Investigation: this document
 
 ## Routing Classification
@@ -257,3 +257,57 @@ Assessed after ledger events 1–10, before any live run.
 - Post-repository confidence: 79%; final confidence after broader validation is in the execution coverage report
 - Broader validation decision: `Required`
 - Reroute Required Before Validation Execution: `No`
+
+
+---
+
+## Round 2 Investigation (`API-REV-002`) — merged state
+
+### Basis
+
+- Code: branch head `0180457ae` = round-1 state + delivery docs + merges of `origin/personal` (`6920ea67e` @ `5c6fb95ea`, `d213b6c33` @ `e9aa4a74c`) + `IR-003` (`a341dad0f`, three test files). Comparison base: `e9aa4a74c`.
+- Upstream additions read: `code-review-report.md` round 3 and `CRR-004`, `api-e2e-test-review-report.md` (`CRR-003`, Pass, no findings), `delivery-revision-record.md` (`DR-001`, `DR-002`), `implementation-handoff.md` IR-003 addendum.
+- Requirements, design and supported scenarios are unchanged. Persisted-data decisions are unchanged.
+
+### What the merges changed (relative to the round-1 head)
+
+| Area | Change | Coverage Consequence |
+| --- | --- | --- |
+| Server `agent-execution/backends` (13 files), `agent-execution/domain`, `agent-collaboration/execution`, `services/agent-streaming` | Background Tasks feature from its own ticket | Run the live runtimes again; launch a background task on a run created without the field (TC-19) |
+| Server `app-data-migrations`, `run-history`, `built-in-agents`; `pnpm-lock.yaml` | none | Rerun as regression only |
+| Web chat composer menus, `ProgressPanel`, `BackgroundTaskPanel`, stream handlers and stores | Background Tasks panel; to-do panel removed; composer polish | Chat-entry launch and Activity tab in the browser; the panel probe |
+| Web agent / team / org launch forms, history tree, run config editor | none | Round-1 browser evidence carries over; not repeated |
+| `team-stream-contracts` | background-task DTOs | contract package tests |
+| Three test files (`IR-003`) | removed field dropped | Run all three (TC-18) |
+
+### Existing Durable Coverage — round 2 decisions
+
+| Path / Scenario | Intent | Validity | Evidence | Action |
+| --- | --- | --- | --- | --- |
+| `tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts` (live, gated) | team member background task routing | Still Valid after `IR-003` | engineer's log; my run | run live |
+| `tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts` (live, gated) | AGY daemon background tasks | Still Valid after `IR-003` | engineer's log; my run | run live |
+| `autobyteus-web/tests/e2e/background-tasks-panel-probe.mjs` + fixture page | Activity tab Background Tasks section | Still Valid after `IR-003` | not run before this round | run |
+| my two round-1 durable tests | — | Still Valid (reviewed, `CRR-003`) | full suite | run |
+| all round-1 decisions | — | unchanged | — | rerun as regression |
+
+Durable coverage to add, update or remove in round 2: none.
+
+### Plan and results
+
+Cases and results are in the ledger, "Round 2". New scenario IDs: TC-18 (the three `IR-003` files) and TC-19 (Background Tasks launch on the merged server).
+
+### Post-repository confidence (round 2)
+
+Assessed after events R2-1..R2-6 (grep gate, suites vs base, contract packages, the three `IR-003` files, upgrade probe): 88% overall. Requirement proof 92, directness 90, cross-boundary realism 85 (live suites and the upgrade ran; served contract and the merged feature's interaction not yet), environment 88, lifecycle 88, user surface 80 (panel probe only), durable coverage 94. Broader validation: `Required` — the merged production code had not run as a server with this change, and the reviewer named the Background Tasks interaction.
+
+### Not tested in round 2
+
+| Behavior / Boundary | Reason | Risk |
+| --- | --- | --- |
+| Browser launch through the agent, team and org forms; Brief Studio live launch | their source did not change after round 1; the full suite's 34 application-backend tests pass on the merged branch | Low |
+| ACP live; packaged desktop app | as in round 1 | Low |
+| Background task on a Codex run through the dev stack | the Background Tasks ticket owns runtime-specific behavior; Claude (dev stack and live suite) and AGY (live suite) were run | Low |
+
+### Investigation decision (round 2)
+
+- Proceed to execution: `Yes`. Durable coverage changed: `No`. Reroute required: `No`.

@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | `/code_reviewer`, `code-review-report.md`, round 2 (`CRR-002`, Pass) | `SR-005`, `ARCH-REV-003`, `IR-002`, `CRR-002` | N/A | Pass / 95% |
+| API-REV-002 | `/code_reviewer`, `code-review-report.md`, round 3 (`CRR-004`, Pass) after delivery re-entry | `SR-005`, `ARCH-REV-003`, `IR-003`, `CRR-004`, `DR-002` | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -31,3 +32,24 @@ None.
 - New or remaining failure IDs: none
 - Recommended recipient: `/code_reviewer` (proportional test-code review)
 - Remaining risks, blocked evidence, or untested scope: ACP runtime not run live; packaged desktop app not run; browser at 400 px only; stored-key records derived from current-written records; pre-existing stale E2E suites (upgrade, gated live runtime, history / team configuration) do not guard this change.
+
+### API-REV-002 — Validation of the merged state after delivery re-entry
+
+- Triggering role, report path, and round: `/code_reviewer`; `code-review-report.md`; round 3 (`CRR-004`), following `DR-002` and `IR-003`.
+- Triggering finding or scenario IDs: none failed in API/E2E. Delivery found three merged-in test files that still used the removed field; `IR-003` fixed them.
+- Related revision IDs: `SR-005`, `ARCH-REV-003`, `IR-003`, `CRR-003`, `CRR-004`, `DR-001`, `DR-002`.
+- Why recorded: the finalization target advanced; the merged state (`0180457ae`, base `e9aa4a74c`) had not been validated.
+- Coverage decisions or durable test paths changed: none.
+- Scenarios added, changed, removed, or rechecked: TC-18 (the three `IR-003` files) and TC-19 (Background Tasks launch on the merged server) added; TC-01, TC-02, TC-04..TC-08, TC-10..TC-16 rerun; TC-14 reduced; TC-17 not repeated live.
+- Commands, environment, fixture, or broader-validation delta: new base worktree at `e9aa4a74c`; live suites with `RUN_CLAUDE_E2E=1` and `RUN_AGY_BACKGROUND_E2E=1`; `test:e2e:background-tasks-panel`; dev stack twice; evidence under `api-e2e-evidence/rev-002/`.
+
+#### Prior Failure Resolution
+
+None — round 1 had no failure.
+
+- Canonical artifacts and sections updated: ledger "Round 2"; investigation "Round 2 Investigation"; execution report meta, "Round 2 Result", "Latest Authoritative Result".
+- Prior result and confidence: Pass / 95%
+- Current result and confidence: Pass / 95% (post-repository 88%)
+- New or remaining failure IDs: none
+- Recommended recipient: `/code_reviewer`
+- Remaining risks, blocked evidence, or untested scope: as round 1 (ACP live, packaged app, stale suites on base). This round did not repeat the browser launch forms or the Brief Studio live launch; their source is unchanged since round 1.

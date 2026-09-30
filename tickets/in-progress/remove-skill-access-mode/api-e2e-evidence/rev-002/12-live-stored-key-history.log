@@ -1,0 +1,30 @@
+PASS history list responses carry no skill field {"agents":8,"teams":2,"orgs":2}
+PASS [PRELOADED_ONLY] records on disk hold the stored key before use 
+PASS [PRELOADED_ONLY] agent, team and org runs are listed 
+PASS [PRELOADED_ONLY] agent resume config opens without the field {"agentDefinitionId":"rsam-skilled-rsamb1790761111692","workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692","llmModelIdentifie
+PASS [PRELOADED_ONLY] agent conversation projection opens 
+PASS [PRELOADED_ONLY] agent restore {"success":true,"message":"Agent run restored successfully.","runId":"rsam_skilled_rsamb1790761111692_37f03a702352458fae98f5141ba38a34"}
+PASS [PRELOADED_ONLY] agent replies after restore; catalog still in the prompt (stored value ignored) {"reply":"RSAM_FAKE_REPLY_15","errors":[]}
+PASS [PRELOADED_ONLY] team resume config opens without the field 
+PASS [PRELOADED_ONLY] team restore {"success":true,"message":"Agent team run restored successfully.","teamRunId":"rsam_team_rsamb1790761111692_7d5f937bb9d8473387768326ac582269"}
+PASS [PRELOADED_ONLY] team lead replies after restore; catalog in the prompt; stream has no field {"reply":"RSAM_FAKE_REPLY_16","errors":[]}
+PASS [PRELOADED_ONLY] org run config opens without the field 
+PASS [PRELOADED_ONLY] org inspection opens without the field 
+PASS [PRELOADED_ONLY] org restore {"success":true,"message":"Agent organization run restored successfully.","agentOrgRunId":"rsam_org_rsamb1790761111692_124306f8c2c744c3bec4cb07a895f999"}
+PASS [PRELOADED_ONLY] org director replies after restore; catalog in the prompt; stream has no field {"reply":"RSAM_FAKE_REPLY_17","errors":[]}
+INFO stored key after use PRELOADED_ONLY {"agent":0,"team":3,"org":5}
+PASS [NONE] records on disk hold the stored key before use 
+PASS [NONE] agent, team and org runs are listed 
+PASS [NONE] agent resume config opens without the field {"agentDefinitionId":"rsam-skilled-rsamb1790761111692","workspaceRootPath":"/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/rsamb1790761111692","llmModelIdentifie
+PASS [NONE] agent conversation projection opens 
+PASS [NONE] agent restore {"success":true,"message":"Agent run restored successfully.","runId":"rsam_skilled_rsamb1790761111692_cc603e6379d8469185116c1c13bf01fe"}
+PASS [NONE] agent replies after restore; catalog still in the prompt (stored value ignored) {"reply":"RSAM_FAKE_REPLY_18","errors":[]}
+PASS [NONE] team resume config opens without the field 
+PASS [NONE] team restore {"success":true,"message":"Agent team run restored successfully.","teamRunId":"rsam_team_rsamb1790761111692_fead78b9c8054f0dbedacb0f7ee018d7"}
+PASS [NONE] team lead replies after restore; catalog in the prompt; stream has no field {"reply":"RSAM_FAKE_REPLY_19","errors":[]}
+PASS [NONE] org run config opens without the field 
+PASS [NONE] org inspection opens without the field 
+PASS [NONE] org restore {"success":true,"message":"Agent organization run restored successfully.","agentOrgRunId":"rsam_org_rsamb1790761111692_e250b2f3cf80486f895fdf87fbccabfd"}
+PASS [NONE] org director replies after restore; catalog in the prompt; stream has no field {"reply":"RSAM_FAKE_REPLY_20","errors":[]}
+INFO stored key after use NONE {"agent":0,"team":3,"org":5}
+ALL PASS

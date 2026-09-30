@@ -4,8 +4,8 @@ All ticket artifact paths are under `/Users/normy/autobyteus_org/autobyteus-work
 
 ## Review Meta
 
-- Review Round: 1
-- Trigger: `/api_e2e_engineer` passed package `API-REV-001`
+- Review Round: 2
+- Trigger: `/api_e2e_engineer` passed package `API-REV-002` (merged state after `DR-002` / `IR-003` / `CRR-004`)
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (REQ-002/003, AC-002/004/006)
 - Investigation Notes Reviewed As Context: `investigation-notes.md`
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (`SR-005`)
@@ -15,27 +15,32 @@ All ticket artifact paths are under `/Users/normy/autobyteus_org/autobyteus-work
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (`IR-002`)
 - Original Code Review Report: `code-review-report.md` (round 2, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
+- Current Code Review Revision ID: `CRR-005`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (`API-REV-001`)
-- Delivery Revision Record Reviewed As Context: `N/A`
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (`API-REV-002`; prior `API-REV-001`)
+- Delivery Revision Record Reviewed As Context: `delivery-revision-record.md` (`DR-002`)
 - API/E2E Result: `Pass`
-- Final Validation Confidence: 95% (79% after repository checks)
-- Prior unresolved test-review findings rechecked: None exist
+- Final Validation Confidence: 95% (88% after repository checks)
+- Prior unresolved test-review findings rechecked: None exist (round 1, `CRR-003`, passed with no findings)
 - Supported Product Scenario Basis Confirmed: `Yes` — SCN-001 (launch Daily Assistant with `ALL_INSTALLED`), SCN-002 (open history saved with the old field), both approved in the requirements.
 
 ## Changed Durable Test Scope
+
+Round 2: no durable test file was added, updated or removed by API/E2E. `git status` on head `0180457ae` shows only ticket documents, `api-e2e-evidence/rev-002/` and two probe scripts under `api-e2e-evidence/probes/`, which are evidence. The three test files changed in `IR-003` are implementation-owned and were reviewed in `CRR-004`. The table below is the round-1 scope, kept for reference; those two files are now committed and unchanged.
 
 | Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
 | `autobyteus-server-ts/tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts` | Updated (one `it`, two imports) | SCN-001; AC-002, AC-006 | Configured-skill catalog and on-demand reading on the native runtime | Closes the `ALL_INSTALLED` → rendered prompt gap named in source review |
 | `autobyteus-server-ts/tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts` | Added (263 lines) | SCN-002; AC-001, AC-004 | Stored-key history opened through the built server's GraphQL contract | Needs `dist/`, like its neighbours |
 
-- No durable test file changed: `No`
+- No durable test file changed: `Yes` (round 2); round 1: `No`
+- Review result when no durable test file changed: `Not Applicable`
 - Removed durable tests: none.
 
 ## Proportional Test-Code Checks
+
+Round 2: not applied — no durable test changed. The round-1 results below stand.
 
 | Check | Result | Evidence / Notes |
 | --- | --- | --- |
@@ -55,8 +60,8 @@ None.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: the two paths above
+- Result: `Not Applicable`
+- Changed durable test paths reviewed: none in round 2
 - Unresolved finding IDs: None
 - Recommended Recipient: `delivery_engineer`
-- Notes: focused rerun only (`vitest run` on the two files: 3 passed); the API/E2E workflow was not repeated. Both test changes and the ticket documents are uncommitted in the worktree. Two orphaned vitest workers in this worktree (pids 27881 and 38258, started 08:15 and 08:30 on 2026-09-30, before any review run) are still consuming CPU; they were left untouched.
+- Notes: round 2 (`CRR-005`). API/E2E revalidated the merged state (`API-REV-002`, Pass, 95%) without changing durable tests. Nothing was rerun by this review. The round-1 test review (`CRR-003`, Pass) stands for the two API/E2E test files. Uncommitted in the worktree: the round-2 API/E2E report updates, `api-e2e-evidence/rev-002/`, two probe scripts, and the code-review report and revision record.

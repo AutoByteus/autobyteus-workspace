@@ -9,6 +9,8 @@ The latest `code-review-report.md` is authoritative for the current implementati
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 / `/implementation_engineer` handoff `IR-001` | N/A | `Fail` — `Local Fix` → `/implementation_engineer` | CR-001, CR-002 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 / `/implementation_engineer` handoff `IR-002` | `Fail` — `Local Fix` (`CRR-001`) | `Pass` → `/api_e2e_engineer` | CR-001, CR-002 (resolved) |
 | CRR-003 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 1 / `/api_e2e_engineer` `API-REV-001` | N/A (test review) | `Pass` → `/delivery_engineer` | None |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 3 (delivery re-entry) / `/implementation_engineer` handoff `IR-003` for `DR-002` | `Pass` (`CRR-002`) | `Pass` → `/api_e2e_engineer` | None |
+| CRR-005 | `api-e2e-test-review-report.md` | API/E2E test-code review, round 2 / `/api_e2e_engineer` `API-REV-002` | `Pass` (`CRR-003`) | `Not Applicable` → `/delivery_engineer` | None |
 
 ## Revision Entries
 
@@ -88,3 +90,51 @@ None.
 - Material score or classification changes: none. Task size `Large`, architectural risk `High` preserved.
 - Recommended recipient: `/delivery_engineer`
 - Remaining risks or uncertainty: as listed in the execution report (ACP not run live; packaged desktop app not run; pre-existing stale E2E suites; stored-key records not taken from a released build). The AGY capsule manifest record update remains with `/solution_designer`.
+
+### CRR-004 — Delivery re-entry: merged-in tests still using the removed field
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/tickets/in-progress/remove-skill-access-mode/code-review-report.md`
+- Review entry point and round: Implementation Review, round 3 (delivery re-entry)
+- Triggering role, report path, and finding or scenario IDs: `/implementation_engineer` for `/delivery_engineer`; `delivery-revision-record.md` (`DR-002`), `implementation-handoff.md` (IR-003 addendum); no finding ID
+- Relevant solution revision IDs: `SR-005`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-003` (fix commit `a341dad0f`, branch head `0180457ae`)
+- Relevant API/E2E revision IDs: `API-REV-001`
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `Pass` (`CRR-002` source review; `CRR-003` test review)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: merge `d213b6c33` of `origin/personal` @ `e9aa4a74c` added three test files that sent or declared `skillAccessMode`. `IR-003` removes it from the two live suites' GraphQL inputs and from one web fixture's config cast. Test code only. Result unchanged.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None open. `CR-001` and `CR-002` remain resolved; the grep gate on the merged tree shows no regression of either.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: none. Task size `Large`, architectural risk `High` preserved.
+- Recommended recipient: `/api_e2e_engineer`; informational notice to `/implementation_engineer`.
+- Remaining risks or uncertainty: the two live suites were not rerun by this review (engineer's logs: Claude 1 passed, AGY 5 passed); the web fixture's probe was not run; full suites were not rerun on the merged state; merged-in Background Tasks production source was not reviewed here; the AGY capsule manifest record update remains with `/solution_designer`.
+
+### CRR-005 — Test-code review after merged-state revalidation: no durable test changed
+
+- Canonical review report updated: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/tickets/in-progress/remove-skill-access-mode/api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 2
+- Triggering role, report path, and finding or scenario IDs: `/api_e2e_engineer`; `api-e2e-execution-coverage-report.md` ("Round 2 Result"); no findings
+- Relevant solution revision IDs: `SR-005`
+- Relevant architecture-review revision IDs: `ARCH-REV-003`
+- Relevant implementation revision IDs: `IR-003`
+- Relevant API/E2E revision IDs: `API-REV-002`
+- Relevant delivery revision IDs: `DR-002`
+- Prior authoritative result: `Pass` (`CRR-003`, test review); `Pass` (`CRR-004`, source review)
+- Current authoritative result: `Not Applicable`
+- What changed in the review result and why: API/E2E revalidated the merged branch at `0180457ae` and changed no durable test. `git status` confirms only ticket documents, evidence and probe scripts are modified.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None.
+- Material score or classification changes: none. Task size `Large`, architectural risk `High` preserved.
+- Recommended recipient: `/delivery_engineer`
+- Remaining risks or uncertainty: as in the execution report (ACP not run live; packaged desktop app not run; pre-existing stale E2E suites on base; stored-key records derived from current-written records). The AGY capsule manifest record update remains with `/solution_designer`.

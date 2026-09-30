@@ -16,16 +16,16 @@ All artifact paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/r
 - Relevant Architecture Review Revision IDs: `ARCH-REV-003`
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`, `IR-002`
+- Relevant Implementation Revision IDs: `IR-001`, `IR-002`, `IR-003`
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
-- Trigger: `/implementation_engineer` handoff of `IR-002` (Local Fix for `CR-001`, `CR-002`)
-- Prior Review Round Reviewed: 1 (`CRR-001`, Fail — Local Fix)
-- Latest Authoritative Round: 2
+- Current Code Review Revision ID: `CRR-004`
+- Current Review Round: 3
+- Trigger: `/implementation_engineer` handoff of `IR-003` (delivery re-entry: Local Fix requested by `/delivery_engineer` in `DR-002` after merging `origin/personal` @ `e9aa4a74c`)
+- Prior Review Round Reviewed: 2 (`CRR-002`, Pass)
+- Latest Authoritative Round: 3
 - Coverage Investigation / Execution Coverage Report / API/E2E Revision Record: `N/A — not applicable`
 - Relevant API/E2E Revision IDs: `N/A`
-- Delivery Revision Record / IDs: `N/A`
+- Delivery Revision Record Reviewed: `delivery-revision-record.md`; Relevant Delivery Revision IDs: `DR-002`
 - Failing Scenario IDs / Commands / Evidence Paths: `N/A` (not a failure-origin review)
 
 ## Routing Classification Review
@@ -46,6 +46,7 @@ All artifact paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/r
   - Full server vitest run on the branch → 4,379 passed, 150 failed. Compared per test and per failure message with the engineer's base result file and, for the migration suites, with my own run on a temporary base worktree at `57df63f07` (installed, prepared and **built**; since removed).
   - autobyteus-ts `tests/unit/agent/context`, `tests/unit/agent/system-prompt`, `tests/integration/agent/agent-skills.test.ts` → 38 passed.
 - Round 2 (this result): read fix commit `1595b8b2c` in full (5 files, 14 deletions, no production behavior change); reran server source typecheck (clean) and the upgrade E2E file on the branch against the rebuilt server; rechecked the grep gate for the E2E directory and web source. Round 1 evidence for unaffected checks stands.
+- Round 3 (this result): read fix commit `a341dad0f` (three test files, field removed from four places; no production source change) on branch head `0180457ae`, which includes merge `d213b6c33`. Reran the grep gate over the merged tree and the server source typecheck (clean). Remaining occurrences are frozen migration code and its tests/fixtures, released seed data, the tolerance and negative-assertion tests, and two doc sentences describing the former input. The two live suites were not rerun by this review; the engineer's logs (`delivery-evidence/ir-003-*.log`) are taken as reported. The merged-in Background Tasks production source was not reviewed beyond the gate and typecheck; it belongs to its own ticket.
 - Explicit exclusions: web test suite, contract-package tests, live-runtime and browser E2E were not rerun (the engineer's results are taken as reported). `autobyteus-web/generated/graphql.ts` was checked only for absence of the removed names, not regenerated. Test files were reviewed by grep gate and targeted reading, not line by line.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
@@ -241,10 +242,10 @@ Round 1 record:
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
+- Review Entry Point: `Implementation Review` (delivery re-entry)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.5 / 10 (95 / 100); every category is at or above 9.0.
+- Score Summary: 9.5 / 10 (95 / 100); unchanged, every category at or above 9.0.
 - Failure Origin: `N/A`
 - Recommended Recipient: `/api_e2e_engineer`
-- Notes: round 2 (`CRR-002`). `CR-001` and `CR-002` are resolved and verified against the code and a rerun. No production behavior changed in the fix. Task size `Large` and architectural risk `High` are preserved. For API/E2E: the upgrade E2E has three pre-existing base failures; `generated/graphql.ts` was produced from an emitted SDL, not a running server; `ALL_INSTALLED` through to a rendered prompt has no single test; live, probe and browser suites have not been run. For the design owner: the AGY capsule manifest should be named in the persisted-data section (record update only).
+- Notes: round 3 (`CRR-004`). The `origin/personal` merge brought in three test files that still used the removed field; `IR-003` removes it from them. No finding. The merged tree passes the grep gate and the server source typecheck. Task size `Large` and architectural risk `High` are preserved. For API/E2E: full server, web, autobyteus-ts and contract-package suites have not been rerun on the merged state (delivery reports 71/71 on files changed by both sides); `autobyteus-web/tests/e2e/fixtures/background-tasks-panel.page.vue` was changed but the probe that loads it was not run. Still open with the design owner: the AGY capsule manifest record update.
