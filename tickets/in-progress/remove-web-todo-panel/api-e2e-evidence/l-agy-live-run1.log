@@ -1,0 +1,384 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:86002) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mPlatform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-29T18:07:35.791Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mAgentRunManager initialized.
+AgentRunManager initialized.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mLoading workspace packages to trigger registration...
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mSuccessfully loaded workspace packages.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mCreating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mRegistering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mSuccessfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mRegistered required tool unit: Core Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mSuccessfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mSuccessfully registered tool definition: 'publish_artifacts'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mRegistered required tool unit: Published Artifact Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mSuccessfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mRegistered required tool unit: Agent Communication Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mSuccessfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mRegistered required tool unit: Browser Tools
+
+[90mstderr[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mOverwriting existing tool definition for name: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mSuccessfully registered tool definition: 'search_web'
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mRegistered required tool unit: Search Tools
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mPopulating agent definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mAgent definition cache populated with 49 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mPopulating agent definition cache for the first time...
+[2026-09-29T18:07:36.320Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39m[2026-09-29T18:07:36.327Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mAgent definition cache populated with 49 items.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mIn-memory cache: Added new agent definition with ID agy-background-updates-live-5a5a7ac5-8310-4768-9303-e9d756a01c9b.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mAgent Definition created successfully with ID: agy-background-updates-live-5a5a7ac5-8310-4768-9303-e9d756a01c9b
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(a) a daemon that exits 0 after its turn ends shows running, then completed about 20 s later without new input
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-StD4vj
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-StD4vj.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(a) a daemon that exits 0 after its turn ends shows running, then completed about 20 s later without new input
+[22m[39mCreated and registered workspace ID: agent_ws_ebb14ec8eba792d552c444ee916c1bb60af4a8f4bfb73d2ddf5c73b926bd300d
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(a) a daemon that exits 0 after its turn ends shows running, then completed about 20 s later without new input
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-StD4vj
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-StD4vj.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(a) a daemon that exits 0 after its turn ends shows running, then completed about 20 s later without new input
+[22m[39mReusing registered workspace ID: agent_ws_ebb14ec8eba792d552c444ee916c1bb60af4a8f4bfb73d2ddf5c73b926bd300d
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(a) a daemon that exits 0 after its turn ends shows running, then completed about 20 s later without new input
+[22m[39mPublished antigravity_cli agent run 'agy_background_updates_live_5a5a7ac5_8310_4768_9_63a3f206542d4f4eb03b80ef69e858e8'.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(a) a daemon that exits 0 after its turn ends shows running, then completed about 20 s later without new input
+[22m[39mAgent websocket attached for run agy_background_updates_live_5a5a7ac5_8310_4768_9_63a3f206542d4f4eb03b80ef69e858e8
+Created agent session e03dd11f-e774-483d-8de6-9b941999094b for run agy_background_updates_live_5a5a7ac5_8310_4768_9_63a3f206542d4f4eb03b80ef69e858e8
+Agent WebSocket connected: session=e03dd11f-e774-483d-8de6-9b941999094b, run=agy_background_updates_live_5a5a7ac5_8310_4768_9_63a3f206542d4f4eb03b80ef69e858e8
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(a) a daemon that exits 0 after its turn ends shows running, then completed about 20 s later without new input
+[22m[39mprisma:info Starting a sqlite pool with 21 connections.
+
+ [32m✓[39m tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m(a) a daemon that exits 0 after its turn ends shows running, then completed about 20 s later without new input[33m 31484[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(b) a daemon that exits 3 shows failed with the exit code in its summary
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-XYQHb9
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-XYQHb9.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(b) a daemon that exits 3 shows failed with the exit code in its summary
+[22m[39mCreated and registered workspace ID: agent_ws_1f23969db55dbdf2896f385dbb2ca5c4c3425eafb0f1e448891d7df264e107ce
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(b) a daemon that exits 3 shows failed with the exit code in its summary
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-XYQHb9
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-XYQHb9.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(b) a daemon that exits 3 shows failed with the exit code in its summary
+[22m[39mReusing registered workspace ID: agent_ws_1f23969db55dbdf2896f385dbb2ca5c4c3425eafb0f1e448891d7df264e107ce
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(b) a daemon that exits 3 shows failed with the exit code in its summary
+[22m[39mPublished antigravity_cli agent run 'agy_background_updates_live_5a5a7ac5_8310_4768_9_ea36a3ba971f43e08e2ea59984b551b6'.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(b) a daemon that exits 3 shows failed with the exit code in its summary
+[22m[39mAgent websocket attached for run agy_background_updates_live_5a5a7ac5_8310_4768_9_ea36a3ba971f43e08e2ea59984b551b6
+Created agent session 48c6bf74-399f-48f8-a189-f5792afb8bb3 for run agy_background_updates_live_5a5a7ac5_8310_4768_9_ea36a3ba971f43e08e2ea59984b551b6
+Agent WebSocket connected: session=48c6bf74-399f-48f8-a189-f5792afb8bb3, run=agy_background_updates_live_5a5a7ac5_8310_4768_9_ea36a3ba971f43e08e2ea59984b551b6
+
+ [32m✓[39m tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m(b) a daemon that exits 3 shows failed with the exit code in its summary[33m 22488[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(c) a never-exiting daemon shows running and becomes stopped when the run is terminated
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-dBZ92r
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-dBZ92r.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(c) a never-exiting daemon shows running and becomes stopped when the run is terminated
+[22m[39mCreated and registered workspace ID: agent_ws_dac5ec57de5ef15ee797d1afcaea4740140fe3de8bb4b4c72fecf3b42c004ada
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(c) a never-exiting daemon shows running and becomes stopped when the run is terminated
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-dBZ92r
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-dBZ92r.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(c) a never-exiting daemon shows running and becomes stopped when the run is terminated
+[22m[39mReusing registered workspace ID: agent_ws_dac5ec57de5ef15ee797d1afcaea4740140fe3de8bb4b4c72fecf3b42c004ada
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(c) a never-exiting daemon shows running and becomes stopped when the run is terminated
+[22m[39mPublished antigravity_cli agent run 'agy_background_updates_live_5a5a7ac5_8310_4768_9_8c980407de27442584415b8bc47609f6'.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2m(c) a never-exiting daemon shows running and becomes stopped when the run is terminated
+[22m[39mAgent websocket attached for run agy_background_updates_live_5a5a7ac5_8310_4768_9_8c980407de27442584415b8bc47609f6
+Created agent session 52da3715-d2cd-4587-85be-67d314d6c218 for run agy_background_updates_live_5a5a7ac5_8310_4768_9_8c980407de27442584415b8bc47609f6
+Agent WebSocket connected: session=52da3715-d2cd-4587-85be-67d314d6c218, run=agy_background_updates_live_5a5a7ac5_8310_4768_9_8c980407de27442584415b8bc47609f6
+
+ [32m✓[39m tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m(c) a never-exiting daemon shows running and becomes stopped when the run is terminated[33m 15983[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma non-daemon background command keeps the turn open and produces no background-task entry
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-FzBaY6
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-FzBaY6.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma non-daemon background command keeps the turn open and produces no background-task entry
+[22m[39mCreated and registered workspace ID: agent_ws_a22f4159b2c70a24fcedba51fdd0a3d13846d301d2e90db64315242406b8de67
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma non-daemon background command keeps the turn open and produces no background-task entry
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-FzBaY6
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-FzBaY6.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma non-daemon background command keeps the turn open and produces no background-task entry
+[22m[39mReusing registered workspace ID: agent_ws_a22f4159b2c70a24fcedba51fdd0a3d13846d301d2e90db64315242406b8de67
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma non-daemon background command keeps the turn open and produces no background-task entry
+[22m[39mPublished antigravity_cli agent run 'agy_background_updates_live_5a5a7ac5_8310_4768_9_841f5eaa5d0443bcbdc0507355c2ee70'.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma non-daemon background command keeps the turn open and produces no background-task entry
+[22m[39mAgent websocket attached for run agy_background_updates_live_5a5a7ac5_8310_4768_9_841f5eaa5d0443bcbdc0507355c2ee70
+Created agent session 3431cf5c-2931-4a09-a2ce-6259552978b8 for run agy_background_updates_live_5a5a7ac5_8310_4768_9_841f5eaa5d0443bcbdc0507355c2ee70
+Agent WebSocket connected: session=3431cf5c-2931-4a09-a2ce-6259552978b8, run=agy_background_updates_live_5a5a7ac5_8310_4768_9_841f5eaa5d0443bcbdc0507355c2ee70
+
+ [32m✓[39m tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22mreal AGY daemons are shown as background tasks (AC-013)[2m > [22ma non-daemon background command keeps the turn open and produces no background-task entry[33m 54925[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma daemon whose exit report exceeds the 64 KiB read bound never shows a false status and ends by the fail-safe
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-BaUuJD
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-BaUuJD.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma daemon whose exit report exceeds the 64 KiB read bound never shows a false status and ends by the fail-safe
+[22m[39mCreated and registered workspace ID: agent_ws_641d992da4d0f020693a54d6bbd68c9084a055d7e883a4ed10e97645dcf4e23f
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma daemon whose exit report exceeds the 64 KiB read bound never shows a false status and ends by the fail-safe
+[22m[39mCreating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-BaUuJD
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-updates-live-pVANUu/workspace-BaUuJD.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma daemon whose exit report exceeds the 64 KiB read bound never shows a false status and ends by the fail-safe
+[22m[39mReusing registered workspace ID: agent_ws_641d992da4d0f020693a54d6bbd68c9084a055d7e883a4ed10e97645dcf4e23f
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma daemon whose exit report exceeds the 64 KiB read bound never shows a false status and ends by the fail-safe
+[22m[39mPublished antigravity_cli agent run 'agy_background_updates_live_5a5a7ac5_8310_4768_9_ce477afae4684cf99ef03f588137f64a'.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)[2m > [22m[2ma daemon whose exit report exceeds the 64 KiB read bound never shows a false status and ends by the fail-safe
+[22m[39mAgent websocket attached for run agy_background_updates_live_5a5a7ac5_8310_4768_9_ce477afae4684cf99ef03f588137f64a
+Created agent session a5f56c44-39b4-4588-9a7e-9043d4fae693 for run agy_background_updates_live_5a5a7ac5_8310_4768_9_ce477afae4684cf99ef03f588137f64a
+Agent WebSocket connected: session=a5f56c44-39b4-4588-9a7e-9043d4fae693, run=agy_background_updates_live_5a5a7ac5_8310_4768_9_ce477afae4684cf99ef03f588137f64a
+
+ [32m✓[39m tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22mreal AGY daemons are shown as background tasks (AC-013)[2m > [22ma daemon whose exit report exceeds the 64 KiB read bound never shows a false status and ends by the fail-safe[33m 51217[2mms[22m[39m
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mClosed agent session a5f56c44-39b4-4588-9a7e-9043d4fae693
+Agent WebSocket disconnected: a5f56c44-39b4-4588-9a7e-9043d4fae693
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mClosed agent session 3431cf5c-2931-4a09-a2ce-6259552978b8
+Agent WebSocket disconnected: 3431cf5c-2931-4a09-a2ce-6259552978b8
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mClosed agent session 52da3715-d2cd-4587-85be-67d314d6c218
+Agent WebSocket disconnected: 52da3715-d2cd-4587-85be-67d314d6c218
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mClosed agent session 48c6bf74-399f-48f8-a189-f5792afb8bb3
+Agent WebSocket disconnected: 48c6bf74-399f-48f8-a189-f5792afb8bb3
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mClosed agent session e03dd11f-e774-483d-8de6-9b941999094b
+Agent WebSocket disconnected: e03dd11f-e774-483d-8de6-9b941999094b
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mIn-memory cache: Removed agent definition with ID agy-background-updates-live-5a5a7ac5-8310-4768-9303-e9d756a01c9b.
+
+[90mstdout[2m | tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts[2m > [22m[2mreal AGY daemons are shown as background tasks (AC-013)
+[22m[39mAgent Definition with ID agy-background-updates-live-5a5a7ac5-8310-4768-9303-e9d756a01c9b deleted successfully.
+
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 20:07:29
+[2m   Duration [22m 184.28s[2m (transform 4.11s, setup 13ms, import 6.05s, tests 177.75s, environment 0ms)[22m
+
