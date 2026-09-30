@@ -2,7 +2,7 @@
 
 ## Status
 
-- Stage: Delivery round 2 (DR-002). **Blocked on a Local Fix owned by `/implementation_engineer`.** The user accepted the DR-001 state on 2026-09-30 ("The task is done. Let's finalize and release a new beta."). `origin/personal` had advanced again by then, and the re-merged state breaks two E2E tests that came in with the base. Nothing is pushed, merged into `personal`, archived or released.
+- Stage: Delivery round 3 (DR-003). The DR-002 blocker is closed (`IR-003` test fix `a341dad0f`, `CRR-004` Pass, `API-REV-002` Pass on the merged state, `CRR-005` Not Applicable). The user accepted the package on 2026-09-30 ("The task is done. Let's finalize and release a new beta."). Finalization into `personal` and the beta release are in progress; final results are in `release-deployment-report.md`.
 - Classification (preserved): `task_size=Large`, `architectural_risk=High`, route `Reviewed`.
 - Reviews and validation: `ARCH-REV-003` Pass, `CRR-002` source review Pass, `API-REV-001` API/E2E Pass (95%), `CRR-003` test-code review Pass with no findings.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode`
@@ -45,6 +45,13 @@
 - Other checks on `d213b6c33`: the three unit files changed by both sides plus the two ticket E2E files, 5 files, 71/71 pass (`delivery-evidence/reintegration-server-vitest.log`).
 - The local test build described below is from `56817443b` and predates this merge.
 
+### Round 3 (DR-003, 2026-09-30)
+
+- `IR-003` (`a341dad0f`) removed the field from the three merged-in test files. API/E2E `API-REV-002` validated the merged state: Claude background-task live E2E 1/1, AGY 5/5, the browser probe passed, and the full server suite has 0 branch-only failures against base `e9aa4a74c`.
+- `origin/personal` was fetched again: one new commit `cb01dea23`, which changes only another ticket's delivery records. It was merged as `3c54e8021`; no rerun was needed for a docs-only change outside this ticket.
+- `scripts/check_repository_artifact_hygiene.py`: passed.
+- Long-lived docs were searched again on the merged tree; no further change was needed.
+
 ## What Changed (user-facing)
 
 - **No run-level skill setting.** A run gets the skills of its agent definition; a team member gets the skills of its own agent definition. The field is removed from the server, all runtime backends, GraphQL, the web client, the application SDK and both stream-contract packages.
@@ -73,7 +80,7 @@ Rejected items go to `/solution_designer`.
 
 ## User Verification
 
-- Status: **Accepted 2026-09-30** for the DR-001 state: "The task is done. Let's finalize and release a new beta." Finalization is on hold for the DR-002 blocker. The fix is limited to test files, so the accepted user-facing behavior does not change.
+- Status: **Accepted 2026-09-30** for the DR-001 state: "The task is done. Let's finalize and release a new beta." The DR-002 fix changed three test files only, so the accepted user-facing behavior did not change and no renewed verification was needed.
 - **Test build (2026-09-30, from `56817443b`):** a local unsigned macOS ARM64 build made with `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac`.
   - App: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
   - Installer: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.92-beta.2.dmg` / `.zip`
