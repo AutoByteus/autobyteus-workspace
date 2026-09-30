@@ -42,6 +42,20 @@ describe('UserMessage', () => {
     windowOpenMock.mockReset();
   });
 
+  it('projects held and queued status without replacing content or retaining a stale badge', async () => {
+    const message: any = { type:'user', text:'Original request', timestamp:new Date(),
+      pendingInput:{ state:'held', sequence:1, turnId:'A' } };
+    const wrapper=mount(UserMessage,{props:{message},global:{mocks:{$t:(key:string)=>key}}});
+    expect(wrapper.get('[role="status"]').text()).toContain('.compaction_held');
+    expect(wrapper.text()).toContain('Original request');
+    await wrapper.setProps({message:{...message,pendingInput:{...message.pendingInput,state:'queued'}}});
+    expect(wrapper.get('[role="status"]').text()).toContain('.queued');
+    await wrapper.setProps({message:{...message,pendingInput:{...message.pendingInput,state:'forwarded'}}});
+    expect(wrapper.find('[role="status"]').exists()).toBe(false);
+    await wrapper.setProps({message:{...message,pendingInput:undefined}});
+    expect(wrapper.find('[role="status"]').exists()).toBe(false);
+  });
+
   it('renders uploaded image attachments as thumbnails, routes thumbnail clicks into the file viewer, and falls back to a chip on preview failure', async () => {
     const uploadedImage = createUploadedContextAttachment({
       storedFilename: 'ctx_upload__proof.png',

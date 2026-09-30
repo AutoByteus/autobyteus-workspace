@@ -39,6 +39,7 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
     is_active: isActive,
     execution_tree: snapshot.tree,
     communication_messages: snapshot.messages,
+    agent_input_states: snapshot.inputStates,
     agent_statuses: snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,
       agent_run_id: status.execution.agentRunId,
@@ -46,7 +47,7 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
       trigger: status.details.trigger,
       tool_name: null,
       error_message: status.details.errorMessage,
-      error_details: null,
+      error_details: null, recoverableBlock: status.details.recoverableBlock,
     })),
   },
   });

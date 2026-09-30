@@ -5,7 +5,7 @@ import {
   type ProviderSafeCompactionText,
 } from '../presentation/unicode-safe-text.js';
 
-export type WorkingContextCompactionPromptBuildOptions = {
+export type CompactionContentBuildOptions = {
   maxItemChars?: number | null;
 };
 
@@ -26,15 +26,15 @@ export class CompactionPromptConstructionError extends Error {
   }
 }
 
-export class WorkingContextCompactionPromptBuilder {
+export class CompactionContentBuilder {
   constructor(
     private readonly conversationRenderer = new CompactionConversationHistoryRenderer(),
     private readonly providerSafeText: ProviderSafeTextBoundary = providerSafeCompactionText,
   ) {}
 
-  buildTaskPrompt(
+  build(
     units: readonly WorkingContextMessageUnit[],
-    options: WorkingContextCompactionPromptBuildOptions = {},
+    options: CompactionContentBuildOptions = {},
   ): string {
     const renderedHistory = this.conversationRenderer.render(
       units,

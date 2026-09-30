@@ -22,7 +22,8 @@ describe('compaction durable commit boundary', () => {
     await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow();
     expect(files.readRawTraceArchiveManifest().segments).toHaveLength(1);
     expect(h.store.listTurnRawTracesOrdered()).toHaveLength(12);
-    await h.executor.executeIfAuthorized({ ...h.input, turnId: 'retry' });
+    h.manager.authorizeCompactionRetry({ block: h.manager.getCompactionRecovery()!, userAdmissionId: 'fresh-B' });
+    await h.executor.executeIfAuthorized(h.input);
     expect(files.readRawTraceArchiveManifest().segments).toHaveLength(1);
     expect(h.store.listTurnRawTraceCorpusOrdered()).toHaveLength(12);
     expect(h.store.listTurnRawTracesOrdered().at(-1)?.id).toBe('raw-11');
@@ -42,7 +43,8 @@ describe('compaction durable commit boundary', () => {
     const segmentPath = files.getCompleteRawTraceArchiveSegmentPathByFileName(segment.file_name)!;
     fs.writeFileSync(segmentPath, '');
     const before = h.snapshotStore.read('agent');
-    await expect(h.executor.executeIfAuthorized({ ...h.input, turnId: 'retry' })).rejects.toThrow('every selected trace');
+    h.manager.authorizeCompactionRetry({ block: h.manager.getCompactionRecovery()!, userAdmissionId: 'fresh-B' });
+    await expect(h.executor.executeIfAuthorized(h.input)).rejects.toThrow('every selected trace');
     expect(h.snapshotStore.read('agent')).toEqual(before);
     expect(h.store.listTurnRawTracesOrdered()).toHaveLength(12);
   });

@@ -1,3 +1,4 @@
+import type { CompactionRecoveryBlock, CompactionRetryRequest, CompactionExecutionSite } from './compaction/compaction-recovery.js';
 import { LLMUserMessage } from '../llm/user-message.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../llm/utils/messages.js';
 import { CompleteResponse } from '../llm/utils/response-types.js';
@@ -43,7 +44,6 @@ export type {
 } from './memory-manager-compaction-coordinator.js';
 import type { CompactionPlanningBudget } from './compaction/compaction-planning-budget.js';
 import { DEFAULT_MEMORY_COMPACTION_CONFIGURATION, type MemoryCompactionConfiguration } from './compaction/memory-compaction-configuration.js';
-import type { TurnStartOrigin } from '../agent/event-inbox/agent-event-inbox-entry.js';
 import {
   buildNativeAssistantResponseTraces,
   buildNativeUserMessageTrace,
@@ -175,12 +175,20 @@ export class MemoryManager {
   beginPendingCompactionAttempt(input: {
     operationId: string;
     turnId: string;
-    turnOrigin: TurnStartOrigin;
   }): BeginPendingCompactionAttemptResult { return this.compactionCoordinator.beginPendingAttempt(input); }
 
-  retainCompactionFailure(operationId: string, executionTurnId: string, errorKind: string): void {
-    this.compactionCoordinator.retainFailure(operationId, executionTurnId, errorKind);
+  retainCompactionFailure(operationId: string, executionTurnId: string, errorKind: string, site: CompactionExecutionSite): void {
+    this.compactionCoordinator.retainFailure(operationId, executionTurnId, errorKind, site);
   }
+
+  getCompactionRecovery(): CompactionRecoveryBlock | null { return this.compactionCoordinator.getRecovery(); }
+  authorizeCompactionRetry(input: CompactionRetryRequest) { return this.compactionCoordinator.authorizeRetry(input); }
+  canStartCompactionTurn(): boolean { return this.compactionCoordinator.canStartTurn(); }
+  bindCompactionRetryTurn(turnId: string): boolean { return this.compactionCoordinator.bindRetryTurn(turnId); }
+  isCompactionRetryAuthorizedForTurn(turnId: string): boolean { return this.compactionCoordinator.isRetryAuthorizedForTurn(turnId); }
+  revokeUnusedCompactionRetry(input: CompactionRetryRequest) { return this.compactionCoordinator.revokeUnusedRetry(input); }
+  retireCompactionTurn(turnId: string): void { this.compactionCoordinator.retireTurn(turnId); }
+  revokeCompactionRetry(): void { this.compactionCoordinator.revokeRetry(); }
 
   private nextSeq(turnId: string): number {
     const current = (this.seqByTurn.get(turnId) ?? 0) + 1;

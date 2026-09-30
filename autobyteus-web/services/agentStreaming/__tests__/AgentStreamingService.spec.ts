@@ -188,7 +188,7 @@ describe('AgentStreamingService', () => {
         mockAgentContext.state.currentStatus = AgentStatus.Error;
 
         (service as any).dispatchMessage(
-            { type: 'AGENT_STATUS', payload: { status: 'running' } },
+            { type: 'AGENT_STATUS', payload: { recoverableBlock: null, status: 'running' } },
             mockAgentContext,
         );
 
@@ -264,7 +264,7 @@ describe('AgentStreamingService', () => {
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
 
         callbacks.get('onMessage')?.(JSON.stringify({
-            type: 'AGENT_STATUS', payload: { status: 'idle' },
+            type: 'AGENT_STATUS', payload: { recoverableBlock: null, status: 'idle' },
         }));
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
     });
@@ -284,7 +284,7 @@ describe('AgentStreamingService', () => {
         };
 
         callbacks.get('onMessage')?.(JSON.stringify({ type: 'AGENT_COMMAND_ACK', payload: rejected }));
-        callbacks.get('onMessage')?.(JSON.stringify({ type: 'AGENT_STATUS', payload: { status: 'offline' } }));
+        callbacks.get('onMessage')?.(JSON.stringify({ type: 'AGENT_STATUS', payload: { recoverableBlock: null, status: 'offline' } }));
 
         expect(onSendMessageCommandAck).toHaveBeenCalledTimes(1);
         expect(onSendMessageCommandAck).toHaveBeenCalledWith(expect.objectContaining({ run_id: 'run-1', accepted: false, code: 'ACTIVATION_FAILED' }));
@@ -473,7 +473,7 @@ describe('AgentStreamingService', () => {
         vi.setSystemTime(new Date('2026-08-01T10:00:00.001Z'));
         onMessage(JSON.stringify({
             type: 'AGENT_STATUS',
-            payload: { status: 'running', agent_id: 'test-agent-id' },
+            payload: { recoverableBlock: null, status: 'running', agent_id: 'test-agent-id' },
         }));
         expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
         onMessage(JSON.stringify({
@@ -483,7 +483,7 @@ describe('AgentStreamingService', () => {
         vi.setSystemTime(new Date('2026-08-01T10:00:00.050Z'));
         onMessage(JSON.stringify({
             type: 'AGENT_STATUS',
-            payload: { status: 'running', agent_id: 'test-agent-id' },
+            payload: { recoverableBlock: null, status: 'running', agent_id: 'test-agent-id' },
         }));
         expect(mockConversation.messages[0].segments[0].content).toBe('hello');
         onMessage(JSON.stringify({
@@ -502,7 +502,7 @@ describe('AgentStreamingService', () => {
         }));
         onMessage(JSON.stringify({
             type: 'AGENT_STATUS',
-            payload: { status: 'running', agent_id: 'test-agent-id' },
+            payload: { recoverableBlock: null, status: 'running', agent_id: 'test-agent-id' },
         }));
         expect(mockConversation.messages[0].segments[0].content).toBe('hello world!');
         onMessage(JSON.stringify({

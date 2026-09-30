@@ -106,6 +106,10 @@ export class ConfiguredAgentExecutionHandle {
   getStatusSnapshot(): CollaborationAgentStatusSnapshot {
     return this.overlay.get(() => this.agentRun?.getStatusSnapshot() ?? { status: "offline" });
   }
+  getInputStateSnapshots() {
+    return this.agentRun?.isActive()
+      ? [{ agent_run_id: this.identity.agentRunId, state: this.agentRun.getInputStateSnapshot() }] : [];
+  }
   getOrCreateAgentRun(): Promise<AgentRun> { return this.ensureReady(); }
 
   async reserveInput(message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {

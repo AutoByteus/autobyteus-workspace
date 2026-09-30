@@ -1,3 +1,4 @@
+import type { AgentPendingInputDto, CompactionRecoveryBlockDto } from "@autobyteus/agent-presentation-contracts";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentActiveTurn } from "../events/processors/lifecycle-status/agent-turn-lifecycle-state.js";
 import type {
@@ -9,7 +10,7 @@ import type {
   AgentRunInputRejectionCode,
 } from "./agent-run-input-contract.js";
 
-type EntryState = "reserved" | "committed" | "queued" | "claimed" | "forwarded" | "terminal";
+type EntryState = "reserved" | "committed" | "queued" | "claimed" | "forwarded" | "held" | "terminal";
 type InputTerminal =
   | { kind: "completed"; turnId: string | null }
   | { kind: "interrupted"; turnId: string | null }
@@ -24,6 +25,7 @@ type InputEntry = {
   associatedTurnId: string | null;
   observedTurnId: string | null;
   pendingTerminal: InputTerminal | null;
+  heldTurnId: string | null;
   /** A turn this entry was proven undeliverable into; it is never appended into it again. */
   notInto: string | null;
 };
@@ -126,6 +128,7 @@ export class AgentRunInputAdmissionState {
       associatedTurnId: null,
       observedTurnId: null,
       pendingTerminal: null,
+      heldTurnId: null,
       notInto: null,
     };
     this.entries.push(entry);
@@ -165,7 +168,7 @@ export class AgentRunInputAdmissionState {
     let entry: InputEntry | null = null;
     for (const candidate of this.entries) {
       if (candidate.state === "terminal") continue;
-      if (candidate.state === "forwarded" && activeTurnId !== null && candidate.associatedTurnId === activeTurnId) {
+      if ((candidate.state === "forwarded" || candidate.state === "held") && activeTurnId !== null && candidate.associatedTurnId === activeTurnId) {
         continue;
       }
       if (candidate.state === "queued") entry = candidate;
@@ -200,6 +203,10 @@ export class AgentRunInputAdmissionState {
   isClaimForEntry(claim: AgentRunInputDispatchClaim, entrySequence: number): boolean {
     return claim.entrySequence === entrySequence &&
       this.activeClaim?.sequence === entrySequence;
+  }
+
+  observedClaimTurnId(claim: AgentRunInputDispatchClaim): string | null {
+    return this.getActiveClaim(claim)?.observedTurnId ?? null;
   }
 
   applyDispatchResult(
@@ -266,6 +273,7 @@ export class AgentRunInputAdmissionState {
     }
     this.clearClaim(entry);
     this.applyPendingTerminal(entry);
+    this.applyHeldProjection(entry);
     return { forwarded: true, turnId: entry.associatedTurnId };
   }
 
@@ -313,7 +321,7 @@ export class AgentRunInputAdmissionState {
       claim.pendingTerminal = terminal;
     }
     for (const entry of [...this.entries]) {
-      if (entry.state === "forwarded" && this.terminalMatchesEntry(entry, terminal.turnId)) {
+      if ((entry.state === "forwarded" || entry.state === "held") && this.terminalMatchesEntry(entry, terminal.turnId)) {
         this.finishEntry(entry, terminal);
       }
     }
@@ -325,7 +333,7 @@ export class AgentRunInputAdmissionState {
       this.activeClaim.pendingTerminal = terminal;
     }
     for (const entry of [...this.entries]) {
-      if (entry.state === "forwarded" && entry.associatedTurnId === input.turnId) {
+      if ((entry.state === "forwarded" || entry.state === "held") && entry.associatedTurnId === input.turnId) {
         this.failEntry(entry, terminal);
       }
     }
@@ -344,6 +352,38 @@ export class AgentRunInputAdmissionState {
     }
     this.activeClaim = null;
     this.resolveQuiescenceWaitersIfReady();
+  }
+
+  get highWaterMark(): number { return this.nextSequence - 1; }
+
+  observeRecovery(block: CompactionRecoveryBlockDto | null): void {
+    const held = block?.position.kind === "held_turn" && block.state !== "recovering" ? block.position.turnId : null;
+    for (const entry of this.entries) {
+      entry.heldTurnId = held && this.terminalMatchesEntry(entry, held) ? held : null;
+      this.applyHeldProjection(entry);
+    }
+  }
+
+  pendingSnapshot(): AgentPendingInputDto[] {
+    return this.entries.filter(entry => entry.state !== "reserved" && entry.state !== "terminal").map(entry => ({
+      sequence: entry.sequence, message_id: requiredString(entry.message.metadata.message_id),
+      dedupe_key: requiredString(entry.message.metadata.dedupe_key),
+      turn_id: entry.associatedTurnId ?? entry.observedTurnId,
+      state: entry.heldTurnId ? "held" : entry.state === "forwarded" ? "forwarded" : "queued",
+      content: entry.message.content, sender_type: entry.message.senderType as AgentPendingInputDto["sender_type"],
+      file_attachments: (entry.message.recordingFileAttachments ?? entry.message.contextFiles ?? []).map(file => ({
+        uri: file.uri, file_type: file.fileType, file_name: file.fileName,
+      })),
+    }));
+  }
+
+  private applyHeldProjection(entry: InputEntry): void {
+    if (entry.state === "forwarded" && entry.heldTurnId) {
+      entry.state = "held"; safeNotify(entry.observer, { kind: "held", turnId: entry.heldTurnId });
+    } else if (entry.state === "held" && !entry.heldTurnId) {
+      entry.state = "forwarded";
+      if (entry.associatedTurnId) safeNotify(entry.observer, { kind: "resumed", turnId: entry.associatedTurnId });
+    }
   }
 
   quiesce(): void {
@@ -377,6 +417,14 @@ export class AgentRunInputAdmissionState {
   reopen(): void {
     if (this.rootShutdownFenced) return;
     this.accepting = true;
+  }
+
+  settleUndeterminedDispatchAfterTermination(claim: AgentRunInputDispatchClaim): void {
+    const entry = this.getActiveClaim(claim);
+    if (!entry) return;
+    this.failEntry(entry, { code: "AGENT_RUN_TERMINATED_DELIVERY_UNCONFIRMED",
+      message: "Runtime stopped; input delivery was not confirmed and will not be replayed.", turnId: entry.observedTurnId });
+    this.clearClaim(entry);
   }
 
   settleAcceptedTermination(): void {
@@ -417,7 +465,7 @@ export class AgentRunInputAdmissionState {
 
   private applyPendingTerminal(entry: InputEntry): void {
     const terminal = entry.pendingTerminal;
-    if (!terminal || entry.state !== "forwarded") return;
+    if (!terminal || (entry.state !== "forwarded" && entry.state !== "held")) return;
     if (terminal.kind === "failed") {
       this.failEntry(entry, terminal);
     } else {

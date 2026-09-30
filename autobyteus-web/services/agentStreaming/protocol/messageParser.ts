@@ -1,3 +1,4 @@
+import { agentInputStateSchema, compactionRecoveryEventSchema, compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
 /**
  * Message parser - Converts raw JSON strings to typed messages.
  * 
@@ -44,7 +45,10 @@ const validOptionalProviderStatus = (payload: Record<string, unknown>): boolean 
 
 const validateCanonicalBoundary = (type: string, payload: unknown): void => {
   if (!isRecord(payload)) throw new Error(`${type} payload must be an object`);
-  if (type === 'SYSTEM_INSTRUCTIONS_SUPPLIED') {
+  if (type === 'AGENT_INPUT_STATE') { agentInputStateSchema.parse(payload); }
+  else if (type === 'COMPACTION_BLOCKED' || type === 'COMPACTION_RESUMED') { compactionRecoveryEventSchema.parse(payload); }
+  else if (type === 'AGENT_STATUS') { compactionRecoveryBlockSchema.nullable().parse(payload.recoverableBlock); }
+  else if (type === 'SYSTEM_INSTRUCTIONS_SUPPLIED') {
     if (!exactKeys(payload, ['trace_id', 'content', 'ts'])
       || Object.keys(payload).length !== 3
       || typeof payload.trace_id !== 'string' || payload.trace_id.trim().length === 0

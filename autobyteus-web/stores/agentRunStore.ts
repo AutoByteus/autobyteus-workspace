@@ -117,7 +117,7 @@ export const useAgentRunStore = defineStore('agentRun', {
       const { config, state } = currentAgent;
       const runId = state.runId;
       const isNewAgent = runId.startsWith('temp-');
-      const isResumeOfStoppedRun = !isNewAgent && NOT_LIVE_STATUSES.has(String(state.currentStatus));
+      const isResumeOfStoppedRun = !isNewAgent && !state.recoverableBlock && NOT_LIVE_STATUSES.has(String(state.currentStatus));
       const resumeConfig = !isNewAgent ? runHistoryStore.getResumeConfig(runId) : null;
       const workspaceId = config.workspaceId;
       const workspaceRootPath = config.workspaceMetadata?.workspaceRootPath || (workspaceId
@@ -161,8 +161,10 @@ export const useAgentRunStore = defineStore('agentRun', {
       const initialSummary = userText.trim() ? userText : messageContent;
       const draftAttachments = [...currentAgent.contextFilePaths];
       const draftOwner = buildAgentDraftContextFileOwner(runId);
+      const messageId = createClientMessageId();
+      let dedupeKey = `agent_run_input:${runId}:${messageId}`;
       const localSubmission = beginLocalUserSubmission(currentAgent, {
-        text: messageContent,
+        text: messageContent, identity: { messageId, dedupeKey },
         attachments: draftAttachments,
         navigationTarget: { kind: 'standalone', runId },
       });
@@ -212,6 +214,8 @@ export const useAgentRunStore = defineStore('agentRun', {
           }
 
           finalRunId = permanentRunId;
+          dedupeKey = `agent_run_input:${permanentRunId}:${messageId}`;
+          localSubmission.message.dedupeKey = dedupeKey;
           preparedRunId = permanentRunId;
           agentContextsStore.promoteTemporaryId(runId, permanentRunId);
           activationPendingRunId = permanentRunId;
@@ -238,14 +242,13 @@ export const useAgentRunStore = defineStore('agentRun', {
         finalizeLocalSubmissionAttachments(localSubmission, submissionPlan.retainedMessageAttachments);
 
         const service = await this.ensureAgentStreamConnected(finalRunId);
-        const messageId = createClientMessageId();
         service.sendMessage(
           messageContent,
           submissionPlan.executable.contextFilePaths,
           submissionPlan.executable.imageUrls,
           {
             messageId,
-            dedupeKey: `agent_run_input:${finalRunId}:${messageId}`,
+            dedupeKey,
           },
         );
         preparedRunId = null;

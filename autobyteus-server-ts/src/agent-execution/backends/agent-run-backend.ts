@@ -1,3 +1,4 @@
+import type { CompactionRetryRequest, CompactionRecoveryBlock } from "autobyteus-ts/memory/compaction/compaction-recovery.js";
 import type { AgentOperationResult } from "../domain/agent-operation-result.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../domain/agent-run-context.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
@@ -14,11 +15,21 @@ export type AgentRunSourceEventBatchListener = (
 ) => void | Promise<void>;
 export type AgentRunSourceEventBatchUnsubscribe = () => void;
 
+export type AgentRunCompactionRecoveryCapability =
+  | { readonly kind: "unsupported" }
+  | {
+      readonly kind: "supported";
+      getSnapshot(): CompactionRecoveryBlock | null;
+      authorize(input: CompactionRetryRequest): Promise<"accepted" | "stale" | "stopped">;
+      revokeUnused(input: CompactionRetryRequest & { reason: string }): Promise<"revoked" | "stale" | "in_use">;
+    };
+
 export interface AgentRunBackend {
   readonly runId: string;
   readonly runtimeKind: RuntimeKind;
   readonly inputCapabilities: AgentRunBackendInputCapabilities;
 
+  readonly compactionRecovery: AgentRunCompactionRecoveryCapability;
   getContext(): AgentRunContext<RuntimeAgentRunContext>;
   isActive(): boolean;
   getPlatformAgentRunId(): string | null;

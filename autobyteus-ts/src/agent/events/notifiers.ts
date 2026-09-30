@@ -1,3 +1,4 @@
+import type { CompactionRecoveryDataInput } from '../streaming/events/compaction-recovery-data.js';
 import { EventEmitter } from '../../events/event-emitter.js';
 import { EventType } from '../../events/event-types.js';
 import { AgentStatus } from '../status/status-enum.js';
@@ -229,6 +230,10 @@ export class AgentExternalEventNotifier extends EventEmitter {
       ...(classification.scope === 'turn' ? { turn_id: classification.turnId } : {})
     };
     this.emitEvent(EventType.AGENT_ERROR_OUTPUT_GENERATION, payload);
+  }
+
+  notifyCompactionRecovery(data: CompactionRecoveryDataInput): void {
+    this.emitEvent(data.recovery?.state === 'awaiting_user' ? EventType.AGENT_COMPACTION_BLOCKED : EventType.AGENT_COMPACTION_RESUMED, data);
   }
 
   notifyAgentCompactionStatus(compactionData: Record<string, any>): void {

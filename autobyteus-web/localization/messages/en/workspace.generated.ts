@@ -1,6 +1,9 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
+  'workspace.components.conversation.UserMessage.compaction_held': 'Held — waiting for compaction',
+  'workspace.components.conversation.UserMessage.queued': 'Queued',
+
   'workspace.components.conversation.AIMessage.avatar': '`${displayAgentName} avatar`',
   'workspace.components.conversation.ToolCallIndicator.contextsummarytitle': 'contextSummaryTitle',
   'workspace.components.conversation.ToolCallIndicator.approve': 'Approve',

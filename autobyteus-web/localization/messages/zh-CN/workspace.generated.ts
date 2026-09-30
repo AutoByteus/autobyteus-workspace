@@ -1,6 +1,9 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
+  'workspace.components.conversation.UserMessage.compaction_held': '已保留 — 等待上下文压缩',
+  'workspace.components.conversation.UserMessage.queued': '排队中',
+
   'workspace.components.conversation.AIMessage.avatar': '`${displayAgentName} 头像`',
   'workspace.components.conversation.ToolCallIndicator.contextsummarytitle': '上下文摘要标题',
   'workspace.components.conversation.ToolCallIndicator.approve': '批准',

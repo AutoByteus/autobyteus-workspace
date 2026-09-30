@@ -1,3 +1,4 @@
+import { agentInputStateSchema, compactionRecoveryBlockSchema } from "@autobyteus/agent-presentation-contracts";
 import { z } from "zod";
 import {
   teamAgentErrorPayloadSchema,
@@ -27,6 +28,7 @@ export const teamExecutionViewSnapshotPayloadSchema = z.object({
   execution_tree: teamRunExecutionTreeDtoSchema,
   messages: z.array(teamCommunicationMessageDtoSchema),
   agent_statuses: z.array(teamAgentStatusDtoSchema),
+  agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
 }).strict();
 
 export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
@@ -39,6 +41,9 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   message("SEGMENT_END", teamAgentPayloadSchemas.SEGMENT_END),
   message("AGENT_STATUS", teamAgentPayloadSchemas.AGENT_STATUS),
   message("COMPACTION_STATUS", teamAgentPayloadSchemas.COMPACTION_STATUS),
+  message("COMPACTION_BLOCKED", teamAgentPayloadSchemas.COMPACTION_BLOCKED),
+  message("COMPACTION_RESUMED", teamAgentPayloadSchemas.COMPACTION_RESUMED),
+  message("AGENT_INPUT_STATE", teamAgentPayloadSchemas.AGENT_INPUT_STATE),
   message("TOKEN_USAGE_UPDATED", teamAgentPayloadSchemas.TOKEN_USAGE_UPDATED),
   message("ASSISTANT_COMPLETE", teamAgentPayloadSchemas.ASSISTANT_COMPLETE),
   message("TOOL_APPROVAL_REQUESTED", teamAgentPayloadSchemas.TOOL_APPROVAL_REQUESTED),

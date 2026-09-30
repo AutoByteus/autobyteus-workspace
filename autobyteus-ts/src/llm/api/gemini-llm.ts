@@ -74,9 +74,9 @@ export class GeminiLLM extends BaseLLM {
     return this.clientPromise;
   }
 
-  private async initializeClient(): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
+  private async initializeClient(singleAttempt = false): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
     const selection = await this.runtimeResolver();
-    return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver);
+    return initializeGeminiClientWithRuntime(selection, this.apiKeyResolver, { singleAttempt });
   }
 
   private buildGenerationConfig(tools?: Array<Record<string, unknown>>): Record<string, unknown> {
@@ -194,7 +194,8 @@ export class GeminiLLM extends BaseLLM {
 
   protected async _sendMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): Promise<CompleteResponse> {
     const history = await this._renderer.render(messages);
-    const { client, runtimeInfo } = await this.getClient();
+    const { client, runtimeInfo } = await (options.retryMode === 'single_attempt'
+      ? this.initializeClient(true) : this.getClient());
     const runtimeAdjustedModel = resolveModelForRuntime(
       this.model.value,
       'llm',
@@ -233,7 +234,8 @@ export class GeminiLLM extends BaseLLM {
 
   protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown>, options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
     const history = await this._renderer.render(messages);
-    const { client, runtimeInfo } = await this.getClient();
+    const { client, runtimeInfo } = await (options.retryMode === 'single_attempt'
+      ? this.initializeClient(true) : this.getClient());
     const runtimeAdjustedModel = resolveModelForRuntime(
       this.model.value,
       'llm',

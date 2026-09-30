@@ -281,8 +281,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         const location = team.view.getAgentExecutionLocation(targetAgentRunId);
         if (!location) throw new Error(`Focused Team AgentRun '${targetAgentRunId}' has no exact execution location.`);
         team.view.setRootTeamActive(true);
+        const messageId = buildClientMessageId();
+        const dedupeKey = inputDedupeKey(rootTeamRunId, targetAgentRunId, messageId);
         localSubmission = beginLocalUserSubmission(member, {
-          text, attachments: contextAttachments,
+          text, attachments: contextAttachments, identity: { messageId, dedupeKey },
           navigationTarget: { kind: 'team_member', teamRunId: rootTeamRunId, agentRunId: targetAgentRunId },
         });
         const draftOwner = options.attachmentDraftOwner
@@ -297,10 +299,6 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         });
         const plan = planContextAttachmentSubmission(finalized);
         retryAttachments = plan.retainedMessageAttachments.map(cloneContextAttachment);
-        const messageId = buildClientMessageId();
-        const dedupeKey = inputDedupeKey(rootTeamRunId, targetAgentRunId, messageId);
-        localSubmission.message.messageId = messageId;
-        localSubmission.message.dedupeKey = dedupeKey;
         finalizeLocalSubmissionAttachments(localSubmission, plan.retainedMessageAttachments);
         useRunHistoryStore().markTeamAsActive(rootTeamRunId);
         void useRunHistoryStore().refreshTreeQuietly();

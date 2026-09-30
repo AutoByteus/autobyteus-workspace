@@ -99,9 +99,9 @@ const snapshot = {
         },
       },
       communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', messages: [] },
-      agent_statuses: [{
+      agent_input_states: [], agent_statuses: [{
         member_address: '/direct', agent_run_id: 'agent-run', status: 'idle', trigger: null,
-        tool_name: null, error_message: null, error_details: null,
+        tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
       }],
     },
   },
@@ -517,7 +517,7 @@ describe('AgentOrgStreamingService', () => {
           kind: 'agent_presentation', member_address: '/direct', agent_run_id: 'agent-task-fresh',
           message: { type: 'AGENT_STATUS', payload: {
             status: 'running', trigger: 'task', tool_name: null,
-            error_message: null, error_details: null,
+            error_message: null, error_details: null, recoverableBlock: null,
           } },
         },
       },

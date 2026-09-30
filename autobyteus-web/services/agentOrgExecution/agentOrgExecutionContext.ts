@@ -1,3 +1,4 @@
+import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
 import { cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { assertAgentOrgRunConfigChange } from './agentOrgRunConfigAdoption'
@@ -75,6 +76,12 @@ export class AgentOrgExecutionContext {
         throw new Error(`AgentOrg status '${status.agent_run_id}' has no exact context identity.`)
       }
       this.contexts.get(status.agent_run_id)!.state.currentStatus = status.status as AgentStatus
+      this.contexts.get(status.agent_run_id)!.state.recoverableBlock = status.recoverableBlock
+    }
+    for (const entry of input.view.agent_input_states) {
+      const context = this.contexts.get(entry.agent_run_id)
+      if (!context) throw new Error('AgentOrg input-state target mismatch.')
+      handleAgentInputState(entry.state, context)
     }
     this.phase = input.view.is_active ? 'live' : 'historical'
   }
@@ -223,7 +230,7 @@ export class AgentOrgExecutionContext {
   setActive(active: boolean): void {
     this.view = { ...this.view, is_active: active }
     if (!active) {
-      this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status: AgentOrgStatus) => ({ ...status, status: 'offline' })) })
+      this.commitView({ ...this.view, agent_statuses: this.view.agent_statuses.map((status: AgentOrgStatus) => ({ ...status, status: 'offline', recoverableBlock: null })) })
       this.contexts.forEach((context) => applyOfflineOrTerminalCleanup(context))
       this.phase = 'historical'
     }

@@ -43,7 +43,7 @@ const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem 
 const offlineEvent = (memberAddress: string, agentRunId: string): AgentOrgExecutionEventDto => ({
   kind: 'agent_presentation', member_address: memberAddress, agent_run_id: agentRunId,
   message: { type: 'AGENT_STATUS', payload: {
-    status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null,
+    status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
   } },
 } as AgentOrgExecutionEventDto)
 

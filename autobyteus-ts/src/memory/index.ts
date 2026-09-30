@@ -7,7 +7,7 @@ export type { BuildToolInteractionsOptions, ToolInteractionTrace } from './tool-
 export { buildToolCallContextIndex, buildToolTraceLifecycleIndex } from './tool-trace-lifecycle-index.js';
 export type { PhysicalToolTraceRecord, ToolCallContext, ToolTraceLifecycleGroup } from './tool-trace-lifecycle-index.js';
 
-export { CompactionPromptConstructionError, WorkingContextCompactionPromptBuilder } from './compaction/working-context-compaction-prompt-builder.js';
+export { CompactionPromptConstructionError, CompactionContentBuilder } from './compaction/compaction-content-builder.js';
 export { CompactionRuntimeSettingsResolver } from './compaction/compaction-runtime-settings.js';
 export type { CompactionRuntimeSettings } from './compaction/compaction-runtime-settings.js';
 export { PendingCompactionExecutor } from './compaction/pending-compaction-executor.js';
@@ -72,4 +72,7 @@ export { CondensedToolCallRenderer } from './presentation/condensed-tool-call-re
 export { ReadableValueRenderer } from './presentation/readable-value-renderer.js';
 export { ProviderSafeCompactionText, providerSafeCompactionText } from './presentation/unicode-safe-text.js';
 
-export { DirectLlmCompactionSummarizer, type CompactionLlmFactory } from './compaction/direct-llm-compaction-summarizer.js';
+export { DirectLlmCompressionStrategy, type CompactionLlmFactory } from './compaction/direct-llm-compression-strategy.js';
+
+export type { CompressionStrategy } from './compaction/compression-strategy.js';
+export type { CompactionCompressionExecution, CompressionAttemptObservation } from './compaction/compaction-execution.js';

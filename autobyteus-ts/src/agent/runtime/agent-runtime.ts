@@ -1,3 +1,6 @@
+import { CompactionRecoveryController } from '../compaction/compaction-recovery-controller.js';
+import type { CompactionRetryRequest } from '../../memory/compaction/compaction-recovery.js';
+import { SenderType } from '../sender-type.js';
 import type { AgentContext } from '../context/agent-context.js';
 import { AgentContextRegistry } from '../context/agent-context-registry.js';
 import { AgentStatus } from '../status/status-enum.js';
@@ -41,6 +44,7 @@ export class AgentRuntime {
     this.externalEventNotifier = new AgentExternalEventNotifier(this.context.agentId);
     this.statusManager = new AgentStatusManager(this.context, this.externalEventNotifier);
     this.context.state.statusManagerRef = this.statusManager;
+    this.context.state.compactionRecovery = new CompactionRecoveryController(context);
 
     this.worker = new AgentWorker(this.context, _eventHandlerRegistry);
     this.worker.addDoneCallback((result) => this.handleWorkerCompletion(result));
@@ -58,7 +62,11 @@ export class AgentRuntime {
     }
 
     if (event instanceof UserMessageReceivedEvent) {
-      await this.getAgentEventInbox().postUserEvent(event);
+      const recovery = this.context.state.compactionRecovery!;
+      // Capture at ingress, before enqueue can yield; no retrospective credit from an in-progress arrival.
+      const block = event.agentInputUserMessage.senderType === SenderType.USER ? recovery.snapshot() : null;
+      const receipt = await this.getAgentEventInbox().postUserEvent(event);
+      if (block?.state === 'awaiting_user') this.authorizeCompactionRetry({ block, userAdmissionId: receipt });
     } else if (event instanceof InterAgentMessageReceivedEvent) {
       await this.getAgentEventInbox().postInterAgentEvent(event);
     } else if (event instanceof LifecycleEvent) {
@@ -69,6 +77,17 @@ export class AgentRuntime {
         'Route turn-local operational events through AgentTurnRunner/TurnToolInputPort.'
       );
     }
+  }
+
+  getCompactionRecovery() { return this.context.state.compactionRecovery?.snapshot() ?? null; }
+
+  authorizeCompactionRetry(input: CompactionRetryRequest): 'accepted' | 'stale' | 'stopped' {
+    if (!this.worker.isAlive() || this.worker.isStopping()) return 'stopped';
+    return this.context.state.compactionRecovery!.authorize(input);
+  }
+
+  revokeUnusedCompactionRetry(input: CompactionRetryRequest): 'revoked' | 'stale' | 'in_use' {
+    return this.context.state.compactionRecovery!.revokeUnused(input);
   }
 
   async postToolApprovalEvent(event: ToolExecutionApprovalEvent): Promise<PostToolApprovalResult> {
@@ -161,6 +180,7 @@ export class AgentRuntime {
     const reason = normalizeInterruptReason(options.reason);
     const activeTurn = this.context.state.activeTurn;
 
+    if (!activeTurn) this.context.state.compactionRecovery?.revoke();
     if (!this.worker.isAlive() || !activeTurn) {
       return {
         accepted: false,

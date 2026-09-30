@@ -261,7 +261,7 @@ describe('TeamExecutionViewState', () => {
     executionTree.root_team.task_executions = [taskAgent('dormant-student-run', 'teacher-run')];
     const state = createStateFixture({ executionTree }).state;
     const status = (agent_run_id: string, member_address: string, value: AgentStatus) => ({
-      agent_run_id, member_address, status: value, trigger: null, tool_name: null, error_message: null, error_details: null,
+      agent_run_id, member_address, status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
     });
     const configuredStatuses = [
       status('teacher-run', '/Teacher', AgentStatus.Idle),
@@ -270,11 +270,11 @@ describe('TeamExecutionViewState', () => {
     ];
     expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
       root_team_run_id: 'root-team-1', base_change_sequence: 3, execution_tree: executionTree,
-      messages: [], agent_statuses: configuredStatuses,
+      messages: [], agent_input_states: [], agent_statuses: configuredStatuses,
     } })).toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_SNAPSHOT_INVALID' });
     expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
       root_team_run_id: 'root-team-1', base_change_sequence: 3, execution_tree: executionTree,
-      messages: [], agent_statuses: [...configuredStatuses, status('dormant-student-run', '/StudentStudyGroup/Student', AgentStatus.Offline)],
+      messages: [], agent_input_states: [], agent_statuses: [...configuredStatuses, status('dormant-student-run', '/StudentStudyGroup/Student', AgentStatus.Offline)],
     } })).toMatchObject({ disposition: 'applied' });
     expect(state.getAgentContext('dormant-student-run')?.state.currentStatus).toBe(AgentStatus.Offline);
   });
@@ -302,7 +302,7 @@ describe('TeamExecutionViewState', () => {
       type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const,
       payload: {
         root_team_run_id: 'foreign-root', base_change_sequence: 9, execution_tree: beforeTree,
-        messages: [], agent_statuses: [],
+        messages: [], agent_input_states: [], agent_statuses: [],
       },
     };
     expect(state.applySnapshot(invalidSnapshot)).toMatchObject({
@@ -320,10 +320,10 @@ describe('TeamExecutionViewState', () => {
       payload: {
         root_team_run_id: 'root-team-1', base_change_sequence: 4, execution_tree: tree(),
         messages: [],
-        agent_statuses: [
-          { agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null },
-          { agent_run_id: 'coordinator-run', member_address: '/StudentStudyGroup/Coordinator', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null },
-          { agent_run_id: 'student-run', member_address: '/StudentStudyGroup/Student', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null },
+        agent_input_states: [], agent_statuses: [
+          { agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+          { agent_run_id: 'coordinator-run', member_address: '/StudentStudyGroup/Coordinator', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+          { agent_run_id: 'student-run', member_address: '/StudentStudyGroup/Student', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
         ],
       },
     });
@@ -368,18 +368,18 @@ describe('TeamExecutionViewState', () => {
         base_change_sequence: 7,
         execution_tree: relocatedTree,
         messages: [],
-        agent_statuses: [
+        agent_input_states: [], agent_statuses: [
           {
             agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Offline,
-            trigger: null, tool_name: null, error_message: null, error_details: null,
+            trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
           },
           {
             agent_run_id: 'coordinator-run', member_address: '/StudentStudyGroup/Coordinator', status: AgentStatus.Offline,
-            trigger: null, tool_name: null, error_message: null, error_details: null,
+            trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
           },
           {
             agent_run_id: 'student-run', member_address: '/StudentStudyGroup/Student', status: AgentStatus.Offline,
-            trigger: null, tool_name: null, error_message: null, error_details: null,
+            trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
           },
         ],
       },

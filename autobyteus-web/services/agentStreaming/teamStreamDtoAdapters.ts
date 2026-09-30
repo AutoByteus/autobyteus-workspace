@@ -56,6 +56,12 @@ export const toAgentPresentationProjectionMessage = (
     case 'SEGMENT_CONTENT': return { type: message.type, payload: { id: message.payload.segment_id, turn_id: message.payload.turn_id, segment_type: segmentType(message.payload.segment_type), delta: message.payload.delta } };
     case 'SEGMENT_END': return { type: message.type, payload: { id: message.payload.segment_id, turn_id: message.payload.turn_id, metadata: message.payload.metadata, interrupted: message.payload.interrupted, reason: message.payload.reason, failed: message.payload.failed, error: message.payload.error } };
     case 'AGENT_STATUS': return { type: message.type, payload: { ...message.payload } };
+    case 'AGENT_INPUT_STATE': {
+      const { run_instance_id, revision, entries, recoverableBlock } = message.payload;
+      return { type: 'AGENT_INPUT_STATE', payload: { run_instance_id, revision, entries, recoverableBlock } };
+    }
+    case 'COMPACTION_BLOCKED':
+    case 'COMPACTION_RESUMED': return { type: message.type, payload: { block: message.payload.block, recovery: message.payload.recovery } };
     case 'COMPACTION_STATUS': return { type: message.type, payload: { ...message.payload, phase: compactionPhase(message.payload.phase) } };
     case 'TOKEN_USAGE_UPDATED': return {
       type: message.type,
@@ -131,11 +137,17 @@ export const toAgentProjectionMessage = (message: TeamAgentProjectionMessage, ag
     case 'TURN_STARTED': return { type: message.type, payload: { turn_id: message.payload.turn_id } };
     case 'TURN_COMPLETED': return { type: message.type, payload: { turn_id: message.payload.turn_id, reason: message.payload.reason } };
     case 'TURN_INTERRUPTED': return { type: message.type, payload: { turn_id: message.payload.turn_id, reason: message.payload.reason } };
-    case 'AGENT_STATUS': return { type: message.type, payload: { status: message.payload.status, trigger: message.payload.trigger, tool_name: message.payload.tool_name, error_message: message.payload.error_message, error_details: message.payload.error_details } };
+    case 'AGENT_STATUS': return { type: message.type, payload: { status: message.payload.status, trigger: message.payload.trigger, tool_name: message.payload.tool_name, error_message: message.payload.error_message, error_details: message.payload.error_details, recoverableBlock: message.payload.recoverableBlock } };
     case 'TOKEN_USAGE_UPDATED': {
       const { change_sequence: _sequence, agent_run_id: _run, ...payload } = message.payload;
       return { type: message.type, payload: { ...payload, run_id: exactAgentRunId } };
     }
+    case 'AGENT_INPUT_STATE': {
+      const { run_instance_id, revision, entries, recoverableBlock } = message.payload;
+      return { type: 'AGENT_INPUT_STATE', payload: { run_instance_id, revision, entries, recoverableBlock } };
+    }
+    case 'COMPACTION_BLOCKED':
+    case 'COMPACTION_RESUMED': return { type: message.type, payload: { block: message.payload.block, recovery: message.payload.recovery } };
     case 'COMPACTION_STATUS': return { type: message.type, payload: { phase: compactionPhase(message.payload.phase), kind: message.payload.kind, status: message.payload.status, turn_id: message.payload.turn_id, compaction_operation_id: message.payload.compaction_operation_id, requested_turn_id: message.payload.requested_turn_id, execution_turn_id: message.payload.execution_turn_id, selected_block_count: message.payload.selected_block_count, compacted_block_count: message.payload.compacted_block_count, raw_trace_count: message.payload.raw_trace_count, summary_char_count: message.payload.summary_char_count, compaction_invocation_id: message.payload.compaction_invocation_id, summarizer_provider: message.payload.summarizer_provider, completion_status: message.payload.completion_status, compaction_model_identifier: message.payload.compaction_model_identifier, completion_reason: message.payload.completion_reason, summary_token_count: message.payload.summary_token_count, error_message: message.payload.error_message, provider: message.payload.provider, source_surface: message.payload.source_surface, boundary_key: message.payload.boundary_key, provider_event_id: message.payload.provider_event_id, provider_session_id: message.payload.provider_session_id, provider_thread_id: message.payload.provider_thread_id, provider_timestamp: message.payload.provider_timestamp, trigger: message.payload.trigger, pre_tokens: message.payload.pre_tokens, rotation_eligible: message.payload.rotation_eligible } };
     case 'ASSISTANT_COMPLETE': return { type: message.type, payload: { content: message.payload.content, reasoning: message.payload.reasoning, usage: jsonObject(message.payload.usage), image_urls: [...message.payload.image_urls], audio_urls: [...message.payload.audio_urls], video_urls: [...message.payload.video_urls] } };
     case 'TOOL_APPROVAL_REQUESTED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: requiredJsonObject(message.payload.arguments, 'Tool approval arguments') } };

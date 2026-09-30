@@ -1,5 +1,5 @@
 import {
-  agentTokenUsageRunSummarySchema,
+  agentTokenUsageRunSummarySchema, agentInputStateSchema, compactionRecoveryEventSchema, compactionRecoveryBlockSchema,
   jsonValueSchema,
   type JsonValue,
 } from "@autobyteus/agent-presentation-contracts";
@@ -314,7 +314,13 @@ export class AgentRunPresentationAdapter {
           status: normalizeAgentApiStatus(p.status), trigger: text(p.trigger),
           toolName: text(raw(p, "tool_name", "toolName")), errorMessage: text(raw(p, "error_message", "errorMessage")),
           errorDetails: text(raw(p, "error_details", "errorDetails")),
+          recoverableBlock: compactionRecoveryBlockSchema.nullable().parse(p.recoverableBlock ?? null),
         }, statusHint: hint });
+      case AgentRunEventType.AGENT_INPUT_STATE:
+        return correlated({ eventType: "AGENT_INPUT_STATE", details: agentInputStateSchema.parse(p), statusHint: null });
+      case AgentRunEventType.COMPACTION_BLOCKED:
+      case AgentRunEventType.COMPACTION_RESUMED:
+        return correlated({ eventType: event.eventType, details: compactionRecoveryEventSchema.parse(p), statusHint: null });
       case AgentRunEventType.COMPACTION_STATUS:
         return correlated({ eventType: "COMPACTION_STATUS", details: {
           phase: text(p.phase), kind: text(p.kind), status: text(p.status), turnId: text(raw(p, "turn_id", "turnId")),

@@ -43,7 +43,10 @@ export const projectAgentPresentationMessage = (event: AgentPresentationEvent): 
     case "SEGMENT_START": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, metadata: event.details.metadata } });
     case "SEGMENT_CONTENT": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, delta: event.details.delta } });
     case "SEGMENT_END": return parse({ type, payload: { segment_id: event.details.segmentId, turn_id: event.details.turnId, metadata: event.details.metadata, interrupted: event.details.interrupted, reason: event.details.reason, failed: event.details.failed, error: event.details.error } });
-    case "AGENT_STATUS": return parse({ type, payload: { status: event.details.status, trigger: event.details.trigger, tool_name: event.details.toolName, error_message: event.details.errorMessage, error_details: event.details.errorDetails } });
+    case "AGENT_STATUS": return parse({ type, payload: { status: event.details.status, trigger: event.details.trigger, tool_name: event.details.toolName, error_message: event.details.errorMessage, error_details: event.details.errorDetails, recoverableBlock: event.details.recoverableBlock } });
+    case "AGENT_INPUT_STATE": return parse({ type, payload: event.details });
+    case "COMPACTION_BLOCKED": return parse({ type, payload: event.details });
+    case "COMPACTION_RESUMED": return parse({ type, payload: event.details });
     case "COMPACTION_STATUS": return parse({ type, payload: {
       phase: event.details.phase, kind: event.details.kind, status: event.details.status, turn_id: event.details.turnId,
       compaction_operation_id: event.details.compactionOperationId, requested_turn_id: event.details.requestedTurnId,

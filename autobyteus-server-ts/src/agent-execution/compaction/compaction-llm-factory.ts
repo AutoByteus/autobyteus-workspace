@@ -1,4 +1,4 @@
-import type { CompactionLlmFactory } from 'autobyteus-ts/memory/compaction/direct-llm-compaction-summarizer.js';
+import type { CompactionLlmFactory } from 'autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js';
 import { COMPACTION_SUMMARY_PROMPT } from 'autobyteus-ts/memory/compaction/compaction-summary-prompt.js';
 import { applyRawLlmConfigOverrides } from 'autobyteus-ts/llm/utils/llm-config-overrides.js';
 import type { LLMConfig } from 'autobyteus-ts/llm/utils/llm-config.js';
@@ -14,6 +14,7 @@ const CONTROLLED = new Set([
   'stop', 'stopsequences', 'conversation', 'conversationid', 'logicalconversationid',
   'previousresponseid', 'stream', 'streamoptions', 'n', 'candidatecount', 'bestof',
   'maxtokens', 'maxcompletiontokens', 'maxoutputtokens', 'numpredict',
+  'retrymode', 'retries', 'maxretries', 'retryoptions', 'httpoptions',
   'signal', 'abortsignal', 'requestoptions', 'extrabody', 'extraheaders',
 ]);
 const safeGenerationOptions = (value: Record<string, unknown>): Record<string, unknown> =>

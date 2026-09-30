@@ -14,6 +14,7 @@ const logger = {
 };
 
 export class ClaudeAgentRunBackend implements AgentRunBackend {
+  readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
   private readonly context: ClaudeRunContext;
   private readonly session: ClaudeSession;

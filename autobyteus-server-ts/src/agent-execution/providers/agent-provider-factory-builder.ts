@@ -1,4 +1,4 @@
-import type { CompactionLlmFactory } from 'autobyteus-ts/memory/compaction/direct-llm-compaction-summarizer.js';
+import type { CompactionLlmFactory } from 'autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js';
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../skills/services/skill-service.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";

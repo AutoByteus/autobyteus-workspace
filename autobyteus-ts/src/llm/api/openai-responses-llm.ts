@@ -196,7 +196,8 @@ export class OpenAIResponsesLLM extends BaseLLM {
     }
 
     try {
-      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const requestOptions = { ...(options.signal ? { signal: options.signal } : {}),
+        ...(options.retryMode === 'single_attempt' ? { maxRetries: 0 } : {}) };
       const client = await this.getClient();
       const response: any = await client.responses.create(params as any, requestOptions as any);
       const { content, reasoning } = this.extractOutputContent(response.output ?? []);
@@ -265,7 +266,8 @@ export class OpenAIResponsesLLM extends BaseLLM {
     let accumulatedReasoning = '';
 
     try {
-      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const requestOptions = { ...(options.signal ? { signal: options.signal } : {}),
+        ...(options.retryMode === 'single_attempt' ? { maxRetries: 0 } : {}) };
       const client = await this.getClient();
       const stream = await client.responses.create(params as any, requestOptions as any) as unknown as AsyncIterable<ResponseStreamEvent>;
 

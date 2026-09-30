@@ -33,7 +33,7 @@ describe('MemoryManagerCompactionCoordinator attempt authorization', () => {
     expect(subject.beginPendingAttempt({
       operationId,
       turnId: 'turn-agent',
-      turnOrigin: 'agent',
+
     })).toMatchObject({
       authorized: true,
       authorization: 'automatic_initial',
@@ -42,39 +42,56 @@ describe('MemoryManagerCompactionCoordinator attempt authorization', () => {
     expect(subject.beginPendingAttempt({
       operationId,
       turnId: 'turn-agent',
-      turnOrigin: 'agent',
+
     })).toEqual({ authorized: false, code: 'attempt_in_progress' });
   });
 
-  it('retains failure and authorizes only one distinct USER-origin retry', () => {
+  it.each(['before_parent_request', 'after_final_response'] as const)('gates %s by exact one-use permission, not origin/different-turn proxy', site => {
     const subject = coordinator();
-    const operationId = subject.request({
-      requestedTurnId: 'turn-initial',
-      requestKind: 'hard_input_cap',
-      planningBudget: planningBudget(615_744),
-    });
-    expect(subject.beginPendingAttempt({
-      operationId,
-      turnId: 'turn-initial',
-      turnOrigin: 'system',
-    }).authorized).toBe(true);
-    subject.retainFailure(operationId, 'turn-initial', 'runner_timeout');
-    expect(subject.getPendingGate()).toMatchObject({ kind: 'awaiting_user_retry', operationId });
-    expect(subject.beginPendingAttempt({
-      operationId,
-      turnId: 'turn-agent',
-      turnOrigin: 'agent',
-    })).toEqual({ authorized: false, code: 'user_retry_required' });
-    expect(subject.beginPendingAttempt({
-      operationId,
-      turnId: 'turn-initial',
-      turnOrigin: 'user',
-    })).toEqual({ authorized: false, code: 'same_turn_retry' });
-    expect(subject.beginPendingAttempt({
-      operationId,
-      turnId: 'turn-user',
-      turnOrigin: 'user',
-    })).toMatchObject({ authorized: true, authorization: 'user_retry' });
+    const operationId = subject.request({ requestedTurnId: 'A', requestKind: 'hard_input_cap', planningBudget: planningBudget(615744) });
+    const begin = (turnId: string | 'agent' = 'user') => subject.beginPendingAttempt({ operationId, turnId });
+    expect(begin('A').authorized).toBe(true);
+    subject.retainFailure(operationId, 'A', 'generation_failure', site);
+    const block = subject.getRecovery()!;
+    expect(block.position.kind).toBe(site === 'before_parent_request' ? 'held_turn' : 'next_turn');
+    expect(subject.canStartTurn()).toBe(false);
+    expect(begin('A')).toMatchObject({ authorized: false, code: 'user_retry_required' });
+    expect(begin('B')).toMatchObject({ authorized: false, code: 'user_retry_required' });
+    expect(subject.authorizeRetry({ block: { ...block, failureEpoch: 999 }, userAdmissionId: 'B' })).toBe('stale');
+    expect(subject.authorizeRetry({ block, userAdmissionId: 'B' })).toBe('accepted');
+    expect(subject.authorizeRetry({ block, userAdmissionId: 'C' })).toBe('stale');
+    if (site === 'after_final_response') {
+      subject.retireTurn('A'); // Consumed A completion preserves an already-accepted next grant.
+      expect(subject.getRecovery()).toMatchObject({ failureEpoch: block.failureEpoch, state: 'authorized' });
+      expect(subject.canStartTurn()).toBe(true); expect(subject.bindRetryTurn('B')).toBe(true);
+      expect(subject.canStartTurn()).toBe(false); expect(begin('C').authorized).toBe(false);
+      expect(begin('B').authorized).toBe(true); // Permission, not selected head's origin.
+    } else {
+      expect(subject.canStartTurn()).toBe(false); expect(begin('B').authorized).toBe(false);
+      expect(begin('A').authorized).toBe(true);
+    }
+    const turn = site === 'before_parent_request' ? 'A' : 'B';
+    subject.retainFailure(operationId, turn, 'again', 'before_parent_request');
+    expect(subject.getRecovery()!.failureEpoch).toBeGreaterThan(block.failureEpoch);
+    expect(subject.authorizeRetry({ block, userAdmissionId: 'late' })).toBe('stale');
+    expect(begin(turn).authorized).toBe(false);
+  });
+
+  it('revokes only exact unused next-turn permission and fences pre-executor failure', () => {
+    const subject = coordinator(); const operationId = subject.request({ requestKind: 'hard_input_cap', planningBudget: planningBudget() });
+    subject.beginPendingAttempt({ operationId, turnId: 'A' });
+    subject.retainFailure(operationId, 'A', 'failed', 'after_final_response');
+    let block = subject.getRecovery()!;
+    subject.authorizeRetry({ block, userAdmissionId: 'C' });
+    expect(subject.revokeUnusedRetry({ block, userAdmissionId: 'wrong' })).toBe('stale');
+    expect(subject.revokeUnusedRetry({ block, userAdmissionId: 'C' })).toBe('revoked');
+    expect(subject.canStartTurn()).toBe(false);
+    block = subject.getRecovery()!; subject.authorizeRetry({ block, userAdmissionId: 'D' });
+    subject.bindRetryTurn('B');
+    expect(subject.revokeUnusedRetry({ block, userAdmissionId: 'D' })).toBe('in_use');
+    subject.retireTurn('B');
+    expect(subject.getRecovery()).toMatchObject({ state: 'awaiting_user', position: { kind: 'next_turn', failedTurnId: 'B' } });
+    expect(subject.canStartTurn()).toBe(false);
   });
 
   it('copies pending planning and attempt state without aliasing', () => {

@@ -86,11 +86,11 @@ describe('AgentConfig', () => {
     expect(config).not.toHaveProperty('compactionAgentRunner');
   });
 
-  it('copies enabled memory compaction with a fresh policy and retained summarizer identity', () => {
-    const summarizer = { summarize: async () => ({ summaryText: 'summary' }) };
+  it('copies enabled memory compaction with a fresh policy and retained createCompressionStrategy identity', () => {
+    const createCompressionStrategy = () => ({ compress: async (_content: string) => 'summary' });
     const memoryCompaction = createEnabledMemoryCompactionConfiguration(
       new CompactionPolicy({ triggerRatio: 0.2, maxItemChars: 1234, safetyMarginTokens: 77 }),
-      summarizer,
+      createCompressionStrategy,
     );
     const config = new AgentConfig(
       'name', 'role', 'desc', makeLLM(), null, null, true, null, null, null, null,
@@ -107,6 +107,6 @@ describe('AgentConfig', () => {
       maxItemChars: 1234,
       safetyMarginTokens: 77,
     });
-    expect(clone.memoryCompaction.summarizer).toBe(summarizer);
+    expect(clone.memoryCompaction.createCompressionStrategy).toBe(createCompressionStrategy);
   });
 });

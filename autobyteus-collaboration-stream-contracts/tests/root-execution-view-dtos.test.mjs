@@ -40,6 +40,7 @@ const orgSnapshot = (orgRunId = "org-run-1") => ({
     task_records: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run-1", records: [] },
     communication_messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run-1", messages: [] },
     agent_statuses: [],
+    agent_input_states: [],
   },
 });
 
@@ -81,6 +82,7 @@ const status = (member_address, agent_run_id) => ({
   tool_name: null,
   error_message: null,
   error_details: null,
+  recoverableBlock: null,
 });
 
 const taskRecord = (taskId, delegatorAgentRunId, recipientAddress, taskExecution) => ({

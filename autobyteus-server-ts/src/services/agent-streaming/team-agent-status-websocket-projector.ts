@@ -12,6 +12,7 @@ const projectStatusDetails = (snapshot: TeamAgentStatusSnapshot) => ({
   tool_name: snapshot.details.toolName,
   error_message: snapshot.details.errorMessage,
   error_details: snapshot.details.errorDetails,
+  recoverableBlock: snapshot.details.recoverableBlock,
 });
 
 export const projectTeamAgentStatusSnapshotDto = (

@@ -1,3 +1,4 @@
+import type { AgentInputStateDto, CompactionRecoveryEventDto, CompactionRecoveryBlockDto } from "@autobyteus/agent-presentation-contracts";
 import type { JsonValue } from "@autobyteus/agent-presentation-contracts";
 import type { AgentRunStatusHint } from "../../../agent-execution/domain/agent-run-event.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
@@ -27,6 +28,7 @@ export type AgentPresentationStatusDetails = Readonly<{
   toolName: string | null;
   errorMessage: string | null;
   errorDetails: string | null;
+  recoverableBlock: CompactionRecoveryBlockDto | null;
 }>;
 
 type AgentPresentationErrorEvidence =
@@ -102,6 +104,9 @@ export type AgentPresentationEvent =
   | Correlated<"SEGMENT_CONTENT", { segmentId: string; turnId: string; segmentType: AgentSegmentType; delta: string }>
   | Correlated<"SEGMENT_END", { segmentId: string; turnId: string; metadata: JsonValue | null; interrupted: boolean; reason: string | null; failed: boolean; error: string | null }>
   | Correlated<"AGENT_STATUS", AgentPresentationStatusDetails>
+  | Correlated<"AGENT_INPUT_STATE", AgentInputStateDto>
+  | Correlated<"COMPACTION_BLOCKED", CompactionRecoveryEventDto>
+  | Correlated<"COMPACTION_RESUMED", CompactionRecoveryEventDto>
   | Correlated<"COMPACTION_STATUS", {
       phase: string | null; kind: string | null; status: string | null; turnId: string | null;
       compactionOperationId: string | null; requestedTurnId: string | null; executionTurnId: string | null;

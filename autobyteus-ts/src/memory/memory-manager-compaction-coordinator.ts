@@ -1,6 +1,6 @@
+import { copyCompactionRecovery, sameCompactionRecovery, type CompactionRecoveryBlock, type CompactionRetryRequest, type CompactionExecutionSite } from './compaction/compaction-recovery.js';
 import type { MemoryManagerWorkingContextController } from './memory-manager-working-context-controller.js';
 import { assertAtMostOneCompactedMemoryRegion } from './working-context-provenance.js';
-import type { TurnStartOrigin } from '../agent/event-inbox/agent-event-inbox-entry.js';
 import {
   AcceptedCompactionBuilder,
   workingContextFingerprint,
@@ -32,10 +32,12 @@ export type PendingCompactionAttemptState =
       kind: 'attempt_in_progress';
       authorization: 'automatic_initial' | 'user_retry';
       executionTurnId: string;
+      recovery: CompactionRecoveryBlock | null;
     }
   | {
       kind: 'awaiting_user_retry';
-      lastFailedExecutionTurnId: string;
+      recovery: CompactionRecoveryBlock;
+      permit: { userAdmissionId: string; boundTurnId: string | null } | null;
     };
 
 export type PendingCompactionRequest = {
@@ -73,7 +75,7 @@ export type BeginPendingCompactionAttemptResult =
     }
   | {
       authorized: false;
-      code: 'none_pending' | 'operation_mismatch' | 'attempt_in_progress' | 'user_retry_required' | 'same_turn_retry';
+      code: 'none_pending' | 'operation_mismatch' | 'attempt_in_progress' | 'user_retry_required' | 'retry_not_bound';
     };
 
 export type CompactionObservationDecision = Readonly<{
@@ -89,6 +91,7 @@ export class MemoryManagerCompactionCoordinator {
   private pendingRequest: PendingCompactionRequest | null = null;
   private thresholdEpisode: CompactionThresholdEpisode = { kind: 'ready' };
   private operationCounter = 0;
+  private failureEpoch = 0;
   private readonly thresholdGate = new CompactionThresholdGate();
 
   constructor(private readonly options: {
@@ -191,7 +194,6 @@ export class MemoryManagerCompactionCoordinator {
   beginPendingAttempt(input: {
     operationId: string;
     turnId: string;
-    turnOrigin: TurnStartOrigin;
   }): BeginPendingCompactionAttemptResult {
     const turnId = input.turnId.trim();
     if (!turnId) throw new Error('Compaction execution requires a non-empty turn ID.');
@@ -205,12 +207,8 @@ export class MemoryManagerCompactionCoordinator {
       return { authorized: false, code: 'attempt_in_progress' };
     }
     if (state.kind === 'awaiting_user_retry') {
-      if (input.turnOrigin !== 'user') {
-        return { authorized: false, code: 'user_retry_required' };
-      }
-      if (state.lastFailedExecutionTurnId === turnId) {
-        return { authorized: false, code: 'same_turn_retry' };
-      }
+      if (!state.permit) return { authorized: false, code: 'user_retry_required' };
+      if (state.permit.boundTurnId !== turnId) return { authorized: false, code: 'retry_not_bound' };
     }
     const authorization = state.kind === 'initial_attempt_ready'
       ? 'automatic_initial'
@@ -219,6 +217,7 @@ export class MemoryManagerCompactionCoordinator {
       kind: 'attempt_in_progress',
       authorization,
       executionTurnId: turnId,
+      recovery: state.kind === 'awaiting_user_retry' ? { ...state.recovery, state: 'recovering' } : null,
     };
     return {
       authorized: true,
@@ -227,8 +226,9 @@ export class MemoryManagerCompactionCoordinator {
     };
   }
 
-  retainFailure(operationId: string, executionTurnId: string, _errorKind: string): void {
-    const pending = this.requirePendingInternal();
+  retainFailure(operationId: string, executionTurnId: string, errorKind: string, site: CompactionExecutionSite): void {
+    const pending = this.pendingRequest;
+    if (!pending) return;
     if (pending.operationId !== operationId) {
       throw new Error('Compaction failure does not match the pending operation.');
     }
@@ -236,12 +236,90 @@ export class MemoryManagerCompactionCoordinator {
       pending.attemptState.kind !== 'attempt_in_progress'
       || pending.attemptState.executionTurnId !== executionTurnId
     ) {
-      throw new Error('Compaction failure does not match the in-progress attempt.');
+      return; // A settled/cancelled turn already fenced this late result.
     }
     pending.attemptState = {
       kind: 'awaiting_user_retry',
-      lastFailedExecutionTurnId: executionTurnId,
+      recovery: this.newRecovery(operationId, executionTurnId, errorKind, site),
+      permit: null,
     };
+  }
+
+  getRecovery(): CompactionRecoveryBlock | null {
+    const state = this.pendingRequest?.attemptState;
+    return state && state.kind !== 'initial_attempt_ready' && state.recovery
+      ? copyCompactionRecovery(state.recovery) : null;
+  }
+
+  authorizeRetry(input: CompactionRetryRequest): 'accepted' | 'stale' {
+    const state = this.pendingRequest?.attemptState;
+    if (!input.userAdmissionId.trim() || state?.kind !== 'awaiting_user_retry'
+      || state.permit || !sameCompactionRecovery(state.recovery, input.block)) return 'stale';
+    state.permit = { userAdmissionId: input.userAdmissionId,
+      boundTurnId: state.recovery.position.kind === 'held_turn' ? state.recovery.position.turnId : null };
+    state.recovery = { ...state.recovery, state: 'authorized' };
+    return 'accepted';
+  }
+
+  canStartTurn(): boolean {
+    const recovery = this.getRecovery();
+    if (!recovery) return true;
+    const state = this.pendingRequest!.attemptState;
+    return state.kind === 'awaiting_user_retry' && recovery.position.kind === 'next_turn'
+      && state.permit !== null && state.permit.boundTurnId === null;
+  }
+
+  bindRetryTurn(turnId: string): boolean {
+    const state = this.pendingRequest?.attemptState;
+    if (!this.getRecovery()) return true;
+    if (!this.canStartTurn() || state?.kind !== 'awaiting_user_retry' || !state.permit) return false;
+    state.permit.boundTurnId = turnId;
+    return true;
+  }
+
+  isRetryAuthorizedForTurn(turnId: string): boolean {
+    const state = this.pendingRequest?.attemptState;
+    return state?.kind === 'awaiting_user_retry' && state.permit?.boundTurnId === turnId;
+  }
+
+  revokeUnusedRetry(input: CompactionRetryRequest): 'revoked' | 'stale' | 'in_use' {
+    const pending = this.pendingRequest;
+    const state = pending?.attemptState;
+    const recovery = this.getRecovery();
+    if (!pending || !recovery || !sameCompactionRecovery(recovery, input.block)) return 'stale';
+    if (state?.kind !== 'awaiting_user_retry' || state.permit?.boundTurnId) return 'in_use';
+    if (state.permit?.userAdmissionId !== input.userAdmissionId) return 'stale';
+    pending.attemptState = { kind: 'awaiting_user_retry', permit: null,
+      recovery: { ...recovery, failureEpoch: ++this.failureEpoch, state: 'awaiting_user' } };
+    return 'revoked';
+  }
+
+  // A consumed post-response A must not revoke an unbound grant for the next turn.
+  retireTurn(turnId: string): void {
+    const pending = this.pendingRequest;
+    const state = pending?.attemptState;
+    const recovery = this.getRecovery();
+    if (!pending || !state) return;
+    const ownsTurn = recovery?.position.kind === 'held_turn' && recovery.position.turnId === turnId
+      || state.kind === 'awaiting_user_retry' && state.permit?.boundTurnId === turnId
+      || state.kind === 'attempt_in_progress' && state.executionTurnId === turnId;
+    if (ownsTurn) pending.attemptState = { kind: 'awaiting_user_retry', permit: null,
+      recovery: this.newRecovery(pending.operationId, turnId, 'recovery_turn_settled', 'after_final_response') };
+  }
+
+  revokeRetry(): void {
+    const pending = this.pendingRequest;
+    const recovery = this.getRecovery();
+    if (!pending || !recovery) return;
+    const turnId = recovery.position.kind === 'held_turn' ? recovery.position.turnId : recovery.position.failedTurnId;
+    pending.attemptState = { kind: 'awaiting_user_retry', permit: null,
+      recovery: this.newRecovery(pending.operationId, turnId, 'cancelled', 'after_final_response') };
+  }
+
+  private newRecovery(operationId: string, turnId: string, code: string, site: CompactionExecutionSite): CompactionRecoveryBlock {
+    return { operationId, failureEpoch: ++this.failureEpoch, state: 'awaiting_user', code,
+      message: 'Compaction failed — send a message to retry',
+      position: site === 'before_parent_request' ? { kind: 'held_turn', turnId } : { kind: 'next_turn', failedTurnId: turnId } };
   }
 
   captureState(): MemoryManagerCompactionState {
@@ -341,5 +419,9 @@ export const copyPendingCompactionRequest = (
 ): PendingCompactionRequest => ({
   ...request,
   planningBudget: copyCompactionPlanningBudget(request.planningBudget),
-  attemptState: { ...request.attemptState },
+  attemptState: request.attemptState.kind === 'initial_attempt_ready' ? { ...request.attemptState }
+    : request.attemptState.kind === 'attempt_in_progress'
+      ? { ...request.attemptState, recovery: request.attemptState.recovery ? copyCompactionRecovery(request.attemptState.recovery) : null }
+      : { ...request.attemptState, recovery: copyCompactionRecovery(request.attemptState.recovery),
+        permit: request.attemptState.permit ? { ...request.attemptState.permit } : null },
 });

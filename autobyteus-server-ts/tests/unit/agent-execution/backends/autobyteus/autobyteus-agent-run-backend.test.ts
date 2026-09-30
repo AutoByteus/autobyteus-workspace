@@ -15,6 +15,9 @@ const createBackend = (overrides: {
 } = {}) => {
   const agent = {
     agentId: "agent-1",
+    getCompactionRecovery: () => null,
+    authorizeCompactionRetry: () => "stale",
+    revokeUnusedCompactionRetry: () => "stale",
     currentStatus: "idle",
     postUserMessage: vi.fn().mockResolvedValue(undefined),
     postToolExecutionApproval: vi.fn().mockResolvedValue({
@@ -107,6 +110,7 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(backend.getLifecycleSnapshot()).toEqual({
       availability: "active",
       phase: "idle",
+      recoverableBlock: null,
       currentTurn: { kind: "NONE" },
     });
     expect(backend.getPlatformAgentRunId()).toBe("agent-1");
@@ -225,6 +229,7 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(agent.postUserMessage).not.toHaveBeenCalledWith(expect.objectContaining({ content: "late" }));
     expect(sendWhileTerminating).toEqual({
       forwarded: false,
+      delivery: "not_delivered",
       code: "RUN_NOT_FOUND",
       message: "Run 'agent-1' is not active.",
       turnId: null,
@@ -252,6 +257,7 @@ describe("AutoByteusAgentRunBackend", () => {
       message: new AgentInputUserMessage("late"),
     })).resolves.toEqual({
       forwarded: false,
+      delivery: "not_delivered",
       code: "RUN_NOT_FOUND",
       message: "Run 'agent-1' is not active.",
       turnId: null,
@@ -274,6 +280,7 @@ describe("AutoByteusAgentRunBackend", () => {
     expect(agent.stop).not.toHaveBeenCalled();
     expect(sendResult).toEqual({
       forwarded: false,
+      delivery: "not_delivered",
       code: "RUN_NOT_FOUND",
       message: "Run 'agent-1' is not active.",
       turnId: null,

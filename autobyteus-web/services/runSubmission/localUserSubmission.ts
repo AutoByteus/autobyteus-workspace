@@ -9,6 +9,7 @@ import { resolveFirstUserMessageSummary } from '~/utils/runTreeSummary';
 
 export interface BeginLocalUserSubmissionOptions {
   text: string;
+  identity?: { messageId: string; dedupeKey: string };
   attachments: ContextAttachment[];
   // Null keeps local composer/conversation effects without optimistic history navigation.
   navigationTarget: LocalUserSubmissionNavigationTarget | null;
@@ -64,6 +65,7 @@ export const beginLocalUserSubmission = (
   const occurredAt = nowIso();
   const submittedMessage = reactive<UserMessage>({
     type: 'user',
+    ...options.identity,
     text: options.text,
     timestamp: new Date(occurredAt),
     contextFilePaths: [...options.attachments],

@@ -144,6 +144,20 @@ describe('AgentUserInputTextArea', () => {
     vi.useRealTimers()
   })
 
+  it('shows explicit compaction retry guidance, allows a new send, and restores interrupt while recovering', async () => {
+    const c=activeContextStoreMock.activeAgentContext;
+    c.state.recoverableBlock={operationId:'op',failureEpoch:1,position:{kind:'held_turn',turnId:'A'},state:'awaiting_user',code:'failed',message:'failed'};
+    c.requirement='Please retry';activeContextStoreMock.currentRequirement=c.requirement;
+    activeContextStoreMock.currentStatus=AgentStatus.Error;
+    const wrapper=mount(withActiveComposerTarget(AgentUserInputTextArea));await nextTick();
+    expect(wrapper.get('[role="status"]').text().toLowerCase()).toContain('compaction');
+    const send=wrapper.get('button[title="Send message"]');expect(send.attributes('disabled')).toBeUndefined();
+    await send.trigger('click');expect(activeContextStoreMock.send).toHaveBeenCalledOnce();
+    c.state.recoverableBlock.state='recovering';activeContextStoreMock.currentStatus=AgentStatus.Running;
+    await nextTick();expect(wrapper.find('[role="status"]').exists()).toBe(false);
+    expect(wrapper.find('button[title="Stop generation"]').exists()).toBe(true);
+  });
+
   it('hides the voice button when voice input is not installed', async () => {
     const wrapper = mount(withActiveComposerTarget(AgentUserInputTextArea))
     await nextTick()

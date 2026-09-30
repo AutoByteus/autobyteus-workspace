@@ -37,7 +37,7 @@ export type AgentRunStatusProjection = {
   statusPayload: AgentStatusPayload;
   command?: {
     messageId: string;
-    state: "STARTING" | "ADMITTED" | "FORWARDED" | "FAILED";
+    state: "STARTING" | "ADMITTED" | "HELD" | "FORWARDED" | "FAILED";
     updatedAt: string;
   } | null;
 };
@@ -154,8 +154,9 @@ export class AgentRunStatusProjectionService {
 
 
   private toProjectedCommandState(
-    state: "STARTING" | "ADMITTED" | "FORWARDED" | "COMPLETED" | "FAILED" | "REJECTED" | "CANCELLED",
-  ): "STARTING" | "ADMITTED" | "FORWARDED" | "FAILED" {
+    state: "STARTING" | "ADMITTED" | "HELD" | "FORWARDED" | "COMPLETED" | "FAILED" | "REJECTED" | "CANCELLED",
+  ): "STARTING" | "ADMITTED" | "HELD" | "FORWARDED" | "FAILED" {
+    if (state === "HELD") return "HELD";
     if (state === "FORWARDED") {
       return "FORWARDED";
     }

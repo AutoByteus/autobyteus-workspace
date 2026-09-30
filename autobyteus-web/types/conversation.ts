@@ -66,6 +66,8 @@ export interface Message {
 }
 
 export interface UserMessage extends Message {
+  /** Transient live-run projection, not durable delivery state. */
+  pendingInput?: { runInstanceId: string; state: "queued" | "held" | "forwarded" };
   type: 'user';
   text: string;
   contextFilePaths?: ContextAttachment[];

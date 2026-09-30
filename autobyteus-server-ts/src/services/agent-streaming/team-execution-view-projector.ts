@@ -50,6 +50,7 @@ export const projectTeamExecutionViewSnapshot = (
     execution_tree: projectExecutionTree(snapshot.tree),
     messages: snapshot.messages.messages.map(projectCommunicationMessage),
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
+    agent_input_states: snapshot.inputStates,
   },
 });
 

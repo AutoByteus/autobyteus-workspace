@@ -1,6 +1,8 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
+  'agentInput.components.agentInput.AgentUserInputTextArea.compaction_retry': 'Compaction failed — send a message to retry',
+
   'agentInput.components.agentInput.AgentUserInputTextArea.type_a_message': 'Type a message...',
   'agentInput.components.agentInput.AgentUserInputTextArea.voicebuttontitle': 'voiceButtonTitle',
   'agentInput.components.agentInput.ContextFilePathInputArea.clear_all': 'Clear All',

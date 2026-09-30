@@ -1,3 +1,4 @@
+import { effectiveAgentStatus } from './status-deriver.js';
 import { AgentStatus } from './status-enum.js';
 import {
   AgentErrorEvent,
@@ -83,14 +84,26 @@ export async function applyEventAndDeriveStatus(
     return [context.currentStatus, context.currentStatus];
   }
 
-  const [oldStatus, newStatus] = context.state.statusDeriver.apply(event, context);
-  if (oldStatus !== newStatus) {
-    context.currentStatus = newStatus;
-    const additionalData = buildStatusUpdateData(event, context, newStatus);
-    if (context.statusManager) {
-      await context.statusManager.emit_status_update(oldStatus, newStatus, additionalData ?? null);
-    }
+  const [oldPhase, newPhase] = context.state.statusDeriver.apply(event, context);
+  const oldStatus = context.currentStatus;
+  const recovery = context.state.memoryManager?.getCompactionRecovery() ?? null;
+  const newStatus = effectiveAgentStatus(newPhase, recovery);
+  context.currentStatus = newStatus;
+  const additionalData = buildStatusUpdateData(event, context, newPhase);
+  if (context.statusManager) {
+    if (oldPhase !== newPhase) await context.statusManager.executeLifecycleProcessors(oldPhase, newPhase, additionalData);
+    await context.statusManager.emit_status_update(oldStatus, newStatus,
+      { ...additionalData, recoverableBlock: recovery }, false);
   }
-
   return [oldStatus, newStatus];
+}
+
+/** A gate-only projection must never invoke phase lifecycle processors. */
+export function publishCompactionRecoveryStatus(context: AgentContext): void {
+  const recovery = context.state.memoryManager?.getCompactionRecovery() ?? null;
+  const phase = context.state.statusDeriver?.currentStatus ?? context.currentStatus;
+  const previous = context.currentStatus;
+  const effective = effectiveAgentStatus(phase, recovery);
+  context.currentStatus = effective;
+  context.statusManager?.notifier.notifyStatusUpdated(effective, previous, { recoverableBlock: recovery });
 }

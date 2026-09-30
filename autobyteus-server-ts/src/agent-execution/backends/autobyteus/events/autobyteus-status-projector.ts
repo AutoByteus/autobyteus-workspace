@@ -57,6 +57,7 @@ export const projectAutoByteusAgentLifecycleSnapshot = (input: {
   currentStatus?: unknown;
   context?: AutoByteusAgentContextLike;
   isActive?: boolean;
+  recoverableBlock?: AgentRuntimeLifecycleSnapshot["recoverableBlock"];
 }): AgentRuntimeLifecycleSnapshot => {
   if (input.isActive === false) {
     return {
@@ -79,7 +80,8 @@ export const projectAutoByteusAgentLifecycleSnapshot = (input: {
 
   return {
     availability: "active",
-    phase: currentTurn.kind === "NONE" && projectedPhase === "running"
+    recoverableBlock: input.recoverableBlock ?? null,
+    phase: input.recoverableBlock && input.recoverableBlock.state !== "recovering" ? "error" : currentTurn.kind === "NONE" && projectedPhase === "running"
       ? "initializing"
       : currentTurn.kind !== "NONE"
         ? "running"

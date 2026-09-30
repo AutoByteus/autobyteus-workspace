@@ -54,6 +54,7 @@ export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
   messages: TeamCommunicationMessagesSnapshot;
   statuses: readonly TeamAgentStatusSnapshot[];
+  inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
 
 export type TeamRunExecutionCheckpoint = Readonly<{
@@ -361,6 +362,7 @@ export class RootTeamRun {
         tree: this.tree,
         messages: this.messages,
         statuses: this.getLeafAgentStatusSnapshots(),
+        inputStates: this.options.rootRun.getInputStateSnapshots(),
       })),
     );
   }

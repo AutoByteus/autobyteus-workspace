@@ -1,10 +1,11 @@
+import type { CompactionRetryRequest, CompactionRecoveryBlock } from "autobyteus-ts/memory/compaction/compaction-recovery.js";
 import { AgentEventStream } from "autobyteus-ts";
 import type { AgentContext } from "autobyteus-ts/agent/context/agent-context.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../domain/agent-operation-result.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../../domain/agent-run-context.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
-import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../agent-run-backend.js";
+import type { AgentRunBackend, AgentRunCompactionRecoveryCapability, AgentRunSourceEventBatchListener } from "../agent-run-backend.js";
 import type {
   AgentRunBackendInputDispatch,
   AgentRunBackendInputDispatchResult,
@@ -16,6 +17,9 @@ import { PendingSystemInstructionEvent } from "../../events/pending-system-instr
 
 export type AutoByteusAgentLike = {
   agentId: string;
+  getCompactionRecovery: () => CompactionRecoveryBlock | null;
+  authorizeCompactionRetry: (input: CompactionRetryRequest) => "accepted" | "stale" | "stopped";
+  revokeUnusedCompactionRetry: (input: CompactionRetryRequest) => "revoked" | "stale" | "in_use";
   context?: AgentContext;
   currentStatus?: string;
   postUserMessage?: (message: AgentInputUserMessage) => Promise<void>;
@@ -72,6 +76,12 @@ const buildCommandFailure = (operation: string, error: unknown): AgentOperationR
 export class AutoByteusAgentRunBackend implements AgentRunBackend {
   readonly runId: string;
   readonly runtimeKind = RuntimeKind.AUTOBYTEUS;
+  readonly compactionRecovery: Extract<AgentRunCompactionRecoveryCapability, { kind: "supported" }> = {
+    kind: "supported",
+    getSnapshot: () => this.agent.getCompactionRecovery(),
+    authorize: async (input) => this.isActive() ? this.agent.authorizeCompactionRetry(input) : "stopped",
+    revokeUnused: async (input) => this.agent.revokeUnusedCompactionRetry(input),
+  };
   readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   private readonly eventConverter: AutoByteusStreamEventConverter;
   private readonly context: AgentRunContext<RuntimeAgentRunContext>;
@@ -112,6 +122,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       currentStatus: this.agent.currentStatus,
       context: this.agent.context ?? null,
       isActive: this.isActive(),
+      recoverableBlock: this.compactionRecovery.getSnapshot(),
     });
   }
 
@@ -132,6 +143,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     if (dispatch.kind !== "start_turn") {
       return {
         forwarded: false,
+        delivery: "not_delivered",
         code: "UNSUPPORTED_RUNTIME_COMMAND",
         message: "AutoByteus does not support active-turn input append.",
         turnId: null,
@@ -141,6 +153,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       const result = buildRunNotFoundResult(this.runId);
       return {
         forwarded: false,
+        delivery: "not_delivered",
         code: result.code,
         message: result.message,
         turnId: null,
@@ -158,6 +171,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
       const result = buildCommandFailure("send user input", error);
       return {
         forwarded: false,
+        delivery: "uncertain",
         code: result.code,
         message: result.message,
         turnId: null,

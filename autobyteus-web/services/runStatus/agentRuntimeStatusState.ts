@@ -26,8 +26,10 @@ export const applyLiveAgentStatusEvent = (
   context: AgentContext,
   payload: AgentStatusPayload,
 ): boolean => {
-  const nextStatus = normalizeAgentRuntimeStatus(payload.status);
+  const block = context.state.inputProjection ? context.state.recoverableBlock : payload.recoverableBlock ?? null;
+  const nextStatus = block && block.state !== 'recovering' ? AgentStatus.Error : normalizeAgentRuntimeStatus(payload.status);
   const changed = context.state.currentStatus !== nextStatus || context.submissionPending;
+  context.state.recoverableBlock = block;
   context.state.currentStatus = nextStatus;
   context.submissionPending = false;
   return changed;
@@ -59,6 +61,9 @@ export const applyOfflineOrTerminalCleanup = (
   status: string | AgentStatus | null | undefined = AgentStatus.Offline,
 ): void => {
   resolveState(target).currentStatus = normalizeAgentRuntimeStatus(status, AgentStatus.Offline);
+  resolveState(target).recoverableBlock = null;
+  resolveState(target).inputProjection = null;
+  for (const message of resolveState(target).conversation.messages) if (message.type === "user") delete message.pendingInput;
   if (isAgentContext(target)) {
     target.submissionPending = false;
   }

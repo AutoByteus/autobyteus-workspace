@@ -35,6 +35,7 @@ import {
   SegmentEventData,
   ErrorEventData,
   CompactionStatusData,
+  CompactionRecoveryData,
   SystemTaskNotificationData,
   InterAgentMessageData,
   ArtifactPersistedData,
@@ -167,6 +168,12 @@ export class AgentEventStream extends EventEmitter {
         case EventType.AGENT_ERROR_OUTPUT_GENERATION:
           typedPayload = createErrorEventData(payload);
           streamEventType = StreamEventType.ERROR_EVENT;
+          break;
+        case EventType.AGENT_COMPACTION_BLOCKED:
+        case EventType.AGENT_COMPACTION_RESUMED:
+          typedPayload = new CompactionRecoveryData(payload);
+          streamEventType = eventType === EventType.AGENT_COMPACTION_BLOCKED
+            ? StreamEventType.COMPACTION_BLOCKED : StreamEventType.COMPACTION_RESUMED;
           break;
         case EventType.AGENT_COMPACTION_STATUS_UPDATED:
           typedPayload = createCompactionStatusData(payload);

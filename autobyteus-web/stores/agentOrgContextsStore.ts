@@ -190,8 +190,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     let attachments = contextPaths.map((attachment) => ({ ...attachment }))
     const messageId = crypto.randomUUID()
     const dedupeKey = `member_input:${id}:${agentRunId}:${messageId}`
-    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null })
-    Object.assign(submission.message, { messageId, dedupeKey })
+    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, identity: { messageId, dedupeKey } })
     const key = keyFor(id, agentRunId)
     submissions.set(key, submission)
     let draftEdited = false

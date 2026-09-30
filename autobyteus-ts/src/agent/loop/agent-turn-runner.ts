@@ -58,6 +58,14 @@ export class AgentTurnRunner {
         const llmOutcome = await this.llmPhase.run(nextInput, this.context, this.turn, this.notifier);
         this.turn.executionScope.throwIfAborted({ kind: 'post_llm_phase' });
 
+        if (llmOutcome.kind === 'compaction_blocked') {
+          const recovery = this.context.state.compactionRecovery;
+          if (!recovery) throw new Error('Compaction recovery controller is unavailable.');
+          await this.turn.executionScope.runAbortable({ kind: 'compaction_recovery_wait' },
+            () => recovery.waitForRetry(turnId, this.turn.executionScope.signal));
+          continue; // Same prepared input and turn; never rerun the external input pipeline.
+        }
+
         if (llmOutcome.kind === 'final') {
           await this.applyStatusEvent(
             new LLMCompleteResponseReceivedEvent(llmOutcome.response, llmOutcome.isError ?? false, turnId)

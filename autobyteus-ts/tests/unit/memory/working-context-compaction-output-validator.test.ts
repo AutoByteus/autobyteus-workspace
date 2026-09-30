@@ -4,16 +4,16 @@ import { WorkingContextCompactionOutputValidator, WorkingContextCompactionOutput
   assertWorkingContextMessagesStructurallyValid } from '../../../src/memory/compaction/working-context-compaction-output-validator.js';
 import { WorkingContextMessageWindowPlanner } from '../../../src/memory/compaction/working-context-message-window-planner.js';
 import { WorkingContext } from '../../../src/memory/working-context.js';
-import { makeHarness, summary, execution } from './direct-compaction-harness.js';
+import { makeHarness, summary } from './direct-compaction-harness.js';
 const subjects: ReturnType<typeof makeHarness>[] = [];
 afterEach(() => { subjects.splice(0).forEach((s) => s.dispose()); vi.restoreAllMocks(); });
 const fixture = () => {
   const h = makeHarness(); subjects.push(h);
-  h.manager.beginPendingCompactionAttempt({ operationId: h.operationId, turnId: h.input.turnId, turnOrigin: 'user' });
+  h.manager.beginPendingCompactionAttempt({ operationId: h.operationId, turnId: h.input.turnId });
   const baseline = h.manager.captureCompactionBaseline();
   const source = baseline.context.copy();
   const plan = new WorkingContextMessageWindowPlanner().plan({ messages: source.buildMessages(), planningBudget: h.manager.requirePendingCompactionRequest().planningBudget });
-  const accepted = h.manager.prepareCompaction(baseline, { summary, execution, selectedNewRawTraceIds: plan.rawTraceIdsToArchive, retainedMessages: plan.retainedMessages, budgetAssessment: plan.budgetAssessment });
+  const accepted = h.manager.prepareCompaction(baseline, { summary, selectedNewRawTraceIds: plan.rawTraceIdsToArchive, retainedMessages: plan.retainedMessages, budgetAssessment: plan.budgetAssessment });
   return { h, baseline, source, plan, accepted,
     validate: () => new WorkingContextCompactionOutputValidator().assertValid(baseline.context, source, accepted, plan) };
 };

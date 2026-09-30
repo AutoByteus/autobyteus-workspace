@@ -50,12 +50,15 @@ export class TaskAgentExecutionRegistry {
       && handle.getLeafAgentStatusSnapshots().some((snapshot) => isRunningTaskExecutionStatus(snapshot.details.status)));
   }
   /** Status leaves: a non-live task Agent always reports `offline`. */
+  getInputStateSnapshots() {
+    return [...this.active].flatMap(([id, handle]) => this.isLive(id) ? handle.getInputStateSnapshots() : []);
+  }
   getLeafAgentStatusSnapshots(): readonly TeamAgentStatusSnapshot[] {
     return [...this.active].flatMap(([agentRunId, handle]) => this.isLive(agentRunId)
       ? handle.getLeafAgentStatusSnapshots()
       : handle.getLeafAgentStatusSnapshots().map((snapshot) => createTeamAgentStatusSnapshot({
           execution: snapshot.execution,
-          details: { status: "offline", trigger: null, toolName: null, errorMessage: null, errorDetails: null },
+          details: { status: "offline", trigger: null, toolName: null, errorMessage: null, errorDetails: null, recoverableBlock: null },
         })));
   }
 

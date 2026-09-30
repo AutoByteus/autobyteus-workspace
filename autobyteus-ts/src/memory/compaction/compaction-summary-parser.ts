@@ -8,18 +8,15 @@ export class CompactionSummaryValidationError extends Error {
   constructor(message: string) { super(message); this.name = 'CompactionSummaryValidationError'; }
 }
 
-export const parseCompactionSummary = (content: string): string => {
-  const open = '<compaction_summary>';
-  const close = '</compaction_summary>';
-  const fail = (message: string): never => { throw new CompactionSummaryValidationError(message); };
-  if (content.split(open).length !== 2 || content.split(close).length !== 2) {
-    fail('Expected exactly one complete compaction_summary block.');
-  }
-  const start = content.indexOf(open) + open.length;
-  const end = content.indexOf(close);
-  if (end < start) fail('Summary markers are out of order.');
-  const body = content.slice(start, end).trim();
+const open = '<compaction_summary>';
+const close = '</compaction_summary>';
+const fail = (message: string): never => { throw new CompactionSummaryValidationError(message); };
+
+export const validateCompactionSummaryBody = (content: string): string => {
+  if (typeof content !== 'string') fail('Summary body must be a string.');
+  const body = content.trim();
   if (!body) fail('Summary body is empty.');
+  if (body.includes(open) || body.includes(close)) fail('Summary body must not contain envelope markers.');
   const headings = [...body.matchAll(/^## ([^\r\n]+)\r?$/gm)];
   if (headings.length !== COMPACTION_SUMMARY_HEADINGS.length ||
       headings.some((heading, i) => heading[1] !== COMPACTION_SUMMARY_HEADINGS[i])) {
@@ -33,4 +30,15 @@ export const parseCompactionSummary = (content: string): string => {
     }
   });
   return body;
+};
+
+/** Provider envelope extraction belongs only to the direct LLM strategy. */
+export const parseCompactionSummary = (content: string): string => {
+  if (typeof content !== 'string' || content.split(open).length !== 2 || content.split(close).length !== 2) {
+    fail('Expected exactly one complete compaction_summary block.');
+  }
+  const start = content.indexOf(open) + open.length;
+  const end = content.indexOf(close);
+  if (end < start) fail('Summary markers are out of order.');
+  return validateCompactionSummaryBody(content.slice(start, end));
 };

@@ -7,6 +7,7 @@ import { LLMUserMessage } from './user-message.js';
 import { CompleteResponse, ChunkResponse } from './utils/response-types.js';
 
 export type LLMInvocationOptions = {
+  retryMode?: 'single_attempt';
   signal?: AbortSignal | null;
   turnId?: string | null;
 };

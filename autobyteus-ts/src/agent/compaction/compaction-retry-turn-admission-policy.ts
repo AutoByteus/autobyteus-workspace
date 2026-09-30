@@ -4,8 +4,8 @@ import type { TurnStartEventInboxEntry } from '../event-inbox/agent-event-inbox-
 export class CompactionRetryTurnAdmissionPolicy {
   constructor(private readonly getMemoryManager: () => MemoryManager | null) {}
 
-  isDispatchable(entry: TurnStartEventInboxEntry): boolean {
+  isDispatchable(_entry: TurnStartEventInboxEntry): boolean {
     const memoryManager = this.getMemoryManager();
-    return !memoryManager?.isCompactionAwaitingUserRetry() || entry.origin === 'user';
+    return memoryManager?.canStartCompactionTurn() ?? true;
   }
 }

@@ -23,7 +23,7 @@ export class AgentStatusManager {
     );
   }
 
-  private async executeLifecycleProcessors(
+  async executeLifecycleProcessors(
     oldStatus: AgentStatus,
     newStatus: AgentStatus,
     eventData: Record<string, any> | null = null
@@ -78,13 +78,14 @@ export class AgentStatusManager {
   async emit_status_update(
     oldStatus: AgentStatus,
     newStatus: AgentStatus,
-    additionalData: Record<string, any> | null = null
+    additionalData: Record<string, any> | null = null,
+    executeLifecycle = true,
   ): Promise<void> {
     if (oldStatus === newStatus) {
       return;
     }
 
-    await this.executeLifecycleProcessors(oldStatus, newStatus, additionalData);
+    if (executeLifecycle) await this.executeLifecycleProcessors(oldStatus, newStatus, additionalData);
     this.notifier.notifyStatusUpdated(newStatus, oldStatus, additionalData);
   }
 }

@@ -14,6 +14,7 @@ const OUTSTANDING_STATES = new Set<AgentRunCommandState>([
   "STARTING",
   "ADMITTED",
   "FORWARDED",
+  "HELD",
 ]);
 const nowIso = (): string => new Date().toISOString();
 
@@ -53,6 +54,10 @@ export class AgentRunCommandRegistry {
       state: "FORWARDED",
       turnId: input.turnId ?? record.turnId,
     }));
+  }
+
+  markHeld(input: { runId: string; messageId: string; turnId: string }): AgentRunCommandRecord | null {
+    return this.updateOutstanding(input.runId, input.messageId, record => ({ ...record, state: "HELD", turnId: input.turnId }));
   }
 
   associateIdentified(input: {
@@ -117,7 +122,7 @@ export class AgentRunCommandRegistry {
 
   getPresentedOutstandingRecord(runId: string): AgentRunCommandRecord | null {
     const records = this.getOutstandingRecords(runId);
-    return records.find((record) => record.state === "FORWARDED") ?? records[0] ?? null;
+    return records.find((record) => (record.state === "FORWARDED" || record.state === "HELD")) ?? records[0] ?? null;
   }
 
   hasOutstandingCommands(runId: string): boolean {

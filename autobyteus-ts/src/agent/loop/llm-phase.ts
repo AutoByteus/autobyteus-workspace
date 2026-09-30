@@ -29,6 +29,7 @@ import { extractProviderErrorEvidence } from '../../llm/errors/provider-error.js
 import type { AnthropicAssistantTurn } from '../../llm/utils/provider-native-assistant-turn.js';
 
 export type LlmPhaseOutcome =
+  | { kind: 'compaction_blocked' }
   | { kind: 'final'; response: CompleteResponse; isError?: boolean }
   | { kind: 'tool_invocations'; response: CompleteResponse; toolInvocations: ToolInvocation[] };
 
@@ -131,8 +132,9 @@ export class LlmPhase {
       );
       const reporter = compactionReporter;
       pendingCompactionExecutor = new PendingCompactionExecutor(memoryManager, {
-        reporter, summarizer: automaticCompaction.summarizer,
+        reporter, createCompressionStrategy: automaticCompaction.createCompressionStrategy,
         maxItemChars: automaticCompaction.policy.maxItemChars,
+        onRecoveryStateChanged: (previous) => context.state.compactionRecovery?.publish(previous),
       });
     }
     const assembler = new LLMRequestAssembler(
@@ -151,7 +153,7 @@ export class LlmPhase {
         { kind: 'llm_request_assembly' },
         () => assembler.prepareRequest(
           input.llmUserMessage,
-          { turnId: activeTurnId, requestId: llmCallId, turnOrigin: turn.startOrigin, isToolContinuation: turn.toolInvocationBatches.length > 0, parentModelIdentifier: llmInstance.model.modelIdentifier, signal: turn.executionScope.signal },
+          { turnId: activeTurnId, requestId: llmCallId, isToolContinuation: turn.toolInvocationBatches.length > 0, getParentModelIdentifier: () => (context.state.llmInstance as BaseLLM).model.modelIdentifier, signal: turn.executionScope.signal },
           systemPrompt ?? undefined,
         )
       );
@@ -164,11 +166,7 @@ export class LlmPhase {
           details: String(error.cause ?? error),
           classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
         });
-        return {
-          kind: 'final',
-          isError: true,
-          response: new CompleteResponse({ content: error.message, usage: null })
-        };
+        return { kind: 'compaction_blocked' };
       }
       throw error;
     }
@@ -371,11 +369,13 @@ export class LlmPhase {
     ) {
       try {
         await pendingCompactionExecutor.executeIfAuthorized({
+          executionSite: 'after_final_response',
           turnId: activeTurnId,
-          turnOrigin: turn.startOrigin,
-          parentModelIdentifier: llmInstance.model.modelIdentifier, signal: turn.executionScope.signal,
+          getParentModelIdentifier: () => (context.state.llmInstance as BaseLLM).model.modelIdentifier, signal: turn.executionScope.signal,
         });
       } catch (error) {
+        turn.executionScope.throwIfAborted({ kind: 'llm_compaction' });
+        context.state.compactionRecovery?.publish();
         const errorMessage = error instanceof Error ? error.message : String(error);
         notifier?.notifyAgentErrorOutputGeneration({
           code: 'LLM_IMMEDIATE_COMPACTION_FAILED',
@@ -383,11 +383,7 @@ export class LlmPhase {
           details: String(error),
           classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
         });
-        return {
-          kind: 'final',
-          isError: true,
-          response: new CompleteResponse({ content: errorMessage, usage: null })
-        };
+        // The parent answer was already consumed. Preserve its response/hooks/completion once.
       }
     }
     if (toolInvocations.length) {

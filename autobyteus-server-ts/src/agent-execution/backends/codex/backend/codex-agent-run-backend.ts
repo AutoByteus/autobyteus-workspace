@@ -32,6 +32,7 @@ const logger = {
 };
 
 export class CodexAgentRunBackend implements AgentRunBackend {
+  readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
   private readonly runContext: CodexRunContext;
   private readonly codexThread: CodexThread;

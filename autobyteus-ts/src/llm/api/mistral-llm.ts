@@ -61,7 +61,8 @@ export class MistralLLM extends BaseLLM {
 
     try {
       const client = await this.getClient();
-      const response = await client.chat.complete(params, options.signal ? { signal: options.signal } as any : undefined);
+      const response = await client.chat.complete(params, { ...(options.signal ? { signal: options.signal } : {}),
+        ...(options.retryMode === 'single_attempt' ? { retries: { strategy: 'none' as const } } : {}) });
       const message = response.choices?.[0]?.message;
       let content = '';
       if (typeof message?.content === 'string') {
@@ -101,7 +102,8 @@ export class MistralLLM extends BaseLLM {
 
     try {
       const client = await this.getClient();
-      const stream = await client.chat.stream(params, options.signal ? { signal: options.signal } as any : undefined);
+      const stream = await client.chat.stream(params, { ...(options.signal ? { signal: options.signal } : {}),
+        ...(options.retryMode === 'single_attempt' ? { retries: { strategy: 'none' as const } } : {}) });
       for await (const event of stream) {
         const chunk = event.data;
         const choice = chunk?.choices?.[0];

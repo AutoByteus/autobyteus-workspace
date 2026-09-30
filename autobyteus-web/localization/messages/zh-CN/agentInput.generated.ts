@@ -1,6 +1,8 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
+  'agentInput.components.agentInput.AgentUserInputTextArea.compaction_retry': '上下文压缩失败 — 发送消息以重试',
+
   'agentInput.components.agentInput.AgentUserInputTextArea.type_a_message': '输入消息...',
   'agentInput.components.agentInput.AgentUserInputTextArea.voicebuttontitle': '语音按钮标题',
   'agentInput.components.agentInput.ContextFilePathInputArea.clear_all': '全部清除',

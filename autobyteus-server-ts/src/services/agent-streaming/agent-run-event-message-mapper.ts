@@ -1,3 +1,4 @@
+import { compactionRecoveryBlockSchema, compactionRecoveryEventSchema, agentInputStateSchema } from "@autobyteus/agent-presentation-contracts";
 import {
   AgentRunEventType,
   type AgentRunEvent,
@@ -11,6 +12,7 @@ import { parseSystemInstructionsSuppliedPayload } from "../../agent-execution/do
 const normalizeStatusPayload = (payload: Record<string, unknown>): Record<string, unknown> => {
   return buildAgentStatusPayload({
     status: payload.status,
+    recoverableBlock: compactionRecoveryBlockSchema.nullable().parse(payload.recoverableBlock ?? null),
     agentId: typeof payload.agent_id === "string" ? payload.agent_id : null,
     agentName: typeof payload.agent_name === "string" ? payload.agent_name : null,
   });
@@ -96,6 +98,12 @@ export class AgentRunEventMessageMapper {
         return new ServerMessage(ServerMessageType.SEGMENT_END, { id: payload.id, turn_id: payload.turn_id, metadata: payload.metadata ?? null, interrupted: payload.interrupted ?? false, reason: payload.reason ?? null, failed: payload.failed ?? false, error: payload.error ?? null });
       case AgentRunEventType.AGENT_STATUS:
         return new ServerMessage(ServerMessageType.AGENT_STATUS, normalizeStatusPayload(payload));
+      case AgentRunEventType.AGENT_INPUT_STATE:
+        return new ServerMessage(ServerMessageType.AGENT_INPUT_STATE, agentInputStateSchema.parse(payload));
+      case AgentRunEventType.COMPACTION_BLOCKED:
+        return new ServerMessage(ServerMessageType.COMPACTION_BLOCKED, compactionRecoveryEventSchema.parse(payload));
+      case AgentRunEventType.COMPACTION_RESUMED:
+        return new ServerMessage(ServerMessageType.COMPACTION_RESUMED, compactionRecoveryEventSchema.parse(payload));
       case AgentRunEventType.COMPACTION_STATUS:
         return new ServerMessage(ServerMessageType.COMPACTION_STATUS, normalizeCompactionPayload(payload));
       case AgentRunEventType.TOKEN_USAGE_UPDATED:

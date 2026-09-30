@@ -24,6 +24,8 @@ export enum EventType {
   AGENT_TOOL_EXECUTION_FAILED = 'agent_tool_execution_failed',
   AGENT_TOOL_EXECUTION_INTERRUPTED = 'agent_tool_execution_interrupted',
   AGENT_ERROR_OUTPUT_GENERATION = 'agent_error_output_generation',
+  AGENT_COMPACTION_BLOCKED = 'agent_compaction_blocked',
+  AGENT_COMPACTION_RESUMED = 'agent_compaction_resumed',
   AGENT_COMPACTION_STATUS_UPDATED = 'agent_compaction_status_updated',
   TEAM_STREAM_EVENT = 'team_stream_event',
   WORKFLOW_STREAM_EVENT = 'workflow_stream_event'

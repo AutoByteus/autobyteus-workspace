@@ -38,3 +38,13 @@ export const dispatchUserMessageForwarded = (input: {
     }
   }
 };
+
+export const composeAgentRunInputObserver = (input: {
+  observers: readonly AgentRunCommandObserver[]; runId: string; runtimeKind: RuntimeKind; config: AgentRunConfig;
+  platformAgentRunId: () => string | null; message: AgentInputUserMessage;
+  lifecycleObserver?: import('../input/agent-run-input-contract.js').AgentRunInputLifecycleObserver;
+}) => (fact: import('../input/agent-run-input-contract.js').AgentRunInputLifecycle): void => {
+  if (fact.kind === 'forwarded') dispatchUserMessageForwarded({ ...input, platformAgentRunId: input.platformAgentRunId(),
+    turnId: fact.turnId, onError: error => console.warn(`[AgentRun] command observer failed for '${input.runId}': ${String(error)}`) });
+  input.lifecycleObserver?.(fact);
+};

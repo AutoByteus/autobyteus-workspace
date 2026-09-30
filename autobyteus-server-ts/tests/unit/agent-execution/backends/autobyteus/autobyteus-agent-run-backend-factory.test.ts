@@ -22,7 +22,7 @@ import { registerAgentCommunicationTools } from "../../../../../src/agent-tools/
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { testMemberExecutionContext } from "../../../../fixtures/current-team-run-fixtures.js";
 import { registerTools } from "autobyteus-ts/tools/register-tools.js";
-import { DirectLlmCompactionSummarizer } from "autobyteus-ts/memory/compaction/direct-llm-compaction-summarizer.js";
+import { DirectLlmCompressionStrategy } from "autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js";
 
 class DummyLLM extends BaseLLM {
   protected async _sendMessagesToLLM(_messages: Message[]): Promise<CompleteResponse> {
@@ -811,8 +811,12 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.memoryCompaction).toMatchObject({
       kind: "enabled",
       policy: expect.any(CompactionPolicy),
-      summarizer: expect.any(DirectLlmCompactionSummarizer),
+      createCompressionStrategy: expect.any(Function),
     });
+    if (built.agentConfig.memoryCompaction.kind === "enabled") {
+      expect(built.agentConfig.memoryCompaction.createCompressionStrategy({ signal: new AbortController().signal, operationId: "factory", executionTurnId: "turn", getParentModelIdentifier: () => "parent" })).toBeInstanceOf(DirectLlmCompressionStrategy);
+    }
+    expect(compactionLlmFactory).not.toHaveBeenCalled();
     expect(built.agentConfig).not.toHaveProperty("compactionAgentRunner");
     expect(built.resolvedRunConfig.runtimeKind).toBe(RuntimeKind.AUTOBYTEUS);
   });

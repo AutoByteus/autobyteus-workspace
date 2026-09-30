@@ -46,6 +46,7 @@ export type AgentOrgRunPackageSnapshot = Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;
   messages: AgentOrgCommunicationMessagesFileV1;
   statuses: readonly CollaborationAgentStatusSnapshot[];
+  inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
 
 /** Native coordinator-free AgentOrg aggregate and sole live owner of its scope. */
@@ -277,6 +278,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       tree: this.tree,
       messages: this.messages,
       statuses: this.getAgentStatusSnapshots(),
+      inputStates: [...new Map([...this.options.rootAgents.getInputStateSnapshots(),
+        ...this.options.teams.list().flatMap(team => team.getInputStateSnapshots())]
+        .map(input => [input.agent_run_id, input])).values()],
     }));
   }
 

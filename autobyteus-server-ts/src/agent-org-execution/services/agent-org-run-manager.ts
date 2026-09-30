@@ -175,7 +175,7 @@ export class AgentOrgRunManager {
       const statuses = Object.freeze([]);
       return Object.freeze({ orgRunId, isActive: false, baseChangeSequence: 0,
         snapshot: Object.freeze({ tree: state.executionTree,
-          messages: state.communicationMessages, statuses }) });
+          messages: state.communicationMessages, statuses, inputStates: [] }) });
     });
   }
 

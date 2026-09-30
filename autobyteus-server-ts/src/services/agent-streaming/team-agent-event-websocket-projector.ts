@@ -81,6 +81,9 @@ export const projectTeamAgentEventMessage = (
     case "SEGMENT_CONTENT": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, segment_id: event.details.segmentId, turn_id: event.details.turnId, segment_type: event.details.segmentType, delta: event.details.delta } });
     case "SEGMENT_END": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, segment_id: event.details.segmentId, turn_id: event.details.turnId, metadata: event.details.metadata, interrupted: event.details.interrupted, reason: event.details.reason, failed: event.details.failed, error: event.details.error } });
     case "AGENT_STATUS": return projectLiveTeamAgentStatusMessage({ execution, details: event.details, statusHint: event.statusHint }, changeSequence);
+    case "AGENT_INPUT_STATE":
+    case "COMPACTION_BLOCKED":
+    case "COMPACTION_RESUMED": return parseTeamStreamServerMessage({ type: event.eventType, payload: { ...base, ...event.details } });
     case "COMPACTION_STATUS": return parseTeamStreamServerMessage({ type: event.eventType, payload: {
       ...base, phase: event.details.phase, kind: event.details.kind, status: event.details.status, turn_id: event.details.turnId,
       compaction_operation_id: event.details.compactionOperationId, requested_turn_id: event.details.requestedTurnId, execution_turn_id: event.details.executionTurnId,

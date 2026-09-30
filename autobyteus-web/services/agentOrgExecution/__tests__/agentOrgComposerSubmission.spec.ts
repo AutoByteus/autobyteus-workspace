@@ -81,7 +81,7 @@ const echo = () => {
   } })
 }
 const status = (value: string) => presentation({ type: 'AGENT_STATUS', payload: {
-  status: value, trigger: null, tool_name: null, error_message: null, error_details: null,
+  status: value, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
 } })
 
 async function open(agentRunId = 'agent-director') {

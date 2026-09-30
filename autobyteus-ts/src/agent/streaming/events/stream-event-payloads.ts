@@ -1,3 +1,5 @@
+import { CompactionRecoveryData } from './compaction-recovery-data.js';
+export { CompactionRecoveryData } from './compaction-recovery-data.js';
 export { BaseStreamPayload } from './stream-event-payload-utils.js';
 
 export {
@@ -86,6 +88,7 @@ export type StreamDataPayload =
   | AgentStatusData
   | ErrorEventData
   | CompactionStatusData
+  | CompactionRecoveryData
   | ToolApprovalRequestedData
   | ToolApprovedData
   | ToolDeniedData

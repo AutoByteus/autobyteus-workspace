@@ -219,7 +219,9 @@ export class AgentWorker {
     } catch (error) {
       console.error(`Fatal error in AgentWorker '${agentId}' asyncRun() loop: ${error}`);
     } finally {
+      this.context.state.activeTurn?.interrupt('runtime_stop');
       await this.waitForActiveRunnerToSettle();
+      this.context.state.compactionRecovery?.revoke();
       this.settleQueuedAwaitablesForShutdown();
       console.info(`AgentWorker '${agentId}' asyncRun() loop has finished.`);
       console.info(`AgentWorker '${agentId}': Running shutdown sequence on worker loop.`);
@@ -258,6 +260,10 @@ export class AgentWorker {
     }
 
     const turn = this.context.state.startActiveTurn(null, origin);
+    if (!this.context.state.memoryManager!.bindCompactionRetryTurn(turn.turnId)) {
+      this.context.state.activeTurn = null;
+      throw new Error('Compaction recovery grant is not available for this turn.');
+    }
     turn.startExecution({
       trigger,
       runnerFactory: () => ({
@@ -295,6 +301,7 @@ export class AgentWorker {
   private async observeTurnSettlement(turn: NonNullable<AgentContext['state']['activeTurn']>): Promise<void> {
     try {
       const outcome = await turn.waitForSettlement();
+      this.context.state.compactionRecovery?.retireTurn(turn.turnId);
       if (outcome.kind === 'completed' || outcome.kind === 'recovered') {
         await this.applyStatusEvent(new AgentIdleEvent(outcome.turnId));
       }

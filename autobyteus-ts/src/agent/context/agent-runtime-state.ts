@@ -1,3 +1,4 @@
+import type { CompactionRecoveryController } from '../compaction/compaction-recovery-controller.js';
 import { AgentEventStore } from '../events/event-store.js';
 import { ToolExecutionApprovalEvent, ToolResultEvent } from '../events/agent-events.js';
 import { AgentStatus } from '../status/status-enum.js';
@@ -38,6 +39,7 @@ export class AgentRuntimeState {
   customData: Record<string, any>;
   activeTurn: AgentTurn | null = null;
   memoryManager: MemoryManager | null = null;
+  compactionRecovery: CompactionRecoveryController | null = null;
   restoreOptions: WorkingContextSnapshotBootstrapOptions | null = null;
   processedSystemPrompt: string | null = null;
   pendingSystemInstructionCapture: SystemInstructionTraceRecord | null = null;

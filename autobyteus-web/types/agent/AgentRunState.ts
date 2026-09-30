@@ -1,3 +1,4 @@
+import type { CompactionRecoveryBlockDto } from "@autobyteus/agent-presentation-contracts";
 import type { Conversation, Message, AIMessage } from '~/types/conversation';
 import { generateBaseInvocationId } from '~/utils/toolUtils';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -43,6 +44,8 @@ export class AgentRunState {
   public currentStatus: AgentStatus = AgentStatus.Offline;
   public conversation: Conversation;
   public agent_tool_invocation_counts = new Map<string, number>();
+  public recoverableBlock: CompactionRecoveryBlockDto | null = null;
+  public inputProjection: { runInstanceId: string; revision: number } | null = null;
   public compactionStatus: AgentCompactionStatus | null = null;
   public eventMonitorPresentationRevision = 0;
   public hasEarlierActiveTraceEvents = false;

@@ -13,7 +13,6 @@ import { PendingCompactionExecutor } from '../../../src/memory/compaction/pendin
 import { COMPACTION_SUMMARY_HEADINGS } from '../../../src/memory/compaction/compaction-summary-parser.js';
 
 export const summary = COMPACTION_SUMMARY_HEADINGS.map((h) => `## ${h}\n- Preserve the approved scope; /repo/check.ts is unrun.`).join('\n\n');
-export const execution = { modelIdentifier: 'fixture', provider: 'fixture', invocationId: 'one', completionStatus: 'complete' as const, completionReason: 'stop', usage: null };
 export const makeHarness = () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'direct-compaction-'));
   const store = new FileMemoryStore(dir, 'agent');
@@ -31,11 +30,11 @@ export const makeHarness = () => {
   const request = () => manager.requestCompaction({ requestedTurnId: 'turn-request', requestKind: 'threshold_crossing',
     planningBudget: resolveCompactionPlanningBudget({ inputBudget: 10000, triggerThresholdTokens: 8000 }, 0) });
   const operationId = request();
-  const summarize = vi.fn(async () => ({ summary, execution }));
+  const compress = vi.fn(async (_content: string) => summary);
   const emitStatus = vi.fn();
-  const executor = new PendingCompactionExecutor(manager, { summarizer: { summarize } as any, reporter: { emitStatus } as any });
+  const executor = new PendingCompactionExecutor(manager, { createCompressionStrategy: () => ({ compress }), reporter: { emitStatus } as any });
   const controller = new AbortController();
-  const input = { turnId: 'execute-1', turnOrigin: 'user' as const, parentModelIdentifier: 'parent', signal: controller.signal };
-  return { dir, store, snapshotStore, manager, executor, summarize, emitStatus, input, controller, operationId, request,
+  const input = { executionSite: 'before_parent_request' as const, turnId: 'execute-1', getParentModelIdentifier: () => 'parent', signal: controller.signal };
+  return { dir, store, snapshotStore, manager, executor, compress, emitStatus, input, controller, operationId, request,
     dispose: () => fs.rmSync(dir, { recursive: true, force: true }) };
 };

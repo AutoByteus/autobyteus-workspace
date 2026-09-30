@@ -27,9 +27,11 @@ export class ConfiguredAgentStatusOverlay {
   }
 
   get(fallback: () => AgentStatusPayload): CollaborationAgentStatusSnapshot {
-    return this.snapshot ?? createCollaborationAgentStatusSnapshot({
+    if (this.snapshot) return this.snapshot;
+    const current = fallback();
+    return createCollaborationAgentStatusSnapshot({
       execution: this.identity,
-      status: fallback().status,
+      status: current.status, recoverableBlock: current.recoverableBlock ?? null,
     });
   }
 

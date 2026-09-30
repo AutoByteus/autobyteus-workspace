@@ -17,3 +17,18 @@ export class CompactionInvocationError extends Error {
     super(message); this.name = 'CompactionInvocationError';
   }
 }
+
+export type CompressionAttemptObservation = Readonly<{
+  attempt: number;
+  outcome: 'started' | 'succeeded' | 'failed';
+  execution?: CompactionExecutionMetadata;
+  code?: string;
+}>;
+
+export type CompactionCompressionExecution = Readonly<{
+  signal: AbortSignal;
+  operationId: string;
+  executionTurnId: string;
+  getParentModelIdentifier: () => string;
+  observe?: (event: CompressionAttemptObservation) => void;
+}>;

@@ -251,7 +251,8 @@ export class AnthropicLLM extends BaseLLM {
     applyAnthropicRequestParams(params, this.model.value, this.config.extraParams ?? null, kwargs);
 
     try {
-      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const requestOptions = { ...(options.signal ? { signal: options.signal } : {}),
+        ...(options.retryMode === 'single_attempt' ? { maxRetries: 0 } : {}) };
       const client = await this.getClient();
       const response = await client.messages.create(params, requestOptions as any);
       
@@ -296,7 +297,8 @@ export class AnthropicLLM extends BaseLLM {
     params.stream = true;
 
     try {
-      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const requestOptions = { ...(options.signal ? { signal: options.signal } : {}),
+        ...(options.retryMode === 'single_attempt' ? { maxRetries: 0 } : {}) };
       const client = await this.getClient();
       const stream = await client.messages.create(params, requestOptions as any);
       

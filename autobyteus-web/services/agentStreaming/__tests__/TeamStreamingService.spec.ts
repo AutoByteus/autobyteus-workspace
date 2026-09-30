@@ -73,6 +73,7 @@ const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChan
   base_change_sequence: baseChangeSequence,
   execution_tree: team.view.getExecutionTree(),
   messages: team.view.listCommunicationMessages(),
+  agent_input_states: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
     agent_run_id: entry.agentRunId,
     member_address: entry.memberAddress,
@@ -81,6 +82,7 @@ const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChan
     tool_name: null,
     error_message: null,
     error_details: null,
+    recoverableBlock: null,
   })),
 });
 
@@ -101,6 +103,7 @@ const statusPayload = (changeSequence: number, agentRunId: string, status: strin
   tool_name: null,
   error_message: null,
   error_details: null,
+    recoverableBlock: null,
 });
 
 describe('TeamStreamingService current AgentRun event dispatch', () => {
@@ -235,6 +238,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       tool_name: null,
       error_message: null,
       error_details: null,
+    recoverableBlock: null,
     });
 
     expect(teacher.state.currentStatus).not.toBe(AgentStatus.Running);

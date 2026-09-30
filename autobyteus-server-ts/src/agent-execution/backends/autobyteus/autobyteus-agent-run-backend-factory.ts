@@ -1,4 +1,4 @@
-import { DirectLlmCompactionSummarizer, type CompactionLlmFactory } from 'autobyteus-ts/memory/compaction/direct-llm-compaction-summarizer.js';
+import { DirectLlmCompressionStrategy, type CompactionLlmFactory } from 'autobyteus-ts/memory/compaction/direct-llm-compression-strategy.js';
 import { createCompactionLlm } from '../../compaction/compaction-llm-factory.js';
 import fs from "node:fs/promises";
 import {
@@ -414,7 +414,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     };
 
     const memoryCompaction = createEnabledMemoryCompactionConfiguration(
-      new CompactionPolicy(), new DirectLlmCompactionSummarizer(this.compactionLlmFactory),
+      new CompactionPolicy(), (execution) => new DirectLlmCompressionStrategy(this.compactionLlmFactory, execution),
     );
 
     return {

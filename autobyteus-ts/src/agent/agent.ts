@@ -1,3 +1,4 @@
+import type { CompactionRetryRequest } from '../memory/compaction/compaction-recovery.js';
 import { AgentRuntime } from './runtime/agent-runtime.js';
 import { AgentStatus } from './status/status-enum.js';
 import { AgentInputUserMessage } from './message/agent-input-user-message.js';
@@ -49,6 +50,10 @@ export class Agent {
     console.debug(`Agent '${this.agentId}': Submitting ${event.constructor.name} to runtime.`);
     await this.runtime.submitEvent(event);
   }
+
+  getCompactionRecovery() { return this.runtime.getCompactionRecovery(); }
+  authorizeCompactionRetry(input: CompactionRetryRequest) { return this.runtime.authorizeCompactionRetry(input); }
+  revokeUnusedCompactionRetry(input: CompactionRetryRequest) { return this.runtime.revokeUnusedCompactionRetry(input); }
 
   async postUserMessage(agentInputUserMessage: AgentInputUserMessage): Promise<void> {
     const event = new UserMessageReceivedEvent(agentInputUserMessage);

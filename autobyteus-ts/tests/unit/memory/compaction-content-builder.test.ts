@@ -9,8 +9,8 @@ import {
 import { CompactionConversationHistoryRenderer } from '../../../src/memory/compaction/compaction-conversation-history-renderer.js';
 import {
   CompactionPromptConstructionError,
-  WorkingContextCompactionPromptBuilder,
-} from '../../../src/memory/compaction/working-context-compaction-prompt-builder.js';
+  CompactionContentBuilder,
+} from '../../../src/memory/compaction/compaction-content-builder.js';
 import type {
   ToolProtocolMessageUnit,
   WorkingContextMessageUnit,
@@ -118,7 +118,7 @@ const shieldToolUnit = (): ToolProtocolMessageUnit => ({
   ],
 });
 
-describe('WorkingContextCompactionPromptBuilder', () => {
+describe('CompactionContentBuilder', () => {
   it('byte-equals one natural renderer block without mutating canonical user/media/tool input', () => {
     const units = [
       messageUnit(
@@ -160,8 +160,8 @@ describe('WorkingContextCompactionPromptBuilder', () => {
     const before = units.map((unit) => unit.messages.map((message) => message.toDict()));
     const renderer = new CompactionConversationHistoryRenderer();
     const expected = renderer.render(units, 240);
-    const prompt = new WorkingContextCompactionPromptBuilder(renderer)
-      .buildTaskPrompt(units, { maxItemChars: 240 });
+    const prompt = new CompactionContentBuilder(renderer)
+      .build(units, { maxItemChars: 240 });
 
     expect(prompt).toBe([
       'Here is the conversation history of the target agent whose conversation history needs to be compacted. This conversation history is contained between the START and END separators below.',
@@ -218,7 +218,7 @@ describe('WorkingContextCompactionPromptBuilder', () => {
 
   it('builds a provider-safe prompt from the exact shield tool-result fixture', () => {
     const before = JSON.stringify(shieldFixture);
-    const prompt = new WorkingContextCompactionPromptBuilder().buildTaskPrompt(
+    const prompt = new CompactionContentBuilder().build(
       [shieldToolUnit()],
       { maxItemChars: 2_000 },
     );
@@ -235,7 +235,7 @@ describe('WorkingContextCompactionPromptBuilder', () => {
     const renderer = {
       render: () => renderedHistory,
     } as unknown as CompactionConversationHistoryRenderer;
-    const prompt = new WorkingContextCompactionPromptBuilder(renderer).buildTaskPrompt([]);
+    const prompt = new CompactionContentBuilder(renderer).build([]);
 
     expect(prompt).toContain(renderedHistory);
     expect(prompt.length).toBeGreaterThan(renderedHistory.length);
@@ -247,12 +247,12 @@ describe('WorkingContextCompactionPromptBuilder', () => {
       finalize: () => '\uD83D',
       isProviderSafeText: () => false,
     };
-    const builder = new WorkingContextCompactionPromptBuilder(
+    const builder = new CompactionContentBuilder(
       new CompactionConversationHistoryRenderer(),
       failedBoundary,
     );
 
-    expect(() => builder.buildTaskPrompt([
+    expect(() => builder.build([
       messageUnit('user', 'message', new Message(MessageRole.USER, { content: 'Target.' })),
     ])).toThrowError(expect.objectContaining<Partial<CompactionPromptConstructionError>>({
       name: 'CompactionPromptConstructionError',
@@ -263,10 +263,10 @@ describe('WorkingContextCompactionPromptBuilder', () => {
   it('rejects incomplete or orphaned tool protocol rather than inventing a transcript', () => {
     const incomplete = toolUnit();
     incomplete.messages = incomplete.messages.slice(0, 2);
-    expect(() => new WorkingContextCompactionPromptBuilder().buildTaskPrompt([incomplete]))
+    expect(() => new CompactionContentBuilder().build([incomplete]))
       .toThrow("Tool call 'backend-call-success' has no terminal result.");
 
-    expect(() => new WorkingContextCompactionPromptBuilder().buildTaskPrompt([
+    expect(() => new CompactionContentBuilder().build([
       messageUnit(
         'orphan',
         'message',

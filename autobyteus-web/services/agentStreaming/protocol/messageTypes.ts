@@ -1,3 +1,4 @@
+import type { AgentInputStateDto, CompactionRecoveryBlockDto, CompactionRecoveryEventDto } from "@autobyteus/agent-presentation-contracts";
 /**
  * Protocol layer - Message type definitions matching backend WebSocket protocol.
  *
@@ -40,6 +41,9 @@ export type ServerMessageType =
   | 'AGENT_STATUS'
   | 'AGENT_COMMAND_ACK'
   | 'COMPACTION_STATUS'
+  | 'AGENT_INPUT_STATE'
+  | 'COMPACTION_BLOCKED'
+  | 'COMPACTION_RESUMED'
   | 'TOKEN_USAGE_UPDATED'
   | 'TOOL_APPROVAL_REQUESTED'
   | 'TOOL_APPROVED'
@@ -105,6 +109,7 @@ export interface SegmentEndPayload {
 }
 
 export interface AgentStatusPayload {
+  recoverableBlock?: CompactionRecoveryBlockDto | null;
   status: 'offline' | 'initializing' | 'idle' | 'running' | 'error';
   trigger?: string | null;
   tool_name?: string | null;
@@ -274,6 +279,8 @@ export type ServerMessage =
   | { type: 'AGENT_STATUS'; payload: AgentStatusPayload }
   | { type: 'AGENT_COMMAND_ACK'; payload: AgentCommandAckPayload }
   | { type: 'COMPACTION_STATUS'; payload: CompactionStatusPayload }
+  | { type: 'AGENT_INPUT_STATE'; payload: AgentInputStateDto }
+  | { type: 'COMPACTION_BLOCKED' | 'COMPACTION_RESUMED'; payload: CompactionRecoveryEventDto }
   | { type: 'TOKEN_USAGE_UPDATED'; payload: TokenUsageUpdatedPayload }
   | { type: 'TOOL_APPROVAL_REQUESTED'; payload: ToolApprovalRequestedPayload }
   | { type: 'TOOL_APPROVED'; payload: ToolApprovedPayload }

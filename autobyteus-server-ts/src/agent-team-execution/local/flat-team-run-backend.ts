@@ -21,6 +21,7 @@ export class FlatTeamRunBackend implements TeamRunBackend {
   getRuntimeContext() { return this.context.runtimeContext; }
   isActive(): boolean { return this.manager.isActive(); }
   isTerminated(): boolean { return this.manager.isTerminated(); }
+  getInputStateSnapshots() { return this.manager.getInputStateSnapshots(); }
   getLeafAgentStatusSnapshots() { return this.manager.getLeafAgentStatusSnapshots(); }
   hasOpenExecutionWork(): boolean { return this.manager.hasOpenExecutionWork(); }
   reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options: AgentRunInputOptions = {}) {

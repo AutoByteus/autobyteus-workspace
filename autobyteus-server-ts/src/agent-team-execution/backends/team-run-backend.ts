@@ -20,6 +20,7 @@ export interface TeamRunBackend {
   getRuntimeContext(): RuntimeTeamRunContext | null;
   isActive(): boolean;
   isTerminated(): boolean;
+  getInputStateSnapshots(): readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
   getLeafAgentStatusSnapshots(): readonly TeamAgentStatusSnapshot[];
   hasOpenExecutionWork(): boolean;
   reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options?: AgentRunInputOptions): Promise<AgentRunInputReservationResult>;

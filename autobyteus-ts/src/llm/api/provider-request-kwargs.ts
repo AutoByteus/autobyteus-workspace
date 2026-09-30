@@ -5,7 +5,8 @@ export const INTERNAL_PROVIDER_REQUEST_KWARG_KEYS = new Set([
   'agentId',
   'turnId',
   'requestId',
-  'renderedPayload'
+  'renderedPayload',
+  'retryMode', 'retry_mode', 'maxRetries', 'max_retries', 'retries'
 ]);
 
 export interface SafeProviderRequestKwargsOptions {

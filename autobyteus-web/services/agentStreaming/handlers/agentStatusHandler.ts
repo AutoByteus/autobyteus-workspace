@@ -54,7 +54,7 @@ export function handleAgentStatus(
   if (
     payload.status === AgentStatus.Idle ||
     payload.status === AgentStatus.Offline ||
-    payload.status === AgentStatus.Error
+    (payload.status === AgentStatus.Error && !payload.recoverableBlock)
   ) {
     conversationEffect = markConversationComplete(context) ? 'STRUCTURAL' : 'NONE';
   }
@@ -100,7 +100,7 @@ export function handleCompactionStatus(
   });
   context.state.compactionStatus = projection.status;
 
-  const conversationChanged = shouldCloseCurrentAIMessageForCenterCompaction(
+  const conversationChanged = Boolean(payload.provider) && shouldCloseCurrentAIMessageForCenterCompaction(
     projection.status,
     previousStatus,
   ) && markConversationComplete(context);

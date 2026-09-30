@@ -35,7 +35,8 @@ const createHarness = (state = 'connected') => {
       base_change_sequence: 0,
       execution_tree: team.view.getExecutionTree(),
       messages: [],
-      agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
+      agent_input_states: [],
+  agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
         agent_run_id: entry.agentRunId,
         member_address: entry.memberAddress,
         status: 'idle',
@@ -43,6 +44,7 @@ const createHarness = (state = 'connected') => {
         tool_name: null,
         error_message: null,
         error_details: null,
+    recoverableBlock: null,
       })),
     },
   }));

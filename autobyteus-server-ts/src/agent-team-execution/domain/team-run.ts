@@ -19,6 +19,7 @@ export class TeamRun {
   isActive(): boolean { return this.backend.isActive(); }
   isTerminated(): boolean { return this.backend.isTerminated(); }
   getRuntimeContext() { return this.context.runtimeContext; }
+  getInputStateSnapshots() { return this.backend.getInputStateSnapshots(); }
   getLeafAgentStatusSnapshots() { return this.backend.getLeafAgentStatusSnapshots(); }
   hasOpenExecutionWork(): boolean { return this.backend.hasOpenExecutionWork(); }
   reserveDirectAgentInput(agentRunId: string, message: AgentInputUserMessage, options: AgentRunInputOptions = {}) {

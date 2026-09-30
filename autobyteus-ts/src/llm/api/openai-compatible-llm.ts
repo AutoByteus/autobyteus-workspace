@@ -131,7 +131,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
     });
 
     try {
-      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const requestOptions = { ...(options.signal ? { signal: options.signal } : {}),
+        ...(options.retryMode === 'single_attempt' ? { maxRetries: 0 } : {}) };
       const client = await this.getClient();
       const response = await client.chat.completions.create(params as any, requestOptions as any); // Cast for extra params flexibility
       const choice = response.choices[0];
@@ -161,7 +162,8 @@ export class OpenAICompatibleLLM extends BaseLLM {
     });
 
     try {
-      const requestOptions = options.signal ? { signal: options.signal } : undefined;
+      const requestOptions = { ...(options.signal ? { signal: options.signal } : {}),
+        ...(options.retryMode === 'single_attempt' ? { maxRetries: 0 } : {}) };
       const client = await this.getClient();
       const stream = await client.chat.completions.create(params, requestOptions as any) as unknown as AsyncIterable<ChatCompletionChunk>;
       

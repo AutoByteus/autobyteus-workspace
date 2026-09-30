@@ -24,7 +24,7 @@ const status = (member_address: string, agent_run_id: string) => ({
   trigger: null,
   tool_name: null,
   error_message: null,
-  error_details: null,
+  error_details: null, recoverableBlock: null,
 })
 
 export const taskBearingView = (): AgentOrgExecutionViewDto => ({
@@ -85,7 +85,7 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
     orgRunId: 'org-run',
     messages: [],
   },
-  agent_statuses: [
+  agent_input_states: [], agent_statuses: [
     status('/director', 'agent-director'),
     status('/worker', 'agent-worker-configured'),
     status('/team/lead', 'agent-lead-configured'),

@@ -12,14 +12,12 @@ import {
   type MediaInputDiagnostic,
 } from '../llm/utils/media-input-sanitizer.js';
 import type { LlmRequestRecoverySnapshot } from '../memory/llm-request-recovery.js';
-import type { TurnStartOrigin } from './event-inbox/agent-event-inbox-entry.js';
 
 export type LlmRequestAssemblyIdentity = Readonly<{
   turnId: string;
   requestId: string;
-  turnOrigin: TurnStartOrigin;
   isToolContinuation?: boolean;
-  parentModelIdentifier: string;
+  getParentModelIdentifier: () => string;
   signal: AbortSignal;
 }>;
 
@@ -54,9 +52,9 @@ export class LLMRequestAssembler {
 
     const didCompact = this.pendingCompactionExecutor && !identity.isToolContinuation
       ? await this.pendingCompactionExecutor.executeIfAuthorized({
+          executionSite: 'before_parent_request',
           turnId: identity.turnId,
-          turnOrigin: identity.turnOrigin,
-          parentModelIdentifier: identity.parentModelIdentifier,
+          getParentModelIdentifier: identity.getParentModelIdentifier,
           signal: identity.signal,
         })
       : false;

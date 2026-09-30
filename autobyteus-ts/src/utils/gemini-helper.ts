@@ -12,25 +12,28 @@ export interface GeminiRuntimeInfo {
 export async function initializeGeminiClientWithRuntime(
   selection: GeminiRuntimeSelection,
   resolver: ProviderApiKeyResolver,
+  transport: { singleAttempt?: boolean } = {},
 ): Promise<{ client: GoogleGenAI; runtimeInfo: GeminiRuntimeInfo }> {
+  const httpOptions = transport.singleAttempt ? { retryOptions: { attempts: 1 } } : undefined;
   switch (selection.kind) {
     case 'aiStudio': {
       const secret = await resolver.resolve('GEMINI', 'geminiAiStudioApiKey');
       return {
-        client: new GoogleGenAI({ apiKey: secret.revealToTrustedConsumer() }),
+        client: new GoogleGenAI({ httpOptions, apiKey: secret.revealToTrustedConsumer() }),
         runtimeInfo: { runtime: 'api_key', project: null, location: null },
       };
     }
     case 'vertexExpress': {
       const secret = await resolver.resolve('GEMINI', 'geminiVertexExpressApiKey');
       return {
-        client: new GoogleGenAI({ vertexai: true, apiKey: secret.revealToTrustedConsumer() }),
+        client: new GoogleGenAI({ httpOptions, vertexai: true, apiKey: secret.revealToTrustedConsumer() }),
         runtimeInfo: { runtime: 'vertex', project: null, location: null },
       };
     }
     case 'vertexProject':
       return {
         client: new GoogleGenAI({
+          httpOptions,
           vertexai: true,
           project: selection.project,
           location: selection.location,

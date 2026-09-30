@@ -209,7 +209,7 @@ describe('agentStatusHandler', () => {
       });
     });
 
-    it('splits the current visual AI block only on the first center-eligible execution phase', () => {
+    it('does not falsely complete the assistant block for direct compaction phases', () => {
       const aiMsg = { type: 'ai', isComplete: false, segments: [{ type: 'text', content: 'before compaction' }] };
       mockContext.conversation.messages.push(aiMsg);
 
@@ -226,7 +226,7 @@ describe('agentStatusHandler', () => {
         requested_turn_id: 'turn-1',
         execution_turn_id: 'turn-2',
       }, mockContext);
-      expect(aiMsg.isComplete).toBe(true);
+      expect(aiMsg.isComplete).toBe(false);
 
       aiMsg.isComplete = false;
       handleCompactionStatus({

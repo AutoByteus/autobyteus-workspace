@@ -1,3 +1,4 @@
+import type { CompactionRecoveryBlockDto } from "@autobyteus/agent-presentation-contracts";
 import type { AgentRunStatusHint } from "../../agent-execution/domain/agent-run-event.js";
 import {
   normalizeAgentApiStatus,
@@ -12,6 +13,7 @@ export type TeamAgentStatusDetails = Readonly<{
   toolName: string | null;
   errorMessage: string | null;
   errorDetails: string | null;
+  recoverableBlock: CompactionRecoveryBlockDto | null;
 }>;
 
 export type TeamAgentStatusSnapshot = Readonly<{
@@ -36,12 +38,14 @@ export const createTeamAgentStatusDetails = (input: {
   toolName?: unknown;
   errorMessage?: unknown;
   errorDetails?: unknown;
+  recoverableBlock?: CompactionRecoveryBlockDto | null;
 }): TeamAgentStatusDetails => Object.freeze({
   status: normalizeAgentApiStatus(input.status),
   trigger: nullableText(input.trigger),
   toolName: nullableText(input.toolName),
   errorMessage: nullableText(input.errorMessage),
   errorDetails: nullableText(input.errorDetails),
+  recoverableBlock: input.recoverableBlock ?? null,
 });
 
 export const createTeamAgentStatusSnapshot = (input: {

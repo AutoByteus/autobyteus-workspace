@@ -23,6 +23,9 @@
         />
         <div v-if="displayText" class="whitespace-pre-wrap break-words text-gray-900 leading-6">{{ displayText }}</div>
 
+        <p v-if="message.pendingInput && message.pendingInput.state !== 'forwarded'" role="status" class="mt-2 text-xs text-amber-700">
+          {{ message.pendingInput.state === 'held' ? $t('workspace.components.conversation.UserMessage.compaction_held') : $t('workspace.components.conversation.UserMessage.queued') }}
+        </p>
         <div v-if="displayedAttachments.length" class="mt-2">
           <p class="text-xs font-medium text-gray-500">{{ $t('workspace.components.conversation.UserMessage.context_files') }}</p>
           <ul class="mt-1 flex flex-wrap gap-2">

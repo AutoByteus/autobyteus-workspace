@@ -1,3 +1,4 @@
+import type { AgentInputStateDto, CompactionRecoveryEventDto, CompactionRecoveryBlockDto } from "@autobyteus/agent-presentation-contracts";
 import type { JsonValue } from "@autobyteus/team-stream-contracts";
 import type { AgentRunStatusHint } from "../../agent-execution/domain/agent-run-event.js";
 import type { CollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -90,6 +91,9 @@ export type TeamAgentEvent =
   | Correlated<"SEGMENT_CONTENT", { segmentId: string; turnId: string; segmentType: AgentSegmentType; delta: string }>
   | Correlated<"SEGMENT_END", { segmentId: string; turnId: string; metadata: JsonValue | null; interrupted: boolean; reason: string | null; failed: boolean; error: string | null }>
   | Correlated<"AGENT_STATUS", TeamAgentStatusDetails>
+  | Correlated<"AGENT_INPUT_STATE", AgentInputStateDto>
+  | Correlated<"COMPACTION_BLOCKED", CompactionRecoveryEventDto>
+  | Correlated<"COMPACTION_RESUMED", CompactionRecoveryEventDto>
   | Correlated<"COMPACTION_STATUS", {
       phase: string | null; kind: string | null; status: string | null; turnId: string | null;
       compactionOperationId: string | null; requestedTurnId: string | null; executionTurnId: string | null;

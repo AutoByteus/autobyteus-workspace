@@ -28,6 +28,8 @@ export type AgentRunBackendInputDispatchResult = Readonly<{
    * turn (or appends into a different later turn), never the same turn again.
    */
   undeliveredRetryAsStart?: true;
+  /** Native recovery dispatch failures distinguish proof from uncertainty. */
+  delivery?: "not_delivered" | "uncertain";
 }>;
 
 export type AgentRunInputRejectionCode =
@@ -41,6 +43,7 @@ export type AgentRunInputLifecycle =
       dispatchKind: AgentRunBackendInputDispatch["kind"];
       turnId: string | null;
     }>
+  | Readonly<{ kind: "held" | "resumed"; turnId: string }>
   | Readonly<{ kind: "turn_associated"; turnId: string }>
   | Readonly<{ kind: "completed"; turnId: string | null }>
   | Readonly<{ kind: "interrupted"; turnId: string | null }>

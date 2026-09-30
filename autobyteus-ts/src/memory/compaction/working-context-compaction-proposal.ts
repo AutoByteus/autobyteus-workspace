@@ -1,4 +1,3 @@
-import type { CompactionExecutionMetadata } from './compaction-execution.js';
 import type { Message } from '../../llm/utils/messages.js';
 import type { WorkingContext } from '../working-context.js';
 import type { CompactionPlanningBudget } from './compaction-planning-budget.js';
@@ -19,7 +18,6 @@ export type WorkingContextCompactionProposal = {
   selectedNewRawTraceIds: string[];
   retainedMessages: Message[];
   summary: string;
-  execution: CompactionExecutionMetadata;
   budgetAssessment: CompactionBudgetAssessment;
 };
 

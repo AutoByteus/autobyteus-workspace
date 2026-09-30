@@ -35,16 +35,17 @@ const nextEntryId = (prefix: string): string => {
 export class AgentEventInbox {
   constructor(private readonly store = new InboxQueueStore<AgentEventInboxEntry>(INBOX_LANES)) {}
 
-  async postEvent(event: BaseEvent): Promise<void> {
+  async postEvent(event: BaseEvent): Promise<string> {
     const entry = this.createEntry(event);
     this.store.enqueue(entry.lane, entry);
+    return entry.entryId;
   }
 
-  async postUserEvent(event: UserMessageReceivedEvent): Promise<void> {
+  async postUserEvent(event: UserMessageReceivedEvent): Promise<string> {
     if (!(event instanceof UserMessageReceivedEvent)) {
       throw new TypeError('postUserEvent requires a UserMessageReceivedEvent.');
     }
-    await this.postEvent(event);
+    return this.postEvent(event);
   }
 
   async postInterAgentEvent(event: InterAgentMessageReceivedEvent): Promise<void> {

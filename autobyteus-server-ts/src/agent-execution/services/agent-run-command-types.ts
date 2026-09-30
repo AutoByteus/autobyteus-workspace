@@ -6,6 +6,7 @@ export type AgentRunCommandState =
   | "STARTING"
   | "ADMITTED"
   | "FORWARDED"
+  | "HELD"
   | "COMPLETED"
   | "FAILED"
   | "REJECTED"

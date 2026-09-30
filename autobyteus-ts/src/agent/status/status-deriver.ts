@@ -127,3 +127,9 @@ export class AgentStatusDeriver {
     return currentStatus;
   }
 }
+
+export const effectiveAgentStatus = (phase: AgentStatus, recovery: import('../../memory/compaction/compaction-recovery.js').CompactionRecoveryBlock | null): AgentStatus => {
+  if ([AgentStatus.ERROR, AgentStatus.SHUTTING_DOWN, AgentStatus.SHUTDOWN_COMPLETE].includes(phase)) return phase;
+  if (recovery && recovery.state !== 'recovering') return AgentStatus.ERROR;
+  return phase;
+};
