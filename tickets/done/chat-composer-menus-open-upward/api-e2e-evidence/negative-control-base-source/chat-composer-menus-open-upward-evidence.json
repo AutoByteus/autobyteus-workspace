@@ -1,0 +1,556 @@
+{
+  "startedAt": "2026-09-30T06:03:57.457Z",
+  "cases": {
+    "U01": {
+      "title": "Layout at four wide viewports: pt-[14vh] pb-10, centered, 10vh−40px lower, hint under the composer (AC-003)",
+      "result": "Fail",
+      "ms": 10331,
+      "error": "AC-003: 1512x952: padding-top 40 is not 14vh (133.3); 1512x952: padding-bottom 57.12 is not 40px; 1512x952: group moved 0.0px versus pt-10 pb-[6vh], not 10vh−40px (55.2); 1512x952: heading top 323.4 is not the reference 379; 1280x720: padding-top 40 is not 14vh (100.8); 1280x720: padding-bottom 43.2 is not 40px; 1280x720: group moved 0.0px versus pt-10 pb-[6vh], not 10vh−40px (32.0); 1280x720: heading top 214.4 is not the reference 246; 1024x520: padding-top 40 is not 14vh (72.8); 1024x520: padding-bottom 31.2 is not 40px; 1024x520: group moved 0.0px versus pt-10 pb-[6vh], not 10vh−40px (12.0); 1024x440: padding-top 40 is not 14vh (61.6); 1024x440: padding-bottom 26.4 is not 40px; 1024x440: group moved 0.0px versus pt-10 pb-[6vh], not 10vh−40px (4.0)",
+      "details": {
+        "1512x952": {
+          "paddingTop": 40,
+          "paddingBottom": 57.12,
+          "headingTop": 323.4,
+          "composerTop": 425.4,
+          "composerBottom": 585.4,
+          "hintTop": 595.4,
+          "movedDownPx": 0,
+          "expectedMovePx": 55.2,
+          "overflow": false
+        },
+        "1280x720": {
+          "paddingTop": 40,
+          "paddingBottom": 43.2,
+          "headingTop": 214.4,
+          "composerTop": 316.4,
+          "composerBottom": 476.4,
+          "hintTop": 486.4,
+          "movedDownPx": 0,
+          "expectedMovePx": 32,
+          "overflow": false
+        },
+        "1024x520": {
+          "paddingTop": 40,
+          "paddingBottom": 31.2,
+          "headingTop": 120.4,
+          "composerTop": 222.4,
+          "composerBottom": 382.4,
+          "hintTop": 392.4,
+          "movedDownPx": 0,
+          "expectedMovePx": 12,
+          "overflow": false
+        },
+        "1024x440": {
+          "paddingTop": 40,
+          "paddingBottom": 26.4,
+          "headingTop": 82.8,
+          "composerTop": 184.8,
+          "composerBottom": 344.8,
+          "hintTop": 354.8,
+          "movedDownPx": 0,
+          "expectedMovePx": 4,
+          "overflow": false
+        }
+      }
+    },
+    "U02": {
+      "title": "@ and / open above the composer card at four wide viewports; scroll, keyboard, choose, Escape, outside click (AC-001, AC-004, AC-005)",
+      "result": "Fail",
+      "ms": 9201,
+      "error": "AC-001/AC-004/AC-005: 1512x952: @: menu bottom is -480.5px above its positioning box, not 6px (it opened below); 1512x952: @: max-height (none) is not 300px; 1512x952: @: height 316.5 exceeds the limit 300; 1512x952: @: menu covers the hint line; 1512x952: @ scrolled: menu bottom is -480.5px above its positioning box, not 6px (it opened below); 1512x952: @ scrolled: max-height (none) is not 300px; 1512x952: @ scrolled: height 316.5 exceeds the limit 300; 1512x952: @ scrolled: menu covers the hint line; 1512x952: /: menu bottom is -480.5px above its positioning box, not 6px (it opened below); 1512x952: /: max-height (none) is not 300px; 1512x952: /: height 316.5 exceeds the limit 300; 1512x952: /: menu covers the hint line; 1512x952: / scrolled: menu bottom is -480.5px above its positioning box, not 6px (it opened below); 1512x952: / scrolled: max-height (none) is not 300px; 1512x952: / scrolled: height 316.5 exceeds the limit 300; 1512x952: / scrolled: menu covers the hint line; 1280x720: @: max-height (none) is not 294px; 1280x720: @: height 316.5 exceeds the limit 294; 1280x720: @: top -5.1 is inside the 16px viewport margin; 1280x720: @ scrolled: max-height (none) is not 294px; 1280x720: @ scrolled: height 316.5 exceeds the limit 294; 1280x720: @ scrolled: top -5.1 is inside the 16px viewport margin; 1280x720: /: max-height (none) is not 294px; 1280x720: /: height 316.5 exceeds the limit 294; 1280x720: /: top -5.1 is inside the 16px viewport margin; 1280x720: / scrolled: max-height (none) is not 294px; 1280x720: / scrolled: height 316.5 exceeds the limit 294; 1280x720: / scrolled: top -5.1 is inside the 16px viewport margin; 1024x520: @: max-height (none) is not 200px; 1024x520: @: height 316.5 exceeds the limit 200; 1024x520: @: top -99.1 is inside the 16px viewport margin; 1024x520: @ scrolled: max-height (none) is not 200px; 1024x520: @ scrolled: height 316.5 exceeds the limit 200; 1024x520: @ scrolled: top -99.1 is inside the 16px viewport margin; 1024x520: /: max-height (none) is not 200px; 1024x520: /: height 316.5 exceeds the limit 200; 1024x520: /: top -99.1 is inside the 16px viewport margin; 1024x520: / scrolled: max-height (none) is not 200px; 1024x520: / scrolled: height 316.5 exceeds the limit 200; 1024x520: / scrolled: top -99.1 is inside the 16px viewport margin; 1024x440: @: max-height (none) is not 162px; 1024x440: @: height 316.5 exceeds the limit 162; 1024x440: @: top -136.7 is inside the 16px viewport margin; 1024x440: @ scrolled: max-height (none) is not 162px; 1024x440: @ scrolled: height 316.5 exceeds the limit 162; 1024x440: @ scrolled: top -136.7 is inside the 16px viewport margin; 1024x440: /: max-height (none) is not 162px; 1024x440: /: height 316.5 exceeds the limit 162; 1024x440: /: top -136.7 is inside the 16px viewport margin; 1024x440: / scrolled: max-height (none) is not 162px; 1024x440: / scrolled: height 316.5 exceeds the limit 162; 1024x440: / scrolled: top -136.7 is inside the 16px viewport margin",
+      "details": {
+        "1512x952": {
+          "at": {
+            "menuTop": 590.4,
+            "menuBottom": 906.9,
+            "cardTop": 425.4,
+            "maxHeight": "",
+            "limit": 300,
+            "rows": 11,
+            "scrolls": true
+          },
+          "slash": {
+            "menuTop": 590.4,
+            "menuBottom": 906.9,
+            "cardTop": 425.4,
+            "maxHeight": "",
+            "limit": 300,
+            "rows": 13,
+            "scrolls": true
+          }
+        },
+        "1280x720": {
+          "at": {
+            "menuTop": -5.1,
+            "menuBottom": 311.4,
+            "cardTop": 316.4,
+            "maxHeight": "",
+            "limit": 294,
+            "rows": 11,
+            "scrolls": true
+          },
+          "slash": {
+            "menuTop": -5.1,
+            "menuBottom": 311.4,
+            "cardTop": 316.4,
+            "maxHeight": "",
+            "limit": 294,
+            "rows": 13,
+            "scrolls": true
+          }
+        },
+        "1024x520": {
+          "at": {
+            "menuTop": -99.1,
+            "menuBottom": 217.4,
+            "cardTop": 222.4,
+            "maxHeight": "",
+            "limit": 200,
+            "rows": 11,
+            "scrolls": true
+          },
+          "slash": {
+            "menuTop": -99.1,
+            "menuBottom": 217.4,
+            "cardTop": 222.4,
+            "maxHeight": "",
+            "limit": 200,
+            "rows": 13,
+            "scrolls": true
+          }
+        },
+        "1024x440": {
+          "at": {
+            "menuTop": -136.7,
+            "menuBottom": 179.8,
+            "cardTop": 184.8,
+            "maxHeight": "",
+            "limit": 162,
+            "rows": 11,
+            "scrolls": true
+          },
+          "slash": {
+            "menuTop": -136.7,
+            "menuBottom": 179.8,
+            "cardTop": 184.8,
+            "maxHeight": "",
+            "limit": 162,
+            "rows": 13,
+            "scrolls": true
+          }
+        }
+      }
+    },
+    "U03": {
+      "title": "Workspace, Model (flyout, search) and Thinking open above their trigger at four wide viewports (AC-002, AC-004)",
+      "result": "Fail",
+      "ms": 39679,
+      "error": "AC-002/AC-004: 1512x952: model: max-height (none) is not 360px; 1512x952: flyout autobyteus: flyout is not bottom-aligned (bottom (none), top -5px); 1512x952: flyout autobyteus: flyout bottom 704.9 is not its row bottom + 5px (416.4); 1512x952: flyout autobyteus: flyout list max-height  is not 320px; 1512x952: flyout autobyteus: flyout covers the hint line; 1512x952: flyout codex_app_server: flyout is not bottom-aligned (bottom (none), top -5px); 1512x952: flyout codex_app_server: flyout bottom 668.4 is not its row bottom + 5px (447.9); 1512x952: flyout codex_app_server: flyout list max-height  is not 320px; 1512x952: flyout codex_app_server: flyout covers the hint line; 1512x952: flyout claude_agent_sdk: flyout is not bottom-aligned (bottom (none), top -5px); 1512x952: flyout claude_agent_sdk: flyout bottom 767.9 is not its row bottom + 5px (479.4); 1512x952: flyout claude_agent_sdk: flyout list max-height  is not 320px; 1512x952: flyout claude_agent_sdk: flyout covers the hint line; 1512x952: flyout antigravity_cli: flyout is not bottom-aligned (bottom (none), top -5px); 1512x952: flyout antigravity_cli: flyout bottom 799.4 is not its row bottom + 5px (510.9); 1512x952: flyout antigravity_cli: flyout list max-height  is not 320px; 1512x952: flyout antigravity_cli: flyout covers the hint line; 1512x952: flyout grok_build: flyout is not bottom-aligned (bottom (none), top -5px); 1512x952: flyout grok_build: flyout bottom 560.4 is not its row bottom + 5px (542.4); 1512x952: flyout grok_build: flyout list max-height  is not 320px; 1512x952: model search: max-height (none) is not 360px; 1512x952: model search: height 390.5 exceeds the limit 360; 1512x952: model search scrolled: max-height (none) is not 360px; 1512x952: model search scrolled: height 390.5 exceeds the limit 360; 1512x952: thinking: menu bottom is -255.5px above its positioning box, not 6px (it opened below); 1512x952: thinking: max-height (none) is not 240px; 1512x952: thinking: menu covers the hint line; 1280x720: workspace: max-height 420px is not 417px; 1280x720: workspace: height 420.0 exceeds the limit 417; 1280x720: workspace: top 13.4 is inside the 16px viewport margin; 1280x720: workspace scrolled: max-height 420px is not 417px; 1280x720: workspace scrolled: height 420.0 exceeds the limit 417; 1280x720: workspace scrolled: top 13.4 is inside the 16px viewport margin; 1280x720: model: max-height (none) is not 360px; 1280x720: flyout autobyteus: flyout is not bottom-aligned (bottom (none), top -5px); 1280x720: flyout autobyteus: flyout bottom 595.9 is not its row bottom + 5px (307.4); 1280x720: flyout autobyteus: flyout list max-height  is not 285px; 1280x720: flyout autobyteus: flyout list height 320.0 exceeds 285; 1280x720: flyout autobyteus: flyout covers the hint line; 1280x720: flyout codex_app_server: flyout is not bottom-aligned (bottom (none), top -5px); 1280x720: flyout codex_app_server: flyout bottom 559.4 is not its row bottom + 5px (338.9); 1280x720: flyout codex_app_server: flyout list max-height  is not 316px; 1280x720: flyout codex_app_server: flyout covers the hint line; 1280x720: flyout claude_agent_sdk: flyout is not bottom-aligned (bottom (none), top -5px); 1280x720: flyout claude_agent_sdk: flyout bottom 658.9 is not its row bottom + 5px (370.4); 1280x720: flyout claude_agent_sdk: flyout list max-height  is not 320px; 1280x720: flyout claude_agent_sdk: flyout covers the hint line; 1280x720: flyout antigravity_cli: flyout is not bottom-aligned (bottom (none), top -5px); 1280x720: flyout antigravity_cli: flyout bottom 690.4 is not its row bottom + 5px (401.9); 1280x720: flyout antigravity_cli: flyout list max-height  is not 320px; 1280x720: flyout antigravity_cli: flyout covers the hint line; 1280x720: flyout grok_build: flyout is not bottom-aligned (bottom (none), top -18.9062px); 1280x720: flyout grok_build: flyout bottom 437.5 is not its row bottom + 5px (433.4); 1280x720: flyout grok_build: flyout list max-height  is not 320px; 1280x720: model search: max-height (none) is not 360px; 1280x720: model search: height 390.5 exceeds the limit 360; 1280x720: model search scrolled: max-height (none) is not 360px; 1280x720: model search scrolled: height 390.5 exceeds the limit 360; 1280x720: thinking: max-height (none) is not 240px; 1024x520: workspace: max-height 329.406px is not 323px; 1024x520: workspace: height 329.4 exceeds the limit 323; 1024x520: workspace: top 10.0 is inside the 16px viewport margin; 1024x520: workspace scrolled: max-height 329.406px is not 323px; 1024x520: workspace scrolled: height 329.4 exceeds the limit 323; 1024x520: workspace scrolled: top 10.0 is inside the 16px viewport margin; 1024x520: model: max-height (none) is not 323px; 1024x520: flyout autobyteus: flyout is not bottom-aligned (bottom (none), top -5px); 1024x520: flyout autobyteus: flyout bottom 501.9 is not its row bottom + 5px (213.4); 1024x520: flyout autobyteus: flyout list max-height  is not 191px; 1024x520: flyout autobyteus: flyout list height 320.0 exceeds 191; 1024x520: flyout autobyteus: flyout covers the hint line; 1024x520: flyout codex_app_server: flyout is not bottom-aligned (bottom (none), top -30.4062px); 1024x520: flyout codex_app_server: flyout bottom 440.0 is not its row bottom + 5px (244.9); 1024x520: flyout codex_app_server: flyout list max-height  is not 222px; 1024x520: flyout codex_app_server: flyout list height 252.0 exceeds 222; 1024x520: flyout codex_app_server: flyout covers the hint line; 1024x520: flyout claude_agent_sdk: flyout is not bottom-aligned (bottom (none), top -61.9062px); 1024x520: flyout claude_agent_sdk: flyout bottom 508.0 is not its row bottom + 5px (276.4); 1024x520: flyout claude_agent_sdk: flyout list max-height  is not 254px; 1024x520: flyout claude_agent_sdk: flyout list height 320.0 exceeds 254; 1024x520: flyout claude_agent_sdk: flyout covers the hint line; 1024x520: flyout antigravity_cli: flyout is not bottom-aligned (bottom (none), top -93.4062px); 1024x520: flyout antigravity_cli: flyout bottom 508.0 is not its row bottom + 5px (307.9); 1024x520: flyout antigravity_cli: flyout list max-height  is not 285px; 1024x520: flyout antigravity_cli: flyout list height 320.0 exceeds 285; 1024x520: flyout antigravity_cli: flyout covers the hint line; 1024x520: flyout grok_build: flyout is not bottom-aligned (bottom (none), top -124.906px); 1024x520: flyout grok_build: flyout bottom 237.5 is not its row bottom + 5px (339.4); 1024x520: flyout grok_build: flyout list max-height  is not 317px; 1024x520: model search: max-height (none) is not 323px; 1024x520: model search: height 390.5 exceeds the limit 323; 1024x520: model search: top -51.1 is inside the 16px viewport margin; 1024x520: model search scrolled: max-height (none) is not 323px; 1024x520: model search scrolled: height 390.5 exceeds the limit 323; 1024x520: model search scrolled: top -51.1 is inside the 16px viewport margin; 1024x520: thinking: max-height (none) is not 240px; 1024x440: workspace: max-height 291.797px is not 285px; 1024x440: workspace: height 291.8 exceeds the limit 285; 1024x440: workspace: top 10.0 is inside the 16px viewport margin; 1024x440: workspace scrolled: max-height 291.797px is not 285px; 1024x440: workspace scrolled: height 291.8 exceeds the limit 285; 1024x440: workspace scrolled: top 10.0 is inside the 16px viewport margin; 1024x440: model: max-height (none) is not 285px; 1024x440: flyout autobyteus: flyout is not bottom-aligned (bottom (none), top -41.2969px); 1024x440: flyout autobyteus: flyout bottom 428.0 is not its row bottom + 5px (175.8); 1024x440: flyout autobyteus: flyout list max-height  is not 153px; 1024x440: flyout autobyteus: flyout list height 320.0 exceeds 153; 1024x440: flyout autobyteus: flyout covers the hint line; 1024x440: flyout codex_app_server: flyout is not bottom-aligned (bottom (none), top -72.7969px); 1024x440: flyout codex_app_server: flyout bottom 360.0 is not its row bottom + 5px (207.3); 1024x440: flyout codex_app_server: flyout list max-height  is not 185px; 1024x440: flyout codex_app_server: flyout list height 252.0 exceeds 185; 1024x440: flyout codex_app_server: flyout covers the hint line; 1024x440: flyout claude_agent_sdk: flyout is not bottom-aligned (bottom (none), top -104.297px); 1024x440: flyout claude_agent_sdk: flyout bottom 428.0 is not its row bottom + 5px (238.8); 1024x440: flyout claude_agent_sdk: flyout list max-height  is not 216px; 1024x440: flyout claude_agent_sdk: flyout list height 320.0 exceeds 216; 1024x440: flyout claude_agent_sdk: flyout covers the hint line; 1024x440: flyout antigravity_cli: flyout is not bottom-aligned (bottom (none), top -135.797px); 1024x440: flyout antigravity_cli: flyout bottom 428.0 is not its row bottom + 5px (270.3); 1024x440: flyout antigravity_cli: flyout list max-height  is not 248px; 1024x440: flyout antigravity_cli: flyout list height 320.0 exceeds 248; 1024x440: flyout antigravity_cli: flyout covers the hint line; 1024x440: flyout grok_build: flyout is not bottom-aligned (bottom (none), top -167.297px); 1024x440: flyout grok_build: flyout bottom 157.5 is not its row bottom + 5px (301.8); 1024x440: flyout grok_build: flyout list max-height  is not 279px; 1024x440: model search: max-height (none) is not 285px; 1024x440: model search: height 390.5 exceeds the limit 285; 1024x440: model search: top -88.7 is inside the 16px viewport margin; 1024x440: model search scrolled: max-height (none) is not 285px; 1024x440: model search scrolled: height 390.5 exceeds the limit 285; 1024x440: model search scrolled: top -88.7 is inside the 16px viewport margin; 1024x440: thinking: max-height (none) is not 240px",
+      "details": {
+        "1512x952": {
+          "workspace": {
+            "menuTop": 122.4,
+            "menuBottom": 542.4,
+            "anchorTop": 548.4,
+            "maxHeight": "420px",
+            "limit": 420,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 313.9,
+            "menuBottom": 542.4,
+            "anchorTop": 548.4,
+            "maxHeight": "",
+            "limit": 360,
+            "runtimes": 5
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 374.9,
+              "bottom": 704.9,
+              "rowBottom": 411.4,
+              "listMax": "",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "right",
+              "left": 1182.3,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 406.4,
+              "bottom": 668.4,
+              "rowBottom": 442.9,
+              "listMax": "",
+              "rows": 8,
+              "listScrolls": false,
+              "side": "right",
+              "left": 1182.3,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 437.9,
+              "bottom": 767.9,
+              "rowBottom": 474.4,
+              "listMax": "",
+              "rows": 10,
+              "listScrolls": true,
+              "side": "right",
+              "left": 1182.3,
+              "catalogLoaded": true
+            },
+            "antigravity_cli": {
+              "top": 469.4,
+              "bottom": 799.4,
+              "rowBottom": 505.9,
+              "listMax": "",
+              "rows": 14,
+              "listScrolls": true,
+              "side": "right",
+              "left": 1182.3,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 500.9,
+              "bottom": 560.4,
+              "rowBottom": 537.4,
+              "listMax": "",
+              "rows": 1,
+              "listScrolls": false,
+              "side": "right",
+              "left": 1182.3,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 66,
+            "menuHeight": 390.5,
+            "limit": 360,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 582.4,
+            "menuBottom": 803.9,
+            "anchorTop": 548.4,
+            "maxHeight": "",
+            "limit": 240,
+            "height": 221.5,
+            "rows": 6
+          }
+        },
+        "1280x720": {
+          "workspace": {
+            "menuTop": 13.4,
+            "menuBottom": 433.4,
+            "anchorTop": 439.4,
+            "maxHeight": "420px",
+            "limit": 417,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 204.9,
+            "menuBottom": 433.4,
+            "anchorTop": 439.4,
+            "maxHeight": "",
+            "limit": 360,
+            "runtimes": 5
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 265.9,
+              "bottom": 595.9,
+              "rowBottom": 302.4,
+              "listMax": "",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "left",
+              "left": 488.3,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 297.4,
+              "bottom": 559.4,
+              "rowBottom": 333.9,
+              "listMax": "",
+              "rows": 8,
+              "listScrolls": false,
+              "side": "left",
+              "left": 488.3,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 328.9,
+              "bottom": 658.9,
+              "rowBottom": 365.4,
+              "listMax": "",
+              "rows": 10,
+              "listScrolls": true,
+              "side": "left",
+              "left": 488.3,
+              "catalogLoaded": true
+            },
+            "antigravity_cli": {
+              "top": 360.4,
+              "bottom": 690.4,
+              "rowBottom": 396.9,
+              "listMax": "",
+              "rows": 14,
+              "listScrolls": true,
+              "side": "left",
+              "left": 488.3,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 378,
+              "bottom": 437.5,
+              "rowBottom": 428.4,
+              "listMax": "",
+              "rows": 1,
+              "listScrolls": false,
+              "side": "left",
+              "left": 488.3,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 66,
+            "menuHeight": 390.5,
+            "limit": 360,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 211.9,
+            "menuBottom": 433.4,
+            "anchorTop": 439.4,
+            "maxHeight": "",
+            "limit": 240,
+            "height": 221.5,
+            "rows": 6
+          }
+        },
+        "1024x520": {
+          "workspace": {
+            "menuTop": 10,
+            "menuBottom": 339.4,
+            "anchorTop": 345.4,
+            "maxHeight": "329.406px",
+            "limit": 323,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 110.9,
+            "menuBottom": 339.4,
+            "anchorTop": 345.4,
+            "maxHeight": "",
+            "limit": 323,
+            "runtimes": 5
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 171.9,
+              "bottom": 501.9,
+              "rowBottom": 208.4,
+              "listMax": "",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 178,
+              "bottom": 440,
+              "rowBottom": 239.9,
+              "listMax": "",
+              "rows": 8,
+              "listScrolls": false,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 178,
+              "bottom": 508,
+              "rowBottom": 271.4,
+              "listMax": "",
+              "rows": 10,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "antigravity_cli": {
+              "top": 178,
+              "bottom": 508,
+              "rowBottom": 302.9,
+              "listMax": "",
+              "rows": 14,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 178,
+              "bottom": 237.5,
+              "rowBottom": 334.4,
+              "listMax": "",
+              "rows": 1,
+              "listScrolls": false,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 66,
+            "menuHeight": 390.5,
+            "limit": 323,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 117.9,
+            "menuBottom": 339.4,
+            "anchorTop": 345.4,
+            "maxHeight": "",
+            "limit": 240,
+            "height": 221.5,
+            "rows": 6
+          }
+        },
+        "1024x440": {
+          "workspace": {
+            "menuTop": 10,
+            "menuBottom": 301.8,
+            "anchorTop": 307.8,
+            "maxHeight": "291.797px",
+            "limit": 285,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 73.3,
+            "menuBottom": 301.8,
+            "anchorTop": 307.8,
+            "maxHeight": "",
+            "limit": 285,
+            "runtimes": 5
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 98,
+              "bottom": 428,
+              "rowBottom": 170.8,
+              "listMax": "",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 98,
+              "bottom": 360,
+              "rowBottom": 202.3,
+              "listMax": "",
+              "rows": 8,
+              "listScrolls": false,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 98,
+              "bottom": 428,
+              "rowBottom": 233.8,
+              "listMax": "",
+              "rows": 10,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "antigravity_cli": {
+              "top": 98,
+              "bottom": 428,
+              "rowBottom": 265.3,
+              "listMax": "",
+              "rows": 14,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 98,
+              "bottom": 157.5,
+              "rowBottom": 296.8,
+              "listMax": "",
+              "rows": 1,
+              "listScrolls": false,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 66,
+            "menuHeight": 390.5,
+            "limit": 285,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 80.3,
+            "menuBottom": 301.8,
+            "anchorTop": 307.8,
+            "maxHeight": "",
+            "limit": 240,
+            "height": 221.5,
+            "rows": 6
+          }
+        }
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 81506
+    },
+    {
+      "label": "frontend",
+      "pid": 81533
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 81533,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 81506,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-r6h2pv"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-r6h2pv",
+  "backendUrl": "http://127.0.0.1:57585",
+  "frontUrl": "http://127.0.0.1:57586",
+  "completedAt": "2026-09-30T06:05:07.043Z"
+}

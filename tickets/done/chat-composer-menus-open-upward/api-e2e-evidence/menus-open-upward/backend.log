@@ -1,0 +1,208 @@
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-menus-open-upward/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data
+AppConfig instance created.
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:58922
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-menus-open-upward/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:58922
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-menus-open-upward/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/memory
+============================================================
+AppConfig initialization completed successfully
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from cache: /Users/normy/.cache/prisma/master/605197351a3c8bdd595af2d2a9bc3025bca48ea2/darwin-arm64 (query=libquery-engine, schema=schema-engine)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "probe.db" at "file:/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/db/probe.db"
+
+26 migrations found in prisma/migrations
+
+
+No pending migrations to apply.
+Database migrations completed successfully.
+(node:93630) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-09-30T06:07:15.618Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/server-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+Populating agent definition cache for the first time...
+Agent definition cache populated with 3 items.
+Populating agent definition cache for the first time...
+[2026-09-30T06:07:15.764Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+[2026-09-30T06:07:15.764Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 0 items.
+Agent definition cache populated with 3 items.
+{"level":30,"time":1790748435771,"pid":93630,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58937"}
+{"level":30,"time":1790748435803,"pid":93630,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:58922"}
+[2026-09-30T06:07:15.803Z] [INFO] [server.runtime] Server listening on 127.0.0.1:58922
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 33 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 4 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+In-memory cache: Added new agent definition with ID probe-agent-1.
+Agent Definition created successfully with ID: probe-agent-1
+In-memory cache: Added new agent definition with ID probe-agent-2.
+Agent Definition created successfully with ID: probe-agent-2
+In-memory cache: Added new agent definition with ID probe-agent-3.
+Agent Definition created successfully with ID: probe-agent-3
+In-memory cache: Added new agent definition with ID probe-agent-4.
+Agent Definition created successfully with ID: probe-agent-4
+In-memory cache: Added new agent definition with ID probe-agent-5.
+Agent Definition created successfully with ID: probe-agent-5
+In-memory cache: Added new agent definition with ID probe-agent-6.
+Agent Definition created successfully with ID: probe-agent-6
+In-memory cache: Added new agent definition with ID probe-agent-7.
+Agent Definition created successfully with ID: probe-agent-7
+In-memory cache: Added new agent definition with ID probe-agent-8.
+Agent Definition created successfully with ID: probe-agent-8
+In-memory cache: Added new agent definition with ID probe-agent-9.
+Agent Definition created successfully with ID: probe-agent-9
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-01
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-01.
+Created and registered workspace ID: agent_ws_4bcd97265a6c5a27341615cce66217246b402461b50e291ea67e72d50c33c7eb
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-02
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-02.
+Created and registered workspace ID: agent_ws_fe5f68da3a2a4479adc94b5cca190850f2ff3898975e127cdef33f4fa5e20045
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-03
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-03.
+Created and registered workspace ID: agent_ws_9668bebf94c9b242ad3e446d630f09d08f1dab8e991ea53e3e09dece57a15660
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-04
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-04.
+Created and registered workspace ID: agent_ws_1497418b959df17ba4fe9cd50476fc88576635bd99251bba3f1a6afdf9127f97
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-05
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-05.
+Created and registered workspace ID: agent_ws_a49ae2f7c083a292481d7b553367dd3231b15a4d1943f90477a30ac1325b0c8d
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-06
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-06.
+Created and registered workspace ID: agent_ws_7cd77514843a4ff25bde01902f494d433d467818f14307ce66098453ad3d5b8a
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-07
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-07.
+Created and registered workspace ID: agent_ws_416ffd6fc68e58f4d535cf8a6a89902e5d530e2c34df895c363f6ff9305e3448
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-08
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-08.
+Created and registered workspace ID: agent_ws_87a01535fb9ee6c1871f557a2843268124a0d580d5fb0f919e08926d0c0ba983
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-09
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-09.
+Created and registered workspace ID: agent_ws_921bc87100e12640f8d6a9c7e95f16d6c69b60cf10b8c90df9e53be33a84e16b
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-10
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-10.
+Created and registered workspace ID: agent_ws_4404154e9f46c6cf8a87568554f7888d9e9865c7827b273403fb2e046ea4b635
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-11
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-11.
+Created and registered workspace ID: agent_ws_2fe9548351ca930b44b6877324b3ad9e85196f93e42fecc9dce33ab4a50250ea
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-12
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-12.
+Created and registered workspace ID: agent_ws_7d98813a771a8ef0cc7ecd618f157d193c6af44fcbb0c333eab1a74fb551dc23
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-13
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-13.
+Created and registered workspace ID: agent_ws_b1feace4d3da3b193c3268d1ceafb0c7857a21ecb5b565aad34073093dcf2c13
+GraphQL mutation to create workspace metadata
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-14
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd/workspaces/probe-ws-14.
+Created and registered workspace ID: agent_ws_d09f4abe7607076200c574fbbc17195497f0fa4237cb68e9e570caa8a60b1fdd
+[CodexAppServerClient] stderr: [2m2026-09-30T06:07:44.806560Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-30T06:07:54.741069Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-30T06:08:04.244260Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+[CodexAppServerClient] stderr: [2m2026-09-30T06:08:13.644751Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+Resolved configured temp workspace root to TempWorkspace.
+Agent websocket attached for run daily_assistant_e1f5dab2799045109906205bdc52a0e1
+Created agent session f2c088b2-5cb1-41c2-9a56-c17f252f5e97 for run daily_assistant_e1f5dab2799045109906205bdc52a0e1
+Agent WebSocket connected: session=f2c088b2-5cb1-41c2-9a56-c17f252f5e97, run=daily_assistant_e1f5dab2799045109906205bdc52a0e1
+Resolved configured temp workspace root to TempWorkspace.
+Published claude_agent_sdk agent run 'daily_assistant_e1f5dab2799045109906205bdc52a0e1'.
+(node:93630) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: Skill, edit_image, mcp__autobyteus_agent_tools__edit_image, generate_image, mcp__autobyteus_agent_tools__generate_image, generate_speech, mcp__autobyteus_agent_tools__generate_speech. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+{"level":40,"time":1790748515874,"pid":93630,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun__ADXs5yXxjd2ZPBm4paZdHvrm6R4x_oz3txQaUZ_5x0","statusCode":400,"elapsedMs":0.7892920076847076,"msg":"http request completed"}
+Closed agent session f2c088b2-5cb1-41c2-9a56-c17f252f5e97
+Agent WebSocket disconnected: f2c088b2-5cb1-41c2-9a56-c17f252f5e97
+[2026-09-30T06:08:38.377Z] [INFO] [server.runtime] Received SIGTERM. Shutting down server...
+[2026-09-30T06:08:38.385Z] [INFO] [server.runtime] Server closed cleanly.

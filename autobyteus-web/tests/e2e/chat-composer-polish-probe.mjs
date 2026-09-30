@@ -12,7 +12,8 @@
 //       Thinking toggle on and the saved config keeps the effort (AC-010, REQ-008)
 //   T04 a model without an on/off switch keeps the per-parameter menu (AC-006)
 //   T05 workspace search at desktop width with many workspaces (AC-007, AC-008, REQ-005/006/009, QR-001)
-//   T06 new-chat layout at 1440×1000 and 1280×700: 6vh bias, lower than 14vh, no overlap/clipping (AC-009)
+//   T06 new-chat layout at 1440×1000 and 1280×700: current padding (`pt-[14vh] pb-10`, set by ticket
+//       chat-composer-menus-open-upward, whose own probe proves the exact position), no overlap/clipping (AC-009)
 //   T07 narrow (bottom sheet) smoke of both menus
 //
 // Prerequisites: `pnpm -C autobyteus-server-ts build` (its workspace contract packages need `dist/`,
@@ -377,7 +378,7 @@ defineCase('T05', 'Workspace search at desktop width with 14 workspaces: focus, 
 const wsIds = {}
 const wsId = async (name) => wsIds[name]
 
-defineCase('T06', 'Layout: 6vh bias at 1440×1000 and 1280×700; ~4vh lower than 14vh; no overlap/clipping; menus inside viewport (AC-009)', async (page) => {
+defineCase('T06', 'Layout at 1440×1000 and 1280×700: pt-[14vh] pb-10; no overlap/clipping; menus inside viewport (AC-009)', async (page) => {
   const results = {}
   for (const vp of [{ width: 1440, height: 1000 }, { width: 1280, height: 700 }]) {
     await page.setViewportSize(vp)
@@ -397,16 +398,11 @@ defineCase('T06', 'Layout: 6vh bias at 1440×1000 and 1280×700; ~4vh lower than
       return { paddingBottom: parseFloat(getComputedStyle(inner).paddingBottom), paddingTop: parseFloat(getComputedStyle(inner).paddingTop), heading, subtitle, composer, hint, area, overflow: root.scrollHeight > root.clientHeight + 1, blockCenter: (heading.top + hint.bottom) / 2, areaCenter: (area.top + area.bottom) / 2 }
     })
     const now = await measure()
-    // Baseline: the same page with the previous 14vh bias (personal before this change).
-    await page.evaluate(() => { document.querySelector('[data-test="chat-new"]').firstElementChild.style.paddingBottom = '14vh' })
-    const baseline = await measure()
-    await page.evaluate(() => { document.querySelector('[data-test="chat-new"]').firstElementChild.style.paddingBottom = '' })
     const order = [now.heading, now.subtitle, now.composer, now.hint]
     const noOverlap = order.every((b, i) => i === 0 || b.top >= order[i - 1].bottom - 0.5)
     const inside = order.every((b) => b.top >= now.area.top - 0.5 && b.bottom <= now.area.bottom + 0.5)
-    assert(Math.abs(now.paddingBottom - 0.06 * vp.height) < 1, 'REQ-007: bottom padding is not 6vh', now)
+    assert(Math.abs(now.paddingTop - 0.14 * vp.height) < 1 && now.paddingBottom === 40, 'New-chat padding is not pt-[14vh] pb-10', now)
     assert(noOverlap && inside && !now.overflow, 'AC-009: composer block overlaps, is clipped or overflows', now)
-    assert(now.composer.top - baseline.composer.top > 0.03 * vp.height, 'AC-009: composer is not visibly lower than with 14vh', { now: now.composer.top, baseline: baseline.composer.top })
     await page.screenshot({ path: path.join(outDir, `T06-layout-${vp.width}x${vp.height}.png`) })
     // Popovers still fit at this height.
     await page.locator(sel('chat-workspace-trigger')).click()
@@ -423,8 +419,8 @@ defineCase('T06', 'Layout: 6vh bias at 1440×1000 and 1280×700; ~4vh lower than
     }
     assert(insideViewport(wsBox, vp) && (!thBox || insideViewport(thBox, vp)), 'AC-009: a composer menu is clipped by the viewport', { wsBox, thBox })
     results[`${vp.width}x${vp.height}`] = {
-      thinkingTriggerSettledMs, paddingBottom: now.paddingBottom, composerTop: now.composer.top, baselineComposerTop: baseline.composer.top, movedDownPx: +(now.composer.top - baseline.composer.top).toFixed(1),
-      blockCenterMinusAreaCenter: +(now.blockCenter - now.areaCenter).toFixed(1), baselineBlockCenterMinusAreaCenter: +(baseline.blockCenter - baseline.areaCenter).toFixed(1), noOverlap, inside, overflow: now.overflow, wsBox, thBox,
+      thinkingTriggerSettledMs, paddingTop: now.paddingTop, paddingBottom: now.paddingBottom, composerTop: now.composer.top,
+      blockCenterMinusAreaCenter: +(now.blockCenter - now.areaCenter).toFixed(1), noOverlap, inside, overflow: now.overflow, wsBox, thBox,
     }
   }
   await page.setViewportSize({ width: 1440, height: 900 })

@@ -1,12 +1,12 @@
 <template>
   <div
     data-test="chat-skill-menu"
-    class="flex w-[23rem] max-w-[calc(100vw-1rem)] flex-col rounded-lg border border-gray-200 bg-white text-left shadow-lg"
+    class="flex min-h-0 w-[23rem] max-w-[calc(100vw-1rem)] flex-col rounded-lg border border-gray-200 bg-white text-left shadow-lg"
   >
     <p class="border-b border-gray-100 px-3 py-1.5 text-[0.6875rem] text-gray-400">
       {{ $t('chat.skills.headerPrefix') }} <span class="font-medium text-gray-600">/{{ query }}</span> · {{ $t('chat.skills.headerHint') }}
     </p>
-    <ul :id="listId" role="listbox" :aria-label="$t('chat.skills.listAria')" class="max-h-64 overflow-y-auto p-1">
+    <ul :id="listId" role="listbox" :aria-label="$t('chat.skills.listAria')" class="max-h-64 min-h-0 overflow-y-auto p-1">
       <li v-if="!skills.length" class="px-2 py-3 text-center text-[0.8125rem] text-gray-500" data-test="chat-skill-menu-empty">
         {{ hasAnySkills ? $t('chat.skills.noMatch') : $t('chat.skills.noSkills') }}
       </li>
