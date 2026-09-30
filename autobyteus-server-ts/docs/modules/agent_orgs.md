@@ -242,7 +242,7 @@ queue.
 - Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
   through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
   same-root wake-on-message in `restore` mode, one liveness predicate
-  (`AgentOrgRootAgentExecutionRegistry.isTaskLive` or the hosting Team
+  (`RootAgentExecutionRegistry.isTaskLive` or the hosting Team
   registry), and open work counting only `initializing`/`running` children. See
   [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
 - Each Agent owns its exact five-state runtime status.

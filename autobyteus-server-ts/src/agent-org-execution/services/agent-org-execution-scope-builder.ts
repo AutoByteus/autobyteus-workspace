@@ -17,8 +17,8 @@ import type { TaskExecutionIdentityCapabilities } from "../../agent-team-executi
 import { AgentOrgRun } from "../domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
 import type { ValidatedAgentOrgStatePackage } from "./agent-org-state-package-validator.js";
-import { AgentOrgRootAgentExecutionRegistry } from "./agent-org-root-agent-execution-registry.js";
-import { AgentOrgTeamExecutionDirectory } from "./agent-org-team-execution-directory.js";
+import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
+import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode } from "./agent-org-runtime-config-projector.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 
@@ -99,7 +99,7 @@ export class AgentOrgExecutionScopeBuilder {
           })
         : null,
     });
-    const rootAgents = new AgentOrgRootAgentExecutionRegistry({
+    const rootAgents = new RootAgentExecutionRegistry({
       root,
       callbacks,
       agentRunManager: this.dependencies.agentRunManager,
@@ -107,7 +107,7 @@ export class AgentOrgExecutionScopeBuilder {
       activityInspector: this.dependencies.activityInspector,
       workspaceManager: this.dependencies.workspaceManager,
     });
-    const teams = new AgentOrgTeamExecutionDirectory(this.dependencies.flatTeamExecutionFactory);
+    const teams = new RootTeamExecutionDirectory(this.dependencies.flatTeamExecutionFactory);
     const plans: Array<Readonly<{
       commitAfterDurability(): void;
       abort(): Promise<void>;

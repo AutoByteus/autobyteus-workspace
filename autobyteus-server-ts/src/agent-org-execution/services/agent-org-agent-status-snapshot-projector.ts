@@ -5,8 +5,8 @@ import {
 import { createCollaborationMemberExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
-import type { AgentOrgRootAgentExecutionRegistry } from "./agent-org-root-agent-execution-registry.js";
-import type { AgentOrgTeamExecutionDirectory } from "./agent-org-team-execution-directory.js";
+import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
+import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 
 /**
  * Projects status leaves from the structural execution roots owned by the Org.
@@ -17,8 +17,8 @@ import type { AgentOrgTeamExecutionDirectory } from "./agent-org-team-execution-
  */
 export const projectAgentOrgAgentStatusSnapshots = (input: Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;
-  rootAgents: Pick<AgentOrgRootAgentExecutionRegistry, "getStatusSnapshots">;
-  teams: Pick<AgentOrgTeamExecutionDirectory, "require" | "get">;
+  rootAgents: Pick<RootAgentExecutionRegistry, "getStatusSnapshots">;
+  teams: Pick<RootTeamExecutionDirectory, "require" | "get">;
 }>): readonly CollaborationAgentStatusSnapshot[] => {
   const rootTeamRunIds = [
     ...input.tree.rootOrg.members.flatMap((member) => "teamRunId" in member ? [member.teamRunId] : []),

@@ -30,8 +30,8 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgExecutionIndex, AgentOrgIndexedTaskExecution } from "./agent-org-execution-index.js";
-import type { AgentOrgTeamExecutionDirectory } from "./agent-org-team-execution-directory.js";
-import type { AgentOrgRootAgentExecutionRegistry } from "./agent-org-root-agent-execution-registry.js";
+import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
+import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 import { addAgentOrgTaskExecution, adoptAgentOrgPlatformBinding } from "./agent-org-run-execution-tree-mutator.js";
 import { findAgentOrgConfiguredSourceNode } from "./agent-org-runtime-config-projector.js";
@@ -48,8 +48,8 @@ const runIdOf = (execution: AgentOrgIndexedTaskExecution): string =>
 export type AgentOrgTaskExecutionAdapterOptions = Readonly<{
   root: RootExecutionIdentity;
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
-  rootAgents: AgentOrgRootAgentExecutionRegistry;
-  teams: AgentOrgTeamExecutionDirectory;
+  rootAgents: RootAgentExecutionRegistry;
+  teams: RootTeamExecutionDirectory;
   callbacks: FlatTeamExecutionCallbacks;
   persistence: AgentOrgRunPersistenceCoordinator;
   getTree(): AgentOrgRunExecutionTreeSnapshot;
@@ -258,7 +258,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
   private async commitActivation(input: {
     host: TaskExecutionHostIdentity;
     prepared: PreparedTaskExecution;
-    reservation: ReturnType<AgentOrgTeamExecutionDirectory["reserveTaskSubtree"]> | null;
+    reservation: ReturnType<RootTeamExecutionDirectory["reserveTaskSubtree"]> | null;
     delegatorAgentRunId: string;
     startedAt: string;
   }): Promise<TaskExecutionActivationCommitResult> {

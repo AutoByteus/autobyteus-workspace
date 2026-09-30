@@ -8,8 +8,8 @@ import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode }
 import type { TeamRunAgentTeamNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
 import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-run.js";
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
-import { AgentOrgTeamExecutionDirectory } from "../../../src/agent-org-execution/services/agent-org-team-execution-directory.js";
-import { AgentOrgRootAgentExecutionRegistry } from "../../../src/agent-org-execution/services/agent-org-root-agent-execution-registry.js";
+import { RootTeamExecutionDirectory } from "../../../src/agent-collaboration/execution/backends/root-team-execution-directory.js";
+import { RootAgentExecutionRegistry } from "../../../src/agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { AgentOrgCommunicationMessagesV1Store } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-v1-store.js";
@@ -63,8 +63,8 @@ const buildOrg = async (kind: "agent" | "team") => {
     buildMemberExecutionContext: vi.fn(async () => ({} as never)), commitPlatformBindingChange: vi.fn(),
     publishAgentEvent: (identity, event) => run?.onAgentExecutionEvent(identity, event),
   };
-  const rootAgents = new AgentOrgRootAgentExecutionRegistry({ root, callbacks });
-  const teams = new AgentOrgTeamExecutionDirectory(new FlatTeamExecutionFactory());
+  const rootAgents = new RootAgentExecutionRegistry({ root, callbacks });
+  const teams = new RootTeamExecutionDirectory(new FlatTeamExecutionFactory());
   for (const member of tree.rootOrg.members) {
     if ("agentRunId" in member) {
       (await rootAgents.prepareConfigured(projectAgentOrgConfiguredAgentNode(member), "fresh")).commitAfterDurability();

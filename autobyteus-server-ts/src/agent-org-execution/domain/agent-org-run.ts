@@ -23,8 +23,8 @@ import type { AgentOrgRunExecutionTreeSnapshot } from "./agent-org-run-execution
 import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
 import type { AgentOrgCommunicationMessagesFileV1 } from "../persistence/agent-org-communication-messages-v1.js";
 import { AgentOrgExecutionIndex } from "../services/agent-org-execution-index.js";
-import { AgentOrgRootAgentExecutionRegistry } from "../services/agent-org-root-agent-execution-registry.js";
-import { AgentOrgTeamExecutionDirectory } from "../services/agent-org-team-execution-directory.js";
+import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
+import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import { AgentOrgRunPersistenceCoordinator } from "../services/agent-org-run-persistence-coordinator.js";
 import { AgentOrgTaskExecutionAdapter, type ResolvedAgentOrgRecipient } from "../services/agent-org-task-execution-adapter.js";
 import { AgentOrgCommunicationAdapter } from "../services/agent-org-communication-adapter.js";
@@ -68,8 +68,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     root: RootExecutionIdentity;
     tree: AgentOrgRunExecutionTreeSnapshot;
     messages: AgentOrgCommunicationMessagesFileV1;
-    rootAgents: AgentOrgRootAgentExecutionRegistry;
-    teams: AgentOrgTeamExecutionDirectory;
+    rootAgents: RootAgentExecutionRegistry;
+    teams: RootTeamExecutionDirectory;
     callbacks: FlatTeamExecutionCallbacks;
     persistence: AgentOrgRunPersistenceCoordinator;
     publisher: RootEventPublisher<AgentOrgRunEvent>;

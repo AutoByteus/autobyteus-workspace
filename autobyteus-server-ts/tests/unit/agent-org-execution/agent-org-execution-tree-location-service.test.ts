@@ -90,9 +90,10 @@ describe("AgentOrg and compound execution locations", () => {
     const service = new CollaborationExecutionLocationService({
       teams: { findAgent: async () => item as never, findAgentSync: () => item as never, listAgents: async () => [item as never], containsRunId: async () => true },
       orgs: { findAgent: async () => org, findAgentSync: () => org, listAgents: async () => [org], containsRunId: async () => true },
+      agents: { findAgent: async () => null, findAgentSync: () => null, listAgents: async () => [], containsRunId: async () => false },
     });
     await expect(service.findAgent({ agentRunId: "duplicate" })).rejects.toThrow("ambiguous across collaboration root families");
     await expect(service.listAgents()).rejects.toThrow("more than one collaboration root");
-    await expect(service.containsRunId("duplicate")).rejects.toThrow("both collaboration root families");
+    await expect(service.containsRunId("duplicate")).rejects.toThrow("more than one collaboration root family");
   });
 });

@@ -1,32 +1,35 @@
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../agent-execution/input/agent-run-input-contract.js";
-import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
-import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
-import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
-import { ConfiguredAgentExecutionFactory } from "../../agent-collaboration/execution/backends/configured-agent-execution-factory.js";
-import type { ConfiguredAgentExecutionHandle, PreparedConfiguredAgentActivation } from "../../agent-collaboration/execution/backends/configured-agent-execution-handle.js";
-import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
-import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import { TaskAgentDurabilityEventGate } from "../../agent-collaboration/execution/services/task-agent-durability-event-gate.js";
-import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
-import type { PreparedTaskExecution } from "../../agent-team-execution/domain/prepared-task-execution.js";
-import { TaskExecutionTeardownIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import { isRunningTaskExecutionStatus } from "../../agent-collaboration/execution/task/task-execution-running-work.js";
-import { createCollaborationAgentStatusSnapshot, type CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
-import type { PrepareTaskAgentInput } from "../../agent-team-execution/domain/task-agent-execution.js";
-import type { TeamMemberExecutionCommand } from "../../agent-team-execution/domain/team-member-execution-command.js";
-import type { TeamRunAgentNode } from "../../agent-team-execution/domain/team-run-config.js";
-import type { ConfiguredAgentActivationMode } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
+import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+import type { AgentRunInputOptions, AgentRunInputReservationResult } from "../../../agent-execution/input/agent-run-input-contract.js";
+import type { AgentRunManager } from "../../../agent-execution/services/agent-run-manager.js";
+import type { AgentConversationActivityInspector } from "../../../agent-memory/services/agent-conversation-activity-inspector.js";
+import type { WorkspaceManager } from "../../../workspaces/workspace-manager.js";
+import { ConfiguredAgentExecutionFactory } from "./configured-agent-execution-factory.js";
+import type { ConfiguredAgentExecutionHandle, PreparedConfiguredAgentActivation } from "./configured-agent-execution-handle.js";
+import type { RootedAgentMemoryLocator } from "../services/rooted-agent-memory-locator.js";
+import { createCollaborationMemberExecutionIdentity, type RootExecutionIdentity } from "../domain/root-execution-identity.js";
+import { TaskAgentDurabilityEventGate } from "../services/task-agent-durability-event-gate.js";
+import type { FlatTeamExecutionCallbacks } from "../../../agent-team-execution/local/flat-team-execution-callbacks.js";
+import type { PreparedTaskExecution } from "../../../agent-team-execution/domain/prepared-task-execution.js";
+import { TaskExecutionTeardownIndeterminateError } from "../task/task-delegation-command.js";
+import { isRunningTaskExecutionStatus } from "../task/task-execution-running-work.js";
+import { createCollaborationAgentStatusSnapshot, type CollaborationAgentStatusSnapshot } from "../domain/collaboration-agent-execution-event.js";
+import type { PrepareTaskAgentInput } from "../../../agent-team-execution/domain/task-agent-execution.js";
+import type { TeamMemberExecutionCommand } from "../../../agent-team-execution/domain/team-member-execution-command.js";
+import type { TeamRunAgentNode } from "../../../agent-team-execution/domain/team-run-config.js";
+import type { ConfiguredAgentActivationMode } from "../domain/configured-agent-execution.js";
 
-export type PreparedAgentOrgConfiguredAgent = Readonly<{
+export type PreparedRootConfiguredAgent = Readonly<{
   handle: ConfiguredAgentExecutionHandle;
   commitAfterDurability(): void;
   abort(): Promise<void>;
 }>;
 
-/** Direct Agent and Org-root task-Agent local mechanics; the resource lifecycle policy stays in the shared lifecycle. */
-export class AgentOrgRootAgentExecutionRegistry {
+/**
+ * Root-level Agent hosting shared by the AgentOrg and Agent roots: configured root Agents and
+ * root-hosted task Agents. The resource lifecycle policy stays in the shared task lifecycle.
+ */
+export class RootAgentExecutionRegistry {
   private readonly active = new Map<string, ConfiguredAgentExecutionHandle>();
   private readonly prepared = new Map<string, ConfiguredAgentExecutionHandle>();
   private readonly taskAgentRunIds = new Set<string>();
@@ -50,7 +53,7 @@ export class AgentOrgRootAgentExecutionRegistry {
   }
   get(agentRunId: string): ConfiguredAgentExecutionHandle | null { return this.active.get(agentRunId) ?? null; }
   /**
-   * AR-005 liveness for Org-root task Agents: live only while the registered handle's
+   * AR-005 liveness for root-hosted task Agents: live only while the registered handle's
    * AgentRun is active. A retained handle whose run was shut down or died is not live.
    */
   isTaskLive(agentRunId: string): boolean {
@@ -71,7 +74,7 @@ export class AgentOrgRootAgentExecutionRegistry {
   isActive(agentRunId: string): boolean { return this.active.get(agentRunId)?.isActive() ?? false; }
   freezeMaterialization(): void { this.materializationOpen = false; }
 
-  async prepareConfigured(sourceNode: TeamRunAgentNode, mode: ConfiguredAgentActivationMode): Promise<PreparedAgentOrgConfiguredAgent> {
+  async prepareConfigured(sourceNode: TeamRunAgentNode, mode: ConfiguredAgentActivationMode): Promise<PreparedRootConfiguredAgent> {
     const handle = await this.createHandle(sourceNode, mode, this.options.callbacks);
     this.reserve(sourceNode.agentRunId, handle);
     try {
@@ -80,7 +83,7 @@ export class AgentOrgRootAgentExecutionRegistry {
         handle,
         commitAfterDurability: () => {
           if (state !== "prepared" || this.prepared.get(sourceNode.agentRunId) !== handle) {
-            throw new Error(`AgentRun '${sourceNode.agentRunId}' is not prepared for AgentOrg publication.`);
+            throw new Error(`AgentRun '${sourceNode.agentRunId}' is not prepared for root publication.`);
           }
           this.prepared.delete(sourceNode.agentRunId);
           this.active.set(sourceNode.agentRunId, handle);
@@ -101,7 +104,7 @@ export class AgentOrgRootAgentExecutionRegistry {
   }
 
   async prepareTask(input: PrepareTaskAgentInput): Promise<PreparedTaskExecution> {
-    if (!this.materializationOpen) throw new Error("AgentOrg root task Agent materialization is closed.");
+    if (!this.materializationOpen) throw new Error("Root task Agent materialization is closed.");
     const eventGate = new TaskAgentDurabilityEventGate(this.options.callbacks.publishAgentEvent);
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
       ...this.options.callbacks,
@@ -154,11 +157,11 @@ export class AgentOrgRootAgentExecutionRegistry {
     const handle = this.active.get(agentRunId);
     return handle
       ? handle.reserveInput(message, options)
-      : Promise.resolve({ reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `AgentOrg direct AgentRun '${agentRunId}' is not active.` });
+      : Promise.resolve({ reserved: false, code: "AGENT_RUN_NOT_ACCEPTING_INPUT", message: `Root-hosted AgentRun '${agentRunId}' is not active.` });
   }
   async executeCommand(agentRunId: string, command: TeamMemberExecutionCommand): Promise<AgentOperationResult> {
     const handle = this.active.get(agentRunId);
-    if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentOrg direct AgentRun '${agentRunId}' is not active.` };
+    if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `Root-hosted AgentRun '${agentRunId}' is not active.` };
     // AR-005: never let approve/interrupt re-activate a shut-down task run through the handle.
     if (command.kind !== "post_message" && this.taskAgentRunIds.has(agentRunId) && !this.isTaskLive(agentRunId)) {
       return { accepted: false, code: "RUN_NOT_ACTIVE", message: `Task AgentRun '${agentRunId}' is shut down.` };
@@ -170,12 +173,12 @@ export class AgentOrgRootAgentExecutionRegistry {
     }
   }
   /**
-   * Wakes one shut-down Org-root task Agent inside a live lease: registers a `restore`-mode
+   * Wakes one shut-down root-hosted task Agent inside a live lease: registers a `restore`-mode
    * handle when none exists (after a root reopen), then activates its AgentRun. A retained
    * handle re-activates in `restore` mode, continuing the persisted conversation.
    */
   async restoreTask(sourceNode: TeamRunAgentNode): Promise<void> {
-    if (!this.materializationOpen) throw new Error("AgentOrg root task Agent materialization is closed.");
+    if (!this.materializationOpen) throw new Error("Root task Agent materialization is closed.");
     if (this.prepared.has(sourceNode.agentRunId)) throw new Error(`Task AgentRun '${sourceNode.agentRunId}' is prepared.`);
     let handle = this.active.get(sourceNode.agentRunId);
     if (!handle) {
@@ -192,7 +195,7 @@ export class AgentOrgRootAgentExecutionRegistry {
     await handle.getOrCreateAgentRun();
   }
 
-  /** Shuts one Org-root task Agent down only when it is quiet; the handle stays registered. */
+  /** Shuts one root-hosted task Agent down only when it is quiet; the handle stays registered. */
   async tryShutDownTaskIfQuiet(agentRunId: string): Promise<boolean> {
     const handle = this.active.get(agentRunId);
     if (!handle || !this.isTaskLive(agentRunId) || this.shuttingDown.has(agentRunId)) return false;
