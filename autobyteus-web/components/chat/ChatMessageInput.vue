@@ -28,7 +28,8 @@
       class="z-50"
       :class="popover.narrow.value
         ? 'fixed inset-x-2 bottom-2 [&>div]:w-auto'
-        : ['absolute left-2', popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
+        : ['absolute left-2 flex flex-col', popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
+      :style="popover.narrow.value ? undefined : { maxHeight: `${popover.maxHeight.value}px` }"
     >
       <ChatTargetMenu
         v-if="menuKind === 'target'"
@@ -92,7 +93,7 @@ const listId = `chat-menu-${useId()}`
 const rootRef = ref<HTMLElement | null>(null)
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
 const height = ref(MIN_HEIGHT)
-const popover = useAnchoredPopover(rootRef, textareaRef, 300)
+const popover = useAnchoredPopover(rootRef, textareaRef, 300, { placement: 'above' })
 const menuKind = ref<'skill' | 'target'>('skill')
 const triggerQuery = ref('')
 const triggerStart = ref(-1)
