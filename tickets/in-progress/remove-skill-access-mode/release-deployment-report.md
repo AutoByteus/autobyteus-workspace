@@ -15,8 +15,16 @@
 
 ## User Verification
 
-- Status: `Pending`
-- Reference: none yet
+- Status: `Accepted` 2026-09-30 for the DR-001 state
+- Reference: the user said "The task is done. Let's finalize and release a new beta."
+
+## Re-Integration After Acceptance
+
+- Target advanced after acceptance: `Yes`, `origin/personal` `5c6fb95ea` → `e9aa4a74c`
+- Delivery-owned edits protected before re-integration: `Yes`, committed on the ticket branch
+- Re-integration result: merge `d213b6c33`, no textual conflicts
+- Rerun result: `Failed`. The merged-in live E2E `claude-team-member-background-task.e2e.test.ts` fails GraphQL validation on `skillAccessMode`; `agy-background-task-updates-live.e2e.test.ts` has the same input; `autobyteus-web/tests/e2e/fixtures/background-tasks-panel.page.vue` carries the field.
+- Classification: `Local Fix` (test code). Recommended recipient: `/implementation_engineer`.
 
 ## Docs Sync Result
 
@@ -65,4 +73,4 @@
 
 ## Final Status
 
-- `Waiting for user verification`. No blocker.
+- `Blocked`: Local Fix with `/implementation_engineer` (see Re-Integration After Acceptance). Finalization and the requested beta release resume after the fix returns through the team's validation route.

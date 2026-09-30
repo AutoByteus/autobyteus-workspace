@@ -2,7 +2,7 @@
 
 ## Status
 
-- Stage: Delivery round 1 (DR-001). The package is merged with the latest `origin/personal`, checked and docs-synced. **Waiting for user verification.** Nothing is pushed, merged into `personal`, archived or released.
+- Stage: Delivery round 2 (DR-002). **Blocked on a Local Fix owned by `/implementation_engineer`.** The user accepted the DR-001 state on 2026-09-30 ("The task is done. Let's finalize and release a new beta."). `origin/personal` had advanced again by then, and the re-merged state breaks two E2E tests that came in with the base. Nothing is pushed, merged into `personal`, archived or released.
 - Classification (preserved): `task_size=Large`, `architectural_risk=High`, route `Reviewed`.
 - Reviews and validation: `ARCH-REV-003` Pass, `CRR-002` source review Pass, `API-REV-001` API/E2E Pass (95%), `CRR-003` test-code review Pass with no findings.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode`
@@ -32,6 +32,19 @@
 | Search of the merged tree for the removed field | Only the frozen released migrations, their fixtures and tests, the tolerance tests and the historical notes in docs |
 | Why no full-suite rerun | The merge brought only web chat-menu files, docs and ticket folders; none overlap the ticket's files. The full suites were compared against base in API-REV-001 with 0 branch-only failures. |
 
+### Re-integration after acceptance (DR-002, 2026-09-30)
+
+- `origin/personal` advanced from `5c6fb95ea` to `e9aa4a74c` (7 commits: remove-web-todo-panel / Background Tasks, and the `1.4.92-beta.3` bump). Delivery records were committed first, then the base was merged as `d213b6c33` with no textual conflicts.
+- The merged-in ticket added three test files that still use the removed field:
+  - `autobyteus-server-ts/tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts` lines 89 and 93
+  - `autobyteus-server-ts/tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts` line 108
+  - `autobyteus-web/tests/e2e/fixtures/background-tasks-panel.page.vue` line 34
+- Both server files send `skillAccessMode: "NONE"` in a GraphQL launch input, which the new schema rejects. Both are live-gated and skipped in a default run.
+- Confirmed: `RUN_CLAUDE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts --no-watch` fails with `Field "skillAccessMode" is not defined by type ...` before any Claude session starts (`delivery-evidence/reintegration-claude-background-e2e.log`). The AGY file was not run; it has the same input shape.
+- The web fixture casts its object `as AgentRunConfig`, so it has no runtime effect, but it puts the field back into web source.
+- Other checks on `d213b6c33`: the three unit files changed by both sides plus the two ticket E2E files, 5 files, 71/71 pass (`delivery-evidence/reintegration-server-vitest.log`).
+- The local test build described below is from `56817443b` and predates this merge.
+
 ## What Changed (user-facing)
 
 - **No run-level skill setting.** A run gets the skills of its agent definition; a team member gets the skills of its own agent definition. The field is removed from the server, all runtime backends, GraphQL, the web client, the application SDK and both stream-contract packages.
@@ -60,7 +73,7 @@ Rejected items go to `/solution_designer`.
 
 ## User Verification
 
-- Status: **Pending.**
+- Status: **Accepted 2026-09-30** for the DR-001 state: "The task is done. Let's finalize and release a new beta." Finalization is on hold for the DR-002 blocker. The fix is limited to test files, so the accepted user-facing behavior does not change.
 - **Test build (2026-09-30, from `56817443b`):** a local unsigned macOS ARM64 build made with `NO_TIMESTAMP=1 APPLE_TEAM_ID= pnpm build:electron:mac`.
   - App: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`
   - Installer: `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.4.92-beta.2.dmg` / `.zip`

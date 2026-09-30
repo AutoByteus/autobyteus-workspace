@@ -1,0 +1,25 @@
+[22m[39mIn-memory cache: Removed agent definition with ID worker-36de1cd3-b57d-4ec7-9d32-22a8fe49037c.
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mAgent Definition with ID worker-36de1cd3-b57d-4ec7-9d32-22a8fe49037c deleted successfully.
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mIn-memory cache: Removed agent definition with ID peer-36de1cd3-b57d-4ec7-9d32-22a8fe49037c.
+[90mstdout[2m | tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22m[2mClaude team member background tasks (live E2E)
+[22m[39mAgent Definition with ID peer-36de1cd3-b57d-4ec7-9d32-22a8fe49037c deleted successfully.
+ [31m❯[39m tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts [2m([22m[2m1 test[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 864[2mms[22m[39m
+[31m     [31m×[31m delivers a member's background task only to that member and marks it stopped on team terminate[39m[32m 136[2mms[22m[39m
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+[41m[1m FAIL [22m[49m tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts[2m > [22mClaude team member background tasks (live E2E)[2m > [22mdelivers a member's background task only to that member and marks it stopped on team terminate
+[31m[1mError[22m: [{"message":"Variable \"$input\" got invalid value { teamAddress: \"/\", llmModelIdentifier: \"haiku\", autoExecuteTools: true, skillAccessMode: \"NONE\", runtimeKind: \"claude_agent_sdk\", workspaceRootPath: \"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-team-background-live-37JZYr/workspace-o19bCV\" } at \"input.teamConfigs[0]\"; Field \"skillAccessMode\" is not d
+[36m [2m❯[22m graphql tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts:[2m37:66[22m[39m
+    [90m 35| [39m      headers: { "content-type": "application/json" }, body: JSON.stri…
+    [90m 36| [39m    const body = await response.json() as { data?: T; errors?: Array<{…
+    [90m 37| [39m    if (!response.ok || !body.data || body.errors?.length) throw new E…
+    [90m   | [39m                                                                 [31m^[39m
+    [90m 38| [39m    [35mreturn[39m body[33m.[39mdata[33m;[39m
+    [90m 39| [39m  }[33m;[39m
+[90m [2m❯[22m tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts:[2m90:22[22m[39m
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m   Start at [22m 11:06:36
+[2m   Duration [22m 8.34s[2m (transform 4.91s, setup 28ms, import 6.73s, tests 864ms, environment 0ms)[22m
