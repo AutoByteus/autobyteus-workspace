@@ -1,0 +1,139 @@
+{
+  "kinds": [
+    "LOCAL_PATH"
+  ],
+  "capability": {
+    "data": {
+      "setApplicationsEnabled": {
+        "__typename": "ApplicationsCapability"
+      }
+    }
+  },
+  "applications": {
+    "data": {
+      "listApplications": [
+        {
+          "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+          "name": "Brief Studio"
+        }
+      ]
+    }
+  },
+  "createBrief": {
+    "status": 200,
+    "body": {
+      "result": {
+        "data": {
+          "createBrief": {
+            "briefId": "brief-3d8b8ff6-d8b4-447c-8a60-8bf488320f28",
+            "title": "RSAM live brief",
+            "status": "not_started",
+            "latestBindingId": null,
+            "latestRunId": null,
+            "latestBindingStatus": null,
+            "lastErrorMessage": null,
+            "createdAt": "2026-09-30T08:21:15.842Z",
+            "updatedAt": "2026-09-30T08:21:15.842Z",
+            "approvedAt": null,
+            "rejectedAt": null
+          }
+        }
+      }
+    }
+  },
+  "briefId": "brief-3d8b8ff6-d8b4-447c-8a60-8bf488320f28",
+  "launch": {
+    "status": 200,
+    "body": {
+      "result": {
+        "data": {
+          "launchDraftRun": {
+            "briefId": "brief-3d8b8ff6-d8b4-447c-8a60-8bf488320f28",
+            "bindingId": "1436fbea-b521-4f05-a9c2-2b881ce30415",
+            "runId": "brief_studio_team_e37037fca1a04bfea6a3013732b29b79",
+            "status": "ATTACHED"
+          }
+        }
+      }
+    }
+  },
+  "runId": "brief_studio_team_e37037fca1a04bfea6a3013732b29b79",
+  "resume": {
+    "data": {
+      "getTeamRunResumeConfig": {
+        "teamRunId": "brief_studio_team_e37037fca1a04bfea6a3013732b29b79",
+        "isActive": true,
+        "executionTree": {
+          "created_at": "2026-09-30T08:21:16.821Z",
+          "archived_at": null,
+          "application_binding": {
+            "application_id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+            "binding_id": "1436fbea-b521-4f05-a9c2-2b881ce30415"
+          },
+          "handoffs": [],
+          "root_team": {
+            "address": "/",
+            "team_definition_id": "bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d",
+            "team_definition_name": "Brief Studio Team",
+            "team_run_id": "brief_studio_team_e37037fca1a04bfea6a3013732b29b79",
+            "coordinator_address": "/researcher",
+            "default_launch_configuration": {
+              "runtime_kind": "codex_app_server",
+              "llm_model_identifier": "gpt-5.6-luna",
+              "llm_config": null,
+              "auto_execute_tools": true,
+              "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/applications/bundle-app__brief-studio__1851a920fbb206071d38049bba27efa2d05757e587a35a08fe82da4940b51808/runtime"
+            },
+            "members": [
+              {
+                "kind": "configured_agent",
+                "address": "/researcher",
+                "agent_definition_id": "team-local-agent:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:researcher",
+                "role": null,
+                "description": null,
+                "agent_run_id": "brief_studio_researcher_36aa34b1e2384011856d28798f766f0b",
+                "platform_agent_run_id": "01a0f167-58c6-7732-a21c-03ce18babd98",
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/applications/bundle-app__brief-studio__1851a920fbb206071d38049bba27efa2d05757e587a35a08fe82da4940b51808/runtime"
+                }
+              },
+              {
+                "kind": "configured_agent",
+                "address": "/writer",
+                "agent_definition_id": "team-local-agent:bundle-team__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f__62726965662d73747564696f2d7465616d:writer",
+                "role": null,
+                "description": null,
+                "agent_run_id": "brief_studio_writer_8d0a4bcd917d42bc9b755c7c76a6f134",
+                "platform_agent_run_id": null,
+                "launch_configuration": {
+                  "runtime_kind": "codex_app_server",
+                  "llm_model_identifier": "gpt-5.6-luna",
+                  "llm_config": null,
+                  "auto_execute_tools": true,
+                  "workspace_root_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/applications/bundle-app__brief-studio__1851a920fbb206071d38049bba27efa2d05757e587a35a08fe82da4940b51808/runtime"
+                }
+              }
+            ],
+            "task_executions": []
+          }
+        }
+      }
+    }
+  },
+  "treeFile": {
+    "exists": true,
+    "hasField": false
+  },
+  "terminate": {
+    "data": {
+      "terminateAgentTeamRun": {
+        "success": false,
+        "message": "Agent team run not found."
+      }
+    }
+  }
+}

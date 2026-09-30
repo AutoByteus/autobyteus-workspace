@@ -1,0 +1,127 @@
+[
+  {
+    "file": "memory/agent_orgs/rsam_org_rsam1790755092811_1b730aeec19a46c19e7fcd23c1c5c062/agent_org_run_execution_tree.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 5
+  },
+  {
+    "file": "memory/agent_orgs/rsam_org_rsam1790755092811_b710427bbd67474bbfee2c086a789461/agent_org_run_execution_tree.json",
+    "mode": "NONE",
+    "keysAdded": 5
+  },
+  {
+    "file": "memory/agent_orgs/rsam_org_rsamb1790755198118_5ec17ba1036d443babedd23aec114792/agent_org_run_execution_tree.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 5
+  },
+  {
+    "file": "memory/agent_orgs/rsam_org_rsamb1790755226491_3fbfc2b3f71a4f82b90164b8bcaa5fbe/agent_org_run_execution_tree.json",
+    "mode": "NONE",
+    "keysAdded": 5
+  },
+  {
+    "file": "memory/agent_orgs/rsam_org_rsamb1790755226491_efedb87a1e0040689cf2ad206fa179f6/agent_org_run_execution_tree.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 5
+  },
+  {
+    "file": "memory/agent_orgs/rsam_org_rsamb1790755410615_dac9ebd09b01419aac6aa9ed780049a1/agent_org_run_execution_tree.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 5
+  },
+  {
+    "file": "memory/agent_orgs/rsam_org_rsamb1790755410615_fa8690f4570b4eb09ad73c6c6bb4e292/agent_org_run_execution_tree.json",
+    "mode": "NONE",
+    "keysAdded": 5
+  },
+  {
+    "file": "memory/agent_teams/rsam_team_rsam1790755092811_18547596a29444b59f2f95ea9bdef4c4/team_run_execution_tree.json",
+    "mode": "NONE",
+    "keysAdded": 3
+  },
+  {
+    "file": "memory/agent_teams/rsam_team_rsam1790755092811_3e7b51ac8bfe40bbac538e840cf45d37/team_run_execution_tree.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 3
+  },
+  {
+    "file": "memory/agent_teams/rsam_team_rsamb1790755198118_312995463ba04a909c92c226674101b2/team_run_execution_tree.json",
+    "mode": "NONE",
+    "keysAdded": 3
+  },
+  {
+    "file": "memory/agent_teams/rsam_team_rsamb1790755226491_1874efaca0024a95be9b5177aca1cb07/team_run_execution_tree.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 3
+  },
+  {
+    "file": "memory/agent_teams/rsam_team_rsamb1790755226491_827984c4469a4ec18beaaa989d06a36b/team_run_execution_tree.json",
+    "mode": "NONE",
+    "keysAdded": 3
+  },
+  {
+    "file": "memory/agent_teams/rsam_team_rsamb1790755410615_1f2acccac201420f8cc56380e3732d21/team_run_execution_tree.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 3
+  },
+  {
+    "file": "memory/agent_teams/rsam_team_rsamb1790755410615_f6044566e64040649da51ecabfa399d5/team_run_execution_tree.json",
+    "mode": "NONE",
+    "keysAdded": 3
+  },
+  {
+    "file": "memory/agents/daily_assistant_5b38105a357d4961985ebd2b741f5be7/run_metadata.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 1
+  },
+  {
+    "file": "memory/agents/rsam_agent_rsam1790755092811_101179605d8a42ad8324330d0caca058/run_metadata.json",
+    "mode": "NONE",
+    "keysAdded": 1
+  },
+  {
+    "file": "memory/agents/rsam_agent_rsam1790755092811_f3328f025ad24191beefd20d109cacfd/run_metadata.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 1
+  },
+  {
+    "file": "memory/agents/rsam_plain_rsamb1790755198118_874a9b015644420a8d0bfd839c7a578b/run_metadata.json",
+    "mode": "NONE",
+    "keysAdded": 1
+  },
+  {
+    "file": "memory/agents/rsam_plain_rsamb1790755226491_c9eb0ce3bc7048a0aeac862406a94fe2/run_metadata.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 1
+  },
+  {
+    "file": "memory/agents/rsam_plain_rsamb1790755410615_db60dee29f3e429ca7ecab2defcd2187/run_metadata.json",
+    "mode": "NONE",
+    "keysAdded": 1
+  },
+  {
+    "file": "memory/agents/rsam_skilled_rsamb1790755198118_3d364943423043418fc6aaf5abe71cc0/run_metadata.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 1
+  },
+  {
+    "file": "memory/agents/rsam_skilled_rsamb1790755226491_52cfbf0cc91c4502906d90cf6cca9476/run_metadata.json",
+    "mode": "NONE",
+    "keysAdded": 1
+  },
+  {
+    "file": "memory/agents/rsam_skilled_rsamb1790755226491_e0beeb12f12a4e9ea146dca09162ba41/run_metadata.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 1
+  },
+  {
+    "file": "memory/agents/rsam_skilled_rsamb1790755410615_57d9fa4d66bd40269edd434fca572720/run_metadata.json",
+    "mode": "NONE",
+    "keysAdded": 1
+  },
+  {
+    "file": "memory/agents/rsam_skilled_rsamb1790755410615_701d78158936411ea116a891bd3d0ab2/run_metadata.json",
+    "mode": "PRELOADED_ONLY",
+    "keysAdded": 1
+  }
+]

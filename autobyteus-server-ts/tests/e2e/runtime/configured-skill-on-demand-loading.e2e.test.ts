@@ -22,6 +22,8 @@ import { AgentDefinitionService } from "../../../src/agent-definition/services/a
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import type { AutoByteusAgentRunBackend } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
+import { DAILY_ASSISTANT_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import { loadAgentCustomizations } from "../../../src/startup/agent-customization-loader.js";
@@ -368,5 +370,91 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
     } finally {
       warnSpy.mockRestore();
     }
+  }, 30_000);
+
+  it("catalogs every enabled installed skill for the built-in Daily Assistant and lets it read a cataloged SKILL.md", async () => {
+    const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    const enabledSkillName = `daily_enabled_${unique}`;
+    const disabledSkillName = `daily_disabled_${unique}`;
+    const enabledBody = `DAILY_ENABLED_BODY_${unique}`;
+    const createSkillMutation = `
+      mutation CreateSkill($input: CreateSkillInput!) {
+        createSkill(input: $input) { name }
+      }
+    `;
+    await execGraphql(createSkillMutation, {
+      input: {
+        name: enabledSkillName,
+        description: "Daily Assistant enabled installed skill fixture",
+        content: `# Enabled\n\n${enabledBody}`,
+      },
+    });
+    await execGraphql(createSkillMutation, {
+      input: {
+        name: disabledSkillName,
+        description: "Daily Assistant disabled installed skill fixture",
+        content: "# Disabled",
+      },
+    });
+    await execGraphql(
+      `mutation DisableSkill($name: String!) { disableSkill(name: $name) { name isDisabled } }`,
+      { name: disabledSkillName },
+    );
+
+    // Startup path: the shipped template becomes the Daily Assistant definition in app data.
+    const bootstrap = await bootstrapBuiltInAgents();
+    expect(
+      bootstrap.builtInAgents.find(
+        (agent) => agent.agentDefinitionId === DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+      ),
+    ).toMatchObject({ syncedAgentConfig: true, resolved: true });
+    const definition = await execGraphql<{
+      agentDefinition: { skillScope: string; skillNames: string[]; toolNames: string[] };
+    }>(
+      `query DailyAssistant($id: String!) {
+        agentDefinition(id: $id) { skillScope skillNames toolNames }
+      }`,
+      { id: DAILY_ASSISTANT_AGENT_DEFINITION_ID },
+    );
+    expect(definition.agentDefinition).toMatchObject({ skillScope: "ALL_INSTALLED", skillNames: [] });
+    expect(definition.agentDefinition.toolNames).toContain("read_file");
+
+    const installed = await execGraphql<{ skills: Array<{ name: string; isDisabled: boolean }> }>(
+      `query InstalledSkills { skills { name isDisabled } }`,
+    );
+    const enabledInstalledNames = installed.skills
+      .filter((skill) => !skill.isDisabled)
+      .map((skill) => skill.name)
+      .sort();
+    expect(enabledInstalledNames).toContain(enabledSkillName);
+    expect(installed.skills.find((skill) => skill.name === disabledSkillName)?.isDisabled).toBe(true);
+
+    const backend = await createBackend({
+      agentDefinitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID,
+      runId: `daily-assistant-run-${unique}`,
+    });
+    const runtimeContext = backend.getContext().runtimeContext as AgentContext;
+    expect(backend.isActive()).toBe(true);
+
+    const prompt = runtimeContext.processedSystemPrompt;
+    const catalogedNames = [...prompt.matchAll(/^- \*\*(.+?)\*\*: .+\n {2}- \*\*SKILL\.md:\*\* `.+`$/gm)]
+      .map((match) => match[1]!)
+      .sort();
+    expect(catalogedNames).toEqual(enabledInstalledNames);
+    const enabledEntryPath = path.join(dataRoot, "skills", enabledSkillName, "SKILL.md");
+    expect(prompt).toContain(
+      `- **${enabledSkillName}**: Daily Assistant enabled installed skill fixture\n` +
+        `  - **SKILL.md:** \`${enabledEntryPath}\``,
+    );
+    expect(prompt).not.toContain(disabledSkillName);
+    expect(prompt).not.toContain(enabledBody);
+
+    const readTool = runtimeContext.getTool("read_file");
+    expect(readTool).toBeDefined();
+    expect(
+      await readTool!.execute(runtimeContext, { path: enabledEntryPath, include_line_numbers: false }),
+    ).toContain(enabledBody);
+
+    await terminateBackend(backend);
   }, 30_000);
 });

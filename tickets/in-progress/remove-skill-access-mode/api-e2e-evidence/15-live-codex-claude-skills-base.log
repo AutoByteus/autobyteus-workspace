@@ -1,0 +1,207 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/private/tmp/rsam-api-e2e-base/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/tmp/rsam-api-e2e-base/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:58926) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstdout[2m | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22m[2mCodex current GraphQL runtime e2e
+[22m[39mPlatform detection: Windows=false
+App root directory: /private/tmp/rsam-api-e2e-base/autobyteus-server-ts
+App data directory: /private/tmp/rsam-api-e2e-base/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-bkp5Zx
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codex-app-server-runtime-api-e2e-bkp5Zx/.env
+
+[90mstderr[2m | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22m[2mCodex current GraphQL runtime e2e[2m > [22m[2mcreates a run, restores it, and continues streaming on the same websocket
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-30T08:16:08.770041Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22m[2mCodex current GraphQL runtime e2e[2m > [22m[2mcreates a run, restores it, and continues streaming on the same websocket
+[22m[39mError creating agent definition: Error: Studio application API services are not configured.
+
+[90mstderr[2m | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22m[2mCodex current GraphQL runtime e2e[2m > [22m[2mapplies configured runtime skills over the current websocket API contract
+[22m[39m[CodexAppServerClient] stderr: [2m2026-09-30T08:16:09.631356Z[0m [31mERROR[0m [2mcodex_app_server[0m[2m:[0m Codex is ignoring 1 unrecognized configuration setting. Check for typos or deprecated settings.
+  user (/Users/normy/.codex/config.toml): `features.voice_transcription` is ignored.
+
+[90mstderr[2m | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22m[2mCodex current GraphQL runtime e2e[2m > [22m[2mapplies configured runtime skills over the current websocket API contract
+[22m[39mError creating agent definition: Error: Studio application API services are not configured.
+
+[90mstdout[2m | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22m[2mClaude current GraphQL runtime e2e
+[22m[39mCustom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-agent-sdk-runtime-api-e2e-Eq1ELc
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/claude-agent-sdk-runtime-api-e2e-Eq1ELc/.env
+
+[90mstderr[2m | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22m[2mClaude current GraphQL runtime e2e[2m > [22m[2mcreates a run, restores it, and continues streaming on the same websocket
+[22m[39mError creating agent definition: Error: Studio application API services are not configured.
+
+[90mstderr[2m | tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22m[2mClaude current GraphQL runtime e2e[2m > [22m[2mapplies configured runtime skills over the current websocket API contract
+[22m[39mError creating agent definition: Error: Studio application API services are not configured.
+
+ [31m❯[39m tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts [2m([22m[2m21 tests[22m[2m | [22m[31m4 failed[39m[2m | [22m[33m17 skipped[39m[2m)[22m[33m 3558[2mms[22m[39m
+     [2m[90m↓[39m[22m creates a run, restores it, and continues streaming on the same websocket
+     [2m[90m↓[39m[22m materializes the native write_file baseline when the persisted definition omits it
+     [2m[90m↓[39m[22m interrupts a live AutoByteus pending tool approval and accepts a follow-up message on the same websocket
+     [2m[90m↓[39m[22m terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket
+     [2m[90m↓[39m[22m serves run history and projection after terminate, restore, and continue
+     [2m[90m↓[39m[22m routes tool approval over websocket and streams the normalized tool lifecycle
+[31m     [31m×[31m creates a run, restores it, and continues streaming on the same websocket[39m[33m 866[2mms[22m[39m
+     [2m[90m↓[39m[22m serves run history and projection after terminate, restore, and continue
+     [2m[90m↓[39m[22m routes tool approval over websocket and streams the normalized tool lifecycle
+     [2m[90m↓[39m[22m terminates an active Codex approval run, restores it, reconnects, and continues streaming
+     [2m[90m↓[39m[22m auto-executes Codex tool calls over websocket without approval requests
+     [2m[90m↓[39m[22m routes Codex MCP tool approval over websocket for the speak tool
+     [2m[90m↓[39m[22m auto-executes the Codex speak MCP tool without approval requests
+[31m     [31m×[31m applies configured runtime skills over the current websocket API contract[39m[33m 901[2mms[22m[39m
+     [2m[90m↓[39m[22m uses a whole-directory materialized skill whose linked shared file sits outside the skill folder
+[31m     [31m×[31m creates a run, restores it, and continues streaming on the same websocket[39m[33m 913[2mms[22m[39m
+     [2m[90m↓[39m[22m terminates an active tool-approval run, restores it, reconnects, and continues streaming
+     [2m[90m↓[39m[22m serves run history and projection after terminate, restore, and continue
+     [2m[90m↓[39m[22m routes tool approval over websocket and streams the normalized tool lifecycle
+     [2m[90m↓[39m[22m auto-approves workspace and outside-scratch write/delete/shell operations without frontend approval prompts
+[31m     [31m×[31m applies configured runtime skills over the current websocket API contract[39m[33m 796[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 4 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22mCodex current GraphQL runtime e2e[2m > [22mcreates a run, restores it, and continues streaming on the same websocket
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22mClaude current GraphQL runtime e2e[2m > [22mcreates a run, restores it, and continues streaming on the same websocket
+[31m[1mGraphQLError[22m: Failed to create agent definition: Error: Studio application API services are not configured.[39m
+[36m [2m❯[22m AgentDefinitionResolver.createAgentDefinition src/api/graphql/types/agent-definition.ts:[2m309:13[22m[39m
+    [90m307| [39m    } [35mcatch[39m (error) {
+    [90m308| [39m      logger.error(`Error creating agent definition: ${String(error)}`…
+    [90m309| [39m      throw new Error(`Failed to create agent definition: ${String(err…
+    [90m   | [39m            [31m^[39m
+    [90m310| [39m    }
+    [90m311| [39m  }
+[90m [2m❯[22m ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:[2m26:98[22m[39m
+[90m [2m❯[22m execGraphql tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:[2m428:22[22m[39m
+[90m [2m❯[22m createAgentDefinitionWithSkills tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:[2m485:22[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:[2m751:33[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22mCodex current GraphQL runtime e2e[2m > [22mapplies configured runtime skills over the current websocket API contract
+[31m[1mGraphQLError[22m: Failed to create agent definition: Error: Studio application API services are not configured.[39m
+[36m [2m❯[22m AgentDefinitionResolver.createAgentDefinition src/api/graphql/types/agent-definition.ts:[2m309:13[22m[39m
+    [90m307| [39m    } [35mcatch[39m (error) {
+    [90m308| [39m      logger.error(`Error creating agent definition: ${String(error)}`…
+    [90m309| [39m      throw new Error(`Failed to create agent definition: ${String(err…
+    [90m   | [39m            [31m^[39m
+    [90m310| [39m    }
+    [90m311| [39m  }
+[90m [2m❯[22m ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:[2m26:98[22m[39m
+[90m [2m❯[22m execGraphql tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:[2m428:22[22m[39m
+[90m [2m❯[22m createAgentDefinitionWithSkills tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:[2m485:22[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:[2m2192:35[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts[2m > [22mClaude current GraphQL runtime e2e[2m > [22mapplies configured runtime skills over the current websocket API contract
+[31m[1mGraphQLError[22m: Failed to create agent definition: Error: Studio application API services are not configured.[39m
+[36m [2m❯[22m AgentDefinitionResolver.createAgentDefinition src/api/graphql/types/agent-definition.ts:[2m309:13[22m[39m
+    [90m307| [39m    } [35mcatch[39m (error) {
+    [90m308| [39m      logger.error(`Error creating agent definition: ${String(error)}`…
+    [90m309| [39m      throw new Error(`Failed to create agent definition: ${String(err…
+    [90m   | [39m            [31m^[39m
+    [90m310| [39m    }
+    [90m311| [39m  }
+[90m [2m❯[22m ../node_modules/.pnpm/type-graphql@2.0.0-rc.3_graphql-scalars@1.25.0_graphql@16.12.0__graphql@16.12.0/node_modules/type-graphql/build/esm/resolvers/create.js:[2m26:98[22m[39m
+[90m [2m❯[22m execGraphql tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:[2m428:22[22m[39m
+[90m [2m❯[22m createAgentDefinitionWithSkills tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:[2m485:22[22m[39m
+[90m [2m❯[22m tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts:[2m2192:35[22m[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m4 failed[39m[22m[2m | [22m[33m17 skipped[39m[90m (21)[39m
+[2m   Start at [22m 10:16:03
+[2m   Duration [22m 9.03s[2m (transform 3.36s, setup 16ms, import 4.94s, tests 3.56s, environment 0ms)[22m
+
