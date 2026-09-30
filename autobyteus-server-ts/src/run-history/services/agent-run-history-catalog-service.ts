@@ -297,7 +297,7 @@ export class AgentRunHistoryCatalogService {
     if (!identity) {
       return { success: false, message: "Invalid run ID path." };
     }
-    if (await this.liveness.isLive(identity.runId)) {
+    if (!(await this.liveness.releaseForHistory(identity.runId))) {
       return {
         success: false,
         message: "Run is active. Terminate it before deleting history.",
@@ -312,7 +312,7 @@ export class AgentRunHistoryCatalogService {
     if (!identity) {
       return { success: false, message: "Invalid run ID path." };
     }
-    if (await this.liveness.isLive(identity.runId)) {
+    if (!(await this.liveness.releaseForHistory(identity.runId))) {
       return {
         success: false,
         message: "Prepared run already has an active runtime.",
@@ -369,7 +369,7 @@ export class AgentRunHistoryCatalogService {
     if (!identity) {
       return { success: false, message: "Invalid run ID path." };
     }
-    if (await this.liveness.isLive(identity.runId)) {
+    if (!(await this.liveness.releaseForHistory(identity.runId))) {
       return {
         success: false,
         message: "Run is active. Terminate it before archiving history.",

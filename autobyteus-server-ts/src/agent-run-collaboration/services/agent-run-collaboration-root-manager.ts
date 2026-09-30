@@ -81,6 +81,10 @@ export class AgentRunCollaborationRootManager implements StandaloneAgentRunColla
   static hasRegisteredRoot(hostRunId: string): boolean {
     return this.instance?.hasRoot(hostRunId) ?? false;
   }
+  /** Ends a registered root and its children (as an explicit Stop does); throws when it cannot finish. */
+  static async endRegisteredRoot(hostRunId: string): Promise<void> {
+    await this.instance?.terminateRoot(hostRunId);
+  }
 
   private readonly layout: AgentMemoryLayout;
   private readonly store: AgentRunCollaborationPackageStore;

@@ -31,11 +31,12 @@ standalone collaboration section in its prompt; it has no `get_handoff_rules`.
   and the catalog row then gets `hasCollaboration: true`.
 - The root survives a host crash. A later user message or a child's `send_message_to` to the host
   restores the host in `restore` mode through the standalone lifecycle.
-- While the root is registered, the run is live for history even if the host's runtime is down:
-  the standalone catalog refuses Delete and Archive ("Run is active. Terminate it before …") until an
-  explicit Stop has ended the root. The catalog asks `StandaloneRunLiveness`
-  (`run-history/services/standalone-run-liveness.ts`): host active, or
-  `AgentRunCollaborationRootManager.hasRegisteredRoot(runId)`.
+- History delete and archive of a run whose host is down end a lingering root first, as an
+  explicit Stop does (fence, stop every child, unregister), and only then change history; nothing
+  is deleted while the root is live. They are refused ("Run is active. Terminate it before …") while
+  the host itself is active, or when the root cannot be ended. The catalog goes through
+  `StandaloneRunLiveness.releaseForHistory` (`run-history/services/standalone-run-liveness.ts`),
+  backed by `AgentRunCollaborationRootManager.hasRegisteredRoot` / `endRegisteredRoot`.
 - Only an explicit Stop of the host (`AgentRunService.terminateAgentRun`) terminates the root first,
   which stops every child; then the host stops. Server shutdown stops all Agent roots before the
   standalone runs.

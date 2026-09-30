@@ -238,29 +238,54 @@ describe("Agent root of a standalone run", () => {
     expect(await reopened.executeAgentCommand(HOST, { kind: "interrupt" })).toMatchObject({ code: "AGENT_ROOT_HOST_COMMAND_REJECTED" });
   });
 
-  it("keeps a crashed host's run live for history: delete and archive are refused until Stop ends the root (CR-001)", async () => {
+  it("history delete after a host crash ends the lingering root and its children first, then deletes (CR-001/CR-002)", async () => {
     const f = await buildManager();
     const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
     await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, content: "x", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
     await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review" });
     await flushMicrotasks();
-    const packageTree = path.join(f.memoryDir, "agents", HOST, "collaboration", "collaboration_tree.json");
-    await expect(fs.access(packageTree)).resolves.toBeUndefined();
+    const child = f.handles.get("code-reviewer-run-1")!;
+    const runDir = path.join(f.memoryDir, "agents", HOST);
+    const packageTree = path.join(runDir, "collaboration", "collaboration_tree.json");
 
+    f.host.crash();
+    expect(f.manager.hasRoot(HOST)).toBe(true);
+    const seenWhileRootLive: boolean[] = [];
+    const { AgentRunHistoryCatalogService } = await import("../../../src/run-history/services/agent-run-history-catalog-service.js");
+    const catalog = new AgentRunHistoryCatalogService(f.memoryDir, {
+      agentRunManager: { hasActiveRun: () => false },
+      collaborationRoots: {
+        hasRoot: (runId) => f.manager.hasRoot(runId),
+        endRoot: async (runId) => {
+          // Nothing is deleted while the root is live.
+          seenWhileRootLive.push(await fs.access(packageTree).then(() => true, () => false));
+          await f.manager.terminateRoot(runId);
+        },
+      },
+    });
+    await catalog.deleteRun(HOST);
+    expect(seenWhileRootLive).toEqual([true]);
+    expect(child.finish).toHaveBeenCalled();
+    expect(f.manager.hasRoot(HOST)).toBe(false);
+    await expect(fs.access(runDir)).rejects.toThrow();
+  });
+
+  it("history delete of a crashed run without collaborators ends its empty root and deletes (CR-002)", async () => {
+    const f = await buildManager();
+    await f.manager.ensureRoot(metadata(f.memoryDir));
+    const runDir = path.join(f.memoryDir, "agents", HOST);
+    await fs.mkdir(runDir, { recursive: true });
     f.host.crash();
     expect(f.manager.hasRoot(HOST)).toBe(true);
     const { AgentRunHistoryCatalogService } = await import("../../../src/run-history/services/agent-run-history-catalog-service.js");
     const catalog = new AgentRunHistoryCatalogService(f.memoryDir, {
       agentRunManager: { hasActiveRun: () => false },
-      collaborationRoots: { hasRoot: (runId) => f.manager.hasRoot(runId) },
+      collaborationRoots: { hasRoot: (runId) => f.manager.hasRoot(runId), endRoot: async (runId) => { await f.manager.terminateRoot(runId); } },
     });
-    await expect(catalog.deleteRun(HOST)).resolves.toMatchObject({ success: false, message: expect.stringContaining("Terminate it") });
-    await expect(catalog.archiveRun(HOST)).resolves.toMatchObject({ success: false });
-    await expect(fs.access(packageTree)).resolves.toBeUndefined();
-
-    expect(await f.manager.terminateRoot(HOST)).toBe(true);
+    await catalog.deleteRun(HOST);
     expect(f.manager.hasRoot(HOST)).toBe(false);
     expect(AgentRunCollaborationRootManager.hasRegisteredRoot(HOST)).toBe(false);
+    await expect(fs.access(runDir)).rejects.toThrow();
   });
 
   it("rejects the command entry for runs that cannot host collaborators", async () => {
