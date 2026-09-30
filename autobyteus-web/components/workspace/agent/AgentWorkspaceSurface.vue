@@ -86,8 +86,10 @@ const fallbackTitle = computed(() => {
   const suffix = props.target.context.state.runId.slice(-4).toUpperCase()
   return `${agentName.value} - ${suffix}`
 })
-const headerTitle = computed(() => standaloneRunTitle.title.value ?? fallbackTitle.value)
-const headerFullTitle = computed(() => standaloneRunTitle.fullTitle.value ?? fallbackTitle.value)
+// A task child of a standalone run is titled by its name.
+const isRunChild = computed(() => props.target.kind === 'agent_run_task_agent' || props.target.kind === 'agent_run_task_team_member')
+const headerTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.title.value ?? fallbackTitle.value)
+const headerFullTitle = computed(() => isRunChild.value ? agentName.value : standaloneRunTitle.fullTitle.value ?? fallbackTitle.value)
 const senderNameByAgentRunId = computed(() => 'collaborationMessages' in props.target
   ? Object.freeze(Object.fromEntries(Object.entries(
       props.target.collaborationMessages.memberIdentityByAgentRunId(),

@@ -4,6 +4,7 @@ import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
 import { resolveRunMentionScope, type RunMentionScope } from '~/composables/agentInput/runMentionScope';
 import {
+  buildAgentCollaborationMemberDraftContextFileOwner,
   buildAgentDraftContextFileOwner,
   buildOrgMemberDraftContextFileOwner,
   buildTeamMemberDraftContextFileOwner,
@@ -43,6 +44,7 @@ const resolveDraftOwner = (
   if (target.access === 'read_only' && target.kind !== 'agent_org_direct_agent'
     && target.kind !== 'agent_org_team_member') return null;
   if ('root' in target) return buildOrgMemberDraftContextFileOwner(target.root.orgRunId, target.context.state.runId);
+  if ('host' in target) return buildAgentCollaborationMemberDraftContextFileOwner(target.host.hostRunId, target.context.state.runId);
   if (target.kind === 'standalone_agent') return buildAgentDraftContextFileOwner(target.context.state.runId);
   return buildTeamMemberDraftContextFileOwner(target.team.rootRunId, target.team.focusedMemberAddress);
 };

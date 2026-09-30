@@ -18,6 +18,8 @@ export interface RunHistoryItem {
   isActive: boolean;
   shouldConnectStream?: boolean;
   statusSource?: string;
+  /** The run has a collaboration package (task children brought in with `@`). */
+  hasCollaboration?: boolean;
 }
 
 export interface RunHistoryAgentGroup {

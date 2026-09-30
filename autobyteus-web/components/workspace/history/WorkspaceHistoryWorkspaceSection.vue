@@ -104,17 +104,16 @@
           v-if="state.isAgentExpanded(workspacePresentationId, agentNode.agentDefinitionId)"
           class="ml-3 space-y-0.5"
         >
+          <template v-for="run in agentNode.runs" :key="run.runId">
           <button
-            v-for="run in agentNode.runs"
-            :key="run.runId"
             type="button"
             data-test="workspace-agent-run-row"
             :data-run-id="run.runId"
             class="group/run-row flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm transition-colors"
-            :class="state.selectedRunId === run.runId
+            :class="state.selectedRunId === run.runId && !collaboration.selectedChild(run.runId)
               ? 'bg-indigo-50 text-indigo-900'
               : 'text-gray-700 hover:bg-gray-50'"
-            @click="actions.onSelectRun(run)"
+            @click="selectAgentRun(run)"
           >
             <div class="min-w-0 flex items-center">
               <StatusDot class="mr-2" :status="run.currentStatus" />
@@ -171,6 +170,15 @@
               </span>
             </div>
           </button>
+          <!-- Task Agents and task Teams brought into this run with `@`. -->
+          <AgentRunTaskRows
+            :run-id="run.runId"
+            :label="formatRunLabel(run.summary)"
+            :run-selected="state.selectedRunId === run.runId"
+            :has-collaboration="run.hasCollaboration === true"
+            @select-run="actions.onSelectRun(run)"
+          />
+          </template>
         </div>
       </div>
 
@@ -325,6 +333,8 @@ import StatusDot from '~/components/workspace/common/StatusDot.vue';
 import TeamActivityDot from '~/components/workspace/common/TeamActivityDot.vue';
 import WorkspaceTeamExecutionTree from '~/components/workspace/history/WorkspaceTeamExecutionTree.vue';
 import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/WorkspaceAgentOrgHistoryCollection.vue';
+import AgentRunTaskRows from '~/components/workspace/history/AgentRunTaskRows.vue';
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import type {
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
@@ -356,6 +366,12 @@ const props = defineProps<{
   actions: WorkspaceHistorySectionActions;
 }>();
 const { t } = useLocalization();
+const collaboration = useAgentRunCollaborationStore();
+/** The run row shows the run's own agent again (not a task child under it). */
+const selectAgentRun = (run: Parameters<typeof props.actions.onSelectRun>[0]) => {
+  collaboration.selectChild(run.runId, null);
+  return props.actions.onSelectRun(run);
+};
 const workspacePresentationId = computed(() => props.workspaceNode.stableKey);
 const workspaceDisplayName = computed(() => props.workspaceNode.workspaceRootPath === NO_WORKSPACE_HISTORY_ROOT
   ? t('workspace.agentOrg.history.noWorkspace')

@@ -11,6 +11,8 @@ const UPLOADED_DRAFT_TEAM_ROUTE =
   /^\/rest\/drafts\/team-runs\/([^/]+)\/members\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_DRAFT_ORG_ROUTE = /^\/rest\/drafts\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_FINAL_ORG_ROUTE = /^\/rest\/agent-org-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
+const UPLOADED_DRAFT_AGENT_COLLABORATION_ROUTE = /^\/rest\/drafts\/agent-collaborations\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
+const UPLOADED_FINAL_AGENT_COLLABORATION_ROUTE = /^\/rest\/agent-collaborations\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_FINAL_AGENT_ROUTE = /^\/rest\/runs\/([^/]+)\/context-files\/([^/?#]+)$/;
 const UPLOADED_FINAL_TEAM_ROUTE =
   /^\/rest\/team-runs\/([^/]+)\/agent-runs\/([^/]+)\/context-files\/([^/?#]+)$/;
@@ -123,6 +125,14 @@ const parseUploadedLocator = (
   };
   const finalOrgMatch = pathname.match(UPLOADED_FINAL_ORG_ROUTE);
   if (finalOrgMatch) return { storedFilename: decodeStoredFilename(finalOrgMatch[3]), phase: 'final' };
+  const draftCollaborationMatch = pathname.match(UPLOADED_DRAFT_AGENT_COLLABORATION_ROUTE);
+  if (draftCollaborationMatch) return {
+    storedFilename: decodeStoredFilename(draftCollaborationMatch[3]), phase: 'draft',
+    draftOwner: { kind: 'agent_collaboration_member_draft', hostRunId: decodePathSegment(draftCollaborationMatch[1]),
+      agentRunId: decodePathSegment(draftCollaborationMatch[2]) },
+  };
+  const finalCollaborationMatch = pathname.match(UPLOADED_FINAL_AGENT_COLLABORATION_ROUTE);
+  if (finalCollaborationMatch) return { storedFilename: decodeStoredFilename(finalCollaborationMatch[3]), phase: 'final' };
 
   const finalAgentMatch = pathname.match(UPLOADED_FINAL_AGENT_ROUTE);
   if (finalAgentMatch?.[1] && finalAgentMatch?.[2]) {

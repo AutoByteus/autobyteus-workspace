@@ -1,12 +1,15 @@
 export type DraftContextFileOwnerDescriptor =
   | { kind: 'agent_draft'; draftRunId: string }
   | { kind: 'team_member_draft'; teamDraftId: string; memberAddress: string }
-  | { kind: 'org_member_draft'; orgRunId: string; agentRunId: string };
+  | { kind: 'org_member_draft'; orgRunId: string; agentRunId: string }
+  /** A task child of a standalone run's collaboration root. */
+  | { kind: 'agent_collaboration_member_draft'; hostRunId: string; agentRunId: string };
 
 export type FinalContextFileOwnerDescriptor =
   | { kind: 'agent_final'; runId: string }
   | { kind: 'team_member_final'; teamRunId: string; agentRunId: string }
-  | { kind: 'org_member_final'; orgRunId: string; agentRunId: string };
+  | { kind: 'org_member_final'; orgRunId: string; agentRunId: string }
+  | { kind: 'agent_collaboration_member_final'; hostRunId: string; agentRunId: string };
 
 const normalizeRequiredString = (value: string, fieldName: string): string => {
   const normalized = value.trim();
@@ -62,6 +65,24 @@ export const buildOrgMemberFinalContextFileOwner = (
   agentRunId: normalizeRequiredString(agentRunId, 'agentRunId'),
 });
 
+export const buildAgentCollaborationMemberDraftContextFileOwner = (
+  hostRunId: string,
+  agentRunId: string,
+): DraftContextFileOwnerDescriptor => ({
+  kind: 'agent_collaboration_member_draft',
+  hostRunId: normalizeRequiredString(hostRunId, 'hostRunId'),
+  agentRunId: normalizeRequiredString(agentRunId, 'agentRunId'),
+});
+
+export const buildAgentCollaborationMemberFinalContextFileOwner = (
+  hostRunId: string,
+  agentRunId: string,
+): FinalContextFileOwnerDescriptor => ({
+  kind: 'agent_collaboration_member_final',
+  hostRunId: normalizeRequiredString(hostRunId, 'hostRunId'),
+  agentRunId: normalizeRequiredString(agentRunId, 'agentRunId'),
+});
+
 export const buildDraftContextFileEndpoint = (
   owner: DraftContextFileOwnerDescriptor,
   storedFilename: string,
@@ -72,6 +93,9 @@ export const buildDraftContextFileEndpoint = (
   }
   if (owner.kind === 'org_member_draft') {
     return `/drafts/agent-org-runs/${encodeURIComponent(owner.orgRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${encodedStoredFilename}`;
+  }
+  if (owner.kind === 'agent_collaboration_member_draft') {
+    return `/drafts/agent-collaborations/${encodeURIComponent(owner.hostRunId)}/agent-runs/${encodeURIComponent(owner.agentRunId)}/context-files/${encodedStoredFilename}`;
   }
   return `/drafts/team-runs/${encodeURIComponent(owner.teamDraftId)}/members/${encodeURIComponent(owner.memberAddress)}/context-files/${encodedStoredFilename}`;
 };

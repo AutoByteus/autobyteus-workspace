@@ -2,7 +2,7 @@
   <AgentWorkspaceSurface
     v-if="target"
     :target="target"
-    :show-header-actions="true"
+    :show-header-actions="isHost"
     :skill-tagging="skillTagging"
     @new-agent="startNewChatForRun"
     @edit-config="openSelectedRunConfig"
@@ -21,6 +21,7 @@ import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useChatDraftStore } from '~/stores/chatDraftStore'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import { useChatComposerOptions } from '~/composables/chat/useChatComposerOptions'
+import { useAgentRunCollaborationSync } from '~/composables/agentCollaboration/useAgentRunCollaborationSync'
 import type { SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu'
 import { DEFAULT_CHAT_AGENT_DEFINITION_ID } from '~/utils/chat/chatDefaults'
 import { useLocalization } from '~/composables/useLocalization'
@@ -35,14 +36,19 @@ const active = useActiveContextStore()
 const definitions = useAgentDefinitionStore()
 const chatDraftStore = useChatDraftStore()
 const center = useWorkspaceCenterViewStore()
-const target = computed(() => active.activeWorkspaceTarget?.kind === 'standalone_agent'
-  ? active.activeWorkspaceTarget
-  : null)
+// The run's own agent, or a task child brought into the run with `@`.
+const target = computed(() => {
+  const current = active.activeWorkspaceTarget
+  return current && (current.kind === 'standalone_agent' || current.kind === 'agent_run_task_agent'
+    || current.kind === 'agent_run_task_team_member') ? current : null
+})
+const isHost = computed(() => target.value?.kind === 'standalone_agent')
+useAgentRunCollaborationSync()
 
 const composerOptions = useChatComposerOptions(computed(() => target.value?.context.config.agentDefinitionId ?? null))
 const skillTagging = computed<SkillTaggingCapability | null>(() => {
   const config = target.value?.context.config
-  if (!config) return null
+  if (!config || !isHost.value) return null
   return {
     skills: composerOptions.skillOptions.value,
     allInstalled: composerOptions.skillsAllInstalled.value,
