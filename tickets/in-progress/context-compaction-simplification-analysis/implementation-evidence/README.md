@@ -79,3 +79,13 @@ Final direct tests were extended after the 363-test run; the later 45-test run v
 ## Coverage retired with obsolete behavior
 
 Removed tests that exercised category generation/normalization/projection/lineage membership, child compactor lifecycle/recursion and strategy APIs. The old LMStudio child-agent/category live E2E harness is obsolete and removed. New scripted runtime integration verifies continuation and explicit retry, not a replacement live semantic-quality harness. Other existing E2E/integration fixtures were mechanically updated for the new injected factory; they were not executed as downstream validation. API/E2E owns replacement system/quality coverage.
+
+
+## IR-003 — approved SR-017/018/019 structural delta
+
+Current handoff/revision: IR-003; local evidence and commands at
+`/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/README.md`. Large/High retained; frozen-v5/current-versionless
+separation and no-import implemented. API-F004/API-F005/SR018-OBS-001 remain
+open; this does not rescore historical reviews or claim Delivery. Prior evidence
+above retains its own revision basis; old importer/v5-writer descriptions are
+not the current implementation.

@@ -1,8 +1,14 @@
-# Implementation Handoff — IR-002
+# Implementation Handoff — IR-003
 
 ## Upstream Artifact Package
 
-Current cumulative implementation after **CRR-001 Fail — Local Fix** (CR-001/CR-002), retaining architecture review **ARCH-REV-001 Pass** against explicitly approved **SR-012** requirements and **SR-013** design. The current cumulative package, not the superseded external three-output redesign, is authoritative. Independent source review is required by Large/High classification.
+**Current result: structural implementation complete for independent source
+review. Not acceptance, semantic-quality Pass or Delivery.** Architecture
+**ARCH-REV-002 Pass** selects SR-018 as corrected by SR-019 against approved
+SR-012 plus explicit SR-017 no-import/default-parent requirements
+(REQ-001–009 / AC-001–012). Independent architecture/source review is applicable,
+not N/A. Current code and this handoff supersede the IR-002 current-state text;
+prior outcomes remain in the cumulative records.
 
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md`
@@ -11,142 +17,213 @@ Current cumulative implementation after **CRR-001 Fail — Local Fix** (CR-001/C
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-review-report.md`
 - `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-revision-record.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr018.md`
+- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr019.md`
 
-Relevant supplements (authority/context as classified by design):
+Full cumulative absolute supplement inventory:
+`/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/reference-index.json` (extends
+`/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr018/reference-index.json`).
+This includes active exact prompt-v5/output contract, prompt rationale/direction,
+research, literal sources/licenses, historical experiments, design investigation,
+review evidence, implementation/code/API histories and SR-018/019 recovery
+context. Their authority/evidence limits remain as recorded upstream. Candidate-v6
+is indexed only as **unapproved/excluded**. Product supplements **N/A—not
+requested**; external three-output WIP remains excluded/read-only and untouched.
 
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/proposed-compaction-prompt.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/output-format-and-coverage.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/compaction-prompt-proposal.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/prompt-refinement-notes.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/simplification-design-direction.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/upstream-compaction-research.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/analysis-report.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/README.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/upstream-experiments/README.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-investigation-probes/README.md`
-- `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/README.md`
-
-Historical prompt variants and literal sources/licenses remain under `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/history/` and `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/upstream-prompts/`; reproducibility and probe payloads are indexed by the linked READMEs and investigation. Product UI/UX supplements: **N/A — not requested**. Triggering rework evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md`, `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/README.md`. Current delta/evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-002/README.md`.
+Triggering evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-evidence/arch-rev-002/README.md`;
+SR-019 actual-writer characterization is feasibility evidence, not target proof.
+Current local evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/README.md`.
+Code review `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md` / `code-review-revision-record.md`
+and API `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md` / `api-e2e-revision-record.md`
+remain active context, not newly rescored results.
 
 ## Current Implementation Summary
 
-- Result: **Implementation complete for independent Code Review**, with focused local checks complete and broader/runtime-quality limits explicitly retained below. Not delivery/runtime success.
-- Cycle: Rework (**Local Fix**). Revision: **IR-002** in `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md`.
-- Related revisions: **SR-012 / SR-013**, **ARCH-REV-001**; **CRR-001**; API-REV / DR: **N/A**; triggering finding IDs: **CR-001 / CR-002**.
-- IR-002 development commit: `7886aeb78449fa54a09ce715fc6e0d74134b386f`. See IR-002 revision entry for the bounded delta; no design change.
-- Initial source development commit: `3eb43f0dc457fb5d5960eee62618d8d497e42e9b` on `codex/context-compaction-simplification-analysis`; reviewed base `046279298f53fb98d7688ee9dc2b2ba0fa827685`.
-- Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`. No push/merge/integration. Later Delivery Engineer finalization target remains `origin/personal`.
-- Replaced category/child-AgentRun/strategy execution with a fresh direct LLM call per authorized attempt and the exact approved tagged Markdown prompt. Existing trigger, window planner, protected head/recent context, tool structure, budgets and explicit user retry remain.
-- Strict-v5 snapshot is the summary authority. Commit is validated/preallocated candidate → archive COPY without active prune → atomic snapshot write → no-copy state install/pending and threshold completion → guarded best-effort prune → safe completed status. Category/lineage generation and active restore dependency are gone; historical files and readers remain.
-- One durable model/config setting, isolated old builtin override migration before bootstrap, current-parent-model inheritance per attempt, existing availability/secrets, normalized provider termination, isolated cleanup and coordinated status/settings frontend.
+- Cycle: **Rework / approved-design revision**. Current **IR-003** in
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md`.
+- Related SR-012/013 baseline, SR-014–016 recovery/base context, **SR-017/018/019**
+  current amendment/design; **ARCH-REV-001/002**, **CRR-001–004**,
+  **API-REV-001/002**, delivery **DR: N/A**.
+- Trigger: ARCH-REV-002 Pass; **ARCH-F001** design correction implemented for
+  independent verification. Separate open API-F004/API-F005/SR018-OBS-001 are
+  not closure claims. New bounded implementation finding **IR003-LF001** below.
+- Development commit **`ebaf3a78eff2d3147dc3f4f2eb63bf119d6547ad`**, 23 owned
+  source/test/fixture paths. Entry HEAD `9f3b7984a0bbb4a1b09ea249958c64f635c4cd2e`;
+  refreshed base `8caa610ff438c288d9aca9f2efe2c33924fbf517`.
+- Workspace `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`, branch `codex/context-compaction-simplification-analysis`.
+  Pending owner files retained, not staged into this source commit. No push,
+  merge, release, backup disposal, external WIP integration or private data use.
+  Later Delivery finalization target remains **origin/personal**.
+- Cumulative implementation retains one fresh direct LLM call with the exact
+  approved tagged Markdown prompt, planner/head/recent/tool/budget behavior,
+  explicit retry and provider completion/isolated cleanup. No child AgentRun,
+  strategy selection, categories, repair generation or second summary store.
+- Snapshot commit remains validated/preallocated candidate → archive COPY without
+  active prune → atomic snapshot commit → no-fallible-I/O/no-copy install and
+  completion → guarded best-effort prune → safe status. Current snapshot codec
+  now projects known fields and ordinarily writes exactly `{agent_id,messages}`.
+- Retired builtin compactor settings importer, startup call and importer tests
+  removed. No replacement migration, initialization write/gate, old-config read
+  or deletion. Existing current tuple saves remain usable; absence uses actual
+  current parent model and existing credential/availability owners per attempt.
+- Released native-v5 classifier/target isolated in one migration-owned frozen
+  shape file. Existing migration preserves recognized versionless locations
+  before raw loading/conversion/cleanup, including unfinished tool batches;
+  unrecognized versionless payloads are unchanged and scoped FAILED. No new
+  migration ID, history rewrite campaign, ledger reset/replay or runtime decoder.
 
-## Routing Classification (Mandatory)
+## Routing Classification
 
-- **task_size: Large; architectural_risk: High — Confirmed, unchanged.** Reference: design `Task Size And Architectural Risk` and source inventory.
-- Evidence: core execution/persistence/restore APIs, seven provider response adapters, shared strict DTO, server startup settings ownership and web settings/status cross boundaries. IR-001 changed 173 source/test paths; IR-002 adds the bounded eight-path delta recorded below. Classification is driven by semantics, not file count.
-- Handoff rule result: `get_handoff_rules` selected the completed implementation-owned Local Fix / Large-High return-for-source-review rule, exact recipient **/code_reviewer**. Selected route: **Code Review**. Lightweight direct-route self-review: **Not Applicable**; independent review cannot be skipped.
-- New design impact/escalation trigger: **None identified**. General factory preconstruction configuration and Ollama cap handling are implementation details within the approved provider-construction boundary; their blast radius is called out for review, not concealed.
+**task_size=Large; architectural_risk=High — confirmed, unchanged.** Design
+classification and reviewed persistence/ownership boundary remain valid: this
+is a cumulative cross-core/provider/server/web contract and storage change,
+not merely an importer deletion. Independent source review cannot be bypassed.
+
+- Selected route: **Code Review**. `get_handoff_rules` selected the implementation-complete Large/High rule, exact recipient **/code_reviewer**; only this recipient receives the outcome. Selection persisted in `implementation-evidence/ir-003/handoff-rule-selection.json`.
+- Lightweight direct-route self-review: **N/A**; local self-checks do not replace
+  independent Code Reviewer.
+- New design impact: **None identified**. The raw-success null handling fix
+  enforces SR-019's explicitly required committed-fact preservation, without
+  adding behavior or a repair mechanism. Review that bounded delta explicitly.
 
 ## Reviewed Behavior Implementation Trace
 
-All production paths below are relative to workspace `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`.
+Production paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`.
 
-| Behavior | Approved IDs / outcome | Implemented production path / key files | Result / local evidence |
-| --- | --- | --- | --- |
-| BEH-001 | REQ-001–006/008/009; AC-001/003–007/010/011. Automatic one-call compaction, safe continuation | `autobyteus-ts/src/agent/loop/llm-phase-compaction.ts` and assembler → `memory/compaction/pending-compaction-executor.ts` → `direct-llm-compaction-summarizer.ts` → accepted builder/validator → MemoryManager coordinator/committer; server `agent-execution/compaction/compaction-llm-factory.ts` | Implemented; request/cap/parser/provider/retained-message/tool/persistence tests; narrow actual-runtime continuation with mocked providers |
-| BEH-003 | REQ-001/003/006/009; AC-002/004/007/011. Replace prior summary, not accumulate | Same planner/executor/builder; `working-context-provenance.ts` at-most-one invariant | Implemented; scripted first/repeated summaries and corpus tests. Semantic model quality unverified |
-| BEH-005 | REQ-004/005; AC-005/006/011. Failure keeps baseline; explicit retry only | `memory-manager-compaction-coordinator.ts` gate; executor; `agent/compaction/compaction-runtime-reporter.ts`; shared/server/web status projections | Implemented; malformed/incomplete/provider/cap/abort/precommit failure, distinct user retry and postcommit diagnostic failure tests |
-| BEH-004 | REQ-007; AC-008. Direct strict-v5 resume | Native backend construction → `memory/restore/working-context-snapshot-bootstrapper.ts` → existing tool repair/validation | Implemented; identity/schema/zero-or-one summary and category-independent restore tests; no re-summary or data migration |
-| BEH-002 | REQ-007/008; AC-009/010. Historical inspection and useful controls | Existing AgentMemoryService/file category/raw/snapshot readers retained; ServerSettingsService + startup migration + CompactionConfigCard/CompactionModelSettings + existing model selector/config editor | Implemented; historical reader/Event Monitor, settings/migration/node binding tests and synthetic rendered interaction |
+| Behavior | Approved / preserved outcome | Actual path and result |
+| --- | --- | --- |
+| BEH-001 | REQ-001–006/008/009, AC-001/003–007/010–012; automatic direct compaction | Existing `agent/loop/llm-phase-compaction.ts` → `memory/compaction/pending-compaction-executor.ts` → direct summarizer → finalizer/validator → MemoryManager commit retained. Server `agent-execution/compaction/compaction-llm-factory.ts` rechecks current tuple and delegates current parent/availability/credentials each attempt; no old importer. Mechanical local checks pass; semantic acceptance not claimed. |
+| BEH-003 | REQ-001/003/006/009, AC-002/004/007/011; one rolling replacement | Existing planner/summarizer/provenance and one-summary invariant retained, prompt unchanged. **API-F005 semantic failure remains open**, not “quality unverified” or a green result. |
+| BEH-005 | REQ-004/005/008, AC-005/006/010/011; safe failure, explicit retry | Existing coordinator/executor/committer/reporter and shared/server/web status unchanged; core fault/cancel/commit/stream local checks rerun. `provider` native discriminator and separate summarizer diagnostics remain intact. |
+| BEH-004 | REQ-007, AC-008; supported saved-run resume | `working-context-snapshot-serializer.ts` projects current fields → bootstrap exact identity → existing active-raw repair → full validation/final ordinary save. `working-context-tool-protocol-repairer.ts` now preserves a committed success's null error. Existing migration and frozen shapes preserve actual writer cuts before destructive work; historical fixed-v5 conversion remains independently classified. |
+| BEH-002 | REQ-007/008, AC-009/010/012; historic inspection and optional current controls | Historical AgentMemoryService/category/raw/Event Monitor readers unchanged and locally checked. Settings codec tolerates root extras, exact tuple save remains durable; startup composition no longer imports old preferences. No new frontend surface or reorganization. |
 
-## Key Files Or Areas
+Scope Guardrail: **Yes**, UC-001–003 and preserved behavior only. No new history
+support, snapshot missing-fact fabrication, provider/default/support change,
+manual summary workflow or candidate-v6 adoption.
 
-Initial IR-001 source/hash inventory (not a complete cumulative caller audit): `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/implementation-source-inventory.json`; commit stat: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/implementation-source-diff-stat.txt`.
+## Key Files / Bounded Delta
 
-- Core `memory/compaction/compaction-summary-prompt.ts`, `compaction-summary-parser.ts`, `compaction-execution.ts`, `direct-llm-compaction-summarizer.ts`: exact prompt, single strict marked body, content-only completion, fresh conversation ID, no tools or hidden correction call. Approved literal SHA-256: `2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7`.
-- Input renderer preserves full natural-message strings subject to existing privacy redaction/Unicode handling; bounded tool excerpts are labelled and IDs retained. No blanket natural-message clipping/fallback.
-- `memory/store/run-memory-file-store.ts`, accepted committer/coordinator/controller: verified archive membership, snapshot commit point, preallocated owned context install, guarded prune. No second summary file.
-- Core `llm/api/completion-status.ts` and seven adapters: nonstream CompleteResponse status/reason normalized; unknown preserved. `clients/autobyteus-client.ts` and RPA adapter forward cleanup AbortSignal; isolated cleanup is attempted with a 10-second signal and cannot mask primary result.
-- `llm/llm-factory.ts`: a config callback sees model + cloned defaults **before adapter construction**. This permits stripping controlled default extraParams without remerging them or mutating an already constructed adapter; existing availability/secrets remain authoritative. Existing object-config behavior retained and tested.
-- `llm/api/ollama-llm.ts`: `maxTokens` now maps to `options.num_predict`, affecting ordinary noncompaction requests that specify maxTokens too; review this general adapter fix.
-- Server startup migration/config/factory, backend/composition wiring, builtin registry/template removal and server setting validation. `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` is one atomic JSON tuple; no credentials accepted in it.
-- Shared contracts/source and tracked generated dist, server projections, web streaming DTO/projection/activity detail changed together. **`provider` still means provider-native lifecycle**; `summarizer_provider` is separate. Live strict DTO rejects retired child/category fields; historical optional read fields/Event Monitor remain for already recorded events.
-- Web strategy catalog/query removed; generated GraphQL kept scoped to retired compaction fields after local codegen. Existing config components/localization reused.
+Exact inventory/hashes: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/source-inventory.json`.
 
-## IR-002 Local Fix Delta (CRR-001)
+- `autobyteus-ts/src/memory/migration/native-working-context-snapshot-shapes.ts`:
+  frozen released classifier/writer and separate pure preservation predicate;
+  no evolving runtime codec/validator imports. Base/source hashes and83 literal
+  classifier cases captured in `tests/fixtures/memory/released-native-snapshot-shapes.json`.
+- Existing core converter and server native-v5 migration use the frozen target.
+  Existing versioned conversion/omission/lineage/missing/obsolete dispositions
+  preserved. Versionless guard returns before raw-fact loading/converter/write/
+  cleanup; no cross-message completeness admission in that guard.
+- Current serializer, snapshot controller and bootstrap remove runtime version
+  API/checks, safely validate known fields without filtering/coercion, and
+  preserve open arguments/results/native context/domain metadata.
+- Server importer file and obsolete tests removed; platform bootstrap call
+  removed; current compaction settings codec projects only tuple fields.
+- Durable local tests cover released classifier/output independence, current
+  projection/invalid facts, actual writer cuts, entire-location bytes and
+  forbidden calls, independent resume, terminal runner skip, startup no-import,
+  current tuple and fresh parent/credential delegation.
 
-- **CR-001:** aligned the active `test-support/live-e2e/live-e2e-harness.ts` and its result/E2E caller with the existing production direct model factory, one captured direct request and snapshot/next-request Markdown. Removed deleted imports/template reads and child/correction/category/lineage assertions; retained existing scenario registration, task-anchor/exact artifact and Unicode fixtures. Removed obsolete topology unit tests. New no-provider units reach direct factory setup for both registered scenarios and verify current Unicode/tool framing.
-- **CR-002:** explicit current core CompactionStatusData fields replace the six retired child/category fields; null metadata preserved. Removed the two unreferenced reporter methods, retained used budget logging and historical reader shapes. Notifier/stream round-trip and status/null tests cover the current contract; no prior runtime metadata loss is claimed.
-- **Audit correction:** IR-001 removed the separate core LMStudio E2E file but missed the active shared harness. Its broad obsolete-harness/caller-cleanup claim was incomplete. This revision fixes that seam; it does not represent a live semantic-quality pass or disable the registered scenarios.
-- Current additive delta inventory/evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-002/source-inventory.json`, `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-002/README.md`. The shared harness is test support; its >220-line cleanup delta does not enlarge production ownership. Two touched production files have 79/252 nonempty lines; Large/High remains confirmed.
+### IR003-LF001 — existing raw-ahead success mislabeled interrupted
 
-## Important Assumptions
+SR-019's target raw-ahead test exposed `completed?.toolError ?? syntheticError`
+in the existing repairer. A committed success with a null error was restored
+with its actual result **and a false interrupted error**. Unchanged released-base
+reproduction and hashes: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/released-raw-ahead-defect.json`;
+script and limitations in evidence README. Existing structural validation did
+not detect this semantic corruption of the tool result.
 
-- Deploy coordinated core/server/contracts/web; do not concurrently run old and new binaries writing the same run. Deep exports/strategy API removals have no shim.
-- Existing supported strict-v5 snapshots already contain authoritative summary text. A previously serialized category-rendered text summary is usable as text; no heading migration or category reconstruction.
-- Parent **model identifier** is resolved on each attempt; parent live config/state is not inherited. Saved explicit unavailable model fails visibly rather than silently falling back.
-- Native filesystem atomic replacement semantics are inherited. No fsync or power-loss guarantee is added.
+The one-line fix selects `completed.toolError` whenever that completed fact
+exists. No new recovery owner/lifecycle is introduced. Regression assertions
+cover successful raw reuse, while genuinely unfinished calls keep existing
+interrupted-result treatment. This is **not evidence about the original
+API-F004 continuation cause**, nor a fix for model-summary fidelity.
 
-## Known Risks
+## Important Assumptions / Known Risks
 
-1. First/repeated **semantic summary quality is unverified**, separately from deterministic parser/retention mechanics. No live/paid provider calls or private histories were used. RPA completion remains unknown; no portable output-cap guarantee is invented.
-2. **Updated by CRR-001:** all 15 sampled broader failures reproduce at unchanged base (original 14 plus the shared harness facade missing provider input normalizer). IR-002 reran the shared unit file: 16 pass / that one failure remains. It can block full live harness execution; it is not waived. Other 14 not rerun in this revision. See `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/residual-comparison.json` and IR-002 evidence. Core broader run remained incomplete with baseline isolated worker timeout reproduced. No full-suite or standalone full web typecheck pass claimed.
-3. Changed factory configuration, general Ollama maxTokens handling and coordinated strict event contract warrant blast-radius review. External consumers of removed APIs were not enumerated.
-4. Fault injection is not an actual process-crash/power-loss campaign. SDK cancellation/cleanup depends on adapter/remote support; RPA cleanup forwarding is locally tested.
-5. Removed obsolete child/category E2E tests and IR-002 reconciliation of the shared live harness do not amount to executed replacement live quality coverage. API/E2E must supply target coverage independently.
+- Coordinated current core/server/contracts/web deployment is still required;
+  concurrent old/new writers are out of scope. Deep removed APIs have no shim.
+- Existing current message semantics/provenance remain required. A root version
+  never admits missing facts. Frozen historical classifier quirks are not an
+  alternate runtime reader or current admission rule.
+- Existing per-file atomic replacement and archive commit semantics retained;
+  no new fsync/power-loss guarantee or all-files transaction.
+- **API-F005 remains actual semantic Fail**: invented completed plan/checkpoint
+  work. **API-F004 remains unisolated** despite later positive runs. Neither
+  local tests nor this raw-result bug prove a remedy/cause for those findings.
+- **SR018-OBS-001** remains API-owned `ContextFileOwnerResolver.memoryDir` /
+  owner-readiness wrapper reconciliation. All nine API-owned durable paths
+  unchanged; later proportional successful-test review still required.
+- Historical source Pass9.40 and API-REV-002 Fail82.9 not rescored. Candidate-v6
+  unapproved/excluded, no further exhausted diagnostic generations authorized.
+  RPA termination remains unknown; no silent clipping/fallback agent.
+- No full repository suite, standalone full test-tree typecheck, live semantic
+  comparison, real crash campaign or installed-data census this round.
+  Prior residuals remain scoped historical evidence, not blanket waivers.
 
-## Task Design Health Assessment Implementation Check
+## Task Design Health / Removal / Size Checks
 
-- Reviewed posture: **Behavior Change / Refactor / Cleanup**.
-- Root cause: boundary/ownership confusion, duplicated representations, category-specific structures and unnecessary child/strategy coordination.
-- Decision: **Refactor Needed Now**. Matched: **Yes**; routed challenge: **N/A**.
-- Evidence: one summary replaces category projection; normal restore needs no lineage; execution has no AgentRun construction; separate planning/provider/validation/persistence/status owners retained.
-
-## Legacy / Compatibility Removal Check
-
-- Backward-compatibility execution mechanisms introduced: **None**. Legacy old execution retained in scope: **No**.
-- Superseded strategy registry/resolver/setting/API/store/query, child runner/collector/launch resolver/recursion exceptions, category parser/normalizer/projection/lineage modules/exports, builtin template/registration, correction generation and obsolete tests: **removed** (the shared-harness omission in IR-001 is corrected by IR-002, as recorded above).
-- Historical data/readers are intentionally preserved, not an alternate execution path. Old saved generic definition files are not deleted or used by normal compaction.
-- Tight structures and canonical design principles reapplied: **Yes**. Specialized execution metadata replaces live child/category fields rather than adding a competing live shape.
-- Source size guardrails: **Yes**; 70 changed handwritten production files, max 492 nonempty lines, no >500. >220-line source deltas assessed: deletions of superseded parser/collector. Evidence: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/source-size-check.json`.
+- Posture: Behavior Change / Refactor / Cleanup. Root cause and refactor decision
+  remain the reviewed category/child/strategy duplication and current-reader /
+  released-upgrader dependency coupling. **Implementation matches assessment**.
+- Backward compatibility mechanisms introduced: **None in current runtime**.
+  One frozen migration boundary belongs to the already-released upgrader, as
+  designed; no generalized registry/fallback/framework.
+- Superseded importer/startup call/tests removed, old files inert and untouched;
+  current shared structures remain tight. Shared guidance reapplied.
+- Source guardrails **PASS**: max499 effective lines in the already-existing
+  converter; new frozen file190; no source delta above220 changed lines.
+  `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/source-size-check.json`. Captured test fixtures are excluded from the
+  source-file limit, not used to downgrade task/risk classification.
 
 ## Persisted Data Transition Check
 
-- Snapshot: **Directly Usable — No Migration**, same strict-v5 schema. Historical categories/raw shape: **Not Affected**. Lineage files left untouched and unused by active compaction.
-- Model/config setting only: **Migration Required**, isolated startup module, invoked before builtin bootstrap/readiness. Current/environment value validated and wins; otherwise one old builtin config file copied to durable tuple (or explicit null defaults). Malformed values/read/write failure fail startup; source retained; current durable tuple is restart marker.
-- Design reference: `Persisted Data / State Transition Decision` and `Configuration Migration Plan`. Conformance: **Yes**. Deviation: **None**. No history walk, second summary artifact, destructive cleanup or version-specific fallback in normal runtime.
-- Evidence: snapshot bootstrap and v5 migration tests; direct corpus/archive and historical reader tests; startup migration/settings tests plus builtin smoke.
+**Directly Usable — No Migration** for current snapshot projection; retired
+settings carry-forward intentionally removed. SR-018/019 migration-guideline
+closure implemented. Versionless current writer and old valid-v5 direct reads
+preserve message meaning without startup rewrite. Ordinary saves only remove
+obsolete envelope/provenance fields according to current contracts.
 
-## Environment Or Dependency Notes
+Existing migration dependency isolation/preservation is **not a new migration**:
+strict-v5 output/classifier pinned; recognized current locations entirely skipped;
+invalid versionless preserved with scoped failure; old terminal records not
+replayed. No ID registration, migration marker, ledger reset, old config reads,
+category reconstruction or history sweep. No deviation from approved transition.
 
-Node 22.23.1 / pnpm 10.28.2; frozen install completed. No dependency manifest/lockfile change. Builds generated untracked `autobyteus-application-backend-sdk/dist/` and `autobyteus-application-sdk-contracts/dist/`; these are deliberately **not committed**, not part of source review. Temporary browser fixture page and dev listener removed/stopped; fixture retained only in evidence. External superseded WIP was not integrated. Upstream ticket artifacts were untracked at receipt and are preserved with this cumulative handoff.
+## Environment / Local Implementation Checks
 
-## Local Implementation Checks Run
+Exact commands, logs and authoring failures: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/README.md`.
+Final local checks: **core48 files/377 tests PASS**, **server6/72 PASS** plus
+preserved-reader/lifecycle **5/28 PASS**; core and server production builds PASS,
+including shared builds, Prisma generation and sanitized builtin startup smoke.
+Counts do not add overlapping reruns. All use test-owned files/database and
+mocked providers. No API/E2E sign-off, public/private model call or user data.
 
-**IR-002 delta:** core 12 files/81 PASS; server no-provider direct-boundary/construction/history 18/119 PASS; web status/history 4/61 PASS; shared contracts 2 PASS; core/server builds PASS. Harness/caller syntactic transpilation PASS (not full typecheck). Shared harness unit file remains 1 fail/16 pass at the independently baseline-reproduced facade prerequisite. No live/E2E execution. Exact logs/recipes: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-002/README.md`.
-
-**IR-001 baseline checks (not rerun wholesale in IR-002):**
-
-Canonical evidence and exact rerun recipes: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/README.md`.
-
-- Core build, server build/full sanitized builtin smoke, web production build, GraphQL codegen, Nuxt prepare, shared contract tests and localization guard/audit: **PASS**.
-- Focused core: **60 files / 363 tests PASS**. Final additional client/factory/direct tests: **5 files / 45 PASS** (overlap; includes final 19 direct tests).
-- Focused server: **32 files / 277 PASS**. Final unused-variable cleanup recheck: **1 file / 6 PASS**.
-- Focused web: **10 files / 122 PASS**. Presentation contracts: **2 PASS**.
-- Implementation source diff whitespace and source-size checks passed. Cumulative ticket staging reports whitespace in verbatim upstream Markdown/diffs and raw logs; those evidence bytes are intentionally preserved. Broader failed/incomplete attempts are retained as limitations, not represented as passes. No API/E2E or full repository executable-validation pass is claimed.
+Entry owner file hashes:272 unchanged in `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/ir-003/pending-owner-preservation.json`.
+Generated dist outputs excluded from that claim; ordinary build outputs retained.
+Pending authority/evidence/API edits and backups are not discarded or committed
+as implementation-owned changes. Old IR commit IDs remain historical; refreshed
+replayed IR-002 source is `ca0552721`, and entry documentation is `9f3b7984a`.
 
 ## Frontend Rendered-Result Check
 
-IR-002: **Not Applicable to this delta** — no rendered component, CSS or interaction behavior changed. The core wrapper explicitly types existing fields and preserves their values. Existing historical/status unit checks were rerun. The IR-001 feedback loop below remains historical evidence, not a new rendering claim.
+**Not Applicable for IR-003** — no rendered frontend implementation or interaction
+changed. Existing optional controls/status presentation remain. Prior IR-001
+synthetic self-check and API browser limits retain their own scope; no new visual
+or full saved-run UI acceptance claim.
 
-Completed the implementation feedback loop for settings/model config/save and progress details against REQ-008/AC-010/DS-004/005, using existing shared selector/config/card/progress conventions and repository Nuxt development surface. Inspected 1512×806 and 900×900 desktop layouts, inherit/explicit/unavailable model, invalid input, save error/retry and unknown/incomplete status using synthetic data. Found and fixed Advanced collapsing on parameter edits, added regression coverage, and reverified interactively.
+## Downstream Coverage / Work Still Required
 
-Evidence and precise limits: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/rendered-result-check.md`; reproducible fixture `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/implementation-evidence/render-fixture.vue`. No real backend mutation, mobile/accessibility audit, or live multi-node execution claim. This is implementation self-validation, not downstream sign-off.
-
-## Downstream Coverage Hints / Suggested Scenarios
-
-Prioritize independent review of post-snapshot nonthrowing install/completion, exact archive selection/retry reuse/pruning, cancellation boundaries, current-parent per-attempt model/config isolation, provider normalization/unknown semantics, controlled-request option sanitization, migration readiness ordering and status/provider discriminator. Use CRR-001 baseline reproduction rather than assuming failure origin; retain the failures as validation limits and resolve the shared facade prerequisite before a live harness pass.
-
-## API / E2E / Executable Coverage Investigation And Execution Still Required
-
-API/E2E owns durable replacement coverage and integrated validation after source review: real first/repeated summary quality on controlled fixtures; provider-family request/output/cancel scenarios; actual startup/settings API and node switching; continuation/resume/historical Memory Inspector; explicit retry/status correlation; bounded cleanup and postcommit failure recovery; packaged builds and appropriate filesystem crash boundaries. Preserve distinctions among semantic quality, mechanics, provider visibility and storage guarantees. Delivery remains responsible for docs sync, explicit user verification, finalization and any merge/push/release.
+1. Independent **source review of IR-003** on the cumulative approved package,
+   especially frozen historical semantics, versionless no-destructive-fallthrough,
+   actual cut-point tests, no-import composition and IR003-LF001. ARCH-F001 remains
+   a named downstream verification item, not self-certified reviewer closure.
+2. API/E2E owns broader startup/resume/continuation, provider semantics and saved
+   override/durable store flows; no broadened live generations without a separately
+   authorized bounded plan. Preserve separate structural versus semantic results.
+3. API-F005/F004 recovery stays with normal accountable owners and approval rules;
+   no prompt/config/model/support remedy invented here. API owner reconciles
+   SR018-OBS-001 and its nine paths without weakening owner/readiness guards;
+   reviewer later performs proportional successful-test review.
+4. No Delivery advancement until all required gates, including actual semantic
+   fidelity, pass. Delivery alone owns final integration to origin/personal.
