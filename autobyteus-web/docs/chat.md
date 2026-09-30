@@ -196,6 +196,44 @@ handle, the strip and the drawer, and a 57px header line. The center pane is
 The New chat footer (model, thinking, workspace, approval) exists only before
 the first message (`chatDraftModelControls.ts`).
 
+## `@` In A Live Run (Collaborators)
+
+In every sendable live-run composer (standalone Agent run, Team member, Org
+member, and any task child), `@` at a word start opens the run variant of
+`ChatTargetMenu` above the box ("Bring into this run"). New chat `@` still picks
+the launch target and is unchanged.
+
+- **Options** come only from the server: `collaboratorMentionCandidates`
+  (`services/collaborators/collaboratorCandidatesService.ts`), refreshed each
+  time the menu opens and invalidated when a collaborator is added. Shared
+  Agents (no Daily Assistant or built-ins), then shared Agent Teams, minus what
+  is already in the run; Agent Orgs are never offered. The footer names the
+  focused agent, which receives the message.
+- **Scope.** `useComposerTarget` sets `mentionScope` from the active target
+  (`composables/agentInput/runMentionScope.ts`); launch drafts and read-only
+  views have none and show no menu.
+- **Choosing** (`useRunMentionMenu`) writes `@Name ` into the text and records
+  the mention in `AgentContext.requestedMentions`. `MentionChipRow` shows a chip
+  while `@Name` is in the text; removing a chip keeps the words (`@Name` →
+  `Name`). ↑/↓, Enter/Tab and Escape work as in New chat; Enter with no match is
+  swallowed. The textarea exposes combobox semantics while a menu is open.
+- **Sending.** The Agent, Team, Org and Agent-collaboration stores send
+  `mentions` (`{kind, definition_id}[]`) with SEND_MESSAGE. The server appends a
+  `[Mentioned collaborators]` note to the stored message; `UserMessage` strips it
+  and shows each `@Name` as an inline chip, and run summaries drop it
+  (`utils/collaborators/collaboratorMentionText.ts`).
+- **Failure notice.** `CollaboratorAddFailureNotice` (above the box) shows
+  "Couldn't add <name> to this run" when a `delegate_task` in the current turn
+  targeted a collaborator address and returned no run ID. It can be dismissed and
+  is replaced by the next send. Success has no notice; the tree shows the result.
+- **Standalone runs** gain children: task rows under the run row
+  (`AgentRunTaskRows`), a task child's own conversation (titled by its name,
+  composer sending to it), the run row returning to the run's own agent, and a
+  "Team" tab once the run has children. `stores/agentRunCollaborationStore.ts`
+  reads a stopped run's stored view with `agentRunCollaboration` (never restoring
+  it) and attaches `/ws/agent-collaboration/:runId` only while the host runs or
+  when the user sends to a child.
+
 ## Tests
 
 - `stores/__tests__/chatDraftStore.spec.ts`
@@ -217,3 +255,8 @@ the first message (`chatDraftModelControls.ts`).
   `ExistingRunConfigEditor.workspace.spec.ts`
 - `composables/__tests__/useRightSideTabs.contextualDefault.spec.ts`
 - `pages/__tests__/chat.spec.ts`, `pages/__tests__/workspace-chat-redirect.spec.ts`
+- `components/agentInput/__tests__/AgentUserInputTextArea.runMentions.spec.ts`,
+  `utils/collaborators/__tests__/collaboratorMentionText.spec.ts`,
+  `services/collaborators/__tests__/*.spec.ts`,
+  `services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts`,
+  `stores/__tests__/agentRunCollaborationStore.spec.ts`

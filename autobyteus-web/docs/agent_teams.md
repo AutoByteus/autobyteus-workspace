@@ -161,8 +161,11 @@ configured member that has not started other than the row kind.
 In an expanded Team run, available task Agents appear immediately after their
 corresponding recipient Agent at the same indentation level. They do not require
 opening that Agent, and an Agent has no disclosure solely for delegated task
-Agents. Task rows retain their distinct dashed treatment, the "Started by"
-line, runtime status, and exact-execution selection by mouse, Enter or Space.
+Agents. Task rows retain their distinct dashed treatment, runtime status, and
+exact-execution selection by mouse, Enter or Space. A task Agent shows the member
+marker (solid status dot and initials) centered on its name line; the starter is
+in the accessible label only, not a visible "Started by" line; branch lines run
+straight through member and task rows.
 Repeated tasks at the same address remain separate conversations. Loading,
 failed inspection and retry retain the existing focus-commit behavior.
 
@@ -179,6 +182,12 @@ is unchanged: peer placement does not fabricate unavailable history.
 No-context history still shows configured members only. This does not add
 nested configured-Team authoring or change Agent Orgs, delegation, identity, or
 persisted data.
+
+Task rows at a collaborator address (a shared Agent or Agent Team brought into
+the run with `@`) are ordinary task rows. Their contexts take the definition and
+launch settings from the collaborator entry in `root_team.collaborators`
+(`services/collaborators/agentSourceSelectors.ts`), and the Team view applies
+`COLLABORATOR_ADDED` before the first `TASK_EXECUTION_STARTED` at that address.
 
 ## History, Restore, Stop, And Delete
 

@@ -239,6 +239,14 @@ queue.
 - Task Agents and task Teams are delegated children recorded in the execution
   tree (with `delegatorAgentRunId` for children created since the resource
   lifecycle); they do not alter configured topology. There are no task records.
+- A member can also delegate to a collaborator: a shared Agent or Agent Team the
+  user brought into the Org run with `@` (see
+  [Agent Communication](./agent_communication.md#collaborators)). It is recorded
+  as a `rootOrg.collaborators` entry at its own root-level address, and its runs
+  are root-hosted task executions at that address (`AgentOrgTaskSourceResolver`
+  resolves configured placements first, then collaborators). The Org, its
+  members and its mounted Teams are never offered with `@`. The `collaborator_added`
+  root event precedes the first task execution at a new collaborator address.
 - Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
   through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
   same-root wake-on-message in `restore` mode, one liveness predicate
@@ -289,7 +297,8 @@ memory/agent_orgs/<org-run-id>/
 coordinator-free `rootOrg`. It stores direct Agent placements, direct
 mounted-Team placements with their Agent members, compiled handoffs, effective
 launch configurations, concrete local and provider identities, application
-binding, timestamps, and delegated child executions. Like the Team tree it is
+binding, timestamps, delegated child executions, and `collaborators` (read as
+`[]` when absent, always written). Like the Team tree it is
 read tolerantly (known required fields and invariants checked, `schemaVersion`,
 `settledAt`, and unknown keys ignored) and written exactly with no
 `schemaVersion`. Older packages may still hold an

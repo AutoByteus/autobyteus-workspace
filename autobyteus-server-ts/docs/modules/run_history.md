@@ -372,13 +372,23 @@ Standalone agent persisted files:
 
 - V2 catalog index: `memory/run_history_index.json`, with rows containing only
   `runId`, `agentDefinitionId`, `agentName`, `workspaceRootPath`, `summary`,
-  `createdAt`, `archivedAt`, and `terminatedAt`
+  `createdAt`, `archivedAt`, `terminatedAt`, and the optional
+  `hasCollaboration: true` (written when the run's collaboration package is
+  first created; `RunHistoryItem.hasCollaboration` in GraphQL)
 - metadata: `memory/agents/<runId>/run_metadata.json`, containing resume/config
   and prepared/start facts such as `runId`, `agentDefinitionId`,
   `workspaceRootPath`, `memoryDir`, `runtimeKind`, `llmModelIdentifier`,
   `llmConfig`, `autoExecuteTools`, `platformAgentRunId`,
   `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
-  `applicationExecutionContext`
+  `applicationExecutionContext` and `launchPurpose` (stored only as
+  `"server_helper"` for server-owned helper runs such as the memory compactor
+  and the skill improver; those runs never host collaborators)
+- optional collaboration package (created lazily with the first collaborator):
+  `memory/agents/<runId>/collaboration/collaboration_tree.json` (host identity,
+  `collaborators`, `taskExecutions`) and `communication_messages.json`; each
+  child's runtime memory lives in `collaboration/<childRunId>/...` (task Team
+  members below their task TeamRun IDs). See
+  [Agent Run Collaboration](./agent_run_collaboration.md).
 - runtime memory artifacts: all runtimes can have `memory/agents/<runId>/raw_traces_active.jsonl`; native AutoByteus runs additionally own `working_context_snapshot.json`, while new Codex/Claude recording does not create or update that snapshot
 - rotated raw-trace segments after native compaction or provider-boundary rotation: `memory/agents/<runId>/raw_traces_manifest.json` plus direct `memory/agents/<runId>/raw_traces_<zero-padded-index>.jsonl` files
 
@@ -394,7 +404,9 @@ Team persisted files:
   root with direct Agents, and delegated child executions (with
   `delegatorAgentRunId` for children created since the resource lifecycle). The
   root carries a complete `defaultLaunchConfiguration`; every direct configured
-  Agent carries a complete `launchConfiguration`. The tree is read tolerantly
+  Agent carries a complete `launchConfiguration`. The root also carries
+  `collaborators` (entries for shared Agents and Agent Teams brought in with
+  `@`; read as `[]` when absent, always written). The tree is read tolerantly
   (known required fields and invariants; `schemaVersion`, `settledAt`, and
   unknown keys ignored) and written exactly with no `schemaVersion`.
 - member runtime memory artifacts: direct members use

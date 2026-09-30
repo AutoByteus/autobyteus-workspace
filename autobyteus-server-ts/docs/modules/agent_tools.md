@@ -40,15 +40,21 @@ Browser-tool support has two explicit source families:
 `src/agent-execution/shared/runtime-agent-tool-exposure.ts` is the common
 runtime-neutral boundary before native schemas or Agent Tools MCP projection.
 It trims and deduplicates configured `AgentDefinition.toolNames`. For every
-valid non-null `MemberTeamContext`, it then automatically unions exactly:
+run with a `MemberExecutionContext`, `automaticCollaborationToolNames(context)`
+then unions:
 
-- `get_handoff_rules`
-- `send_message_to`
-- `delegate_task`
+- `send_message_to` and `delegate_task` for every member context;
+- `get_handoff_rules` only when the context is Team-scoped (`teamScoped: true`:
+  Team and Org members, and members of a task Team in any root).
 
-This automatic trio is required by the AgentTeam Addressing/Collaboration and
-delegation contract and applies even when the agent definition omitted those
-names. Standalone runs receive no automatic Team tools and preserve their
+These tools apply even when the agent definition omitted them. Every
+user-facing standalone run that can host collaborators (not a server helper
+run with `launchPurpose: "server_helper"`, not application-owned) gets a host
+member context from its Agent root (see
+[Agent Run Collaboration](./agent_run_collaboration.md)), so it has
+`send_message_to` and `delegate_task` from its first turn. A task Agent directly
+under an Agent root is not Team-scoped and has no `get_handoff_rules`. Server
+helper runs and application-owned runs have no member context and keep their
 explicitly configured set. Browser, media, publishing, and configured
 MCP-origin tools remain explicitly selected and availability-gated.
 
@@ -179,8 +185,8 @@ security, and adapter contract.
 
 ## Server-Owned Task Delegation Tool
 
-The server owns one first-party delegation tool for collaboration roots (Team
-and Org):
+The server owns one first-party delegation tool for collaboration roots (Team,
+Org, and the Agent root of a standalone run):
 
 - `delegate_task`
 
@@ -207,9 +213,12 @@ Runtime projection is explicit and uses the same manifest/service boundary:
   policy or forced-tool dampening to compensate for model/prompt behavior.
 
 Every `delegate_task` call must be bound to an active collaboration root and
-the current member identity. It resolves the required canonical absolute
-non-root `recipient_address` through the same logical placement authority as
-`send_message_to`; an Agent cannot delegate to its own logical placement. There
+the current member identity. Each root resolves the required canonical absolute
+non-root `recipient_address` with `resolveDelegationPlacement`: configured
+placements first, then the run's collaborators (shared Agents and Agent Teams
+brought in with `@`; see [Agent Communication](./agent_communication.md#collaborators)).
+`send_message_to` uses `resolveMessageRecipient`, which accepts configured
+placements only. An Agent cannot delegate to its own logical placement. There
 is no caller-supplied target kind, flat-name lookup, or compatibility input.
 
 `delegate_task` takes ready-to-run `description` content (objective, context,
@@ -228,9 +237,14 @@ The result is a strict union, also published as the MCP output schema
 { target_agent_run_id: null, message: "<why nothing started>" }
 ```
 
-Input errors (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`) and a root that is
-not admitting (`ROOT_RUN_NOT_ACTIVE`) are tool errors raised before anything is
-prepared. The original logical `recipient_address` remains the mounted
+An address that is neither a configured placement nor a collaborator of the run
+returns `{ target_agent_run_id: null, message }` (the message says the user can
+bring one in with `@`); it is not a tool error. A collaborator that cannot start
+with the run's settings also returns no run ID with the reason. The web client
+turns such a result for a collaborator address into the "Couldn't add … to this
+run" notice. Input errors (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`) and a
+root that is not admitting (`ROOT_RUN_NOT_ACTIVE`) are tool errors raised before
+anything is prepared. The original logical `recipient_address` remains the mounted
 definition, not an alias for the child.
 
 The two collaboration modes are intentionally not interchangeable.

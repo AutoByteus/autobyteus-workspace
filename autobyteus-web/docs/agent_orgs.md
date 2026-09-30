@@ -372,6 +372,11 @@ does not own polling, lifecycle, focus, readiness, or command authority.
 
 Task Agents and task Teams are transient execution projections. They can be
 nested by task delegation without changing the fixed configured Org topology.
+A task Agent row shows the member marker (solid status dot and initials); the
+starter is kept in the accessible label, not as a visible line. Task rows at a
+collaborator address resolve their source through `rootOrg.collaborators`
+(`AgentOrgExecutionViewIndex`), and the Org context applies `collaborator_added`
+and invalidates the `@` candidates.
 Status projection walks each structural Team root once and lets that Team own
 recursive descendants; the flat Team directory is not reused as recursive
 status roots, so nested task-Team Agent statuses remain unique.

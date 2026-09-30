@@ -377,10 +377,18 @@ legacy configured tool names are ignored.
 
 The address uses the same canonical absolute non-root `/...` grammar as
 `send_message_to`; relative addresses, bare names, and the structural root `/`
-are invalid. The root topology resolver returns one immutable Agent or
-AgentTeam placement; an Agent cannot delegate to its own logical placement.
-Input and admission failures (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`,
+are invalid. `RootTeamRun.resolveDelegationPlacement` returns one immutable
+Agent or AgentTeam placement: a configured member first, then a collaborator
+of the run (a shared Agent or Agent Team brought in with `@`; see
+[Agent Communication](./agent_communication.md#collaborators)). Task sources come
+from `TeamTaskSourceResolver`, which projects a collaborator entry into the
+same source shape a configured placement has. An Agent cannot delegate to its
+own logical placement. An address that is neither returns
+`{ target_agent_run_id: null, message }` rather than failing the call. Input and
+admission failures (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`,
 `ROOT_RUN_NOT_ACTIVE`) are tool errors raised before any preparation.
+`resolveMessageRecipient` (used by `send_message_to`) accepts configured members
+only.
 
 A successful Agent target creates one task Agent at the logical member's
 address. A successful AgentTeam target creates one task-scoped TeamRun and sends
@@ -553,6 +561,8 @@ Team-only events retain their own strict identities:
 - `TASK_EXECUTION_STARTED` carries the host `parent_team_run_id` and the new
   task Agent or task Team execution, including its nullable
   `delegator_agent_run_id`;
+- `COLLABORATOR_ADDED` carries a new root-level collaborator entry; it always
+  precedes the first task execution at that address;
 - `TEAM_COMMUNICATION_MESSAGE` carries exact sender/receiver addresses;
 - `MEMBER_INPUT_MESSAGE` carries its execution, optional sender, stable message
   identity, origin, and context files; and

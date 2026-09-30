@@ -262,6 +262,41 @@ conversation) before delivery; a target outside the sender's root must be
 active. See
 [Delegated Child Lifecycle](./agent_team_execution.md#delegated-child-lifecycle).
 
+## Collaborators
+
+A collaborator is a shared Agent or Agent Team definition that the user brought
+into a live run with `@` (Team runs, Org runs, and standalone Agent runs). It is
+recorded as a root-level entry in the run's execution tree (`collaborators`), at
+its own root-level address (`/code_reviewer`, `/product_team`, allocated from the
+definition name with `_2`, `_3`, … on collisions). An entry snapshots the run's
+root launch settings, and for a Team, its member layout and Team-local handoffs.
+It has no run of its own; its runs are task executions at its address.
+
+- **Admission.** A user message with `mentions` (`{kind, definition_id}[]`, at
+  most 8) is admitted by the root before it is posted: every mention is
+  re-validated by the shared candidate policy (shared, not an Org, not a
+  built-in, not already in the run), an entry is created or reused per
+  definition, and a `[Mentioned collaborators]` note with each name, kind and
+  address is appended to the message. Admission is all-or-nothing; a rejected
+  admission posts nothing. The note wording is owned by
+  `@autobyteus/agent-presentation-contracts` (`collaboratorMentionNote`).
+- **Reaching a collaborator.** Only `delegate_task` reaches a collaborator
+  address (see [Agent Tools](./agent_tools.md#server-owned-task-delegation-tool)).
+  `send_message_to` with a collaborator address is rejected with a hint to use
+  `delegate_task`, and it never allocates or records an execution. After the
+  delegation, the started instance is messaged by run ID as usual.
+- **In the run.** A collaborator counts as "in the run" once it has at least one
+  task execution; before that (for example after a failed add) it stays
+  offerable and a new mention reuses its entry and address.
+- **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
+  rootRunId)` lists the `@` options of an active or stored root from the same
+  policy: shared Agents (minus built-ins such as the Daily Assistant), then
+  shared Agent Teams, in catalog order, minus what is in the run.
+
+The shared policy, admission, entry builder, address allocator and source
+projection live in `src/agent-collaboration/collaborators/`; each root implements
+`CollaboratorRootPort`.
+
 ## Out Of Scope
 
 This module does not provide a distributed inbox, inactive-run message queue,
