@@ -16,11 +16,13 @@ import {
   objectRecord,
   parseApplicationBinding,
   parseConfiguredAgent,
+  parseCollaborators,
   parseLaunchConfiguration,
   parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
+  validateCollaboratorInvariants,
   validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
 
@@ -56,6 +58,7 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     coordinatorAddress,
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
     members,
+    collaborators: parseCollaborators(root.collaborators, "rootTeam.collaborators"),
     taskExecutions: parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
   };
 };
@@ -79,6 +82,11 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
     tree.rootTeam.members.map((member) => member.agentRunId),
     [tree.rootTeam],
   );
+  validateCollaboratorInvariants({
+    collaborators: tree.rootTeam.collaborators,
+    reservedAddresses: byAddress.keys(),
+    owners: [tree.rootTeam],
+  });
 };
 
 /**

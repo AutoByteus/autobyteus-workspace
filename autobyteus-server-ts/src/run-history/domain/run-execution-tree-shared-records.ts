@@ -1,4 +1,5 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 
 export type IsoTimestamp = string;
@@ -65,6 +66,42 @@ export type TaskTeamExecution = Readonly<{
 }>;
 
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;
+
+/**
+ * A collaborator of a run: a root-level record that makes one shared Agent definition
+ * delegable in that run, with a snapshot of the run's root launch settings. It has no run
+ * of its own; its runs are the task executions at its address.
+ * `addedViaAgentRunId` is the focused agent whose user message carried the mention.
+ */
+export type CollaboratorAgentEntry = Readonly<{
+  kind: "agent";
+  address: AgentTeamAddress;
+  agentDefinitionId: string;
+  launchConfiguration: AgentLaunchConfiguration;
+  addedAt: IsoTimestamp;
+  addedViaAgentRunId: string;
+}>;
+
+/** Layout only: the Team's members share its `defaultLaunchConfiguration`. */
+export type CollaboratorTeamMember = Readonly<{
+  address: AgentTeamAddress;
+  agentDefinitionId: string;
+}>;
+
+/** A collaborator Agent Team: its layout and rebased Team-local handoffs, snapshotted when added. */
+export type CollaboratorTeamEntry = Readonly<{
+  kind: "agent_team";
+  address: AgentTeamAddress;
+  teamDefinitionId: string;
+  coordinatorAddress: AgentTeamAddress;
+  members: readonly CollaboratorTeamMember[];
+  handoffs: readonly CollaborationHandoff[];
+  defaultLaunchConfiguration: AgentLaunchConfiguration;
+  addedAt: IsoTimestamp;
+  addedViaAgentRunId: string;
+}>;
+
+export type CollaboratorEntry = CollaboratorAgentEntry | CollaboratorTeamEntry;
 
 export type TeamRunApplicationBinding = Readonly<{
   applicationId: string;

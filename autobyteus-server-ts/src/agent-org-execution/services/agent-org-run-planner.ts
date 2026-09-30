@@ -78,7 +78,7 @@ export class AgentOrgRunPlanner {
       handoffs: new CollaborationHandoffCompiler().compileOrg(topology),
       rootOrg: { address: "/", orgDefinitionId: input.definition.id, orgDefinitionName: input.definition.name,
         orgRunId: this.identities.allocateOrg(input.definition.name), defaultLaunchConfiguration: launch.root,
-        members, taskExecutions: [] },
+        members, collaborators: [], taskExecutions: [] },
     });
   }
   static defaultOrgIdentity(name: string): string { return orgRunId(name); }

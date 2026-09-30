@@ -1,6 +1,7 @@
 import {
   parseTeamStreamServerMessage,
   type AgentLaunchConfigurationDto,
+  type CollaboratorEntryDto,
   type ConfiguredMemberExecutionDto,
   type TaskExecutionDto,
   type TaskTeamMemberExecutionDto,
@@ -11,6 +12,7 @@ import {
 } from "@autobyteus/team-stream-contracts";
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
 import type {
+  CollaboratorEntry,
   ConfiguredExecutionNode,
   RootConfiguredTeamExecutionNode,
   TaskExecution,
@@ -126,9 +128,25 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
     coordinator_address: tree.rootTeam.coordinatorAddress,
     default_launch_configuration: projectLaunchConfiguration(tree.rootTeam.defaultLaunchConfiguration),
     members: tree.rootTeam.members.map(projectConfiguredMember),
+    collaborators: tree.rootTeam.collaborators.map(projectCollaboratorEntry),
     task_executions: tree.rootTeam.taskExecutions.map(projectTaskExecution),
   },
 });
+
+export const projectCollaboratorEntry = (entry: CollaboratorEntry): CollaboratorEntryDto => entry.kind === "agent"
+  ? {
+      kind: "agent", address: entry.address, agent_definition_id: entry.agentDefinitionId,
+      launch_configuration: projectLaunchConfiguration(entry.launchConfiguration),
+      added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
+    }
+  : {
+      kind: "agent_team", address: entry.address, team_definition_id: entry.teamDefinitionId,
+      coordinator_address: entry.coordinatorAddress,
+      members: entry.members.map((member) => ({ address: member.address, agent_definition_id: member.agentDefinitionId })),
+      handoffs: entry.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
+      default_launch_configuration: projectLaunchConfiguration(entry.defaultLaunchConfiguration),
+      added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
+    };
 
 const projectConfiguredMember = (member: ConfiguredExecutionNode): ConfiguredMemberExecutionDto => {
   return {

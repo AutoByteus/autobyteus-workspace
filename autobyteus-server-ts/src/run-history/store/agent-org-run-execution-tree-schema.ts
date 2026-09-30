@@ -16,11 +16,13 @@ import {
   parseApplicationBinding,
   parseConfiguredAgent,
   parseConfiguredTeam,
+  parseCollaborators,
   parseLaunchConfiguration,
   parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
+  validateCollaboratorInvariants,
   validateConfiguredPlacementUniqueness,
   validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
@@ -55,6 +57,7 @@ const parseRootOrg = (value: unknown): RootConfiguredAgentOrgExecutionNode => {
     orgRunId: requiredString(root.orgRunId, "rootOrg.orgRunId"),
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootOrg.defaultLaunchConfiguration"),
     members,
+    collaborators: parseCollaborators(root.collaborators, "rootOrg.collaborators"),
     taskExecutions: parseTaskExecutions(root.taskExecutions, "rootOrg.taskExecutions"),
   };
 };
@@ -79,10 +82,16 @@ const validateHandoffEndpoints = (tree: AgentOrgRunExecutionTreeFile): void => {
     const effectiveTarget = agents.has(to) ? to : teams.get(to)!;
     if (from === effectiveTarget) throw new Error(`Handoff '${from}' -> '${to}' resolves back to its source Agent.`);
   }
-  validateTaskExecutionDelegators(agents.values(), [
+  const owners = [
     tree.rootOrg,
     ...members.flatMap((member) => "teamRunId" in member ? [member] : []),
-  ]);
+  ];
+  validateTaskExecutionDelegators(agents.values(), owners);
+  validateCollaboratorInvariants({
+    collaborators: tree.rootOrg.collaborators,
+    reservedAddresses: [...agents.keys(), ...teams.keys()],
+    owners,
+  });
 };
 
 /**

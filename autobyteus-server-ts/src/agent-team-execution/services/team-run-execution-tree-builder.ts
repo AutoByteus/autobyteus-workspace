@@ -51,6 +51,7 @@ export const buildInitialTeamRunExecutionTree = (input: {
       if (member.kind !== "agent") throw new Error(`Team V2 cannot contain configured Team '${member.address}'.`);
       return toAgent(member);
     }),
+    collaborators: [],
     taskExecutions: [],
   },
 }, input.config.rootTeam.teamRunId);
