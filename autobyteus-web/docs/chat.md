@@ -87,8 +87,40 @@ while thinking is on is owned by `utils/llmThinkingConfigAdapter.ts`:
 
 ### New chat placement
 
-`ChatNewSurface.vue` centres the composer block with a small upward optical bias
-(`pb-[6vh]`, previously `14vh`).
+`ChatNewSurface.vue` keeps the heading, composer and workspace hint line
+flex-centred in a column with `pt-[14vh] pb-10` padding (previously
+`pt-10 pb-[6vh]`). The larger top padding moves the group down by 10vh − 40px
+(about 56px in a 952px-tall window), which leaves room above the composer for
+its menus.
+
+### New chat menu placement
+
+On windows 640px wide or more, the New chat `@`, `/`, Workspace, Model and
+Thinking menus always open upward and never flip down. Each menu passes
+`{ placement: 'above' }` to `useAnchoredPopover`
+(`composables/popover/useAnchoredPopover.ts`).
+
+- **Position.** `@` and `/` sit 6px above the composer card and may cover the
+  heading and subtitle. Workspace, Model and Thinking sit above their trigger.
+  No menu covers the workspace hint line under the composer.
+- **Height.** Max height = min(preferred height, space above the menu's
+  containing block − 6px gap − 16px margin), measured when the menu opens.
+  Preferred heights: `@`/`/` 300px, Workspace 420px, Model 360px, Thinking
+  240px. There is no minimum height. The containing block is the popover root
+  when it is positioned, otherwise its offset parent (the composer card for `@`
+  and `/`).
+- **Scrolling.** The menu's list scrolls while header, search and footer rows
+  stay visible. The Model menu's runtime-row list has no scroll region, because
+  the menu root must not clip the side flyout; in a window shorter than about
+  330px those rows can exceed the height limit.
+- **Model runtime flyout.** It is bottom-aligned with its runtime row and grows
+  upward. Its list is limited to 320px or the space above that row, whichever is
+  smaller.
+- **Narrow windows.** Below 640px all five menus stay a bottom sheet.
+- **Default policy.** Without the option the composable uses `auto`: below when
+  the preferred height fits, otherwise the side with more room, with a 220px
+  floor. The running-conversation `/` skill menu (`useSkillTagMenu.ts`) uses
+  `auto`.
 
 ### Model labels
 
@@ -173,6 +205,11 @@ the first message (`chatDraftModelControls.ts`).
 - `components/chat/__tests__/ChatThinkingControl.spec.ts`, `chatThinkingMenu.spec.ts`,
   `ChatWorkspaceMenu.spec.ts`; `utils/__tests__/llmThinkingConfigAdapter.spec.ts`
 - Browser probe: `pnpm test:e2e:chat-composer-polish` (`tests/e2e/chat-composer-polish-probe.mjs`)
+- `composables/popover/__tests__/useAnchoredPopover.spec.ts`;
+  `components/chat/__tests__/ChatMessageInput.spec.ts`, `ChatModelMenu.spec.ts`
+- Browser probe: `pnpm test:e2e:chat-composer-menus-open-upward`
+  (`tests/e2e/chat-composer-menus-open-upward-probe.mjs`). It needs Chrome, a
+  logged-in `claude` CLI and a prior `pnpm -C autobyteus-server-ts build`.
 - `composables/chat/__tests__/useChatModelCatalog.spec.ts`
 - `components/workspace/agent/__tests__/AgentWorkspaceView.spec.ts`
 - `components/agentInput/__tests__/AgentUserInputForm.skillTagging.spec.ts`
