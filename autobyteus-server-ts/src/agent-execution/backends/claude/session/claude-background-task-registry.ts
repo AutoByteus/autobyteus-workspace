@@ -1,4 +1,9 @@
 import { asArray, asObject, asString } from "../claude-runtime-shared.js";
+import type {
+  AgentBackgroundTask,
+  AgentBackgroundTaskKind,
+  AgentBackgroundTaskStatus,
+} from "../../../domain/agent-background-task.js";
 
 /**
  * How far a completion recorded mid CLI turn has progressed towards the model:
@@ -21,6 +26,37 @@ export type ClaudeBackgroundTaskCarryOver = Readonly<{
   notes: readonly string[];
 }>;
 
+export type ClaudeBackgroundTaskChangeListener = (task: AgentBackgroundTask) => void;
+
+/**
+ * Raw CLI `task_type` -> runtime-neutral kind. Mirrors the CLI's own friendly labels
+ * (SDK 0.3.280: local_bash=shell, local_agent=subagent, local_workflow=workflow,
+ * monitor_mcp/monitor_ws=monitor); every other type is `other`.
+ */
+const toBackgroundTaskKind = (taskType: string | null): AgentBackgroundTaskKind => {
+  switch (taskType) {
+    case "local_bash":
+      return "shell";
+    case "local_agent":
+      return "subagent";
+    case "local_workflow":
+      return "workflow";
+    default:
+      return taskType?.includes("monitor") ? "monitor" : "other";
+  }
+};
+
+const TERMINAL_UPDATE_STATUSES: Readonly<Record<string, AgentBackgroundTaskStatus>> = {
+  completed: "completed",
+  failed: "failed",
+  killed: "stopped",
+};
+
+const notificationStatus = (status: string | null): AgentBackgroundTaskStatus =>
+  status === "failed" ? "failed" : status === "stopped" ? "stopped" : "completed";
+
+const nonEmpty = (value: string | null): string | null => (value && value.length > 0 ? value : null);
+
 const NO_PENDING_COMPLETION_NOTICE = "Claude started a turn on its own.";
 
 const noticeLine = (completion: BackgroundTaskCompletion): string =>
@@ -32,16 +68,25 @@ const carryOverNote = (completion: BackgroundTaskCompletion): string =>
   (completion.outputFile ? `; its output is at ${completion.outputFile}.]` : ".]");
 
 /**
- * Pure owner of the Claude CLI's background-task view: the live background set and
- * background completions the model may not have seen yet. Emits no turn events.
+ * Pure owner of the Claude CLI's background-task view: the live background set, the
+ * per-task snapshot shown to the user, and background completions the model may not
+ * have seen yet. Emits no turn events; reports every snapshot change through
+ * `onBackgroundTaskChanged`. Free of I/O: time comes from the injected clock.
  */
 export class ClaudeBackgroundTaskRegistry {
   private readonly backgroundTaskIds = new Set<string>();
   private readonly descriptions = new Map<string, string>();
+  private readonly taskTypes = new Map<string, string>();
+  private readonly view = new Map<string, AgentBackgroundTask>();
   private pending: BackgroundTaskCompletion[] = [];
   private carryOver: BackgroundTaskCompletion[] = [];
   private sequence = 0;
   private cliTurnOpen = false;
+
+  constructor(
+    private readonly onBackgroundTaskChanged: ClaudeBackgroundTaskChangeListener,
+    private readonly now: () => Date = () => new Date(),
+  ) {}
 
   /** Last assigned completion sequence; completions recorded later have a larger one. */
   get currentSequence(): number {
@@ -55,13 +100,14 @@ export class ClaudeBackgroundTaskRegistry {
   observeTaskFrame(frame: Record<string, unknown>): void {
     const subtype = asString(frame.subtype);
     if (subtype === "background_tasks_changed") {
+      // Absence from the set does not end a task: a terminal frame follows (probes J/O).
       for (const task of asArray(frame.tasks)) {
         const entry = asObject(task);
         const taskId = asString(entry?.task_id);
         if (!taskId) continue;
         this.backgroundTaskIds.add(taskId);
-        const description = asString(entry?.description);
-        if (description) this.descriptions.set(taskId, description);
+        this.recordIdentity(taskId, asString(entry?.description), asString(entry?.task_type));
+        this.enterBackground(taskId);
       }
       return;
     }
@@ -70,18 +116,28 @@ export class ClaudeBackgroundTaskRegistry {
       return;
     }
     if (subtype === "task_started") {
-      const description = asString(frame.description);
-      if (description) this.descriptions.set(taskId, description);
-      if (frame.is_backgrounded === true) this.backgroundTaskIds.add(taskId);
+      this.recordIdentity(taskId, asString(frame.description), asString(frame.task_type));
+      if (frame.is_backgrounded === true) {
+        this.backgroundTaskIds.add(taskId);
+        this.enterBackground(taskId);
+      }
       return;
     }
     if (subtype === "task_updated") {
-      if (asObject(frame.patch)?.is_backgrounded === true) this.backgroundTaskIds.add(taskId);
+      const patch = asObject(frame.patch);
+      if (patch?.is_backgrounded === true) {
+        this.backgroundTaskIds.add(taskId);
+        this.enterBackground(taskId);
+      }
+      const terminal = TERMINAL_UPDATE_STATUSES[asString(patch?.status) ?? ""];
+      if (terminal) this.finishTask(taskId, terminal, nonEmpty(asString(patch?.error)));
       return;
     }
     if (subtype === "task_notification") {
+      this.finishTask(taskId, notificationStatus(asString(frame.status)), nonEmpty(asString(frame.summary)));
       this.recordCompletion(taskId, frame);
     }
+    // task_progress is ignored: it changes no snapshot field (QR-002).
   }
 
   /** Tracks consumption of pending completions by the running CLI turn (SPINE-3). */
@@ -153,11 +209,59 @@ export class ClaudeBackgroundTaskRegistry {
 
   /** The process closed or exited; its background tasks died with it. */
   clear(): void {
+    for (const task of [...this.view.values()]) {
+      if (task.status === "running") this.publish({ ...task, status: "stopped" });
+    }
+    this.view.clear();
+    this.taskTypes.clear();
     this.backgroundTaskIds.clear();
     this.descriptions.clear();
     this.pending = [];
     this.carryOver = [];
     this.cliTurnOpen = false;
+  }
+
+  private recordIdentity(taskId: string, description: string | null, taskType: string | null): void {
+    if (description) this.descriptions.set(taskId, description);
+    if (taskType) this.taskTypes.set(taskId, taskType);
+    const task = this.view.get(taskId);
+    if (task && task.description.length === 0 && description) this.publish({ ...task, description });
+  }
+
+  /** First sight of a background task adds it as running. */
+  private enterBackground(taskId: string): void {
+    if (this.view.has(taskId)) {
+      return;
+    }
+    this.publish({
+      taskId,
+      kind: toBackgroundTaskKind(this.taskTypes.get(taskId) ?? null),
+      description: this.descriptions.get(taskId) ?? "",
+      status: "running",
+      summary: null,
+      startedAt: this.now().toISOString(),
+    });
+  }
+
+  /** Foreground tasks are never in the view, so their terminal frames change nothing. */
+  private finishTask(taskId: string, status: AgentBackgroundTaskStatus, summary: string | null): void {
+    const task = this.view.get(taskId);
+    if (!task) {
+      return;
+    }
+    if (task.status === "running") {
+      this.publish({ ...task, status, summary });
+      return;
+    }
+    if (task.summary === null && summary !== null) {
+      this.publish({ ...task, summary });
+    }
+  }
+
+  private publish(task: AgentBackgroundTask): void {
+    const snapshot = Object.freeze({ ...task });
+    this.view.set(snapshot.taskId, snapshot);
+    this.onBackgroundTaskChanged(snapshot);
   }
 
   private recordCompletion(taskId: string, frame: Record<string, unknown>): void {

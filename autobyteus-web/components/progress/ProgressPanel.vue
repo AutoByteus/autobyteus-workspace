@@ -1,14 +1,13 @@
 <template>
   <div class="h-full flex flex-col bg-white overflow-hidden">
-    <!-- Top Section: To-Do List (Goals) -->
+    <!-- Top Section: Background Tasks -->
     <div 
       class="flex flex-col transition-all duration-300 ease-in-out border-b border-gray-200"
-      :class="[ expandedSection === 'todo' ? 'flex-1 min-h-0' : 'flex-none' ]"
+      :class="[ expandedSection === 'backgroundTasks' ? 'flex-1 min-h-0' : 'flex-none' ]"
     >
-      <TodoListPanel 
-        :todos="todos" 
-        :collapsed="expandedSection !== 'todo'"
-        @toggle="toggleSection('todo')"
+      <BackgroundTaskPanel 
+        :collapsed="expandedSection !== 'backgroundTasks'"
+        @toggle="toggleSection('backgroundTasks')"
         class="h-full" 
       />
     </div>
@@ -28,26 +27,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useAgentTodoStore } from '~/stores/agentTodoStore';
-import { useActiveContextStore } from '~/stores/activeContextStore';
-import type { ToDo } from '~/types/todo';
-import TodoListPanel from '~/components/workspace/agent/TodoListPanel.vue';
+import { ref } from 'vue';
+import BackgroundTaskPanel from '~/components/progress/BackgroundTaskPanel.vue';
 import ActivityFeed from '~/components/progress/ActivityFeed.vue';
 
-const todoStore = useAgentTodoStore();
-const activeContextStore = useActiveContextStore();
+type ProgressSection = 'backgroundTasks' | 'activity';
 
-const currentAgentRunId = computed(() => activeContextStore.activeAgentContext?.state.runId ?? '');
+const expandedSection = ref<ProgressSection | null>('activity');
 
-const todos = computed(() => {
-  if (!currentAgentRunId.value) return [];
-  return todoStore.getTodos(currentAgentRunId.value);
-});
-
-const expandedSection = ref<'todo' | 'activity' | null>('activity');
-
-const toggleSection = (section: 'todo' | 'activity') => {
+const toggleSection = (section: ProgressSection) => {
   if (expandedSection.value === section) {
     expandedSection.value = null;
   } else {

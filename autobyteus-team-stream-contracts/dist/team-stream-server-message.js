@@ -34,7 +34,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
     message("TOOL_EXECUTION_FAILED", teamAgentPayloadSchemas.TOOL_EXECUTION_FAILED),
     message("TOOL_EXECUTION_INTERRUPTED", teamAgentPayloadSchemas.TOOL_EXECUTION_INTERRUPTED),
     message("TOOL_LOG", teamAgentPayloadSchemas.TOOL_LOG),
-    message("TODO_LIST_UPDATE", teamAgentPayloadSchemas.TODO_LIST_UPDATE),
+    message("BACKGROUND_TASK_UPDATED", teamAgentPayloadSchemas.BACKGROUND_TASK_UPDATED),
     message("SYSTEM_TASK_NOTIFICATION", teamAgentPayloadSchemas.SYSTEM_TASK_NOTIFICATION),
     message("ARTIFACT_PERSISTED", teamAgentPayloadSchemas.ARTIFACT_PERSISTED),
     message("FILE_CHANGE", teamAgentPayloadSchemas.FILE_CHANGE),

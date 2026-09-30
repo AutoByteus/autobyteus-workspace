@@ -1,6 +1,8 @@
 import { nextTick, ref } from 'vue';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { shallowMount } from '@vue/test-utils';
+import { createPinia, setActivePinia } from 'pinia';
+import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
 
 const setActiveTab = vi.fn();
 const selectTabExplicitly = vi.fn();
@@ -21,12 +23,6 @@ vi.mock('~/stores/activeContextStore', () => ({
     activeAgentContext: { state: { runId: 'run-1' } },
     activeConfig: null,
     get activeWorkspaceTarget() { return activeWorkspaceTarget.value; },
-  }),
-}));
-
-vi.mock('~/stores/agentTodoStore', () => ({
-  useAgentTodoStore: () => ({
-    getTodos: () => [],
   }),
 }));
 
@@ -141,6 +137,23 @@ describe('RightSideTabs', () => {
       wrapper.unmount();
     },
   );
+
+  it('does not switch tabs when a background task appears for the active run (DEC-006, REQ-010)', async () => {
+    setActivePinia(createPinia());
+    activeTab.value = 'files';
+    activeWorkspaceTarget.value = { kind: 'standalone_agent', context: { config: { workspaceId: 'ws-1' } } };
+    const wrapper = mountSubject();
+    setActiveTab.mockReset();
+
+    useAgentBackgroundTaskStore().upsertTask('run-1', {
+      taskId: 'bg-1', kind: 'shell', description: 'sleep 20', status: 'running',
+      summary: null, startedAt: '2026-09-29T16:48:20.000Z',
+    });
+    await nextTick();
+
+    expect(setActiveTab).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
 
   it('keeps the shared tab shell clipped instead of scrollable', () => {
     const wrapper = mountSubject();

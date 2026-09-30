@@ -76,7 +76,7 @@ export const toAgentPresentationProjectionMessage = (
     case 'TOOL_EXECUTION_FAILED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
     case 'TOOL_EXECUTION_INTERRUPTED': return { type: message.type, payload: { ...message.payload, arguments: jsonObject(message.payload.arguments) } };
     case 'TOOL_LOG': return { type: message.type, payload: { ...message.payload } };
-    case 'TODO_LIST_UPDATE': return { type: message.type, payload: { todos: message.payload.todos.map((todo) => ({ ...todo })) } };
+    case 'BACKGROUND_TASK_UPDATED': return { type: message.type, payload: { ...message.payload } };
     case 'SYSTEM_TASK_NOTIFICATION': return { type: message.type, payload: { sender_id: message.payload.sender.kind === 'system' ? 'system' : message.payload.sender.identity.member_address, content: message.payload.content } };
     case 'ARTIFACT_PERSISTED': return { type: message.type, payload: { id: message.payload.artifact_id, runId, path: message.payload.path, type: artifactType(message.payload.artifact_type), status: message.payload.status, description: message.payload.description, revisionId: message.payload.revision_id, createdAt: message.payload.created_at, updatedAt: message.payload.updated_at } };
     case 'FILE_CHANGE': return { type: message.type, payload: { id: message.payload.file_change_id, runId, path: message.payload.path, type: artifactType(message.payload.file_type), status: fileStatus(message.payload.status), sourceTool: fileSourceTool(message.payload.source_tool), sourceInvocationId: message.payload.source_invocation_id, content: message.payload.content, createdAt: message.payload.created_at, updatedAt: message.payload.updated_at } };
@@ -146,6 +146,6 @@ export const toAgentProjectionMessage = (message: TeamAgentProjectionMessage, ag
     case 'TOOL_EXECUTION_FAILED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), error: message.payload.error } };
     case 'TOOL_EXECUTION_INTERRUPTED': return { type: message.type, payload: { invocation_id: message.payload.invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id, arguments: jsonObject(message.payload.arguments), reason: message.payload.reason } };
     case 'TOOL_LOG': return { type: message.type, payload: { log_entry: message.payload.log_entry, tool_invocation_id: message.payload.tool_invocation_id, tool_name: message.payload.tool_name, turn_id: message.payload.turn_id } };
-    case 'TODO_LIST_UPDATE': return { type: message.type, payload: { todos: message.payload.todos.map((todo) => ({ todo_id: todo.todo_id, description: todo.description, status: todo.status })) } };
+    case 'BACKGROUND_TASK_UPDATED': return { type: message.type, payload: { task_id: message.payload.task_id, kind: message.payload.kind, description: message.payload.description, status: message.payload.status, summary: message.payload.summary, started_at: message.payload.started_at } };
   }
 };

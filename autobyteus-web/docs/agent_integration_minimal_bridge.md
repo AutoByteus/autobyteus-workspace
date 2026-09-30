@@ -79,7 +79,7 @@ These handlers update the agent context and mark messages complete. In the curre
   not a reason to replace the displayed message with a locally invented
   balance, quota, or authentication category.
 - Do not infer `running`, error recovery, or turn reopening from `SEGMENT_*`,
-  tool, inter-agent, todo, or system-task activity. Late content for a completed
+  tool, inter-agent, or system-task activity. Late content for a completed
   turn remains displayable while the member stays `idle`; lifecycle changes
   come from canonical status/boundary/error evidence.
 - Standalone `SEND_MESSAGE` payloads must include `message_id` and

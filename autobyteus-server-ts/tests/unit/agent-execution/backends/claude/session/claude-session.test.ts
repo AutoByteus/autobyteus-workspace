@@ -703,6 +703,52 @@ describe("ClaudeSession background tasks and provider-initiated turns", () => {
     expect(fake.sent[2]!.message.content).toEqual([{ type: "text", text: "again" }]);
   });
 
+  it("emits background-task snapshots while the task runs and when it finishes, never for foreground tasks (REQ-006..008)", async () => {
+    const { sdkClient, start, events } = createSession();
+    await start("build in the background");
+    const fake = sdkClient.current;
+    fake.init();
+    fake.emit(
+      { type: "system", subtype: "task_started", session_id: RESERVED_SESSION_ID, task_id: "fg-1", description: "pwd", task_type: "local_bash", is_backgrounded: false },
+      { type: "system", subtype: "task_notification", session_id: RESERVED_SESSION_ID, task_id: "fg-1", status: "completed", output_file: "/tmp/fg", summary: "fg" },
+      { type: "system", subtype: "background_tasks_changed", session_id: RESERVED_SESSION_ID, tasks: [{ task_id: "bg-1", task_type: "local_bash", description: "Sleep 20 then write marker" }] },
+      { type: "system", subtype: "task_started", session_id: RESERVED_SESSION_ID, task_id: "bg-1", description: "Sleep 20 then write marker", task_type: "local_bash", is_backgrounded: true },
+    );
+    fake.assistantText("started");
+    fake.result([fake.sent[0]!.uuid]);
+    await flushClaudeSession();
+    fake.emit(
+      { type: "system", subtype: "background_tasks_changed", session_id: RESERVED_SESSION_ID, tasks: [] },
+      { type: "system", subtype: "task_notification", session_id: RESERVED_SESSION_ID, task_id: "bg-1", status: "completed", output_file: "/tmp/bg-1.out", summary: "Background command completed (exit code 0)" },
+    );
+    await flushClaudeSession();
+
+    const snapshots = events.filter((event) => event.method === ClaudeSessionEventName.BACKGROUND_TASK_UPDATED)
+      .map((event) => [event.params?.task_id, event.params?.kind, event.params?.status, event.params?.summary]);
+    expect(snapshots).toEqual([
+      ["bg-1", "shell", "running", null],
+      ["bg-1", "shell", "completed", "Background command completed (exit code 0)"],
+    ]);
+  });
+
+  it("keeps a background task running across a turn-level Stop (MP-003)", async () => {
+    const { session, sdkClient, start, events } = createSession();
+    const turnId = acceptedTurnId(await start("start then stop"));
+    const fake = sdkClient.current;
+    fake.init();
+    fake.emit({ type: "system", subtype: "background_tasks_changed", session_id: RESERVED_SESSION_ID, tasks: [{ task_id: "bg-2", task_type: "local_bash", description: "server" }] });
+    await flushClaudeSession();
+    fake.interruptOutcomes.push((current) => {
+      queueMicrotask(() => current.emit({ type: "result", subtype: "error_during_execution", session_id: RESERVED_SESSION_ID, user_message_uuids: [current.sent[0]!.uuid], terminal_reason: "aborted_tools", is_error: true }));
+      return { stillQueued: [], cancelled: [] };
+    });
+
+    await session.interrupt(turnId);
+
+    expect(events.filter((event) => event.method === ClaudeSessionEventName.BACKGROUND_TASK_UPDATED)
+      .map((event) => event.params?.status)).toEqual(["running"]);
+  });
+
   it("does not announce foreground task notifications (probe J)", async () => {
     const { sdkClient, start, methods } = createSession();
     await start("foreground");
@@ -772,6 +818,24 @@ describe("ClaudeSession process lifetime", () => {
       accepted: false,
       code: "CLAUDE_SESSION_CLOSED",
     });
+  });
+
+  it.each([
+    ["terminate cleanup", async (session: ClaudeSession) => { await session.closeProcess("closed"); }],
+    ["unexpected exit", async (_session: ClaudeSession, fake: { fail: (error: Error) => void }) => { fake.fail(new Error("killed")); }],
+  ] as const)("marks still-running background tasks stopped on %s (REQ-009, AC-011)", async (_label, end) => {
+    const { session, sdkClient, start, events } = createSession();
+    await start("background");
+    const fake = sdkClient.current;
+    fake.init();
+    fake.emit({ type: "system", subtype: "background_tasks_changed", session_id: RESERVED_SESSION_ID, tasks: [{ task_id: "bg-3", task_type: "local_agent", description: "Research" }] });
+    await flushClaudeSession();
+
+    await end(session, fake);
+    await flushClaudeSession();
+
+    expect(events.filter((event) => event.method === ClaudeSessionEventName.BACKGROUND_TASK_UPDATED)
+      .map((event) => [event.params?.kind, event.params?.status])).toEqual([["subagent", "running"], ["subagent", "stopped"]]);
   });
 
   it("closes an idle open process without emitting turn events", async () => {

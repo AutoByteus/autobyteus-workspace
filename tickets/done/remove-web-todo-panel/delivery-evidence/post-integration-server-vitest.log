@@ -1,0 +1,237 @@
+
+[1m[46m RUN [49m[22m [36mv4.0.18 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-turn-lifecycle.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 140[2mms[22m[39m
+[90mstdout[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstderr[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22m[2mClaudeSession streaming lifecycle[2m > [22m[2mcloses the opened process and fails the turn when system-instruction persistence fails
+[22m[39mClaude input for run 'run-1' failed before send: Error: persist failed
+    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:241:36)
+    at Object.Mock [as capture] (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/@vitest+spy@4.0.18/node_modules/@vitest/spy/dist/index.js:285:34)
+    at captureClaudeSystemInstructions (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-system-instruction-capture.ts:14:75)
+    at ClaudeSession.openStreamingSession (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:361:7)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:104:17)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:215:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:123:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:248:20
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+[90mstderr[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22m[2mClaudeSession streaming lifecycle[2m > [22m[2menriches a failed process open with bounded redacted stderr diagnostics
+[22m[39mClaude input for run 'run-1' failed before send: Error: Claude Code process exited with code 1
+Claude Code diagnostics:
+Authorization: Bearer [redacted]
+ANTHROPIC_API_KEY=[redacted]
+--dangerously-skip-permissions cannot be used with root/sudo privileges for security reasons
+    at enrichClaudeRuntimeErrorWithDiagnostics (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-process-diagnostics.ts:79:10)
+    at ClaudeSessionProcess.open (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:107:13)
+    at ClaudeSession.submitInput (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:215:7)
+    at start (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:123:20)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:335:5
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+[90mstderr[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22m[2mClaudeSession process lifetime[2m > [22m[2mfails the active turn visibly on an unexpected exit and reopens with resume on the next input (AC-009)
+[22m[39mClaude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:773:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+[90mstderr[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22m[2mClaudeSession process lifetime[2m > [22m[2mtreats a conflicting provider UUID as fatal for the process and fails the active turn
+[22m[39mClaude process for run 'run-1' exited: Error: CLAUDE_PROVIDER_SESSION_ID_CONFLICT: Claude returned a different provider session identity.
+    at ClaudeProviderSessionLifecycle.confirmProviderSessionId (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.ts:82:13)
+    at ClaudeSession.handleFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:396:37)
+    at Object.onFrame (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts:116:32)
+    at ClaudeSessionProcess.runPump (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-process.ts:127:26)
+
+[90mstderr[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22m[2mClaudeSession process lifetime[2m > [22m[2mmarks still-running background tasks stopped on unexpected exit (REQ-009, AC-011)
+[22m[39mClaude process for run 'run-1' exited: Error: killed
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:825:112
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:834:11
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+[90mstderr[2m | tests/unit/agent-execution/backends/claude/session/claude-session.test.ts[2m > [22m[2mClaudeSession token usage[2m > [22m[2mmarks the first observation after a reopen following an unexpected exit, but never a create generation
+[22m[39mClaude process for run 'run-1' exited: Error: Claude Code process terminated by signal SIGKILL
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-server-ts/tests/unit/agent-execution/backends/claude/session/claude-session.test.ts:943:16
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/node_modules/.pnpm/@vitest+runner@4.0.18/node_modules/@vitest/runner/dist/index.js:915:20
+
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-session.test.ts [2m([22m[2m41 tests[22m[2m)[22m[32m 69[2mms[22m[39m
+[90mstderr[2m | tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts[2m > [22m[2mCodex reasoning block conversion[2m > [22m[2mrejects a completed reasoning snapshot without exact turn identity
+[22m[39m[CodexSegmentTurnAdmissionRejected] {
+  runtimeKind: [32m'codex_app_server'[39m,
+  runId: [32m'run-1'[39m,
+  nativeEventName: [32m'item/completed'[39m,
+  reasonCode: [32m'CODEX_SEGMENT_TURN_INACTIVE'[39m
+}
+
+[90mstderr[2m | tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts[2m > [22m[2mCodex reasoning block conversion[2m > [22m[2mpreserves for in-place or no-effect event: thread tokens
+[22m[39mRun 'run-1': Codex token-usage update for turn 'turn-1' did not include usable token counts.
+
+ [32m✓[39m tests/unit/agent-execution/backends/codex/events/codex-reasoning-block-converter.test.ts [2m([22m[2m51 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to a run identity and sends CONNECTED plus projected status without restoring runtime
+[22m[39mCreated agent session efc0c239-53a4-4348-a91d-b1b68ea106f9 for run agent-123
+Agent WebSocket connected: session=efc0c239-53a4-4348-a91d-b1b68ea106f9, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mconnects to run events through the AgentRun subject for active runtime-managed runs
+[22m[39mCreated agent session d269dbaf-6ba8-4851-bb66-e06983c4b456 for run runtime-run-1
+Agent WebSocket connected: session=d269dbaf-6ba8-4851-bb66-e06983c4b456, run=runtime-run-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps Codex AgentRunEvents directly to websocket messages for single-agent runs
+[22m[39mCreated agent session 15b84009-b4aa-47a0-8005-193eba5834f5 for run runtime-run-2
+Agent WebSocket connected: session=15b84009-b4aa-47a0-8005-193eba5834f5, run=runtime-run-2
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps turn lifecycle AgentRunEvents directly to websocket messages
+[22m[39mCreated agent session 9ac76bda-8ce5-487c-9dc5-a705347b6325 for run runtime-run-3
+Agent WebSocket connected: session=9ac76bda-8ce5-487c-9dc5-a705347b6325, run=runtime-run-3
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mregisters the websocket connection for run-scoped live message broadcasts
+[22m[39mCreated agent session 515fb001-3d9f-49ff-b43f-6d39fc6517bf for run agent-123
+Agent WebSocket connected: session=515fb001-3d9f-49ff-b43f-6d39fc6517bf, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mpublishes terminal offline status to an already-connected websocket when a run terminates
+[22m[39mCreated agent session 7f60549f-2a1c-4a2b-9ac9-989fc3cf6306 for run run-terminate-1
+Agent WebSocket connected: session=7f60549f-2a1c-4a2b-9ac9-989fc3cf6306, run=run-terminate-1
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles SEND_MESSAGE through the command coordinator and returns an ACK
+[22m[39mCreated agent session 172d10e0-b073-4900-b5d1-68f247587d20 for run agent-123
+Agent WebSocket connected: session=172d10e0-b073-4900-b5d1-68f247587d20, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mdefers runtime binding on identity-only connect until SEND_MESSAGE activates through the coordinator
+[22m[39mCreated agent session ce8055c1-dda7-4745-8208-adaa34c954b8 for run agent-123
+Agent WebSocket connected: session=ce8055c1-dda7-4745-8208-adaa34c954b8, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mCreated agent session d69c79a1-bdf3-4751-bbc5-7a9ea165b8cb for run agent-123
+Agent WebSocket connected: session=d69c79a1-bdf3-4751-bbc5-7a9ea165b8cb, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mkeeps interrupt-generation active-only and does not activate a stopped agent run
+[22m[39mINTERRUPT_GENERATION rejected for missing agent run agent-123.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mreturns exactly one same-socket acknowledgement for an accepted interrupt
+[22m[39mCreated agent session 0f6e194b-0164-4172-a4a6-30305a354a76 for run agent-123
+Agent WebSocket connected: session=0f6e194b-0164-4172-a4a6-30305a354a76, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mrejects an empty interrupt command id before runtime execution
+[22m[39mCreated agent session 532711a5-55fd-4f10-91b3-40f06da09740 for run agent-123
+Agent WebSocket connected: session=532711a5-55fd-4f10-91b3-40f06da09740, run=agent-123
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mCreated agent session b42a52ea-f278-48bd-ba3b-3727a3a2579b for run agent-123
+Agent WebSocket connected: session=b42a52ea-f278-48bd-ba3b-3727a3a2579b, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mmaps interrupt provider failures without emitting lifecycle status
+[22m[39mINTERRUPT_GENERATION rejected for agent run agent-123: [PROVIDER_REJECTED] Cannot interrupt now.
+
+[90mstdout[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mhandles tool approvals for active sessions
+[22m[39mCreated agent session d0d26b86-8536-4c68-b543-1c3170321b04 for run agent-123
+Agent WebSocket connected: session=d0d26b86-8536-4c68-b543-1c3170321b04, run=agent-123
+
+[90mstderr[2m | tests/unit/services/agent-streaming/agent-stream-handler.test.ts[2m > [22m[2mAgentStreamHandler[2m > [22m[2mignores messages for unknown sessions
+[22m[39mMessage for unknown session: missing
+
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-handler.test.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts [2m([22m[2m35 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-task-exit-message-reader.test.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/antigravity/agy-background-task-monitor.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts [2m([22m[2m33 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-turn-tracker.test.ts [2m([22m[2m26 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/domain/agent-background-task.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 9[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-team-execution/team-agent-background-task-admission.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/backends/claude/session/claude-background-task-registry.test.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+ [32m✓[39m tests/unit/agent-execution/events/lifecycle-status-event-transformer.test.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/services/agent-streaming/agent-stream-broadcaster.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m14 passed[39m[22m[90m (14)[39m
+[2m      Tests [22m [1m[32m278 passed[39m[22m[90m (278)[39m
+[2m   Start at [22m 10:56:23
+[2m   Duration [22m 6.94s[2m (transform 2.78s, setup 69ms, import 4.74s, tests 329ms, environment 1ms)[22m
+

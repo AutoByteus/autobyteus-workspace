@@ -1,7 +1,9 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const readAgyNativeImagePath = vi.hoisted(() => vi.fn());
 vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-step-output-reader.js", () => ({ readAgyNativeImagePath }));
+const scanAgyTaskExitMessages = vi.hoisted(() => vi.fn());
+vi.mock("../../../../../src/agent-execution/backends/antigravity/stream/agy-task-exit-message-reader.js", () => ({ scanAgyTaskExitMessages }));
 
 import { AgyAgentRunBackend } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
@@ -50,6 +52,11 @@ const setup = () => {
   backend.subscribeToSourceEventBatches(async (batch) => { events.push(...batch); });
   return { process, backend, events };
 };
+
+beforeEach(() => {
+  scanAgyTaskExitMessages.mockReset();
+  scanAgyTaskExitMessages.mockReturnValue({ settledFiles: [], exits: [], problem: null });
+});
 
 describe("AGY ordinary turn lifecycle", () => {
   it("publishes native DONE with the AGY step-output path for this conversation and the normal AGY reply, then accepts another turn", async () => {
@@ -139,5 +146,67 @@ describe("AGY ordinary turn lifecycle", () => {
     interrupt.process.emit(imageDone());
     await waitFor(() => interrupt.events.some((item) => item.eventType === AgentRunEventType.TURN_INTERRUPTED));
     expect(interrupt.events.some((item) => item.eventType === AgentRunEventType.TOOL_EXECUTION_SUCCEEDED)).toBe(false);
+  });
+});
+
+describe("AGY daemon background tasks (REQ-011)", () => {
+  const daemon = (): AgyStreamMessage => ({ event: "step_update", step_update: {
+    conversation_id: conversationId, step_index: 2, step_type: "tool", state: "ACTIVE", tool_name: "run_command",
+    tool_info: { parameters: { CommandLine: "python3 -m http.server" } },
+  } });
+  const taskUpdates = (events: AgentRunEvent[]) => events
+    .filter((item) => item.eventType === AgentRunEventType.BACKGROUND_TASK_UPDATED)
+    .map((item) => [item.payload.task_id, item.payload.kind, item.payload.status, item.statusHint]);
+  const startDaemonTurn = async () => {
+    const run = setup();
+    await start(run.backend, "start a dev server");
+    run.process.emit(daemon());
+    run.process.emit(result("SUCCESS", "Dev server started."));
+    await waitFor(() => taskUpdates(run.events).length > 0);
+    return run;
+  };
+
+  it("lists the daemon as running after the turn completes and completes it from AGY's exit message", async () => {
+    scanAgyTaskExitMessages.mockReturnValue({ settledFiles: ["m.json"], problem: null,
+      exits: [{ stepIndex: 2, exitCode: 0, summary: "The command exited with code 0." }] });
+    const run = await startDaemonTurn();
+    await waitFor(() => taskUpdates(run.events).length === 2);
+
+    const types = run.events.map((item) => item.eventType);
+    expect(types.indexOf(AgentRunEventType.TURN_COMPLETED)).toBeLessThan(types.indexOf(AgentRunEventType.BACKGROUND_TASK_UPDATED));
+    expect(taskUpdates(run.events)).toEqual([
+      [`${conversationId}/task-2`, "shell", "running", null],
+      [`${conversationId}/task-2`, "shell", "completed", null],
+    ]);
+    expect(scanAgyTaskExitMessages.mock.calls[0]?.[0]).toBe(conversationId);
+  });
+
+  it("delivers stopped snapshots before terminate resolves (AR-REC-003, AC-013c)", async () => {
+    const run = await startDaemonTurn();
+
+    await run.backend.terminate();
+
+    expect(taskUpdates(run.events)).toEqual([
+      [`${conversationId}/task-2`, "shell", "running", null],
+      [`${conversationId}/task-2`, "shell", "stopped", null],
+    ]);
+  });
+
+  it("marks the daemon stopped when a later turn is interrupted", async () => {
+    const run = await startDaemonTurn();
+    const next = await start(run.backend, "second");
+
+    await run.backend.interrupt(next.turnId ?? null);
+
+    expect(taskUpdates(run.events).map((row) => row[2])).toEqual(["running", "stopped"]);
+  });
+
+  it("marks the daemon stopped when the AGY process closes on its own", async () => {
+    const run = await startDaemonTurn();
+
+    run.process.close();
+    await waitFor(() => taskUpdates(run.events).length === 2);
+
+    expect(taskUpdates(run.events).map((row) => row[2])).toEqual(["running", "stopped"]);
   });
 });

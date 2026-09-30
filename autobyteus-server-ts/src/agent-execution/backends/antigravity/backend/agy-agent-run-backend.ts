@@ -10,11 +10,14 @@ import { AgyStreamEventConverter } from "../stream/agy-stream-event-converter.js
 import { recordAgyProviderDiagnostic } from "../stream/agy-provider-diagnostic-sink.js";
 import { readAgyNativeImagePath } from "../stream/agy-step-output-reader.js";
 import type { AgyStreamMessage } from "../stream/agy-stream-message.js";
+import { AgyBackgroundTaskMonitor } from "../stream/agy-background-task-monitor.js";
+import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTask } from "../../../domain/agent-background-task.js";
 
 export class AgyAgentRunBackend implements AgentRunBackend {
   readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   private readonly listeners = new Set<AgentRunSourceEventBatchListener>();
   private readonly converter: AgyStreamEventConverter;
+  private readonly backgroundTasks: AgyBackgroundTaskMonitor;
   private eventQueue: Promise<void> = Promise.resolve();
   private active = true;
   private processAlive = true;
@@ -24,13 +27,17 @@ export class AgyAgentRunBackend implements AgentRunBackend {
 
   constructor(private readonly context: AgyRunContext, private readonly process: AgyStreamProcess) {
     const conversationId = context.runtimeContext.conversationId;
+    // Background-task changes arrive between turns, so they bypass turn-scoped message handling.
+    this.backgroundTasks = new AgyBackgroundTaskMonitor({ runId: context.runId, conversationId,
+      emit: (tasks) => this.enqueue(() => this.deliver(tasks.map((task) => this.backgroundTaskEvent(task)))) });
     this.converter = new AgyStreamEventConverter(context.runId, conversationId, context.config.llmModelIdentifier,
       (diagnostic) => {
         if (!context.config.memoryDir) return;
         void recordAgyProviderDiagnostic(context.config.memoryDir, diagnostic)
           .catch(() => console.warn(`AGY_PROVIDER_DIAGNOSTIC_WRITE_FAILED: run=${context.runId}`));
       },
-      (stepIndex) => readAgyNativeImagePath(conversationId, stepIndex));
+      (stepIndex) => readAgyNativeImagePath(conversationId, stepIndex),
+      (steps) => this.backgroundTasks.track(steps));
     process.subscribe((message) => {
       if (message.event === "init") return;
       this.enqueue(() => this.handleMessage(message));
@@ -68,6 +75,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
         this.cancelled = true; this.active = false; this.processAlive = false; this.phase = "error";
         this.process.stop();
         this.enqueue(async () => { await this.deliver(this.converter.interrupt()); this.turnId = null; });
+        this.backgroundTasks.stopAll();
       }
       await this.eventQueue;
       return { forwarded: false, code: "RUNTIME_COMMAND_FAILED", message: "Antigravity could not accept this message.", turnId: null };
@@ -86,6 +94,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
       await this.deliver(this.converter.interrupt());
       this.turnId = null; this.phase = "error";
     });
+    this.backgroundTasks.stopAll();
     await this.eventQueue;
     return { accepted: true, turnId };
   }
@@ -93,6 +102,7 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   async terminate(): Promise<AgentOperationResult> {
     if (this.turnId) return this.interrupt(this.turnId);
     this.active = false; this.processAlive = false; this.process.stop();
+    this.backgroundTasks.stopAll();
     await this.eventQueue;
     return { accepted: true };
   }
@@ -117,12 +127,19 @@ export class AgyAgentRunBackend implements AgentRunBackend {
       // Source-listener failures stop this backend; the app still owns public delivery.
       this.active = false; this.processAlive = false; this.phase = "error";
       this.process.stop();
+      this.backgroundTasks.stopAll();
     });
+  }
+
+  private backgroundTaskEvent(task: AgentBackgroundTask): AgentRunEvent {
+    return { eventType: AgentRunEventType.BACKGROUND_TASK_UPDATED, runId: this.runId,
+      payload: buildBackgroundTaskUpdatedPayload(task), statusHint: null };
   }
 
   private handleClose(): void {
     if (!this.processAlive) return;
     this.processAlive = false;
+    this.backgroundTasks.stopAll();
     if (this.cancelled) return;
     this.enqueue(async () => {
       if (!this.turnId) { this.active = false; this.phase = "error"; return; }

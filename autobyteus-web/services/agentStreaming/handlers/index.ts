@@ -31,8 +31,8 @@ export {
 } from './memberInputMessageHandler';
 
 export {
-  handleTodoListUpdate,
-} from './todoHandler';
+  handleBackgroundTaskUpdated,
+} from './backgroundTaskHandler';
 
 export {
   handleSystemTaskNotification,

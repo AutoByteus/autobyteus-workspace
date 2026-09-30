@@ -58,9 +58,9 @@ team streams enrich child agent events, Team Communication messages, task-agent
 and task-team status metadata, scoped child identity, and reference-file entries
 under `autobyteus-server-ts`.
 Agent-level events can still include generic `SYSTEM_TASK_NOTIFICATION` items.
-Backend-owned progress events such as server `TODO_LIST_UPDATE` remain a
-server/Codex contract; `autobyteus-ts` no longer emits a native TODO stream
-item. These are not native team task-plan events.
+`autobyteus-ts` emits no native TODO or background-task stream items. The
+server-owned `BACKGROUND_TASK_UPDATED` event (Claude and Antigravity background
+tasks) is a server contract, not a native team task-plan event.
 
 ## Server-Owned Task Delegation
 

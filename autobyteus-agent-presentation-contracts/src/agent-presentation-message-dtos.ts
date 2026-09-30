@@ -22,6 +22,12 @@ const status = {
 const executionIdentity = z.object({ agent_run_id: nonEmptyStringSchema, member_address: agentAddressSchema }).strict();
 const contextPath = z.object({ path: nonEmptyStringSchema, type: nullableNonEmptyStringSchema }).strict();
 
+/** Runtime-neutral background-task vocabulary; runtime-specific task types are mapped by each server backend. */
+export const backgroundTaskKindSchema = z.enum(["shell", "subagent", "monitor", "workflow", "other"]);
+export const backgroundTaskStatusSchema = z.enum(["running", "completed", "failed", "stopped"]);
+export type BackgroundTaskKind = z.infer<typeof backgroundTaskKindSchema>;
+export type BackgroundTaskStatus = z.infer<typeof backgroundTaskStatusSchema>;
+
 const token = {
   usage_event_id: nonEmptyStringSchema, idempotency_key: nonEmptyStringSchema, observed_at: nonEmptyStringSchema,
   turn_id: turnId, llm_call_id: nullableNonEmptyStringSchema, model_provider: nullableNonEmptyStringSchema,
@@ -86,7 +92,7 @@ export const agentPresentationPayloadSchemas = {
   TOOL_EXECUTION_FAILED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), error: nonEmptyStringSchema }).strict(),
   TOOL_EXECUTION_INTERRUPTED: z.object({ ...toolCore, arguments: jsonValueSchema.nullable(), reason: nonEmptyStringSchema }).strict(),
   TOOL_LOG: z.object({ log_entry: z.string(), tool_invocation_id: nonEmptyStringSchema, tool_name: nonEmptyStringSchema, turn_id: turnId }).strict(),
-  TODO_LIST_UPDATE: z.object({ todos: z.array(z.object({ todo_id: nonEmptyStringSchema, description: z.string(), status: z.enum(["pending", "in_progress", "done"]) }).strict()) }).strict(),
+  BACKGROUND_TASK_UPDATED: z.object({ task_id: nonEmptyStringSchema, kind: backgroundTaskKindSchema, description: z.string(), status: backgroundTaskStatusSchema, summary: z.string().nullable(), started_at: nonEmptyStringSchema }).strict(),
   SYSTEM_TASK_NOTIFICATION: z.object({ sender: z.union([z.object({ kind: z.literal("system") }).strict(), z.object({ kind: z.literal("execution"), identity: executionIdentity }).strict()]), content: z.string() }).strict(),
   ARTIFACT_PERSISTED: z.object({ artifact_id: nonEmptyStringSchema, path: nonEmptyStringSchema, artifact_type: nonEmptyStringSchema, status: z.literal("available"), description: z.string().nullable(), revision_id: nonEmptyStringSchema, created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }).strict(),
   FILE_CHANGE: z.object({ file_change_id: nonEmptyStringSchema, path: nonEmptyStringSchema, file_type: nonEmptyStringSchema, status: nonEmptyStringSchema, source_tool: nonEmptyStringSchema, source_invocation_id: nullableNonEmptyStringSchema, content: z.string().nullable(), created_at: nonEmptyStringSchema, updated_at: nonEmptyStringSchema }).strict(),

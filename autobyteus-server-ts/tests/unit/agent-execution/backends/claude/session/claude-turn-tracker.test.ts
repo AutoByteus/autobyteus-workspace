@@ -42,7 +42,7 @@ const createTracker = () => {
     turnSettled: (turnId, settlement) => log.push(["settled", turnId, settlement.kind]),
     anomaly: (frameKind) => log.push(["anomaly", frameKind]),
   };
-  const registry = new ClaudeBackgroundTaskRegistry();
+  const registry = new ClaudeBackgroundTaskRegistry(() => undefined);
   const tracker = new ClaudeTurnTracker({
     runId: "run-1",
     listener,

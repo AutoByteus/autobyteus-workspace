@@ -24,9 +24,10 @@ set. Server team runs publish dedicated task domain events through
 exposes as `TASK_DELEGATION_EVENT`. See
 `autobyteus-server-ts/docs/modules/agent_team_execution.md`.
 
-## Backend-Owned TODO Progress
+## Backend-Owned Background Tasks
 
-`autobyteus-ts` does not emit native personal ToDo stream events. Backend-owned
-progress events such as Codex `TODO_LIST_UPDATE` remain a server-level event
-and WebSocket contract, outside this native stream package. The existing web
-TODO panel continues to consume that server-owned path.
+`autobyteus-ts` does not emit native ToDo or background-task stream events.
+Background tasks that a runtime keeps running beyond its turn (Claude and
+Antigravity) are reported by the server as `BACKGROUND_TASK_UPDATED`, a
+server-level event and WebSocket contract outside this native stream package.
+The web Activity tab shows them in its Background Tasks section.

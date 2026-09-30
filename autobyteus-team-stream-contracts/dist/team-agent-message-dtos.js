@@ -32,7 +32,7 @@ export const teamAgentPayloadSchemas = {
     TOOL_EXECUTION_FAILED: withExecution(agentPresentationPayloadSchemas.TOOL_EXECUTION_FAILED),
     TOOL_EXECUTION_INTERRUPTED: withExecution(agentPresentationPayloadSchemas.TOOL_EXECUTION_INTERRUPTED),
     TOOL_LOG: withExecution(agentPresentationPayloadSchemas.TOOL_LOG),
-    TODO_LIST_UPDATE: withExecution(agentPresentationPayloadSchemas.TODO_LIST_UPDATE),
+    BACKGROUND_TASK_UPDATED: withExecution(agentPresentationPayloadSchemas.BACKGROUND_TASK_UPDATED),
     SYSTEM_TASK_NOTIFICATION: withExecution(agentPresentationPayloadSchemas.SYSTEM_TASK_NOTIFICATION),
     ARTIFACT_PERSISTED: withExecution(agentPresentationPayloadSchemas.ARTIFACT_PERSISTED),
     FILE_CHANGE: withExecution(agentPresentationPayloadSchemas.FILE_CHANGE),

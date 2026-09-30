@@ -1,0 +1,5 @@
+
+> autobyteus@1.4.92-beta.2 test:e2e:background-tasks-panel /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-web
+> node tests/e2e/background-tasks-panel-probe.mjs
+
+Background tasks browser probe passed. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-web/test-results/background-tasks-panel/evidence.json

@@ -20,6 +20,7 @@ import type {
   AgentRunFileChangeStatus,
 } from "../../../agent-execution/domain/agent-run-file-change.js";
 import type { TokenUsageRunSummaryPayload } from "../../../agent-execution/domain/agent-run-token-usage.js";
+import { parseBackgroundTaskUpdatedPayload } from "../../../agent-execution/domain/agent-background-task.js";
 
 export type AgentRunPresentationAdaptationResult =
   | Readonly<{ kind: "publish"; event: AgentPresentationEvent }>
@@ -345,17 +346,8 @@ export class AgentRunPresentationAdapter {
         return correlated({ eventType: "TOOL_EXECUTION_INTERRUPTED", details: { invocationId: required(raw(p, "invocation_id", "invocationId"), "invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")), arguments: json(p.arguments), reason: required(p.reason, "reason") }, statusHint: hint });
       case AgentRunEventType.TOOL_LOG:
         return correlated({ eventType: "TOOL_LOG", details: { logEntry: stringValue(raw(p, "log_entry", "logEntry")), toolInvocationId: required(raw(p, "tool_invocation_id", "toolInvocationId"), "tool_invocation_id"), toolName: required(raw(p, "tool_name", "toolName"), "tool_name"), turnId: text(raw(p, "turn_id", "turnId")) }, statusHint: hint });
-      case AgentRunEventType.TODO_LIST_UPDATE: {
-        const entries = Array.isArray(p.todos) ? p.todos : [];
-        const todos = entries.map((entry) => {
-          if (!isRecord(entry)) throw new Error("todos contains an invalid entry");
-          const item = entry;
-          const status = item.status;
-          if (status !== "pending" && status !== "in_progress" && status !== "done") throw new Error("todo status is invalid");
-          return Object.freeze({ todoId: required(raw(item, "todo_id", "todoId"), "todo_id"), description: stringValue(item.description), status });
-        });
-        return correlated({ eventType: "TODO_LIST_UPDATE", details: { todos: Object.freeze(todos) }, statusHint: hint });
-      }
+      case AgentRunEventType.BACKGROUND_TASK_UPDATED:
+        return correlated({ eventType: "BACKGROUND_TASK_UPDATED", details: parseBackgroundTaskUpdatedPayload(p), statusHint: hint });
       case AgentRunEventType.SYSTEM_TASK_NOTIFICATION: {
         const senderRunId = text(raw(p, "sender_run_id", "senderRunId"));
         const sender = senderRunId

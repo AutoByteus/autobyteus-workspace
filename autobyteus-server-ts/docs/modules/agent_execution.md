@@ -385,7 +385,7 @@ identified/anonymous/retired turn state:
 - Duplicate boundaries and boundaries for an already retired turn are
   idempotent lifecycle no-ops. A terminal boundary for turn A cannot close a
   newer active turn B.
-- Ordinary segment, tool, inter-agent, todo, and system-task activity remains
+- Ordinary segment, tool, inter-agent, and system-task activity remains
   observable but cannot establish or reopen a turn. Same-turn activity may only
   recover an `error` projection when it carries the current identified, still
   open turn id.
@@ -532,6 +532,26 @@ the model has not seen. A turn the CLI starts itself is preceded by a
 example `Background task completed: <description> (<status>)`. Agent memory
 records these notices, and only these, as `system_task_notification` traces,
 and run-history replay shows them in the conversation.
+
+The registry also owns the live Background Tasks view. A task enters it when the
+CLI lists it in `background_tasks_changed`, reports `task_started` with
+`is_backgrounded: true`, or moves it to the background (`task_updated`
+`patch.is_backgrounded`); foreground tasks never appear. A terminal
+`task_updated` (`completed`, `failed`, `killed` → `stopped`) or
+`task_notification` (`completed`, `failed`, `stopped`, with `summary`) finishes
+it; `task_progress` is ignored. When the process closes or exits, running tasks
+become `stopped`. A turn-level Stop leaves them running, because the CLI keeps
+them alive. Raw `task_type` maps to the shared kind: `local_bash` → `shell`,
+`local_agent` → `subagent`, `local_workflow` → `workflow`, `monitor_*` →
+`monitor`, anything else → `other`. Every change is emitted as one
+`BACKGROUND_TASK_UPDATED` snapshot.
+
+`BACKGROUND_TASK_UPDATED` (`agent-execution/domain/agent-background-task.ts`)
+is the runtime-neutral background-task event: `{task_id, kind, description,
+status, summary, started_at}`, a full snapshot of one task applied as an upsert
+by `task_id`. Claude and Antigravity produce it. It usually arrives between
+turns, so it is not turn activity (it is not in `ACTIVITY_EVENT_TYPES` and
+never changes run status), and it is not persisted in memory or run history.
 
 Image context files are sent inline as image content blocks. The Codex and
 Claude paths share `agent-execution/shared/context-image-source.ts`. Local
