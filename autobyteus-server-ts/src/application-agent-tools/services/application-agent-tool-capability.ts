@@ -113,8 +113,9 @@ class SealedApplicationAgentToolCapability implements ApplicationAgentToolCapabi
     if (memberIdentity && memberIdentity.agentRunId !== sender.senderRunId) {
       throw new Error("Application Team producer identity is inconsistent.");
     }
-    if (memberIdentity?.root.rootSubjectKind === "agent_org") {
-      throw new Error("Application execution scopes do not admit AgentOrg producers.");
+    // Application-owned runs never join AgentOrg or Agent roots (their collaborators are excluded).
+    if (memberIdentity && memberIdentity.root.rootSubjectKind !== "agent_team") {
+      throw new Error(`Application execution scopes do not admit ${memberIdentity.root.rootSubjectKind} producers.`);
     }
     return Object.freeze({
       applicationId: executionContext.applicationId,

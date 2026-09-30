@@ -53,6 +53,7 @@ import { AgentOrgRunHistoryCatalogService } from "../../run-history/services/age
 import { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { CollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
+import { AgentRunCollaborationLocationService } from "../../agent-run-collaboration/services/agent-run-collaboration-location-service.js";
 
 export type GeneralProcessRunSupervisorInput = Readonly<{
   memoryDir: string;
@@ -118,6 +119,7 @@ export class GeneralProcessRunSupervisor {
     const collaborationLocations = new CollaborationExecutionLocationService({
       teams: storedTeamLocations,
       orgs: storedOrgLocations,
+      agents: new AgentRunCollaborationLocationService({ memoryDir }),
     });
     let agentRunManager: AgentRunManager | null = null;
     let agentTeamRunManager: AgentTeamRunManager | null = null;
