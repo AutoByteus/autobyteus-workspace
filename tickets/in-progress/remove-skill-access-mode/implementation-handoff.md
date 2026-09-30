@@ -37,7 +37,7 @@ Commits on `codex/remove-skill-access-mode` (base `origin/personal` @ `57df63f07
 | `cf401a563` | Field removal across packages, tests, docs |
 | `1595b8b2c` | `IR-002`: released-upgrade E2E current-contract calls fixed; orphaned comment and leftover blank lines removed |
 | `d213b6c33` | Delivery merge of `origin/personal` @ `e9aa4a74c` (Background Tasks ticket, `1.4.92-beta.3`) |
-| see `IR-003` | `IR-003`: field removed from three test files that arrived with that merge |
+| `a341dad0f` | `IR-003`: field removed from three test files that arrived with that merge |
 
 Ticket documents are not committed, matching the state in which the package arrived.
 
