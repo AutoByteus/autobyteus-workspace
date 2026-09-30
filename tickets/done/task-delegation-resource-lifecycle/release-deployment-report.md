@@ -11,7 +11,7 @@
 - Handoff summary artifact: `tickets/done/task-delegation-resource-lifecycle/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-001` (DR-002 records finalization and release)
+- Current delivery revision ID: `DR-002`
 - Notes: user verified; see User Verification.
 
 ## Initial Delivery Integration Refresh
@@ -54,38 +54,57 @@
 
 ## Version / Tag / Release Commit
 
-- Pending the user's release decision. If a beta is requested, the next version is `1.4.91-beta.9` (current `autobyteus-web/package.json` is `1.4.91-beta.8`).
+- Version: `1.4.91-beta.9` (`autobyteus-web/package.json`)
+- Release commit: `cd4ad898b` "chore(release): bump workspace release version to 1.4.91-beta.9"
+- Tag: annotated `v1.4.91-beta.9` (tag object `68bff8bca64d0a9d62879df5e9f5eacfda1d9f6b`), pointing at `cd4ad898b`
+- Method: `bash scripts/desktop-release.sh beta --branch finalize/task-delegation-resource-lifecycle --no-push`, run in the finalization worktree, then pushed manually (see below).
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` (finalization target `origin` / `personal`)
 - Ticket branch: `codex/task-delegation-resource-lifecycle`
-- Ticket branch commit result: pending (checkpoint `a7bd0548d` and merge `743af3a7c` exist locally; the final delivery commit comes after verification)
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`. Checkpoint `a7bd0548d` (reviewed candidate), base merge `743af3a7c`, and `380876bc0` (docs sync, DEC-008 guideline, stale `dist` removal, archived ticket with delivery records).
+- Ticket branch push result: `Completed`. Created `origin/codex/task-delegation-resource-lifecycle` at `380876bc0`.
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: pending
-- Delivery-owned edits protected before re-integration: pending
-- Re-integration before final merge result: pending
-- Target branch update result: pending
-- Merge into target result: pending
-- Push target branch result: pending
-- Repository finalization status: pending (awaiting verification)
+- Target advanced after verification / acceptance: `No`. Re-fetched after verification, before the merge and before the push: `origin/personal` stayed at `8c474e37a`.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. The finalization worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-resource-lifecycle-finalize` (branch `finalize/task-delegation-resource-lifecycle`) was created from `origin/personal@8c474e37a`.
+- Merge into target result: `Completed`. Fast-forward to `380876bc0`, then the release commit `cd4ad898b`.
+- Push target branch result: `Completed`. `git push origin HEAD:personal` moved `8c474e37a..cd4ad898b`, confirmed with `git ls-remote`.
+- Repository finalization status: `Completed`
 - Blocker: None
+- Later state: `personal` has since advanced with other tickets (to `e9aa4a74c`, 1.4.92-beta.3). This record was committed on top of that.
 
 ## Release / Publication / Deployment
 
-- Applicable: pending the user's decision
-- Method (if requested): `Git Tag Method` via `scripts/desktop-release.sh beta`, as for beta.5–beta.8
-- Release/publication/deployment result: pending
-- Release notes handoff result: pending (`release-notes.md` prepared)
+- Applicable: `Yes` (new beta requested by the user)
+- Method: `Git Tag Method`. Pushing the tag starts the desktop, Android, iOS and server Docker release workflows.
+- Method reference / command: root `README.md` "Release workflow"; `git push origin v1.4.91-beta.9`
+- Release/publication/deployment result: `Completed`. All four workflows at `cd4ad898b` are `completed / success` (`delivery-evidence/release-workflows.json`):
+  - Desktop Release (run 36577989600);
+  - Android APK Release (run 36577989466);
+  - iOS App Store Connect Release (run 36577989674);
+  - Server Docker Release (run 36577989772).
+- GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.91-beta.9 (pre-release, published 2026-09-29T13:53:24Z). Assets: macOS arm64 and x64 (dmg, zip), Windows exe, Linux x64 and arm64 AppImage, Android APK, and the updater `latest*.yml` files.
+- Release notes handoff result: `Not required`. Pre-release tags use GitHub generated notes. The archived `release-notes.md` is kept as supporting context.
+- Blocker: None
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/task-delegation-resource-lifecycle`
-- Also scheduled (SR-007 delivery instruction): the DEC-008 docs worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/data-migration-guideline-refresh` and branch `codex/data-migration-guideline-refresh`. Its only change is now carried by this ticket.
-- Temporary data: `/tmp/tdrl-api-e2e/` and `/tmp/tdrl-delivery/`. Remove after finalization. `/tmp/tdrl-prerebase-backup/` and the stash `tdrl-pre-rebase-IR-002` come from implementation and are removed at cleanup.
-- Worktree cleanup, prune, local branch and remote branch cleanup: pending
+- Worktree cleanup result: `Completed`. Removed with `git worktree remove --force` after confirming no process was running from it. Leftovers were the untracked SDK `dist/` directories and git-ignored build output (`electron-dist`, `.nuxt`, `node_modules`); all evidence had been committed.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed` (`git branch -d`, fully merged)
+- Remote branch cleanup result: `Not required`. `origin/codex/task-delegation-resource-lifecycle` is kept at `380876bc0`.
+- DEC-008 docs worktree (SR-007 delivery instruction): `Completed`. `/Users/normy/autobyteus_org/autobyteus-worktrees/data-migration-guideline-refresh` and the local branch `codex/data-migration-guideline-refresh` are removed. Its only change is identical to the guideline on `personal`, apart from the one lessons-table row delivery added. The branch was never pushed.
+- Implementation backups: `Completed`. The stash `tdrl-pre-rebase-IR-002` is dropped and `/tmp/tdrl-prerebase-backup/` is removed; both were superseded by the merged work.
+- Retained on purpose, local only:
+  - `/tmp/tdrl-api-e2e/` (API/E2E logs, screenshots and the sanitized-env script). It contains excerpts of the user's real data (run titles, workspace screenshots), so it is **not** committed.
+  - `/tmp/tdrl-*.log` implementation logs and `/tmp/tdrl-delivery/`. These are ordinary temporary files.
+- Finalization worktree and branch: removed right after this record is pushed to `personal`.
+- Blocker: None
 
 ## Escalation / Reroute
 
@@ -94,12 +113,15 @@
 ## Release Notes Summary
 
 - Release notes artifact created before verification / acceptance: `release-notes.md`
-- Archived release notes artifact used for release/publication: pending
+- Archived release notes artifact used for release/publication: `tickets/done/task-delegation-resource-lifecycle/release-notes.md`, kept as supporting context. Beta tags use GitHub generated notes.
 - Release notes status: `Updated`
 
 ## Deployment Steps
 
-None beyond an optional beta publication. No hosted deployment.
+None. This is a beta-channel publication; no hosted deployment was requested.
+
+- Desktop installs with "Receive beta updates" on are offered 1.4.91-beta.9 through the updater.
+- Docker launcher users on the beta track run `autobyteus-docker upgrade --all`.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -135,11 +157,21 @@ The 6 baseline-failing files are `hierarchical-team-run-config-graphql.e2e`, `te
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No` (pending decision)
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: None (awaiting verification)
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: N/A
+- Explicit user testing/verification complete: `Yes`
+- Repository finalization complete: `Yes` (`personal` at `cd4ad898b` for this ticket)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`v1.4.91-beta.9` published; all 4 workflows succeeded)
+- Applicable safe cleanup complete or not required: `Yes`. The ticket worktree, guideline worktree and their local branches are removed; the finalization worktree is removed after this push.
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent immediately after this record was pushed. See DR-002.
+- Terminal message/reference: DR-002
+
+### Follow-ups recorded (not blockers)
+
+- Remove the orphaned web files `autobyteus-web/components/workspace/team/TeamReferenceFileViewer.vue` and `autobyteus-web/utils/teamReferences/` (`referenceFilePresentation.ts`, `teamReferenceFileModel.ts`).
+- OBS-002: `DataCloneError` in `autobyteus-web/services/teamExecution/teamExecutionContextFactory.ts:55` (pre-existing; separate ticket).
+- The stale pre-existing e2e files `hierarchical-team-run-config-graphql` and `team-run-v1-production-upgrade` need an owner.
+- `agent-org-run.ts` is at 491 effective lines (limit 500).
+- OBS-001 / C-11: wake latency for same-root messages (Codex +667 ms); observed, not bounded.
+- Solution Designer: align the stale migration-era lines in `design-spec.md` (R-6, R-12) at the next design touch.
+- Web docs debt: `autobyteus-web/docs/settings.md` duplicates `agent_execution_architecture.md`.
