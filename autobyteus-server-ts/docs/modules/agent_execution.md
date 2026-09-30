@@ -385,7 +385,7 @@ identified/anonymous/retired turn state:
 - Duplicate boundaries and boundaries for an already retired turn are
   idempotent lifecycle no-ops. A terminal boundary for turn A cannot close a
   newer active turn B.
-- Ordinary segment, tool, inter-agent, todo, and system-task activity remains
+- Ordinary segment, tool, inter-agent, and system-task activity remains
   observable but cannot establish or reopen a turn. Same-turn activity may only
   recover an `error` projection when it carries the current identified, still
   open turn id.

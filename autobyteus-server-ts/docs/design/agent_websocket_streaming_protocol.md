@@ -77,7 +77,7 @@ identity, or scalar name/id targets.
 include:
 
 - Agent events: turn, segment, Agent status, compaction, token usage, assistant
-  completion, tool lifecycle/log, todo, task notification, artifact, and file
+  completion, tool lifecycle/log, background task, task notification, artifact, and file
   change, each with exact `agent_execution`;
 - Team-only events: `TASK_EXECUTION_STARTED` (a delegated child committed under
   its host TeamRun, with nullable `delegator_agent_run_id`),

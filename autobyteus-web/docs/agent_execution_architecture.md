@@ -1646,7 +1646,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Frontend code must not reconstruct Team topology, parse opaque identity keys, infer pricing/coverage/comparison facts, reprice captured costs, or round unsafe primary token totals. Generated GraphQL types must stay synchronized with the matching server schema.
     - Durable coverage includes real-SQLite policy/GraphQL reconciliation, preserved Run-details queries, focused component/store/state/accessibility/localization checks, a strict negative export/file boundary, and a self-starting built-server/Nuxt/Chromium journey covering default/custom/filter/retry/partial-pricing/Detailed-usage/Run-details behavior at desktop and 390px widths. Browser proof does not imply packaged Electron execution.
 6.  **Live background tasks (`agentBackgroundTaskStore`)**:
-    - Keeps each run's background tasks (Claude background shells, subagents, monitors and workflows; Antigravity daemons) keyed by `task_id`, newest first, with running/total counts. Live-session state only: it is not persisted and starts empty after a reload.
+    - Keeps each run's background tasks (Claude background shell commands; Antigravity daemons) keyed by `task_id`, newest first, with running/total counts. Live-session state only: it is not persisted and starts empty after a reload.
     - `ProgressPanel` (the Activity tab) shows it in the `BackgroundTaskPanel` section above the Activity feed. The two sections share one accordion (Activity expanded by default); the section is always present and shows "No background tasks" when empty.
 
 ### Run-Level Compaction Activity
@@ -1683,7 +1683,7 @@ The backend can emit:
 `TURN_COMPLETED` is the preferred signal when a client needs to know that one
 exact turn has finished. Correlate terminal boundaries
 and turn-scoped errors by `turn_id`; delayed events for turn A must not settle a
-newer turn B. Ordinary segment/tool/inter-agent/todo/system-task activity is
+newer turn B. Ordinary segment/tool/inter-agent/system-task activity is
 content/progress only and must not infer `running` or recover/reopen a terminal
 turn.
 
