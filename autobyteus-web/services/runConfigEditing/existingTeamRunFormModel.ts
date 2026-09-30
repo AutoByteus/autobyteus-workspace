@@ -4,7 +4,7 @@ import type {
   ConfiguredMemberExecutionDto,
   TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts'
-import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig'
+import type { AgentRuntimeKind } from '~/types/agent/AgentRunConfig'
 import type {
   ExistingTeamFormMemberNode,
   ExistingTeamRunFormModel,
@@ -25,7 +25,6 @@ const resolved = (
   workspaceRootPath: launch.workspace_root_path,
   ...selection,
   autoExecuteTools: launch.auto_execute_tools,
-  skillAccessMode: launch.skill_access_mode as SkillAccessMode,
 })
 
 export const projectExistingTeamRunFormModel = (input: {

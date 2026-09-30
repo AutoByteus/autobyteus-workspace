@@ -13,7 +13,7 @@ vi.mock('~/composables/useToasts', () => ({ useToasts: () => ({ addToast: vi.fn(
 const buildTarget = (overrides: Partial<ComposerTarget> = {}) => {
   const context = reactive(new AgentContext({
     agentDefinitionId: 'a', agentDefinitionName: 'A', llmModelIdentifier: 'm', runtimeKind: 'autobyteus',
-    workspaceId: null, workspaceMetadata: null, autoExecuteTools: true, skillAccessMode: 'PRELOADED_ONLY', isLocked: false,
+    workspaceId: null, workspaceMetadata: null, autoExecuteTools: true, isLocked: false,
   }, new AgentRunState('temp-1', { id: 'temp-1', messages: [], createdAt: '', updatedAt: '', agentDefinitionId: 'a' }))) as AgentContext
   context.state.currentStatus = AgentStatus.Offline
   return {

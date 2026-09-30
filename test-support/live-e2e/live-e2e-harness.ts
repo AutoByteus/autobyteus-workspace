@@ -17,7 +17,6 @@ import { LLMExtension } from '../../autobyteus-ts/src/llm/extensions/base-extens
 import { LLMProvider } from '../../autobyteus-ts/src/llm/providers.js';
 import { MessageRole, type Message } from '../../autobyteus-ts/src/llm/utils/messages.js';
 import type { CompleteResponse } from '../../autobyteus-ts/src/llm/utils/response-types.js';
-import { SkillAccessMode } from '../../autobyteus-ts/src/agent/context/skill-access-mode.js';
 import {
   resolveCompactionTokenBudget,
   resolveLlmRequestCapacity,
@@ -471,7 +470,6 @@ export const runLiveE2eAgentFlow = async (input: {
     llmModelIdentifier: input.scenario.model,
     autoExecuteTools: false,
     memoryDir: input.memoryDirectory,
-    skillAccessMode: SkillAccessMode.NONE,
     runtimeKind: RuntimeKind.AUTOBYTEUS,
   }), runId);
   let observedEventCount = 0;
@@ -832,7 +830,6 @@ export class LiveE2eScenarioExecution {
           safety_margin_tokens: 256,
           extra_params: providerExtraParams,
         },
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }), runId);
 

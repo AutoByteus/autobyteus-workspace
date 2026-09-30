@@ -303,7 +303,6 @@ export class ConfiguredAgentExecutionHandle {
       memoryDir: (this.options.memoryLocator ?? new RootedAgentMemoryLocator())
         .getLocation(this.physicalScope, this.identity.agentRunId).memoryDir,
       llmConfig: execution.llmConfig as Record<string, unknown> | null,
-      skillAccessMode: execution.skillAccessMode,
       runtimeKind: execution.runtimeKind,
       memberExecutionContext: this.options.memberExecutionContext,
       applicationExecutionContext: this.options.applicationExecutionContext ?? null,

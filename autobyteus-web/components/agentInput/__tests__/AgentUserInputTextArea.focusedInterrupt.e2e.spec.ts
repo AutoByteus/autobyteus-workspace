@@ -114,7 +114,6 @@ const createAgentContext = (routeKey: string): AgentContext => {
     runtimeKind: 'codex_app_server',
     workspaceId: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
     llmConfig: null,
     isLocked: false,
   } as AgentRunConfig;

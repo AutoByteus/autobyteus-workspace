@@ -1,5 +1,4 @@
 import path from "node:path";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { describe, expect, it, vi } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
@@ -149,7 +148,6 @@ describe("Brief package team prompt authority", () => {
         workspaceId: "brief-workspace",
         memoryDir: path.join(workspaceRoot, ".test-memory"),
         llmConfig: null,
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         memberExecutionContext,
       }),

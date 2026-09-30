@@ -32,7 +32,7 @@ const buildTarget = (runId: string, firstMessage: string | null) => {
     agentDefinitionId: 'autobyteus-daily-assistant', agentDefinitionName: 'Daily Assistant', llmModelIdentifier: 'gpt-5.5',
     runtimeKind: 'codex_app_server', workspaceId: 'ws-1',
     workspaceMetadata: { workspaceId: 'ws-1', workspaceRootPath: '/Users/me/project', displayName: 'project', kind: 'filesystem' } as any,
-    autoExecuteTools: true, skillAccessMode: 'PRELOADED_ONLY', isLocked: false,
+    autoExecuteTools: true, isLocked: false,
   }, new AgentRunState(runId, { id: runId, messages: [], createdAt: '', updatedAt: '', agentDefinitionId: 'autobyteus-daily-assistant' }))) as AgentContext
   context.state.currentStatus = AgentStatus.Idle
   if (firstMessage) context.state.conversation.messages.push({ type: 'user', text: firstMessage, timestamp: new Date(), contextFilePaths: [] } as any)

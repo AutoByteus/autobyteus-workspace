@@ -5,7 +5,6 @@ import path from "node:path";
 import { createRequire } from "node:module";
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
 import { TeamRunHistoryCatalogService } from "../../../src/run-history/services/team-run-history-catalog-service.js";
@@ -115,7 +114,6 @@ const buildAgentMetadata = (
   llmModelIdentifier: "model-e2e",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: null,
   applicationExecutionContext: null,
@@ -139,7 +137,6 @@ const buildTeamExecutionTree = (
       agentDefinitionId: "agent-def-e2e",
       llmModelIdentifier: "model-e2e",
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.NONE,
       llmConfig: null,
       workspaceRootPath: WORKSPACE_ROOT,
       applicationExecutionContext: null,

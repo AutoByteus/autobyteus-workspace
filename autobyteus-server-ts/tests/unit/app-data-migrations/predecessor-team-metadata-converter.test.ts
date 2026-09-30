@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { convertLegacyTeamRunMetadata } from "../../../src/app-data-migrations/migrations/team-run-execution-tree-v1/predecessor-team-metadata-converter.js";
 
@@ -14,7 +13,7 @@ const agent = (address: string[], runId: string) => ({
   agentDefinitionId: `definition-${runId}`,
   llmModelIdentifier: "codex:model",
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+  skillAccessMode: "PRELOADED_ONLY",
   llmConfig: null,
   workspaceRootPath: "/workspace",
   applicationExecutionContext: null,

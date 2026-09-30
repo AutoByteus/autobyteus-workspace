@@ -1,0 +1,11 @@
+
+> autobyteus@1.4.92-beta.1 test:nuxt /private/tmp/rsam-api-e2e-base/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run tests/integration/app-font-size-fixed-px-audit.integration.test.ts pages/__tests__/org-definition-navigation.spec.ts components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.regressions.spec.ts --reporter=json --outputFile=/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/tickets/in-progress/remove-skill-access-mode/api-e2e-evidence/08-web-nuxt-base-3files.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+JSON report written to /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/tickets/in-progress/remove-skill-access-mode/api-e2e-evidence/08-web-nuxt-base-3files.json
+ ELIFECYCLE  Command failed with exit code 1.

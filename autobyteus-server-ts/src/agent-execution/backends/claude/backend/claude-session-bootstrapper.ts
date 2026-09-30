@@ -1,7 +1,3 @@
-import {
-  SkillAccessMode,
-  resolveSkillAccessMode,
-} from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import { AgentRunContext } from "../../../domain/agent-run-context.js";
 import { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
@@ -75,24 +71,15 @@ export class ClaudeSessionBootstrapper {
       agentDefinition,
       runContext.config.memberExecutionContext,
     );
-    const skillAccessMode = resolveSkillAccessMode(
-      runContext.config.skillAccessMode ?? null,
-      configuredSkillBindings.length,
-    );
-    const exposedConfiguredSkills =
-      skillAccessMode === SkillAccessMode.NONE ? [] : configuredSkills;
     const materializedConfiguredSkills =
       await this.workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills({
         runId: runContext.runId,
         workingDirectory,
-        requests: skillAccessMode === SkillAccessMode.NONE
-          ? []
-          : configuredSkillBindings.map((binding) =>
-              binding.kind === "resolved"
-                ? { kind: "expose-resolved", skill: binding.skill }
-                : { kind: "reconcile-unresolved", name: binding.name }
-            ),
-        skillAccessMode,
+        requests: configuredSkillBindings.map((binding) =>
+          binding.kind === "resolved"
+            ? { kind: "expose-resolved", skill: binding.skill }
+            : { kind: "reconcile-unresolved", name: binding.name }
+        ),
         workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
       });
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
@@ -113,9 +100,8 @@ export class ClaudeSessionBootstrapper {
         sessionConfig,
         carpenterSystemPrompt,
         runtimeToolExposure,
-        configuredSkills: exposedConfiguredSkills,
+        configuredSkills,
         materializedConfiguredSkills,
-        skillAccessMode,
         sessionId: existingRuntimeContext?.sessionId ?? null,
         hasCompletedTurn: existingRuntimeContext?.hasCompletedTurn ?? false,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,

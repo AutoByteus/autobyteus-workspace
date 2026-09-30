@@ -1,0 +1,63 @@
+{
+ "runtimeKind": "claude_agent_sdk",
+ "model": "haiku",
+ "created": {
+  "success": true,
+  "message": "Agent run created successfully.",
+  "runId": "rsam_bg_84a558af_b0e37c5e15d846a69ad10f3520db6205"
+ },
+ "running": {
+  "task_id": "bbqdj3bve",
+  "kind": "shell",
+  "description": "sleep 15; echo RSAM_BG_DONE",
+  "status": "running",
+  "summary": null,
+  "started_at": "2026-09-30T09:40:52.996Z"
+ },
+ "completed": {
+  "task_id": "bbqdj3bve",
+  "kind": "shell",
+  "description": "sleep 15; echo RSAM_BG_DONE",
+  "status": "completed",
+  "summary": null,
+  "started_at": "2026-09-30T09:40:52.996Z"
+ },
+ "messageTypes": [
+  "CONNECTED",
+  "AGENT_STATUS",
+  "AGENT_COMMAND_ACK",
+  "TURN_STARTED",
+  "SYSTEM_INSTRUCTIONS_SUPPLIED",
+  "SEGMENT_START",
+  "TOOL_EXECUTION_STARTED",
+  "BACKGROUND_TASK_UPDATED",
+  "SEGMENT_END",
+  "TOOL_EXECUTION_SUCCEEDED",
+  "SEGMENT_CONTENT",
+  "TOKEN_USAGE_UPDATED",
+  "TURN_COMPLETED",
+  "SYSTEM_TASK_NOTIFICATION"
+ ],
+ "streamErrors": [],
+ "fieldOnStream": false,
+ "terminated": {
+  "success": true,
+  "message": "Agent run terminated successfully."
+ },
+ "metadataKeys": [
+  "agentDefinitionId",
+  "applicationExecutionContext",
+  "autoExecuteTools",
+  "llmConfig",
+  "llmModelIdentifier",
+  "memoryDir",
+  "platformAgentRunId",
+  "preparedAt",
+  "preparedExpiresAt",
+  "runId",
+  "runtimeKind",
+  "startedAt",
+  "workspaceRootPath"
+ ],
+ "pass": true
+}

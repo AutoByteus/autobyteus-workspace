@@ -125,7 +125,6 @@ const configFor = (runId: string, workspaceIndex: number): AgentRunConfig => ({
   workspaceId: `workspace-${workspaceIndex}`,
   workspaceMetadata: workspaceMetadata(workspaceIndex),
   autoExecuteTools: false,
-  skillAccessMode: 'NONE',
   isLocked: true,
   llmConfig: null,
 });

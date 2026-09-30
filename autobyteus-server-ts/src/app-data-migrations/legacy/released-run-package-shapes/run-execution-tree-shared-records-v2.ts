@@ -1,7 +1,7 @@
 // Frozen verbatim copy (import paths remapped only) of `src/run-history/domain/run-execution-tree-shared-records.ts` as released at
 // origin/personal@f2924a2b0. Owned by released app-data migrations; current runtime must not import it.
 import type { AgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
-import type { AgentLaunchConfiguration } from "../../../agent-team-execution/domain/team-run-config.js";
+import type { ReleasedAgentLaunchConfiguration } from "../released-team-run-config.js";
 
 export type IsoTimestamp = string;
 
@@ -12,7 +12,7 @@ export type ConfiguredAgentExecutionNode = Readonly<{
   description: string | null;
   agentRunId: string;
   platformAgentRunId: string | null;
-  launchConfiguration: AgentLaunchConfiguration;
+  launchConfiguration: ReleasedAgentLaunchConfiguration;
 }>;
 
 export type ConfiguredTeamExecutionNode = Readonly<{
@@ -22,7 +22,7 @@ export type ConfiguredTeamExecutionNode = Readonly<{
   description: string | null;
   teamRunId: string;
   coordinatorAddress: AgentTeamAddress;
-  defaultLaunchConfiguration: AgentLaunchConfiguration;
+  defaultLaunchConfiguration: ReleasedAgentLaunchConfiguration;
   members: readonly ConfiguredAgentExecutionNode[];
   taskExecutions: readonly TaskExecution[];
 }>;

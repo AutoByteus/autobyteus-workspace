@@ -1,4 +1,3 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../src/agent-execution/domain/agent-run-context.js";
 import type { AgentRunEvent } from "../../src/agent-execution/domain/agent-run-event.js";
@@ -53,7 +52,6 @@ const createRunContext = (runId: string) =>
       autoExecuteTools: false,
       workspaceId: "/tmp/codex-thread-event-harness",
       llmConfig: null,
-      skillAccessMode: SkillAccessMode.NONE,
       memberExecutionContext: null,
     }),
     runtimeContext: new CodexAgentRunContext({

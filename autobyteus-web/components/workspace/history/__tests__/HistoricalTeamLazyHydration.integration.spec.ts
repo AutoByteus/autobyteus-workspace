@@ -27,7 +27,6 @@ const agentMetadata = (address: string, agentRunId: string, agentDefinitionId: s
   agentDefinitionId,
   llmModelIdentifier: 'model-x',
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
   llmConfig: null,
   workspaceRootPath: '/ws/a',
   applicationExecutionContext: null,

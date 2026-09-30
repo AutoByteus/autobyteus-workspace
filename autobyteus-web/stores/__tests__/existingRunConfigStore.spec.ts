@@ -57,7 +57,6 @@ const agentPayload = ({
     llmModelIdentifier: 'model-1',
     llmConfig,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY' as const,
     runtimeKind: 'codex_app_server' as const,
   },
   modelConfigEditability,
@@ -68,7 +67,6 @@ const launch = (model: string, effort: string) => ({
   llm_model_identifier: model,
   llm_config: { effort },
   auto_execute_tools: false,
-  skill_access_mode: 'PRELOADED_ONLY',
   workspace_root_path: '/workspace',
 })
 

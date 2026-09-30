@@ -13,7 +13,6 @@ const launch = {
   llmModelIdentifier: 'gpt-5.6-sol',
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
   workspaceRootPath: null,
 }
 const view = (): AgentOrgExecutionViewDto => ({
@@ -81,7 +80,7 @@ const agentContext = (runId: string, name: string) => new AgentContext({
   agentDefinitionId: `${name}-def`, agentDefinitionName: name,
   llmModelIdentifier: launch.llmModelIdentifier, runtimeKind: launch.runtimeKind,
   workspaceId: null, workspaceMetadata: null, autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY', isLocked: true, llmConfig: null,
+  isLocked: true, llmConfig: null,
 }, new AgentRunState(runId, {
   id: runId, messages: [], createdAt: '2026-09-01T00:00:00.000Z',
   updatedAt: '2026-09-01T00:00:00.000Z', agentDefinitionId: `${name}-def`,

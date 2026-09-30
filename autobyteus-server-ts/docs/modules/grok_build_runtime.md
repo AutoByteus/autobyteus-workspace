@@ -245,8 +245,7 @@ Analytics labels the runtime "Grok Build".
 Configured skills are symlinked into `.grok/skills/<name>` in the run working
 directory. The shared workspace skill materializer applies the same
 collision, repair, and release rules as `.codex/skills` and `.claude/skills`.
-The symlinks are removed on terminate or failure, and `skillAccessMode: NONE`
-skips materialization.
+The symlinks are removed on terminate or failure.
 
 ## Persistence
 

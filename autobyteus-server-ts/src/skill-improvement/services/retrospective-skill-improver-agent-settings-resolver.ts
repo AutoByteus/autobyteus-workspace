@@ -1,4 +1,3 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { runtimeKindFromString, type RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID } from "../domain/settings.js";
@@ -19,7 +18,6 @@ export type ResolvedRetrospectiveSkillImproverAgentSettings = {
   runtimeKind: RuntimeKind;
   llmModelIdentifier: string;
   llmConfig: Record<string, unknown> | null;
-  skillAccessMode: SkillAccessMode;
 };
 
 const asTrimmedString = (value: unknown): string | null => {
@@ -83,7 +81,6 @@ export class RetrospectiveSkillImproverAgentSettingsResolver {
       runtimeKind,
       llmModelIdentifier,
       llmConfig: asObjectRecord(launchConfig?.llmConfig) ?? asObjectRecord(input.targetFallback.llmConfig),
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     };
   }
 

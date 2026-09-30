@@ -65,7 +65,6 @@ describe('chatDraftStore', () => {
     expect(draft.target).toEqual({ kind: 'agent', agentDefinitionId: 'autobyteus-daily-assistant' })
     expect(draft.workspace).toEqual({ kind: 'existing', workspaceId: 'temp_ws_default' })
     expect(draft.autoExecuteTools).toBe(true)
-    expect(draft.context.config.skillAccessMode).toBe('PRELOADED_ONLY')
     // No tree row exists before send.
     expect(useAgentContextsStore().runs.size).toBe(0)
   })

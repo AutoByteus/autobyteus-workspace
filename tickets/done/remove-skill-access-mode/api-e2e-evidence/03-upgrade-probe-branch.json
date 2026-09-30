@@ -1,0 +1,823 @@
+{
+  "seeded": {
+    "agent_teams/team-v1-supported-root/task_delegation_records.json": {
+      "teamRunId": "team-v1-supported-root",
+      "records": [
+        {
+          "taskId": "team-v1-supported-root-accepted-review-task",
+          "senderAddress": {
+            "rootTeamRunId": "team-v1-supported-root",
+            "taskTeamRunIds": [],
+            "memberAddress": "/lead",
+            "taskAgentRunId": null
+          },
+          "receiverAddress": {
+            "rootTeamRunId": "team-v1-supported-root",
+            "taskTeamRunIds": [],
+            "memberAddress": "/research/reviewer",
+            "taskAgentRunId": null
+          },
+          "receiverTargetKind": "agent",
+          "taskRun": {
+            "address": {
+              "rootTeamRunId": "team-v1-supported-root",
+              "taskTeamRunIds": [],
+              "memberAddress": "/research/reviewer",
+              "taskAgentRunId": "team-v1-supported-root-task-reviewer-run"
+            },
+            "startedAt": "2026-08-16T12:03:00.000Z"
+          },
+          "content": "Review the preserved migration package.",
+          "referenceFiles": [
+            "/synthetic/migration-task.md"
+          ],
+          "status": "accepted",
+          "updates": [
+            {
+              "kind": "submission",
+              "submissionId": "team-v1-supported-root-accepted-review-task_submission_0001",
+              "senderAddress": {
+                "rootTeamRunId": "team-v1-supported-root",
+                "taskTeamRunIds": [],
+                "memberAddress": "/research/reviewer",
+                "taskAgentRunId": "team-v1-supported-root-task-reviewer-run"
+              },
+              "receiverAddress": {
+                "rootTeamRunId": "team-v1-supported-root",
+                "taskTeamRunIds": [],
+                "memberAddress": "/lead",
+                "taskAgentRunId": null
+              },
+              "content": "The preserved migration package is valid.",
+              "referenceFiles": [
+                "/synthetic/migration-result.md"
+              ],
+              "createdAt": "2026-08-16T12:04:00.000Z"
+            },
+            {
+              "kind": "review",
+              "reviewId": "team-v1-supported-root-accepted-review-task_review_0001",
+              "reviewedSubmissionId": "team-v1-supported-root-accepted-review-task_submission_0001",
+              "decision": "accept",
+              "senderAddress": {
+                "rootTeamRunId": "team-v1-supported-root",
+                "taskTeamRunIds": [],
+                "memberAddress": "/lead",
+                "taskAgentRunId": null
+              },
+              "receiverAddress": {
+                "rootTeamRunId": "team-v1-supported-root",
+                "taskTeamRunIds": [],
+                "memberAddress": "/research/reviewer",
+                "taskAgentRunId": "team-v1-supported-root-task-reviewer-run"
+              },
+              "content": "Accepted migration evidence.",
+              "referenceFiles": [],
+              "createdAt": "2026-08-16T12:05:00.000Z"
+            }
+          ],
+          "createdAt": "2026-08-16T12:02:00.000Z"
+        }
+      ]
+    },
+    "agent_teams/team-v1-supported-root/team-v1-supported-root-lead-run/synthetic-memory.bin": "<48 bytes>",
+    "agent_teams/team-v1-supported-root/team_communication_messages.json": {
+      "teamRunId": "team-v1-supported-root",
+      "version": 1,
+      "messages": [
+        {
+          "messageId": "team-v1-supported-root-address-message",
+          "senderAddress": {
+            "segments": [
+              {
+                "kind": "member",
+                "memberPath": [
+                  "lead"
+                ]
+              }
+            ]
+          },
+          "receiverAddress": {
+            "segments": [
+              {
+                "kind": "member",
+                "memberPath": [
+                  "research",
+                  "reviewer"
+                ]
+              }
+            ]
+          },
+          "content": "address projection",
+          "messageType": "agent_message",
+          "referenceFiles": [
+            "/synthetic/address-evidence.md"
+          ],
+          "createdAt": "2026-08-16T12:01:00.000Z"
+        },
+        {
+          "messageId": "team-v1-supported-root-run-id-message",
+          "senderRunId": "team-v1-supported-root-reviewer-run",
+          "receiverRunId": "team-v1-supported-root-lead-run",
+          "senderMemberRouteKey": "research/reviewer",
+          "receiverMemberPath": [
+            "lead"
+          ],
+          "content": "run ID projection",
+          "messageType": "agent_message",
+          "referenceFiles": [
+            "/synthetic/run-id-evidence.md"
+          ],
+          "createdAt": "2026-08-16T12:02:00.000Z"
+        }
+      ]
+    },
+    "agent_teams/team-v1-supported-root/team_run_metadata.json": {
+      "teamRunId": "team-v1-supported-root",
+      "teamDefinitionId": "synthetic-released-root-definition",
+      "teamDefinitionName": "Synthetic Released Team",
+      "coordinatorMemberRouteKey": "lead",
+      "createdAt": "2026-08-16T12:00:00.000Z",
+      "archivedAt": null,
+      "handoffs": [
+        {
+          "from": "lead",
+          "to": "research/reviewer",
+          "rules": [
+            "Review the migration evidence."
+          ]
+        }
+      ],
+      "memberTree": [
+        {
+          "memberKind": "agent",
+          "memberRouteKey": "lead",
+          "memberPath": [
+            "lead"
+          ],
+          "memberName": "lead",
+          "memberRunId": "team-v1-supported-root-lead-run",
+          "runtimeKind": "autobyteus",
+          "platformAgentRunId": null,
+          "agentDefinitionId": "autobyteus-memory-compactor",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "llmConfig": {
+            "temperature": 0.15
+          },
+          "workspaceRootPath": "/tmp/autobyteus-team-v1-root-workspace",
+          "applicationExecutionContext": null,
+          "role": "Synthetic migration member",
+          "description": "Synthetic released-shape member"
+        },
+        {
+          "memberKind": "agent_team",
+          "memberRouteKey": "research",
+          "memberPath": [
+            "research"
+          ],
+          "memberName": "research",
+          "memberRunId": "team-v1-supported-root-wrapper-team-run",
+          "teamRunId": "team-v1-supported-root-explicit-child-team-run",
+          "teamDefinitionId": "synthetic-released-child-definition",
+          "coordinatorMemberRouteKey": "research/reviewer",
+          "role": "Research",
+          "description": "Nested released-shape team",
+          "memberTree": [
+            {
+              "memberKind": "agent",
+              "memberRouteKey": "research/reviewer",
+              "memberPath": [
+                "research",
+                "reviewer"
+              ],
+              "memberName": "reviewer",
+              "memberRunId": "team-v1-supported-root-reviewer-run",
+              "runtimeKind": "autobyteus",
+              "platformAgentRunId": null,
+              "agentDefinitionId": "autobyteus-memory-compactor",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "llmConfig": null,
+              "workspaceRootPath": "/tmp/autobyteus-team-v1-nested-workspace",
+              "applicationExecutionContext": null,
+              "role": "Synthetic migration member",
+              "description": "Synthetic released-shape member"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "statuses": [
+    {
+      "migrationId": "20260727_custom_provider_v1_secret_migration",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260706_remove_global_skill_discovery_mode",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260517_team_run_metadata_member_tree",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260814_team_run_execution_tree_v1",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 4; migrated 2; skipped 2; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260823_repair_team_agent_memory_layout",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 2; migrated 0; skipped 2; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260824_team_run_execution_tree_v2",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260730_token_usage_custom_provider_model_value_backfill",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260730_token_usage_provider_name_snapshot_backfill",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260819_token_usage_run_records_v1",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260901_agent_org_flat_team_families_v1",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 2; migrated 3; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260731_remove_external_runtime_working_context_snapshots",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260617_raw_trace_rotation_layout",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260707_raw_trace_active_file_name",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260926_team_context_file_execution_locators_v1",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 2; migrated 0; skipped 2; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260731_migrate_native_working_context_snapshots_v5",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 0; skipped 0; failed 1.",
+      "errorMessage": "synthetic released warning"
+    },
+    {
+      "migrationId": "20260905_agent_org_history_first_message_summary_v1",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 0; skipped 1; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260701_team_communication_projection_addresses",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 0; skipped 0; failed 1.",
+      "errorMessage": "synthetic released warning"
+    },
+    {
+      "migrationId": "20260623_remove_self_evolution_run_metadata",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260521_team_run_history_index_v2",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 1; skipped 0; failed 0.",
+      "errorMessage": null
+    },
+    {
+      "migrationId": "20260521_run_history_index_v2",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 0; skipped 0; failed 1.",
+      "errorMessage": "synthetic released warning"
+    },
+    {
+      "migrationId": "20260803_custom_provider_readable_identity",
+      "status": "SUCCEEDED_WITH_WARNINGS",
+      "attempts": 1,
+      "summary": "Scanned 1; migrated 0; skipped 0; failed 1.",
+      "errorMessage": "synthetic released warning"
+    },
+    {
+      "migrationId": "20260924_remove_external_messaging_data",
+      "status": "SUCCEEDED",
+      "attempts": 1,
+      "summary": "Scanned 4; migrated 0; skipped 4; failed 0.",
+      "errorMessage": null
+    }
+  ],
+  "logs": {
+    "20260706_remove_global_skill_discovery_mode": null,
+    "20260814_team_run_execution_tree_v1": [
+      "migrationId=20260814_team_run_execution_tree_v1",
+      "displayName=TeamRun execution-tree V1 migration",
+      "statusSummary={\"scannedCount\":4,\"migratedCount\":2,\"skippedCount\":2,\"failedCount\":0}",
+      "error=",
+      "details=",
+      "{\"itemId\":\"team-root:team-v1-supported-root\",\"filePath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts/tests/.tmp/rsam-upgrade-probe-13703-1790753984999-e4367166b8ece/memory/agent_teams/team-v1-supported-root\",\"backupPath\":\"/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts/tests/.tmp/rsam-upgrade-probe-13703-1790753984999-e4367166b8ece/app-data-migration-backups/20260814_team_run_execution_tree_v1/team-v1-supported-root/2026-09-30T07-39-47-168Z\",\"status\":\"MIGRATED\",\"message\":\"Promoted and revalidated the complete TeamRun V1 package.\"}",
+      "{\"itemId\":\"team-v1-e2e-supported-direct\",\"status\":\"SKIPPED\",\"message\":\"Token row already has exact current root identity.\"}",
+      "{\"itemId\":\"token-usage:root-update-transaction\",\"status\":\"SKIPPED\",\"message\":\"Token runtime root schema/index are current; no row root update was required.\"}",
+      "{\"itemId\":\"team-history-index\",\"backupPath\":null,\"status\":\"MIGRATED\",\"message\":\"Reconciled 1 independently admitted TeamRun history row(s).\"}",
+      ""
+    ],
+    "20260824_team_run_execution_tree_v2": [
+      "migrationId=20260824_team_run_execution_tree_v2",
+      "displayName=Upgrade TeamRun execution trees to V2",
+      "statusSummary={\"scannedCount\":1,\"migratedCount\":1,\"skippedCount\":0,\"failedCount\":0}",
+      "error=",
+      "details=",
+      "{\"itemId\":\"MIGRATED\",\"status\":\"MIGRATED\",\"message\":\"Transformed one exact TeamRun execution tree from V1 to V2. Count: 1. Examples: agent_teams/team-v1-supported-root/team_run_execution_tree.json.\"}",
+      ""
+    ],
+    "20260901_agent_org_flat_team_families_v1": [
+      "migrationId=20260901_agent_org_flat_team_families_v1",
+      "displayName=Cut over flat Team and AgentOrg run families",
+      "statusSummary={\"scannedCount\":2,\"migratedCount\":3,\"skippedCount\":0,\"failedCount\":0}",
+      "error=",
+      "details=",
+      "{\"itemId\":\"MIGRATED_ORG_HISTORY\",\"status\":\"MIGRATED\",\"message\":\"Count: 1. Examples: team_run_history_index.json.\"}",
+      "{\"itemId\":\"MIGRATED_ORG_RUN\",\"status\":\"MIGRATED\",\"message\":\"Count: 1. Examples: agent_orgs/team-v1-supported-root.\"}",
+      "{\"itemId\":\"MIGRATED_ORG_TOKENS\",\"status\":\"MIGRATED\",\"message\":\"Count: 1. Examples: team-v1-supported-root. Reasons: 1 records corrected without accounting changes..\"}",
+      ""
+    ],
+    "20260905_agent_org_history_first_message_summary_v1": [
+      "migrationId=20260905_agent_org_history_first_message_summary_v1",
+      "displayName=AgentOrg first-message history summaries",
+      "statusSummary={\"scannedCount\":1,\"migratedCount\":0,\"skippedCount\":1,\"failedCount\":0}",
+      "error=",
+      "details=",
+      "{\"itemId\":\"SKIPPED_NO_UNIQUE_QUALIFYING_TRACE\",\"status\":\"SKIPPED\",\"message\":\"Count: 1. Examples: team-v1-supported-root. Reasons: NO_QUALIFYING_TRACE.\"}",
+      ""
+    ]
+  },
+  "afterStartup": {
+    "agent_org_run_history_index.json": [
+      {
+        "orgRunId": "team-v1-supported-root",
+        "orgDefinitionId": "synthetic-released-root-definition",
+        "orgDefinitionName": "Synthetic Released Team",
+        "workspaceRootPath": "/tmp/autobyteus-team-v1-root-workspace",
+        "summary": "",
+        "createdAt": "2026-08-16T12:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+      }
+    ],
+    "agent_orgs/team-v1-supported-root/agent_org_communication_messages.json": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "orgRunId": "team-v1-supported-root",
+      "messages": [
+        {
+          "messageId": "team-v1-supported-root-address-message",
+          "senderAgentRunId": "team-v1-supported-root-lead-run",
+          "receiverAgentRunId": "team-v1-supported-root-reviewer-run",
+          "content": "address projection",
+          "messageType": "agent_message",
+          "referenceFiles": [
+            "/synthetic/address-evidence.md"
+          ],
+          "createdAt": "2026-08-16T12:01:00.000Z"
+        },
+        {
+          "messageId": "team-v1-supported-root-run-id-message",
+          "senderAgentRunId": "team-v1-supported-root-reviewer-run",
+          "receiverAgentRunId": "team-v1-supported-root-lead-run",
+          "content": "run ID projection",
+          "messageType": "agent_message",
+          "referenceFiles": [
+            "/synthetic/run-id-evidence.md"
+          ],
+          "createdAt": "2026-08-16T12:02:00.000Z"
+        }
+      ]
+    },
+    "agent_orgs/team-v1-supported-root/agent_org_run_execution_tree.json": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "createdAt": "2026-08-16T12:00:00.000Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/research/reviewer",
+          "rules": [
+            "Review the migration evidence."
+          ]
+        }
+      ],
+      "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "synthetic-released-root-definition",
+        "orgDefinitionName": "Synthetic Released Team",
+        "orgRunId": "team-v1-supported-root",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "temperature": 0.15
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/tmp/autobyteus-team-v1-root-workspace"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "autobyteus-memory-compactor",
+            "role": "Synthetic migration member",
+            "description": "Synthetic released-shape member",
+            "agentRunId": "team-v1-supported-root-lead-run",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": {
+                "temperature": 0.15
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/tmp/autobyteus-team-v1-root-workspace"
+            }
+          },
+          {
+            "address": "/research",
+            "teamDefinitionId": "synthetic-released-child-definition",
+            "role": "Research",
+            "description": "Nested released-shape team",
+            "teamRunId": "team-v1-supported-root-explicit-child-team-run",
+            "coordinatorAddress": "/research/reviewer",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceRootPath": "/tmp/autobyteus-team-v1-nested-workspace"
+            },
+            "members": [
+              {
+                "address": "/research/reviewer",
+                "agentDefinitionId": "autobyteus-memory-compactor",
+                "role": "Synthetic migration member",
+                "description": "Synthetic released-shape member",
+                "agentRunId": "team-v1-supported-root-reviewer-run",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "gpt-5.6-luna",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "NONE",
+                  "workspaceRootPath": "/tmp/autobyteus-team-v1-nested-workspace"
+                }
+              }
+            ],
+            "taskExecutions": [
+              {
+                "address": "/research/reviewer",
+                "agentRunId": "team-v1-supported-root-task-reviewer-run",
+                "platformAgentRunId": null,
+                "startedAt": "2026-08-16T12:03:00.000Z",
+                "settledAt": "2026-08-16T12:05:00.000Z"
+              }
+            ]
+          }
+        ],
+        "taskExecutions": []
+      }
+    },
+    "agent_orgs/team-v1-supported-root/agent_org_task_delegation_records.json": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "orgRunId": "team-v1-supported-root",
+      "records": [
+        {
+          "taskId": "team-v1-supported-root-accepted-review-task",
+          "delegatorAgentRunId": "team-v1-supported-root-lead-run",
+          "recipientAddress": "/research/reviewer",
+          "taskExecution": {
+            "agentRunId": "team-v1-supported-root-task-reviewer-run"
+          },
+          "description": "Review the preserved migration package.",
+          "referenceFiles": [
+            "/synthetic/migration-task.md"
+          ],
+          "status": "accepted",
+          "updates": [
+            {
+              "submissionId": "team-v1-supported-root-accepted-review-task_submission_0001",
+              "message": "The preserved migration package is valid.",
+              "referenceFiles": [
+                "/synthetic/migration-result.md"
+              ],
+              "createdAt": "2026-08-16T12:04:00.000Z"
+            },
+            {
+              "reviewId": "team-v1-supported-root-accepted-review-task_review_0001",
+              "reviewedSubmissionId": "team-v1-supported-root-accepted-review-task_submission_0001",
+              "decision": "accept",
+              "comment": "Accepted migration evidence.",
+              "referenceFiles": [],
+              "createdAt": "2026-08-16T12:05:00.000Z"
+            }
+          ],
+          "createdAt": "2026-08-16T12:02:00.000Z"
+        }
+      ]
+    },
+    "agent_orgs/team-v1-supported-root/team-v1-supported-root-lead-run/synthetic-memory.bin": "<48 bytes>",
+    "team_run_history_index.json": []
+  },
+  "history": {
+    "listWorkspaceRunHistory": []
+  },
+  "teamResume": {
+    "probeError": "teamResume",
+    "message": "TEST_GRAPHQL_REQUEST_FAILED"
+  },
+  "teamRestore": {
+    "restoreAgentTeamRun": {
+      "success": false,
+      "teamRunId": null,
+      "message": "Error: TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun 'team-v1-supported-root' is not an admitted current package."
+    }
+  },
+  "orgInspection": {
+    "probeError": "orgInspection",
+    "message": "TEST_GRAPHQL_REQUEST_FAILED"
+  },
+  "orgRestore": {
+    "restoreAgentOrgRun": {
+      "success": true,
+      "message": "Agent organization run restored successfully."
+    }
+  },
+  "afterRestore": {
+    "agent_org_run_history_index.json": [
+      {
+        "orgRunId": "team-v1-supported-root",
+        "orgDefinitionId": "synthetic-released-root-definition",
+        "orgDefinitionName": "Synthetic Released Team",
+        "workspaceRootPath": "/tmp/autobyteus-team-v1-root-workspace",
+        "summary": "",
+        "createdAt": "2026-08-16T12:00:00.000Z",
+        "archivedAt": null,
+        "terminatedAt": null
+      }
+    ],
+    "agent_orgs/team-v1-supported-root/agent_org_communication_messages.json": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "orgRunId": "team-v1-supported-root",
+      "messages": [
+        {
+          "messageId": "team-v1-supported-root-address-message",
+          "senderAgentRunId": "team-v1-supported-root-lead-run",
+          "receiverAgentRunId": "team-v1-supported-root-reviewer-run",
+          "content": "address projection",
+          "messageType": "agent_message",
+          "referenceFiles": [
+            "/synthetic/address-evidence.md"
+          ],
+          "createdAt": "2026-08-16T12:01:00.000Z"
+        },
+        {
+          "messageId": "team-v1-supported-root-run-id-message",
+          "senderAgentRunId": "team-v1-supported-root-reviewer-run",
+          "receiverAgentRunId": "team-v1-supported-root-lead-run",
+          "content": "run ID projection",
+          "messageType": "agent_message",
+          "referenceFiles": [
+            "/synthetic/run-id-evidence.md"
+          ],
+          "createdAt": "2026-08-16T12:02:00.000Z"
+        }
+      ]
+    },
+    "agent_orgs/team-v1-supported-root/agent_org_run_execution_tree.json": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "createdAt": "2026-08-16T12:00:00.000Z",
+      "archivedAt": null,
+      "applicationBinding": null,
+      "handoffs": [
+        {
+          "from": "/lead",
+          "to": "/research/reviewer",
+          "rules": [
+            "Review the migration evidence."
+          ]
+        }
+      ],
+      "rootOrg": {
+        "address": "/",
+        "orgDefinitionId": "synthetic-released-root-definition",
+        "orgDefinitionName": "Synthetic Released Team",
+        "orgRunId": "team-v1-supported-root",
+        "defaultLaunchConfiguration": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "gpt-5.6-luna",
+          "llmConfig": {
+            "temperature": 0.15
+          },
+          "autoExecuteTools": false,
+          "skillAccessMode": "PRELOADED_ONLY",
+          "workspaceRootPath": "/tmp/autobyteus-team-v1-root-workspace"
+        },
+        "members": [
+          {
+            "address": "/lead",
+            "agentDefinitionId": "autobyteus-memory-compactor",
+            "role": "Synthetic migration member",
+            "description": "Synthetic released-shape member",
+            "agentRunId": "team-v1-supported-root-lead-run",
+            "platformAgentRunId": null,
+            "launchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": {
+                "temperature": 0.15
+              },
+              "autoExecuteTools": false,
+              "skillAccessMode": "PRELOADED_ONLY",
+              "workspaceRootPath": "/tmp/autobyteus-team-v1-root-workspace"
+            }
+          },
+          {
+            "address": "/research",
+            "teamDefinitionId": "synthetic-released-child-definition",
+            "role": "Research",
+            "description": "Nested released-shape team",
+            "teamRunId": "team-v1-supported-root-explicit-child-team-run",
+            "coordinatorAddress": "/research/reviewer",
+            "defaultLaunchConfiguration": {
+              "runtimeKind": "autobyteus",
+              "llmModelIdentifier": "gpt-5.6-luna",
+              "llmConfig": null,
+              "autoExecuteTools": true,
+              "skillAccessMode": "NONE",
+              "workspaceRootPath": "/tmp/autobyteus-team-v1-nested-workspace"
+            },
+            "members": [
+              {
+                "address": "/research/reviewer",
+                "agentDefinitionId": "autobyteus-memory-compactor",
+                "role": "Synthetic migration member",
+                "description": "Synthetic released-shape member",
+                "agentRunId": "team-v1-supported-root-reviewer-run",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "gpt-5.6-luna",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "skillAccessMode": "NONE",
+                  "workspaceRootPath": "/tmp/autobyteus-team-v1-nested-workspace"
+                }
+              }
+            ],
+            "taskExecutions": [
+              {
+                "address": "/research/reviewer",
+                "agentRunId": "team-v1-supported-root-task-reviewer-run",
+                "platformAgentRunId": null,
+                "startedAt": "2026-08-16T12:03:00.000Z",
+                "settledAt": "2026-08-16T12:05:00.000Z"
+              }
+            ]
+          }
+        ],
+        "taskExecutions": []
+      }
+    },
+    "agent_orgs/team-v1-supported-root/agent_org_task_delegation_records.json": {
+      "schemaVersion": 1,
+      "subjectKind": "agent_org",
+      "orgRunId": "team-v1-supported-root",
+      "records": [
+        {
+          "taskId": "team-v1-supported-root-accepted-review-task",
+          "delegatorAgentRunId": "team-v1-supported-root-lead-run",
+          "recipientAddress": "/research/reviewer",
+          "taskExecution": {
+            "agentRunId": "team-v1-supported-root-task-reviewer-run"
+          },
+          "description": "Review the preserved migration package.",
+          "referenceFiles": [
+            "/synthetic/migration-task.md"
+          ],
+          "status": "accepted",
+          "updates": [
+            {
+              "submissionId": "team-v1-supported-root-accepted-review-task_submission_0001",
+              "message": "The preserved migration package is valid.",
+              "referenceFiles": [
+                "/synthetic/migration-result.md"
+              ],
+              "createdAt": "2026-08-16T12:04:00.000Z"
+            },
+            {
+              "reviewId": "team-v1-supported-root-accepted-review-task_review_0001",
+              "reviewedSubmissionId": "team-v1-supported-root-accepted-review-task_submission_0001",
+              "decision": "accept",
+              "comment": "Accepted migration evidence.",
+              "referenceFiles": [],
+              "createdAt": "2026-08-16T12:05:00.000Z"
+            }
+          ],
+          "createdAt": "2026-08-16T12:02:00.000Z"
+        }
+      ]
+    },
+    "agent_orgs/team-v1-supported-root/team-v1-supported-root-lead-run/synthetic-memory.bin": "<48 bytes>",
+    "team_run_history_index.json": []
+  },
+  "orgTerminate": {
+    "terminateAgentOrgRun": {
+      "success": true,
+      "message": "Agent organization run terminated successfully."
+    }
+  },
+  "teamTerminate": {
+    "terminateAgentTeamRun": {
+      "success": false
+    }
+  },
+  "serverOutputTail": [
+    "Running Prisma migrations...",
+    "26 migrations found in prisma/migrations",
+    "Applying migration `20260820090000_redesign_app_data_migration_summary`",
+    "The following migration(s) have been applied:",
+    "migrations/",
+    "  └─ 20260820090000_redesign_app_data_migration_summary/",
+    "    └─ migration.sql",
+    "All migrations have been successfully applied.",
+    "Database migrations completed successfully.",
+    "{\"level\":30,\"time\":1790753987533,\"pid\":13714,\"hostname\":\"MacBookPro\",\"reqId\":\"req-4\",\"err\":{\"type\":\"GraphQLError\",\"message\":\"Team run execution tree not found for 'team-v1-supported-root'.\",\"stack\":\"Error: Team run execution tree not found for 'team-v1-supported-root'.\\n    at TeamRunHistoryService.getTeamRunResumeConfig (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts/dist/run-history/services/team-run-history-service.js:39:19)\\n    at async StudioRunModelConfigService.getTeamRunResumeConfig (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts/dist/run-history/services/studio-run-model-config-service.js:25:27)\\n    at async TeamRunHistoryResolver.getTeamRunResumeConfig (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/autobyteus-server-ts/dist/api/graphql/types/team-run-history.js:137:24)\\n    at async Promise.all (index 0)\\n    at async Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:552:23)\",\"path\":[\"getTeamRunResumeConfig\"],\"locations\":[{\"line\":2,\"column\":48}],\"extensions\":{}},\"msg\":\"Team run execution tree not found for 'team-v1-supported-root'.\"}",
+    "Error restoring agent team run with ID team-v1-supported-root: Error: TEAM_RUN_STATE_PACKAGE_NOT_CATALOGED: TeamRun 'team-v1-supported-root' is not an admitted current package.",
+    "{\"level\":30,\"time\":1790753987540,\"pid\":13714,\"hostname\":\"MacBookPro\",\"reqId\":\"req-6\",\"err\":{\"type\":\"GraphQLError\",\"message\":\"Graphql validation error\",\"stack\":\"FastifyError: Graphql validation error\\n    at Object.fastifyGraphQl [as graphql] (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:473:21)\\n    at _Reply.graphql (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/index.js:232:16)\\n    at executeQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:231:18)\\n    at executeRegularQuery (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:244:12)\\n    at Object.<anonymous> (/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/node_modules/.pnpm/mercurius@13.4.1_graphql@16.12.0/node_modules/mercurius/lib/routes.js:388:14)\\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)\",\"extensions\":{}},\"msg\":\"Graphql validation error\"}"
+  ]
+}

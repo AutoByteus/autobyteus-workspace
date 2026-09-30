@@ -24,7 +24,7 @@ const buildContext = (status: AgentStatus, submissionPending: boolean) => {
   const context = new AgentContext({
     agentDefinitionId: 'autobyteus-daily-assistant', agentDefinitionName: 'Daily Assistant', llmModelIdentifier: 'gpt-5.5',
     runtimeKind: 'codex_app_server', workspaceId: null, workspaceMetadata: null, autoExecuteTools: true,
-    skillAccessMode: 'PRELOADED_ONLY', isLocked: false,
+    isLocked: false,
   }, new AgentRunState(RUN_ID, { id: RUN_ID, messages: [], createdAt: '', updatedAt: '', agentDefinitionId: 'autobyteus-daily-assistant' }))
   context.state.currentStatus = status
   context.submissionPending = submissionPending

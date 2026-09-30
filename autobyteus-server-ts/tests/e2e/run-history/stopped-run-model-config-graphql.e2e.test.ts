@@ -187,7 +187,7 @@ const agentResume = (serverUrl: string, runId: string) => executeGraphql<{
       runId isActive
       metadataConfig {
         agentDefinitionId workspaceRootPath llmModelIdentifier llmConfig
-        autoExecuteTools skillAccessMode runtimeKind
+        autoExecuteTools runtimeKind
         runtimeReference { runtimeKind sessionId threadId metadata }
       }
       modelConfigEditability { editable reason }
@@ -270,7 +270,6 @@ describe("stopped run model-config GraphQL lifecycle", () => {
         llmModelIdentifier: model,
         llmConfig: INITIAL_CONFIG,
         autoExecuteTools: false,
-        skillAccessMode: "PRELOADED_ONLY",
         runtimeKind: "autobyteus",
       },
     });
@@ -507,7 +506,6 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       llmModelIdentifier: model,
       llmConfig: INITIAL_CONFIG,
       autoExecuteTools: false,
-      skillAccessMode: "PRELOADED_ONLY",
       workspaceRootPath,
     };
 

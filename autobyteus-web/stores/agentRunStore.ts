@@ -148,9 +148,6 @@ export const useAgentRunStore = defineStore('agentRun', {
       if (isNewAgent && !workspaceRootPath) {
         throw new Error("A workspace root path is required for the first message.");
       }
-      if (isNewAgent && !config.skillAccessMode) {
-        throw new Error("A skill access mode is required for the first message.");
-      }
       if (isNewAgent && !config.runtimeKind) {
         throw new Error("A runtime kind is required for the first message.");
       }
@@ -190,7 +187,6 @@ export const useAgentRunStore = defineStore('agentRun', {
                 llmModelIdentifier: config.llmModelIdentifier,
                 autoExecuteTools: config.autoExecuteTools,
                 llmConfig: config.llmConfig ?? null,
-                skillAccessMode: config.skillAccessMode,
                 runtimeKind: config.runtimeKind,
                 initialSummary,
               }

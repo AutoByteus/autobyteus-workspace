@@ -16,7 +16,7 @@ import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID as PREREQUISITE } from "../../.
 const AUTHORING = "20260911_collaboration_definition_authoring_shape";
 
 import { testExecutionTree, testAgentNode } from "../../fixtures/current-team-run-fixtures.js";
-import { toReleasedTeamRunExecutionTreeV2 } from "../../fixtures/released-run-tree-fixtures.js";
+import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../../fixtures/released-run-tree-fixtures.js";
 import { testOrgTeamNode, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const roots: string[] = [], clients: PrismaClient[] = [];
@@ -123,7 +123,7 @@ it("runs the complete production registry on a fresh pre-ticket data root, prese
   await fs.mkdir(path.join(runtimeSource, "mounted", "worker", "context_files"), { recursive: true });
   const base = testExecutionTree({ rootTeamRunId: "runtime-org", coordinatorAddress: "/direct", children: [testAgentNode("/direct", { agentRunId: "director" })] });
   const runtimeTree = { ...base, rootTeam: { ...base.rootTeam, members: [...base.rootTeam.members,
-    testOrgTeamNode({ address: "/team", teamRunId: "mounted", coordinatorAddress: "/team/lead", members: [testOrgAgentNode("/team/lead", "worker")] })] } };
+    toReleasedConfiguredNode(testOrgTeamNode({ address: "/team", teamRunId: "mounted", coordinatorAddress: "/team/lead", members: [testOrgAgentNode("/team/lead", "worker")] }))] } };
   await fs.writeFile(path.join(runtimeSource, "team_run_execution_tree.json"), json(toReleasedTeamRunExecutionTreeV2(runtimeTree)));
   await fs.writeFile(path.join(runtimeSource, "task_delegation_records.json"), json({ schemaVersion: 1, rootTeamRunId: "runtime-org", records: [] }));
   await fs.writeFile(path.join(runtimeSource, "team_communication_messages.json"), json({ schemaVersion: 1, rootTeamRunId: "runtime-org", messages: [] }));

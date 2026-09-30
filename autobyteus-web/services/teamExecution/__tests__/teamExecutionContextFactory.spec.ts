@@ -14,7 +14,6 @@ const launch = (overrides: Partial<AgentLaunchConfigurationDto> = {}): AgentLaun
   llm_model_identifier: 'gpt-5.6-luna',
   llm_config: { reasoning_effort: 'medium', nested: { values: ['medium'] } },
   auto_execute_tools: false,
-  skill_access_mode: 'PRELOADED_ONLY',
   workspace_root_path: '/workspace/root',
   ...overrides,
 })
@@ -55,7 +54,6 @@ const tree = (): TeamRunExecutionTreeDto => ({
           llm_model_identifier: 'claude-sonnet',
           llm_config: null,
           auto_execute_tools: true,
-          skill_access_mode: 'NONE',
           workspace_root_path: '/workspace/study',
         }),
         members: [
@@ -72,7 +70,6 @@ const tree = (): TeamRunExecutionTreeDto => ({
               llm_model_identifier: 'claude-opus',
               llm_config: { temperature: 0.2 },
               auto_execute_tools: true,
-              skill_access_mode: 'NONE',
               workspace_root_path: '/workspace/student-one',
             }),
           },
@@ -124,7 +121,6 @@ describe('teamExecutionContextFactory stored V2 projection', () => {
     expect(view.root.effectiveConfig).toEqual(expect.objectContaining({
       runtimeKind: 'codex_app_server',
       workspaceRootPath: '/workspace/root',
-      skillAccessMode: 'PRELOADED_ONLY',
     }))
     expect(view.teamsByAddress['/StudentStudyGroup']).toEqual(expect.objectContaining({
       parentAddress: '/',
@@ -132,14 +128,12 @@ describe('teamExecutionContextFactory stored V2 projection', () => {
       effectiveConfig: expect.objectContaining({
         runtimeKind: 'claude_agent_sdk',
         workspaceRootPath: '/workspace/study',
-        skillAccessMode: 'NONE',
         llmConfig: null,
       }),
     }))
     expect(view.agentsByAddress['/StudentStudyGroup/student_one'].effectiveConfig).toEqual(expect.objectContaining({
       llmModelIdentifier: 'claude-opus',
       workspaceRootPath: '/workspace/student-one',
-      skillAccessMode: 'NONE',
       llmConfig: { temperature: 0.2 },
     }))
     expect(Object.isFrozen(view)).toBe(true)
@@ -161,7 +155,6 @@ describe('teamExecutionContextFactory stored V2 projection', () => {
       rootConfig: expect.objectContaining({
         runtimeKind: 'codex_app_server',
         workspace: expect.objectContaining({ workspaceId: 'root-ws' }),
-        skillAccessMode: 'PRELOADED_ONLY',
       }),
       teamOverrides: {
         '/StudentStudyGroup': {
@@ -184,8 +177,6 @@ describe('teamExecutionContextFactory stored V2 projection', () => {
       isLocked: false,
     }))
     expect(seed.agentOverrides['/StudentStudyGroup/student_one']).not.toHaveProperty('workspace')
-    expect(seed.agentOverrides['/StudentStudyGroup/student_one']).not.toHaveProperty('skillAccessMode')
-    expect(seed.teamOverrides['/StudentStudyGroup']).not.toHaveProperty('skillAccessMode')
 
     ;(seed.agentOverrides['/StudentStudyGroup/student_one'].llmConfig as { temperature: number }).temperature = 0.9
     expect(view.agentsByAddress['/StudentStudyGroup/student_one'].effectiveConfig.llmConfig).toEqual({ temperature: 0.2 })
@@ -207,7 +198,6 @@ describe('teamExecutionContextFactory stored V2 projection', () => {
       runtimeKind: 'claude_agent_sdk',
       llmModelIdentifier: 'claude-opus',
       workspaceId: 'student-ws',
-      skillAccessMode: 'NONE',
       llmConfig: { temperature: 0.2 },
       isLocked: true,
     }))

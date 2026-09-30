@@ -1,4 +1,3 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { describe, expect, it, vi } from "vitest";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
@@ -24,7 +23,6 @@ const metadata = (overrides: Partial<AgentRunMetadata> = {}): AgentRunMetadata =
   llmModelIdentifier: "haiku",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
   platformAgentRunId: null,
   preparedAt: "2026-08-17T20:00:00.000Z",

@@ -2,7 +2,6 @@ import fastify from "fastify";
 import websocket from "@fastify/websocket";
 import { describe, expect, it } from "vitest";
 import WebSocket from "ws";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type {
   AgentRunBackend,
   AgentRunSourceEventBatchListener,
@@ -70,7 +69,6 @@ class ScriptedAgentRunBackend implements AgentRunBackend {
         workspaceId: null,
         memoryDir: null,
         llmConfig: null,
-        skillAccessMode: SkillAccessMode.NONE,
       }),
       runtimeContext: null,
     });

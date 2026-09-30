@@ -334,7 +334,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: {},
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "antigravity_cli",
               workspaceRootPath,
             },
@@ -346,7 +345,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: {},
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "antigravity_cli",
               workspaceRootPath,
             },
@@ -356,7 +354,6 @@ Rules:
               llmModelIdentifier: modelIdentifier,
               llmConfig: {},
               autoExecuteTools: true,
-              skillAccessMode: "NONE",
               runtimeKind: "antigravity_cli",
               workspaceRootPath,
             },
@@ -735,7 +732,7 @@ On a teammate message, do not use tools; reply with exactly ACK.`;
         }`,
         { input: { agentOrgDefinitionId: org.createAgentOrgDefinition.id,
           rootConfiguration: { runtimeKind: "antigravity_cli", llmModelIdentifier: modelIdentifier,
-            llmConfig: null, autoExecuteTools: true, skillAccessMode: "NONE", workspaceRootPath },
+            llmConfig: null, autoExecuteTools: true, workspaceRootPath },
           agentOverrides: [], teamOverrides: [] } },
       );
       expect(created.createAgentOrgRun.success, created.createAgentOrgRun.message).toBe(true);

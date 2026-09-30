@@ -16,7 +16,7 @@ import {
 } from "../../agent-collaboration/domain/agent-team-address.js";
 import { TeamRunTreeIndex } from "./team-run-tree-index.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { isReleasedSkillAccessMode } from "./released-skill-access-mode.js";
 
 export const LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED_CODE =
   "LEGACY_TEAM_RUN_METADATA_UPGRADE_REQUIRED";
@@ -120,7 +120,7 @@ const validateNodeShape = (value: unknown, label: string, isRoot = false): void 
       throw new Error(`${label}.llmConfig must be an object or null.`);
     }
     if (typeof node.autoExecuteTools !== "boolean") throw new Error(`${label}.autoExecuteTools must be boolean.`);
-    if (!Object.values(SkillAccessMode).includes(node.skillAccessMode as SkillAccessMode)) {
+    if (!isReleasedSkillAccessMode(node.skillAccessMode)) {
       throw new Error(`${label}.skillAccessMode is unsupported.`);
     }
     validateNullableString(node.workspaceRootPath, `${label}.workspaceRootPath`);

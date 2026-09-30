@@ -143,7 +143,6 @@ type CompleteLaunchConfiguration = {
   llmModelIdentifier: string;
   llmConfig: Record<string, unknown> | null;
   autoExecuteTools: boolean;
-  skillAccessMode: string;
   workspaceRootPath: string | null;
 };
 
@@ -164,7 +163,6 @@ const normalizeLaunchConfiguration = (
       llmModelIdentifier: value.llmModelIdentifier as string,
       llmConfig: value.llmConfig as Record<string, unknown> | null,
       autoExecuteTools: value.autoExecuteTools as boolean,
-      skillAccessMode: value.skillAccessMode as string,
       workspaceRootPath: value.workspaceRootPath as string | null,
     }
   : {
@@ -172,7 +170,6 @@ const normalizeLaunchConfiguration = (
       llmModelIdentifier: value.llm_model_identifier as string,
       llmConfig: value.llm_config as Record<string, unknown> | null,
       autoExecuteTools: value.auto_execute_tools as boolean,
-      skillAccessMode: value.skill_access_mode as string,
       workspaceRootPath: value.workspace_root_path as string | null,
     };
 
@@ -248,7 +245,6 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
       llmModelIdentifier: model,
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: "PRELOADED_ONLY",
       workspaceRootPath: rootWorkspace,
     };
     const researchTeamConfiguration: CompleteLaunchConfiguration = {
@@ -256,7 +252,6 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
       llmModelIdentifier: model,
       llmConfig: { temperature: 0.2 },
       autoExecuteTools: true,
-      skillAccessMode: "PRELOADED_ONLY",
       workspaceRootPath: researchWorkspace,
     };
     const coordinatorConfiguration = { ...rootTeamConfiguration };
@@ -265,7 +260,6 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
       llmModelIdentifier: model,
       llmConfig: { temperature: 0.1 },
       autoExecuteTools: true,
-      skillAccessMode: "PRELOADED_ONLY",
       workspaceRootPath: rootWorkspace,
     };
     const leadConfiguration = { ...researchTeamConfiguration };
@@ -274,7 +268,6 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
       llmModelIdentifier: model,
       llmConfig: { temperature: 0.35 },
       autoExecuteTools: false,
-      skillAccessMode: "PRELOADED_ONLY",
       workspaceRootPath: researchWorkspace,
     };
     const expectedConfigurationTree: ExactConfigurationNode = {
@@ -433,7 +426,6 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
           teamAddress: "/",
           llmModelIdentifier: model,
           autoExecuteTools: false,
-          skillAccessMode: "NONE",
           ...(subject === "Team"
             ? (runtimeKind === undefined ? {} : { runtimeKind })
             : { runtimeKind: "autobyteus" }),
@@ -443,7 +435,6 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
           teamAddress: "/Research",
           llmModelIdentifier: model,
           autoExecuteTools: false,
-          skillAccessMode: "NONE",
           runtimeKind: "autobyteus",
           workspaceRootPath: rejectedWorkspace,
         },
@@ -458,7 +449,6 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
         agentDefinitionId,
         llmModelIdentifier: model,
         autoExecuteTools: false,
-        skillAccessMode: "NONE",
         ...(subject === "Agent" && index === 0
           ? (runtimeKind === undefined ? {} : { runtimeKind })
           : { runtimeKind: "autobyteus" }),

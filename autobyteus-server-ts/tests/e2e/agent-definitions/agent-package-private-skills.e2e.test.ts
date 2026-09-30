@@ -6,7 +6,6 @@ import { createRequire } from "node:module";
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import type { AgentConfig } from "autobyteus-ts";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
@@ -240,7 +239,6 @@ const createRuntimeRunConfig = (input: {
     autoExecuteTools: false,
     workspaceId: input.workspaceId,
     memoryDir: input.memoryDir ?? null,
-    skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   });
 
 const createCodexRunContext = (input: {
@@ -609,7 +607,6 @@ describe("Agent package private skills GraphQL e2e", () => {
       singleRunId,
     );
     expect(capturedConfigs.get(singleRunId)?.skills).toEqual([path.resolve(singleSkillDir)]);
-    expect(capturedConfigs.get(singleRunId)?.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
     expect(singleBackend.getContext().config.workspaceId).toBe(workspaceId);
     await singleBackend.terminate();
 
@@ -627,7 +624,6 @@ describe("Agent package private skills GraphQL e2e", () => {
       path.resolve(toneSkillDir),
       path.resolve(outlineSkillDir),
     ]);
-    expect(capturedConfigs.get(multiRunId)?.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
     expect(multiBackend.getContext().config.workspaceId).toBe(workspaceId);
     await multiBackend.terminate();
   });

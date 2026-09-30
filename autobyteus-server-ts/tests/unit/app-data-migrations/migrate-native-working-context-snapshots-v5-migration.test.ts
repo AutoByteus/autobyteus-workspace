@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { Message, MessageRole } from "autobyteus-ts/llm/utils/messages.js";
 import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import { MemoryManager } from "autobyteus-ts/memory/memory-manager.js";
@@ -67,7 +66,7 @@ const writeStandaloneMetadata = async (runId: string, runtimeKind = RuntimeKind.
     llmModelIdentifier: "model-test",
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: SkillAccessMode.NONE,
+    skillAccessMode: "NONE",
     runtimeKind,
     platformAgentRunId: null,
     startedAt: "2026-07-31T00:00:00.000Z",
@@ -85,7 +84,7 @@ const writeTeamMetadata = async (teamRunId: string, memberRunId: string): Promis
     children: [testAgentNode("/lead", {
       agentRunId: memberRunId,
       runtimeKind: RuntimeKind.AUTOBYTEUS,
-      skillAccessMode: SkillAccessMode.NONE,
+      skillAccessMode: "NONE",
       autoExecuteTools: false,
       workspaceRootPath: "/workspace/team",
     })],

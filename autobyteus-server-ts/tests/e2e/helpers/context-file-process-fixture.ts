@@ -72,7 +72,7 @@ export class ContextFileProcessFixture {
     });
     const agentDefinitionId = result.createAgentDefinition.id;
     const config = { llmModelIdentifier: model, llmConfig: null, autoExecuteTools: false,
-      skillAccessMode: "NONE", runtimeKind: "autobyteus", workspaceRootPath: this.root };
+      runtimeKind: "autobyteus", workspaceRootPath: this.root };
     if (kind === "agent") {
       const result = await this.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
         { input: { agentDefinitionId, ...config } });

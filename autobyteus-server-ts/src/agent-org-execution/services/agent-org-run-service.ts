@@ -2,7 +2,6 @@ import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../doma
 import { listAgentOrgRunModelConfigScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgExecutionSnapshot } from "../../services/agent-streaming/agent-org-execution-view-projector.js";
-import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { PlacementLaunchOverride } from "../../agent-collaboration/services/collaboration-launch-configuration-resolver.js";
@@ -24,7 +23,6 @@ export type AgentOrgLaunchConfigurationInput = Readonly<{
   llmModelIdentifier: string;
   llmConfig?: Readonly<Record<string, unknown>> | null;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
   workspaceRootPath?: string | null;
 }>;
 
@@ -230,7 +228,6 @@ const normalizeConfiguration = (value: AgentOrgLaunchConfigurationInput, label: 
   llmModelIdentifier: required(value.llmModelIdentifier, `${label}.llmModelIdentifier`),
   llmConfig: value.llmConfig ? Object.freeze(structuredClone(value.llmConfig)) : null,
   autoExecuteTools: Boolean(value.autoExecuteTools),
-  skillAccessMode: value.skillAccessMode,
   workspaceRootPath: value.workspaceRootPath?.trim() || null,
 });
 
@@ -240,14 +237,12 @@ const normalizePatch = (value: Partial<AgentOrgLaunchConfigurationInput>, label:
     llmModelIdentifier?: string;
     llmConfig?: Readonly<Record<string, unknown>> | null;
     autoExecuteTools?: boolean;
-    skillAccessMode?: SkillAccessMode;
     workspaceRootPath?: string | null;
   } = {};
   if (value.runtimeKind !== undefined) patch.runtimeKind = runtime(value.runtimeKind, `${label}.runtimeKind`);
   if (value.llmModelIdentifier !== undefined) patch.llmModelIdentifier = required(value.llmModelIdentifier, `${label}.llmModelIdentifier`);
   if (Object.hasOwn(value, "llmConfig")) patch.llmConfig = value.llmConfig ? Object.freeze(structuredClone(value.llmConfig)) : null;
   if (value.autoExecuteTools !== undefined) patch.autoExecuteTools = Boolean(value.autoExecuteTools);
-  if (value.skillAccessMode !== undefined) patch.skillAccessMode = value.skillAccessMode;
   if (Object.hasOwn(value, "workspaceRootPath")) patch.workspaceRootPath = value.workspaceRootPath?.trim() || null;
   return patch;
 };

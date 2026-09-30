@@ -1,6 +1,5 @@
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata';
 
-export type SkillAccessMode = 'PRELOADED_ONLY' | 'NONE';
 export type AgentRuntimeKind = string;
 export const DEFAULT_AGENT_RUNTIME_KIND: AgentRuntimeKind = 'autobyteus';
 
@@ -60,9 +59,6 @@ export interface AgentRunConfig {
   /** Whether to auto-execute tool calls without user confirmation */
   autoExecuteTools: boolean;
 
-  /** Controls which skills this agent can use for this run */
-  skillAccessMode: SkillAccessMode;
-  
   /** 
    * Whether this config is locked (read-only).
    * Set to true after the first message is sent to the backend.

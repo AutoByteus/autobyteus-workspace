@@ -36,7 +36,6 @@ export interface TestAgentNode {
   readonly runtimeKind: 'autobyteus' | 'codex_app_server' | 'claude_agent_sdk' | 'grok_build';
   readonly llmModelIdentifier: string;
   readonly autoExecuteTools: boolean;
-  readonly skillAccessMode: 'PRELOADED_ONLY' | 'NONE';
   readonly llmConfig: Record<string, unknown> | null;
   readonly workspaceRootPath: string | null;
   readonly currentStatus: AgentStatus;
@@ -73,7 +72,6 @@ export const testAgentNode = (
   runtimeKind: 'autobyteus',
   llmModelIdentifier: 'test-model',
   autoExecuteTools: true,
-  skillAccessMode: 'NONE',
   llmConfig: null,
   workspaceRootPath: null,
   currentStatus: AgentStatus.Idle,
@@ -132,7 +130,7 @@ export const testAgentContext = (input: {
       displayName: 'test-workspace', kind: 'filesystem',
     } : null,
     autoExecuteTools: input.autoExecuteTools ?? true,
-    skillAccessMode: 'NONE', isLocked: true, llmConfig: null,
+    isLocked: true, llmConfig: null,
   };
   const conversation: Conversation = {
     id: input.runId, messages: input.messages ?? [], createdAt: NOW, updatedAt: NOW,
@@ -150,7 +148,6 @@ function launch(node: TestAgentNode): AgentLaunchConfigurationDto {
   llm_model_identifier: node.llmModelIdentifier,
   llm_config: node.llmConfig,
   auto_execute_tools: node.autoExecuteTools,
-  skill_access_mode: node.skillAccessMode,
   workspace_root_path: node.workspaceRootPath,
   };
 }

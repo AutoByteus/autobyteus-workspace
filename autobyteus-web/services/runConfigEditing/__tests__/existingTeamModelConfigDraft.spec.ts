@@ -14,7 +14,6 @@ const launch = (
   llm_model_identifier: model,
   llm_config: config,
   auto_execute_tools: false,
-  skill_access_mode: 'PRELOADED_ONLY',
   workspace_root_path: '/workspace',
 })
 const tree = (): TeamRunExecutionTreeDto => ({

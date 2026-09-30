@@ -1,6 +1,5 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { Skill } from "../../../skills/domain/models.js";
 import type { WorkspaceCollisionPolicy } from "./workspace-skill-collision-policy.js";
 import {
@@ -97,13 +96,10 @@ export class WorkspaceSkillMaterializer {
     runId: string;
     workingDirectory: string;
     requests?: WorkspaceSkillReconciliationRequest[] | null;
-    skillAccessMode?: SkillAccessMode | null;
     /** From `SkillService.resolveSkillScope` via `workspaceCollisionPolicyForScope`. */
     workspaceCollisionPolicy: WorkspaceCollisionPolicy;
   }): Promise<MaterializedWorkspaceSkill[]> {
-    const requests = options.skillAccessMode === SkillAccessMode.NONE
-      ? []
-      : options.requests ?? [];
+    const requests = options.requests ?? [];
     const acquired: MaterializedWorkspaceSkill[] = [];
     try {
       for (const request of requests) {

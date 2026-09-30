@@ -2289,7 +2289,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   });
   it("archives and confirms deletion of stopped AgentOrg roots with exact selected-route cleanup", async () => {
     const launch = { runtimeKind: "codex_app_server", llmModelIdentifier: "model", llmConfig: null,
-      autoExecuteTools: false, skillAccessMode: "PRELOADED_ONLY", workspaceRootPath: "/ws/a" };
+      autoExecuteTools: false, workspaceRootPath: "/ws/a" };
     const orgRun = {
       stableKey: "org-run:org-stopped", rootSubjectKind: "agent_org", rootRunId: "org-stopped",
       createdAt: "2026-09-21T00:00:00.000Z", archivedAt: null, isActive: false, summary: "Stopped Org",
@@ -2330,7 +2330,7 @@ describe('WorkspaceAgentRunsTreePanel', () => {
   it('renders the real AgentOrg Delete confirmation action and dialog name in zh-CN', async () => {
     await localizationRuntime.setPreference('zh-CN');
     const launch = { runtimeKind: 'codex_app_server', llmModelIdentifier: 'model', llmConfig: null,
-      autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/ws/a' };
+      autoExecuteTools: false, workspaceRootPath: '/ws/a' };
     const orgRun = {
       stableKey: 'org-run:org-stopped', rootSubjectKind: 'agent_org', rootRunId: 'org-stopped',
       createdAt: '2026-09-21T00:00:00.000Z', archivedAt: null, isActive: false, summary: 'Stopped Org',

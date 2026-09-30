@@ -115,10 +115,14 @@ Launch flows no longer expose a user-facing skill-access choice. A standalone
 agent run receives the skills configured on its selected agent definition, and a
 team run gives each leaf member only the skills configured on that member's
 agent definition. An agent with no configured skills receives no
-AutoByteus-managed skills by default. The legacy `GLOBAL_DISCOVERY` / "all
-installed skills" mode is removed from public runtime inputs; unsupported legacy
-values are rejected after startup migration has rewritten old persisted metadata
-to configured-only behavior.
+AutoByteus-managed skills by default. There is no run-level skill setting at
+all: the former `skillAccessMode` input (`PRELOADED_ONLY` / `NONE`, and the
+earlier `GLOBAL_DISCOVERY` / "all installed skills" mode) is removed from every
+launch input, GraphQL type, SDK contract and runtime backend. A GraphQL launch
+input that still names the field fails schema validation, so the web client and
+server must be the same version. Persisted run history
+that still stores a value is loaded and the value is ignored; see
+[run history](./run_history.md).
 
 Native AutoByteus runs consume the resolved `Skill.rootPath` values directly in
 `AgentConfig.skills`. For imported package agents this includes exact canonical

@@ -57,7 +57,6 @@ const buildTeamInput = (): ApplicationStartAgentTeamInput => ({
       workspaceRootPath: "/tmp/team-workspace",
       llmModelIdentifier: "grok-4.7",
       autoExecuteTools: false,
-      skillAccessMode: "PRELOADED_ONLY",
       runtimeKind: "autobyteus",
     }],
     memberConfigs: [{
@@ -67,7 +66,6 @@ const buildTeamInput = (): ApplicationStartAgentTeamInput => ({
       workspaceRootPath: "/tmp/team-workspace",
       llmModelIdentifier: "grok-4.7",
       autoExecuteTools: false,
-      skillAccessMode: "PRELOADED_ONLY",
       runtimeKind: "autobyteus",
     }],
   },
@@ -191,6 +189,31 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
     expect(requireCurrentAutoByteusModelIdentifier).not.toHaveBeenCalled();
   });
 
+  it("ignores a skillAccessMode still sent by an application bundle built against the older SDK", async () => {
+    const { service, agentRunService, teamRunService } = buildService();
+    const agentInput = buildAgentInput();
+    const teamInput = buildTeamInput();
+    if (teamInput.launch.mode !== "memberConfigs") throw new Error("Expected memberConfigs launch.");
+
+    await service.startAgentRunBinding(applicationId, {
+      ...agentInput,
+      launch: { ...agentInput.launch, skillAccessMode: "NONE" } as never,
+    });
+    await service.startAgentTeamRunBinding(applicationId, {
+      ...teamInput,
+      launch: {
+        ...teamInput.launch,
+        teamConfigs: teamInput.launch.teamConfigs.map((config) => ({ ...config, skillAccessMode: "PRELOADED_ONLY" })),
+        memberConfigs: teamInput.launch.memberConfigs.map((config) => ({ ...config, skillAccessMode: "NONE" })),
+      } as never,
+    });
+
+    expect(agentRunService.createAgentRun).toHaveBeenCalledOnce();
+    expect(teamRunService.createTeamRun).toHaveBeenCalledOnce();
+    expect(JSON.stringify(agentRunService.createAgentRun.mock.calls)).not.toContain("skillAccessMode");
+    expect(JSON.stringify(teamRunService.createTeamRun.mock.calls)).not.toContain("skillAccessMode");
+  });
+
   it("routes a valid startAgentTeam request only through team creation", async () => {
     const { service, bindingStore, lookupStore, agentRunService, teamRunService } = buildService();
 
@@ -230,7 +253,6 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
             workspaceRootPath: "/tmp/team-workspace",
             llmModelIdentifier: "grok-4.7",
             autoExecuteTools: false,
-            skillAccessMode: "PRELOADED_ONLY" as never,
           },
           {
             memberAddress: "/writer",
@@ -239,7 +261,6 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
             workspaceRootPath: "/tmp/team-workspace",
             llmModelIdentifier: "grok-4.5",
             autoExecuteTools: false,
-            skillAccessMode: "PRELOADED_ONLY" as never,
           },
         ],
       },
@@ -271,7 +292,6 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
           workspaceRootPath: "/tmp/team-workspace",
           llmModelIdentifier,
           autoExecuteTools: false,
-          skillAccessMode: "PRELOADED_ONLY" as never,
         })),
       },
     })).rejects.toMatchObject({
@@ -295,7 +315,6 @@ describe("ApplicationRunBindingLaunchService explicit start kinds", () => {
           workspaceRootPath: "/tmp/team-workspace",
           llmModelIdentifier: "grok-4.7",
           runtimeKind: "autobyteus",
-          skillAccessMode: "PRELOADED_ONLY",
         },
       },
     });

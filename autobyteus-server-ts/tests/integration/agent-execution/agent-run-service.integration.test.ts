@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
 import { AgentRunProvisioningService } from "../../../src/agent-execution/services/agent-run-provisioning-service.js";
 import { StandaloneAgentRunLifecycleService } from "../../../src/agent-execution/services/standalone-agent-run-lifecycle-service.js";
@@ -50,7 +49,6 @@ const createMetadata = (input: {
   llmModelIdentifier: "model-1",
   llmConfig: { temperature: 0.2 },
   autoExecuteTools: true,
-  skillAccessMode: SkillAccessMode.NONE,
   runtimeKind: input.runtimeKind,
   platformAgentRunId: input.platformAgentRunId ?? null,
   preparedAt: "2026-08-17T20:00:00.000Z",
@@ -176,7 +174,6 @@ describe("AgentRunService integration", () => {
         llmModelIdentifier: "model-1",
         autoExecuteTools: true,
         llmConfig: { temperature: 0.2 },
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: runtimeKindInput,
       });
 
@@ -398,7 +395,6 @@ describe("AgentRunService integration", () => {
       workspaceRootPath: "/tmp/project",
       llmModelIdentifier: "model-1",
       autoExecuteTools: true,
-      skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: "unsupported_runtime",
     })).rejects.toThrow("not supported");
     expect(allocateForAgentDefinition).not.toHaveBeenCalled();

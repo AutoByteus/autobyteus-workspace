@@ -70,7 +70,7 @@ class TestWebSocket {
 
 const launch = {
   runtimeKind: 'codex_app_server' as const, llmModelIdentifier: 'gpt-5.6-sol', llmConfig: null,
-  autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY' as const, workspaceRootPath: null,
+  autoExecuteTools: false, workspaceRootPath: null,
 }
 const connected = {
   type: 'CONNECTED',

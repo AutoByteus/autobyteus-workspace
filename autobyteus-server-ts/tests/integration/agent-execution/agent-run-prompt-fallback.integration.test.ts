@@ -4,7 +4,6 @@ import { afterEach, describe, expect, it } from "vitest";
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import type { AgentConfig } from "autobyteus-ts/agent/context/agent-config.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
@@ -222,7 +221,6 @@ describe("AgentRunService fresh definition runtime integration", () => {
       llmModelIdentifier: "dummy-model",
       autoExecuteTools: false,
       runtimeKind: "autobyteus",
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       llmConfig: null,
     });
 
@@ -276,7 +274,6 @@ describe("AgentRunService fresh definition runtime integration", () => {
       llmModelIdentifier: "dummy-model",
       autoExecuteTools: false,
       runtimeKind: "autobyteus",
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       llmConfig: null,
     });
 

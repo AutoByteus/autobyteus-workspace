@@ -10,7 +10,6 @@ export declare const agentOrgLaunchConfigurationDtoSchema: z.ZodObject<{
     llmModelIdentifier: z.ZodString;
     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
     autoExecuteTools: z.ZodBoolean;
-    skillAccessMode: z.ZodString;
     workspaceRootPath: z.ZodNullable<z.ZodString>;
 }, z.core.$strict>;
 type TaskAgentExecutionDto = Readonly<{
@@ -72,7 +71,6 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
             llmModelIdentifier: z.ZodString;
             llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
             autoExecuteTools: z.ZodBoolean;
-            skillAccessMode: z.ZodString;
             workspaceRootPath: z.ZodNullable<z.ZodString>;
         }, z.core.$strict>;
         members: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -93,7 +91,6 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
                 llmModelIdentifier: z.ZodString;
                 llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                 autoExecuteTools: z.ZodBoolean;
-                skillAccessMode: z.ZodString;
                 workspaceRootPath: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>;
         }, z.core.$strict>, z.ZodObject<{
@@ -114,7 +111,6 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
                 llmModelIdentifier: z.ZodString;
                 llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                 autoExecuteTools: z.ZodBoolean;
-                skillAccessMode: z.ZodString;
                 workspaceRootPath: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>;
             members: z.ZodArray<z.ZodObject<{
@@ -135,7 +131,6 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
                     llmModelIdentifier: z.ZodString;
                     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                     autoExecuteTools: z.ZodBoolean;
-                    skillAccessMode: z.ZodString;
                     workspaceRootPath: z.ZodNullable<z.ZodString>;
                 }, z.core.$strict>;
             }, z.core.$strict>>;
@@ -214,7 +209,6 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                 llmModelIdentifier: z.ZodString;
                 llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                 autoExecuteTools: z.ZodBoolean;
-                skillAccessMode: z.ZodString;
                 workspaceRootPath: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>;
             members: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
@@ -235,7 +229,6 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                     llmModelIdentifier: z.ZodString;
                     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                     autoExecuteTools: z.ZodBoolean;
-                    skillAccessMode: z.ZodString;
                     workspaceRootPath: z.ZodNullable<z.ZodString>;
                 }, z.core.$strict>;
             }, z.core.$strict>, z.ZodObject<{
@@ -256,7 +249,6 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                     llmModelIdentifier: z.ZodString;
                     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                     autoExecuteTools: z.ZodBoolean;
-                    skillAccessMode: z.ZodString;
                     workspaceRootPath: z.ZodNullable<z.ZodString>;
                 }, z.core.$strict>;
                 members: z.ZodArray<z.ZodObject<{
@@ -277,7 +269,6 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                         llmModelIdentifier: z.ZodString;
                         llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                         autoExecuteTools: z.ZodBoolean;
-                        skillAccessMode: z.ZodString;
                         workspaceRootPath: z.ZodNullable<z.ZodString>;
                     }, z.core.$strict>;
                 }, z.core.$strict>>;

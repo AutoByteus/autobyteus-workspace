@@ -1,4 +1,3 @@
-import { SkillAccessMode, resolveSkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
@@ -113,11 +112,10 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     const definition = await this.deps.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`ACP_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
     const bindings = this.deps.skills.resolveConfiguredSkillBindingsForAgent(definition);
-    const skillAccessMode = resolveSkillAccessMode(config.skillAccessMode ?? null, bindings.length);
     const materializedSkills = await this.deps.skillMaterializer.materializeConfiguredWorkspaceSkills({
-      runId, workingDirectory, skillAccessMode,
+      runId, workingDirectory,
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.deps.skills.resolveSkillScope(definition)),
-      requests: skillAccessMode === SkillAccessMode.NONE ? [] : bindings.map((binding) => binding.kind === "resolved"
+      requests: bindings.map((binding) => binding.kind === "resolved"
         ? { kind: "expose-resolved" as const, skill: binding.skill }
         : { kind: "reconcile-unresolved" as const, name: binding.name }),
     });

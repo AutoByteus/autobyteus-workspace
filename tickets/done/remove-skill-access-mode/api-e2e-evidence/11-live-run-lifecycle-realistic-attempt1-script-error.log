@@ -1,0 +1,31 @@
+PASS plain agent create {"success":true,"message":"Agent run created successfully.","runId":"rsam_plain_rsamb1790755198118_874a9b015644420a8d0bfd839c7a578b"}
+PASS plain agent turn replied {"reply":"RSAM_FAKE_REPLY_1","errors":[]}
+PASS agent with no skills: no skills section in the system prompt {"promptChars":2658}
+PASS agent[0] create {"success":true,"message":"Agent run created successfully.","runId":"rsam_skilled_rsamb1790755198118_3d364943423043418fc6aaf5abe71cc0"}
+PASS agent[0] first turn replied {"reply":"RSAM_FAKE_REPLY_2","errors":[]}
+PASS agent[0]: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":3460}
+PASS agent[0]: system prompt does not inline the skill body 
+PASS agent[0] terminate 
+PASS agent[0] restore {"success":true,"message":"Agent run restored successfully.","runId":"rsam_skilled_rsamb1790755198118_3d364943423043418fc6aaf5abe71cc0"}
+PASS agent[0] turn after restore replied {"reply":"RSAM_FAKE_REPLY_3","errors":[]}
+PASS agent[0] after restore: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":3460}
+PASS agent[0] after restore: system prompt does not inline the skill body 
+PASS team[0] create {"success":true,"message":"Agent team run created successfully.","teamRunId":"rsam_team_rsamb1790755198118_312995463ba04a909c92c226674101b2"}
+PASS team[0] resume config has no skill field {"lead":{"address":"/lead","agentRunId":"rsam_skilled_rsamb1790755198118_fa1eaa1ad95447c0bb0817ec44acfd2e"}}
+PASS team[0] lead turn replied {"reply":"RSAM_FAKE_REPLY_4","errors":[]}
+PASS team[0] lead: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":7399}
+PASS team[0] lead: system prompt does not inline the skill body 
+PASS team[0] terminate 
+PASS team[0] restore {"success":true,"message":"Agent team run restored successfully.","teamRunId":"rsam_team_rsamb1790755198118_312995463ba04a909c92c226674101b2"}
+PASS team[0] lead turn after restore replied {"reply":"RSAM_FAKE_REPLY_5","errors":[]}
+PASS org[0] create {"success":true,"message":"Agent organization run created successfully.","agentOrgRunId":"rsam_org_rsamb1790755198118_5ec17ba1036d443babedd23aec114792"}
+PASS org[0] run config has no skill field {}
+file:///private/tmp/rsam-probe/live-b.mjs:106
+  const ot1 = await turn(`/ws/agent-org/${o.agentOrgRunId}`, { agent_run_id: director.agentRunId, content: 'Org first message.' });
+                                                                                      ^
+
+TypeError: Cannot read properties of undefined (reading 'agentRunId')
+    at file:///private/tmp/rsam-probe/live-b.mjs:106:87
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+
+Node.js v22.23.1

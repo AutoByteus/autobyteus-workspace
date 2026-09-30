@@ -243,7 +243,6 @@ const configureSelectedFlatLaunchDraft = (): Readonly<{
       llmModelIdentifier: 'gpt-5.4',
       llmConfig: null,
       autoExecuteTools: true,
-      skillAccessMode: 'NONE',
     },
     teamOverrides: {},
     agentOverrides: {

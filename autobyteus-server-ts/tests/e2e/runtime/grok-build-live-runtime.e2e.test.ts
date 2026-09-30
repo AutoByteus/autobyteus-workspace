@@ -138,7 +138,7 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
     const created = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
       "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
       { input: { agentDefinitionId: definitionId, workspaceRootPath: workspace, llmModelIdentifier: modelIdentifier,
-        llmConfig: { reasoning_effort: REASONING_EFFORT }, autoExecuteTools: false, skillAccessMode: "NONE",
+        llmConfig: { reasoning_effort: REASONING_EFFORT }, autoExecuteTools: false,
         runtimeKind: "grok_build" } });
     expect(created.createAgentRun.success, created.createAgentRun.message).toBe(true);
     const runId = created.createAgentRun.runId!;
@@ -313,13 +313,13 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
     const teamDefinitionId = team.createAgentTeamDefinition.id;
     cleanup.push(() => graphql("mutation($id: String!) { deleteAgentTeamDefinition(id: $id) { success } }", { id: teamDefinitionId }));
     const grokConfig = { llmModelIdentifier: modelIdentifier, llmConfig: { reasoning_effort: REASONING_EFFORT },
-      autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: "grok_build", workspaceRootPath: workspace };
+      autoExecuteTools: true, runtimeKind: "grok_build", workspaceRootPath: workspace };
     const run = await graphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
       "mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }",
       { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...grokConfig }], memberConfigs: [
         { memberAddress: "/ping", agentDefinitionId: pingId, ...grokConfig },
         { memberAddress: "/pong", agentDefinitionId: pongId, llmModelIdentifier: pongModel, llmConfig: null,
-          autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: pongRuntime, workspaceRootPath: workspace },
+          autoExecuteTools: true, runtimeKind: pongRuntime, workspaceRootPath: workspace },
       ] } });
     expect(run.createAgentTeamRun.success, run.createAgentTeamRun.message).toBe(true);
     const teamRunId = run.createAgentTeamRun.teamRunId!;
@@ -411,7 +411,7 @@ describeLiveGrok("Grok Build live runtime e2e (real grok CLI)", () => {
       "mutation($input: CreateAgentOrgRunInput!) { createAgentOrgRun(input: $input) { success message agentOrgRunId } }",
       { input: { agentOrgDefinitionId: org.createAgentOrgDefinition.id, rootConfiguration: { runtimeKind: "grok_build",
         llmModelIdentifier: modelIdentifier, llmConfig: { reasoning_effort: REASONING_EFFORT }, autoExecuteTools: true,
-        skillAccessMode: "NONE", workspaceRootPath: workspace }, agentOverrides: [], teamOverrides: [] } });
+        workspaceRootPath: workspace }, agentOverrides: [], teamOverrides: [] } });
     expect(created.createAgentOrgRun.success, created.createAgentOrgRun.message).toBe(true);
     const orgRunId = created.createAgentOrgRun.agentOrgRunId!;
     cleanup.push(() => graphql("mutation($agentOrgRunId: String!) { terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success } }",

@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { createAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import type {
   TeamRunAgentMemberMetadata,
@@ -28,7 +27,7 @@ const agent = (
     llmModelIdentifier: "test-model",
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+    skillAccessMode: "PRELOADED_ONLY",
     workspaceRootPath: "/workspace",
     applicationExecutionContext,
   });

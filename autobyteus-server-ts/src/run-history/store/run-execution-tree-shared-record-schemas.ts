@@ -1,4 +1,3 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import {
@@ -73,7 +72,6 @@ const LAUNCH_CONFIGURATION_KEYS = [
   "llmModelIdentifier",
   "llmConfig",
   "autoExecuteTools",
-  "skillAccessMode",
   "workspaceRootPath",
 ] as const;
 
@@ -89,16 +87,12 @@ export const parseLaunchConfiguration = (value: unknown, label: string): AgentLa
     && (!launch.llmConfig || typeof launch.llmConfig !== "object" || Array.isArray(launch.llmConfig))
   ) throw new Error(`${label}.llmConfig must be an object or null.`);
   if (typeof launch.autoExecuteTools !== "boolean") throw new Error(`${label}.autoExecuteTools must be boolean.`);
-  if (!Object.values(SkillAccessMode).includes(launch.skillAccessMode as SkillAccessMode)) {
-    throw new Error(`${label}.skillAccessMode is unsupported.`);
-  }
   if (launch.workspaceRootPath !== null) requiredString(launch.workspaceRootPath, `${label}.workspaceRootPath`);
   return {
     runtimeKind: launch.runtimeKind,
     llmModelIdentifier: launch.llmModelIdentifier,
     llmConfig: launch.llmConfig === null ? null : structuredClone(launch.llmConfig),
     autoExecuteTools: launch.autoExecuteTools,
-    skillAccessMode: launch.skillAccessMode,
     workspaceRootPath: launch.workspaceRootPath,
   } as AgentLaunchConfiguration;
 };

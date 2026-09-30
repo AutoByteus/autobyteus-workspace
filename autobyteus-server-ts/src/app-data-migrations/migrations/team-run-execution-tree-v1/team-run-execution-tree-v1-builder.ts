@@ -5,11 +5,15 @@ import {
   type ConfiguredTeamExecution,
   type TeamRunExecutionTreeSnapshot,
 } from "./team-run-execution-tree-v1-types.js";
-import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunNode } from "../../../agent-team-execution/domain/team-run-config.js";
-import { TeamRunConfig } from "../../../agent-team-execution/domain/team-run-config.js";
+import type {
+  ReleasedTeamRunAgentNode,
+  ReleasedTeamRunAgentTeamNode,
+  ReleasedTeamRunConfig,
+  ReleasedTeamRunNode,
+} from "../../legacy/released-team-run-config.js";
 import { validateTeamRunExecutionTreePayload } from "./team-run-execution-tree-v1-schema.js";
 
-const toAgent = (node: TeamRunAgentNode): ConfiguredAgentExecution => ({
+const toAgent = (node: ReleasedTeamRunAgentNode): ConfiguredAgentExecution => ({
   address: node.address,
   agentDefinitionId: node.agentDefinitionId,
   role: node.role,
@@ -26,7 +30,7 @@ const toAgent = (node: TeamRunAgentNode): ConfiguredAgentExecution => ({
   },
 });
 
-const toTeam = (node: TeamRunAgentTeamNode): ConfiguredTeamExecution => ({
+const toTeam = (node: ReleasedTeamRunAgentTeamNode): ConfiguredTeamExecution => ({
   address: node.address,
   teamDefinitionId: node.teamDefinitionId,
   role: node.role ?? null,
@@ -37,11 +41,11 @@ const toTeam = (node: TeamRunAgentTeamNode): ConfiguredTeamExecution => ({
   taskExecutions: [],
 });
 
-const toMember = (node: TeamRunNode): ConfiguredMemberExecution =>
+const toMember = (node: ReleasedTeamRunNode): ConfiguredMemberExecution =>
   node.kind === "agent" ? toAgent(node) : toTeam(node);
 
 export const buildInitialTeamRunExecutionTree = (input: {
-  config: TeamRunConfig;
+  config: ReleasedTeamRunConfig;
   teamDefinitionName: string;
   createdAt?: string;
 }): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({

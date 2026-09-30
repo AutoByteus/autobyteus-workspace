@@ -83,9 +83,9 @@ in `SkillRegistry` and normalizes them to the names declared by their
 resolve agent-definition skill names to concrete root paths before constructing
 `AgentConfig`.
 
-The retained internal/transport value `PRELOADED_ONLY` still means "use only the agent's
-explicitly configured skills." It does **not** mean that skill bodies are
-preloaded into the prompt. `NONE` suppresses the catalog entirely.
+`AgentConfig.skills` is the only skill input. There is no separate access mode:
+every configured skill is advertised in the catalog, and skill bodies are never
+preloaded into the prompt.
 
 ### Catalog-only system prompt
 

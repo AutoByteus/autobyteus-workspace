@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { ConfiguredAgentActivationPlanner } from "../../../src/agent-collaboration/execution/backends/configured-agent-activation-planner.js";
@@ -19,7 +18,6 @@ const config = new AgentRunConfig({
   llmModelIdentifier: "gpt-5.6-sol",
   autoExecuteTools: false,
   memoryDir: "/memory/agent_org/org-run/agent-run",
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
 });
 

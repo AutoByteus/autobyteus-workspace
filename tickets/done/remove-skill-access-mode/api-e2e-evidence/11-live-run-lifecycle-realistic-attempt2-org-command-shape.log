@@ -1,0 +1,55 @@
+PASS plain agent create {"success":true,"message":"Agent run created successfully.","runId":"rsam_plain_rsamb1790755226491_c9eb0ce3bc7048a0aeac862406a94fe2"}
+PASS plain agent turn replied {"reply":"RSAM_FAKE_REPLY_6","errors":[]}
+PASS agent with no skills: no skills section in the system prompt {"promptChars":2658}
+PASS agent[0] create {"success":true,"message":"Agent run created successfully.","runId":"rsam_skilled_rsamb1790755226491_e0beeb12f12a4e9ea146dca09162ba41"}
+PASS agent[0] first turn replied {"reply":"RSAM_FAKE_REPLY_7","errors":[]}
+PASS agent[0]: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":3460}
+PASS agent[0]: system prompt does not inline the skill body 
+PASS agent[0] terminate 
+PASS agent[0] restore {"success":true,"message":"Agent run restored successfully.","runId":"rsam_skilled_rsamb1790755226491_e0beeb12f12a4e9ea146dca09162ba41"}
+PASS agent[0] turn after restore replied {"reply":"RSAM_FAKE_REPLY_8","errors":[]}
+PASS agent[0] after restore: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":3460}
+PASS agent[0] after restore: system prompt does not inline the skill body 
+PASS team[0] create {"success":true,"message":"Agent team run created successfully.","teamRunId":"rsam_team_rsamb1790755226491_1874efaca0024a95be9b5177aca1cb07"}
+PASS team[0] resume config has no skill field {"lead":{"address":"/lead","agentRunId":"rsam_skilled_rsamb1790755226491_cd1d61da7ac24b4c9d769f2d32e061f7"}}
+PASS team[0] lead turn replied {"reply":"RSAM_FAKE_REPLY_9","errors":[]}
+PASS team[0] lead: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":7399}
+PASS team[0] lead: system prompt does not inline the skill body 
+PASS team[0] terminate 
+PASS team[0] restore {"success":true,"message":"Agent team run restored successfully.","teamRunId":"rsam_team_rsamb1790755226491_1874efaca0024a95be9b5177aca1cb07"}
+PASS team[0] lead turn after restore replied {"reply":"RSAM_FAKE_REPLY_10","errors":[]}
+PASS org[0] create {"success":true,"message":"Agent organization run created successfully.","agentOrgRunId":"rsam_org_rsamb1790755226491_efedb87a1e0040689cf2ad206fa179f6"}
+PASS org[0] run config has no skill field {"director":{"address":"/director","agentRunId":"rsam_skilled_rsamb1790755226491_4340bc1a047648a9b6cf05c949260f1d"}}
+FAIL org[0] director turn replied {"reply":null,"errors":["{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_ORG_COMMAND_INVALID\",\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"invalid_value\\\",\\n    \\\"values\\\": [\\n      \\\"agent_org\\\"\\n    ],\\n    \\\"path\\\": [\\n      \\\"paylo
+FAIL org[0] director: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":0}
+FAIL org[0] director: system prompt does not inline the skill body 
+PASS org[0] terminate 
+PASS org[0] restore {"success":true,"message":"Agent organization run restored successfully.","agentOrgRunId":"rsam_org_rsamb1790755226491_efedb87a1e0040689cf2ad206fa179f6"}
+FAIL org[0] director turn after restore replied {"reply":null,"errors":["{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_ORG_COMMAND_INVALID\",\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"invalid_value\\\",\\n    \\\"values\\\": [\\n      \\\"agent_org\\\"\\n    ],\\n    \\\"path\\\": [\\n      \\\"paylo
+PASS agent[1] create {"success":true,"message":"Agent run created successfully.","runId":"rsam_skilled_rsamb1790755226491_52cfbf0cc91c4502906d90cf6cca9476"}
+PASS agent[1] first turn replied {"reply":"RSAM_FAKE_REPLY_11","errors":[]}
+PASS agent[1]: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":3460}
+PASS agent[1]: system prompt does not inline the skill body 
+PASS agent[1] terminate 
+PASS agent[1] restore {"success":true,"message":"Agent run restored successfully.","runId":"rsam_skilled_rsamb1790755226491_52cfbf0cc91c4502906d90cf6cca9476"}
+PASS agent[1] turn after restore replied {"reply":"RSAM_FAKE_REPLY_12","errors":[]}
+PASS agent[1] after restore: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":3460}
+PASS agent[1] after restore: system prompt does not inline the skill body 
+PASS team[1] create {"success":true,"message":"Agent team run created successfully.","teamRunId":"rsam_team_rsamb1790755226491_827984c4469a4ec18beaaa989d06a36b"}
+PASS team[1] resume config has no skill field {"lead":{"address":"/lead","agentRunId":"rsam_skilled_rsamb1790755226491_b94648a1730541639bc41f7ad0b52719"}}
+PASS team[1] lead turn replied {"reply":"RSAM_FAKE_REPLY_13","errors":[]}
+PASS team[1] lead: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":7399}
+PASS team[1] lead: system prompt does not inline the skill body 
+PASS team[1] terminate 
+PASS team[1] restore {"success":true,"message":"Agent team run restored successfully.","teamRunId":"rsam_team_rsamb1790755226491_827984c4469a4ec18beaaa989d06a36b"}
+PASS team[1] lead turn after restore replied {"reply":"RSAM_FAKE_REPLY_14","errors":[]}
+PASS org[1] create {"success":true,"message":"Agent organization run created successfully.","agentOrgRunId":"rsam_org_rsamb1790755226491_3fbfc2b3f71a4f82b90164b8bcaa5fbe"}
+PASS org[1] run config has no skill field {"director":{"address":"/director","agentRunId":"rsam_skilled_rsamb1790755226491_ef14bcab8c6445bf8efcb720b1788c0a"}}
+FAIL org[1] director turn replied {"reply":null,"errors":["{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_ORG_COMMAND_INVALID\",\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"invalid_value\\\",\\n    \\\"values\\\": [\\n      \\\"agent_org\\\"\\n    ],\\n    \\\"path\\\": [\\n      \\\"paylo
+FAIL org[1] director: system prompt sent to the model has the catalog entry and SKILL.md path {"promptChars":0}
+FAIL org[1] director: system prompt does not inline the skill body 
+PASS org[1] terminate 
+PASS org[1] restore {"success":true,"message":"Agent organization run restored successfully.","agentOrgRunId":"rsam_org_rsamb1790755226491_3fbfc2b3f71a4f82b90164b8bcaa5fbe"}
+FAIL org[1] director turn after restore replied {"reply":null,"errors":["{\"type\":\"ERROR\",\"payload\":{\"code\":\"AGENT_ORG_COMMAND_INVALID\",\"message\":\"[\\n  {\\n    \\\"code\\\": \\\"invalid_value\\\",\\n    \\\"values\\\": [\\n      \\\"agent_org\\\"\\n    ],\\n    \\\"path\\\": [\\n      \\\"paylo
+PASS no record written by the server contains the field {"files":48,"carrying":[]}
+FAILED: org[0] director turn replied; org[0] director: system prompt sent to the model has the catalog entry and SKILL.md path; org[0] director: system prompt does not inline the skill body; org[0] director turn after restore replied; org[1] director turn replied; org[1] director: system prompt sent to the model has the catalog entry and SKILL.md path; org[1] director: system prompt does not inline the skill body; org[1] director turn after restore replied

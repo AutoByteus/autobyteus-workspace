@@ -247,7 +247,6 @@ const buildAgentContext = (runId: string, name: string) => {
     workspaceId: null,
     workspaceMetadata: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
     llmConfig: null,
     isLocked: true,
   } as any, state);

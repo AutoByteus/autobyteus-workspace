@@ -16,7 +16,6 @@ export type AgyCapsuleManifest = {
   agentName: string;
   workspacePath: string;
   agentMarkdownHash: string;
-  skillAccessMode: "PRELOADED_ONLY" | "NONE";
   skills: AgySkillSnapshot[];
 };
 
@@ -33,7 +32,6 @@ export const createAgyRunCapsule = async (input: {
   agentDefinitionId: string;
   configuredSkillBindings: readonly DetailedConfiguredSkillResolution[];
   workspaceCollisionPolicy: WorkspaceCollisionPolicy;
-  skillAccessMode: "PRELOADED_ONLY" | "NONE";
   mcpDescriptor: AgentToolMcpDescriptor | null;
 }): Promise<AgyRunCapsule> => {
   const workspacePath = await fs.realpath(input.workspacePath);
@@ -55,12 +53,11 @@ export const createAgyRunCapsule = async (input: {
       capsulePath: root, workspacePath, bindings: input.configuredSkillBindings,
       runId: input.runId, agentDefinitionId: input.agentDefinitionId,
       workspaceCollisionPolicy: input.workspaceCollisionPolicy,
-      enabled: input.skillAccessMode === "PRELOADED_ONLY",
     });
     await materializeAgyMcpConfig({ capsulePath: root, workspacePath, descriptor: input.mcpDescriptor });
     const manifest: AgyCapsuleManifest = {
       version: 1, runId: input.runId, agentName, workspacePath,
-      agentMarkdownHash: sha256(markdown), skillAccessMode: input.skillAccessMode, skills,
+      agentMarkdownHash: sha256(markdown), skills,
     };
     await fs.writeFile(path.join(root, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, { mode: 0o600, flag: "wx" });
     return { path: root, manifest };

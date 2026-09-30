@@ -14,6 +14,6 @@ export function writeAttachmentAgentMetadata(memoryDir: string, runId: string): 
   fs.mkdirSync(directory, { recursive: true });
   fs.writeFileSync(path.join(directory, "run_metadata.json"), JSON.stringify({ runId, agentDefinitionId: "attachment-fixture",
     workspaceRootPath: path.dirname(memoryDir), memoryDir: directory, llmModelIdentifier: "fixture-model",
-    llmConfig: null, autoExecuteTools: false, skillAccessMode: "NONE", runtimeKind: "autobyteus", platformAgentRunId: null,
+    llmConfig: null, autoExecuteTools: false, runtimeKind: "autobyteus", platformAgentRunId: null,
     preparedAt: null, preparedExpiresAt: null, startedAt: "2026-09-01T00:00:00.000Z", applicationExecutionContext: null }));
 }

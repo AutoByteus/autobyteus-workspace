@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgyAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.js";
@@ -57,7 +56,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
     );
     config = new AgentRunConfig({ agentDefinitionId: "test-agent", llmModelIdentifier: "test-model",
       autoExecuteTools: true, workspaceId: "workspace", memoryDir: path.join(base, "memory"),
-      skillAccessMode: SkillAccessMode.NONE, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI });
+      runtimeKind: RuntimeKind.ANTIGRAVITY_CLI });
   });
 
   afterEach(async () => {
@@ -81,7 +80,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
         { resolveWorkingDirectory: async () => workspace } as never,
         { activateForRun: () => ({ kind: "not_exposed" }) } as never,
       );
-      const preloaded = new AgentRunConfig({ ...config, skillAccessMode: SkillAccessMode.PRELOADED_ONLY } as never);
+      const preloaded = new AgentRunConfig({ ...config } as never);
       if (outcome === "rejects") {
         await expect(scoped.createBackend(preloaded, "run")).rejects.toThrow("AGY_SKILL_NAME_COLLISION");
         return;

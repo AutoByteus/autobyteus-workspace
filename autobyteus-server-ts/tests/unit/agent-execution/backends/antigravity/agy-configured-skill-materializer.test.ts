@@ -45,9 +45,9 @@ const detailed = (binding: ConfiguredAgentSkillBinding): DetailedConfiguredSkill
   })() }
   : { kind: "certified_absent", name: binding.name };
 const create = (root: Awaited<ReturnType<typeof fixture>>, configuredSkillBindings: ConfiguredAgentSkillBinding[],
-  mode: "PRELOADED_ONLY" | "NONE" = "PRELOADED_ONLY", runId = "linked") => createAgyRunCapsule({ agentDefinitionId: "test-agent",
+  runId = "linked") => createAgyRunCapsule({ agentDefinitionId: "test-agent",
   runId, memoryDir: path.join(root.base, `memory-${runId}`), workspacePath: root.workspace,
-  identity: "Identity", configuredSkillBindings: mode === "NONE" ? [] : configuredSkillBindings.map(detailed), skillAccessMode: mode, mcpDescriptor: null,
+  identity: "Identity", configuredSkillBindings: configuredSkillBindings.map(detailed), mcpDescriptor: null,
 });
 const resolver = new ConfiguredAgentSkillResolver({ loader: new SkillLoader(), isReadonlyPath: () => true,
   isSkillDisabled: () => false, logger: { warn: () => undefined } });
@@ -161,13 +161,6 @@ describe("AGY configured skill checked snapshot", () => {
     await expect(create(root, [binding(root.skill, root.base)])).rejects.toThrow("AGY_SKILL_SOURCE_PROVENANCE_INVALID");
   });
 
-  it("does not inspect or expose configured source links in NONE mode", async () => {
-    const root = await fixture();
-    const capsule = await create(root, [binding(root.skill, root.skill, "global")], "NONE");
-    expect(capsule.manifest.skills).toEqual([]);
-    await expect(fs.stat(path.join(capsule.path, ".agents", "skills"))).rejects.toMatchObject({ code: "ENOENT" });
-  });
-
   it("detects a source changed during copy and removes every candidate byte", async () => {
     const root = await fixture();
     const writeFile = fs.writeFile.bind(fs);
@@ -194,7 +187,7 @@ it.skipIf(!existsSync(path.join(actualTeam, "agents", "solution-designer", "skil
       skillNames: ["solution-designer"], sourceInfo: { agentDirPath: agent, teamDirPath: actualTeam } });
     const bindings = resolver.resolveForAgent(definition, catalogWith(actual, actualTeam));
     const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "actual", memoryDir: path.join(base, "memory"), workspacePath: workspace,
-      identity: "Identity", configuredSkillBindings: bindings.map(detailed), skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
+      identity: "Identity", configuredSkillBindings: bindings.map(detailed), mcpDescriptor: null });
     for (const name of ["design-examples.md", "design-principles.md"]) {
       const target = path.join(capsule.path, ".agents", "skills", "solution-designer", name);
       expect((await fs.lstat(target)).isFile()).toBe(true);

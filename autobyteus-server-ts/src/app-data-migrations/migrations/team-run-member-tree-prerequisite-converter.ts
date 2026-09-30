@@ -1,4 +1,4 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { isReleasedSkillAccessMode, type ReleasedSkillAccessMode } from "../legacy/released-skill-access-mode.js";
 import { normalizeCollaborationHandoffs } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 
@@ -74,11 +74,11 @@ const requireRuntimeKind = (value: unknown, label: string): RuntimeKind => {
   return value as RuntimeKind;
 };
 
-const requireSkillAccessMode = (value: unknown, label: string): SkillAccessMode => {
-  if (!Object.values(SkillAccessMode).includes(value as SkillAccessMode)) {
+const requireSkillAccessMode = (value: unknown, label: string): ReleasedSkillAccessMode => {
+  if (!isReleasedSkillAccessMode(value)) {
     throw new Error(`${label} is unsupported.`);
   }
-  return value as SkillAccessMode;
+  return value;
 };
 
 const convertFlatAgent = (value: unknown, index: number): JsonRecord => {

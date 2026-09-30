@@ -53,7 +53,6 @@ async function run(input: { name: string; prompt: string; skillSource?: string;
     workspacePath: workspace, identity: "You are an AutoByteus agent. Follow the user's request using your available tools and configured skills.",
     agentDefinitionId: "codex", configuredSkillBindings: [...bindings, ...(input.extraSkillBindings ?? [])],
     workspaceCollisionPolicy: "fail",
-    skillAccessMode: source || input.extraSkillBindings?.length ? "PRELOADED_ONLY" : "NONE",
     mcpDescriptor: null });
   const stream = new AgyStreamProcess();
   const observed: AgyStreamMessage[] = [];

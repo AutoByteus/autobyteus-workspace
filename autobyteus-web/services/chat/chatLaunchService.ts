@@ -113,7 +113,6 @@ export const launchAgentChat = async (
     context.config.workspaceId = workspaceId
     context.config.workspaceMetadata = workspaceMetadata
     context.config.autoExecuteTools = draft.autoExecuteTools
-    context.config.skillAccessMode = 'PRELOADED_ONLY'
     context.config.isLocked = false
     selectionStore.beginSelectionIntent()
     agentContextsStore.registerDraftRun(context)

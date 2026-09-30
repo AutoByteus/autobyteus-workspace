@@ -354,7 +354,6 @@ describe("AgentStreamHandler", () => {
       autoExecuteTools: false,
       workspaceId: "workspace-1",
       llmConfig: null,
-      skillAccessMode: null,
     });
     const context = new AgentRunContext({
       runId,

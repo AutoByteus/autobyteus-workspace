@@ -24,7 +24,6 @@ import type { FlatTeamExecutionCallbacks } from '../../../src/agent-team-executi
 import { createAgentOrgRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from '../../../src/agent-collaboration/execution/domain/root-execution-identity.js';
 import { AgentOrgRunPlanner } from '../../../src/agent-org-execution/services/agent-org-run-planner.js';
 import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
-import { SkillAccessMode } from 'autobyteus-ts/agent/context/skill-access-mode.js';
 import { AgentOrgDefinitionResolver } from '../../../src/agent-org-definition/services/agent-org-definition-resolver.js';
 import { CollaborationHandoffCompiler } from '../../../src/agent-collaboration/definition/collaboration-handoff-compiler.js';
 import { buildCanonicalApplicationId, buildCanonicalApplicationOwnedTeamId } from '../../../src/application-bundles/utils/application-bundle-identity.js';
@@ -155,7 +154,7 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     const f = await fixture(), before = await treeHash(f.root);
     let sequence = 0;
     const planner = new AgentOrgRunPlanner({ getAgentById: id => f.agents.getById(id), getTeamById: id => f.service.getDefinitionById(id) }, { allocateAgent: async () => `agent-${++sequence}`, allocateTeam: () => 'team-run', allocateOrg: () => 'org-run' });
-    const tree = await planner.build({ definition: (await f.orgs.getById('alpha'))!, rootConfiguration: { ...launch, autoExecuteTools: false, skillAccessMode: SkillAccessMode.PRELOADED_ONLY, workspaceRootPath: null } });
+    const tree = await planner.build({ definition: (await f.orgs.getById('alpha'))!, rootConfiguration: { ...launch, autoExecuteTools: false, workspaceRootPath: null } });
     expect(tree.rootOrg.members).toMatchObject([{ address: '/guide', agentDefinitionId: f.ids('alpha').direct, platformAgentRunId: null }, { address: '/group', teamDefinitionId: f.ids('alpha').team, members: [{ address: '/group/lead', agentDefinitionId: f.ids('alpha').agent, platformAgentRunId: null }] }]);
     expect(tree.handoffs).toHaveLength(2);
     expect(await treeHash(f.root)).toEqual(before);
@@ -166,7 +165,7 @@ describe('Org-owned Team -> Team-local Agent production reads', () => {
     const planner = new AgentOrgRunPlanner({ getAgentById: id => f.agents.getById(id), getTeamById: id => f.service.getDefinitionById(id) }, { allocateAgent: async () => `agent-${++sequence}`, allocateTeam: () => 'team-run', allocateOrg: () => 'org-run' });
     const tree = await planner.build({
       definition: (await f.orgs.getById('alpha'))!,
-      rootConfiguration: { ...launch, autoExecuteTools: false, skillAccessMode: SkillAccessMode.PRELOADED_ONLY, workspaceRootPath: null },
+      rootConfiguration: { ...launch, autoExecuteTools: false, workspaceRootPath: null },
     });
     const state = validateAgentOrgStatePackage({
       executionTree: tree,

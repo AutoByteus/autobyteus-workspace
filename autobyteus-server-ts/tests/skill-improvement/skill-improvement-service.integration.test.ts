@@ -95,7 +95,6 @@ describe("SkillImprovementService executable direct-edit flow", () => {
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       llmModelIdentifier: "target-model",
       llmConfig: null,
-      skillAccessMode: "PRELOADED_ONLY",
       effectiveConfig,
       targetMetadata: {} as any,
     };
@@ -287,7 +286,6 @@ describe("SkillImprovementService executable direct-edit flow", () => {
             runtimeKind: RuntimeKind.CODEX_APP_SERVER,
             llmModelIdentifier: "target-model",
             llmConfig: null,
-            skillAccessMode: "PRELOADED_ONLY",
           })),
         } as any,
         grantRegistry: new DirectAgentRunMessageGrantRegistry(),

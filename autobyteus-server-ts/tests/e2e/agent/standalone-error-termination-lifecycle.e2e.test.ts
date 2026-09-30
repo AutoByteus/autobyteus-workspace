@@ -5,7 +5,6 @@ import { createRequire } from "node:module";
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentRunBackend } from "../../../src/agent-execution/backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -57,7 +56,6 @@ const createConfig = (): AgentRunConfig => new AgentRunConfig({
   autoExecuteTools: true,
   workspaceId: "standalone-error-workspace",
   llmConfig: null,
-  skillAccessMode: SkillAccessMode.NONE,
 });
 
 const createErrorBackend = (accepted: boolean): RuntimeFixture => {
@@ -129,7 +127,6 @@ const buildMetadata = (): AgentRunMetadata => ({
   llmModelIdentifier: "fixture-model",
   llmConfig: null,
   autoExecuteTools: true,
-  skillAccessMode: SkillAccessMode.NONE,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: null,
   activationState: "PREPARED",

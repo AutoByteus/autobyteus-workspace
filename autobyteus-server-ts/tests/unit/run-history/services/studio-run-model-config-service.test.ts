@@ -16,7 +16,6 @@ const agentResume = Object.freeze({
     llmModelIdentifier: "model-1",
     llmConfig: { reasoning_effort: "medium" },
     autoExecuteTools: true,
-    skillAccessMode: null,
     runtimeKind: RuntimeKind.AUTOBYTEUS,
     platformAgentRunId: null,
     applicationExecutionContext: {

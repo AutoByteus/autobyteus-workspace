@@ -1,7 +1,6 @@
 import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it } from "vitest";
 import { StreamEventType } from "autobyteus-ts";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type {
   AgentRunBackend,
   AgentRunSourceEventBatchListener,
@@ -49,7 +48,6 @@ class SegmentSourceBackend implements AgentRunBackend {
       workspaceId: null,
       memoryDir: null,
       llmConfig: null,
-      skillAccessMode: SkillAccessMode.NONE,
     }),
     runtimeContext: null,
   });

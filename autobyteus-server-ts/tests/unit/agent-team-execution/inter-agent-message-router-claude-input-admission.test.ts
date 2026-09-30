@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { createFakeClaudeSdkClient, flushClaudeSession } from "../../helpers/fake-claude-streaming-sdk.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -65,7 +64,6 @@ describe("InterAgentMessageRouter Claude input admission", () => {
         autoExecuteTools: false,
         workspaceId: null,
         llmConfig: null,
-        skillAccessMode: SkillAccessMode.NONE,
       }),
       runtimeContext: new ClaudeAgentRunContext({
         sessionConfig: buildClaudeSessionConfig({

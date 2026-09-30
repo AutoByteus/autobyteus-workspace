@@ -40,7 +40,7 @@ describe('agentContextsStore', () => {
     describe('registerDraftRun', () => {
         const buildDraft = (runId: string) => new AgentContext({
             agentDefinitionId: 'def-1', agentDefinitionName: 'TestAgent', llmModelIdentifier: 'm', runtimeKind: 'autobyteus',
-            workspaceId: 'ws-1', workspaceMetadata: null, autoExecuteTools: true, skillAccessMode: 'PRELOADED_ONLY', isLocked: false,
+            workspaceId: 'ws-1', workspaceMetadata: null, autoExecuteTools: true, isLocked: false,
         }, new AgentRunState(runId, { id: runId, messages: [], createdAt: '', updatedAt: '', agentDefinitionId: 'def-1' }));
 
         it('registers a prepared temp context and selects it', () => {
@@ -82,7 +82,6 @@ describe('agentContextsStore', () => {
                     kind: 'filesystem',
                 },
                 autoExecuteTools: false,
-                skillAccessMode: 'PRELOADED_ONLY',
                 llmConfig: { reasoning_effort: 'low' },
                 isLocked: true,
             };
@@ -99,7 +98,6 @@ describe('agentContextsStore', () => {
                     kind: 'filesystem',
                 },
                 autoExecuteTools: true,
-                skillAccessMode: 'NONE',
                 llmConfig: { reasoning: { effort: 'xhigh' } },
             });
 
@@ -125,7 +123,6 @@ describe('agentContextsStore', () => {
                 kind: 'filesystem',
             });
             expect(runContext?.config.autoExecuteTools).toBe(true);
-            expect(runContext?.config.skillAccessMode).toBe('NONE');
             expect(runContext?.config.llmConfig).toEqual({ reasoning: { effort: 'xhigh' } });
             expect(runContext?.config.isLocked).toBe(false);
             expect(sourceConfig).toEqual(sourceSnapshot);
@@ -250,7 +247,6 @@ describe('agentContextsStore', () => {
                 runtimeKind: 'codex_app_server',
                 workspaceId: 'ws-1',
                 autoExecuteTools: false,
-                skillAccessMode: 'PRELOADED_ONLY',
                 llmConfig: null,
                 isLocked: true,
             } as any;

@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RemoveGlobalSkillDiscoveryModeMigration } from "../../../src/app-data-migrations/migrations/remove-global-skill-discovery-mode-migration.js";
 
 let tempRoot: string;
@@ -52,7 +51,7 @@ describe("RemoveGlobalSkillDiscoveryModeMigration", () => {
         {
           memberKind: "agent",
           memberRouteKey: "reviewer",
-          skillAccessMode: SkillAccessMode.NONE,
+          skillAccessMode: "NONE",
         },
       ],
     });
@@ -72,9 +71,9 @@ describe("RemoveGlobalSkillDiscoveryModeMigration", () => {
 
     expectNoLegacyMode(agentMetadata);
     expectNoLegacyMode(teamMetadata);
-    expect(agentMetadata.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
-    expect(teamMetadata.memberTree[0].config.skillAccessMode).toBe(SkillAccessMode.PRELOADED_ONLY);
-    expect(teamMetadata.memberTree[1].skillAccessMode).toBe(SkillAccessMode.NONE);
+    expect(agentMetadata.skillAccessMode).toBe("PRELOADED_ONLY");
+    expect(teamMetadata.memberTree[0].config.skillAccessMode).toBe("PRELOADED_ONLY");
+    expect(teamMetadata.memberTree[1].skillAccessMode).toBe("NONE");
     expect(unrelatedJson.skillAccessMode).toBe(LEGACY_MODE);
 
     const secondResult = await new RemoveGlobalSkillDiscoveryModeMigration(memoryDir).execute();

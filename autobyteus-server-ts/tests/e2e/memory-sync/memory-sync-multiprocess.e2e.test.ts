@@ -224,7 +224,6 @@ const seedSourceMemory = (sourceDataDir: string): void => {
     llmModelIdentifier: "model-a",
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: null,
     runtimeKind: "autobyteus",
     platformAgentRunId: null,
     startedAt: "2026-06-23T02:00:00.000Z",

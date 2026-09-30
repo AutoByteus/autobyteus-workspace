@@ -18,7 +18,6 @@ const launch = {
   llm_model_identifier: 'provider:model',
   llm_config: null,
   auto_execute_tools: false,
-  skill_access_mode: 'PRELOADED_ONLY',
   workspace_root_path: null,
 };
 
@@ -79,7 +78,7 @@ const context = (agentRunId: string, address: AgentTeamAddress): AgentContext =>
     agentDefinitionId: `${address}-definition`,
     agentDefinitionName: address.split('/').at(-1) ?? address,
     llmModelIdentifier: 'provider:model', runtimeKind: 'autobyteus', workspaceId: null,
-    workspaceMetadata: null, autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', isLocked: true,
+    workspaceMetadata: null, autoExecuteTools: false, isLocked: true,
   }, state);
 };
 

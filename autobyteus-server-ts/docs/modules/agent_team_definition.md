@@ -104,9 +104,10 @@ coordinator without changing the Team definition.
 ## Default Launch Preferences
 
 `defaultLaunchConfig` may seed a standalone Team draft with `runtimeKind`,
-`llmModelIdentifier`, and `llmConfig`. Workspace, automatic-tool policy, and
-skill access remain run-configuration concerns rather than definition-default
-fields.
+`llmModelIdentifier`, and `llmConfig`. Workspace and automatic-tool policy
+remain run-configuration concerns rather than definition-default fields. Skills
+are neither: each member's own agent definition (`skillScope` / `skillNames`)
+is the only skill authority, and no Team or run setting changes it.
 
 When a Team is mounted in an AgentOrg, its definition defaults do not silently
 override the Org run configuration. Effective Org launch resolution is:

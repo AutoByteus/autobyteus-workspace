@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { AgyAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend-factory.js";
@@ -45,7 +44,7 @@ const runScopedMcpMessage = async (kind: "team" | "org") => {
   const marker = `MCP-MARKER-${kind.toUpperCase()}-5127`;
   const config = new AgentRunConfig({ agentDefinitionId: "agy-member-definition", llmModelIdentifier: "gemini-3.8-flash-low",
     autoExecuteTools: true, workspaceId: "workspace", memoryDir: path.join(base, "memory"),
-    skillAccessMode: SkillAccessMode.NONE, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI,
+    runtimeKind: RuntimeKind.ANTIGRAVITY_CLI,
     memberExecutionContext: member });
   const factory = new AgyAgentRunBackendFactory(
     { getAgentDefinitionById: async () => ({ name: "MCP team member", description: "Team messenger.",

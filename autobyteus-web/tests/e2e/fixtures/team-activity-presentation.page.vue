@@ -176,7 +176,6 @@ const runningRun = (teamRunId: string, isActive: boolean): AgentTeamContext => {
       llmModelIdentifier: 'browser-fixture',
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
       memberOverrides: {},
       isLocked: true,
     },

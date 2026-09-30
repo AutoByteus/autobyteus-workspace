@@ -1,4 +1,3 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import { MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../built-in-agents/built-in-agent-registry.js";
@@ -11,7 +10,6 @@ export type ResolvedMemoryCompactorAgentLaunch = {
   llmModelIdentifier: string;
   provider: string;
   llmConfig: Record<string, unknown> | null;
-  skillAccessMode: SkillAccessMode;
 };
 
 export type CompactionParentLaunchFallback = {
@@ -85,7 +83,6 @@ export class MemoryCompactorAgentLaunchResolver {
       llmModelIdentifier,
       provider: String(provider),
       llmConfig: asObjectRecord(launchConfig?.llmConfig),
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     };
   }
 

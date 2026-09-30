@@ -102,7 +102,6 @@ describe("SkillImprovementImproverSessionService", () => {
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           llmModelIdentifier: "improver-model",
           llmConfig: null,
-          skillAccessMode: "PRELOADED_ONLY",
         })),
       } as any,
     });
@@ -218,7 +217,6 @@ describe("SkillImprovementImproverSessionService", () => {
           runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           llmModelIdentifier: "new-model",
           llmConfig: null,
-          skillAccessMode: "PRELOADED_ONLY",
         })),
       } as any,
     }).activateOrGet(context);

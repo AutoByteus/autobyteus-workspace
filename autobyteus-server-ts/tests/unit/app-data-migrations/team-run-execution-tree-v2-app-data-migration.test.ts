@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import {
   TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
@@ -28,7 +27,7 @@ const launch = (runtimeKind: AgentLaunchConfiguration["runtimeKind"], model: str
   llmModelIdentifier: model,
   llmConfig: { reasoning_effort: runtimeKind === "CODEX" ? "medium" : "high" },
   autoExecuteTools: runtimeKind !== "CLAUDE",
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+  skillAccessMode: "PRELOADED_ONLY",
   workspaceRootPath,
 });
 const agent = (input: {

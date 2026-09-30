@@ -140,17 +140,20 @@ try {
     await fs.readFile(dailyAssistantDistAgentConfigPath, "utf8"),
   );
   await fs.writeFile(path.join(dailyAssistantAgentDir, "agent.md"), "user edited daily assistant", "utf8");
-  const reseedResult = await bootstrapBuiltInAgents({
+  const resyncResult = await bootstrapBuiltInAgents({
     agentsDir,
     agentDefinitionService: fakeAgentDefinitionService,
     serverSettingsService: fakeServerSettingsService,
     logger: { info() {}, warn() {} },
   });
-  const reseedById = new Map(reseedResult.builtInAgents.map((item) => [item.agentDefinitionId, item]));
-  assert.equal(reseedById.get(DAILY_ASSISTANT_AGENT_DEFINITION_ID).syncedAgentMd, false);
+  const resyncById = new Map(resyncResult.builtInAgents.map((item) => [item.agentDefinitionId, item]));
+  assert.equal(resyncById.get(DAILY_ASSISTANT_AGENT_DEFINITION_ID).syncedAgentMd, true);
   assert.equal(
     await fs.readFile(path.join(dailyAssistantAgentDir, "agent.md"), "utf8"),
-    "user edited daily assistant",
+    await fs.readFile(dailyAssistantDistAgentMdPath, "utf8"),
+  );
+  assert.ok(
+    JSON.parse(await fs.readFile(path.join(dailyAssistantAgentDir, "agent-config.json"), "utf8")).toolNames.includes("read_file"),
   );
   const standaloneAgentMd = await fs.readFile(path.join(standaloneAgentDir, "agent.md"), "utf8");
   const standaloneAgentConfig = await fs.readFile(path.join(standaloneAgentDir, "agent-config.json"), "utf8");

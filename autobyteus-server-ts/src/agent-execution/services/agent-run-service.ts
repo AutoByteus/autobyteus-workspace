@@ -1,4 +1,3 @@
-import type { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
@@ -27,7 +26,6 @@ export interface CreateAgentRunInput {
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
   llmConfig?: Record<string, unknown> | null;
-  skillAccessMode: SkillAccessMode;
   runtimeKind: string;
   applicationBinding?: {
     applicationId: string;

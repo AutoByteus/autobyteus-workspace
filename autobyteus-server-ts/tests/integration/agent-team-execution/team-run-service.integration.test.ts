@@ -1,5 +1,4 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
@@ -28,7 +27,6 @@ const launch = (
   memberAddress,
   llmModelIdentifier: `model-${runtimeKind}`,
   autoExecuteTools: true,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind,
   workspaceRootPath,
   llmConfig: { reasoning_effort: "medium" },
@@ -42,7 +40,6 @@ const teamLaunch = (
   teamAddress,
   llmModelIdentifier: `model-${runtimeKind}`,
   autoExecuteTools: true,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind,
   workspaceRootPath,
   llmConfig: { reasoning_effort: "medium" },
@@ -82,7 +79,6 @@ const createHarness = () => {
               runtimeKind: RuntimeKind.AUTOBYTEUS,
               llmModelIdentifier: "restored-model",
               autoExecuteTools: false,
-              skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
               workspaceRootPath: null,
               llmConfig: null,
             },
@@ -149,7 +145,6 @@ describe("TeamRunService current flat Team V2 integration", () => {
         workspaceRootPath: "/tmp/classroom-workspace",
         llmModelIdentifier: "shared-model",
         autoExecuteTools: true,
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
       },
     });

@@ -2,7 +2,6 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentDefinition } from "../../../../../src/agent-definition/domain/models.js";
 import type { AgentDefinitionService } from "../../../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../../src/skills/services/skill-service.js";
@@ -71,7 +70,7 @@ const createFactory = (fixture: string, options: {
 
 const config = (overrides: Partial<ConstructorParameters<typeof AgentRunConfig>[0]> = {}) => new AgentRunConfig({
   agentDefinitionId: "def-1", llmModelIdentifier: "grok-4.7", autoExecuteTools: false,
-  memoryDir: tempDir("acp-memory-"), skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+  memoryDir: tempDir("acp-memory-"),
   runtimeKind: RuntimeKind.GROK_BUILD, ...overrides,
 });
 

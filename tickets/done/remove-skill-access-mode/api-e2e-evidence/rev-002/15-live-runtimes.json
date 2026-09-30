@@ -1,0 +1,109 @@
+[
+  {
+    "runtimeKind": "codex_app_server",
+    "skillName": "rsam_live_c035d50c8a",
+    "model": "gpt-5.5",
+    "workspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-codex_app_server-c035d50c8a",
+    "created": {
+      "success": true,
+      "message": "Agent run created successfully.",
+      "runId": "rsam_live_c035d50c8a_d98fb47ec3b044e8affd234dda244e27"
+    },
+    "bootstrap": {
+      "isActive": true,
+      "metadataConfig": {
+        "runtimeKind": "codex_app_server",
+        "runtimeReference": {
+          "threadId": "01a0f1ae-fa6f-7c21-bb89-aab5d1ae45f6",
+          "sessionId": null
+        }
+      }
+    },
+    "materializedBeforeTurn": [
+      ".codex/skills/rsam_live_c035d50c8a"
+    ],
+    "materializedDuringTurn": [
+      ".codex/skills/rsam_live_c035d50c8a"
+    ],
+    "replied": true,
+    "streamErrors": [],
+    "messageCount": 16,
+    "terminated": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    },
+    "workspaceAfterTerminate": [],
+    "metadataHasField": false,
+    "result": "skill applied"
+  },
+  {
+    "runtimeKind": "claude_agent_sdk",
+    "skillName": "rsam_live_c035d50c8a",
+    "model": "haiku",
+    "workspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-claude_agent_sdk-c035d50c8a",
+    "created": {
+      "success": true,
+      "message": "Agent run created successfully.",
+      "runId": "rsam_live_c035d50c8a_8e685b1316384b3483bbfad858f8e756"
+    },
+    "bootstrap": {
+      "isActive": true,
+      "metadataConfig": {
+        "runtimeKind": "claude_agent_sdk",
+        "runtimeReference": {
+          "threadId": null,
+          "sessionId": "1c2d1897-f1a6-4e42-9409-b90718621203"
+        }
+      }
+    },
+    "materializedBeforeTurn": [
+      ".claude/skills/rsam_live_c035d50c8a"
+    ],
+    "materializedDuringTurn": [
+      ".claude/skills/rsam_live_c035d50c8a"
+    ],
+    "replied": true,
+    "streamErrors": [],
+    "messageCount": 17,
+    "terminated": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    },
+    "workspaceAfterTerminate": [],
+    "metadataHasField": false,
+    "result": "skill applied"
+  },
+  {
+    "runtimeKind": "antigravity_cli",
+    "skillName": "rsam_live_c035d50c8a",
+    "model": "gemini-3.6-flash-high",
+    "workspace": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-access-mode/.autobyteus/development/server-data/rsam-workspaces/live-antigravity_cli-c035d50c8a",
+    "created": {
+      "success": true,
+      "message": "Agent run created successfully.",
+      "runId": "rsam_live_c035d50c8a_5883fc61dd09453f9ea24e8e5bfbeea1"
+    },
+    "bootstrap": {
+      "isActive": true,
+      "metadataConfig": {
+        "runtimeKind": "antigravity_cli",
+        "runtimeReference": {
+          "threadId": null,
+          "sessionId": null
+        }
+      }
+    },
+    "materializedBeforeTurn": [],
+    "materializedDuringTurn": [],
+    "replied": true,
+    "streamErrors": [],
+    "messageCount": 14,
+    "terminated": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    },
+    "workspaceAfterTerminate": [],
+    "metadataHasField": false,
+    "result": "skill applied"
+  }
+]

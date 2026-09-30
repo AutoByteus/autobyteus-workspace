@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
   CollaborationLaunchConfigurationResolver,
@@ -13,7 +12,6 @@ const rootConfiguration: AgentLaunchConfiguration = {
   llmModelIdentifier: 'root-model',
   llmConfig: { temperature: 0.4 },
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   workspaceRootPath: '/workspace/root',
 };
 
@@ -86,7 +84,6 @@ describe('CollaborationLaunchConfigurationResolver AgentOrg placement equality',
       llmModelIdentifier: 'team-model',
       llmConfig: null,
       autoExecuteTools: true,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       workspaceRootPath: '/workspace/software',
     });
     expect(resolved.agents.get('/software/architect')).toEqual(resolved.teams.get('/software'));
@@ -95,7 +92,6 @@ describe('CollaborationLaunchConfigurationResolver AgentOrg placement equality',
       llmModelIdentifier: 'agent-model',
       llmConfig: { reasoningEffort: 'high' },
       autoExecuteTools: true,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       workspaceRootPath: '/workspace/software',
     });
   });

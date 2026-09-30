@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../src/agent-execution/domain/agent-run-context.js";
@@ -42,7 +41,6 @@ const createRunContext = (input: {
       autoExecuteTools: false,
       workspaceId: input.workingDirectory,
       llmConfig: null,
-      skillAccessMode: SkillAccessMode.NONE,
     }),
     runtimeContext: new CodexAgentRunContext({
       codexThreadConfig: {

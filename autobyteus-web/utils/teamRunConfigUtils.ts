@@ -27,7 +27,6 @@ export const resolvedTeamRunLaunchConfigsEqual = (
   && left.llmModelIdentifier === right.llmModelIdentifier
   && modelConfigsEqual(left.llmConfig, right.llmConfig)
   && left.autoExecuteTools === right.autoExecuteTools
-  && left.skillAccessMode === right.skillAccessMode
 export const hasExplicitRuntimeOverride = (override?: LaunchConfigOverride | null): boolean => Boolean((override?.runtimeKind || '').trim())
 export const hasExplicitLlmModelOverride = (override?: LaunchConfigOverride | null): boolean => Boolean((override?.llmModelIdentifier || '').trim())
 export const hasExplicitLlmConfigOverride = (override?: LaunchConfigOverride | null): boolean =>

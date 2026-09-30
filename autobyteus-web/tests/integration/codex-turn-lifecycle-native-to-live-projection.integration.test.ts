@@ -42,7 +42,6 @@ const buildProjectionContext = (runId: string): AgentContext => new AgentContext
   workspaceId: null,
   workspaceMetadata: null,
   autoExecuteTools: true,
-  skillAccessMode: 'NONE',
   isLocked: true,
   llmConfig: null,
 }, new AgentRunState(runId, {
@@ -64,7 +63,6 @@ const createNativeToProjectionHarness = (memoryDir?: string) => {
       workspaceId: '/tmp/codex-turn-lifecycle',
       ...(memoryDir ? { memoryDir } : {}),
       llmConfig: null,
-      skillAccessMode: 'NONE' as never,
       memberTeamContext: null,
     }),
     runtimeContext: new CodexAgentRunContext({

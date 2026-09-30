@@ -302,7 +302,6 @@ describe("Memory view GraphQL e2e", () => {
         llmModelIdentifier: "model-test",
         llmConfig: null,
         autoExecuteTools: false,
-        skillAccessMode: "none",
         runtimeKind: fixture.runtimeKind,
         platformAgentRunId: null,
         startedAt: "2026-07-31T00:00:00.000Z",

@@ -31,7 +31,6 @@ describe('TeamRunConfig helpers', () => {
       reasoning_effort: 'high',
     })
     expect(config.rootConfig.autoExecuteTools).toBe(false)
-    expect(config.rootConfig.skillAccessMode).toBe('PRELOADED_ONLY')
     expect(config.teamOverrides).toEqual({})
     expect(config.agentOverrides).toEqual({})
     expect(config.isLocked).toBe(false)

@@ -152,7 +152,7 @@ suite("real AGY stop cleanup and Org/Team member recovery", () => {
       "mutation($input: CreateAgentOrgRunInput!) { createAgentOrgRun(input: $input) { success message agentOrgRunId } }",
       { input: { agentOrgDefinitionId: orgDefinitionId, agentOverrides: [], teamOverrides: [],
         rootConfiguration: { runtimeKind: "antigravity_cli", llmModelIdentifier: MODEL, llmConfig: null,
-          autoExecuteTools: true, skillAccessMode: "NONE", workspaceRootPath: workspace } } });
+          autoExecuteTools: true, workspaceRootPath: workspace } } });
     expect(created.createAgentOrgRun.success, created.createAgentOrgRun.message).toBe(true);
     const orgRunId = created.createAgentOrgRun.agentOrgRunId!;
     orgRuns.add(orgRunId);
@@ -454,7 +454,7 @@ suite("real AGY stop cleanup and Org/Team member recovery", () => {
     const port = await freePort(); ports.push(port);
     try {
       const memberConfig = (memberAddress: string) => ({ memberAddress, llmModelIdentifier: MODEL, llmConfig: {},
-        autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: "antigravity_cli", workspaceRootPath: workspace });
+        autoExecuteTools: true, runtimeKind: "antigravity_cli", workspaceRootPath: workspace });
       const definition = (await graphql<{ agentTeamDefinition: { nodes: Array<{ memberName: string; ref: string }> } }>(
         "query($id: String!) { agentTeamDefinition(id: $id) { nodes { memberName ref } } }", { id: pairTeamDefinitionId })).agentTeamDefinition;
       const refOf = (name: string) => definition.nodes.find((node) => node.memberName === name)!.ref;
@@ -462,7 +462,7 @@ suite("real AGY stop cleanup and Org/Team member recovery", () => {
         "mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }",
         { input: { teamDefinitionId: pairTeamDefinitionId,
           teamConfigs: [{ teamAddress: "/", llmModelIdentifier: MODEL, llmConfig: {}, autoExecuteTools: true,
-            skillAccessMode: "NONE", runtimeKind: "antigravity_cli", workspaceRootPath: workspace }],
+            runtimeKind: "antigravity_cli", workspaceRootPath: workspace }],
           memberConfigs: [{ ...memberConfig("/alpha"), agentDefinitionId: refOf("alpha") },
             { ...memberConfig("/beta"), agentDefinitionId: refOf("beta") }] } });
       expect(created.createAgentTeamRun.success, created.createAgentTeamRun.message).toBe(true);
@@ -568,7 +568,7 @@ suite("real AGY stop cleanup and Org/Team member recovery", () => {
       const created = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
         "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
         { input: { agentDefinitionId: directorDefinitionId, workspaceRootPath: workspace, llmModelIdentifier: MODEL,
-          llmConfig: {}, autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: "antigravity_cli" } });
+          llmConfig: {}, autoExecuteTools: true, runtimeKind: "antigravity_cli" } });
       expect(created.createAgentRun.success, created.createAgentRun.message).toBe(true);
       const runId = created.createAgentRun.runId!;
       agentRuns.add(runId);

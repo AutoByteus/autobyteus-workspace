@@ -232,7 +232,6 @@ export class AgentOrgRootAgentExecutionRegistry {
       llmModelIdentifier: sourceNode.llmModelIdentifier,
       llmConfig: sourceNode.llmConfig,
       autoExecuteTools: sourceNode.autoExecuteTools,
-      skillAccessMode: sourceNode.skillAccessMode,
       runtimeKind: sourceNode.runtimeKind,
       workspaceRootPath: sourceNode.workspaceRootPath,
       platformAgentRunId: sourceNode.platformAgentRunId,

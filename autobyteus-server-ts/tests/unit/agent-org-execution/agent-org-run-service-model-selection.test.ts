@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentOrgDefinition, AgentOrgMember } from "../../../src/agent-org-definition/domain/agent-org-definition.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
 import { AgentOrgRunService } from "../../../src/agent-org-execution/services/agent-org-run-service.js";
@@ -51,7 +50,7 @@ const command = () => ({
   agentOrgDefinitionId: "org-1",
   rootConfiguration: {
     runtimeKind: "codex_app_server", llmModelIdentifier: "root-model", llmConfig: null,
-    autoExecuteTools: false, skillAccessMode: SkillAccessMode.PRELOADED_ONLY, workspaceRootPath: "/workspace/root",
+    autoExecuteTools: false, workspaceRootPath: "/workspace/root",
   },
   teamOverrides: [{ address: "/team", configuration: { llmModelIdentifier: "team-model", workspaceRootPath: "/workspace/team" } }],
   agentOverrides: [{ address: "/direct", configuration: { llmModelIdentifier: "agent-model", llmConfig: { effort: "high" } } }],

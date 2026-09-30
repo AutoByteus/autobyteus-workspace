@@ -1,6 +1,5 @@
 import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunService } from "../../../src/agent-team-execution/services/team-run-service.js";
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
@@ -29,7 +28,6 @@ const launchConfig = (
   memberAddress,
   llmModelIdentifier: "gpt-test",
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind,
   workspaceRootPath,
   llmConfig: null,
@@ -42,7 +40,6 @@ const teamLaunchConfig = (
   teamAddress: "/",
   llmModelIdentifier: "gpt-test",
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind,
   workspaceRootPath,
   llmConfig: null,
@@ -341,7 +338,6 @@ describe("TeamRunService current root lifecycle", () => {
           workspaceRootPath: "/tmp/root-only-invalid",
           llmModelIdentifier: "gpt-test",
           autoExecuteTools: false,
-          skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
           runtimeKind: RuntimeKind.AUTOBYTEUS,
           llmConfig: null,
         },

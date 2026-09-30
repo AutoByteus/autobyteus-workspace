@@ -24,7 +24,7 @@ definePageMeta({ layout: false });
 const ROOT = 'ttrc-org-run';
 const launch = {
   runtimeKind: 'codex_app_server', llmModelIdentifier: 'probe-model', llmConfig: null,
-  autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: null,
+  autoExecuteTools: false, workspaceRootPath: null,
 };
 const agent = (address: string, agentRunId: string) => ({
   address, agentDefinitionId: `definition-${agentRunId}`, role: null, description: null,

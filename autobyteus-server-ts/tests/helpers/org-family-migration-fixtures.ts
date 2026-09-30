@@ -9,7 +9,7 @@ import { AgentOrgTokenAttributionTransition } from "../../src/app-data-migration
 import { AtomicRunPackageFileCommitWriter } from "../../src/run-history/store/atomic-run-package-file-commit-writer.js";
 import { createCurrentTokenUsageTestHarness } from "./token-usage-run-record-fixtures.js";
 import { testExecutionTree as testCurrentExecutionTree, testAgentNode } from "../fixtures/current-team-run-fixtures.js";
-import { toReleasedTeamRunExecutionTreeV2 } from "../fixtures/released-run-tree-fixtures.js";
+import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../fixtures/released-run-tree-fixtures.js";
 
 // Flat-family migration inputs are pre-delegator data: seed released Team tree V2 shapes.
 const testExecutionTree = (input: Parameters<typeof testCurrentExecutionTree>[0]) =>
@@ -23,7 +23,7 @@ export const putOrgFixture = async (file: string, data: unknown, raw = false): P
 export const nestedTree = (id: string) => {
   const tree = testExecutionTree({ rootTeamRunId: id, children: [testAgentNode("/direct", { agentRunId: `${id}-direct` })], coordinatorAddress: "/direct" });
   return { ...tree, rootTeam: { ...tree.rootTeam, members: [...tree.rootTeam.members,
-    testOrgTeamNode({ address: "/team", teamRunId: `${id}-team`, coordinatorAddress: "/team/lead", members: [testOrgAgentNode("/team/lead", `${id}-lead`)] })] } };
+    toReleasedConfiguredNode(testOrgTeamNode({ address: "/team", teamRunId: `${id}-team`, coordinatorAddress: "/team/lead", members: [testOrgAgentNode("/team/lead", `${id}-lead`)] }))] } };
 };
 export const writeNestedRoot = async (memory: string, id = "org") => {
   const source = path.join(memory, "agent_teams", id), target = path.join(memory, "agent_orgs", id);

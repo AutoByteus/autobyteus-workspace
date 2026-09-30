@@ -1,0 +1,41 @@
+{
+  "kinds": [
+    "LOCAL_PATH"
+  ],
+  "capability": {
+    "data": {
+      "setApplicationsEnabled": {
+        "__typename": "ApplicationsCapability"
+      }
+    }
+  },
+  "import": {
+    "data": {
+      "importApplicationPackage": [
+        {
+          "packageId": "application-local:%2FUsers%2Fnormy%2Fautobyteus_org%2Fautobyteus-worktrees%2Fremove-skill-access-mode%2Fapplications%2Fbrief-studio%2Fdist%2Fimportable-package",
+          "displayName": "importable-package"
+        }
+      ]
+    }
+  },
+  "applications": {
+    "data": {
+      "listApplications": [
+        {
+          "id": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+          "name": "Brief Studio"
+        }
+      ]
+    }
+  },
+  "createBrief": {
+    "status": 503,
+    "body": {
+      "detail": "Application 'bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f' is currently quarantined: Application setup is required after catalog transition.",
+      "applicationId": "bundle-app__6170706c69636174696f6e2d6c6f63616c3a25324655736572732532466e6f726d792532466175746f6279746575735f6f72672532466175746f6279746575732d776f726b747265657325324672656d6f76652d736b696c6c2d6163636573732d6d6f64652532466170706c69636174696f6e7325324662726965662d73747564696f25324664697374253246696d706f727461626c652d7061636b616765__62726965662d73747564696f",
+      "availabilityState": "QUARANTINED",
+      "retryable": true
+    }
+  }
+}

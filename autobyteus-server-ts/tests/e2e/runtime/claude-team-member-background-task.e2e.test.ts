@@ -86,11 +86,11 @@ suite("Claude team member background tasks (live E2E)", () => {
     )).createAgentTeamDefinition.id;
     teamDefinitionIds.push(teamDefinitionId);
     const memberConfig = (memberAddress: string, agentDefinitionId: string) => ({ memberAddress, agentDefinitionId,
-      llmModelIdentifier: "haiku", autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: "claude_agent_sdk", workspaceRootPath });
+      llmModelIdentifier: "haiku", autoExecuteTools: true, runtimeKind: "claude_agent_sdk", workspaceRootPath });
     const created = (await graphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
       "mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }",
       { input: { teamDefinitionId,
-        teamConfigs: [{ teamAddress: "/", llmModelIdentifier: "haiku", autoExecuteTools: true, skillAccessMode: "NONE",
+        teamConfigs: [{ teamAddress: "/", llmModelIdentifier: "haiku", autoExecuteTools: true,
           runtimeKind: "claude_agent_sdk", workspaceRootPath }],
         memberConfigs: [memberConfig("/worker", workerDefinitionId), memberConfig("/peer", peerDefinitionId)] } },
     )).createAgentTeamRun;

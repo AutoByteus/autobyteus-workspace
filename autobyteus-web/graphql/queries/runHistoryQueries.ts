@@ -300,7 +300,6 @@ export const GetAgentRunResumeConfig = gql`
         llmModelIdentifier
         llmConfig
         autoExecuteTools
-        skillAccessMode
         runtimeKind
         runtimeReference {
           runtimeKind

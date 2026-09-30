@@ -1,6 +1,6 @@
 // Frozen verbatim copy (import paths remapped only) of `src/run-history/store/run-execution-tree-shared-record-schemas.ts` as released at
 // origin/personal@f2924a2b0. Owned by released app-data migrations; current runtime must not import it.
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
+import { isReleasedSkillAccessMode } from "../released-skill-access-mode.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import {
   assertAgentTeamAddress,
@@ -86,7 +86,7 @@ export const validateLaunchConfiguration = (value: unknown, label: string): void
     && (!launch.llmConfig || typeof launch.llmConfig !== "object" || Array.isArray(launch.llmConfig))
   ) throw new Error(`${label}.llmConfig must be an object or null.`);
   if (typeof launch.autoExecuteTools !== "boolean") throw new Error(`${label}.autoExecuteTools must be boolean.`);
-  if (!Object.values(SkillAccessMode).includes(launch.skillAccessMode as SkillAccessMode)) {
+  if (!isReleasedSkillAccessMode(launch.skillAccessMode)) {
     throw new Error(`${label}.skillAccessMode is unsupported.`);
   }
   if (launch.workspaceRootPath !== null) requiredString(launch.workspaceRootPath, `${label}.workspaceRootPath`);

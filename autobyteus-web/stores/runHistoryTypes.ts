@@ -1,4 +1,4 @@
-import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig';
+import type { AgentRuntimeKind } from '~/types/agent/AgentRunConfig';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation';
 import type { RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration';
@@ -73,7 +73,6 @@ export interface RunMetadataConfigPayload {
   llmModelIdentifier: string;
   llmConfig?: Record<string, unknown> | null;
   autoExecuteTools: boolean;
-  skillAccessMode?: SkillAccessMode | null;
   runtimeKind?: AgentRuntimeKind | null;
   runtimeReference?: {
     runtimeKind: string;
