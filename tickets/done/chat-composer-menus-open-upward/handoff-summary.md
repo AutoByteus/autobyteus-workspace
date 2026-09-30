@@ -2,11 +2,11 @@
 
 ## Status
 
-- Stage: Delivery round 1 (DR-001). The package is current with `origin/personal`, checked and docs-synced. **The user accepted it on 2026-09-30 ("finalie and release a new beta") and it is being finalized into `personal`, followed by a beta release.** See `release-deployment-report.md` for the final state.
+- Stage: Delivery round 1 (DR-001). The package is current with `origin/personal`, checked and docs-synced. **The user accepted it on 2026-09-30 ("finalie and release a new beta") and it is finalized into `personal` (merge `ca0b17d9c`) and released as `v1.4.92-beta.2` (release commit `59144618d`).** See `release-deployment-report.md` for the final state.
 - Classification (preserved): `task_size=Small`, `architectural_risk=Low`, route `Direct`. Architecture, source and test-code review: `N/A — not applicable`.
 - Validation: API/E2E API-REV-001 Pass (96%, no category below 93%). AC-001–AC-005 each proven in a real browser.
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-menus-open-upward`
-- Ticket branch: `codex/chat-composer-menus-open-upward` at `ce3852910` (local only)
+- Ticket branch: `codex/chat-composer-menus-open-upward` at `ce3852910` → archived at `b6a9e9b58`, pushed, and merged into `personal` as `ca0b17d9c` (pushed). The worktree and local branch were removed; the remote branch was kept.
 - Finalization target: `personal` (remote `origin`)
 
 ## Integrated State For Verification
@@ -71,4 +71,4 @@ Rejected items go to `/solution_designer`.
 
 ## Release
 
-- The user asked for a new beta. See `release-deployment-report.md`. `release-notes.md` stays archived for the next stable release (beta tags use GitHub-generated notes).
+- The user asked for a new beta: `v1.4.92-beta.2` is published (https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.2), all four workflows succeeded. See `release-deployment-report.md`. `release-notes.md` stays archived for the next stable release (beta tags use GitHub-generated notes).

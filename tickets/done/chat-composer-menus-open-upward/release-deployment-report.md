@@ -3,7 +3,7 @@
 ## Release / Publication / Deployment Scope
 
 - Classification preserved: `task_size=Small`, `architectural_risk=Low`, route `Direct`.
-- Scope: repository finalization of `codex/chat-composer-menus-open-upward` into `personal` after user verification. A release through the documented helper happens only if the user asks for one.
+- Scope: repository finalization of `codex/chat-composer-menus-open-upward` into `personal`, then the beta release `v1.4.92-beta.2` that the user requested.
 
 ## Handoff Summary
 
@@ -11,7 +11,7 @@
 - Handoff summary status: `Updated`
 - Delivery revision record: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-menus-open-upward/delivery-revision-record.md`
 - Current delivery revision ID: `DR-001`
-- Notes: waiting for user verification.
+- Notes: accepted by the user on 2026-09-30; finalized into `personal` and released as `v1.4.92-beta.2`.
 
 ## Initial Delivery Integration Refresh
 
@@ -31,9 +31,9 @@
 
 ## User Verification
 
-- Initial explicit user completion/verification received: `No`
-- Initial verification / acceptance reference: pending
-- Renewed verification required after later re-integration: `No`
+- Initial explicit user completion/verification received: `Yes`
+- Initial verification / acceptance reference: 2026-09-30, after the verification hold with a local test build, the user said "finalie and release a new beta". This is recorded as acceptance; the user did not report test results in detail.
+- Renewed verification required after later re-integration: `No`. `origin/personal` was re-fetched after the user's message and was unchanged at `57df63f07`.
 - Renewed verification received: `Not needed`
 - Renewed verification / acceptance reference: —
 
@@ -45,50 +45,75 @@
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No` (after user verification)
-- Archived ticket path: —
+- Ticket moved to `tickets/done/<ticket-name>`: `Yes`
+- Archived ticket path: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-menus-open-upward` (in the repo: `tickets/done/chat-composer-menus-open-upward/`)
 
 ## Version / Tag / Release Commit
 
-- Pending the user's decision. The version stays `1.4.92-beta.1` unless a release is requested.
+- Version `1.4.92-beta.1` → `1.4.92-beta.2`. Release commit `59144618d` ("chore(release): bump workspace release version to 1.4.92-beta.2"). Annotated tag `v1.4.92-beta.2`.
 
 ## Repository Finalization
 
 - Bootstrap context source: `investigation-notes.md` (finalization target `personal`)
 - Ticket branch: `codex/chat-composer-menus-open-upward`
-- Ticket branch commit result: pending (checkpoint `f6a99b9f9` and docs `ce3852910` are local)
-- Ticket branch push result: pending
+- Ticket branch commit result: `Completed`, `b6a9e9b58` (archive plus delivery records), after `f6a99b9f9` (checkpoint) and `ce3852910` (docs sync)
+- Ticket branch push result: `Completed`, `origin/codex/chat-composer-menus-open-upward` @ `b6a9e9b58`
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: pending
-- Delivery-owned edits protected before re-integration: pending
-- Re-integration before final merge result: pending
-- Target branch update result: pending
-- Merge into target result: pending
-- Push target branch result: pending
-- Repository finalization status: not started (user-verification hold)
+- Target advanced after verification / acceptance: `No` (re-fetched: `origin/personal@57df63f07`)
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`. `git pull --ff-only origin personal` in the shared checkout: already up to date.
+- Merge into target result: `Completed`, `--no-ff` merge `ca0b17d9c`, no conflicts. The merge tree is identical to the ticket tip `b6a9e9b58`.
+- Push target branch result: `Completed`, `origin/personal` `57df63f07..ca0b17d9c`
+- Repository finalization status: `Completed`
 - Blocker (if applicable): none
 
 ## Release / Publication / Deployment
 
-- Applicable: undecided; only on user request
-- Method: `Release Script` + `Git Tag Method` (root `README.md` "Release workflow")
-- Method reference / command: `scripts/desktop-release.sh`; `git push origin v<version>`
-- Release/publication/deployment result: pending
-- Release notes handoff result: pending
+- Applicable: `Yes`. The user asked for a new beta.
+- Method: `Release Script` + `Git Tag Method` (root `README.md` "Release workflow"), same as the `v1.4.92-beta.1` precedent.
+- Method reference / command:
+  - Clean worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-menus-open-upward-beta-release` on branch `finalize/chat-composer-menus-open-upward-beta` from `origin/personal@ca0b17d9c` (the shared checkout has untracked build output and the helper needs a clean tree).
+  - `bash scripts/desktop-release.sh beta --branch finalize/chat-composer-menus-open-upward-beta --no-push`
+  - Re-fetch `origin/personal`: unchanged at `ca0b17d9c`.
+  - `git push origin HEAD:personal` (`ca0b17d9c..59144618d`) and `git push origin v1.4.92-beta.2`.
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required`. Pre-release tags use GitHub-generated notes. `release-notes.md` stays archived for the next stable release.
+- Blocker (if applicable): none
+
+### Beta release v1.4.92-beta.2
+
+- Contents since `v1.4.92-beta.1`: this ticket only (`67c9e2e5f`, `f6a99b9f9`, `ce3852910`, `b6a9e9b58`) plus the chat-composer-polish DR-002 record commit `57df63f07`.
+- Workflows at `59144618d`, all `completed / success`:
+  - Desktop Release: 36681370215
+  - Android APK Release: 36681370128
+  - Server Docker Release: 36681370349
+  - iOS App Store Connect Release: 36681370302
+- GitHub pre-release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.2
+  - Published 2026-09-30T07:05:29Z as a pre-release, not a draft.
+  - 17 assets: macOS ARM64/x64 DMG and ZIP with blockmaps, the Windows EXE, the Linux x64/ARM64 AppImages, the Android APK with its sha256, and `latest*.yml` updater metadata (`delivery-evidence/github-release-v1.4.92-beta.2.json`).
+  - `releases/latest` stays `v1.4.91`.
+- Docker (`delivery-evidence/docker-digests-v1.4.92-beta.2.txt`):
+  - `1.4.92-beta.2` = `:beta` = `sha256:e186271a…`. `:beta` moved from `1e721a38…` (1.4.92-beta.1).
+  - `:latest` is unchanged at `a529eb86…` (stable 1.4.91).
+- Channels: desktop installs with **Receive beta updates** on are offered 1.4.92-beta.2. Stable-channel installs stay on 1.4.91.
+- Not exercised: the published installers and images were not downloaded or started locally.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-menus-open-upward`
-- Worktree cleanup result: pending
-- Worktree prune result: pending
-- Local ticket branch cleanup result: pending
-- Remote branch cleanup result: `Not required` (team convention keeps the remote ticket branch)
+- Worktree cleanup result: `Completed`. It held only ignored/untracked build output, including the local verification build.
+- Worktree prune result: `Completed`
+- Local ticket branch cleanup result: `Completed`. `codex/chat-composer-menus-open-upward` was deleted after verifying it is an ancestor of `origin/personal`.
+- Remote branch cleanup result: `Not required` (the remote ticket branch is kept, matching the team convention)
+- Release worktree and local branch `finalize/chat-composer-menus-open-upward-beta`: removed after this record was pushed to `personal`. The branch was never pushed as a remote branch.
+- Blocker (if applicable): none
 
 ## Release Notes Summary
 
 - Release notes artifact created before verification / acceptance: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-menus-open-upward/release-notes.md`
-- Archived release notes artifact used for release/publication: —
+- Archived release notes artifact used for release/publication: — (beta uses generated notes). Archived at `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo/tickets/done/chat-composer-menus-open-upward/release-notes.md`.
 - Release notes status: `Updated`
 
 ## Deployment Steps
@@ -107,15 +132,16 @@
 
 ## Rollback Criteria
 
-- If composer menu placement or New chat layout regresses after finalization, revert the merge commit on `personal`. There is no data migration, so rollback is code-only.
+- If composer menu placement or New chat layout regresses, revert the merge commit `ca0b17d9c` on `personal`. There is no data migration, so rollback is code-only.
+- Beta: delete or unpublish the pre-release, or ship a newer beta. Beta installs never downgrade automatically. `:latest` was not moved.
 
 ## Final Status
 
-- Explicit user testing/verification complete: `No`
-- Repository finalization complete: `No`
-- Applicable release/deployment/rollout complete or not required: `No`
-- Applicable safe cleanup complete or not required: `No`
-- Unresolved blocker: `None` (user-verification hold)
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`
-- Terminal message/reference: —
+- Explicit user testing/verification complete: `Yes` (acceptance as quoted above)
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (`v1.4.92-beta.2`)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: `Yes` (see `delivery-revision-record.md` DR-001)
+- Terminal message/reference: `Delivery Completed` message to `/software_engineering_team/solution_designer` via `send_message_to`
