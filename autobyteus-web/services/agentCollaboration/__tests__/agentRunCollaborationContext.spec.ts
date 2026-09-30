@@ -44,7 +44,7 @@ describe('AgentRunCollaborationContext', () => {
     expect(closed.map((entry) => [entry.row.transientKind, entry.row.displayName, entry.row.depth])).toEqual([
       ['task_agent', 'computer use agent', 0], ['task_team', 'product team', 0],
     ])
-    expect(closed[0]!.row).toMatchObject({ delegatedBy: 'research_assistant', currentStatus: 'idle' })
+    expect(closed[0]!.row).toMatchObject({ delegatedBy: 'research assistant', currentStatus: 'idle' })
     const open = context.listTaskRows((teamRunId) => teamRunId === 'team-run')
     expect(open.map((entry) => entry.row.displayName)).toEqual(['computer use agent', 'product team', 'prototyper', 'bootstrapper'])
     expect(open[2]!).toMatchObject({ hasFollowingSibling: true, continuingAncestorDepths: [] })
@@ -55,8 +55,8 @@ describe('AgentRunCollaborationContext', () => {
     const context = build()
     const host = context.messagesView('host-run')
     expect(host).toMatchObject({ rootKind: 'agent', rootRunId: 'host-run', focusedMemberAddress: '/research_assistant' })
-    expect(host.listMessages()).toMatchObject([{ direction: 'received', counterpart: { label: 'computer_use_agent', kind: 'delegated' } }])
-    expect(context.messagesView('cua-run').listMessages()).toMatchObject([{ direction: 'sent', counterpart: { label: 'research_assistant', kind: 'configured' } }])
+    expect(host.listMessages()).toMatchObject([{ direction: 'received', counterpart: { label: 'computer use agent', kind: 'delegated' } }])
+    expect(context.messagesView('cua-run').listMessages()).toMatchObject([{ direction: 'sent', counterpart: { label: 'research assistant', kind: 'configured' } }])
     expect(host.referenceContentPath('m1', 'r1')).toBe('agent-collaborations/host-run/communication/messages/m1/references/r1/content')
   })
 

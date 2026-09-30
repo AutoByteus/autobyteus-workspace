@@ -5,7 +5,7 @@ import type {
 } from '@autobyteus/collaboration-stream-contracts'
 import type { AgentContext } from '~/types/agent/AgentContext'
 import { AgentStatus } from '~/types/agent/AgentStatus'
-import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
+import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type {
   CollaborationMessageMemberIdentity,
   CollaborationMessagePerspectiveRow,
@@ -163,7 +163,7 @@ export class AgentRunCollaborationContext {
     const delegatorName = (agentRunId: string | null) => {
       if (!agentRunId) return null
       const address = this.index.addressOf(agentRunId)
-      return address ? memberAddressBasename(address) : agentRunId
+      return address ? nameAt(address) : agentRunId
     }
     const agentRow = (agent: AgentRootChildAgent, depth: number): RunHistoryTransientExecutionRow => ({
       kind: 'transient_execution', transientKind: agent.kind === 'task_team_member' ? 'task_team_child' : 'task_agent',
@@ -217,7 +217,7 @@ export class AgentRunCollaborationContext {
 
   private identityOf(agentRunId: string): CollaborationMessageMemberIdentity {
     const address = this.index.addressOf(agentRunId)!
-    const common = { address, label: memberAddressBasename(address) }
+    const common = { address, label: nameAt(address) }
     const child = this.index.agents.get(agentRunId)
     if (!child) return Object.freeze({ ...common, kind: 'configured' })
     return Object.freeze({ ...common, kind: 'delegated', hostRunId: child.teamRunId ?? this.hostRunId,
