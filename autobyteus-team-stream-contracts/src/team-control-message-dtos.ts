@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { collaboratorMentionsDtoSchema } from "@autobyteus/agent-presentation-contracts";
 import { nonEmptyStringSchema } from "./schema-helpers.js";
 
 export const teamConnectedPayloadSchema = z.object({
@@ -17,6 +18,8 @@ export const teamSendMessageClientPayloadSchema = z.object({
   agent_run_id: nonEmptyStringSchema,
   message_id: nonEmptyStringSchema,
   dedupe_key: nonEmptyStringSchema,
+  /** Shared definitions the user mentioned with `@`; the server admits them before delivery. */
+  mentions: collaboratorMentionsDtoSchema.optional(),
 }).strict();
 
 export const teamInterruptClientPayloadSchema = z.object({

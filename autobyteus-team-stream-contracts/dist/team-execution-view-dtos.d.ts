@@ -68,6 +68,36 @@ export type ConfiguredTeamExecutionDto = Readonly<{
     task_executions: readonly TaskExecutionDto[];
 }>;
 export type ConfiguredMemberExecutionDto = ConfiguredAgentExecutionDto | ConfiguredTeamExecutionDto;
+/**
+ * One collaborator of the run: a root-level record that makes one shared Agent or Agent
+ * Team definition delegable. It has no run of its own; its runs are task executions at its address.
+ */
+export type CollaboratorEntryDto = Readonly<{
+    kind: "agent";
+    address: string;
+    agent_definition_id: string;
+    launch_configuration: AgentLaunchConfigurationDto;
+    added_at: string;
+    added_via_agent_run_id: string;
+}> | Readonly<{
+    kind: "agent_team";
+    address: string;
+    team_definition_id: string;
+    coordinator_address: string;
+    members: readonly Readonly<{
+        address: string;
+        agent_definition_id: string;
+    }>[];
+    handoffs: readonly Readonly<{
+        from: string;
+        to: string;
+        rules: readonly string[];
+    }>[];
+    default_launch_configuration: AgentLaunchConfigurationDto;
+    added_at: string;
+    added_via_agent_run_id: string;
+}>;
+export declare const collaboratorEntryDtoSchema: z.ZodType<CollaboratorEntryDto>;
 export declare const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto>;
 export declare const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto>;
 export type TeamRunExecutionTreeDto = Readonly<{
@@ -90,6 +120,7 @@ export type TeamRunExecutionTreeDto = Readonly<{
         coordinator_address: string;
         default_launch_configuration: AgentLaunchConfigurationDto;
         members: readonly ConfiguredMemberExecutionDto[];
+        collaborators: readonly CollaboratorEntryDto[];
         task_executions: readonly TaskExecutionDto[];
     }>;
 }>;

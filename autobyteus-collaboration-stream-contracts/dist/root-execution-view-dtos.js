@@ -1,6 +1,7 @@
 import { z } from "zod";
-import { nonEmptyStringSchema } from "@autobyteus/agent-presentation-contracts";
+import { collaboratorMentionsDtoSchema, nonEmptyStringSchema } from "@autobyteus/agent-presentation-contracts";
 import { agentOrgExecutionEventDtoSchema, agentOrgExecutionViewDtoSchema } from "./agent-org-execution-dtos.js";
+import { agentRunCollaborationEventDtoSchema, agentRunCollaborationViewDtoSchema, } from "./agent-run-collaboration-dtos.js";
 const addCorrelationIssue = (context, message) => {
     context.addIssue({ code: "custom", message });
 };
@@ -13,9 +14,54 @@ export const AgentOrgRootExecutionViewDtoSchema = z.object({
     root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema,
     root_org: agentOrgExecutionViewDtoSchema,
 }).strict();
+export const AgentRootExecutionViewDtoSchema = z.object({
+    root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema,
+    root_agent: agentRunCollaborationViewDtoSchema,
+}).strict();
+const validateAgentRootCorrelation = (value, context) => {
+    const view = value.root_agent;
+    if (view.execution_tree.host.agentRunId !== value.root_run_id || view.communication_messages.hostRunId !== value.root_run_id) {
+        addCorrelationIssue(context, "Agent root snapshot host correlation mismatch.");
+    }
+    const addresses = new Map([[view.execution_tree.host.agentRunId, view.execution_tree.host.address]]);
+    const childRunIds = new Set();
+    const visit = (nodes) => {
+        for (const node of nodes) {
+            if ("agentRunId" in node) {
+                if (addresses.has(node.agentRunId))
+                    addCorrelationIssue(context, `Agent root AgentRun identity '${node.agentRunId}' is duplicated.`);
+                addresses.set(node.agentRunId, node.address);
+                childRunIds.add(node.agentRunId);
+            }
+            else {
+                visit(node.members);
+                visit(node.taskExecutions);
+            }
+        }
+    };
+    visit(view.execution_tree.taskExecutions);
+    const collaboratorAddresses = new Set(view.execution_tree.collaborators.map((entry) => entry.address));
+    if (collaboratorAddresses.size !== view.execution_tree.collaborators.length || collaboratorAddresses.has(view.execution_tree.host.address)) {
+        addCorrelationIssue(context, "Agent root collaborator addresses must be unique and differ from the host address.");
+    }
+    for (const message of view.communication_messages.messages) {
+        if (!addresses.has(message.senderAgentRunId) || !addresses.has(message.receiverAgentRunId)) {
+            addCorrelationIssue(context, `Agent root communication message '${message.messageId}' identity mismatch.`);
+        }
+    }
+    for (const status of view.agent_statuses) {
+        if (!childRunIds.has(status.agent_run_id) || addresses.get(status.agent_run_id) !== status.member_address) {
+            addCorrelationIssue(context, "Agent root status identity mismatch.");
+        }
+    }
+};
 export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kind", [
-    AgentTeamRootExecutionViewDtoSchema, AgentOrgRootExecutionViewDtoSchema,
+    AgentTeamRootExecutionViewDtoSchema, AgentOrgRootExecutionViewDtoSchema, AgentRootExecutionViewDtoSchema,
 ]).superRefine((value, context) => {
+    if (value.root_subject_kind === "agent") {
+        validateAgentRootCorrelation(value, context);
+        return;
+    }
     if (value.root_subject_kind !== "agent_org")
         return;
     const correlated = [value.root_org.execution_tree.rootOrg.orgRunId, value.root_org.communication_messages.orgRunId];
@@ -105,24 +151,28 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
 export const RootExecutionEventDtoSchema = z.discriminatedUnion("root_subject_kind", [
     z.object({ root_subject_kind: z.literal("agent_team"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: z.unknown() }).strict(),
     z.object({ root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: agentOrgExecutionEventDtoSchema }).strict(),
+    z.object({ root_subject_kind: z.literal("agent"), root_run_id: nonEmptyStringSchema, change_sequence: positiveSequence, event: agentRunCollaborationEventDtoSchema }).strict(),
 ]);
+const rootSubjectKind = z.enum(["agent_team", "agent_org", "agent"]);
+/** Roots that accept per-agent commands on the collaboration stream. */
+const commandRootSubjectKind = z.enum(["agent_org", "agent"]);
 const commandType = z.enum(["SEND_MESSAGE", "INTERRUPT_GENERATION", "APPROVE_TOOL", "DENY_TOOL"]);
 const commandAck = z.object({
-    root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema,
+    root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema,
     command_id: nonEmptyStringSchema, command_type: commandType, target_agent_run_id: nonEmptyStringSchema,
     state: z.enum(["accepted", "rejected", "failed"]), code: nonEmptyStringSchema.nullable(), message: z.string().nullable(),
 }).strict();
 export const CollaborationStreamServerMessageSchema = z.discriminatedUnion("type", [
-    z.object({ type: z.literal("CONNECTED"), payload: z.object({ root_subject_kind: z.enum(["agent_team", "agent_org"]), root_run_id: nonEmptyStringSchema, session_id: nonEmptyStringSchema }).strict() }).strict(),
+    z.object({ type: z.literal("CONNECTED"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, session_id: nonEmptyStringSchema }).strict() }).strict(),
     z.object({ type: z.literal("ROOT_EXECUTION_VIEW_SNAPSHOT"), payload: RootExecutionViewDtoSchema }).strict(),
     z.object({ type: z.literal("ROOT_EXECUTION_EVENT"), payload: RootExecutionEventDtoSchema }).strict(),
-    z.object({ type: z.literal("ROOT_LIFECYCLE"), payload: z.object({ root_subject_kind: z.enum(["agent_team", "agent_org"]), root_run_id: nonEmptyStringSchema, is_active: z.boolean() }).strict() }).strict(),
+    z.object({ type: z.literal("ROOT_LIFECYCLE"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, is_active: z.boolean() }).strict() }).strict(),
     z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: commandAck }).strict(),
     z.object({ type: z.literal("ERROR"), payload: z.object({ code: nonEmptyStringSchema, message: nonEmptyStringSchema }).strict() }).strict(),
 ]);
-const commandRoot = { root_subject_kind: z.literal("agent_org"), root_run_id: nonEmptyStringSchema, target_agent_run_id: nonEmptyStringSchema, command_id: nonEmptyStringSchema };
+const commandRoot = { root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema, target_agent_run_id: nonEmptyStringSchema, command_id: nonEmptyStringSchema };
 export const CollaborationStreamClientMessageSchema = z.discriminatedUnion("type", [
-    z.object({ type: z.literal("SEND_MESSAGE"), payload: z.object({ ...commandRoot, content: z.string(), context_file_paths: z.array(z.string()), image_urls: z.array(z.string()), message_id: nonEmptyStringSchema, dedupe_key: nonEmptyStringSchema }).strict() }).strict(),
+    z.object({ type: z.literal("SEND_MESSAGE"), payload: z.object({ ...commandRoot, content: z.string(), context_file_paths: z.array(z.string()), image_urls: z.array(z.string()), message_id: nonEmptyStringSchema, dedupe_key: nonEmptyStringSchema, mentions: collaboratorMentionsDtoSchema.optional() }).strict() }).strict(),
     z.object({ type: z.literal("INTERRUPT_GENERATION"), payload: z.object(commandRoot).strict() }).strict(),
     z.object({ type: z.literal("APPROVE_TOOL"), payload: z.object({ ...commandRoot, invocation_id: nonEmptyStringSchema, reason: z.string().nullable() }).strict() }).strict(),
     z.object({ type: z.literal("DENY_TOOL"), payload: z.object({ ...commandRoot, invocation_id: nonEmptyStringSchema, reason: z.string().nullable() }).strict() }).strict(),

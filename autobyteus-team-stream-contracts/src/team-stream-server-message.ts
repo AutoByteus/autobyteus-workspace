@@ -10,7 +10,10 @@ import {
   teamMemberInputMessagePayloadSchema,
 } from "./team-collaboration-message-dtos.js";
 import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./team-control-message-dtos.js";
-import { teamTaskExecutionStartedPayloadSchema } from "./team-task-execution-message-dtos.js";
+import {
+  teamCollaboratorAddedPayloadSchema,
+  teamTaskExecutionStartedPayloadSchema,
+} from "./team-task-execution-message-dtos.js";
 import { readonlyParsed } from "./schema-helpers.js";
 import {
   teamAgentStatusDtoSchema,
@@ -58,6 +61,7 @@ export const teamStreamServerMessageSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("TEAM_EXECUTION_VIEW_SNAPSHOT"), payload: teamExecutionViewSnapshotPayloadSchema }).strict(),
   z.object({ type: z.literal("AGENT_COMMAND_ACK"), payload: teamInterruptCommandAckPayloadSchema }).strict(),
   z.object({ type: z.literal("TASK_EXECUTION_STARTED"), payload: teamTaskExecutionStartedPayloadSchema }).strict(),
+  z.object({ type: z.literal("COLLABORATOR_ADDED"), payload: teamCollaboratorAddedPayloadSchema }).strict(),
   z.object({ type: z.literal("TEAM_COMMUNICATION_MESSAGE"), payload: teamCommunicationMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("MEMBER_INPUT_MESSAGE"), payload: teamMemberInputMessagePayloadSchema }).strict(),
   z.object({ type: z.literal("ERROR"), payload: teamAgentErrorPayloadSchema }).strict(),
@@ -77,6 +81,7 @@ export type TeamStreamServerMessage =
   | Readonly<{ type: "TEAM_EXECUTION_VIEW_SNAPSHOT"; payload: z.infer<typeof teamExecutionViewSnapshotPayloadSchema> }>
   | Readonly<{ type: "AGENT_COMMAND_ACK"; payload: z.infer<typeof teamInterruptCommandAckPayloadSchema> }>
   | Readonly<{ type: "TASK_EXECUTION_STARTED"; payload: z.infer<typeof teamTaskExecutionStartedPayloadSchema> }>
+  | Readonly<{ type: "COLLABORATOR_ADDED"; payload: z.infer<typeof teamCollaboratorAddedPayloadSchema> }>
   | Readonly<{ type: "TEAM_COMMUNICATION_MESSAGE"; payload: z.infer<typeof teamCommunicationMessagePayloadSchema> }>
   | Readonly<{ type: "MEMBER_INPUT_MESSAGE"; payload: z.infer<typeof teamMemberInputMessagePayloadSchema> }>
   | Readonly<{ type: "ERROR"; payload: z.infer<typeof teamAgentErrorPayloadSchema> }>;

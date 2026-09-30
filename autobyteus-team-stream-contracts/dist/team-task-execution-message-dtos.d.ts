@@ -36,4 +36,10 @@ export declare const teamTaskExecutionStartedPayloadSchema: z.ZodObject<{
     }>, unknown>>]>;
 }, z.core.$strict>;
 export type TeamTaskExecutionStartedPayload = Readonly<z.infer<typeof teamTaskExecutionStartedPayloadSchema>>;
+/** A collaborator entry was committed at the root; it precedes any task execution at its address. */
+export declare const teamCollaboratorAddedPayloadSchema: z.ZodObject<{
+    change_sequence: z.ZodNumber;
+    collaborator: z.ZodType<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown, z.core.$ZodTypeInternals<import("./team-execution-view-dtos.js").CollaboratorEntryDto, unknown>>;
+}, z.core.$strict>;
+export type TeamCollaboratorAddedPayload = Readonly<z.infer<typeof teamCollaboratorAddedPayloadSchema>>;
 //# sourceMappingURL=team-task-execution-message-dtos.d.ts.map

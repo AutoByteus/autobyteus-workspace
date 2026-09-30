@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { nonEmptyStringSchema } from "./schema-helpers.js";
 import {
+  collaboratorEntryDtoSchema,
   taskAgentExecutionDtoSchema,
   taskTeamExecutionDtoSchema,
 } from "./team-execution-view-dtos.js";
@@ -13,3 +14,11 @@ export const teamTaskExecutionStartedPayloadSchema = z.object({
 }).strict();
 
 export type TeamTaskExecutionStartedPayload = Readonly<z.infer<typeof teamTaskExecutionStartedPayloadSchema>>;
+
+/** A collaborator entry was committed at the root; it precedes any task execution at its address. */
+export const teamCollaboratorAddedPayloadSchema = z.object({
+  change_sequence: z.number().int().positive(),
+  collaborator: collaboratorEntryDtoSchema,
+}).strict();
+
+export type TeamCollaboratorAddedPayload = Readonly<z.infer<typeof teamCollaboratorAddedPayloadSchema>>;
