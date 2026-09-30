@@ -44,7 +44,7 @@ Public launch input contains `teamDefinitionId`, one complete root Team default,
 and one complete configuration for every exact direct-Agent address; callers do
 not choose concrete run identities. `TeamRunService` canonicalizes workspace
 roots, and `FlatTeamTopologyPlanner` validates the flat definition, coordinator,
-exact Agent coverage, definition bindings, and configured skill access before
+exact Agent coverage, and definition bindings before
 allocating a root TeamRun ID and direct AgentRun IDs. The result is one immutable
 `TeamRunConfig`.
 
