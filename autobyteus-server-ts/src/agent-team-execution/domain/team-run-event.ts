@@ -2,12 +2,14 @@ import type { TeamAgentExecutionBinding } from "./team-agent-execution-binding.j
 import type { TeamAgentEvent } from "./team-agent-event.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import type { TeamCommunicationMessageV1 } from "../../services/team-communication/team-communication-v1-types.js";
+import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 
 export enum TeamRunEventSourceType {
   AGENT = "AGENT",
   TASK_EXECUTION = "TASK_EXECUTION",
   COMMUNICATION = "COMMUNICATION",
   MEMBER_INPUT = "MEMBER_INPUT",
+  COLLABORATOR = "COLLABORATOR",
 }
 
 export type TeamRunTaskExecutionEvent = Readonly<{
@@ -48,6 +50,11 @@ export type TeamRunEvent =
       eventSourceType: TeamRunEventSourceType.MEMBER_INPUT;
       agentRunId: string;
       payload: TeamRunMemberInputEventPayload;
+    }>
+  | Readonly<{
+      /** Committed at the root before any task execution references its address. */
+      eventSourceType: TeamRunEventSourceType.COLLABORATOR;
+      payload: Readonly<{ eventType: "COLLABORATOR_ADDED"; collaborator: CollaboratorEntry }>;
     }>;
 
 export type TeamRunEventListener = (event: TeamRunEvent) => void;

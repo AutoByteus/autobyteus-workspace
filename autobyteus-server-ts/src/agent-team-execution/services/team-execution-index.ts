@@ -1,5 +1,6 @@
 import { createAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
+  CollaboratorEntry,
   ConfiguredAgentExecutionNode,
   RootConfiguredTeamExecutionNode,
   TaskAgentExecution,
@@ -60,6 +61,7 @@ export class TeamExecutionIndex {
   private readonly agentsByRunId = new Map<string, IndexedAgentExecution>();
   private readonly teamsByRunId = new Map<string, IndexedTeamExecution>();
   private readonly configuredByAddress = new Map<AgentTeamAddress, ConfiguredAgentExecutionNode>();
+  private readonly collaboratorsByAddress = new Map<string, CollaboratorEntry>();
   private readonly taskExecutionsByRunId = new Map<string, IndexedTaskExecution>();
   private readonly directAgentRunIdsByTeamRunId = new Map<string, string[]>();
   private readonly directTeamRunIdsByTeamRunId = new Map<string, string[]>();
@@ -74,6 +76,7 @@ export class TeamExecutionIndex {
       source: tree.rootTeam,
     });
     this.visitConfiguredRoot(tree.rootTeam);
+    tree.rootTeam.collaborators.forEach((entry) => this.collaboratorsByAddress.set(entry.address, entry));
   }
 
   get rootTeamRunId(): string {
@@ -102,6 +105,16 @@ export class TeamExecutionIndex {
 
   getConfiguredPlacement(address: AgentTeamAddress | string): ConfiguredAgentExecutionNode | null {
     return this.configuredByAddress.get(address as AgentTeamAddress) ?? null;
+  }
+
+  /** A collaborator entry of the run: delegable, but never a message ingress. */
+  getCollaborator(address: AgentTeamAddress | string): CollaboratorEntry | null {
+    return this.collaboratorsByAddress.get(address) ?? null;
+  }
+
+  /** Whether at least one task execution (anywhere in the tree) sits at this address. */
+  hasTaskExecutionAt(address: AgentTeamAddress | string): boolean {
+    return [...this.taskExecutionsByRunId.values()].some((task) => task.address === address);
   }
 
   getTaskExecution(reference: TaskExecutionReference): IndexedTaskExecution | null {

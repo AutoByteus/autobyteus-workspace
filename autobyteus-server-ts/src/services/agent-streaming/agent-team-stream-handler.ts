@@ -19,6 +19,7 @@ import { projectSequencedTeamRunEvent, projectTeamExecutionViewSnapshot } from "
 import { handleTeamInterruptGenerationCommand } from "./team-interrupt-generation-command-handler.js";
 import { handleTeamToolApprovalCommand } from "./team-tool-approval-command-handler.js";
 import { AgentStreamWebSocketEgress, type AgentStreamServerMessageSink } from "./websocket-egress/agent-stream-websocket-egress.js";
+import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
 
 export type WebSocketConnection = { send(data: string): void; close(code?: number): void };
 type TeamStreamSink = AgentStreamServerMessageSink<TeamStreamServerMessage>;
@@ -167,12 +168,30 @@ export class AgentTeamStreamHandler {
   ): Promise<void> {
     const agentRunId = parseCommandAgentRunId(payload);
     if (!agentRunId) return this.sendInvalidTarget(sink, TEAM_COMMAND_INVALID_TARGET_MESSAGE);
+    let content = payload.content;
+    if (payload.mentions?.length) {
+      try {
+        const admission = await root.admitCollaboratorMentions({
+          focusedAgentRunId: agentRunId,
+          content: payload.content,
+          mentions: toCollaboratorMentions(payload.mentions),
+        });
+        if (!admission.admitted) {
+          sink?.send(errorMessage(TEAM_SEND_MESSAGE_REJECTED, admission.message, agentRunId, admission.code));
+          return;
+        }
+        content = admission.content;
+      } catch (error) {
+        sink?.send(errorMessage(TEAM_SEND_MESSAGE_FAILED, error instanceof Error ? error.message : String(error), agentRunId));
+        return;
+      }
+    }
     const contextFiles = [
       ...payload.context_file_paths.map((filePath) => new ContextFile(filePath)),
       ...payload.image_urls.map((url) => new ContextFile(url, ContextFileType.IMAGE)),
     ];
     const message = AgentInputUserMessage.fromDict({
-      content: payload.content,
+      content,
       context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
       metadata: { input_origin: "user_message", message_id: payload.message_id, dedupe_key: payload.dedupe_key },
     });

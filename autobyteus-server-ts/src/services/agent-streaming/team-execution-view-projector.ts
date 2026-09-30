@@ -83,6 +83,11 @@ export const projectSequencedTeamRunEvent = (
       } });
     case TeamRunEventSourceType.TASK_EXECUTION:
       return projectTaskExecutionStarted(root, event.taskExecution, changeSequence);
+    case TeamRunEventSourceType.COLLABORATOR:
+      return parseTeamStreamServerMessage({ type: "COLLABORATOR_ADDED", payload: {
+        change_sequence: changeSequence,
+        collaborator: projectCollaboratorEntry(event.payload.collaborator),
+      } });
   }
 };
 

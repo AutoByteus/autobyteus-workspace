@@ -1,5 +1,5 @@
-import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
-import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
+import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
+import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { CollaboratorDefinitionCatalog } from "./collaborator-candidate-policy.js";
 import { CollaboratorCandidatePolicy } from "./collaborator-candidate-policy.js";
 import { CollaboratorEntryBuilder } from "./collaborator-entry-builder.js";
@@ -21,3 +21,11 @@ export const createCollaboratorMentionAdmission = (catalog: CollaboratorDefiniti
     policy: new CollaboratorCandidatePolicy(catalog),
     entries: new CollaboratorEntryBuilder(catalog),
   });
+
+let processAdmission: CollaboratorMentionAdmission | null = null;
+/** The process admission coordinator over the shared definition services. */
+export const getCollaboratorMentionAdmission = (): CollaboratorMentionAdmission =>
+  processAdmission ??= createCollaboratorMentionAdmission(createCollaboratorDefinitionCatalog({
+    agents: AgentDefinitionService.getInstance(),
+    teams: AgentTeamDefinitionService.getInstance(),
+  }));

@@ -18,14 +18,9 @@ export const findTaskConfigNode = (
 
 export const requirePreparedTaskTeamNode = (
   prepared: PreparedTaskExecution,
-  root: TeamRunAgentTeamNode,
 ): TeamRunAgentTeamNode => {
   const binding = prepared.binding;
   if (binding.kind !== "team") throw new Error("Prepared execution is not a Team.");
-  const source = findTaskConfigNode(root, binding.address);
-  if (!source || source.kind !== "agent_team") {
-    throw new Error(`Configured Team '${binding.address}' was not found.`);
-  }
   const preparedRoot = prepared.preparedTeamRuns.find((run) => run.teamRunId === binding.teamRunId);
   if (!preparedRoot) throw new Error(`Prepared TeamRun '${binding.teamRunId}' was not found.`);
   return preparedRoot.context.teamNode;

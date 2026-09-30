@@ -1,4 +1,5 @@
 import type {
+  CollaboratorEntry,
   ConfiguredAgentExecutionNode,
   RootConfiguredTeamExecutionNode,
   TaskAgentExecution,
@@ -75,6 +76,15 @@ export const addTaskExecutionToTree = (input: {
     return { ...team, taskExecutions: [...team.taskExecutions, input.execution] } as TeamWithTasks;
   },
 );
+
+/** Appends new collaborator entries at the root; the schema re-checks address invariants. */
+export const addCollaboratorsToTree = (input: {
+  tree: TeamRunExecutionTreeSnapshot;
+  collaborators: readonly CollaboratorEntry[];
+}): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
+  ...input.tree,
+  rootTeam: { ...input.tree.rootTeam, collaborators: [...input.tree.rootTeam.collaborators, ...input.collaborators] },
+}, input.tree.rootTeam.teamRunId);
 
 type AgentExecutionNode = ConfiguredAgentExecutionNode | TaskAgentExecution | TaskTeamAgentExecution;
 

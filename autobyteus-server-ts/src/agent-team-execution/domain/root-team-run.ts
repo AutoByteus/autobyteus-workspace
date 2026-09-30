@@ -32,7 +32,17 @@ import { TeamRunResolver } from "../services/team-run-resolver.js";
 import type { RootEventListener, RootSnapshotConnection } from "../services/team-run-event-publisher.js";
 import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
 import { TeamRecipientResolver } from "../services/team-recipient-resolver.js";
-import type { ResolvedTeamRecipient } from "../services/resolved-team-recipient.js";
+import type { ResolvedTeamRecipient, TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
+import { addCollaboratorsToTree } from "../services/team-run-execution-tree-mutator.js";
+import { TeamRunEventSourceType } from "./team-run-event.js";
+import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
+import {
+  type CollaboratorMention,
+  type CollaboratorMentionAdmission,
+  type CollaboratorMentionAdmissionResult,
+} from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import { getCollaboratorMentionAdmission } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import {
   TaskDelegationError,
   type DelegateTaskInput,
@@ -92,6 +102,7 @@ export class RootTeamRun {
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
+    collaboratorAdmission?: CollaboratorMentionAdmission;
     disposeRootSubjects?(): void;
     onTerminated?(): void;
   }) {
@@ -226,9 +237,88 @@ export class RootTeamRun {
     return this.executeAgentCommand(targetAgentRunId, { kind: "post_message", message });
   }
 
-  resolveRecipient(recipientAddress: string): ResolvedTeamRecipient {
+  /** Message ingress: configured Agents only (a collaborator address is rejected with a hint). */
+  resolveMessageRecipient(recipientAddress: string): ResolvedTeamRecipient {
     this.assertAdmitting();
-    return this.recipientResolver.resolve(this.index, recipientAddress);
+    return this.recipientResolver.resolveMessageRecipient(this.index, recipientAddress);
+  }
+
+  /** Delegation target: a configured Agent, else a collaborator of this run. */
+  resolveDelegationPlacement(recipientAddress: string): TeamDelegationPlacement {
+    this.assertAdmitting();
+    return this.recipientResolver.resolveDelegationPlacement(this.index, recipientAddress);
+  }
+
+  /**
+   * Admits the user's mentions for the focused agent in one gate: validate all, commit new
+   * collaborator entries in one tree write, publish them, and return the content to post.
+   * The caller posts through its existing command path.
+   */
+  admitCollaboratorMentions(input: Readonly<{
+    focusedAgentRunId: string;
+    content: string;
+    mentions: readonly CollaboratorMention[];
+  }>): Promise<CollaboratorMentionAdmissionResult> {
+    return this.materializationGate.run(async () => {
+      this.assertAdmitting();
+      if (!this.index.getAgent(input.focusedAgentRunId)) {
+        return { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in root '${this.teamRunId}'.` };
+      }
+      return (this.options.collaboratorAdmission ?? getCollaboratorMentionAdmission()).admit(this.collaboratorPort(), {
+        ...input,
+        commitEntries: (entries) => this.commitCollaborators(entries),
+      });
+    });
+  }
+
+  collaboratorPort(): CollaboratorRootPort {
+    const tree = this.tree;
+    const index = this.index;
+    return Object.freeze({
+      rootKind: "agent_team",
+      isApplicationBound: tree.applicationBinding !== null,
+      rootLaunchConfiguration: () => tree.rootTeam.defaultLaunchConfiguration,
+      configuredDefinitionIds: () => Object.freeze({
+        agentDefinitionIds: new Set(tree.rootTeam.members.map((member) => member.agentDefinitionId)),
+        teamDefinitionIds: new Set([tree.rootTeam.teamDefinitionId]),
+      }),
+      collaborators: () => tree.rootTeam.collaborators,
+      hasTaskExecutionAt: (address: string) => index.hasTaskExecutionAt(address),
+      addressesInUse: () => new Set([
+        ...tree.rootTeam.members.map((member) => member.address),
+        ...tree.rootTeam.collaborators.map((entry) => entry.address),
+      ]),
+    });
+  }
+
+  private async commitCollaborators(entries: readonly CollaboratorEntry[]): Promise<void> {
+    let nextTree: TeamRunExecutionTreeSnapshot | null = null;
+    const result = await this.options.persistence.commitExecutionTreeMutation({
+      prepareAgainstCurrent: () => {
+        this.assertAdmitting();
+        nextTree = addCollaboratorsToTree({ tree: this.tree, collaborators: entries });
+        const committedTree = nextTree;
+        return {
+          nextTree: committedTree,
+          requiresWrite: true,
+          cancelBeforeDurability: () => undefined,
+          commitAfterDurability: () => {
+            this.replaceTree(committedTree);
+            for (const collaborator of entries) {
+              this.options.publisher.publish({
+                eventSourceType: TeamRunEventSourceType.COLLABORATOR,
+                payload: { eventType: "COLLABORATOR_ADDED", collaborator },
+              });
+            }
+          },
+        };
+      },
+    });
+    if (result.outcome === "committed") return;
+    if (result.outcome === "finalization_indeterminate") {
+      throw new Error(`Collaborators for root '${this.teamRunId}' may not have been saved (${result.stage}).`);
+    }
+    throw new Error(`Collaborators for root '${this.teamRunId}' were not saved: ${result.cause.message}`);
   }
 
   authorizeIdentity(identity: CollaborationMemberExecutionIdentity): void {
@@ -248,7 +338,16 @@ export class RootTeamRun {
   delegateTask(context: TaskDelegationContext, input: DelegateTaskInput): Promise<DelegateTaskResult> {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
-      const placement = this.resolveRecipient(input.recipient_address);
+      let placement: TeamDelegationPlacement;
+      try {
+        placement = this.resolveDelegationPlacement(input.recipient_address);
+      } catch (error) {
+        // Nothing is started: a target that is neither mounted nor mentioned returns a reason.
+        if (error instanceof CollaborationContractError && error.code === "COLLABORATION_TARGET_NOT_FOUND") {
+          return { target_agent_run_id: null, message: error.message };
+        }
+        throw error;
+      }
       if (placement.kind === "agent" && placement.address === context.identity.memberAddress) {
         throw new CollaborationContractError(
           "COLLABORATION_SELF_TARGET_REJECTED",
@@ -265,7 +364,7 @@ export class RootTeamRun {
         return { accepted: false, code: "COLLABORATION_ROOT_MISMATCH", message: "Message root does not match the selected RootTeamRun." };
       }
       this.authorizeIdentity(intent.sender.participant.identity);
-      const placement = this.resolveRecipient(intent.recipientAddress);
+      const placement = this.resolveMessageRecipient(intent.recipientAddress);
       const receiver = this.resolveConfiguredRecipientIdentity(placement);
       return this.communication.deliver({
         intent,
