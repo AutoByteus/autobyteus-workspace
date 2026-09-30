@@ -136,6 +136,31 @@ describe("LifecycleStatusEventTransformer", () => {
     expect(lifecycleState.activeTurn).toEqual({ kind: "NONE" });
   });
 
+  it("treats background-task updates between turns as non-activity (REQ-004)", async () => {
+    const { event, lifecycleState, process } = createHarness();
+    await process([
+      event(AgentRunEventType.TURN_STARTED, { turn_id: "turn-a" }),
+      event(AgentRunEventType.TURN_COMPLETED, { turn_id: "turn-a" }),
+    ]);
+    const backgroundTask = event(AgentRunEventType.BACKGROUND_TASK_UPDATED, {
+      task_id: "task-1", kind: "shell", description: "sleep 20", status: "completed",
+      summary: "done", started_at: "2026-09-29T16:48:20.000Z",
+    });
+
+    const idle = await process([backgroundTask]);
+    expect(statuses(idle)).toEqual(["idle"]);
+    expect(idle.at(-1)).toBe(backgroundTask);
+    expect(lifecycleState.activeTurn).toEqual({ kind: "NONE" });
+
+    // An activity event would open an anonymous turn while a command is pending; this must not.
+    const token = lifecycleState.beginCommand();
+    lifecycleState.acceptCommand(token!, null);
+    const statusBefore = lifecycleState.lastStatus;
+    const pending = await process([backgroundTask]);
+    expect(statuses(pending)).toEqual([statusBefore]);
+    expect(lifecycleState.activeTurn).toEqual({ kind: "NONE" });
+  });
+
   it("keeps diagnostic errors recoverable and terminal errors retired", async () => {
     const harness = createHarness();
     await harness.process([

@@ -92,7 +92,6 @@ const codexItemEventNames = new Set<string>([
   CodexThreadEventName.ITEM_REASONING_SUMMARY_PART_ADDED,
   CodexThreadEventName.ITEM_REASONING_SUMMARY_TEXT_DELTA,
   CodexThreadEventName.ITEM_REASONING_COMPLETED,
-  CodexThreadEventName.ITEM_PLAN_DELTA,
   CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL,
   CodexThreadEventName.ITEM_TOOL_CALL,
   CodexThreadEventName.ITEM_PERMISSIONS_REQUEST_APPROVAL,
@@ -408,14 +407,6 @@ export const convertCodexItemEvent = (
     case CodexThreadEventName.ITEM_REASONING_COMPLETED: {
       return context.resolveCompletedReasoningEvents(codexEventName, payload);
     }
-    case CodexThreadEventName.ITEM_PLAN_DELTA:
-      return [
-        context.createEvent(
-          codexEventName,
-          AgentRunEventType.TODO_LIST_UPDATE,
-          serializeCodexItemEventPayload(payload),
-        ),
-      ];
     case CodexThreadEventName.ITEM_COMMAND_EXECUTION_REQUEST_APPROVAL:
     case CodexThreadEventName.ITEM_FILE_CHANGE_REQUEST_APPROVAL:
     case CodexThreadEventName.LOCAL_TOOL_APPROVAL_REQUESTED: {

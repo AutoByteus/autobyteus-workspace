@@ -529,17 +529,25 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         agent_run_id: z.ZodString;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
-    type: z.ZodLiteral<"TODO_LIST_UPDATE">;
+    type: z.ZodLiteral<"BACKGROUND_TASK_UPDATED">;
     payload: z.ZodObject<{
-        todos: z.ZodArray<z.ZodObject<{
-            todo_id: z.ZodString;
-            description: z.ZodString;
-            status: z.ZodEnum<{
-                pending: "pending";
-                in_progress: "in_progress";
-                done: "done";
-            }>;
-        }, z.core.$strict>>;
+        task_id: z.ZodString;
+        kind: z.ZodEnum<{
+            shell: "shell";
+            subagent: "subagent";
+            monitor: "monitor";
+            workflow: "workflow";
+            other: "other";
+        }>;
+        description: z.ZodString;
+        status: z.ZodEnum<{
+            running: "running";
+            completed: "completed";
+            failed: "failed";
+            stopped: "stopped";
+        }>;
+        summary: z.ZodNullable<z.ZodString>;
+        started_at: z.ZodString;
         change_sequence: z.ZodNumber;
         agent_run_id: z.ZodString;
     }, z.core.$strict>;

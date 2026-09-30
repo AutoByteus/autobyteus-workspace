@@ -28,7 +28,7 @@ export type {
   ToolExecutionFailedPayload,
   ToolExecutionInterruptedPayload,
   ToolLogPayload,
-  TodoListUpdatePayload,
+  BackgroundTaskUpdatedPayload,
   InterAgentMessagePayload,
   SystemTaskNotificationPayload,
   FileChangePayload,

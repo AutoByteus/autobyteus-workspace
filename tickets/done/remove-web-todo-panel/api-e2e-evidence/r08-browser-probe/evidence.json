@@ -1,0 +1,157 @@
+{
+  "startedAt": "2026-09-29T18:30:22.687Z",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "fixturePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-web/tests/e2e/fixtures/background-tasks-panel.page.vue",
+  "installedPagePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/autobyteus-web/pages/__background-tasks-panel-probe.vue",
+  "routePath": "/__background-tasks-panel-probe",
+  "scenarios": {
+    "BT-UI-001": {
+      "result": "Pass",
+      "description": "To-Do is gone; Background Tasks sits above Activity, collapsed, with 0 counts; Activity expanded by default (AC-001, AC-002)",
+      "details": {
+        "headerY": 49,
+        "activityY": 93
+      }
+    },
+    "BT-UI-002": {
+      "result": "Pass",
+      "description": "A running task appears live with description, kind and status without changing run status (AC-007)",
+      "details": {
+        "statusBefore": "offline"
+      }
+    },
+    "BT-UI-003": {
+      "result": "Pass",
+      "description": "Newest first; finishing one task changes only that entry; long text stays inside the panel (AC-008, AC-012)",
+      "details": {
+        "statuses": [
+          "failed",
+          "running",
+          "completed"
+        ],
+        "truncation": {
+          "clientWidth": 269,
+          "scrollWidth": 2146
+        },
+        "overflow": {
+          "listClient": 378,
+          "listScroll": 378
+        }
+      }
+    },
+    "BT-UI-004": {
+      "result": "Pass",
+      "description": "Summary expands by click and keyboard and collapses again",
+      "details": {
+        "collapsedHeight": 32,
+        "expandedHeight": 240
+      }
+    },
+    "BT-UI-005": {
+      "result": "Pass",
+      "description": "Tasks are per run: another run shows its own empty list (AC-009 web side)",
+      "details": {
+        "otherRunEmpty": true
+      }
+    },
+    "BT-UI-006": {
+      "result": "Pass",
+      "description": "Accordion: expanding Activity collapses Background Tasks; a narrow (320px, drawer-like) right panel keeps a one-line header and rows inside the panel",
+      "details": {
+        "panelWidth": 318,
+        "listClient": 318,
+        "listScroll": 318,
+        "countsInside": true,
+        "headerHeight": 33,
+        "titleTruncated": false,
+        "chipsInside": true
+      }
+    }
+  },
+  "browserEvents": [
+    {
+      "type": "console:debug",
+      "text": "[vite] connecting..."
+    },
+    {
+      "type": "console:debug",
+      "text": "[vite] connected."
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Initializing server config"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Not in Electron environment. Skipping server initialization."
+    },
+    {
+      "type": "console:info",
+      "text": "<Suspense> is an experimental feature and its API will likely change."
+    },
+    {
+      "type": "console:log",
+      "text": "ServerLoading: Component mounted with status: running"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22applicationsCapability%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22projectsCapability%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22workspaces%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listWorkspaceRunHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22listCollaborationRootHistory%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentTeamDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentOrgDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:error",
+      "text": "An error occurred! For more details, see the full error text at https://go.apollo.dev/c/err#%7B%22version%22%3A%223.14.0%22%2C%22message%22%3A13%2C%22args%22%3A%5B%22agentDefinitions%22%2C%22%7B%7D%22%5D%7D"
+    },
+    {
+      "type": "console:log",
+      "text": "serverStore: Checking server health at /rest/health"
+    }
+  ],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": {
+      "status": "terminated",
+      "pid": 41777,
+      "exitCode": null,
+      "signalCode": "SIGTERM"
+    },
+    "log": "closed",
+    "fixture": "removed"
+  },
+  "failures": [],
+  "port": 60030,
+  "ignoredMockBackendErrors": 9,
+  "result": "Pass",
+  "finishedAt": "2026-09-29T18:30:35.073Z",
+  "artifacts": {
+    "evidencePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/tickets/in-progress/remove-web-todo-panel/api-e2e-evidence/r08-browser-probe/evidence.json",
+    "logPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/remove-web-todo-panel/tickets/in-progress/remove-web-todo-panel/api-e2e-evidence/r08-browser-probe/nuxt.log"
+  }
+}

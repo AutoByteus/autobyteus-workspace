@@ -180,6 +180,36 @@ describe("AGY canonical stream conversion", () => {
         result: { provider_state: "RUNNING", output: BACKGROUND } });
     });
 
+    it("reports unfinished steps as background tool steps at result, and nothing when every step finished", () => {
+      const reported: unknown[] = [];
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini", undefined, undefined,
+        (steps) => reported.push(steps));
+      converter.startTurn("turn");
+      converter.convert(step(5, "ACTIVE", "browser_subagent", { parameters: { Task: "watch" } }));
+      converter.convert(step(2, "ACTIVE", "run_command", { parameters: { CommandLine: "pnpm dev" } }));
+      converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS" } });
+      converter.startTurn("turn-2");
+      converter.convert(step(7, "ACTIVE"));
+      converter.convert(step(7, "DONE"));
+      converter.convert({ event: "result", result: { conversation_id: "conversation", status: "SUCCESS" } });
+
+      expect(reported).toEqual([[
+        { stepIndex: 2, toolName: "run_command", commandLine: "pnpm dev" },
+        { stepIndex: 5, toolName: "browser_subagent", commandLine: null },
+      ]]);
+    });
+
+    it("does not report steps closed by an interrupt as background steps", () => {
+      const reported: unknown[] = [];
+      const converter = new AgyStreamEventConverter("run", "conversation", "gemini", undefined, undefined,
+        (steps) => reported.push(steps));
+      converter.startTurn("turn");
+      converter.convert(step(2, "ACTIVE"));
+      converter.interrupt();
+
+      expect(reported).toEqual([]);
+    });
+
     it("closes every unfinished step in ascending step order", () => {
       const converter = new AgyStreamEventConverter("run", "conversation", "gemini");
       converter.startTurn("turn");

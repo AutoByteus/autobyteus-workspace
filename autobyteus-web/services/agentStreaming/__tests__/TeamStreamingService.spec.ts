@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import { TeamStreamingService } from '../TeamStreamingService';
+import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 import {
   buildTestTeamContext,
@@ -198,6 +199,27 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     });
     expect(persistentStudent.state.conversation.messages).toHaveLength(0);
     expect(taskStudent.state.conversation.messages).toHaveLength(0);
+  });
+
+  it('adds a member background task only to that member AgentRun (AC-009)', () => {
+    const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
+    const backgroundTasks = useAgentBackgroundTaskStore();
+
+    emit(callbacks, 'BACKGROUND_TASK_UPDATED', {
+      change_sequence: 1,
+      agent_run_id: teacherRunId,
+      task_id: 'bg-1',
+      kind: 'shell',
+      description: 'sleep 20',
+      status: 'running',
+      summary: null,
+      started_at: '2026-09-29T16:48:20.000Z',
+    });
+
+    expect(backgroundTasks.getTasks(teacherRunId).map((task) => [task.taskId, task.status])).toEqual([['bg-1', 'running']]);
+    expect(backgroundTasks.getTasks(persistentStudentRunId)).toEqual([]);
+    expect(team.view.getAgentContext(teacherRunId)!.state.currentStatus).not.toBe(AgentStatus.Running);
   });
 
   it('rejects a legacy identity-less Agent event instead of using the focused AgentRun', () => {

@@ -2,6 +2,7 @@ import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run
 import { agyRecord, agyString, type AgyStreamMessage } from "./agy-stream-message.js";
 import type { AgyProviderFailureDiagnostic } from "./agy-provider-diagnostic-sink.js";
 import type { AgyNativeImagePathResolution } from "./agy-step-output-reader.js";
+import type { AgyBackgroundToolStep } from "./agy-background-task-monitor.js";
 
 export type AgyNativeImagePathResolver = (stepIndex: number) => AgyNativeImagePathResolution;
 
@@ -29,7 +30,8 @@ export class AgyStreamEventConverter {
 
   constructor(private readonly runId: string, private readonly conversationId: string, private readonly model: string,
     private readonly onProviderFailure?: (diagnostic: AgyProviderFailureDiagnostic) => void,
-    private readonly resolveNativeImagePath?: AgyNativeImagePathResolver) {}
+    private readonly resolveNativeImagePath?: AgyNativeImagePathResolver,
+    private readonly onBackgroundToolSteps?: (steps: readonly AgyBackgroundToolStep[]) => void) {}
 
   startTurn(turnId: string): AgentRunEvent[] {
     if (this.turnId) throw new Error("AGY_TURN_ALREADY_ACTIVE");
@@ -184,13 +186,20 @@ export class AgyStreamEventConverter {
     return events;
   }
 
-  /** At turn end, a step AGY never finished (e.g. a daemon) is still running in the background. */
+  /**
+   * At turn end, a step AGY never finished (e.g. a daemon) is still running in the background:
+   * its tool call closes here and the step is reported as a background task.
+   */
   private closeBackgroundTools(): AgentRunEvent[] {
-    const events = [...this.openTools.entries()].sort(([a], [b]) => a - b).map(([, common]) =>
+    const open = [...this.openTools.entries()].sort(([a], [b]) => a - b);
+    const events = open.map(([, common]) =>
       this.event(AgentRunEventType.TOOL_EXECUTION_SUCCEEDED, {
         ...common, result: { provider_state: "RUNNING", output: BACKGROUND_TOOL_OUTPUT }, provider_state: "RUNNING",
       }));
     this.openTools.clear();
+    if (open.length > 0) this.onBackgroundToolSteps?.(open.map(([stepIndex, common]) => ({
+      stepIndex, toolName: String(common.tool_name), commandLine: agyString(agyRecord(common.arguments)?.CommandLine),
+    })));
     return events;
   }
 

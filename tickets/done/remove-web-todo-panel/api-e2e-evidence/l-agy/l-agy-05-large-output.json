@@ -1,0 +1,29 @@
+{
+  "case": "L-AGY-05",
+  "runId": "agy_background_updates_live_5a5a7ac5_8310_4768_9_ce477afae4684cf99ef03f588137f64a",
+  "model": "gemini-3.8-flash-high",
+  "turnEndAtMs": 5715,
+  "running": {
+    "at": 5715,
+    "task_id": "13d8a83c-0545-451a-b80c-e0b600717c3a/task-2",
+    "kind": "shell",
+    "description": "sleep 5; python3 -c \"print('x' * 200000)\"; exit 0",
+    "status": "running",
+    "summary": null,
+    "started_at": "2026-09-29T18:09:52.385Z"
+  },
+  "statusesBeforeTerminate": [
+    "running",
+    "completed"
+  ],
+  "final": {
+    "at": 9713,
+    "task_id": "13d8a83c-0545-451a-b80c-e0b600717c3a/task-2",
+    "kind": "shell",
+    "description": "sleep 5; python3 -c \"print('x' * 200000)\"; exit 0",
+    "status": "completed",
+    "summary": "The command exited with code 0.\nOutput:\n<truncated 25 bytes>\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx…",
+    "started_at": "2026-09-29T18:09:52.385Z"
+  },
+  "result": "Pass"
+}

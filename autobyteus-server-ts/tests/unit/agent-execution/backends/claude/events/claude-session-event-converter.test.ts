@@ -4,6 +4,24 @@ import { ClaudeSessionEventConverter } from "../../../../../../src/agent-executi
 import { ClaudeSessionEventName } from "../../../../../../src/agent-execution/backends/claude/events/claude-session-event-name.js";
 
 describe("ClaudeSessionEventConverter", () => {
+  it("maps a background-task snapshot to a non-activity BACKGROUND_TASK_UPDATED event and rejects invalid snapshots", () => {
+    const converter = new ClaudeSessionEventConverter("run-claude-converter");
+    const params = {
+      task_id: "bg-1", kind: "shell", description: "Sleep 20", status: "failed",
+      summary: "exit 3", started_at: "2026-09-29T16:48:20.000Z",
+    };
+
+    expect(converter.convert({ method: ClaudeSessionEventName.BACKGROUND_TASK_UPDATED, params })).toEqual([{
+      eventType: AgentRunEventType.BACKGROUND_TASK_UPDATED,
+      runId: "run-claude-converter",
+      payload: params,
+      statusHint: null,
+    }]);
+    expect(() => converter.convert({
+      method: ClaudeSessionEventName.BACKGROUND_TASK_UPDATED, params: { ...params, kind: "local_bash" },
+    })).toThrow("background task kind is invalid");
+  });
+
   it("converts normal Claude tool segment lane metadata with arguments", () => {
     const converter = new ClaudeSessionEventConverter("run-claude-converter");
 

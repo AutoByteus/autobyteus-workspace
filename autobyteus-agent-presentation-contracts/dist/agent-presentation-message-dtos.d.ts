@@ -1,4 +1,20 @@
 import { z } from "zod";
+/** Runtime-neutral background-task vocabulary; runtime-specific task types are mapped by each server backend. */
+export declare const backgroundTaskKindSchema: z.ZodEnum<{
+    shell: "shell";
+    subagent: "subagent";
+    monitor: "monitor";
+    workflow: "workflow";
+    other: "other";
+}>;
+export declare const backgroundTaskStatusSchema: z.ZodEnum<{
+    running: "running";
+    completed: "completed";
+    failed: "failed";
+    stopped: "stopped";
+}>;
+export type BackgroundTaskKind = z.infer<typeof backgroundTaskKindSchema>;
+export type BackgroundTaskStatus = z.infer<typeof backgroundTaskStatusSchema>;
 export declare const agentPresentationPayloadSchemas: {
     readonly SYSTEM_INSTRUCTIONS_SUPPLIED: z.ZodObject<{
         trace_id: z.ZodString;
@@ -360,16 +376,24 @@ export declare const agentPresentationPayloadSchemas: {
         tool_name: z.ZodString;
         turn_id: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
-    readonly TODO_LIST_UPDATE: z.ZodObject<{
-        todos: z.ZodArray<z.ZodObject<{
-            todo_id: z.ZodString;
-            description: z.ZodString;
-            status: z.ZodEnum<{
-                pending: "pending";
-                in_progress: "in_progress";
-                done: "done";
-            }>;
-        }, z.core.$strict>>;
+    readonly BACKGROUND_TASK_UPDATED: z.ZodObject<{
+        task_id: z.ZodString;
+        kind: z.ZodEnum<{
+            shell: "shell";
+            subagent: "subagent";
+            monitor: "monitor";
+            workflow: "workflow";
+            other: "other";
+        }>;
+        description: z.ZodString;
+        status: z.ZodEnum<{
+            running: "running";
+            completed: "completed";
+            failed: "failed";
+            stopped: "stopped";
+        }>;
+        summary: z.ZodNullable<z.ZodString>;
+        started_at: z.ZodString;
     }, z.core.$strict>;
     readonly SYSTEM_TASK_NOTIFICATION: z.ZodObject<{
         sender: z.ZodUnion<readonly [z.ZodObject<{

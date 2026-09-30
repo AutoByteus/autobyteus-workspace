@@ -168,6 +168,23 @@ closes it before the turn's completion or turn error as canonical success with
 running when the turn ended.`. User Stop and process death before `result`
 still interrupt open tool steps instead.
 
+Each step closed this way is also reported to `AgyBackgroundTaskMonitor`, which
+shows it as a running background task (`BACKGROUND_TASK_UPDATED`, id
+`<conversation>/task-<stepIndex>`, kind `shell` for `run_command`, description
+from `CommandLine`). AGY's stream never reports a daemon's exit, but AGY 1.2.13
+writes `<brain>/<conversation>/.system_generated/messages/<uuid>.json` when one
+exits, with `sourceMetadata.tool.stepIndex` and `The command exited with code N`
+in `content`. While any task runs, the monitor polls `messages/*.json` every 2 s
+(reads go through `agy-brain-file.ts`: 64 KiB bound, no symlinks, confined to
+the conversation) and marks the task `completed` (exit code 0) or `failed`
+(other codes) with the reported result text as summary. Files it cannot parse
+yet are retried; files of any other shape are remembered and ignored. When the
+backend stops AGY (Stop, Terminate, process close, listener failure) every task
+still running becomes `stopped`, and those snapshots are delivered before the
+stop resolves. An unreadable or changed message format therefore leaves a task
+running until AGY stops and never produces a false completion. Non-daemon
+background commands keep their turn open and never become background tasks.
+
 Stopping AGY also stops its background commands. AGY (observed with 1.2.12)
 starts each background command in its own session/process group, shared by the
 whole command tree, and such a group survives a SIGTERM of AGY alone. Whenever

@@ -1,0 +1,25 @@
+{
+  "case": "L-AGY-01",
+  "runId": "agy_background_updates_live_5a5a7ac5_8310_4768_9_63a3f206542d4f4eb03b80ef69e858e8",
+  "model": "gemini-3.8-flash-high",
+  "turnEndAtMs": 7930,
+  "running": {
+    "at": 7930,
+    "task_id": "6f375559-058f-4157-bd5f-cbbcc1eb2910/task-2",
+    "kind": "shell",
+    "description": "sleep 20; echo DAEMON_EXITED_MARKER > daemon-exit.txt",
+    "status": "running",
+    "summary": null,
+    "started_at": "2026-09-29T18:07:49.695Z"
+  },
+  "completed": {
+    "at": 25924,
+    "task_id": "6f375559-058f-4157-bd5f-cbbcc1eb2910/task-2",
+    "kind": "shell",
+    "description": "sleep 20; echo DAEMON_EXITED_MARKER > daemon-exit.txt",
+    "status": "completed",
+    "summary": "The command exited with code 0.\nStdout:\n\nStderr:",
+    "started_at": "2026-09-29T18:07:49.695Z"
+  },
+  "result": "Pass"
+}

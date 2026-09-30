@@ -332,19 +332,15 @@ describe("AgentStreamHandler", () => {
     expect(
       broadcaster.publishToRun(
         "agent-123",
-        new ServerMessage(ServerMessageType.TODO_LIST_UPDATE, {
-          todos: [],
-        }),
+        new ServerMessage(ServerMessageType.BACKGROUND_TASK_UPDATED, { task_id: "task-1", kind: "shell", description: "sleep 20", status: "running", summary: null, started_at: "2026-09-29T16:48:20.000Z" }),
       ),
     ).toBe(1);
 
     expect(connection.send).toHaveBeenCalledTimes(3);
     const payload = JSON.parse(connection.send.mock.calls[2][0]);
     expect(payload).toMatchObject({
-      type: ServerMessageType.TODO_LIST_UPDATE,
-      payload: {
-        todos: [],
-      },
+      type: ServerMessageType.BACKGROUND_TASK_UPDATED,
+      payload: { task_id: "task-1", status: "running" },
     });
   });
 
