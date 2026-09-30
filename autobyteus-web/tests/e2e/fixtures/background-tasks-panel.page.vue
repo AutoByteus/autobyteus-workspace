@@ -31,7 +31,7 @@ const makeContext = (runId: string, runtimeKind: string): AgentContext => {
   const config: AgentRunConfig = {
     agentDefinitionId: runId, agentDefinitionName: runId, llmModelIdentifier: 'browser-probe-model',
     runtimeKind, workspaceId: null, workspaceMetadata: null, autoExecuteTools: false,
-    skillAccessMode: 'NONE', llmConfig: null, isLocked: true,
+    llmConfig: null, isLocked: true,
   } as AgentRunConfig;
   const conversation: Conversation = {
     id: runId, messages: [], createdAt: '2026-09-29T16:00:00.000Z', updatedAt: '2026-09-29T16:00:00.000Z',

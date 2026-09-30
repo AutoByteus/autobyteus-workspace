@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | `/architecture_reviewer`, `design-review-report.md`, `ARCH-REV-003` Pass on `SR-005` | N/A | `Initial Baseline` | `SR-005`, `ARCH-REV-003`; CRR / API-REV / DR: `N/A` | Implementation complete; handed to `/code_reviewer` |
 | IR-002 | `/code_reviewer`, `code-review-report.md`, `CRR-001` (round 1) | `CR-001`, `CR-002` | `Local Fix` | `SR-005`, `ARCH-REV-003`, `CRR-001`; API-REV / DR: `N/A` | Fix complete; returned to `/code_reviewer` |
+| IR-003 | `/delivery_engineer`, `delivery-revision-record.md`, `DR-002` (re-integration blocker) | N/A (delivery blocker; no finding ID) | `Local Fix` | `SR-005`, `ARCH-REV-003`, `CRR-002`, `CRR-003`, `API-REV-001`, `DR-002` | Fix complete; returned to `/code_reviewer` |
 
 ## Revision Entries
 
@@ -62,3 +63,32 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - Not rerun for this delta: web, autobyteus-ts and contract-package suites (the web change is a deleted comment).
 - Next recipient or routing: `/code_reviewer` (Large / High, Local Fix return).
 - Remaining limitations or risks: unchanged from `IR-001`, except that the base comparison is now made with a built server. Cause of the miss: the `IR-001` grep gate excluded the migration test directories as a group instead of reading them, and server test files are not typechecked. The design record still needs the AGY capsule manifest named as a fourth stored subject (reviewer: solution-designer record update, non-blocking).
+
+### IR-003 — Removed field in three test files that arrived with the delivery merge
+
+- Triggering role, report path, and round: `/delivery_engineer`; `tickets/in-progress/remove-skill-access-mode/delivery-revision-record.md`; `DR-002`.
+- Triggering finding IDs: `N/A` — delivery re-integration blocker without a finding ID.
+- Classification: `Local Fix`
+- Prior authoritative result: `IR-002`, passed by `CRR-002`; API/E2E `API-REV-001`; test review `CRR-003`. After delivery merged `origin/personal` @ `e9aa4a74c` (`d213b6c33`), three test files added by the Background Tasks ticket still used `skillAccessMode`.
+- Current authoritative result: field removed from the three files. No production source change.
+- Related solution revision IDs: `SR-005`
+- Related architecture-review revision IDs: `ARCH-REV-003`
+- Related code-review revision IDs: `CRR-002`, `CRR-003`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `DR-002`
+- Why this revision is recorded: rework after re-integration with the advanced base.
+- Approved behavior or requirement IDs affected: REQ-001 / AC-001 (BEH-003, BEH-004) — test code only.
+- Implementation delta:
+  - `autobyteus-server-ts/tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts`: field removed from the member config and from `teamConfigs[0]`.
+  - `autobyteus-server-ts/tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts`: field removed from the `createAgentRun` input.
+  - `autobyteus-web/tests/e2e/fixtures/background-tasks-panel.page.vue`: field removed from the `AgentRunConfig` cast.
+- Changed files or areas: the three files above; `implementation-handoff.md` addendum; two run logs under `delivery-evidence/` (`ir-003-claude-background-e2e.log`, `ir-003-agy-background-e2e.log`).
+- Local validation and result:
+  - `RUN_CLAUDE_E2E=1 vitest run tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts`: 1 passed (live Claude CLI).
+  - `RUN_AGY_BACKGROUND_E2E=1 vitest run tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts`: 5 passed (live AGY CLI).
+  - Server source typecheck on the merged state: clean.
+  - Field search on the merged state, read line by line: no remaining use against a current contract.
+  - Not run: the browser probe that loads the web fixture; full suites on the merged state.
+- Next recipient or routing: `/code_reviewer` (Large / High, Local Fix return).
+- Remaining limitations or risks: the merged-in Background Tasks production source was not reviewed by implementation beyond the field search and typecheck. Any further advance of `origin/personal` before finalization can reintroduce the field in new test files; the field search is the control, because server test files are not typechecked.
+

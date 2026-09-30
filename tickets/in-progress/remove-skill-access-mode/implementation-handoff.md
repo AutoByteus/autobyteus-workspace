@@ -18,15 +18,15 @@ All artifact paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/r
 
 The run-level `skillAccessMode` is removed from current code in autobyteus-ts, the server (run configs, services, every runtime backend, GraphQL, run-history stores, projectors), the web client, the application SDK and both stream-contract packages. The agent definition is the only skill authority. Run history that still stores the value loads and ignores it; new records do not write it. Released app-data migrations keep their behavior through two frozen legacy files. The Daily Assistant template has `read_file`, and every built-in agent is overwritten from its template at startup; the copy-if-missing policy is gone.
 
-- Implementation cycle: `Rework` (current delta: `IR-002`; baseline: `IR-001`)
+- Implementation cycle: `Rework` (current delta: `IR-003`; earlier: `IR-001` baseline, `IR-002`)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-005` (supersedes `SR-004`)
 - Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `CRR-001`
-- Related API/E2E revision IDs: `N/A`
-- Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001`, `CR-002` (`DI-001` was raised and resolved before any source change)
+- Related code-review revision IDs: `CRR-001`, `CRR-002`, `CRR-003`
+- Related API/E2E revision IDs: `API-REV-001`
+- Related delivery revision IDs: `DR-002`
+- Triggering finding IDs: `IR-003`: `DR-002` re-integration blocker (three merged-in test files). `IR-002`: `CR-001`, `CR-002`. (`DI-001` was raised and resolved before any source change)
 
 Commits on `codex/remove-skill-access-mode` (base `origin/personal` @ `57df63f07`):
 
@@ -36,6 +36,8 @@ Commits on `codex/remove-skill-access-mode` (base `origin/personal` @ `57df63f07
 | `f85525ce5` | Built-in agents: overwrite for all, `read_file` on Daily Assistant |
 | `cf401a563` | Field removal across packages, tests, docs |
 | `1595b8b2c` | `IR-002`: released-upgrade E2E current-contract calls fixed; orphaned comment and leftover blank lines removed |
+| `d213b6c33` | Delivery merge of `origin/personal` @ `e9aa4a74c` (Background Tasks ticket, `1.4.92-beta.3`) |
+| see `IR-003` | `IR-003`: field removed from three test files that arrived with that merge |
 
 Ticket documents are not committed, matching the state in which the package arrived.
 
@@ -175,3 +177,18 @@ The equivalence tests assert the contract the validators had on base; they impor
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
 Not run by implementation: `pnpm test:e2e`, real-provider and Codex live E2E, browser dev-path probes, isolated desktop instance. All of the scenarios above remain to be validated by `api_e2e_engineer`.
+
+## IR-003 Addendum — Files That Arrived With The Delivery Merge
+
+Delivery merged `origin/personal` @ `e9aa4a74c` into the branch (`d213b6c33`). The merged-in Background Tasks ticket added three test files that used the removed field. They are fixed; see `IR-003` in `implementation-revision-record.md`.
+
+| File | Change | Check |
+| --- | --- | --- |
+| `autobyteus-server-ts/tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts` | field removed from the member config and `teamConfigs[0]` | Live run with `RUN_CLAUDE_E2E=1`: 1 passed. Before the fix it failed on the GraphQL input (delivery log). |
+| `autobyteus-server-ts/tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts` | field removed from the `createAgentRun` input | Live run with `RUN_AGY_BACKGROUND_E2E=1`: 5 passed. |
+| `autobyteus-web/tests/e2e/fixtures/background-tasks-panel.page.vue` | field removed from the `AgentRunConfig` cast | Not executed; the browser probe that loads it was not run. No runtime effect. |
+
+- Server source typecheck on the merged state: clean.
+- Grep gate on the merged state, read line by line: besides the categories listed under "Legacy / Compatibility Removal Check", two files added downstream remain and are legitimate — `tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts` (API/E2E persisted-history test) and one sentence in `docs/modules/agent_execution.md` describing the former input.
+- Not rerun on the merged state: full server, web, autobyteus-ts and contract-package suites. The file counts and suite numbers earlier in this handoff describe the pre-merge branch.
+- I did not review the merged-in Background Tasks production source beyond the field search and the typecheck.
