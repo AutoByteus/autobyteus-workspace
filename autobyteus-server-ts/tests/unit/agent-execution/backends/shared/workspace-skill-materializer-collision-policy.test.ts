@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { WorkspaceSkillMaterializer } from "../../../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import type { WorkspaceCollisionPolicy } from "../../../../../src/agent-execution/backends/shared/workspace-skill-collision-policy.js";
@@ -38,7 +37,7 @@ const deferred = () => {
 const acquire = (materializer: WorkspaceSkillMaterializer, workspace: string, skill: Skill,
   workspaceCollisionPolicy: WorkspaceCollisionPolicy, runId: string) =>
   materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace,
-    requests: [{ kind: "expose-resolved", skill }], skillAccessMode: SkillAccessMode.PRELOADED_ONLY, workspaceCollisionPolicy });
+    requests: [{ kind: "expose-resolved", skill }], workspaceCollisionPolicy });
 
 const dispositions = (warn: ReturnType<typeof vi.fn>): string[] =>
   warn.mock.calls.map(([message]) => /disposition='([^']+)'/.exec(String(message))?.[1] ?? "");

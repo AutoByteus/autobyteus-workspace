@@ -7,10 +7,8 @@ import {
   Query,
   ObjectType,
   Resolver,
-  registerEnumType,
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
   getStudioRunModelConfigService,
   getStudioTeamRunService,
@@ -20,10 +18,6 @@ import {
   RunModelConfigFieldErrorObject,
 } from "./run-model-config.js";
 import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
-
-registerEnumType(SkillAccessMode, {
-  name: "SkillAccessModeEnum",
-});
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -78,8 +72,6 @@ export class TeamMemberConfigInput {
   @Field(() => Boolean)
   autoExecuteTools!: boolean;
 
-  @Field(() => SkillAccessMode)
-  skillAccessMode!: SkillAccessMode;
 
   @Field(() => String, { nullable: true })
   workspaceRootPath?: string | null;
@@ -102,8 +94,6 @@ export class TeamScopeLaunchConfigInput {
   @Field(() => Boolean)
   autoExecuteTools!: boolean;
 
-  @Field(() => SkillAccessMode)
-  skillAccessMode!: SkillAccessMode;
 
   @Field(() => String, { nullable: true })
   workspaceRootPath?: string | null;

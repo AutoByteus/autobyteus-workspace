@@ -90,7 +90,6 @@ describe('one-database live E2E runtime and evidence boundary', () => {
         autoExecuteTools: false,
         workspaceId: null,
         llmConfig: null,
-        skillAccessMode: null,
       }),
       runtimeContext: null,
     });

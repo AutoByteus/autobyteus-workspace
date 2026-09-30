@@ -406,7 +406,6 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
         autoExecuteTools: true,
         runtimeKind: input.runtimeKind,
         llmConfig: input.llmConfig ?? null,
-        skillAccessMode: "NONE",
       },
     });
 

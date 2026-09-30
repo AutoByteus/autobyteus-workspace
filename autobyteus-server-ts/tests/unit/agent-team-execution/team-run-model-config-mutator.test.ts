@@ -6,7 +6,7 @@ import {
 
 const launch = (llmConfig: Record<string, unknown>) => ({
   runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt', llmConfig,
-  autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/workspace',
+  autoExecuteTools: false, workspaceRootPath: '/workspace',
 });
 const tree = () => ({
   schemaVersion: 2, createdAt: '2026-08-25T00:00:00.000Z', archivedAt: null, applicationBinding: null, handoffs: [],

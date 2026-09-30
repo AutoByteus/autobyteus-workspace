@@ -132,13 +132,11 @@ export const materializeAgyConfiguredSkills = async (input: {
   capsulePath: string;
   workspacePath: string;
   bindings: readonly DetailedConfiguredSkillResolution[];
-  enabled: boolean;
   runId: string;
   agentDefinitionId: string;
   /** From `SkillService.resolveSkillScope` via `workspaceCollisionPolicyForScope` (D-15 Rule 1). */
   workspaceCollisionPolicy: WorkspaceCollisionPolicy;
 }): Promise<AgySkillSnapshot[]> => {
-  if (!input.enabled) return [];
   const names = new Set<string>();
   const snapshots: AgySkillSnapshot[] = [];
   const targetRoot = path.join(input.capsulePath, ".agents", "skills");

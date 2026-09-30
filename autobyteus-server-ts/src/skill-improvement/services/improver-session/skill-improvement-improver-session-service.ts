@@ -151,7 +151,6 @@ export class SkillImprovementImproverSessionService {
       llmModelIdentifier: resolved.llmModelIdentifier,
       autoExecuteTools: true,
       llmConfig: resolved.llmConfig,
-      skillAccessMode: resolved.skillAccessMode,
       runtimeKind: resolved.runtimeKind,
     });
     const run = this.requireActiveRun(created.runId);

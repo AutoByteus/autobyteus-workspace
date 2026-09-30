@@ -275,16 +275,14 @@ The materializers never read `skillScope` themselves.
   `<workspace>/.agents/skills/<name>` (`AGY_SKILL_NAME_COLLISION` for `fail`
   only).
 
-### Access modes and historical context
+### Historical context
 
-Normal launches use configured-only behavior. `PRELOADED_ONLY` remains the
-internal/default runtime value for "use the agent definition's configured
-skills"; despite the retained name, it does not mean that native prompt bodies
-are preloaded. `NONE` remains available for internal no-skill suppression. The
-removed legacy `GLOBAL_DISCOVERY` value is not accepted by public GraphQL inputs
-or SDK contracts. Existing persisted run/team/channel records that still
-contain that legacy value are rewritten to `PRELOADED_ONLY` by the required
-startup app-data migration `20260706_remove_global_skill_discovery_mode`.
+There is no run-level skill switch. The agent definition (`skillScope` /
+`skillNames`) is the only authority for which skills a run has, and every
+runtime always exposes those effective skills. The former run-level skill
+access mode (`PRELOADED_ONLY` / `NONE`, and earlier `GLOBAL_DISCOVERY`)
+is gone from launch inputs, GraphQL, SDK contracts and newly written run
+history; a value in older run history is ignored on read.
 
 Historical native working-context snapshots remain exact. A pre-change snapshot
 may therefore retain historical embedded skill content; restore does not merge

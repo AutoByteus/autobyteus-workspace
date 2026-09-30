@@ -108,7 +108,6 @@ const editableSeedFromConfigurationView = (view: Readonly<TeamRunConfigurationVi
       llmModelIdentifier: view.root.effectiveConfig.llmModelIdentifier,
       llmConfig: normalizeModelConfig(view.root.effectiveConfig.llmConfig),
       autoExecuteTools: view.root.effectiveConfig.autoExecuteTools,
-      skillAccessMode: view.root.effectiveConfig.skillAccessMode,
     },
     teamOverrides,
     agentOverrides,
@@ -134,7 +133,6 @@ export const buildAgentRunTemplate = (
     workspaceId: null,
     workspaceMetadata: null,
     autoExecuteTools: autoExecuteForNewRuntimeSelection(normalizeRuntimeKind(defaults?.runtimeKind), false),
-    skillAccessMode: 'PRELOADED_ONLY',
     isLocked: false,
     llmConfig: normalizeModelConfig(defaults?.llmConfig),
   }
@@ -152,7 +150,6 @@ export const buildTeamRunTemplate = (
       llmModelIdentifier: normalizeModelIdentifier(defaults?.llmModelIdentifier),
       llmConfig: normalizeModelConfig(defaults?.llmConfig),
       autoExecuteTools: autoExecuteForNewRuntimeSelection(normalizeRuntimeKind(defaults?.runtimeKind), false),
-      skillAccessMode: 'PRELOADED_ONLY',
     },
     teamOverrides: {},
     agentOverrides: {},

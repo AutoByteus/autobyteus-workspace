@@ -376,7 +376,7 @@ Standalone agent persisted files:
 - metadata: `memory/agents/<runId>/run_metadata.json`, containing resume/config
   and prepared/start facts such as `runId`, `agentDefinitionId`,
   `workspaceRootPath`, `memoryDir`, `runtimeKind`, `llmModelIdentifier`,
-  `llmConfig`, `autoExecuteTools`, `skillAccessMode`, `platformAgentRunId`,
+  `llmConfig`, `autoExecuteTools`, `platformAgentRunId`,
   `preparedAt`, `preparedExpiresAt`, `startedAt`, and optional
   `applicationExecutionContext`
 - runtime memory artifacts: all runtimes can have `memory/agents/<runId>/raw_traces_active.jsonl`; native AutoByteus runs additionally own `working_context_snapshot.json`, while new Codex/Claude recording does not create or update that snapshot
@@ -511,9 +511,11 @@ Important identity/storage rules:
   `20260706_remove_global_skill_discovery_mode` rewrites persisted
   `skillAccessMode: "GLOBAL_DISCOVERY"` values in standalone run metadata and
   recursive team metadata to `PRELOADED_ONLY`, creates per-file backups for changed files, and reports
-  migrated/skipped/failed item counts. Current metadata parsing accepts only
-  `PRELOADED_ONLY` and `NONE`; history restore must not resurrect all-installed
-  skill discovery from older metadata.
+  migrated/skipped/failed item counts. That run-level field has
+  since been removed: current readers ignore a stored value, current writers do
+  not emit it, and an old record loses the key on its next ordinary save. Only
+  released migrations still read or write it, through frozen shapes under
+  `app-data-migrations/legacy/`.
 - required startup app-data migration
   `20260731_remove_external_runtime_working_context_snapshots` discards only
   exact current-metadata-classified Codex/Claude standalone and recursive

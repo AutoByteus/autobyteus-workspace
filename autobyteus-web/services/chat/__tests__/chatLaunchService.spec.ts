@@ -109,7 +109,6 @@ const buildDraft = (overrides: Partial<ChatDraft> = {}): ChatDraft => {
     workspaceId: null,
     workspaceMetadata: null,
     autoExecuteTools: true,
-    skillAccessMode: 'PRELOADED_ONLY',
     isLocked: false,
     llmConfig: { reasoning_effort: 'high' },
   }, new AgentRunState('temp-chat-1', {
@@ -162,7 +161,6 @@ describe('chatLaunchService', () => {
       workspaceId: 'ws-folder',
       workspaceMetadata: { workspaceRootPath: '/Users/me/project' },
       autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
     })
     expect(readChatLastModel()).toEqual({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5-codex' })
   })
@@ -214,7 +212,6 @@ describe('chatLaunchService', () => {
         llmModelIdentifier: 'gpt-5.5-codex',
         llmConfig: { reasoning_effort: 'high' },
         autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
         workspace: { workspaceId: 'ws-folder' },
       },
       teamOverrides: {},

@@ -118,13 +118,8 @@ Team binding members and execution producers expose their logical/member identit
 
 `ApplicationPublishedArtifacts` includes durable reads through `list(runId)` and `readRevision({ runId, revisionId })`, and `ApplicationBackendDefinition` exposes live published-artifact callbacks through `artifactHandlers.persisted`. These artifact callbacks are intentionally separate from lifecycle `eventHandlers`.
 
-`ApplicationSkillAccessMode` is intentionally narrow: `PRELOADED_ONLY` means
-the host launches with the target agent definition's configured skills, and
-`NONE` suppresses AutoByteus-managed skills for flows that explicitly need no
-skills. `GLOBAL_DISCOVERY` / all-installed skill access is not part of the SDK
-contract. External application code should configure broad/orchestrator agents
-by assigning the desired skill names to the agent definition rather than by
-requesting a broader launch-time mode.
+Launch contracts carry no skill setting. Every run exposes the skills of its
+agent definition (`skillScope` / `skillNames`); configure skills there.
 
 SDK consumers use the `ApplicationExecutionResource*` types, `source`, `executionResourceRef`, `executionResourceSlots[]`, and `agentResources.listAvailable(...)` / `agentResources.getConfigured(...)`.
 

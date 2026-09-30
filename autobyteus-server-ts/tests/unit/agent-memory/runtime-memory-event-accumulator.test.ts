@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -625,7 +624,6 @@ describe("RuntimeMemoryEventAccumulator", () => {
         llmModelIdentifier: "claude",
         autoExecuteTools: false,
         memoryDir,
-        skillAccessMode: SkillAccessMode.NONE,
       }),
       platformAgentRunId: "session-1",
       message: new AgentInputUserMessage("hello after lifecycle"),

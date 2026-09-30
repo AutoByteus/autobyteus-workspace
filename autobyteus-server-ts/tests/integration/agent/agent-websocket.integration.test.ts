@@ -3,7 +3,6 @@ import websocket from "@fastify/websocket";
 import { describe, expect, it, vi } from "vitest";
 import WebSocket from "ws";
 import { AgentInputUserMessage } from "autobyteus-ts";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentCreationError } from "../../../src/agent-execution/errors.js";
 import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
@@ -117,7 +116,6 @@ const buildMetadata = (runId: string, overrides: Partial<AgentRunMetadata> = {})
   llmModelIdentifier: "model-1",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: "platform-existing",
   lastKnownStatus: "IDLE",

@@ -141,7 +141,7 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
       created.teams.add(team.createAgentTeamDefinition.id);
       const memberConfig = (address: string, agentDefinitionId: string, runtimeKind: string, llmModelIdentifier: string) => ({
         memberAddress: address, agentDefinitionId, llmModelIdentifier, runtimeKind,
-        autoExecuteTools: true, skillAccessMode: "NONE", workspaceRootPath,
+        autoExecuteTools: true, workspaceRootPath,
       });
       const run = await execGraphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
         "mutation C($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }",
@@ -150,7 +150,7 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
             teamDefinitionId: team.createAgentTeamDefinition.id,
             teamConfigs: [{
               teamAddress: "/", llmModelIdentifier: "haiku", runtimeKind: "claude_agent_sdk",
-              autoExecuteTools: true, skillAccessMode: "NONE", workspaceRootPath,
+              autoExecuteTools: true, workspaceRootPath,
             }],
             memberConfigs: [
               memberConfig("/sender", senderId, "claude_agent_sdk", "haiku"),

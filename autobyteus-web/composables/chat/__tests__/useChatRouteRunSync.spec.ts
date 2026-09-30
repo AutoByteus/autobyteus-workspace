@@ -10,7 +10,7 @@ import { AgentRunState } from '~/types/agent/AgentRunState'
 
 const buildContext = (runId: string) => new AgentContext({
   agentDefinitionId: 'a', agentDefinitionName: 'A', llmModelIdentifier: 'm', runtimeKind: 'autobyteus',
-  workspaceId: null, workspaceMetadata: null, autoExecuteTools: true, skillAccessMode: 'PRELOADED_ONLY', isLocked: false,
+  workspaceId: null, workspaceMetadata: null, autoExecuteTools: true, isLocked: false,
 }, new AgentRunState(runId, { id: runId, messages: [], createdAt: '', updatedAt: '', agentDefinitionId: 'a' }))
 
 describe('useChatRouteRunSync', () => {

@@ -51,7 +51,6 @@ export type ApplicationRouteMethod =
   | "DELETE"
   | "HEAD"
   | "OPTIONS";
-export type ApplicationSkillAccessMode = "PRELOADED_ONLY" | "NONE";
 
 export type ApplicationBackendSupportedExposures = {
   queries: boolean;
@@ -115,7 +114,6 @@ export type ApplicationAgentRunLaunch = {
   llmModelIdentifier: string;
   autoExecuteTools?: boolean | null;
   llmConfig?: Record<string, unknown> | null;
-  skillAccessMode?: ApplicationSkillAccessMode | null;
   runtimeKind?: string | null;
 };
 
@@ -123,7 +121,6 @@ export type ApplicationTeamRunPreset = {
   workspaceRootPath: string;
   llmModelIdentifier: string;
   autoExecuteTools?: boolean | null;
-  skillAccessMode?: ApplicationSkillAccessMode | null;
   runtimeKind?: string | null;
   llmConfig?: Record<string, unknown> | null;
 };
@@ -132,7 +129,6 @@ export type ApplicationTeamScopeLaunchConfig = Readonly<{
   teamAddress: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
-  skillAccessMode: ApplicationSkillAccessMode;
   workspaceRootPath: string;
   llmConfig?: Record<string, unknown> | null;
   runtimeKind: string;
@@ -144,7 +140,6 @@ export type ApplicationTeamMemberLaunchConfig = Readonly<{
   agentDefinitionId: string;
   llmModelIdentifier: string;
   autoExecuteTools: boolean;
-  skillAccessMode: ApplicationSkillAccessMode;
   workspaceRootPath: string;
   llmConfig?: Record<string, unknown> | null;
   runtimeKind: string;

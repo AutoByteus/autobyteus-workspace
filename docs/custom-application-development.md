@@ -247,11 +247,9 @@ the UI.
 Application-authored run launches use the same configured-skill boundary as the
 native AutoByteus UI. Agents and team members can use the skills listed on their
 definition; an agent with no configured skills exposes no AutoByteus-managed
-skills by default. The SDK contract supports `PRELOADED_ONLY` for this
-host-managed behavior and `NONE` for explicit no-skill suppression. Do not send
-`GLOBAL_DISCOVERY` or model broad/orchestrator agents as "all installed skills"
-launches; configure the exact allowed `skillNames[]` on the agent definition
-instead.
+skills by default. The SDK launch contract carries no skill setting: there is
+no launch-time way to widen or suppress skills. Configure the skills an agent
+may use on its agent definition instead.
 
 ## Trust and safety boundary
 

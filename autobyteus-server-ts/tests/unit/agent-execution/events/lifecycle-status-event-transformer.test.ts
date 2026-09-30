@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../src/agent-execution/domain/agent-run-context.js";
 import {
@@ -30,7 +29,6 @@ const createHarness = (options: {
       autoExecuteTools: false,
       workspaceId: null,
       memoryDir: null,
-      skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.AUTOBYTEUS,
     }),
     runtimeContext: null,

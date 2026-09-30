@@ -53,7 +53,6 @@ function makeAgentContext(runId: string): AgentContext {
     runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
     workspaceId: 'workspace-1',
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
     isLocked: false,
   };
   const conversation: Conversation = {

@@ -21,7 +21,6 @@ const buildContext = (): AgentContext => {
     workspaceId: null,
     workspaceMetadata: null,
     autoExecuteTools: false,
-    skillAccessMode: 'NONE',
     isLocked: true,
     llmConfig: null,
   }, new AgentRunState('member-run-1', conversation));

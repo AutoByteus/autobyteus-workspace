@@ -65,7 +65,6 @@ function makeAgentRunConfig(): AgentRunConfig {
     workspaceId: "workspace-1",
     workspaceMetadata: null,
     autoExecuteTools: false,
-    skillAccessMode: "PRELOADED_ONLY",
     isLocked: false,
   };
 }

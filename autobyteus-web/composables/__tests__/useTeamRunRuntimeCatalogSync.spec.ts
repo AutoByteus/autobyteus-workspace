@@ -27,7 +27,6 @@ const config = (): TeamRunConfig => ({
     llmModelIdentifier: 'model-a',
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
   },
   teamOverrides: {},
   agentOverrides: {},

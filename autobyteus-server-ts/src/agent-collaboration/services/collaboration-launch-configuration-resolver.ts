@@ -30,7 +30,6 @@ const merge = (
   llmModelIdentifier: override?.llmModelIdentifier ?? base.llmModelIdentifier,
   llmConfig: Object.hasOwn(override ?? {}, "llmConfig") ? override?.llmConfig ?? null : base.llmConfig,
   autoExecuteTools: override?.autoExecuteTools ?? base.autoExecuteTools,
-  skillAccessMode: override?.skillAccessMode ?? base.skillAccessMode,
   workspaceRootPath: Object.hasOwn(override ?? {}, "workspaceRootPath")
     ? override?.workspaceRootPath ?? null
     : base.workspaceRootPath,

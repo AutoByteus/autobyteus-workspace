@@ -146,7 +146,6 @@ const projectLaunchConfiguration = (
   llm_model_identifier: configuration.llmModelIdentifier,
   llm_config: configuration.llmConfig as Record<string, import("@autobyteus/team-stream-contracts").JsonValue> | null,
   auto_execute_tools: configuration.autoExecuteTools,
-  skill_access_mode: configuration.skillAccessMode,
   workspace_root_path: configuration.workspaceRootPath,
 });
 

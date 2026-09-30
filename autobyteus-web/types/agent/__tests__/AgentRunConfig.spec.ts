@@ -12,7 +12,6 @@ describe('AgentRunConfig', () => {
       workspaceId: 'ws-456',
       workspaceMetadata: null,
       autoExecuteTools: true,
-      skillAccessMode: 'PRELOADED_ONLY',
       isLocked: false,
     };
 
@@ -34,7 +33,6 @@ describe('AgentRunConfig', () => {
       workspaceId: null,
       workspaceMetadata: null,
       autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
       isLocked: false,
     };
 
@@ -50,7 +48,6 @@ describe('AgentRunConfig', () => {
       workspaceId: null,
       workspaceMetadata: null,
       autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
       isLocked: true, // Locked after first message
     };
 

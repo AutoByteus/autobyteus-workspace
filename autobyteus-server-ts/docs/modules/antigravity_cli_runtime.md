@@ -65,8 +65,7 @@ selected workspace as an added directory. The generated agent identifies that
 real path as the task workspace. This is model-directed task targeting, **not**
 a filesystem sandbox or proof that every relative provider action will land
 there. User/provider-owned workspace skills and MCP configurations may still
-be visible; `skillAccessMode: NONE` only prevents materialization of
-AutoByteus-configured skills.
+be visible alongside the AutoByteus-configured skills of the agent definition.
 
 Before writing the run-scoped MCP configuration, activation reads (never
 modifies) the selected workspace's `.agents/mcp_config.json` and the global
@@ -86,8 +85,7 @@ to existing regular files **within** that root as ordinary private files.
 It rejects links that escape the root, dangling/cyclic/directory links,
 nonregular targets, collisions, or a source changed during copying; a failed
 candidate is removed. It does not dereference unchecked links into the real
-task workspace or retain symlinks in the capsule. `skillAccessMode: NONE`
-skips configured-skill materialization without inspecting the source.
+task workspace or retain symlinks in the capsule.
 Restore uses the already checked capsule bytes rather than re-resolving
 possibly edited source links. The actual Team-local Solution Designer skill's
 two links into its Team `shared/` directory passed a disposable full-Org

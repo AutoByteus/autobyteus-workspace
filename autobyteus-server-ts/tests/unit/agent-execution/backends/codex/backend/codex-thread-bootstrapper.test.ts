@@ -1,6 +1,5 @@
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
 import {
@@ -48,7 +47,6 @@ const createRunContext = (input: {
       autoExecuteTools: input.autoExecuteTools ?? false,
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       memberExecutionContext: input.memberExecutionContext ?? null,
       applicationExecutionContext: input.applicationExecutionContext ?? null,
     }),
@@ -69,7 +67,6 @@ const createRestoreRunContext = (input: {
       autoExecuteTools: input.autoExecuteTools ?? false,
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       memberExecutionContext: input.memberExecutionContext ?? null,
     }),
     runtimeContext: new CodexAgentRunContext({
@@ -389,7 +386,6 @@ describe("CodexThreadBootstrapper", () => {
         workingDirectory: WORKING_DIRECTORY,
         runId: "run-1",
         requests: [{ kind: "reconcile-discoverable", skill }],
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       }),
     );
     expect(runContext.runtimeContext.materializedConfiguredSkills).toEqual([]);
@@ -450,7 +446,6 @@ describe("CodexThreadBootstrapper", () => {
         { kind: "reconcile-unresolved", name: "unresolved_skill" },
         { kind: "expose-resolved", skill: missing },
       ],
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       workspaceCollisionPolicy: "fail",
     });
     expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);
@@ -575,7 +570,6 @@ describe("CodexThreadBootstrapper", () => {
           { kind: "expose-resolved", skill },
           { kind: "reconcile-unresolved", name: "still_missing" },
         ],
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
       }),
     );
     expect(runContext.runtimeContext.materializedConfiguredSkills).toHaveLength(1);

@@ -15,7 +15,7 @@ import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from 
 import { AgentOrgExecutionTreeLocationService } from '../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
 import { ContextFileOwnerResolver } from '../../../src/context-files/services/context-file-owner-resolver.js';
 import { testExecutionTree as testCurrentExecutionTree, testAgentNode } from "../../fixtures/current-team-run-fixtures.js";
-import { toReleasedTeamRunExecutionTreeV2 } from "../../fixtures/released-run-tree-fixtures.js";
+import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../../fixtures/released-run-tree-fixtures.js";
 
 // Flat-family migration inputs are pre-delegator data: seed released Team tree V2 shapes.
 const testExecutionTree = (input: Parameters<typeof testCurrentExecutionTree>[0]) =>
@@ -38,7 +38,7 @@ const env = async () => {
   const config = { getAgentTeamsDir: () => path.join(root, 'defs', 'teams'), getAgentOrgsDir: () => path.join(root, 'defs', 'orgs'), getBaseUrl: () => 'https://installation.test' } as AppConfig;
   const base = testExecutionTree({ rootTeamRunId: 'org', children: [testAgentNode('/direct', { agentRunId: 'direct' })], coordinatorAddress: '/direct' });
   const tree = { ...base, rootTeam: { ...base.rootTeam, members: [...base.rootTeam.members,
-    testOrgTeamNode({ address: '/team', teamRunId: 'mounted', coordinatorAddress: '/team/lead', members: [testOrgAgentNode('/team/lead', 'lead')] })],
+    toReleasedConfiguredNode(testOrgTeamNode({ address: '/team', teamRunId: 'mounted', coordinatorAddress: '/team/lead', members: [testOrgAgentNode('/team/lead', 'lead')] }))],
     taskExecutions: [{ address: '/direct', agentRunId: 'task', platformAgentRunId: null, startedAt: '2026-09-01T00:00:01.000Z', settledAt: '2026-09-01T00:00:02.000Z' }],
   } };
   await put(path.join(source, treeName), json(tree));

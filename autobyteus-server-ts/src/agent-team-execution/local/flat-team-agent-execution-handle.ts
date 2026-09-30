@@ -167,7 +167,6 @@ export class FlatTeamAgentExecutionHandle {
       llmModelIdentifier: this.options.config.llmModelIdentifier,
       llmConfig: this.options.config.llmConfig,
       autoExecuteTools: this.options.config.autoExecuteTools,
-      skillAccessMode: this.options.config.skillAccessMode,
       runtimeKind: this.options.config.runtimeKind,
       workspaceRootPath: this.options.config.workspaceRootPath,
       platformAgentRunId: this.context.getPlatformAgentRunId(),

@@ -117,7 +117,6 @@ const editableTeamConfig = (input: {
     llmModelIdentifier: input.llmModelIdentifier ?? 'model-x',
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
   },
   teamOverrides: {},
   agentOverrides: {},

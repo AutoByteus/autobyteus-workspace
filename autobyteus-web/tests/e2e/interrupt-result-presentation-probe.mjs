@@ -53,7 +53,6 @@ const teamExecutionTree = {
         llm_model_identifier: 'browser-probe-model',
         llm_config: null,
         auto_execute_tools: false,
-        skill_access_mode: 'NONE',
         workspace_root_path: null,
       },
     }],

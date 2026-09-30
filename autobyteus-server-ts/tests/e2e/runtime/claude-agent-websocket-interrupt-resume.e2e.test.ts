@@ -8,7 +8,6 @@ import fastify, { type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
 import { describe, expect, it, vi } from "vitest";
 import WebSocket from "ws";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -161,7 +160,6 @@ const createClaudeRunContext = (input: {
       agentDefinitionId: "agent-claude-ws",
       llmModelIdentifier: input.modelIdentifier ?? "claude-test-model",
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     }),
     runtimeContext: new ClaudeAgentRunContext({
@@ -172,7 +170,6 @@ const createClaudeRunContext = (input: {
       }),
       carpenterSystemPrompt,
       runtimeToolExposure: buildRuntimeAgentToolExposure([]),
-      skillAccessMode: SkillAccessMode.NONE,
     }),
   });
 };

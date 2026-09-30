@@ -40,7 +40,7 @@ describe("grok_build runtime registration", () => {
 
   it("restores from the stored Grok session id and references it as the run session", () => {
     const config = new AgentRunConfig({ agentDefinitionId: "d", llmModelIdentifier: "grok-4.7", autoExecuteTools: false,
-      skillAccessMode: "PRELOADED_ONLY" as never, runtimeKind: RuntimeKind.GROK_BUILD });
+      runtimeKind: RuntimeKind.GROK_BUILD });
     expect(buildAgentRunRestoreRuntimeContext(config, "session-1")).toEqual(new AcpAgentRunContext("session-1"));
     const service = new AgentRunResumeConfigService(os.tmpdir(), {} as never);
     expect((service as unknown as { buildRuntimeReference(metadata: unknown): unknown })

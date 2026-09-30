@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { buildAgentRunMessageSenderContext } from "../../../src/agent-communication/domain/agent-run-message-sender.js";
 import type { AgentRunBackend } from "../../../src/agent-execution/backends/agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
@@ -51,7 +50,6 @@ const createAgentConfig = (): AgentRunConfig =>
     autoExecuteTools: true,
     workspaceId: "team-agent-tools-lifecycle-workspace",
     llmConfig: null,
-    skillAccessMode: SkillAccessMode.NONE,
   });
 
 const createAgentBackend = (input: {

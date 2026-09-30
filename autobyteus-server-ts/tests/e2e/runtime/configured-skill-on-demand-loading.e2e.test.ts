@@ -7,7 +7,6 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { AgentFactory } from "autobyteus-ts/agent/factory/agent-factory.js";
 import type { AgentContext } from "autobyteus-ts/agent/context/agent-context.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
@@ -179,7 +178,6 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
         autoExecuteTools: true,
         workspaceId: workspace.workspaceId,
         memoryDir: path.join(dataRoot, "memory", input.runId),
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
       input.runId,

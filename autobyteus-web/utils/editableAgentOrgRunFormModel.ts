@@ -87,7 +87,6 @@ const resolveConfig = (
     llmModelIdentifier: resolveOverrideLlmModelIdentifier(override, inherited.llmModelIdentifier),
     llmConfig: resolveOverrideLlmConfig(override, inherited.llmConfig),
     autoExecuteTools: override?.autoExecuteTools ?? inherited.autoExecuteTools,
-    skillAccessMode: inherited.skillAccessMode,
   })
 }
 

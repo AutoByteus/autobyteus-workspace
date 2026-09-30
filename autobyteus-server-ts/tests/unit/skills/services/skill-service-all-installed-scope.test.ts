@@ -2,7 +2,6 @@ import fs from "node:fs";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { createAgyRunCapsule } from "../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
@@ -218,7 +217,6 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
       const descriptors = await materializer.materializeConfiguredWorkspaceSkills({
         runId: "run-all-installed",
         workingDirectory: workspace,
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         workspaceCollisionPolicy: "prefer_workspace",
         requests: bindings.map((binding) => binding.kind === "resolved"
           ? { kind: "expose-resolved" as const, skill: binding.skill }
@@ -241,7 +239,6 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
         identity: "Identity",
         workspaceCollisionPolicy: "prefer_workspace",
         configuredSkillBindings: service.resolveConfiguredSkillBindingsForAgentDetailed(dailyAssistant()),
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         mcpDescriptor: null,
       });
 

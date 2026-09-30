@@ -72,7 +72,6 @@ export type {
   ApplicationAgentToolResult,
   ApplicationRuntimeInput,
   ApplicationRuntimeInputContextFile,
-  ApplicationSkillAccessMode,
   ApplicationStartAgentInput,
   ApplicationStartAgentTeamInput,
   ApplicationStorageContext,

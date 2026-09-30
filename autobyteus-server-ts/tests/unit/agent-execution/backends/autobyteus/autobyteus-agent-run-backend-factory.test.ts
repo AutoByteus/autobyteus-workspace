@@ -2,7 +2,6 @@ import { createTeamRootExecutionIdentity } from "../../../../../src/agent-collab
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentConfig, CompactionPolicy, LLMFactory } from "autobyteus-ts";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
@@ -159,7 +158,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
         llmConfig: rawLlmConfig,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
       "run-professor",
@@ -246,7 +244,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         applicationExecutionContext,
       }),
@@ -343,7 +340,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(TeamBackendKind.MIXED),
       }),
@@ -418,7 +414,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(
           TeamBackendKind.MIXED,
@@ -497,7 +492,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
       "run-professor",
@@ -560,7 +554,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(
           TeamBackendKind.MIXED,
@@ -632,7 +625,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(
           TeamBackendKind.MIXED,
@@ -722,7 +714,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext,
       }),
@@ -812,7 +803,6 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         agentDefinitionId: "agent-1",
         llmModelIdentifier: "dummy-model",
         autoExecuteTools: false,
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
       "run-professor",

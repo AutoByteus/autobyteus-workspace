@@ -45,7 +45,6 @@ describe('agentRunConfigStore', () => {
       expect(store.config?.llmConfig).toEqual({ reasoning_effort: 'high' })
       expect(store.config?.workspaceId).toBeNull()
       expect(store.config?.autoExecuteTools).toBe(false)
-      expect(store.config?.skillAccessMode).toBe('PRELOADED_ONLY')
       expect(store.config?.isLocked).toBe(false)
     })
 
@@ -75,12 +74,10 @@ describe('agentRunConfigStore', () => {
       store.updateAgentConfig({
         llmModelIdentifier: 'gpt-4-turbo',
         autoExecuteTools: true,
-        skillAccessMode: 'PRELOADED_ONLY',
       })
 
       expect(store.config?.llmModelIdentifier).toBe('gpt-4-turbo')
       expect(store.config?.autoExecuteTools).toBe(true)
-      expect(store.config?.skillAccessMode).toBe('PRELOADED_ONLY')
     })
   })
 
@@ -93,7 +90,6 @@ describe('agentRunConfigStore', () => {
         llmModelIdentifier: 'gpt-4-turbo',
         workspaceId: 'ws-legacy',
         autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
         isLocked: true,
       } as any)
 

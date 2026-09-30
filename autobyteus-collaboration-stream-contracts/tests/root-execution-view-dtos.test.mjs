@@ -31,7 +31,6 @@ const orgSnapshot = (orgRunId = "org-run-1") => ({
           llmModelIdentifier: "gpt-5.6-sol",
           llmConfig: null,
           autoExecuteTools: false,
-          skillAccessMode: "PRELOADED_ONLY",
           workspaceRootPath: null,
         },
         members: [],
@@ -49,7 +48,6 @@ const launchConfiguration = {
   llmModelIdentifier: "gpt-5.6-sol",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: "PRELOADED_ONLY",
   workspaceRootPath: null,
 };
 

@@ -80,7 +80,7 @@ suite("real AutoByteus AGY standalone native image chat", () => {
       "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
       { input: { agentDefinitionId: id, workspaceRootPath: workspace,
         llmModelIdentifier: "gemini-3.8-flash-low", llmConfig: {},
-        autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: "antigravity_cli" } });
+        autoExecuteTools: true, runtimeKind: "antigravity_cli" } });
     expect(started.createAgentRun.success, started.createAgentRun.message).toBe(true);
     const runId = started.createAgentRun.runId;
     expect(runId).toBeTruthy();
@@ -212,7 +212,7 @@ suite("real AutoByteus AGY standalone native image chat", () => {
       "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
       { input: { agentDefinitionId: "codex", workspaceRootPath: workspace,
         llmModelIdentifier: "gemini-3.8-flash-low", llmConfig: null,
-        autoExecuteTools: true, skillAccessMode: "PRELOADED_ONLY", runtimeKind: "antigravity_cli" } });
+        autoExecuteTools: true, runtimeKind: "antigravity_cli" } });
     expect(started.createAgentRun.success, started.createAgentRun.message).toBe(true);
     const runId = started.createAgentRun.runId;
     expect(runId).toBeTruthy();

@@ -14,7 +14,6 @@ export const agentOrgLaunchConfigurationDtoSchema = z.object({
   llmModelIdentifier: nonEmptyStringSchema,
   llmConfig: z.record(z.string(), jsonValueSchema).nullable(),
   autoExecuteTools: z.boolean(),
-  skillAccessMode: nonEmptyStringSchema,
   workspaceRootPath: nullableText,
 }).strict();
 

@@ -25,7 +25,6 @@ const buildMetadata = (runId: string, overrides: Partial<AgentRunMetadata> = {})
   llmModelIdentifier: "model-1",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: "PRELOADED_ONLY" as never,
   runtimeKind: RuntimeKind.CODEX_APP_SERVER,
   platformAgentRunId: null,
   preparedAt: "2026-03-26T10:00:00.000Z",

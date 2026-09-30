@@ -3,7 +3,7 @@ import type { AgentOrgExecutionViewDto } from '@autobyteus/collaboration-stream-
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
 import { AgentStatus } from '~/types/agent/AgentStatus'
-import type { AgentRunConfig, SkillAccessMode } from '~/types/agent/AgentRunConfig'
+import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
@@ -92,7 +92,6 @@ const createAgentContext = (
     workspaceId: workspace?.workspaceId ?? null,
     workspaceMetadata: workspace,
     autoExecuteTools: seed.launch.autoExecuteTools,
-    skillAccessMode: seed.launch.skillAccessMode as SkillAccessMode,
     llmConfig: seed.launch.llmConfig ? structuredClone(seed.launch.llmConfig) : null,
     isLocked: true,
   }

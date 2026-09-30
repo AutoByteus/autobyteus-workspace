@@ -124,7 +124,6 @@ const metadataFor = (location: LocatedAgentOrgAgentExecution): AgentRunMetadata 
     llmModelIdentifier: configured.launchConfiguration.llmModelIdentifier,
     llmConfig: configured.launchConfiguration.llmConfig as Record<string, unknown> | null,
     autoExecuteTools: configured.launchConfiguration.autoExecuteTools,
-    skillAccessMode: configured.launchConfiguration.skillAccessMode,
     runtimeKind: configured.launchConfiguration.runtimeKind as AgentRunMetadata["runtimeKind"],
     platformAgentRunId: location.platformAgentRunId,
   };

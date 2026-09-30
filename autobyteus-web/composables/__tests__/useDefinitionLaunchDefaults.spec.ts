@@ -19,7 +19,6 @@ describe('useDefinitionLaunchDefaults editable seeds', () => {
       workspaceId: 'ws-1',
       workspaceMetadata: null,
       autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
       isLocked: true,
       llmConfig: {
         reasoning_effort: 'xhigh',
@@ -46,7 +45,6 @@ describe('useDefinitionLaunchDefaults editable seeds', () => {
         runtimeKind: 'codex_app_server',
         workspace: { workspaceId: 'ws-1', workspaceMetadata: null },
         autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
         llmConfig: {
           reasoning_effort: 'high',
           metadata: { allowed: ['high'] },
@@ -90,7 +88,7 @@ describe('canonical view seed parameter fidelity', () => {
   const source = (llmConfig: Record<string, unknown> | null): TeamRunConfig => ({
     teamDefinitionId: 'team', teamDefinitionName: 'Team', isLocked: false,
     rootConfig: { runtimeKind: 'autobyteus', llmModelIdentifier: 'root-model', llmConfig,
-      workspace: { workspaceId: null, workspaceMetadata: null }, autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY' },
+      workspace: { workspaceId: null, workspaceMetadata: null }, autoExecuteTools: false },
     teamOverrides: {}, agentOverrides: {},
   })
   const cases = (['model', 'runtime', 'both'] as const).flatMap(change =>

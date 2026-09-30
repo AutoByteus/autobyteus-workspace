@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { TeamRunMetadataMemberTreeMigration } from "../../../src/app-data-migrations/migrations/team-run-metadata-member-tree-migration.js";
 
@@ -36,7 +35,7 @@ const legacyMetadata = (teamRunId: string) => ({
       agentDefinitionId: "agent-lead",
       llmModelIdentifier: "codex:model",
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      skillAccessMode: "PRELOADED_ONLY",
       llmConfig: { temperature: 0 },
       workspaceRootPath: "/workspace",
       applicationExecutionContext: null,
@@ -65,7 +64,7 @@ const currentMetadata = (teamRunId: string) => ({
       agentDefinitionId: "agent-lead",
       llmModelIdentifier: "codex:model",
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      skillAccessMode: "PRELOADED_ONLY",
       llmConfig: null,
       workspaceRootPath: "/workspace",
       applicationExecutionContext: null,

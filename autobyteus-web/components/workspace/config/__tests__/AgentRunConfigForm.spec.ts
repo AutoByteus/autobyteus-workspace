@@ -96,7 +96,6 @@ describe('AgentRunConfigForm', () => {
     runtimeKind: 'autobyteus',
     workspaceId: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
     isLocked: false,
   }
 

@@ -22,7 +22,6 @@ const createConfig = (runtimeKind: RuntimeKind = RuntimeKind.CODEX_APP_SERVER) =
     autoExecuteTools: false,
     workspaceId: "workspace-1",
     llmConfig: null,
-    skillAccessMode: null,
   });
 
 const createBackend = (input: {

@@ -7,7 +7,7 @@ import type {
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
 import { AgentStatus } from '~/types/agent/AgentStatus'
-import type { AgentRunConfig, AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig'
+import type { AgentRunConfig, AgentRuntimeKind } from '~/types/agent/AgentRunConfig'
 import type {
   ResolvedAgentLaunchView,
   ResolvedTeamRunLaunchConfig,
@@ -42,7 +42,6 @@ const agentConfig = (input: { source: ConfiguredAgentExecutionDto; workspaceMeta
   workspaceId: input.workspaceMetadata?.workspaceId ?? null,
   workspaceMetadata: input.workspaceMetadata,
   autoExecuteTools: input.source.launch_configuration.auto_execute_tools,
-  skillAccessMode: input.source.launch_configuration.skill_access_mode as SkillAccessMode,
   llmConfig: immutableLlmConfig(input.source.launch_configuration.llm_config),
   isLocked: true,
 })
@@ -57,7 +56,6 @@ const storedLaunchConfiguration = (
   llmModelIdentifier: source.llm_model_identifier,
   llmConfig: immutableLlmConfig(source.llm_config),
   autoExecuteTools: source.auto_execute_tools,
-  skillAccessMode: source.skill_access_mode as SkillAccessMode,
 })
 export const createTeamAgentContext = (input: {
   tree: TeamRunExecutionTreeDto

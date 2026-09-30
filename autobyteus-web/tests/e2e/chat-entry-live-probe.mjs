@@ -458,7 +458,7 @@ defineCase('C10', 'Team quick path with an attachment: uniform member config, co
 })
 
 defineCase('C11', 'RSK-005 redirects, missing and unregistered ids, tool strip collapsed', async (page) => {
-  const org = await gql('mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}', { input: { agentOrgDefinitionId: 'probe-org', rootConfiguration: { runtimeKind: runtime, llmModelIdentifier: state.model, llmConfig: null, autoExecuteTools: true, skillAccessMode: 'NONE', workspaceRootPath: path.join(dataRoot, 'temp_workspace') }, agentOverrides: [], teamOverrides: [] } })
+  const org = await gql('mutation($input:CreateAgentOrgRunInput!){createAgentOrgRun(input:$input){success message agentOrgRunId}}', { input: { agentOrgDefinitionId: 'probe-org', rootConfiguration: { runtimeKind: runtime, llmModelIdentifier: state.model, llmConfig: null, autoExecuteTools: true, workspaceRootPath: path.join(dataRoot, 'temp_workspace') }, agentOverrides: [], teamOverrides: [] } })
   assert(org.createAgentOrgRun.success, org.createAgentOrgRun.message)
   const orgRunId = org.createAgentOrgRun.agentOrgRunId
   const push = (to) => page.evaluate((p) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$router.push(p), to)
@@ -1187,7 +1187,7 @@ const writeProbeOrg = async () => {
 }
 const launchStandalone = async (agentDefinitionId, workspace) => {
   const res = await gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: {
-    agentDefinitionId, workspaceRootPath: workspace, llmModelIdentifier: state.model, autoExecuteTools: true, skillAccessMode: 'PRELOADED_ONLY', runtimeKind: runtime } })
+    agentDefinitionId, workspaceRootPath: workspace, llmModelIdentifier: state.model, autoExecuteTools: true, runtimeKind: runtime } })
   assert(res.createAgentRun.success, `Launch of ${agentDefinitionId} failed`, res.createAgentRun)
   return res.createAgentRun.runId
 }

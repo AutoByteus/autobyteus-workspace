@@ -18,7 +18,7 @@ const rootConfig: ResolvedTeamRunLaunchConfig = {
   runtimeKind: 'autobyteus', workspaceId: 'workspace-1',
   workspaceMetadata: { workspaceId: 'workspace-1', workspaceRootPath: '/workspace', displayName: 'Workspace', kind: 'filesystem' },
   workspaceRootPath: '/workspace', llmModelIdentifier: 'gpt-root', llmConfig: null,
-  autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY',
+  autoExecuteTools: false,
 }
 const effectiveOrg = (store: ReturnType<typeof useAgentOrgRunConfigStore>) => {
   const projection = projectEditableAgentOrgRunFormModel({

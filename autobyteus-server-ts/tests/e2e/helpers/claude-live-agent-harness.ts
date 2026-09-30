@@ -3,7 +3,6 @@ import fastify, { type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
 import { vi } from "vitest";
 import WebSocket from "ws";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
@@ -61,7 +60,6 @@ const buildRunContext = (runId: string, workspaceRoot: string): AgentRunContext<
       agentDefinitionId: "agent-claude-live-e2e",
       llmModelIdentifier: "haiku",
       autoExecuteTools: true,
-      skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     }),
     runtimeContext: new ClaudeAgentRunContext({
@@ -79,7 +77,6 @@ const buildRunContext = (runId: string, workspaceRoot: string): AgentRunContext<
         },
       }),
       runtimeToolExposure: buildRuntimeAgentToolExposure([]),
-      skillAccessMode: SkillAccessMode.NONE,
     }),
   });
 

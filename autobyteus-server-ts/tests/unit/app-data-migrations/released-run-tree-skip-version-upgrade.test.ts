@@ -17,7 +17,7 @@ import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from 
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 import { testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
-import { toReleasedTeamRunExecutionTreeV2 } from "../../fixtures/released-run-tree-fixtures.js";
+import { toReleasedTeamRunExecutionTreeV2, toReleasedConfiguredNode } from "../../fixtures/released-run-tree-fixtures.js";
 
 /**
  * SR-007 evidence item 3 (unit level): a skip-version install whose ledger is terminal only
@@ -91,8 +91,8 @@ it("runs 20260901, 20260926 and 20260905 as released on a skip-version install, 
   const orgBase = testExecutionTree({ rootTeamRunId: "org-a", coordinatorAddress: "/director", createdAt: T0,
     children: [testAgentNode("/director", { agentRunId: "director" })] });
   await put(path.join(orgSource, "team_run_execution_tree.json"), toReleasedTeamRunExecutionTreeV2({ ...orgBase, rootTeam: { ...orgBase.rootTeam,
-    members: [...orgBase.rootTeam.members, testOrgTeamNode({ address: "/team", teamRunId: "mounted", coordinatorAddress: "/team/lead",
-      members: [testOrgAgentNode("/team/lead", "lead")] })] } }));
+    members: [...orgBase.rootTeam.members, toReleasedConfiguredNode(testOrgTeamNode({ address: "/team", teamRunId: "mounted", coordinatorAddress: "/team/lead",
+      members: [testOrgAgentNode("/team/lead", "lead")] }))] } }));
   await put(path.join(orgSource, "task_delegation_records.json"), { schemaVersion: 1, rootTeamRunId: "org-a", records: [] });
   await put(path.join(orgSource, "team_communication_messages.json"), { schemaVersion: 1, rootTeamRunId: "org-a", messages: [] });
   await put(path.join(orgSource, "director", "raw_traces_active.jsonl"),

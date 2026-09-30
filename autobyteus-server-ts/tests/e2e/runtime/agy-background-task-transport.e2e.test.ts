@@ -78,7 +78,7 @@ suite("AGY background (daemon) tool steps through app WebSocket and history", ()
       "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
       { input: { agentDefinitionId: definitionId, workspaceRootPath: workspace,
         llmModelIdentifier: "gemini-3.8-flash-low", llmConfig: null,
-        autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: "antigravity_cli" } });
+        autoExecuteTools: true, runtimeKind: "antigravity_cli" } });
     expect(started.createAgentRun.success, started.createAgentRun.message).toBe(true);
     const runId = started.createAgentRun.runId!;
     runIds.push(runId);

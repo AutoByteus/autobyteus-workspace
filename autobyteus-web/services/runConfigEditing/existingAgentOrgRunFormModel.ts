@@ -11,7 +11,7 @@ import type {
   ExistingWorkspaceDisplay,
 } from '~/types/agent/ExistingTeamRunFormModel'
 import type { ResolvedTeamRunLaunchConfig } from '~/types/agent/TeamRunConfig'
-import type { AgentRuntimeKind, SkillAccessMode } from '~/types/agent/AgentRunConfig'
+import type { AgentRuntimeKind } from '~/types/agent/AgentRunConfig'
 import type { ExistingAgentOrgModelConfigDraft } from './existingAgentOrgModelConfigDraft'
 import type { AgentOrgConfiguredAgentNode, AgentOrgConfiguredMember } from '~/types/collaboration/agentOrgExecution'
 
@@ -28,7 +28,6 @@ const resolved = (launch: Launch, selection: ExistingRunModelSelection): Readonl
   workspaceRootPath: launch.workspaceRootPath,
   ...selection,
   autoExecuteTools: launch.autoExecuteTools,
-  skillAccessMode: launch.skillAccessMode as SkillAccessMode,
 })
 
 export const projectExistingAgentOrgRunFormModel = (input: {

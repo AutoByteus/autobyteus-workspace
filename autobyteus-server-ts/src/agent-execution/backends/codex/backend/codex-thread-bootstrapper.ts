@@ -1,7 +1,3 @@
-import {
-  SkillAccessMode,
-  resolveSkillAccessMode,
-} from "autobyteus-ts/agent/context/skill-access-mode.js";
 import fs from "node:fs";
 import path from "node:path";
 import {
@@ -247,10 +243,6 @@ export class CodexThreadBootstrapper {
       agentDefinition,
       runContext.config.memberExecutionContext,
     );
-    const skillAccessMode = resolveSkillAccessMode(
-      runContext.config.skillAccessMode ?? null,
-      configuredSkillBindings.length,
-    );
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,
@@ -272,7 +264,6 @@ export class CodexThreadBootstrapper {
       runId: runContext.runId,
       workingDirectory,
       configuredSkillBindings,
-      skillAccessMode,
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skillService.resolveSkillScope(agentDefinition)),
     });
 
@@ -355,7 +346,6 @@ export class CodexThreadBootstrapper {
     runId: string;
     workingDirectory: string;
     configuredSkillBindings: ConfiguredAgentSkillBinding[];
-    skillAccessMode: SkillAccessMode;
     workspaceCollisionPolicy: WorkspaceCollisionPolicy;
   }): Promise<MaterializedWorkspaceSkill[]> {
     const requests = await this.planWorkspaceSkillRequests(input);
@@ -363,7 +353,6 @@ export class CodexThreadBootstrapper {
       runId: input.runId,
       workingDirectory: input.workingDirectory,
       requests,
-      skillAccessMode: input.skillAccessMode,
       workspaceCollisionPolicy: input.workspaceCollisionPolicy,
     });
   }
@@ -371,12 +360,8 @@ export class CodexThreadBootstrapper {
   private async planWorkspaceSkillRequests(input: {
     workingDirectory: string;
     configuredSkillBindings: ConfiguredAgentSkillBinding[];
-    skillAccessMode: SkillAccessMode;
   }): Promise<WorkspaceSkillReconciliationRequest[]> {
-    if (
-      input.skillAccessMode === SkillAccessMode.NONE ||
-      input.configuredSkillBindings.length === 0
-    ) {
+    if (input.configuredSkillBindings.length === 0) {
       return [];
     }
 

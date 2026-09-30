@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
   RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
@@ -55,7 +54,7 @@ const writeStandaloneMetadata = async (input: {
     llmModelIdentifier: "model-test",
     llmConfig: null,
     autoExecuteTools: false,
-    skillAccessMode: SkillAccessMode.NONE,
+    skillAccessMode: "NONE",
     runtimeKind: input.runtimeKind,
     platformAgentRunId: null,
     startedAt: "2026-07-31T00:00:00.000Z",
@@ -75,7 +74,7 @@ const agentMember = (input: {
   agentDefinitionId: `agent-${input.memberRunId}`,
   llmModelIdentifier: "model-test",
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.NONE,
+  skillAccessMode: "NONE",
   llmConfig: null,
   workspaceRootPath: "/workspace/team",
   applicationExecutionContext: null,

@@ -12,7 +12,6 @@ const rootConfig: ResolvedTeamRunLaunchConfig = {
   },
   workspaceRootPath: '/workspace/root', llmModelIdentifier: 'gpt-root',
   llmConfig: { reasoning_effort: 'medium' }, autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
 }
 const softwareTeam: AgentTeamDefinition = {
   id: 'software-team', name: 'Software Engineering', description: '', instructions: '',

@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { buildSchema, registerEnumType } from 'type-graphql';
+import { buildSchema } from 'type-graphql';
 import { createRequire } from 'node:module';
 const { graphql } = createRequire(import.meta.url)('graphql') as typeof import('graphql');
 import { describe, expect, it, vi } from 'vitest';
@@ -9,14 +9,12 @@ const io = vi.hoisted(() => ({ getRunConfig: vi.fn(), runModelOptions: vi.fn(), 
 const memberViews = vi.hoisted(() => ({ getProjection: vi.fn(), getActiveTracePage: vi.fn() }));
 vi.mock('../../../../../src/api/graphql/studio-application-api-services.js', () => ({ getStudioAgentOrgRunService: () => io }));
 vi.mock('../../../../../src/run-history/services/agent-org-member-run-view-projection-service.js', () => ({ getAgentOrgMemberRunViewProjectionService: () => memberViews }));
-import { SkillAccessMode } from 'autobyteus-ts/agent/context/skill-access-mode.js';
-registerEnumType(SkillAccessMode, { name: 'SkillAccessModeEnum' });
 import { AgentOrgRunResolver } from '../../../../../src/api/graphql/types/agent-org-run.js';
 import { buildGraphqlSchema } from '../../../../../src/api/graphql/schema.js';
 const tree = { schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-17T00:00:00Z', archivedAt: null,
   applicationBinding: null, handoffs: [], rootOrg: { address: '/', orgDefinitionId: 'definition', orgDefinitionName: 'Org',
     orgRunId: 'org', defaultLaunchConfiguration: { runtimeKind: 'autobyteus', llmModelIdentifier: 'model', llmConfig: null,
-      autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/workspace' }, members: [], taskExecutions: [] } };
+      autoExecuteTools: false, workspaceRootPath: '/workspace' }, members: [], taskExecutions: [] } };
 
 describe('whole AgentOrg model configuration GraphQL transport', () => {
   it('binds distinct Org member projection and trace-page public arguments exactly', async () => {

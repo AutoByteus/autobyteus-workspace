@@ -107,7 +107,7 @@ import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
 import { useWorkspaceStore } from '~/stores/workspace'
-import type { AgentRunConfig, SkillAccessMode } from '~/types/agent/AgentRunConfig'
+import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import { projectExistingTeamRunFormModel } from '~/services/runConfigEditing/existingTeamRunFormModel'
 import { projectExistingAgentOrgRunFormModel } from '~/services/runConfigEditing/existingAgentOrgRunFormModel'
@@ -179,7 +179,6 @@ const agentConfig = computed<AgentRunConfig | null>(() => {
     workspaceId: hydrated?.workspaceId ?? null,
     workspaceMetadata: hydrated?.workspaceMetadata ?? null,
     autoExecuteTools: current.metadata.autoExecuteTools,
-    skillAccessMode: (current.metadata.skillAccessMode ?? 'PRELOADED_ONLY') as SkillAccessMode,
     isLocked: true,
   }
 })

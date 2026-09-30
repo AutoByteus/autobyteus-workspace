@@ -66,11 +66,6 @@ export enum AgentDefinitionOwnershipScope {
   TeamLocal = 'TEAM_LOCAL'
 }
 
-export enum AgentSkillScope {
-  AllInstalled = 'ALL_INSTALLED',
-  Configured = 'CONFIGURED'
-}
-
 export enum AgentMemberRefScope {
   ApplicationOwned = 'APPLICATION_OWNED',
   Shared = 'SHARED',
@@ -169,7 +164,6 @@ export type AgentOrgPlacementLaunchConfigurationInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier?: InputMaybe<Scalars['String']['input']>;
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
-  skillAccessMode?: InputMaybe<SkillAccessModeEnum>;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -194,7 +188,6 @@ export type AgentOrgRootLaunchConfigurationInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind: Scalars['String']['input'];
-  skillAccessMode: SkillAccessModeEnum;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -215,6 +208,28 @@ export type AgentOrgRunConfigUpdateResult = {
   message: Scalars['String']['output'];
   outcome: Scalars['String']['output'];
   success: Scalars['Boolean']['output'];
+};
+
+export type AgentOrgRunMemoryPage = {
+  __typename?: 'AgentOrgRunMemoryPage';
+  entries: Array<AgentOrgRunMemorySummary>;
+  page: Scalars['Int']['output'];
+  pageSize: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type AgentOrgRunMemorySummary = {
+  __typename?: 'AgentOrgRunMemorySummary';
+  createdAt?: Maybe<Scalars['String']['output']>;
+  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
+  memberTargets: Array<CollaborationMemberMemoryTargetSummary>;
+  memory: MemoryAvailabilitySummary;
+  orgDefinitionId: Scalars['String']['output'];
+  orgDefinitionName: Scalars['String']['output'];
+  orgRunId: Scalars['String']['output'];
+  summary?: Maybe<Scalars['String']['output']>;
+  workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
 
 export type AgentOrgRunModelConfigPatchInput = {
@@ -251,6 +266,25 @@ export type AgentOrgStoredRunMutationResult = {
 export type AgentOrgTeamWorkspacePatchInput = {
   teamAddress: Scalars['String']['input'];
   workspaceRootPath: Scalars['String']['input'];
+};
+
+export type AgentOrgWithMemoryPage = {
+  __typename?: 'AgentOrgWithMemoryPage';
+  entries: Array<AgentOrgWithMemorySummary>;
+  page: Scalars['Int']['output'];
+  pageSize: Scalars['Int']['output'];
+  total: Scalars['Int']['output'];
+  totalPages: Scalars['Int']['output'];
+};
+
+export type AgentOrgWithMemorySummary = {
+  __typename?: 'AgentOrgWithMemorySummary';
+  latestMemoryAt?: Maybe<Scalars['String']['output']>;
+  memberMemoryCount: Scalars['Int']['output'];
+  memory: MemoryAvailabilitySummary;
+  orgDefinitionId: Scalars['String']['output'];
+  orgDefinitionName: Scalars['String']['output'];
+  orgRunCount: Scalars['Int']['output'];
 };
 
 export type AgentPackage = {
@@ -324,6 +358,11 @@ export type AgentRunMemorySummary = {
   summary?: Maybe<Scalars['String']['output']>;
   workspaceRootPath?: Maybe<Scalars['String']['output']>;
 };
+
+export enum AgentSkillScope {
+  AllInstalled = 'ALL_INSTALLED',
+  Configured = 'CONFIGURED'
+}
 
 export type AgentTeamDefinition = {
   __typename?: 'AgentTeamDefinition';
@@ -628,6 +667,39 @@ export type CatalogProviderObject = {
   providerType: Scalars['String']['output'];
 };
 
+export enum CollaborationMemberExecutionKind {
+  Configured = 'CONFIGURED',
+  TaskAgent = 'TASK_AGENT',
+  TaskTeamMember = 'TASK_TEAM_MEMBER'
+}
+
+export type CollaborationMemberMemoryTargetSummary = {
+  __typename?: 'CollaborationMemberMemoryTargetSummary';
+  agentDefinitionId?: Maybe<Scalars['String']['output']>;
+  agentRunId: Scalars['String']['output'];
+  displayName: Scalars['String']['output'];
+  executionKind: CollaborationMemberExecutionKind;
+  groupPath: Array<CollaborationMemoryGroup>;
+  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
+  memberAddress: Scalars['String']['output'];
+  memory: MemoryAvailabilitySummary;
+  startedAt?: Maybe<Scalars['String']['output']>;
+};
+
+export type CollaborationMemoryGroup = {
+  __typename?: 'CollaborationMemoryGroup';
+  address: Scalars['String']['output'];
+  displayName: Scalars['String']['output'];
+  kind: CollaborationMemoryGroupKind;
+  startedAt?: Maybe<Scalars['String']['output']>;
+  teamRunId: Scalars['String']['output'];
+};
+
+export enum CollaborationMemoryGroupKind {
+  ConfiguredTeam = 'CONFIGURED_TEAM',
+  TaskTeam = 'TASK_TEAM'
+}
+
 export type CollaborationRootHistoryItem = AgentOrgRootHistoryObject | AgentTeamRootHistoryObject;
 
 export type ConfigureMcpServerResult = {
@@ -678,50 +750,8 @@ export type CreateAgentRunInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind: Scalars['String']['input'];
-  skillAccessMode: SkillAccessModeEnum;
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath: Scalars['String']['input'];
-};
-
-export type AgentOrgRunMemoryPage = {
-  __typename?: 'AgentOrgRunMemoryPage';
-  entries: Array<AgentOrgRunMemorySummary>;
-  page: Scalars['Int']['output'];
-  pageSize: Scalars['Int']['output'];
-  total: Scalars['Int']['output'];
-  totalPages: Scalars['Int']['output'];
-};
-
-export type AgentOrgRunMemorySummary = {
-  __typename?: 'AgentOrgRunMemorySummary';
-  createdAt?: Maybe<Scalars['String']['output']>;
-  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
-  memberTargets: Array<CollaborationMemberMemoryTargetSummary>;
-  memory: MemoryAvailabilitySummary;
-  orgDefinitionId: Scalars['String']['output'];
-  orgDefinitionName: Scalars['String']['output'];
-  orgRunId: Scalars['String']['output'];
-  summary?: Maybe<Scalars['String']['output']>;
-  workspaceRootPath?: Maybe<Scalars['String']['output']>;
-};
-
-export type AgentOrgWithMemoryPage = {
-  __typename?: 'AgentOrgWithMemoryPage';
-  entries: Array<AgentOrgWithMemorySummary>;
-  page: Scalars['Int']['output'];
-  pageSize: Scalars['Int']['output'];
-  total: Scalars['Int']['output'];
-  totalPages: Scalars['Int']['output'];
-};
-
-export type AgentOrgWithMemorySummary = {
-  __typename?: 'AgentOrgWithMemorySummary';
-  latestMemoryAt?: Maybe<Scalars['String']['output']>;
-  memberMemoryCount: Scalars['Int']['output'];
-  memory: MemoryAvailabilitySummary;
-  orgDefinitionId: Scalars['String']['output'];
-  orgDefinitionName: Scalars['String']['output'];
-  orgRunCount: Scalars['Int']['output'];
 };
 
 export type CreateAgentRunResult = {
@@ -912,39 +942,6 @@ export type EventMonitorActiveTracePage = {
   hasEarlier: Scalars['Boolean']['output'];
   loadedEarlierCount: Scalars['Int']['output'];
 };
-
-export enum CollaborationMemberExecutionKind {
-  Configured = 'CONFIGURED',
-  TaskAgent = 'TASK_AGENT',
-  TaskTeamMember = 'TASK_TEAM_MEMBER'
-}
-
-export type CollaborationMemberMemoryTargetSummary = {
-  __typename?: 'CollaborationMemberMemoryTargetSummary';
-  agentDefinitionId?: Maybe<Scalars['String']['output']>;
-  agentRunId: Scalars['String']['output'];
-  displayName: Scalars['String']['output'];
-  executionKind: CollaborationMemberExecutionKind;
-  groupPath: Array<CollaborationMemoryGroup>;
-  lastUpdatedAt?: Maybe<Scalars['String']['output']>;
-  memberAddress: Scalars['String']['output'];
-  memory: MemoryAvailabilitySummary;
-  startedAt?: Maybe<Scalars['String']['output']>;
-};
-
-export type CollaborationMemoryGroup = {
-  __typename?: 'CollaborationMemoryGroup';
-  address: Scalars['String']['output'];
-  displayName: Scalars['String']['output'];
-  kind: CollaborationMemoryGroupKind;
-  startedAt?: Maybe<Scalars['String']['output']>;
-  teamRunId: Scalars['String']['output'];
-};
-
-export enum CollaborationMemoryGroupKind {
-  ConfiguredTeam = 'CONFIGURED_TEAM',
-  TaskTeam = 'TASK_TEAM'
-}
 
 export type EventMonitorActiveTracePageEvent = {
   __typename?: 'EventMonitorActiveTracePageEvent';
@@ -2193,6 +2190,7 @@ export type Query = {
   skillFileTree?: Maybe<Scalars['String']['output']>;
   skillImprovementCapability: SkillImprovementCapability;
   skillImprovementStrategyCatalog: GraphqlSkillImprovementStrategyCatalog;
+  skillNameIssues: Array<SkillNameIssue>;
   skillSources: Array<SkillSource>;
   skills: Array<Skill>;
   teamRunModelOptions: Array<TeamScopeModelOptionsObject>;
@@ -2279,6 +2277,21 @@ export type QueryGetAgentOrgMemberEventMonitorActiveTracePageArgs = {
 };
 
 
+export type QueryGetAgentOrgMemberRunMemoryViewArgs = {
+  agentRunId: Scalars['String']['input'];
+  includeArchive?: Scalars['Boolean']['input'];
+  includeEpisodic?: Scalars['Boolean']['input'];
+  includeRawTraceFiles?: Scalars['Boolean']['input'];
+  includeRawTraces?: Scalars['Boolean']['input'];
+  includeSemantic?: Scalars['Boolean']['input'];
+  includeWorkingContext?: Scalars['Boolean']['input'];
+  orgRunId: Scalars['String']['input'];
+  rawTraceFileName?: InputMaybe<Scalars['String']['input']>;
+  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
+  source?: InputMaybe<MemoryExplorerSourceInput>;
+};
+
+
 export type QueryGetAgentOrgMemberRunProjectionArgs = {
   agentRunId: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
@@ -2300,21 +2313,6 @@ export type QueryGetAgentOrgRunConfigArgs = {
 
 export type QueryGetAgentOrgRunInspectionArgs = {
   orgRunId: Scalars['String']['input'];
-};
-
-
-export type QueryGetAgentOrgMemberRunMemoryViewArgs = {
-  agentRunId: Scalars['String']['input'];
-  includeArchive?: Scalars['Boolean']['input'];
-  includeEpisodic?: Scalars['Boolean']['input'];
-  includeRawTraceFiles?: Scalars['Boolean']['input'];
-  includeRawTraces?: Scalars['Boolean']['input'];
-  includeSemantic?: Scalars['Boolean']['input'];
-  includeWorkingContext?: Scalars['Boolean']['input'];
-  orgRunId: Scalars['String']['input'];
-  rawTraceFileName?: InputMaybe<Scalars['String']['input']>;
-  rawTraceLimit?: InputMaybe<Scalars['Int']['input']>;
-  source?: InputMaybe<MemoryExplorerSourceInput>;
 };
 
 
@@ -2704,7 +2702,6 @@ export type RunMetadataConfigObject = {
   llmModelIdentifier: Scalars['String']['output'];
   runtimeKind: Scalars['String']['output'];
   runtimeReference: RunRuntimeReferenceObject;
-  skillAccessMode?: Maybe<SkillAccessModeEnum>;
   workspaceRootPath: Scalars['String']['output'];
 };
 
@@ -2833,11 +2830,6 @@ export type Skill = {
   updatedAt?: Maybe<Scalars['String']['output']>;
 };
 
-export enum SkillAccessModeEnum {
-  None = 'NONE',
-  PreloadedOnly = 'PRELOADED_ONLY'
-}
-
 export type SkillCatalogReloadResult = {
   __typename?: 'SkillCatalogReloadResult';
   skillSources: Array<SkillSource>;
@@ -2849,6 +2841,14 @@ export type SkillImprovementCapability = {
   enabled: Scalars['Boolean']['output'];
   settingKey: Scalars['String']['output'];
   source: Scalars['String']['output'];
+};
+
+export type SkillNameIssue = {
+  __typename?: 'SkillNameIssue';
+  ignoredPaths: Array<Scalars['String']['output']>;
+  kind: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  usedPath: Scalars['String']['output'];
 };
 
 export type SkillSource = {
@@ -2937,7 +2937,6 @@ export type TeamMemberConfigInput = {
   llmModelIdentifier: Scalars['String']['input'];
   memberAddress: Scalars['String']['input'];
   runtimeKind: Scalars['String']['input'];
-  skillAccessMode: SkillAccessModeEnum;
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -2984,7 +2983,6 @@ export type TeamScopeLaunchConfigInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind: Scalars['String']['input'];
-  skillAccessMode: SkillAccessModeEnum;
   teamAddress: Scalars['String']['input'];
   workspaceRootPath?: InputMaybe<Scalars['String']['input']>;
 };
@@ -4585,7 +4583,7 @@ export type GetAgentRunResumeConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetAgentRunResumeConfigQuery = { __typename?: 'Query', getAgentRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, metadataConfig: { __typename?: 'RunMetadataConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, skillAccessMode?: SkillAccessModeEnum | null, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
+export type GetAgentRunResumeConfigQuery = { __typename?: 'Query', getAgentRunResumeConfig: { __typename?: 'RunResumeConfigPayload', runId: string, isActive: boolean, metadataConfig: { __typename?: 'RunMetadataConfigObject', agentDefinitionId: string, workspaceRootPath: string, llmModelIdentifier: string, llmConfig?: any | null, autoExecuteTools: boolean, runtimeKind: string, runtimeReference: { __typename?: 'RunRuntimeReferenceObject', runtimeKind: string, sessionId?: string | null, threadId?: string | null, metadata?: any | null } }, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
 
 export type GetAgentOrgRunInspectionQueryVariables = Exact<{
   orgRunId: Scalars['String']['input'];
@@ -4879,6 +4877,11 @@ export type EnableSkillMutationVariables = Exact<{
 
 
 export type EnableSkillMutation = { __typename?: 'Mutation', enableSkill: { __typename?: 'Skill', name: string, isDisabled: boolean } };
+
+export type GetSkillNameIssuesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetSkillNameIssuesQuery = { __typename?: 'Query', skillNameIssues: Array<{ __typename?: 'SkillNameIssue', name: string, usedPath: string, ignoredPaths: Array<string>, kind: string }> };
 
 export const AgentPackageFieldsFragmentDoc = gql`
     fragment AgentPackageFields on AgentPackage {
@@ -10725,7 +10728,6 @@ export const GetAgentRunResumeConfigDocument = gql`
       llmModelIdentifier
       llmConfig
       autoExecuteTools
-      skillAccessMode
       runtimeKind
       runtimeReference {
         runtimeKind
@@ -12241,3 +12243,33 @@ export function useEnableSkillMutation(options: VueApolloComposable.UseMutationO
   return VueApolloComposable.useMutation<EnableSkillMutation, EnableSkillMutationVariables>(EnableSkillDocument, options);
 }
 export type EnableSkillMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<EnableSkillMutation, EnableSkillMutationVariables>;
+export const GetSkillNameIssuesDocument = gql`
+    query GetSkillNameIssues {
+  skillNameIssues {
+    name
+    usedPath
+    ignoredPaths
+    kind
+  }
+}
+    `;
+
+/**
+ * __useGetSkillNameIssuesQuery__
+ *
+ * To run a query within a Vue component, call `useGetSkillNameIssuesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSkillNameIssuesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetSkillNameIssuesQuery();
+ */
+export function useGetSkillNameIssuesQuery(options: VueApolloComposable.UseQueryOptions<GetSkillNameIssuesQuery, GetSkillNameIssuesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSkillNameIssuesQuery, GetSkillNameIssuesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSkillNameIssuesQuery, GetSkillNameIssuesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetSkillNameIssuesQuery, GetSkillNameIssuesQueryVariables>(GetSkillNameIssuesDocument, {}, options);
+}
+export function useGetSkillNameIssuesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetSkillNameIssuesQuery, GetSkillNameIssuesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetSkillNameIssuesQuery, GetSkillNameIssuesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetSkillNameIssuesQuery, GetSkillNameIssuesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetSkillNameIssuesQuery, GetSkillNameIssuesQueryVariables>(GetSkillNameIssuesDocument, {}, options);
+}
+export type GetSkillNameIssuesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetSkillNameIssuesQuery, GetSkillNameIssuesQueryVariables>;

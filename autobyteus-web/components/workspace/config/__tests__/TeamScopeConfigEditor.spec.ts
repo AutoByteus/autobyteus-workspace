@@ -84,7 +84,6 @@ const inheritedConfig: ResolvedTeamRunLaunchConfig = {
   llmModelIdentifier: 'gpt-5.6-sol',
   llmConfig: { reasoning_effort: 'high' },
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
 }
 
 const workspaceSelection: WorkspaceSelectionState = {

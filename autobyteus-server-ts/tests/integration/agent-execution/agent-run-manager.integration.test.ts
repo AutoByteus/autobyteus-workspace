@@ -1,7 +1,6 @@
 import { createRecordingAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
 import { createAgentRunManagerInfrastructureFixture } from "../../fixtures/agent-run-manager-infrastructure-fixtures.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import type { AgentRunBackend } from "../../../src/agent-execution/backends/agent-run-backend.js";
@@ -19,7 +18,6 @@ const createConfig = (runtimeKind: RuntimeKind): AgentRunConfig =>
     autoExecuteTools: true,
     workspaceId: `workspace-${runtimeKind}`,
     llmConfig: { mode: runtimeKind },
-    skillAccessMode: SkillAccessMode.NONE,
   });
 
 const createBackend = (input: {

@@ -70,7 +70,6 @@ describe("Memory explorer GraphQL e2e", () => {
       llmModelIdentifier: "model-a",
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: null,
       runtimeKind: RuntimeKind.AUTOBYTEUS,
       platformAgentRunId: null,
       startedAt: "2026-05-31T00:00:00Z",

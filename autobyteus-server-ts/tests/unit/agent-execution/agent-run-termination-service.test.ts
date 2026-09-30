@@ -134,7 +134,6 @@ describe("AgentRunService termination", () => {
         llmModelIdentifier: "gpt-test",
         llmConfig: null,
         autoExecuteTools: false,
-        skillAccessMode: null,
         runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         platformAgentRunId: "thread-old",
         startedAt: "2026-05-17T00:05:00.000Z",

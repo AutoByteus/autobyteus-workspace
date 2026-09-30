@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RawTraceItem } from "autobyteus-ts/memory/models/raw-trace-item.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { AgentRunService } from "../../../src/agent-execution/services/agent-run-service.js";
@@ -135,7 +134,6 @@ describe("memory layout and projection integration", () => {
         llmModelIdentifier: "model-1",
         autoExecuteTools: true,
         llmConfig: { temperature: 0.1 },
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind,
       });
 
@@ -182,7 +180,6 @@ describe("memory layout and projection integration", () => {
         llmModelIdentifier: "model-1",
         llmConfig: null,
         autoExecuteTools: true,
-        skillAccessMode: SkillAccessMode.NONE,
         runtimeKind,
         platformAgentRunId,
       }),

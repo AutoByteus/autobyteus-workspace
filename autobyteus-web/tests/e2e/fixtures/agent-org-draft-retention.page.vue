@@ -64,7 +64,6 @@ const createAgentContext = (runId: string, name: string, status = AgentStatus.Of
     workspaceId: null,
     workspaceMetadata: null,
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
     llmConfig: null,
     isLocked: true,
   };
@@ -86,7 +85,6 @@ const launch = {
   llmModelIdentifier: 'test-model',
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY' as const,
   workspaceRootPath: null,
 };
 

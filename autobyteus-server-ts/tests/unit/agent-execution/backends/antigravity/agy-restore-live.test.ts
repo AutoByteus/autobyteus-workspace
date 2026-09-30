@@ -3,7 +3,6 @@ import os from "node:os";
 import path from "node:path";
 import { expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../src/agent-execution/domain/agent-run-context.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
@@ -42,7 +41,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("restores the exact AGY conversation, im
   );
   const config = new AgentRunConfig({ agentDefinitionId: "restore-agent", llmModelIdentifier: "gemini-3.8-flash-low",
     autoExecuteTools: true, workspaceId: "workspace", memoryDir: path.join(base, "memory"),
-    skillAccessMode: SkillAccessMode.NONE, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI });
+    runtimeKind: RuntimeKind.ANTIGRAVITY_CLI });
   let active: AgyAgentRunBackend | undefined;
   const evidence: Record<string, unknown> = { base, workspace };
   try {

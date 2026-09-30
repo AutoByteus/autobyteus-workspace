@@ -33,14 +33,13 @@ describe('Org source configuration projection', () => {
     expect(seed.agentOverrides['/director'].llmConfig!.budget).toBe(0)
     expect(store.modelSchemaStateFor('/').status).toBe('loading')
   })
-  it.each(['root', 'placement', 'kind', 'child', 'coordinator', 'skill', 'agent-workspace'])('blocks unrepresentable or changed %s instead of normalizing or rebinding', what => {
+  it.each(['root', 'placement', 'kind', 'child', 'coordinator', 'agent-workspace'])('blocks unrepresentable or changed %s instead of normalizing or rebinding', what => {
     const { view, definition, references } = seedFixture(), root = view.execution_tree.rootOrg
     if (what === 'root') definition.id = 'other'
     if (what === 'placement') definition.members.pop()
     if (what === 'kind') definition.members[0].refType = 'AGENT_TEAM'
     if (what === 'child') references.teams['team-definition'].nodes[0].ref = 'rebound'
     if (what === 'coordinator') references.teams['team-definition'].coordinatorMemberName = 'worker'
-    if (what === 'skill') root.defaultLaunchConfiguration.skillAccessMode = 'NONE'
     if (what === 'agent-workspace' && 'agentRunId' in root.members[0]) root.members[0].launchConfiguration.workspaceRootPath = '/different'
     expect(() => buildEditableAgentOrgRunSeed(view.execution_tree, definition, references)).toThrow()
   })

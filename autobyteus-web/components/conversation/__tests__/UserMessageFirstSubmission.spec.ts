@@ -23,7 +23,7 @@ describe('canonical first-submission chip through actual Pinia promotion', () =>
   it.each(['standalone', 'team_member', 'org'] as const)('%s retains one proxy and opens the final text immediately without remount', async (kind) => {
     const contexts = useAgentContextsStore();
     useAgentRunConfigStore().setAgentConfig({ agentDefinitionId: 'def', agentDefinitionName: 'Writer',
-      llmModelIdentifier: 'model', runtimeKind: 'autobyteus', workspaceId: null, workspaceMetadata: null, autoExecuteTools: true, skillAccessMode: 'NONE', isLocked: false });
+      llmModelIdentifier: 'model', runtimeKind: 'autobyteus', workspaceId: null, workspaceMetadata: null, autoExecuteTools: true, isLocked: false });
     const temporary = contexts.createRunFromTemplate();
     const context = contexts.getRun(temporary)!;
     context.requirement = 'Read my note';

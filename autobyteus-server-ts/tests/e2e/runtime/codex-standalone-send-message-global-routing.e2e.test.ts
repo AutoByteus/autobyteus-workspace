@@ -472,7 +472,6 @@ describeCodexStandaloneDirect(
             llmModelIdentifier: input.llmModelIdentifier,
             autoExecuteTools: input.toolAutoExecute,
             llmConfig: { reasoning_effort: "medium" },
-            skillAccessMode: "NONE",
             runtimeKind: "codex_app_server",
           },
         },

@@ -81,7 +81,6 @@ const config = (): TeamRunConfig => ({
     llmModelIdentifier: 'gpt-5.4',
     llmConfig: { reasoning_effort: 'medium' },
     autoExecuteTools: false,
-    skillAccessMode: 'PRELOADED_ONLY',
   },
   teamOverrides: {
     '/Research': {
@@ -128,7 +127,6 @@ describe('teamRunLaunchHierarchy', () => {
       workspaceRootPath: '/workspace/root',
       llmModelIdentifier: 'gpt-5.4',
       llmConfig: { reasoning_effort: 'medium' },
-      skillAccessMode: 'PRELOADED_ONLY',
     }))
     expect(view.teamsByAddress['/Research']).toEqual(expect.objectContaining({
       parentAddress: '/',
@@ -153,7 +151,6 @@ describe('teamRunLaunchHierarchy', () => {
       llmModelIdentifier: 'gpt-5.6-luna',
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
     }))
     expect(view.agentsByAddress['/Delivery/publisher'].effectiveConfig).toEqual(
       expect.objectContaining({ runtimeKind: 'codex_app_server', workspaceRootPath: '/workspace/root' }),
@@ -213,7 +210,6 @@ describe('teamRunLaunchHierarchy', () => {
       llmModelIdentifier: 'claude-opus',
       llmConfig: { thinking: true },
       autoExecuteTools: true,
-      skillAccessMode: 'PRELOADED_ONLY',
       workspaceRootPath: '/workspace/research',
     })
     expect(result.memberConfigs.find((entry) => entry.memberAddress === '/Research/Review/reviewer')).toEqual({
@@ -223,7 +219,6 @@ describe('teamRunLaunchHierarchy', () => {
       llmModelIdentifier: 'gpt-5.6-luna',
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: 'PRELOADED_ONLY',
       workspaceRootPath: '/workspace/research',
     })
   })

@@ -1,5 +1,4 @@
 import { RootRunPackageReadinessIndex } from "../../run-history/services/root-run-package-readiness-index.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
 import { AgentRunContext } from "../domain/agent-run-context.js";
@@ -400,7 +399,6 @@ export class StandaloneAgentRunLifecycleService {
       workspaceId: workspace.workspaceId,
       memoryDir: metadata.memoryDir,
       llmConfig: metadata.llmConfig,
-      skillAccessMode: metadata.skillAccessMode ?? SkillAccessMode.PRELOADED_ONLY,
       applicationExecutionContext: metadata.applicationExecutionContext ?? null,
     });
   }

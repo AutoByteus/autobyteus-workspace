@@ -33,7 +33,6 @@ export const buildChatTeamLaunchConfig = (
       llmModelIdentifier: settings.llmModelIdentifier,
       llmConfig: settings.llmConfig ? { ...settings.llmConfig } : null,
       autoExecuteTools: settings.autoExecuteTools,
-      skillAccessMode: 'PRELOADED_ONLY',
     },
     teamOverrides: {},
     agentOverrides: {},

@@ -35,7 +35,6 @@ export interface TeamScopeLaunchRecord {
   readonly llmModelIdentifier: string
   readonly llmConfig: Record<string, unknown> | null
   readonly autoExecuteTools: boolean
-  readonly skillAccessMode: string
   readonly workspaceRootPath: string | null
 }
 
@@ -46,7 +45,6 @@ export interface TeamMemberLaunchRecord {
   readonly llmModelIdentifier: string
   readonly llmConfig: Record<string, unknown> | null
   readonly autoExecuteTools: boolean
-  readonly skillAccessMode: string
   readonly workspaceRootPath: string | null
 }
 
@@ -70,7 +68,6 @@ const rootEffectiveConfig = (config: Readonly<TeamRunConfig>): Readonly<Resolved
     llmModelIdentifier: normalizeModelIdentifier(config.rootConfig.llmModelIdentifier),
     llmConfig: normalizeModelConfig(config.rootConfig.llmConfig),
     autoExecuteTools: config.rootConfig.autoExecuteTools,
-    skillAccessMode: config.rootConfig.skillAccessMode,
   })
 }
 
@@ -90,7 +87,6 @@ const inheritedEffectiveConfig = (
     llmModelIdentifier: resolveOverrideLlmModelIdentifier(override, parent.llmModelIdentifier),
     llmConfig: resolveOverrideLlmConfig(override, parent.llmConfig),
     autoExecuteTools: override?.autoExecuteTools ?? parent.autoExecuteTools,
-    skillAccessMode: parent.skillAccessMode,
   })
 }
 
@@ -206,7 +202,6 @@ const launchFields = (config: Readonly<ResolvedTeamRunLaunchConfig>) => ({
   llmModelIdentifier: config.llmModelIdentifier,
   llmConfig: normalizeModelConfig(config.llmConfig),
   autoExecuteTools: config.autoExecuteTools,
-  skillAccessMode: config.skillAccessMode,
   workspaceRootPath: config.workspaceRootPath,
 })
 

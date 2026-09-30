@@ -1,4 +1,3 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { TeamBackendKind } from "./team-backend-kind.js";
 import {
@@ -18,7 +17,6 @@ export type AgentLaunchConfiguration = Readonly<{
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
   workspaceRootPath: string | null;
 }>;
 
@@ -34,7 +32,6 @@ export type TeamRunAgentNode = Readonly<{
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
   autoExecuteTools: boolean;
-  skillAccessMode: SkillAccessMode;
   workspaceRootPath: string | null;
 }>;
 
@@ -95,7 +92,6 @@ export const cloneAgentLaunchConfiguration = (
   llmModelIdentifier: required(value.llmModelIdentifier, `${label}.llmModelIdentifier`),
   llmConfig: freezeRecord(value.llmConfig as Record<string, unknown> | null),
   autoExecuteTools: Boolean(value.autoExecuteTools),
-  skillAccessMode: value.skillAccessMode,
   workspaceRootPath: optional(value.workspaceRootPath),
 });
 
@@ -115,7 +111,6 @@ export const cloneTeamRunNode = (node: TeamRunNode): TeamRunNode => {
       llmModelIdentifier: required(node.llmModelIdentifier, `llmModelIdentifier at '${address}'`),
       llmConfig: freezeRecord(node.llmConfig as Record<string, unknown> | null),
       autoExecuteTools: Boolean(node.autoExecuteTools),
-      skillAccessMode: node.skillAccessMode,
       workspaceRootPath: optional(node.workspaceRootPath),
     });
   }
@@ -177,7 +172,6 @@ export const projectAgentLaunchSettings = (
   agentDefinitionId: node.agentDefinitionId,
   llmModelIdentifier: node.llmModelIdentifier,
   autoExecuteTools: node.autoExecuteTools,
-  skillAccessMode: node.skillAccessMode,
   workspaceRootPath: node.workspaceRootPath,
   llmConfig: node.llmConfig,
   runtimeKind: node.runtimeKind,

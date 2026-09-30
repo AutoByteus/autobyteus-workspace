@@ -101,7 +101,6 @@ const makeContext = (runId: string, definitionId: string): AgentContext => {
     workspaceId: null,
     workspaceMetadata: null,
     autoExecuteTools: false,
-    skillAccessMode: 'NONE',
     llmConfig: null,
     isLocked: true,
   };

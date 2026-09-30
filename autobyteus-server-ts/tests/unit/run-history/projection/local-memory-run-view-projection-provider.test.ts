@@ -24,7 +24,6 @@ const createMetadata = (
   llmModelIdentifier: "model-1",
   llmConfig: null,
   autoExecuteTools: true,
-  skillAccessMode: null,
   runtimeKind: RuntimeKind.AUTOBYTEUS,
   platformAgentRunId: "native-agent-1",
   lastKnownStatus: "IDLE",

@@ -89,7 +89,6 @@ const metadataFor = (
     llmModelIdentifier: configured.launchConfiguration.llmModelIdentifier,
     llmConfig: configured.launchConfiguration.llmConfig as Record<string, unknown> | null,
     autoExecuteTools: configured.launchConfiguration.autoExecuteTools,
-    skillAccessMode: configured.launchConfiguration.skillAccessMode,
     runtimeKind: configured.launchConfiguration.runtimeKind as AgentRunMetadata["runtimeKind"],
     platformAgentRunId: "platformAgentRunId" in configured ? configured.platformAgentRunId : null,
   };

@@ -122,7 +122,6 @@ class RecordingChildRunService {
     llmModelIdentifier: string;
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
-    skillAccessMode: AgentRunConfig["skillAccessMode"];
     runtimeKind: RuntimeKind;
   }): Promise<{ runId: string }> {
     const runId = `memory_compactor_leaf_${++this.nextRun}`;

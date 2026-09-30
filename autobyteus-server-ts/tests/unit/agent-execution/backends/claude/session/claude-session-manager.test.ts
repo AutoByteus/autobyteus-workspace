@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../../src/agent-execution/domain/agent-run-context.js";
@@ -28,7 +27,6 @@ const createRunContext = (input: { runId: string; sessionId?: string }) =>
       agentDefinitionId: "agent-1",
       llmModelIdentifier: "haiku",
       autoExecuteTools: false,
-      skillAccessMode: SkillAccessMode.NONE,
       runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
     }),
     runtimeContext: new ClaudeAgentRunContext({

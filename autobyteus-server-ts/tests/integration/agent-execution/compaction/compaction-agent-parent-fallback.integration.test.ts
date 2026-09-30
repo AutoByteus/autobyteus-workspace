@@ -11,7 +11,6 @@ import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
 import type { Message } from "autobyteus-ts/llm/utils/messages.js";
 import { buildLlmTokenUsageObservation } from "autobyteus-ts/llm/utils/llm-token-usage-observation.js";
 import { CompleteResponse, ChunkResponse } from "autobyteus-ts/llm/utils/response-types.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { SkillRegistry } from "autobyteus-ts/skills/registry.js";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { AutoByteusAgentRunBackendFactory } from "../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.js";
@@ -325,7 +324,6 @@ describe("compaction agent parent runtime/model fallback executable validation",
         llmModelIdentifier: "parent-model",
         autoExecuteTools: false,
         memoryDir: path.join(memoryDir, "agents", "parent-run-1"),
-        skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
       "parent-run-1",

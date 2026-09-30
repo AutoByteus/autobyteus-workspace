@@ -2,7 +2,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { buildRunProjectionBundle } from "../../../../src/run-history/projection/run-projection-utils.js";
@@ -23,7 +22,6 @@ const createMetadata = (
   llmModelIdentifier: "gpt-5.2-codex",
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
   runtimeKind,
   platformAgentRunId: runtimeKind === RuntimeKind.CODEX_APP_SERVER ? "thread-1" : runId,
   lastKnownStatus: "IDLE",

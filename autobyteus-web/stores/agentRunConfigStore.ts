@@ -90,7 +90,6 @@ export const useAgentRunConfigStore = defineStore('agentRunConfig', {
         this.config = {
           ...config,
           runtimeKind: config.runtimeKind ?? DEFAULT_AGENT_RUNTIME_KIND,
-          skillAccessMode: config.skillAccessMode ?? 'PRELOADED_ONLY',
         };
         this.isPanelExpanded = true;
         this.hasFirstMessageSent = false;

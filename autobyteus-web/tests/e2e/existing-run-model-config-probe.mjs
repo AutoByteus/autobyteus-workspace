@@ -169,7 +169,6 @@ const launch = (effort = 'low') => ({
   llm_model_identifier: 'gpt-5.6-luna',
   llm_config: modelConfig(effort),
   auto_execute_tools: false,
-  skill_access_mode: 'PRELOADED_ONLY',
   workspace_root_path: '/workspace/browser-probe',
 })
 const teamTree = {
@@ -283,7 +282,6 @@ const operationResponse = async (operationName, variables) => {
         llmModelIdentifier: state.agentModel,
         llmConfig: clone(state.agentConfig),
         autoExecuteTools: false,
-        skillAccessMode: 'PRELOADED_ONLY',
         runtimeKind: 'autobyteus',
         runtimeReference: { runtimeKind: 'autobyteus', sessionId: null, threadId: null, metadata: null },
       },

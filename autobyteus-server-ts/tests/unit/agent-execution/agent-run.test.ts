@@ -51,7 +51,6 @@ const createHarness = (options: {
       autoExecuteTools: false,
       workspaceId: null,
       llmConfig: null,
-      skillAccessMode: null,
     }),
     runtimeContext: null,
   });

@@ -91,7 +91,7 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
       agentOrgDefinitionId: org.createAgentOrgDefinition.id,
       rootConfiguration: { runtimeKind: "autobyteus", llmModelIdentifier: model.modelIdentifier,
         llmConfig: { reasoning_effort: "low" }, autoExecuteTools: false,
-        skillAccessMode: "PRELOADED_ONLY", workspaceRootPath: a },
+        workspaceRootPath: a },
       agentOverrides: [{ address: "/team/unused", configuration: {
         llmConfig: { reasoning_effort: "high" }, workspaceRootPath: c,
       } }],

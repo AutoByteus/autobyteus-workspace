@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { WorkspaceSkillMaterializer } from "../../../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
@@ -29,9 +28,9 @@ const materializedPath = (workspace: string, name: string): string =>
 const expose = (skill: Skill) => ({ kind: "expose-resolved" as const, skill });
 const discoverable = (skill: Skill) => ({ kind: "reconcile-discoverable" as const, skill });
 type TestRequest = ReturnType<typeof expose> | ReturnType<typeof discoverable> | { kind: "reconcile-unresolved"; name: string };
-const run = (materializer: WorkspaceSkillMaterializer, workspace: string, requests: TestRequest[], skillAccessMode = SkillAccessMode.PRELOADED_ONLY,
+const run = (materializer: WorkspaceSkillMaterializer, workspace: string, requests: TestRequest[],
   workspaceCollisionPolicy: WorkspaceCollisionPolicy = "fail", runId = "run-1") =>
-  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, skillAccessMode, workspaceCollisionPolicy });
+  materializer.materializeConfiguredWorkspaceSkills({ runId, workingDirectory: workspace, requests, workspaceCollisionPolicy });
 
 const isAbsent = async (target: string): Promise<boolean> => {
   try { await fs.lstat(target); return false; } catch (error) {
@@ -342,16 +341,6 @@ describe("WorkspaceSkillMaterializer", () => {
       expect.stringContaining("Failed to roll back Test workspace skill acquisition for run 'run-1'"),
       expect.any(Error),
     );
-  });
-
-  it("does not process requests when skill access is NONE", async () => {
-    const source = await tempDir("workspace-skill-source-");
-    const workspace = await tempDir("workspace-skill-workspace-");
-    const skill = await skillFixture(source, "disabled");
-    const materializer = new WorkspaceSkillMaterializer(profile);
-
-    expect(await run(materializer, workspace, [expose(skill)], SkillAccessMode.NONE)).toEqual([]);
-    expect(await isAbsent(materializedPath(workspace, skill.name))).toBe(true);
   });
 
   it("leaves a replacement directory untouched during guarded cleanup", async () => {

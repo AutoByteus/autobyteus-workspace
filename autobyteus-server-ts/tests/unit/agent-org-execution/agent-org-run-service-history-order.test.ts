@@ -1,5 +1,4 @@
 import { describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentOrgDefinition, AgentOrgMember } from "../../../src/agent-org-definition/domain/agent-org-definition.js";
 import { AgentOrgRunService } from "../../../src/agent-org-execution/services/agent-org-run-service.js";
 
@@ -38,7 +37,7 @@ describe("AgentOrgRunService history ordering", () => {
       agentOrgDefinitionId: "org-1",
       rootConfiguration: {
         runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5.6-sol", llmConfig: null,
-        autoExecuteTools: false, skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+        autoExecuteTools: false,
         workspaceRootPath: "/tmp/workspace",
       },
     });

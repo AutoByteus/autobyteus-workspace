@@ -4,7 +4,6 @@ import os from "node:os";
 import path from "node:path";
 import fastify, { type FastifyInstance } from "fastify";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { registerGraphql } from "../../../src/api/graphql/index.js";
 import { registerRunFileChangeRoutes } from "../../../src/api/rest/run-file-changes.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -60,7 +59,6 @@ describe("Run file changes API integration", () => {
           llmModelIdentifier: "model-1",
           llmConfig: null,
           autoExecuteTools: true,
-          skillAccessMode: null,
           runtimeKind: RuntimeKind.AUTOBYTEUS,
           platformAgentRunId: null,
           lastKnownStatus: "IDLE",
@@ -97,7 +95,7 @@ describe("Run file changes API integration", () => {
       rootTeamRunId: input.teamRunId, rootTeamDefinitionId: "team-def-1",
       teamDefinitionName: "Team Definition", coordinatorAddress: memberAddress,
       children: [testAgentNode(memberAddress, { agentRunId: input.memberRunId,
-        workspaceRootPath: input.workspaceRootPath, skillAccessMode: SkillAccessMode.NONE })],
+        workspaceRootPath: input.workspaceRootPath })],
     }));
     await fs.writeFile(
       path.join(memberDir, "file_changes.json"),

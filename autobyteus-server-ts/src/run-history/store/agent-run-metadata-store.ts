@@ -41,7 +41,6 @@ const normalizeMetadata = (
   llmModelIdentifier: metadata.llmModelIdentifier.trim(),
   llmConfig: metadata.llmConfig ?? null,
   autoExecuteTools: Boolean(metadata.autoExecuteTools),
-  skillAccessMode: metadata.skillAccessMode ?? null,
   runtimeKind: metadata.runtimeKind,
   platformAgentRunId:
     typeof metadata.platformAgentRunId === "string" && metadata.platformAgentRunId.trim().length > 0

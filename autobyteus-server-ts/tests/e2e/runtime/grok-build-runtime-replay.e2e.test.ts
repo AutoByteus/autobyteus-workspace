@@ -99,7 +99,7 @@ describe("Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)",
       const started = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
         "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
         { input: { agentDefinitionId: definitionId, workspaceRootPath: workspace, llmModelIdentifier: "grok-4.7",
-          llmConfig: { reasoning_effort: "low" }, autoExecuteTools: input.autoExecuteTools, skillAccessMode: "NONE",
+          llmConfig: { reasoning_effort: "low" }, autoExecuteTools: input.autoExecuteTools,
           runtimeKind: "grok_build" } },
       );
       expect(started.createAgentRun.success, started.createAgentRun.message).toBe(true);
@@ -317,7 +317,7 @@ describe("Grok Build runtime over GraphQL/WebSocket (recorded Grok ACP replay)",
       const started = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
         "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
         { input: { agentDefinitionId: definitionId, workspaceRootPath: workspace, llmModelIdentifier: "grok-4.7",
-          llmConfig: null, autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: "grok_build" } },
+          llmConfig: null, autoExecuteTools: true, runtimeKind: "grok_build" } },
       );
       expect(started.createAgentRun).toMatchObject({ success: false, runId: null });
       expect(started.createAgentRun.message).toContain("Grok Build: Authentication required: no auth method id provided");

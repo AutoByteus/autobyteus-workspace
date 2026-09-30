@@ -4,7 +4,6 @@ const launch = {
   llmModelIdentifier: 'gpt-5.6-sol',
   llmConfig: null,
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
   workspaceRootPath: null,
 }
 

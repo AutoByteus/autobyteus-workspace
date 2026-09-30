@@ -309,7 +309,6 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
     agentDefinitionId: definitionId,
     llmModelIdentifier: models.get(member.runtime),
     autoExecuteTools: member.autoExecuteTools ?? true,
-    skillAccessMode: "NONE",
     runtimeKind: RUNTIME_KIND[member.runtime],
     workspaceRootPath,
     ...(member.runtime === "auto" ? { llmConfig: { temperature: 0 } } : {}),
@@ -345,7 +344,6 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
       teamAddress: "/",
       llmModelIdentifier: models.get(coordinator.runtime),
       autoExecuteTools: true,
-      skillAccessMode: "NONE",
       runtimeKind: RUNTIME_KIND[coordinator.runtime],
       workspaceRootPath,
     }];
@@ -737,7 +735,7 @@ describeLive("Live delegated-child resource lifecycle across AutoByteus, Codex a
         agentOrgDefinitionId: orgDefinitionId,
         rootConfiguration: {
           runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: models.get("auto"), llmConfig: null,
-          autoExecuteTools: true, skillAccessMode: "NONE", workspaceRootPath,
+          autoExecuteTools: true, workspaceRootPath,
         },
         agentOverrides: [override("/coordinator", COORDINATOR_RUNTIME), override("/planner", "claude"), override("/squad/lead", "codex")],
       } },

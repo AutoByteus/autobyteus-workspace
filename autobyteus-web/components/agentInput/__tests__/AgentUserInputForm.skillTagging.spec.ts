@@ -17,7 +17,7 @@ vi.mock('~/composables/agentInput/useComposerTarget', async () => {
 const buildTarget = () => {
   const context = reactive(new AgentContext({
     agentDefinitionId: 'a', agentDefinitionName: 'A', llmModelIdentifier: 'm', runtimeKind: 'codex_app_server',
-    workspaceId: null, workspaceMetadata: null, autoExecuteTools: true, skillAccessMode: 'PRELOADED_ONLY', isLocked: true,
+    workspaceId: null, workspaceMetadata: null, autoExecuteTools: true, isLocked: true,
   }, new AgentRunState('run-1', { id: 'run-1', messages: [], createdAt: '', updatedAt: '', agentDefinitionId: 'a' }))) as AgentContext
   context.state.currentStatus = AgentStatus.Idle
   return { key: 'run-1', context, draftOwner: null, access: 'live', send: vi.fn(async () => undefined), interrupt: vi.fn() }

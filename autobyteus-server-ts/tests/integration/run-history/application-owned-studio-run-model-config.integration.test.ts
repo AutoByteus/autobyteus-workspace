@@ -1,7 +1,6 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ApplicationExecutionResourceRef } from "@autobyteus/application-sdk-contracts";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
@@ -100,7 +99,6 @@ describe("Application-owned Studio run-model configuration integration", () => {
         llmModelIdentifier: string;
         llmConfig?: Record<string, unknown> | null;
         autoExecuteTools: boolean;
-        skillAccessMode: SkillAccessMode;
         applicationBinding: {
           applicationId: string;
           bindingId: string;
@@ -119,7 +117,6 @@ describe("Application-owned Studio run-model configuration integration", () => {
             llmModelIdentifier: input.llmModelIdentifier,
             llmConfig: input.llmConfig ?? null,
             autoExecuteTools: input.autoExecuteTools,
-            skillAccessMode: input.skillAccessMode,
             runtimeKind: RuntimeKind.AUTOBYTEUS,
             platformAgentRunId: null,
             applicationExecutionContext: {
@@ -289,7 +286,6 @@ describe("Application-owned Studio run-model configuration integration", () => {
           llmModelIdentifier: MODEL_ID,
           llmConfig: { reasoning_effort: "medium" },
           autoExecuteTools: true,
-          skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
           runtimeKind: RuntimeKind.AUTOBYTEUS,
         },
       })
@@ -309,7 +305,6 @@ describe("Application-owned Studio run-model configuration integration", () => {
             llmModelIdentifier: MODEL_ID,
             llmConfig: null,
             autoExecuteTools: true,
-            skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
             runtimeKind: RuntimeKind.AUTOBYTEUS,
           }],
           memberConfigs: [{
@@ -320,7 +315,6 @@ describe("Application-owned Studio run-model configuration integration", () => {
             llmModelIdentifier: MODEL_ID,
             llmConfig: null,
             autoExecuteTools: true,
-            skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
             runtimeKind: RuntimeKind.AUTOBYTEUS,
           }],
         },

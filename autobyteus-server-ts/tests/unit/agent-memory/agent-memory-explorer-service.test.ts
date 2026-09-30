@@ -42,7 +42,6 @@ describe("AgentMemoryExplorerService", () => {
       llmModelIdentifier: "model-a",
       llmConfig: null,
       autoExecuteTools: false,
-      skillAccessMode: null,
       runtimeKind: RuntimeKind.AUTOBYTEUS,
       platformAgentRunId: null,
       startedAt,

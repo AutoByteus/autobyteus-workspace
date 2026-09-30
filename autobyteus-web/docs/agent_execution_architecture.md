@@ -1218,10 +1218,8 @@ toggling OFF after inspection does not force-collapse the section.
 
 Editable launch forms intentionally do not expose a skill-access dropdown.
 Standalone runs inherit the selected agent definition's configured skills, and
-team runs apply each leaf member's configured skills. Reopened historical
-configuration may still carry an internal `skillAccessMode` field for backend
-resume compatibility, but the only normal launch behavior is configured skills
-only.
+team runs apply each leaf member's configured skills. Launch, edit and restore
+payloads carry no skill field.
 
 Desktop run-configuration forms use quieter light-blue filled-field controls on
 dense Agent and Team launch surfaces while keeping the shared select components'

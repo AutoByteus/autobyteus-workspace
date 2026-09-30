@@ -1,4 +1,3 @@
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import {
   assertAgentTeamAddress,
   getAgentTeamAddressBasename,
@@ -35,7 +34,6 @@ export const testAgentNode = (
     llmModelIdentifier: "test-model",
     llmConfig: null,
     autoExecuteTools: true,
-    skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     workspaceRootPath: null,
     ...overrides,
     address,
@@ -72,7 +70,6 @@ export const testAgentTeamNode = (input: {
       llmModelIdentifier: coordinator.llmModelIdentifier,
       llmConfig: coordinator.llmConfig,
       autoExecuteTools: coordinator.autoExecuteTools,
-      skillAccessMode: coordinator.skillAccessMode,
       workspaceRootPath: coordinator.workspaceRootPath,
     },
     ...(address === "/" ? {} : {

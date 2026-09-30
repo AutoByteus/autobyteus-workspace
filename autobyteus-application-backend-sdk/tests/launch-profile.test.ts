@@ -84,20 +84,18 @@ describe("effective application launch translation", () => {
       llmModelIdentifier: "gpt-5.6-luna",
       llmConfig,
       autoExecuteTools: true,
-      skillAccessMode: "PRELOADED_ONLY",
     });
     expect(launch.llmConfig).not.toBe(llmConfig);
     expect(launch.llmConfig?.nested).not.toBe(llmConfig.nested);
   });
 
-  it("omits a null llmConfig and preserves explicit skill access", () => {
+  it("omits a null llmConfig and carries no skill setting", () => {
     const launch = buildEffectiveAgentRunLaunch({
       configuration: buildAgentConfiguration(null),
-      skillAccessMode: "NONE",
     });
 
     expect(launch).not.toHaveProperty("llmConfig");
-    expect(launch.skillAccessMode).toBe("NONE");
+    expect(launch).not.toHaveProperty("skillAccessMode");
   });
 
   it("builds rooted member configs and independently clones every llmConfig", () => {
@@ -113,7 +111,6 @@ describe("effective application launch translation", () => {
       llmModelIdentifier: "gpt-5.6-luna",
       llmConfig,
       autoExecuteTools: true,
-      skillAccessMode: "PRELOADED_ONLY",
     }]);
     expect(launch.teamConfigs[0]?.llmConfig).not.toBe(llmConfig);
     expect(launch.teamConfigs[0]?.llmConfig?.nested).not.toBe(llmConfig.nested);

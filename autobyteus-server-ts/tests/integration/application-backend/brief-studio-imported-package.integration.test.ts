@@ -343,7 +343,6 @@ const persistPublishedArtifactForRun = async (input: {
     llmModelIdentifier: "grok-4.7",
     llmConfig: null,
     autoExecuteTools: true,
-    skillAccessMode: null,
     runtimeKind: RuntimeKind.AUTOBYTEUS,
     platformAgentRunId: null,
     lastKnownStatus: "IDLE",

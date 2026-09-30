@@ -17,7 +17,6 @@ const launchConfiguration = (value: AgentLaunchConfiguration): AgentLaunchConfig
   llmModelIdentifier: value.llmModelIdentifier,
   llmConfig: value.llmConfig,
   autoExecuteTools: value.autoExecuteTools,
-  skillAccessMode: value.skillAccessMode,
   workspaceRootPath: value.workspaceRootPath,
 });
 

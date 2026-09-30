@@ -1,5 +1,4 @@
 import { BaseLLM } from '../../llm/base.js';
-import { SkillAccessMode, resolveSkillAccessMode } from './skill-access-mode.js';
 import type { BaseTool } from '../../tools/base-tool.js';
 import type { BaseAgentUserInputMessageProcessor } from '../input-processor/base-user-input-processor.js';
 import type { BaseToolInvocationPreprocessor } from '../tool-invocation-preprocessor/base-preprocessor.js';
@@ -41,7 +40,6 @@ export class AgentConfig {
   lifecycleProcessors: BaseLifecycleEventProcessor[];
   initialCustomData?: Record<string, any> | null;
   skills: string[];
-  skillAccessMode: SkillAccessMode;
   memoryDir?: string | null;
   memoryCompaction: MemoryCompactionConfiguration;
   compactionLineageScope: CompactionLineageScope | null;
@@ -63,7 +61,6 @@ export class AgentConfig {
     initialCustomData: Record<string, any> | null = null,
     skills: string[] | null = null,
     memoryDir: string | null = null,
-    skillAccessMode: SkillAccessMode | null = null,
     memoryCompaction: MemoryCompactionConfiguration = DEFAULT_MEMORY_COMPACTION_CONFIGURATION,
     compactionLineageScope: CompactionLineageScope | null = null,
   ) {
@@ -86,7 +83,6 @@ export class AgentConfig {
     this.lifecycleProcessors = lifecycleProcessors ?? [];
     this.initialCustomData = initialCustomData ?? undefined;
     this.skills = skills ?? [];
-    this.skillAccessMode = resolveSkillAccessMode(skillAccessMode, this.skills.length);
     this.memoryDir = memoryDir ?? undefined;
     this.memoryCompaction = memoryCompaction;
     this.compactionLineageScope = compactionLineageScope
@@ -114,7 +110,6 @@ export class AgentConfig {
       deepClone(this.initialCustomData ?? null),
       this.skills.slice(),
       this.memoryDir ?? null,
-      this.skillAccessMode,
       copyMemoryCompactionConfiguration(this.memoryCompaction),
       this.compactionLineageScope,
     );
@@ -124,8 +119,7 @@ export class AgentConfig {
     return (
       `AgentConfig(name='${this.name}', role='${this.role}', ` +
       `llmInstance='${this.llmInstance.constructor.name}', ` +
-      `workspace_configured=${this.workspaceRootPath !== null}, skills=${JSON.stringify(this.skills)}, ` +
-      `skillAccessMode='${this.skillAccessMode}')`
+      `workspace_configured=${this.workspaceRootPath !== null}, skills=${JSON.stringify(this.skills)})`
     );
   }
 }

@@ -24,7 +24,6 @@ export type AgentLaunchConfigurationDto = Readonly<{
   llm_model_identifier: string;
   llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
   auto_execute_tools: boolean;
-  skill_access_mode: string;
   workspace_root_path: string | null;
 }>;
 
@@ -99,7 +98,6 @@ const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.obje
   llm_model_identifier: nonEmptyStringSchema,
   llm_config: z.record(z.string(), jsonValueSchema).nullable(),
   auto_execute_tools: z.boolean(),
-  skill_access_mode: nonEmptyStringSchema,
   workspace_root_path: nullableNonEmptyStringSchema,
 }).strict();
 

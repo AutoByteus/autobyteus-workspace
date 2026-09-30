@@ -6,7 +6,6 @@ import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
@@ -314,7 +313,6 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           llmModelIdentifier: modelIdentifier,
           autoExecuteTools: true,
           workspaceId: "workspace-claude-live-normal",
-          skillAccessMode: SkillAccessMode.NONE,
         }),
       );
 
@@ -406,7 +404,6 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           llmModelIdentifier: modelIdentifier,
           autoExecuteTools: false,
           workspaceId: "workspace-claude-live-approved",
-          skillAccessMode: SkillAccessMode.NONE,
         }),
       );
 
@@ -504,7 +501,6 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           llmModelIdentifier: modelIdentifier,
           autoExecuteTools: false,
           workspaceId: "workspace-claude-live-denied",
-          skillAccessMode: SkillAccessMode.NONE,
         }),
       );
 
@@ -581,7 +577,6 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           llmModelIdentifier: modelIdentifier,
           autoExecuteTools: true,
           workspaceId: "workspace-claude-live-autoexec",
-          skillAccessMode: SkillAccessMode.NONE,
         }),
       );
 
@@ -653,7 +648,6 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           llmModelIdentifier: modelIdentifier,
           autoExecuteTools: false,
           workspaceId: "workspace-claude-live-interrupt",
-          skillAccessMode: SkillAccessMode.NONE,
         }),
       );
 
@@ -727,7 +721,6 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           llmModelIdentifier: modelIdentifier,
           autoExecuteTools: true,
           workspaceId: "workspace-claude-live-restore",
-          skillAccessMode: SkillAccessMode.NONE,
         }),
       );
 
@@ -842,7 +835,6 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           llmModelIdentifier: modelIdentifier,
           autoExecuteTools: true,
           workspaceId: "workspace-claude-browser-live",
-          skillAccessMode: SkillAccessMode.NONE,
         }),
       );
 
@@ -938,7 +930,6 @@ describeClaudeBackendIntegration("ClaudeAgentRunBackendFactory integration (live
           llmModelIdentifier: modelIdentifier,
           autoExecuteTools: true,
           workspaceId: "workspace-claude-browser-surface-live",
-          skillAccessMode: SkillAccessMode.NONE,
         }),
       );
 

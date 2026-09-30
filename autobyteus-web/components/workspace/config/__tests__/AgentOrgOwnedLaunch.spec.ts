@@ -116,7 +116,7 @@ describe('selected Org launch references through real panel, stores, projector a
     expect(transport.mutate).toHaveBeenCalledWith({ mutation: CreateAgentOrgRun, variables: { input: {
       agentOrgDefinitionId: 'alpha',
       rootConfiguration: { runtimeKind: 'autobyteus', llmModelIdentifier: 'chosen-model', llmConfig: null,
-        autoExecuteTools: false, skillAccessMode: 'PRELOADED_ONLY', workspaceRootPath: '/isolated/selected' },
+        autoExecuteTools: false, workspaceRootPath: '/isolated/selected' },
       teamOverrides: [], agentOverrides: [{ address: '/group/lead', configuration: { autoExecuteTools: true } }],
     } } })
     expect(transport.replace).toHaveBeenCalledWith(expect.objectContaining({ query: expect.objectContaining({ orgRunId: 'new-org-run' }) }))

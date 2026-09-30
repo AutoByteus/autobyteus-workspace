@@ -80,7 +80,6 @@ const buildDraftContext = (agent: { id: string; name: string; avatarUrl?: string
     workspaceId: null,
     workspaceMetadata: null,
     autoExecuteTools: true,
-    skillAccessMode: 'PRELOADED_ONLY',
     isLocked: false,
     llmConfig: null,
   }

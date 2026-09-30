@@ -21,7 +21,6 @@ const launchConfigurationSchema = z.object({
     llm_model_identifier: nonEmptyStringSchema,
     llm_config: z.record(z.string(), jsonValueSchema).nullable(),
     auto_execute_tools: z.boolean(),
-    skill_access_mode: nonEmptyStringSchema,
     workspace_root_path: nullableNonEmptyStringSchema,
 }).strict();
 const configuredAgentSchema = z.object({

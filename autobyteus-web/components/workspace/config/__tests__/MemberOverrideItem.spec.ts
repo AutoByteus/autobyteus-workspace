@@ -75,7 +75,6 @@ const resolved = (changes: Partial<ResolvedTeamRunLaunchConfig> = {}): ResolvedT
   llmModelIdentifier: 'gpt-5.4',
   llmConfig: { thinking_level: 5 },
   autoExecuteTools: false,
-  skillAccessMode: 'PRELOADED_ONLY',
   workspaceId: null,
   workspaceMetadata: null,
   workspaceRootPath: null,

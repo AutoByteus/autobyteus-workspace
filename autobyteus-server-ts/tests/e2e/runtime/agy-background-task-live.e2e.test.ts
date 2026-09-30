@@ -120,7 +120,7 @@ suite("real AGY background tasks keep the AutoByteus turn alive", () => {
     const started = await graphql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
       "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
       { input: { agentDefinitionId: definitionId, workspaceRootPath: workspace, llmModelIdentifier: MODEL,
-        llmConfig: {}, autoExecuteTools: true, skillAccessMode: "NONE", runtimeKind: "antigravity_cli" } });
+        llmConfig: {}, autoExecuteTools: true, runtimeKind: "antigravity_cli" } });
     expect(started.createAgentRun.success, started.createAgentRun.message).toBe(true);
     const runId = started.createAgentRun.runId!;
     runIds.push(runId);

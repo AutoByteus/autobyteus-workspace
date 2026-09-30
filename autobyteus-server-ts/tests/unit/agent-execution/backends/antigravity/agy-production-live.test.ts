@@ -18,7 +18,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads production-generated main agent a
   await fs.mkdir(workspacePath);
   const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "live-run", memoryDir: path.join(base, "memory"),
     workspacePath, identity: "You are the AutoByteus test main agent. Your identity code is AGY-ID-8614. Answer accurately when asked for this code.",
-    configuredSkillBindings: [], skillAccessMode: "NONE", mcpDescriptor: null });
+    configuredSkillBindings: [], mcpDescriptor: null });
   const process = new AgyStreamProcess();
   const observed: AgyStreamMessage[] = [];
   const init = await process.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
@@ -63,7 +63,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads an AutoByteus-configured PRELOADE
     source: { origin: "global" as const, sourceRoot: await fs.realpath(source), trustedRoot: await fs.realpath(source) } };
   const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "skill-live", memoryDir: path.join(base, "memory"),
     workspacePath, identity: "You are an AutoByteus agent. Consult the codebook skill when asked about its marker.",
-    configuredSkillBindings: [{ ...binding, sourceTreeSha256: fingerprintConfiguredSkillSource(source, source) }], skillAccessMode: "PRELOADED_ONLY", mcpDescriptor: null });
+    configuredSkillBindings: [{ ...binding, sourceTreeSha256: fingerprintConfiguredSkillSource(source, source) }], mcpDescriptor: null });
   const process = new AgyStreamProcess();
   const observed: AgyStreamMessage[] = [];
   const closeErrors: string[] = [];

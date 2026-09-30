@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { SkillAccessMode } from "autobyteus-ts/agent/context/skill-access-mode.js";
 import { LLMFactory } from "autobyteus-ts/llm/llm-factory.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
@@ -48,7 +47,6 @@ describe("MemoryCompactorAgentLaunchResolver", () => {
       llmModelIdentifier: "codex:gpt-5",
       provider: LLMProvider.OPENAI,
       llmConfig: { reasoning_effort: "medium" },
-      skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
     });
     expect(getFreshAgentDefinitionById).toHaveBeenCalledOnce();
     expect(getFreshAgentDefinitionById).toHaveBeenCalledWith(
