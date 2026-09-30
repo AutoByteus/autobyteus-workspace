@@ -56,22 +56,34 @@ export const projectAgentOrgExecutionEvent = (
   run: AgentOrgRun,
   sequenced: SequencedRootEvent<AgentOrgRunEvent>,
 ): RootExecutionEventDto | null => {
-  if (sequenced.event.kind === "lifecycle") return null;
-  const event = sequenced.event.kind === "agent_presentation"
-    ? {
+  const source = sequenced.event;
+  let event;
+  switch (source.kind) {
+    case "lifecycle":
+      return null;
+    case "agent_presentation":
+      event = {
         kind: "agent_presentation" as const,
-        member_address: sequenced.event.execution.memberAddress,
-        agent_run_id: sequenced.event.execution.agentRunId,
-        message: sequenced.event.message,
-      }
-    : sequenced.event.kind === "task_execution_started"
-      ? {
-          kind: "task_execution_started" as const,
-          host_kind: sequenced.event.host.hostKind,
-          host_run_id: sequenced.event.host.hostRunId,
-          execution: requireStartedExecution(run, sequenced.event.taskExecution),
-        }
-      : { kind: "communication" as const, message: sequenced.event.message };
+        member_address: source.execution.memberAddress,
+        agent_run_id: source.execution.agentRunId,
+        message: source.message,
+      };
+      break;
+    case "task_execution_started":
+      event = {
+        kind: "task_execution_started" as const,
+        host_kind: source.host.hostKind,
+        host_run_id: source.host.hostRunId,
+        execution: requireStartedExecution(run, source.taskExecution),
+      };
+      break;
+    case "communication":
+      event = { kind: "communication" as const, message: source.message };
+      break;
+    case "collaborator_added":
+      event = { kind: "collaborator_added" as const, collaborator: source.collaborator };
+      break;
+  }
   return RootExecutionEventDtoSchema.parse({
     root_subject_kind: "agent_org",
     root_run_id: run.orgRunId,

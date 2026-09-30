@@ -4,6 +4,7 @@ import type {
 } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import type { TaskExecutionHostIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type {
+  CollaboratorEntry,
   ConfiguredAgentExecutionNode,
   ConfiguredExecutionNode,
   ConfiguredTeamExecutionNode,
@@ -33,6 +34,15 @@ const mapTeam = (
     : mapTeam(task, targetTeamRunId, change) as TaskTeamExecution);
   return { ...team, members, taskExecutions } as TeamWithTasks;
 };
+
+/** Appends new collaborator entries at the Org root; the schema re-checks address invariants. */
+export const addAgentOrgCollaborators = (input: {
+  tree: AgentOrgRunExecutionTreeSnapshot;
+  collaborators: readonly CollaboratorEntry[];
+}): AgentOrgRunExecutionTreeSnapshot => validateAgentOrgRunExecutionTreePayload({
+  ...input.tree,
+  rootOrg: { ...input.tree.rootOrg, collaborators: [...input.tree.rootOrg.collaborators, ...input.collaborators] },
+}, input.tree.rootOrg.orgRunId);
 
 export const addAgentOrgTaskExecution = (input: {
   tree: AgentOrgRunExecutionTreeSnapshot;

@@ -9,6 +9,7 @@ import { AgentInputUserMessage, ContextFile, ContextFileType } from "autobyteus-
 import type { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
 import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionView } from "./agent-org-execution-view-projector.js";
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
+import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
 
 const serialize = (message: CollaborationStreamServerMessage): string =>
   JSON.stringify(CollaborationStreamServerMessageSchema.parse(message));
@@ -114,9 +115,24 @@ export class AgentOrgStreamHandler {
       return;
     }
     try {
-      if (message.payload.root_run_id !== session.orgRunId) throw new Error("AgentOrg command root correlation mismatch.");
+      if (message.payload.root_subject_kind !== "agent_org" || message.payload.root_run_id !== session.orgRunId) {
+        throw new Error("AgentOrg command root correlation mismatch.");
+      }
       const run = this.service.getActive(session.orgRunId);
       if (!run) throw new Error(`AgentOrg run '${session.orgRunId}' is not active.`);
+      let content = message.type === "SEND_MESSAGE" ? message.payload.content : "";
+      if (message.type === "SEND_MESSAGE" && message.payload.mentions?.length) {
+        const admission = await run.admitCollaboratorMentions({
+          focusedAgentRunId: message.payload.target_agent_run_id,
+          content,
+          mentions: toCollaboratorMentions(message.payload.mentions),
+        });
+        if (!admission.admitted) {
+          session.connection.send(serialize(commandAck(message, "rejected", admission.code, admission.message)));
+          return;
+        }
+        content = admission.content;
+      }
       const command = message.type === "SEND_MESSAGE"
         ? (() => {
             const contextFiles = [
@@ -126,7 +142,7 @@ export class AgentOrgStreamHandler {
             return {
               kind: "post_message" as const,
               message: AgentInputUserMessage.fromDict({
-                content: message.payload.content,
+                content,
                 context_files: contextFiles.length ? contextFiles.map((file) => file.toDict()) : null,
                 metadata: {
                   input_origin: "user_message",
