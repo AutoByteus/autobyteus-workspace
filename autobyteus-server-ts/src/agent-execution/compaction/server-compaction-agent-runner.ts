@@ -76,6 +76,7 @@ export class ServerCompactionAgentRunner implements CompactionAgentRunner {
         autoExecuteTools: false,
         llmConfig: resolved.llmConfig,
         runtimeKind: resolved.runtimeKind,
+        launchPurpose: "server_helper",
       });
       runId = created.runId;
       const run = this.requireCreatedRun(agentRunService, runId);

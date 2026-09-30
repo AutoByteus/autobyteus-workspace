@@ -1,4 +1,6 @@
 import { randomUUID } from "node:crypto";
+import { collaboratorMentionsDtoSchema } from "@autobyteus/agent-presentation-contracts";
+import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
 import {
   AgentInputUserMessage,
   ContextFile,
@@ -359,6 +361,15 @@ export class AgentStreamHandler {
       content,
       context_files: contextPayload.length > 0 ? contextPayload : null,
     });
+    const mentions = payload.mentions === undefined ? { success: true as const, data: [] } : collaboratorMentionsDtoSchema.safeParse(payload.mentions);
+    if (!mentions.success) {
+      egress.send(new ServerMessage(ServerMessageType.AGENT_COMMAND_ACK, {
+        command_type: "SEND_MESSAGE", run_id: agentRunId, message_id: messageId, dedupe_key: dedupeKey,
+        state: "rejected", accepted: false, duplicate: false,
+        code: "COLLABORATOR_MENTION_INVALID", message: "Mentions must be at most 8 unique Agents or Agent Teams.",
+      }));
+      return;
+    }
 
     const result = await this.commandCoordinator.postUserMessage({
       runId: agentRunId,
@@ -366,6 +377,7 @@ export class AgentStreamHandler {
       dedupeKey,
       message: userMessage,
       summary: content,
+      mentions: toCollaboratorMentions(mentions.data),
       onActiveRunReady: (activeRun) => {
         this.bindSessionToRun(sessionId, activeRun, egress);
       },

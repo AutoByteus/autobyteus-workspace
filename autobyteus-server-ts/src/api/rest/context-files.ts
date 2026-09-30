@@ -15,6 +15,7 @@ import { ContextFileLayout } from "../../context-files/store/context-file-layout
 import {
   ContextFileOwnerResolver,
   OrgContextFileOwnerNotFoundError,
+  AgentCollaborationContextFileOwnerNotFoundError,
   StandaloneContextFileOwnerNotFoundError,
   TeamContextFileOwnerNotFoundError,
 } from "../../context-files/services/context-file-owner-resolver.js";
@@ -261,4 +262,40 @@ export async function registerContextFileRoutes(app: FastifyInstance): Promise<v
       throw error;
     }
   });
+
+  type AgentCollaborationFileParams = { hostRunId: string; agentRunId: string; storedFilename: string };
+  const sendAgentCollaborationFile = async (
+    filePath: Promise<string | null>,
+    reply: Parameters<typeof sendFile>[1] & { code(status: number): { send(body: unknown): unknown } },
+  ) => {
+    try {
+      const resolved = await filePath;
+      if (!resolved) return reply.code(404).send({ detail: "File not found." });
+      return sendFile(resolved, reply);
+    } catch (error) {
+      if (error instanceof AgentCollaborationContextFileOwnerNotFoundError) return reply.code(404).send({ detail: "File not found." });
+      if (error instanceof ContextFileDescriptorError) return reply.code(400).send({ detail: error.message });
+      throw error;
+    }
+  };
+  app.get<{ Params: AgentCollaborationFileParams }>(
+    "/drafts/agent-collaborations/:hostRunId/agent-runs/:agentRunId/context-files/:storedFilename",
+    async (request, reply) => sendAgentCollaborationFile((async () => {
+      const { hostRunId, agentRunId, storedFilename } = request.params;
+      return readService.getDraftFilePath(
+        parseDraftContextFileOwnerDescriptor({ kind: "agent_collaboration_member_draft", hostRunId, agentRunId }),
+        storedFilename,
+      );
+    })(), reply),
+  );
+  app.get<{ Params: AgentCollaborationFileParams }>(
+    "/agent-collaborations/:hostRunId/agent-runs/:agentRunId/context-files/:storedFilename",
+    async (request, reply) => sendAgentCollaborationFile((async () => {
+      const { hostRunId, agentRunId, storedFilename } = request.params;
+      return readService.getFinalFilePath(
+        parseFinalContextFileOwnerDescriptor({ kind: "agent_collaboration_member_final", hostRunId, agentRunId }),
+        storedFilename,
+      );
+    })(), reply),
+  );
 }

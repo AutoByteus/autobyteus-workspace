@@ -19,6 +19,8 @@ import {
   getAgentStreamBroadcaster,
 } from "../../services/agent-streaming/agent-stream-broadcaster.js";
 import { ServerMessage, ServerMessageType } from "../../services/agent-streaming/models.js";
+import { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
+import type { CollaboratorMentionAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
 import type {
   SendMessageCommandAckPayload,
   AgentRunCommandCoordinatorInput,
@@ -39,6 +41,7 @@ export class AgentRunCommandCoordinator {
     overlayStore?: AgentRunCommandStatusOverlayStore;
     projectionService?: AgentRunStatusProjectionService;
     broadcaster?: AgentStreamBroadcaster;
+    collaborationRoots?: Pick<AgentRunCollaborationRootManager, "getActive">;
   } = {}) {}
 
   async postUserMessage(
@@ -65,8 +68,30 @@ export class AgentRunCommandCoordinator {
       this.clearOverlayForCommand(record);
       input.onActiveRunReady?.(activeRun);
 
+      let message = input.message;
+      if (input.mentions?.length) {
+        // The host is ready (its activation ensured the Agent root); admission runs in the root's
+        // gate after the lane was released, and the post stays here for dedupe and the overlay.
+        let admission: CollaboratorMentionAdmissionResult;
+        try {
+          admission = await this.admitMentions(record.runId, input);
+        } catch (error) {
+          return this.failCommand(this.latestRecord(record), "COLLABORATOR_ADMISSION_FAILED", toMessage(error), { publishErrorStatus: false });
+        }
+        if (!admission.admitted) {
+          this.registry.markRejected({
+            runId: record.runId,
+            messageId: record.messageId,
+            code: admission.code === "COLLABORATOR_MENTION_INVALID" ? "COLLABORATOR_MENTION_INVALID" : "COLLABORATOR_MENTION_UNAVAILABLE",
+            message: admission.message,
+          });
+          return this.recordResult(this.latestRecord(record), "rejected", false, false);
+        }
+        message = new AgentInputUserMessage(admission.content, message.senderType, message.contextFiles, message.metadata);
+      }
+
       const result = await activeRun.postUserMessage(
-        this.withCommandMetadata(input.message, record),
+        this.withCommandMetadata(message, record),
         {
           lifecycleObserver: (fact) => this.applyInputLifecycle(record, fact),
         },
@@ -93,6 +118,14 @@ export class AgentRunCommandCoordinator {
         publishErrorStatus: requiresActivation && !this.agentRunService.getAgentRun(record.runId),
       });
     }
+  }
+
+  private admitMentions(runId: string, input: AgentRunCommandCoordinatorInput): Promise<CollaboratorMentionAdmissionResult> {
+    const root = (this.deps.collaborationRoots ?? AgentRunCollaborationRootManager.getInstance()).getActive(runId);
+    if (!root) {
+      return Promise.resolve({ admitted: false, code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "This run cannot bring in collaborators." });
+    }
+    return root.admitCollaboratorMentions({ focusedAgentRunId: runId, content: input.message.content, mentions: input.mentions ?? [] });
   }
 
   private applyInputLifecycle(

@@ -1,14 +1,17 @@
-/** Org-private barrier for admitted handle construction and input publication. */
-export class AgentOrgOperationGate {
+/**
+ * Root-level barrier for admitted operations (handle construction, admission, delegation,
+ * input publication) that termination closes and drains. Shared by the AgentOrg and Agent roots.
+ */
+export class RootOperationGate {
   private open = true;
   private admitted = 0;
   private drainWaiters: Array<() => void> = [];
 
-  constructor(private readonly options: Readonly<{ orgRunId: string; canEnter(): boolean }>) {}
+  constructor(private readonly options: Readonly<{ rootLabel: string; canEnter(): boolean }>) {}
 
   async run<T>(operation: () => Promise<T>): Promise<T> {
     if (!this.open || !this.options.canEnter()) {
-      throw new Error(`AgentOrg '${this.options.orgRunId}' is not accepting execution operations.`);
+      throw new Error(`${this.options.rootLabel} is not accepting execution operations.`);
     }
     this.admitted += 1;
     try {

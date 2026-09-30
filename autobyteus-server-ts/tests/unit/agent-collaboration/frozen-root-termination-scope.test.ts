@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createFrozenAgentOrgTerminationScope } from "../../../src/agent-org-execution/domain/frozen-agent-org-termination-scope.js";
+import { createFrozenRootTerminationScope } from "../../../src/agent-collaboration/execution/backends/frozen-root-termination-scope.js";
 
 type Result = { accepted: boolean; code?: string };
 
@@ -11,7 +11,7 @@ describe("frozen AgentOrg termination scope retry", () => {
         .mockResolvedValue({ accepted: true }),
       terminate: vi.fn(async () => ({ accepted: true })),
     };
-    const scope = createFrozenAgentOrgTerminationScope({ agentHandles: [handle as never], teamScopes: [] });
+    const scope = createFrozenRootTerminationScope({ agentHandles: [handle as never], teamScopes: [] });
 
     await expect(scope.fenceAgentRunsForRootShutdown()).resolves.toMatchObject({ accepted: false });
     await expect(scope.fenceAgentRunsForRootShutdown()).resolves.toEqual({ accepted: true });
@@ -31,7 +31,7 @@ describe("frozen AgentOrg termination scope retry", () => {
       fenceAgentRunsForRootShutdown: vi.fn(async () => ({ accepted: true })),
       finish: vi.fn(async () => ({ accepted: true })),
     };
-    const scope = createFrozenAgentOrgTerminationScope({ agentHandles: [handle as never], teamScopes: [teamScope as never] });
+    const scope = createFrozenRootTerminationScope({ agentHandles: [handle as never], teamScopes: [teamScope as never] });
 
     await expect(scope.finish()).rejects.toThrow("not the current published run");
     await expect(scope.finish()).resolves.toMatchObject({ accepted: false, code: "BUSY" });

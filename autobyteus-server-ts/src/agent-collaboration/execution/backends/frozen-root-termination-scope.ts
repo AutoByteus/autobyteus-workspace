@@ -1,16 +1,17 @@
-import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
-import type { ConfiguredAgentExecutionHandle } from "../../agent-collaboration/execution/backends/configured-agent-execution-handle.js";
-import type { FrozenTeamRunTerminationScope } from "../../agent-team-execution/domain/frozen-team-run-termination-scope.js";
+import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
+import type { ConfiguredAgentExecutionHandle } from "./configured-agent-execution-handle.js";
+import type { FrozenTeamRunTerminationScope } from "../../../agent-team-execution/domain/frozen-team-run-termination-scope.js";
 
-export type FrozenAgentOrgTerminationScope = Readonly<{
+/** Frozen root-hosted executions (Agents and Teams) of an AgentOrg or Agent root, fenced then finished. */
+export type FrozenRootTerminationScope = Readonly<{
   fenceAgentRunsForRootShutdown(): Promise<AgentOperationResult>;
   finish(): Promise<AgentOperationResult>;
 }>;
 
-export const createFrozenAgentOrgTerminationScope = (input: Readonly<{
+export const createFrozenRootTerminationScope = (input: Readonly<{
   agentHandles: readonly ConfiguredAgentExecutionHandle[];
   teamScopes: readonly FrozenTeamRunTerminationScope[];
-}>): FrozenAgentOrgTerminationScope => {
+}>): FrozenRootTerminationScope => {
   let fencing: Promise<AgentOperationResult> | null = null;
   let finishing: Promise<AgentOperationResult> | null = null;
   return Object.freeze({

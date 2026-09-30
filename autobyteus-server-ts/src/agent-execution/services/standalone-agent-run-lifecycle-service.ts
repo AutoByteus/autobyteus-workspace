@@ -19,6 +19,7 @@ import {
   runModelConfigEditability,
   type RunModelConfigUpdateResult,
 } from "../../run-history/domain/run-model-config.js";
+import type { StandaloneAgentRunCollaborationBinding } from "./standalone-agent-run-collaboration-binding.js";
 
 export type StandaloneAgentRunActivationResult = Readonly<{
   run: AgentRun;
@@ -42,6 +43,7 @@ export class StandaloneAgentRunLifecycleService {
   private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
   private readonly modelSelectionValidator: RunModelSelectionValidator;
+  private collaboration: StandaloneAgentRunCollaborationBinding | null = null;
 
   constructor(
     memoryDir: string,
@@ -66,6 +68,17 @@ export class StandaloneAgentRunLifecycleService {
       throw new Error("modelSelectionValidator is required.");
     }
     this.modelSelectionValidator = deps.modelSelectionValidator;
+  }
+
+  /** Binds the Agent-root owner once at process composition (the two depend on each other). */
+  bindCollaboration(binding: StandaloneAgentRunCollaborationBinding): void {
+    if (this.collaboration) throw new Error("Standalone collaboration binding is already set.");
+    this.collaboration = binding;
+  }
+
+  /** Explicit Stop: the Agent root and its children end before the host run. */
+  terminateCollaborationRoot(runId: string): Promise<boolean> {
+    return this.collaboration?.terminateRoot(requiredRunId(runId)) ?? Promise.resolve(false);
   }
 
   async resolveCommandReadyAgentRun(runId: string): Promise<AgentRun> {
@@ -329,8 +342,9 @@ export class StandaloneAgentRunLifecycleService {
       }
     }
 
+    let run: AgentRun;
     try {
-      return { run: input.candidate.commitPublication(), metadata: persisted };
+      run = input.candidate.commitPublication();
     } catch (error) {
       const cleanup = await input.candidate.abort();
       const cause = cleanup.kind === "quarantined"
@@ -344,6 +358,11 @@ export class StandaloneAgentRunLifecycleService {
       this.quarantines.set(input.target.runId, commitError);
       throw commitError;
     }
+    // Inside the transition lane: the hook ensures the Agent root without taking its gate.
+    await this.collaboration?.onHostPublished({ run, metadata: persisted }).catch((error: unknown) => {
+      console.error(`Run '${input.target.runId}' collaboration root could not be ensured:`, error);
+    });
+    return { run, metadata: persisted };
   }
 
   private async abortForRetry(candidate: AgentRunActivationCandidate): Promise<void> {
@@ -400,6 +419,7 @@ export class StandaloneAgentRunLifecycleService {
       memoryDir: metadata.memoryDir,
       llmConfig: metadata.llmConfig,
       applicationExecutionContext: metadata.applicationExecutionContext ?? null,
+      memberExecutionContext: await this.collaboration?.buildHostMemberExecutionContext(metadata) ?? null,
     });
   }
 

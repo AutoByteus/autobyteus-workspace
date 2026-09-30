@@ -8,6 +8,8 @@ import { registerApplicationAgentCommunicationWebsocket } from "./application-ag
 import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRealtimeContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 import type { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
 import { AgentOrgStreamHandler } from "../../services/agent-streaming/agent-org-stream-handler.js";
+import { AgentCollaborationStreamHandler } from "../../services/agent-streaming/agent-collaboration-stream-handler.js";
+import { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
 
 export async function registerWebsocketRoutes(
   app: FastifyInstance,
@@ -19,7 +21,16 @@ export async function registerWebsocketRoutes(
 ): Promise<void> {
   await registerFileExplorerWebsocket(app);
   await registerTerminalWebsocket(app);
-  await registerAgentWebsocket(app, undefined, undefined, new AgentOrgStreamHandler(dependencies.agentOrgRunService));
+  await registerAgentWebsocket(
+    app,
+    undefined,
+    undefined,
+    new AgentOrgStreamHandler(dependencies.agentOrgRunService),
+    new AgentCollaborationStreamHandler({
+      resolveCommandReadyRoot: (hostRunId) => AgentRunCollaborationRootManager.getInstance().resolveCommandReadyRoot(hostRunId),
+      getActive: (hostRunId) => AgentRunCollaborationRootManager.getInstance().getActive(hostRunId),
+    }),
+  );
   await registerApplicationBackendNotificationWebsocket(app, {
     notificationHub: dependencies.application.notifications,
     lifecycle: dependencies.lifecycleReadiness,

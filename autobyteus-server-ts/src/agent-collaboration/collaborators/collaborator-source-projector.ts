@@ -1,7 +1,9 @@
 import type {
+  AgentLaunchConfiguration,
   TeamRunAgentNode,
   TeamRunAgentTeamNode,
 } from "../../agent-team-execution/domain/team-run-config.js";
+import { getAgentTeamAddressSegments } from "../domain/agent-team-address.js";
 import type {
   CollaboratorAgentEntry,
   CollaboratorEntry,
@@ -49,3 +51,30 @@ export const projectCollaboratorTeamSource = (entry: CollaboratorTeamEntry): Tea
 
 export const projectCollaboratorSource = (entry: CollaboratorEntry): TeamRunAgentNode | TeamRunAgentTeamNode =>
   entry.kind === "agent" ? projectCollaboratorAgentSource(entry) : projectCollaboratorTeamSource(entry);
+
+export type CollaboratorExecutionSource = Readonly<{
+  agentDefinitionId: string;
+  launchConfiguration: AgentLaunchConfiguration;
+}>;
+
+/**
+ * The definition and launch settings of a collaborator run's agent at `memberAddress` (the
+ * collaborator Agent itself, or a member of a collaborator Team); null when it is not one.
+ */
+export const collaboratorExecutionSource = (
+  collaborators: readonly CollaboratorEntry[],
+  memberAddress: string,
+): CollaboratorExecutionSource | null => {
+  const segment = getAgentTeamAddressSegments(memberAddress)[0];
+  const entry = collaborators.find((candidate) => getAgentTeamAddressSegments(candidate.address)[0] === segment);
+  if (!entry) return null;
+  if (entry.kind === "agent") {
+    return entry.address === memberAddress
+      ? Object.freeze({ agentDefinitionId: entry.agentDefinitionId, launchConfiguration: entry.launchConfiguration })
+      : null;
+  }
+  const member = entry.members.find((candidate) => candidate.address === memberAddress);
+  return member
+    ? Object.freeze({ agentDefinitionId: member.agentDefinitionId, launchConfiguration: entry.defaultLaunchConfiguration })
+    : null;
+};

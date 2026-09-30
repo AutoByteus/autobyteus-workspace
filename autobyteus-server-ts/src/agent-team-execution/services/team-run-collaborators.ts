@@ -12,6 +12,26 @@ import type { TeamExecutionIndex } from "./team-execution-index.js";
 import type { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
 import { addCollaboratorsToTree } from "./team-run-execution-tree-mutator.js";
 
+/** Collaborator facts of one Team tree: the root Team and its configured Agents are in the run. */
+export const teamCollaboratorPortFor = (
+  tree: TeamRunExecutionTreeSnapshot,
+  index: TeamExecutionIndex,
+): CollaboratorRootPort => Object.freeze({
+  rootKind: "agent_team",
+  isApplicationBound: tree.applicationBinding !== null,
+  rootLaunchConfiguration: () => tree.rootTeam.defaultLaunchConfiguration,
+  configuredDefinitionIds: () => Object.freeze({
+    agentDefinitionIds: new Set(tree.rootTeam.members.map((member) => member.agentDefinitionId)),
+    teamDefinitionIds: new Set([tree.rootTeam.teamDefinitionId]),
+  }),
+  collaborators: () => tree.rootTeam.collaborators,
+  hasTaskExecutionAt: (address: string) => index.hasTaskExecutionAt(address),
+  addressesInUse: () => new Set([
+    ...tree.rootTeam.members.map((member) => member.address),
+    ...tree.rootTeam.collaborators.map((entry) => entry.address),
+  ]),
+});
+
 /**
  * Team-root collaborator facts and commits. The root runs `admit` inside its materialization
  * gate; this owner commits new entries in one tree write and publishes them.
@@ -39,25 +59,8 @@ export class TeamRunCollaborators {
     });
   }
 
-  /** The root Team and its configured Agents are in the run by configuration. */
   port(): CollaboratorRootPort {
-    const tree = this.options.getTree();
-    const index = this.options.getIndex();
-    return Object.freeze({
-      rootKind: "agent_team",
-      isApplicationBound: tree.applicationBinding !== null,
-      rootLaunchConfiguration: () => tree.rootTeam.defaultLaunchConfiguration,
-      configuredDefinitionIds: () => Object.freeze({
-        agentDefinitionIds: new Set(tree.rootTeam.members.map((member) => member.agentDefinitionId)),
-        teamDefinitionIds: new Set([tree.rootTeam.teamDefinitionId]),
-      }),
-      collaborators: () => tree.rootTeam.collaborators,
-      hasTaskExecutionAt: (address: string) => index.hasTaskExecutionAt(address),
-      addressesInUse: () => new Set([
-        ...tree.rootTeam.members.map((member) => member.address),
-        ...tree.rootTeam.collaborators.map((entry) => entry.address),
-      ]),
-    });
+    return teamCollaboratorPortFor(this.options.getTree(), this.options.getIndex());
   }
 
   private async commit(entries: readonly CollaboratorEntry[]): Promise<void> {

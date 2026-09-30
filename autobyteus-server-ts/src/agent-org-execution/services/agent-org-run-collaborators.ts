@@ -12,6 +12,34 @@ import type { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 import { addAgentOrgCollaborators } from "./agent-org-run-execution-tree-mutator.js";
 
+/** Collaborator facts of one Org tree: the Org, its direct Agents, mounted Teams and their Agents are in the run. */
+export const agentOrgCollaboratorPortFor = (
+  tree: AgentOrgRunExecutionTreeSnapshot,
+  index: AgentOrgExecutionIndex,
+): CollaboratorRootPort => {
+  const agentDefinitionIds = new Set<string>();
+  const teamDefinitionIds = new Set<string>([tree.rootOrg.orgDefinitionId]);
+  const addresses = new Set<string>(tree.rootOrg.collaborators.map((entry) => entry.address));
+  for (const member of tree.rootOrg.members) {
+    addresses.add(member.address);
+    if ("agentRunId" in member) {
+      agentDefinitionIds.add(member.agentDefinitionId);
+      continue;
+    }
+    teamDefinitionIds.add(member.teamDefinitionId);
+    member.members.forEach((agent) => agentDefinitionIds.add(agent.agentDefinitionId));
+  }
+  return Object.freeze({
+    rootKind: "agent_org",
+    isApplicationBound: tree.applicationBinding !== null,
+    rootLaunchConfiguration: () => tree.rootOrg.defaultLaunchConfiguration,
+    configuredDefinitionIds: () => Object.freeze({ agentDefinitionIds, teamDefinitionIds }),
+    collaborators: () => tree.rootOrg.collaborators,
+    hasTaskExecutionAt: (address: string) => index.hasTaskExecutionAt(address),
+    addressesInUse: () => addresses,
+  });
+};
+
 /**
  * Org-root collaborator facts and commits. The Org runs `admit` inside its operation gate;
  * this owner commits new entries in one tree write and publishes them.
@@ -38,31 +66,8 @@ export class AgentOrgRunCollaborators {
     });
   }
 
-  /** The Org, its direct Agents, its mounted Teams and their Agents are in the run by configuration. */
   port(): CollaboratorRootPort {
-    const tree = this.options.getTree();
-    const index = this.options.getIndex();
-    const agentDefinitionIds = new Set<string>();
-    const teamDefinitionIds = new Set<string>([tree.rootOrg.orgDefinitionId]);
-    const addresses = new Set<string>(tree.rootOrg.collaborators.map((entry) => entry.address));
-    for (const member of tree.rootOrg.members) {
-      addresses.add(member.address);
-      if ("agentRunId" in member) {
-        agentDefinitionIds.add(member.agentDefinitionId);
-        continue;
-      }
-      teamDefinitionIds.add(member.teamDefinitionId);
-      member.members.forEach((agent) => agentDefinitionIds.add(agent.agentDefinitionId));
-    }
-    return Object.freeze({
-      rootKind: "agent_org",
-      isApplicationBound: tree.applicationBinding !== null,
-      rootLaunchConfiguration: () => tree.rootOrg.defaultLaunchConfiguration,
-      configuredDefinitionIds: () => Object.freeze({ agentDefinitionIds, teamDefinitionIds }),
-      collaborators: () => tree.rootOrg.collaborators,
-      hasTaskExecutionAt: (address: string) => index.hasTaskExecutionAt(address),
-      addressesInUse: () => addresses,
-    });
+    return agentOrgCollaboratorPortFor(this.options.getTree(), this.options.getIndex());
   }
 
   private commit(entries: readonly CollaboratorEntry[]): Promise<void> {

@@ -40,11 +40,11 @@ import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/loca
 import type { RootSnapshotConnection } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { CollaborationAgentStatusSnapshot } from "../../agent-collaboration/execution/domain/collaboration-agent-execution-event.js";
 import { CollaborationAgentPresentationEventAdapter } from "../../agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
-import { AgentOrgOperationGate } from "./agent-org-operation-gate.js";
+import { RootOperationGate } from "../../agent-collaboration/execution/services/root-operation-gate.js";
 import {
-  createFrozenAgentOrgTerminationScope,
-  type FrozenAgentOrgTerminationScope,
-} from "./frozen-agent-org-termination-scope.js";
+  createFrozenRootTerminationScope,
+  type FrozenRootTerminationScope,
+} from "../../agent-collaboration/execution/backends/frozen-root-termination-scope.js";
 import { projectAgentOrgAgentStatusSnapshots } from "../services/agent-org-agent-status-snapshot-projector.js";
 
 export type AgentOrgRunPackageSnapshot = Readonly<{
@@ -62,14 +62,14 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private readonly taskExecutions: RootTaskExecutionLifecycle<ResolvedAgentOrgRecipient>;
   private readonly communication: RootCommunicationEngine;
   private readonly presentation: CollaborationAgentPresentationEventAdapter;
-  private readonly operationGate: AgentOrgOperationGate;
+  private readonly operationGate: RootOperationGate;
   private readonly recipients = new AgentOrgRecipientResolver();
   private readonly collaborators: AgentOrgRunCollaborators;
   private readonly eventRetirement: AgentOrgTaskEventRetirement;
   private termination: Promise<AgentOperationResult> | null = null;
   /** Fail-stop origin outlives a failed termination attempt, so a retry keeps the fail-stop settlement. */
   private failStopped = false;
-  private frozenTerminationScope: FrozenAgentOrgTerminationScope | null = null;
+  private frozenTerminationScope: FrozenRootTerminationScope | null = null;
 
   constructor(private readonly options: Readonly<{
     root: RootExecutionIdentity;
@@ -91,8 +91,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     this.messages = options.messages;
     this.index = new AgentOrgExecutionIndex(this.tree);
     this.assertCorrelation();
-    this.operationGate = new AgentOrgOperationGate({
-      orgRunId: this.orgRunId,
+    this.operationGate = new RootOperationGate({
+      rootLabel: `AgentOrg '${this.orgRunId}'`,
       canEnter: () => this.isAdmitting(),
     });
     this.eventRetirement = new AgentOrgTaskEventRetirement({
@@ -340,7 +340,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private async terminateOnce(): Promise<AgentOperationResult> {
     const errors: string[] = [];
     await this.operationGate.closeAndDrain();
-    this.frozenTerminationScope ??= createFrozenAgentOrgTerminationScope({
+    this.frozenTerminationScope ??= createFrozenRootTerminationScope({
       agentHandles: this.options.rootAgents.freezeForRootTermination(),
       teamScopes: this.options.teams.freezeForRootTermination(),
     });

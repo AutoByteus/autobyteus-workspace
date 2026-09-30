@@ -81,6 +81,7 @@ const normalizeRow = (
   createdAt: row.createdAt,
   archivedAt: row.archivedAt ?? null,
   terminatedAt: row.terminatedAt ?? null,
+  ...(row.hasCollaboration === true ? { hasCollaboration: true as const } : {}),
 });
 
 const cloneRows = (
@@ -272,6 +273,18 @@ export class AgentRunHistoryCatalogService {
         return { value: undefined, shouldFlush: false };
       }
       rows.set(input.runId, normalizeRow({ ...row, terminatedAt }));
+      return { value: undefined, shouldFlush: true };
+    });
+  }
+
+  /** The run's collaboration package now exists; history can show its children without reading it. */
+  async recordCollaborationPackageCreated(input: { runId: string }): Promise<void> {
+    await this.mutate(async (rows) => {
+      const row = rows.get(input.runId);
+      if (!row || row.hasCollaboration) {
+        return { value: undefined, shouldFlush: false };
+      }
+      rows.set(input.runId, normalizeRow({ ...row, hasCollaboration: true }));
       return { value: undefined, shouldFlush: true };
     });
   }

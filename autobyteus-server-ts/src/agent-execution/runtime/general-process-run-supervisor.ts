@@ -53,6 +53,7 @@ import { AgentOrgRunHistoryCatalogService } from "../../run-history/services/age
 import { CollaborationRootHistoryService } from "../../run-history/services/collaboration-root-history-service.js";
 import { AgentOrgExecutionTreeLocationService } from "../../agent-org-execution/services/agent-org-execution-tree-location-service.js";
 import { CollaborationExecutionLocationService } from "../../agent-collaboration/execution/services/collaboration-execution-location-service.js";
+import { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
 import { AgentRunCollaborationLocationService } from "../../agent-run-collaboration/services/agent-run-collaboration-location-service.js";
 
 export type GeneralProcessRunSupervisorInput = Readonly<{
@@ -107,6 +108,7 @@ export class GeneralProcessRunSupervisor {
   private readonly agentRunManager: AgentRunManager;
   private readonly agentTeamRunManager: AgentTeamRunManager;
   private readonly agentOrgRunManager: AgentOrgRunManager;
+  private readonly agentRunCollaborationRootManager: AgentRunCollaborationRootManager;
   private readonly agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
   private closePromise: Promise<void> | null = null;
 
@@ -119,9 +121,13 @@ export class GeneralProcessRunSupervisor {
     const collaborationLocations = new CollaborationExecutionLocationService({
       teams: storedTeamLocations,
       orgs: storedOrgLocations,
-      agents: new AgentRunCollaborationLocationService({ memoryDir }),
+      agents: new AgentRunCollaborationLocationService({
+        memoryDir,
+        roots: { getActiveTree: (hostRunId) => agentRunCollaborationRootManager?.getActiveTree(hostRunId) ?? null },
+      }),
     });
     let agentRunManager: AgentRunManager | null = null;
+    let agentRunCollaborationRootManager: AgentRunCollaborationRootManager | null = null;
     let agentTeamRunManager: AgentTeamRunManager | null = null;
     let agentOrgRunManager: AgentOrgRunManager | null = null;
     let agentRunService: AgentRunService | null = null;
@@ -244,6 +250,28 @@ export class GeneralProcessRunSupervisor {
         tokenUsageReadiness,
         modelSelectionValidator: input.modelSelectionValidator,
       });
+      const lifecycle = lifecycleService;
+      const activeAgentRuns = agentRunManager;
+      agentRunCollaborationRootManager = AgentRunCollaborationRootManager.initializeProcessInstance({
+        memoryDir,
+        definitions: input.agentDefinitionService,
+        host: {
+          getActiveRun: (hostRunId) => activeAgentRuns.getActiveRun(hostRunId),
+          resolveCommandReadyAgentRun: (hostRunId) => lifecycle.resolveCommandReadyAgentRun(hostRunId),
+          readMetadata: (hostRunId) => metadataService.readMetadata(hostRunId),
+          recordCollaborationPackageCreated: (hostRunId) => historyCatalogService.recordCollaborationPackageCreated({ runId: hostRunId }),
+        },
+        rootDependencies: {
+          flatTeamExecutionFactory,
+          taskExecutionIdentity,
+          teamDefinitions: input.agentTeamDefinitionService,
+          agentRunManager: generalAgentRunManager,
+          memoryLocator,
+          activityInspector,
+          workspaceManager,
+        },
+      });
+      lifecycleService.bindCollaboration(agentRunCollaborationRootManager);
       agentRunService = new AgentRunService(memoryDir, {
         agentRunManager,
         metadataService,
@@ -293,6 +321,7 @@ export class GeneralProcessRunSupervisor {
       this.agentRunManager = agentRunManager;
       this.agentTeamRunManager = agentTeamRunManager;
       this.agentOrgRunManager = agentOrgRunManager;
+      this.agentRunCollaborationRootManager = agentRunCollaborationRootManager;
       this.agentRunService = agentRunService;
       this.teamRunService = teamRunService;
       this.agentOrgRunService = agentOrgRunService;
@@ -325,6 +354,9 @@ export class GeneralProcessRunSupervisor {
       if (agentOrgRunManager) {
         AgentOrgRunManager.releaseProcessInstance(agentOrgRunManager);
       }
+      if (agentRunCollaborationRootManager) {
+        AgentRunCollaborationRootManager.releaseProcessInstance(agentRunCollaborationRootManager);
+      }
       if (agentTeamRunManager) {
         AgentTeamRunManager.releaseProcessInstance(agentTeamRunManager);
       }
@@ -356,6 +388,12 @@ export class GeneralProcessRunSupervisor {
       errors.push(error);
     }
     try {
+      // Agent roots end (and stop their children) before their host runs stop.
+      await this.agentRunCollaborationRootManager.stopAll();
+    } catch (error) {
+      errors.push(error);
+    }
+    try {
       await this.agentRunManager.stopAllAgentRuns();
     } catch (error) {
       errors.push(error);
@@ -364,6 +402,7 @@ export class GeneralProcessRunSupervisor {
       releaseProcessTeamRunService(this.teamRunService);
       releaseProcessAgentRunService(this.agentRunService);
       AgentOrgRunManager.releaseProcessInstance(this.agentOrgRunManager);
+      AgentRunCollaborationRootManager.releaseProcessInstance(this.agentRunCollaborationRootManager);
       AgentTeamRunManager.releaseProcessInstance(this.agentTeamRunManager);
       AgentRunManager.releaseProcessInstance(this.agentRunManager);
     } catch (error) {

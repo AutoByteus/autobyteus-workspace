@@ -212,6 +212,7 @@ describe("ServerCompactionAgentRunner", () => {
       autoExecuteTools: false,
       llmConfig: { reasoning_effort: "medium" },
       runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+      launchPurpose: "server_helper",
     });
     expect(launchResolver.resolve).toHaveBeenCalledWith(parentLaunchFallback);
     expect(run.postedMessage).toBeInstanceOf(AgentInputUserMessage);

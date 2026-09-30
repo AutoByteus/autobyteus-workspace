@@ -7,6 +7,8 @@ export interface AgentRunHistoryIndexRowRecord {
   createdAt: string;
   archivedAt?: string | null;
   terminatedAt?: string | null;
+  /** Present (true) once the run has a collaboration package; absent means none. */
+  hasCollaboration?: true;
 }
 
 export type AgentRunHistoryIndexFileRecord = AgentRunHistoryIndexRowRecord[];

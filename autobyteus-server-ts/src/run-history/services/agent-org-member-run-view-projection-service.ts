@@ -9,6 +9,7 @@ import {
 import { AgentOrgRunManager } from "../../agent-org-execution/services/agent-org-run-manager.js";
 import { TokenUsageRunStore } from "../../token-usage/providers/token-usage-run-store.js";
 import type { TokenUsageRunSummaryPayload } from "../../agent-execution/domain/agent-run-token-usage.js";
+import { collaboratorExecutionSource } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -107,24 +108,27 @@ export class AgentOrgMemberRunViewProjectionService {
     if (!location || location.rootRunId !== root || location.memberAddress !== address) {
       throw new Error(`AgentRun '${run}' at '${address}' was not found in AgentOrg '${root}'.`);
     }
-    if (!location.configuredPlacement) {
-      throw new Error(`AgentRun '${run}' has no configured AgentOrg launch placement.`);
+    if (!location.configuredPlacement && !collaboratorExecutionSource(location.tree.rootOrg.collaborators, location.memberAddress)) {
+      throw new Error(`AgentRun '${run}' has no configured AgentOrg launch placement or collaborator source.`);
     }
     return location;
   }
 }
 
 const metadataFor = (location: LocatedAgentOrgAgentExecution): AgentRunMetadata => {
-  const configured = location.configuredPlacement!;
+  // A collaborator run has no configured placement: its entry supplies the definition and settings.
+  const source = location.configuredPlacement
+    ?? collaboratorExecutionSource(location.tree.rootOrg.collaborators, location.memberAddress)!;
+  const launch = source.launchConfiguration;
   return {
     runId: location.agentRunId,
-    agentDefinitionId: configured.agentDefinitionId,
-    workspaceRootPath: configured.launchConfiguration.workspaceRootPath ?? process.cwd(),
+    agentDefinitionId: source.agentDefinitionId,
+    workspaceRootPath: launch.workspaceRootPath ?? process.cwd(),
     memoryDir: location.memoryDir,
-    llmModelIdentifier: configured.launchConfiguration.llmModelIdentifier,
-    llmConfig: configured.launchConfiguration.llmConfig as Record<string, unknown> | null,
-    autoExecuteTools: configured.launchConfiguration.autoExecuteTools,
-    runtimeKind: configured.launchConfiguration.runtimeKind as AgentRunMetadata["runtimeKind"],
+    llmModelIdentifier: launch.llmModelIdentifier,
+    llmConfig: launch.llmConfig as Record<string, unknown> | null,
+    autoExecuteTools: launch.autoExecuteTools,
+    runtimeKind: launch.runtimeKind as AgentRunMetadata["runtimeKind"],
     platformAgentRunId: location.platformAgentRunId,
   };
 };
