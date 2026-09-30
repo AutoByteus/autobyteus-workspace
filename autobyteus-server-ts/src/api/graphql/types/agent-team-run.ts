@@ -72,7 +72,6 @@ export class TeamMemberConfigInput {
   @Field(() => Boolean)
   autoExecuteTools!: boolean;
 
-
   @Field(() => String, { nullable: true })
   workspaceRootPath?: string | null;
 
@@ -93,7 +92,6 @@ export class TeamScopeLaunchConfigInput {
 
   @Field(() => Boolean)
   autoExecuteTools!: boolean;
-
 
   @Field(() => String, { nullable: true })
   workspaceRootPath?: string | null;

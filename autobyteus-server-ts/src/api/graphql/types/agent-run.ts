@@ -53,7 +53,6 @@ export class CreateAgentRunInput {
   @Field(() => GraphQLJSON, { nullable: true })
   llmConfig?: Record<string, unknown> | null;
 
-
   @Field(() => String)
   runtimeKind!: string;
 

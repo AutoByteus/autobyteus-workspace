@@ -699,7 +699,6 @@ const createCurrentAgentRun = async (serverUrl: string, runtimeRoot: string, lab
       workspaceRootPath,
       llmModelIdentifier: modelIdentifier,
       autoExecuteTools: false,
-      skillAccessMode: "NONE",
       runtimeKind: "autobyteus",
     },
   });
@@ -906,7 +905,6 @@ const exerciseHistoryAndNewWork = async (
           llm_model_identifier: "gpt-5.6-luna",
           llm_config: { temperature: 0.15 },
           auto_execute_tools: false,
-          skill_access_mode: "PRELOADED_ONLY",
           workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
         },
         members: expect.arrayContaining([
@@ -918,7 +916,6 @@ const exerciseHistoryAndNewWork = async (
               llm_model_identifier: "gpt-5.6-luna",
               llm_config: { temperature: 0.15 },
               auto_execute_tools: false,
-              skill_access_mode: "PRELOADED_ONLY",
               workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
             },
           }),
@@ -930,7 +927,6 @@ const exerciseHistoryAndNewWork = async (
               llm_model_identifier: "gpt-5.6-luna",
               llm_config: null,
               auto_execute_tools: true,
-              skill_access_mode: "NONE",
               workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
             },
             members: [expect.objectContaining({
@@ -941,7 +937,6 @@ const exerciseHistoryAndNewWork = async (
                 llm_model_identifier: "gpt-5.6-luna",
                 llm_config: null,
                 auto_execute_tools: true,
-                skill_access_mode: "NONE",
                 workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
               },
             })],
@@ -1009,7 +1004,6 @@ const exerciseHistoryAndNewWork = async (
       workspaceRootPath,
       llmModelIdentifier: modelIdentifier,
       autoExecuteTools: false,
-      skillAccessMode: "NONE",
       runtimeKind: "autobyteus",
     },
   });
@@ -1054,7 +1048,6 @@ const exerciseHistoryAndNewWork = async (
         teamAddress: "/",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
-        skillAccessMode: "NONE",
         runtimeKind: "autobyteus",
         workspaceRootPath,
       }],
@@ -1063,7 +1056,6 @@ const exerciseHistoryAndNewWork = async (
         agentDefinitionId: createdAgent.createAgentDefinition.id,
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
-        skillAccessMode: "NONE",
         runtimeKind: "autobyteus",
         workspaceRootPath,
       }],

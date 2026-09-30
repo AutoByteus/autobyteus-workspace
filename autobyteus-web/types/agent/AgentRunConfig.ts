@@ -59,8 +59,6 @@ export interface AgentRunConfig {
   /** Whether to auto-execute tool calls without user confirmation */
   autoExecuteTools: boolean;
 
-  /** Controls which skills this agent can use for this run */
-  
   /** 
    * Whether this config is locked (read-only).
    * Set to true after the first message is sent to the backend.

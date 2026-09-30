@@ -199,7 +199,6 @@ class RunMetadataConfigObject {
   @Field(() => Boolean)
   autoExecuteTools!: boolean;
 
-
   @Field(() => String)
   runtimeKind!: string;
 
