@@ -46,6 +46,22 @@ const skillMessages = {
   'skills.components.skills.SkillSourcesModal.remove_confirm': 'Remove',
   'skills.components.skills.SkillSourcesModal.add_success': 'Successfully added source. Found {{count}} skills. Refreshing list...',
   'skills.components.skills.SkillSourcesModal.remove_success': 'Skill source removed. Skills list refreshed.',
+  'skills.nameConflict.title': 'Duplicate skill names',
+  'skills.nameConflict.body': 'These skills already exist in another location. Each skill name must be unique. Rename or remove one copy, then try again.',
+  'skills.nameConflict.alreadyInstalled': 'Already installed:',
+  'skills.nameConflict.incoming': 'New:',
+  'skills.nameConflict.ok': 'OK',
+  'skills.nameIssues.banner': 'Some skills share a name. AutoByteus uses one copy per name.',
+  'skills.nameIssues.showDetails': 'Show details',
+  'skills.nameIssues.hideDetails': 'Hide details',
+  'skills.nameIssues.conflictHint': 'Rename or remove one copy.',
+  'skills.nameIssues.shadowedHint': 'Runtime default copy ignored. Consider removing it: Codex may still show both copies in Codex runs.',
+  'skills.nameIssues.used': 'Used:',
+  'skills.nameIssues.ignored': 'Ignored:',
+  'skills.nameNotice.ignoredOneFromFolder': 'Ignored 1 skill from the {{folder}} default folder because your own copy takes precedence.',
+  'skills.nameNotice.ignoredManyFromFolder': 'Ignored {{count}} skills from the {{folder}} default folder because your own copies take precedence.',
+  'skills.nameNotice.ignoredOne': 'Ignored 1 skill from a runtime default folder because your own copy takes precedence.',
+  'skills.nameNotice.ignoredMany': 'Ignored {{count}} skills from runtime default folders because your own copies take precedence.',
 } satisfies TranslationCatalog;
 
 export default skillMessages;

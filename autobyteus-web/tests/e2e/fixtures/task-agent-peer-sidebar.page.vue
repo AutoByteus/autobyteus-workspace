@@ -85,7 +85,7 @@ const actions = {
   ...useWorkspaceHistorySelectionActions({ runHistoryStore, selectionStore,
     setTeamExpanded: tree.setTeamExpanded, toggleTeam: tree.toggleTeam,
     expandTeamMemberAncestors: tree.expandTeamMemberAncestors,
-    emitRunSelected: noop, emitRunCreated: noop, presentTeamStreamRecoveryFeedback: noop }),
+    emitRunSelected: noop, startPresetChat: async () => undefined, presentTeamStreamRecoveryFeedback: noop }),
 };
 const avatars = {
   showAgentAvatar: () => false, onAgentAvatarError: noop, getAgentInitials: () => 'A',

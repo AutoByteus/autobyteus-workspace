@@ -62,7 +62,7 @@
         :missing-historical-config-label="$t('workspace.components.workspace.config.ModelConfigSection.not_recorded_for_this_historical_run')"
         :control-variant="controlVariant"
         :validation-errors="validationErrors"
-        @update:config="emitConfig"
+        @update:config="onAdvancedConfig"
       />
     </div>
     <HistoricalModelConfigFallback
@@ -77,16 +77,16 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
-import { sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
+import { applyModelConfigSchemaDefaults, sanitizeModelConfigAgainstSchema, type UiModelConfigSchema } from '~/utils/llmConfigSchema';
 import {
   projectHistoricalModelConfigFields,
   type HistoricalModelConfigControlField,
   type HistoricalModelConfigResidualField,
 } from '~/utils/historicalModelConfigFields';
 import {
+  applyThinkingDependentEdit,
   applyThinkingToggle,
   getThinkingControlState,
-  getThinkingParamKeys,
   getThinkingToggleOwnedParamKeys,
 } from '~/utils/llmThinkingConfigAdapter';
 import ModelConfigBasic from './ModelConfigBasic.vue';
@@ -217,6 +217,12 @@ const emitConfig = (nextConfig: Record<string, unknown> | null, automatic = fals
   else emit('update:config', nextConfig ?? null);
 };
 
+// Advanced fields are user edits: choosing a thinking-dependent value while thinking is off turns it on.
+// Automatic default/sanitize writes go straight through `emitConfig` and never auto-enable.
+const onAdvancedConfig = (nextConfig: Record<string, unknown> | null) => {
+  emitConfig(applyThinkingDependentEdit(presentedSchema.value, presentedModelConfig.value, nextConfig));
+};
+
 const configsEqual = (
   left: Record<string, unknown> | null | undefined,
   right: Record<string, unknown> | null | undefined,
@@ -257,26 +263,8 @@ const applyDefaultsIfNeeded = () => {
   if (!hasSchema.value) return;
   if (!props.applyDefaults) return;
 
-  const nextConfig: Record<string, unknown> = { ...(props.modelConfig ?? {}) };
-  let changed = false;
-  const thinkingKeys = new Set(getThinkingParamKeys(props.schema ?? null));
-
-  for (const [key, paramSchema] of Object.entries(props.schema ?? {})) {
-    if (thinkingKeys.has(key)) continue;
-    if (nextConfig[key] === undefined && paramSchema.default !== undefined) {
-      nextConfig[key] = paramSchema.default;
-      changed = true;
-    }
-  }
-
-  if (props.modelConfig?.thinking_enabled === true && props.schema?.thinking_budget_tokens?.default !== undefined) {
-    if (nextConfig.thinking_budget_tokens === undefined) {
-      nextConfig.thinking_budget_tokens = props.schema.thinking_budget_tokens.default;
-      changed = true;
-    }
-  }
-
-  if (changed && !configsEqual(nextConfig, props.modelConfig ?? null)) {
+  const nextConfig = applyModelConfigSchemaDefaults(props.schema ?? null, props.modelConfig ?? null);
+  if (!configsEqual(nextConfig, props.modelConfig ?? null)) {
     emitConfig(nextConfig, true);
   }
 };

@@ -103,8 +103,14 @@ surfaces:
 - the normal Skills catalog scans available package roots so users can browse
   and open bundled skill files through the existing Skills page, Skill Detail,
   and File Explorer flow;
-- runtime bootstrap resolves configured skill names source-context-first for the
-  owning agent/team before falling back to configured global skill directories.
+- runtime bootstrap resolves configured skill names from the same catalog, one
+  copy per name (see [Skills](./skills.md)).
+
+Importing, updating or reloading a package validates its skill names first: a
+name that already exists in AutoByteus's skills folder, another package or an
+added skill folder is rejected with `SKILL_NAME_CONFLICT`, and nothing changes.
+A duplicate only against a runtime default folder (e.g. `~/.codex/skills`) is
+accepted; the package copy wins.
 
 Supported package layouts:
 

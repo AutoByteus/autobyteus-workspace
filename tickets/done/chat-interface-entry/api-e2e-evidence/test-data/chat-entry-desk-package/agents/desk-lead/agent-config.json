@@ -1,0 +1,5 @@
+{
+  "toolNames": ["read_file", "run_bash"],
+  "skillNames": ["desk-alpha"],
+  "defaultLaunchConfig": null
+}

@@ -47,6 +47,11 @@ const createRootSettingsStore = (defaultRoot: string): AgentPackageRootSettingsS
     },
   );
 
+/** Package tests that are not about skill names use a guard that accepts every source. */
+const noSkillNameConflicts = {
+  assertNoIncomingSkillNameConflicts: () => ({ conflicts: [], notices: [] }),
+};
+
 const writeAgentPackageRoot = async (
   rootPath: string,
   agentId = "demo-agent",
@@ -97,6 +102,7 @@ describe("AgentPackageService", () => {
     );
 
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
@@ -157,6 +163,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
@@ -217,6 +224,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
@@ -289,6 +297,7 @@ describe("AgentPackageService", () => {
     let shouldFailRefresh = false;
 
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
@@ -343,6 +352,7 @@ describe("AgentPackageService", () => {
 
     let refreshCount = 0;
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,
@@ -417,6 +427,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
       installer: new MockInstaller(),
@@ -501,6 +512,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
       installer: new MockInstaller(),
@@ -598,6 +610,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
       installer: new MockInstaller(),
@@ -662,6 +675,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
       installer: new MockInstaller(),
@@ -745,6 +759,7 @@ describe("AgentPackageService", () => {
     }
 
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore,
       installer: new MockInstaller(),
@@ -790,6 +805,7 @@ describe("AgentPackageService", () => {
     await writeAgentPackageRoot(localRoot, "local-agent");
 
     const service = new AgentPackageService({
+      skillNames: noSkillNameConflicts,
       rootSettingsStore: createRootSettingsStore(defaultRoot),
       registryStore: new AgentPackageRegistryStore({
         getAppDataDir: () => registryRoot,

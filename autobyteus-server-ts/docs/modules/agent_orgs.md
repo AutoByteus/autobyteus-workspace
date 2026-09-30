@@ -111,6 +111,19 @@ global recursive inventory, or change configured topology, runtime identity,
 provider behavior or schema. Ordinary enclosing Org execution retains the exact
 Agent and enclosing Team instruction sources.
 
+### Correlation core and skills
+
+The correlation from `org_local` members to local folders is one pure function,
+`correlateAgentOrgOwnedMembers` in
+`agent-org-definition/providers/agent-org-owned-definition-correlation.ts`. It
+does no I/O. Two thin readers in `agent-org-owned-definition-source-index.ts`
+use it: the async `listAgentOrgOwnedDefinitionSources` /
+`findAgentOrgOwnedDefinitionSource` for the definition providers and admission,
+and the sync `listAgentOrgOwnedDefinitionSourcesSync` for the skill catalog.
+The skill catalog lists org-owned agents' and teams' `skills/*` folders
+(see [Skills](./skills.md)), so org agents run with their own skills on every
+runtime.
+
 ## Addresses And Handoffs
 
 Configured placement addresses are root-relative and exact:

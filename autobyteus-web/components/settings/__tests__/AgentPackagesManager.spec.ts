@@ -4,6 +4,7 @@ import { createTestingPinia } from '@pinia/testing'
 import { setActivePinia } from 'pinia'
 import AgentPackagesManager from '../AgentPackagesManager.vue'
 import { useAgentPackagesStore } from '~/stores/agentPackagesStore'
+import { useSkillNamesStore } from '~/stores/skillNamesStore'
 
 const flushPromises = async () => {
   await Promise.resolve()
@@ -83,6 +84,9 @@ const mountComponent = async (packages = defaultPackages) => {
   store.updateAgentPackage = vi.fn().mockResolvedValue(undefined)
   store.isPackageActionLoading = vi.fn().mockReturnValue(false)
   store.clearError = vi.fn()
+  const skillNames = useSkillNamesStore()
+  skillNames.fetchIssues = vi.fn().mockResolvedValue([])
+  skillNames.runWithSkillNameChecks = vi.fn((action: () => Promise<unknown>) => action()) as typeof skillNames.runWithSkillNameChecks
 
   const wrapper = mount(AgentPackagesManager, {
     global: {
@@ -90,7 +94,7 @@ const mountComponent = async (packages = defaultPackages) => {
     },
   })
   await flushPromises()
-  return { wrapper, store }
+  return { wrapper, store, skillNames }
 }
 
 describe('AgentPackagesManager', () => {
@@ -251,5 +255,30 @@ describe('AgentPackagesManager', () => {
 
     expect(store.removeAgentPackage).toHaveBeenCalledWith('local:%2Fcustom%2Froot')
     expect(wrapper.text()).toContain('Agent package removed.')
+  })
+
+  it('runs import, reload and update through the skill-name checks (D-19)', async () => {
+    const { wrapper, store, skillNames } = await mountComponent()
+
+    await wrapper.get('[data-testid="agent-package-source-input"]').setValue('/new/source/root')
+    await wrapper.get('[data-testid="agent-package-import-button"]').trigger('click')
+    await flushPromises()
+    await wrapper.get('[data-testid="agent-package-reload-button-local_3A_252Fcustom_252Froot"]').trigger('click')
+    await flushPromises()
+
+    expect(skillNames.runWithSkillNameChecks).toHaveBeenCalledTimes(2)
+    expect(store.importAgentPackage).toHaveBeenCalledTimes(1)
+    expect(store.reloadAgentPackage).toHaveBeenCalledTimes(1)
+  })
+
+  it('shows no success message when a duplicate skill name rejects the import', async () => {
+    const { wrapper, store } = await mountComponent()
+    store.importAgentPackage = vi.fn().mockRejectedValue(new Error('Duplicate skill names: dup'))
+
+    await wrapper.get('[data-testid="agent-package-source-input"]').setValue('/dup/root')
+    await wrapper.get('[data-testid="agent-package-import-button"]').trigger('click')
+    await flushPromises()
+
+    expect(wrapper.find('[data-testid="agent-packages-success"]').exists()).toBe(false)
   })
 })

@@ -1,0 +1,135 @@
+{
+  "startedAt": "2026-09-29T03:25:50.426Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C16": {
+      "title": "D-16 / AC-018: Chat model labels follow the launch-form policy (rows, trigger, search, fixed list, launch-form parity, 390×844)",
+      "result": "Pass",
+      "ms": 25799,
+      "details": {
+        "claude_agent_sdk": [
+          {
+            "id": "opus",
+            "label": "claude-opus-5-5",
+            "secondary": "Opus 5.5 · For complex work and everyday tasks",
+            "recommended": true
+          },
+          {
+            "id": "claude-fable-5",
+            "label": "claude-fable-5",
+            "secondary": "Fable 5 · Most capable for your hardest and longest-running tasks",
+            "recommended": false
+          },
+          {
+            "id": "claude-fable-5-1[1m]",
+            "label": "claude-fable-5-1",
+            "secondary": "Fable 5.1 · For your toughest challenges",
+            "recommended": false
+          },
+          {
+            "id": "haiku",
+            "label": "claude-haiku-4-5-20251001",
+            "secondary": "Haiku 4.5 · Fastest for quick answers",
+            "recommended": false
+          }
+        ],
+        "codex_app_server": [
+          {
+            "id": "gpt-5.5",
+            "label": "GPT-5.5 (default reasoning: medium)",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "gpt-5.6-luna",
+            "label": "GPT-5.6-Luna (default reasoning: medium)",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "gpt-5.6-sol",
+            "label": "GPT-5.6-Sol (default reasoning: low)",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "gpt-5.6-terra",
+            "label": "GPT-5.6-Terra (default reasoning: medium)",
+            "secondary": null,
+            "recommended": false
+          }
+        ],
+        "autobyteus": [
+          {
+            "id": "claude-fable-5",
+            "label": "claude-fable-5",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "claude-fable-5-1",
+            "label": "claude-fable-5-1",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "claude-opus-4.7",
+            "label": "claude-opus-4.7",
+            "secondary": null,
+            "recommended": false
+          },
+          {
+            "id": "claude-opus-4.8",
+            "label": "claude-opus-4.8",
+            "secondary": null,
+            "recommended": false
+          }
+        ],
+        "picked": {
+          "id": "opus",
+          "label": "claude-opus-5-5",
+          "secondary": "Opus 5.5 · For complex work and everyday tasks",
+          "recommended": true,
+          "singleLine": true,
+          "title": "claude-opus-5-5 — Opus 5.5 · For complex work and everyday tasks"
+        },
+        "searches": {
+          "opus-5-5": 2,
+          "Opus 5.5": 1,
+          "opus": 10,
+          "gpt-6": 6
+        },
+        "fixedRows": 10,
+        "launchFormParity": 10
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 34283
+    },
+    {
+      "label": "frontend",
+      "pid": 34292
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 34292,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 34283,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-1gxRaw"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-1gxRaw",
+  "backendUrl": "http://127.0.0.1:51576",
+  "frontUrl": "http://127.0.0.1:51577",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T03:26:43.891Z"
+}

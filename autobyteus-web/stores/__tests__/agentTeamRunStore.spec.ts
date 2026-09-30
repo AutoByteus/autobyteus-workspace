@@ -567,6 +567,25 @@ describe('agentTeamRunStore current rooted execution contract', () => {
     expect(runHistoryStoreMock.markTeamAsActive).toHaveBeenCalledWith('team-nested-live')
   })
 
+  it('finalizes attachments from an explicit source owner (a Team started from a New chat)', async () => {
+    const team = nestedHydratedTeam()
+    expect(team.view.focusAgent('review-run')).toMatchObject({ disposition: 'applied' })
+    setActiveTeam(team)
+    const draftFile: ContextAttachment = {
+      kind: 'uploaded', id: 'chat-file', locator: '/rest/drafts/agent-runs/temp-chat-1/context-files/ctx__notes.txt',
+      storedFilename: 'ctx__notes.txt', displayName: 'notes.txt', phase: 'draft', type: 'Text',
+    }
+
+    await useAgentTeamRunStore().sendMessageToFocusedMember('from chat', [draftFile], {
+      attachmentDraftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
+    })
+
+    expect(contextFileUploadStoreMock.finalizeDraftAttachments).toHaveBeenCalledWith(expect.objectContaining({
+      draftOwner: { kind: 'agent_draft', draftRunId: 'temp-chat-1' },
+      finalOwner: { kind: 'team_member_final', teamRunId: 'build-run', agentRunId: 'review-run' },
+    }))
+  })
+
   it('keeps attachment ownership and dispatch fixed while focus changes during finalization', async () => {
     const team = twoMemberTeam({ teamRunId: 'team-focus', focusedMemberAddress: '/worker' })
     setActiveTeam(team)

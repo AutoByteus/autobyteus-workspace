@@ -42,7 +42,7 @@ const createRunContext = (input: {
     runtimeContext: null,
   });
 
-const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = []) => {
+const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = [], skillScope: "CONFIGURED" | "ALL_INSTALLED" = "CONFIGURED") => {
   const workspaceSkillMaterializer = { materializeConfiguredWorkspaceSkills: vi.fn(async () => []) };
   const bootstrapper = new ClaudeSessionBootstrapper(
     { resolveWorkingDirectory: vi.fn(async () => WORKING_DIRECTORY) } as any,
@@ -56,7 +56,7 @@ const createBootstrapper = (bindings: ConfiguredAgentSkillBinding[] = []) => {
         toolNames: [],
       })),
     } as any,
-    { resolveConfiguredSkillBindingsForAgent: vi.fn(() => bindings) } as any,
+    { resolveSkillScope: () => skillScope, resolveConfiguredSkillBindingsForAgent: vi.fn(() => bindings) } as any,
   );
   return { bootstrapper, workspaceSkillMaterializer };
 };
@@ -115,7 +115,20 @@ describe("ClaudeSessionBootstrapper", () => {
         { kind: "reconcile-unresolved", name: "missing-skill" },
       ],
       skillAccessMode: SkillAccessMode.PRELOADED_ONLY,
+      workspaceCollisionPolicy: "fail",
     });
     expect(runContext.runtimeContext.configuredSkills).toEqual([skill]);
+  });
+
+  it("prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1)", async () => {
+    const skill = new Skill({ name: "installed-skill", description: "d", content: "# c", rootPath: "/skills/installed-skill" });
+    const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
+      { kind: "resolved", skill, source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } },
+    ], "ALL_INSTALLED");
+
+    await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false, skillAccessMode: SkillAccessMode.PRELOADED_ONLY }));
+
+    expect(workspaceSkillMaterializer.materializeConfiguredWorkspaceSkills).toHaveBeenCalledWith(
+      expect.objectContaining({ workspaceCollisionPolicy: "prefer_workspace" }));
   });
 });

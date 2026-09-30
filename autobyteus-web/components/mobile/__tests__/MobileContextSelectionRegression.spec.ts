@@ -176,6 +176,7 @@ function seedCatalog(): void {
       toolInvocationPreprocessorNames: [],
       lifecycleProcessorNames: [],
       skillNames: [],
+      skillScope: 'CONFIGURED',
       defaultLaunchConfig: {
         runtimeKind: DEFAULT_AGENT_RUNTIME_KIND,
         llmModelIdentifier: "test-model",

@@ -21,25 +21,44 @@ const toFirstQueryValue = (value: LocationQueryValue | LocationQueryValue[] | un
   return (value ?? '').trim()
 }
 
-export const createWorkspaceExecutionLinkSignature = (link: WorkspaceExecutionLink): string => (
+/** Standalone agent runs (including chats) open in the chat view. */
+export const buildAgentRunChatRoute = (runId: string): RouteLocationRaw => ({
+  path: '/chat',
+  query: { id: runId },
+})
+
+export const createWorkspaceExecutionLinkSignature =(link: WorkspaceExecutionLink): string => (
   link.kind === 'agent'
     ? `agent:${link.runId}`
     : `team:${link.teamRunId}:${link.agentRunId ?? ''}`
 )
 
+/**
+ * The single route authority for opening a run: standalone agent runs open in the chat view,
+ * team runs (and their members) in the existing workspace Team view.
+ */
 export const buildWorkspaceExecutionRoute = (
   link: WorkspaceExecutionLink,
-): RouteLocationRaw => ({
-  path: '/workspace',
-  query: {
-    [EXECUTION_KIND_QUERY_KEY]: link.kind,
-    [EXECUTION_RUN_ID_QUERY_KEY]: link.kind === 'agent' ? link.runId : link.teamRunId,
-    ...(link.kind === 'team' && link.agentRunId
-      ? { [EXECUTION_AGENT_RUN_ID_QUERY_KEY]: link.agentRunId }
-      : {}),
-  },
-})
+): RouteLocationRaw => (link.kind === 'agent'
+  ? buildAgentRunChatRoute(link.runId)
+  : {
+      path: '/workspace',
+      query: {
+        [EXECUTION_KIND_QUERY_KEY]: link.kind,
+        [EXECUTION_RUN_ID_QUERY_KEY]: link.teamRunId,
+        ...(link.agentRunId ? { [EXECUTION_AGENT_RUN_ID_QUERY_KEY]: link.agentRunId } : {}),
+      },
+    })
 
+export type RunSelectionRouteInput =
+  | Readonly<{ type: 'agent'; runId: string }>
+  | Readonly<{ type: 'team'; runId: string }>
+
+/** Route for a committed run selection: agent → `/chat?id=`, team → `/workspace`. */
+export const resolveSelectionRoute = (selection: RunSelectionRouteInput): RouteLocationRaw =>
+  selection.type === 'agent' ? buildAgentRunChatRoute(selection.runId) : '/workspace'
+
+/** Team execution links carried on `/workspace`; agent links are chat routes. */
 export const parseWorkspaceExecutionLinkQuery = (
   query: LocationQuery,
 ): WorkspaceExecutionLink | null => {
@@ -47,26 +66,15 @@ export const parseWorkspaceExecutionLinkQuery = (
   const runId = toFirstQueryValue(query[EXECUTION_RUN_ID_QUERY_KEY])
   const agentRunId = toFirstQueryValue(query[EXECUTION_AGENT_RUN_ID_QUERY_KEY]) || null
 
-  if (!kind || !runId) {
+  if (kind !== 'team' || !runId) {
     return null
   }
 
-  if (kind === 'agent') {
-    return {
-      kind: 'agent',
-      runId,
-    }
+  return {
+    kind: 'team',
+    teamRunId: runId,
+    agentRunId,
   }
-
-  if (kind === 'team') {
-    return {
-      kind: 'team',
-      teamRunId: runId,
-      agentRunId,
-    }
-  }
-
-  return null
 }
 
 export const stripWorkspaceExecutionLinkQuery = (

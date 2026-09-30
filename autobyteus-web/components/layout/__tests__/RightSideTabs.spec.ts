@@ -5,6 +5,8 @@ import { createPinia, setActivePinia } from 'pinia';
 import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
 
 const setActiveTab = vi.fn();
+const selectTabExplicitly = vi.fn();
+const useContextualDefaultTab = vi.fn();
 const activeTab = ref('progress');
 const visibleTabs = ref([
   { name: 'files', label: 'Files' },
@@ -41,6 +43,8 @@ vi.mock('~/composables/useRightSideTabs', () => ({
     activeTab,
     visibleTabs,
     setActiveTab,
+    selectTabExplicitly,
+    useContextualDefaultTab,
   }),
 }));
 
@@ -67,6 +71,8 @@ import RightSideTabs from '../RightSideTabs.vue';
 describe('RightSideTabs', () => {
   beforeEach(() => {
     setActiveTab.mockReset();
+    selectTabExplicitly.mockReset();
+    useContextualDefaultTab.mockReset();
     activeTab.value = 'progress';
     visibleTabs.value = [
       { name: 'files', label: 'Files' },
@@ -235,24 +241,20 @@ describe('RightSideTabs', () => {
     expect(overview.props()).not.toHaveProperty('tasks');
   });
 
-  it('tracks the compound collaboration root when Team and AgentOrg run IDs collide', async () => {
-    activeWorkspaceTarget.value = {
-      kind: 'standalone_team_member',
-      collaborationMessages: { rootKind: 'agent_team', rootRunId: 'shared-run-id' },
-      team: {},
-      context: { config: { workspaceId: null, workspaceMetadata: null } },
-    };
+  it('registers the shared contextual default and routes tab-bar clicks as explicit choices', async () => {
     const wrapper = mountSubject();
-    setActiveTab.mockClear();
+    expect(useContextualDefaultTab).toHaveBeenCalledTimes(1);
 
-    activeWorkspaceTarget.value = {
-      kind: 'agent_org_direct_agent',
-      collaborationMessages: { rootKind: 'agent_org', rootRunId: 'shared-run-id' },
-      context: { config: { workspaceId: null, workspaceMetadata: null } },
-    };
+    wrapper.findComponent({ name: 'TabList' }).vm.$emit('select', 'artifacts');
     await nextTick();
+    expect(selectTabExplicitly).toHaveBeenCalledWith('artifacts');
+    wrapper.unmount();
+  });
 
-    expect(setActiveTab).toHaveBeenCalledWith('teamMembers');
+  it('replaces an invisible active tab on mount with the first visible tab', () => {
+    activeTab.value = 'teamMembers';
+    const wrapper = mountSubject();
+    expect(setActiveTab).toHaveBeenCalledWith('files');
     wrapper.unmount();
   });
 

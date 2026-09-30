@@ -129,4 +129,41 @@ describe('UserMessage', () => {
     expect(fileExplorerStoreMock.openFilePreview).not.toHaveBeenCalled();
     expect(windowOpenMock).not.toHaveBeenCalled();
   });
+
+  it('renders skill tags as chips with the exact sent text in the tooltip and shows only the user text', () => {
+    const sent = 'Use these skills for this request: skill-optimizer, writer.\n\nHelp me tune this.';
+    const wrapper = mount(UserMessage, {
+      props: { message: { type: 'user', text: sent, timestamp: new Date(), contextFilePaths: [] } },
+      global: { mocks: { $t: (key: string) => key } },
+    });
+
+    const chips = wrapper.get('[data-test="skill-request-chips"]');
+    expect(chips.text()).toContain('/skill-optimizer');
+    expect(chips.text()).toContain('/writer');
+    const tooltip = wrapper.get('[data-test="skill-request-sent-as"]');
+    expect(tooltip.attributes('role')).toBe('tooltip');
+    expect(tooltip.find('.whitespace-pre-wrap').text()).toBe(sent);
+    expect(chips.attributes('aria-describedby')).toBe(tooltip.attributes('id'));
+    expect(wrapper.text()).toContain('Help me tune this.');
+  });
+
+  it('renders a tags-only message as chips without an empty text block', () => {
+    const wrapper = mount(UserMessage, {
+      props: { message: { type: 'user', text: 'Use the writer skill for this request.', timestamp: new Date(), contextFilePaths: [] } },
+      global: { mocks: { $t: (key: string) => key } },
+    });
+
+    expect(wrapper.get('[data-test="skill-request-chips"]').text()).toContain('/writer');
+    expect(wrapper.findAll('.leading-6.text-gray-900')).toHaveLength(0);
+  });
+
+  it('renders plain messages unchanged', () => {
+    const wrapper = mount(UserMessage, {
+      props: { message: { type: 'user', text: 'Just text', timestamp: new Date(), contextFilePaths: [] } },
+      global: { mocks: { $t: (key: string) => key } },
+    });
+
+    expect(wrapper.find('[data-test="skill-request-chips"]').exists()).toBe(false);
+    expect(wrapper.text()).toContain('Just text');
+  });
 });

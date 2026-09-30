@@ -1,6 +1,11 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const messages = {
+  'agents.components.agents.AgentCard.allInstalledSkills': '全部已安装技能',
+  'agents.components.agents.AgentDetail.allInstalledSkills': '全部已安装',
+  'agents.components.agents.AgentDetail.allInstalledSkillsDescription': '全部已安装技能。智能体会获得所有已启用的已安装技能，包括之后安装的技能。',
+  'agents.components.agents.AgentDefinitionForm.useAllInstalledSkills': '使用全部已安装技能',
+  'agents.components.agents.AgentDefinitionForm.useAllInstalledSkillsHelp': '智能体会获得所有已启用的已安装技能，包括之后安装的技能。开启后将忽略下方的技能列表。',
   'agents.components.agents.AgentCard.teamLabel': '团队：{{team}}',
   'agents.components.agents.AgentCard.toolsSummary': '工具 {{count}}',
   'agents.components.agents.AgentCard.skillsSummary': '技能 {{count}}',

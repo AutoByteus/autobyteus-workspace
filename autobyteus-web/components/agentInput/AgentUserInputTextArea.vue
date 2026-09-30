@@ -1,6 +1,6 @@
 <template>
   <div class="flex flex-col bg-white">
-    <div class="relative flex-grow">
+    <div ref="rootRef" class="relative flex-grow">
       <textarea
         :value="internalRequirement"
         @input="handleInput"
@@ -11,156 +11,102 @@
           minHeight: `${MIN_TEXTAREA_HEIGHT}px`,
           maxHeight: `${MAX_TEXTAREA_HEIGHT}px`
         }"
-        :placeholder="$t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
+        :placeholder="skillTagging?.placeholder || $t('agentInput.components.agentInput.AgentUserInputTextArea.type_a_message')"
         @keydown="handleKeyDown"
-        :disabled="!activeContextStore.activeAgentContext"
+        @click="skillMenu.detect"
+        :disabled="!target"
         @dragover.prevent
         @drop.prevent="handleDrop"
         data-file-drop-target="true"
       ></textarea>
 
-      <button
-        v-if="voiceInputStore.isAvailable || voiceInputStore.isStarting || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
-        type="button"
-        @click="handleVoiceAction"
-        :disabled="voiceInputStore.isStarting || voiceInputStore.isTranscribing || !activeContextStore.activeAgentContext"
-        :title="voiceButtonTitle"
-        :aria-busy="voiceInputStore.isStarting ? 'true' : undefined"
-        class="absolute bottom-2 right-14 flex items-center justify-center p-2 rounded-full focus:outline-none focus:ring-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-        :class="voiceButtonClass"
-      >
-        <Icon
-          :icon="voiceInputStore.isRecording ? 'heroicons:stop-solid' : voiceInputStore.isStarting ? 'heroicons:arrow-path-solid' : 'heroicons:microphone-solid'"
-          class="h-5 w-5"
-          :class="voiceInputStore.isStarting ? 'animate-spin' : ''"
-        />
-      </button>
+      <VoiceInputButton :target="target" class="absolute bottom-2 right-14" />
 
-      <button
-        @click="handlePrimaryAction"
+      <MessagePrimaryActionButton
+        class="absolute bottom-2 right-2"
+        :kind="primaryAction.kind === 'interrupt' ? 'interrupt' : 'send'"
         :disabled="isActionDisabled"
-        :title="primaryAction.kind === 'interrupt' ? 'Stop generation' : 'Send message'"
-        class="absolute bottom-2 right-2 flex items-center justify-center p-2 text-white rounded-full focus:outline-none focus:ring-2 transition-all duration-200 shadow-sm disabled:opacity-50 disabled:cursor-not-allowed"
-        :class="primaryAction.kind === 'interrupt'
-          ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500/50'
-          : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500/50'"
-      >
-        <Icon v-if="primaryAction.kind === 'interrupt'" icon="heroicons:stop-solid" class="h-5 w-5" />
-        <Icon v-else icon="heroicons:paper-airplane-solid" class="h-5 w-5" />
-      </button>
+        @activate="handlePrimaryAction"
+      />
+
+      <!-- `/` skill menu: standalone runs only (skillTagging). -->
+      <template v-if="skillTagging && skillMenu.open.value">
+        <div v-if="skillMenu.popover.narrow.value" class="fixed inset-0 z-40 bg-black/20" aria-hidden="true"></div>
+        <div
+          class="z-50"
+          :class="skillMenu.popover.narrow.value
+            ? 'fixed inset-x-2 bottom-2 [&>div]:w-auto'
+            : ['absolute left-2', skillMenu.popover.placement.value === 'above' ? 'bottom-full mb-1.5' : 'top-full mt-1.5']"
+        >
+          <ChatSkillMenu
+            :list-id="skillMenuListId"
+            :query="skillMenu.query.value"
+            :skills="skillMenu.filteredSkills.value"
+            :has-any-skills="skillTagging.skills.length > 0"
+            :selected="targetContext?.requestedSkillNames ?? []"
+            :highlight="skillMenu.highlight.value"
+            :all-installed="skillTagging.allInstalled"
+            @highlight="skillMenu.highlight.value = $event"
+            @choose="skillMenu.choose"
+          />
+        </div>
+      </template>
     </div>
 
-    <div
-      v-if="voiceInputStore.isStarting || voiceInputStore.isRecording || voiceInputStore.isTranscribing"
-      class="mx-3 mb-2 flex items-center justify-between rounded-lg border px-3 py-2 text-xs font-medium"
-      :class="voiceStatusClass"
-    >
-      <div class="flex items-center gap-2">
-        <span
-          v-if="voiceInputStore.isStarting"
-          class="h-3 w-3 animate-spin rounded-full border-2 border-blue-200 border-t-blue-600"
-        ></span>
-        <span
-          v-else
-          class="h-2.5 w-2.5 rounded-full"
-          :class="voiceInputStore.isRecording ? 'animate-pulse bg-red-500' : 'bg-blue-500'"
-        ></span>
-        <span>{{ voiceStatusText }}</span>
-      </div>
-      <span v-if="voiceInputStore.isRecording" class="tabular-nums text-[0.6875rem] text-current/80">
-        {{ recordingDurationLabel }}
-      </span>
-    </div>
+    <VoiceInputStatusRow class="mx-3 mb-2" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, nextTick, watch, onUnmounted } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useActiveContextStore } from '~/stores/activeContextStore';
-import { useVoiceInputStore } from '~/stores/voiceInputStore';
-import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { ref, computed, onMounted, nextTick, watch, onUnmounted, toRef, useId } from 'vue';
 import { useContextFileUploadStore } from '~/stores/contextFileUploadStore';
-import { useWorkspaceStore } from '~/stores/workspace';
-import { Icon } from '@iconify/vue';
-import { getFilePathsFromFolder } from '~/utils/fileExplorer/fileUtils';
-import type { TreeNode } from '~/utils/fileExplorer/TreeNode';
+import { useComposerFilePathDrop } from '~/composables/agentInput/useComposerFilePathDrop';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import { resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { ComposerTarget } from '~/composables/agentInput/useComposerTarget';
+import VoiceInputButton from '~/components/agentInput/VoiceInputButton.vue';
+import VoiceInputStatusRow from '~/components/agentInput/VoiceInputStatusRow.vue';
+import MessagePrimaryActionButton from '~/components/agentInput/MessagePrimaryActionButton.vue';
+import ChatSkillMenu from '~/components/chat/ChatSkillMenu.vue';
+import { useSkillTagMenu, type SkillTaggingCapability } from '~/composables/agentInput/useSkillTagMenu';
+import { hasSendableDraft } from '~/services/runSubmission/agentPrimaryAction';
 
 const props = defineProps<{
+  target: ComposerTarget | null;
   beforeSend?: () => void | Promise<void>;
+  /** `/` skill tags; supplied only for standalone agent runs. */
+  skillTagging?: SkillTaggingCapability | null;
 }>();
 
-// Initialize stores
-const activeContextStore = useActiveContextStore();
-const voiceInputStore = useVoiceInputStore();
-const windowNodeContextStore = useWindowNodeContextStore();
 const contextFileUploadStore = useContextFileUploadStore();
-const workspaceStore = useWorkspaceStore();
+const { resolveDroppedFilePaths } = useComposerFilePathDrop();
 const internalRequirement = ref('');
 
-// Store refs
-const {
-  submissionPending,
-  currentStatus,
-  currentRequirement: storeCurrentRequirement,
-} = storeToRefs(activeContextStore);
+const targetContext = computed<AgentContext | null>(() => props.target?.context ?? null);
+const submissionPending = computed(() => targetContext.value?.submissionPending ?? false);
+
 const primaryAction = computed(() => resolveAgentPrimaryAction({
-  hasContext: Boolean(activeContextStore.activeAgentContext),
-  status: currentStatus.value,
+  hasContext: Boolean(targetContext.value),
+  status: targetContext.value?.state.currentStatus ?? AgentStatus.Offline,
   submissionPending: submissionPending.value,
   isUploading: contextFileUploadStore.isUploading,
-  hasDraft: Boolean(internalRequirement.value.trim()),
+  // With skill tagging (a standalone run), a skill tag or a context file also makes a draft, as in Chat.
+  hasDraft: props.skillTagging && targetContext.value
+    ? Boolean(internalRequirement.value.trim()) || hasSendableDraft(targetContext.value, { attachmentsAreSendable: true })
+    : Boolean(internalRequirement.value.trim()),
 }));
 const isActionDisabled = computed(() => !primaryAction.value.enabled
-  || activeContextStore.activeWorkspaceTarget?.access === 'read_only');
-const voiceButtonTitle = computed(() => {
-  if (voiceInputStore.isStarting) {
-    return 'Starting microphone...';
-  }
-  if (voiceInputStore.isTranscribing) {
-    return 'Transcribing...';
-  }
-  return voiceInputStore.isRecording ? 'Stop recording' : 'Start voice input';
-});
-const voiceButtonClass = computed(() => {
-  if (voiceInputStore.isRecording) {
-    return 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500/50';
-  }
-  return 'bg-slate-100 text-slate-700 hover:bg-slate-200 focus:ring-slate-400/50';
-});
-const voiceStatusText = computed(() => {
-  if (voiceInputStore.isStarting) {
-    return 'Starting microphone...';
-  }
-  if (voiceInputStore.isRecording) {
-    return 'Recording... Tap stop when you are done.';
-  }
-  return 'Transcribing voice input...';
-});
-const voiceStatusClass = computed(() => {
-  if (voiceInputStore.isRecording) {
-    return 'border-red-200 bg-red-50 text-red-700';
-  }
-  return 'border-blue-200 bg-blue-50 text-blue-700';
-});
+  || props.target?.access === 'read_only');
 
 // Local component state
 const textarea = ref<HTMLTextAreaElement | null>(null);
 const MIN_TEXTAREA_HEIGHT = 56;
 const MAX_TEXTAREA_HEIGHT = 220;
 const textareaHeight = ref(MIN_TEXTAREA_HEIGHT);
-const recordingElapsedSeconds = ref(0);
-let recordingStartedAt = 0;
-let recordingTimer: ReturnType<typeof setInterval> | null = null;
+const rootRef = ref<HTMLElement | null>(null);
+const skillMenuListId = `agent-skill-menu-${useId()}`;
 let pendingLocalAcknowledgementContext: AgentContext | null = null;
-
-const recordingDurationLabel = computed(() => {
-  const minutes = Math.floor(recordingElapsedSeconds.value / 60);
-  const seconds = recordingElapsedSeconds.value % 60;
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-});
 
 const adjustTextareaHeight = () => {
   if (textarea.value) {
@@ -183,28 +129,28 @@ const syncInternalRequirement = (nextRequirement: string) => {
 };
 
 watch(
-  () => activeContextStore.activeAgentContext,
-  (activeContext) => {
-    syncInternalRequirement(activeContext?.requirement ?? '');
+  targetContext,
+  (context) => {
+    syncInternalRequirement(context?.requirement ?? '');
   },
   { immediate: true },
 );
 
-watch(storeCurrentRequirement, (requirement) => {
+watch(() => targetContext.value?.requirement ?? '', (requirement) => {
   syncInternalRequirement(requirement);
 });
 
 const syncPendingLocalAcknowledgement = () => {
-  const activeContext = activeContextStore.activeAgentContext;
+  const context = targetContext.value;
   if (
     !pendingLocalAcknowledgementContext
-    || activeContext !== pendingLocalAcknowledgementContext
+    || context !== pendingLocalAcknowledgementContext
     || !submissionPending.value
   ) {
     return;
   }
 
-  syncInternalRequirement(activeContext.requirement);
+  syncInternalRequirement(context.requirement);
   pendingLocalAcknowledgementContext = null;
 };
 
@@ -214,24 +160,42 @@ watch(submissionPending, (pending) => {
   }
 }, { flush: 'sync' });
 
-const handleInput = (event: Event) => {
-  const target = event.target as HTMLTextAreaElement;
-  internalRequirement.value = target.value;
+const setRequirement = (text: string) => {
+  internalRequirement.value = text;
   nextTick(adjustTextareaHeight);
   // The exact AgentContext owns every unsent edit, including deliberate clearing.
   // Do not buffer local-only state past submission or verified context replacement.
-  activeContextStore.updateRequirementForContext(activeContextStore.activeAgentContext, target.value);
+  if (targetContext.value) {
+    targetContext.value.requirement = text;
+  }
+};
+
+const skillMenu = useSkillTagMenu({
+  rootRef,
+  textareaRef: textarea,
+  context: targetContext,
+  capability: toRef(props, 'skillTagging'),
+  setText: setRequirement,
+});
+
+const handleInput = (event: Event) => {
+  setRequirement((event.target as HTMLTextAreaElement).value);
+  nextTick(skillMenu.detect);
 };
 
 const handleSend = async () => {
+  const target = props.target;
+  if (!target) {
+    return;
+  }
   let submittedContext: AgentContext | null = null;
   try {
     if (props.beforeSend) {
       await props.beforeSend();
     }
-    submittedContext = activeContextStore.activeAgentContext;
+    submittedContext = target.context;
     pendingLocalAcknowledgementContext = submittedContext;
-    const sendPromise = activeContextStore.send();
+    const sendPromise = target.send();
     syncPendingLocalAcknowledgement();
     await sendPromise;
   } catch (error) {
@@ -245,7 +209,7 @@ const handleSend = async () => {
 
 const handleStop = () => {
   try {
-    activeContextStore.interruptGeneration();
+    void props.target?.interrupt?.();
   } catch (error) {
     console.error('Error interrupting generation:', error);
   }
@@ -263,28 +227,20 @@ const handlePrimaryAction = () => {
   void handleSend();
 };
 
-const handleVoiceAction = async () => {
-  try {
-    await voiceInputStore.toggleRecording();
-  } catch (error) {
-    console.error('Error toggling voice input:', error);
-  }
-};
-
 const insertFilePaths = (
   filePaths: string[],
-  targetContext: AgentContext | null = activeContextStore.activeAgentContext,
+  insertionContext: AgentContext | null = targetContext.value,
 ) => {
-  if (!targetContext || filePaths.length === 0) return;
+  if (!insertionContext || filePaths.length === 0) return;
 
   const textToInsert = filePaths.join(' ');
-  const isTargetStillActive = activeContextStore.activeAgentContext === targetContext;
-  const baseRequirement = isTargetStillActive ? internalRequirement.value : targetContext.requirement;
+  const isTargetStillActive = targetContext.value === insertionContext;
+  const baseRequirement = isTargetStillActive ? internalRequirement.value : insertionContext.requirement;
   const start = isTargetStillActive && textarea.value ? textarea.value.selectionStart : baseRequirement.length;
   const end = isTargetStillActive && textarea.value ? textarea.value.selectionEnd : baseRequirement.length;
   const newText = baseRequirement.substring(0, start) + textToInsert + baseRequirement.substring(end);
 
-  activeContextStore.updateRequirementForContext(targetContext, newText);
+  insertionContext.requirement = newText;
 
   if (!isTargetStillActive) {
     return;
@@ -294,7 +250,7 @@ const insertFilePaths = (
   nextTick(adjustTextareaHeight);
 
   nextTick(() => {
-    if (textarea.value && activeContextStore.activeAgentContext === targetContext) {
+    if (textarea.value && targetContext.value === insertionContext) {
       const newCursorPos = start + textToInsert.length;
       textarea.value.focus();
       textarea.value.setSelectionRange(newCursorPos, newCursorPos);
@@ -303,49 +259,13 @@ const insertFilePaths = (
 };
 
 const handleDrop = async (event: DragEvent) => {
-  const targetContext = activeContextStore.activeAgentContext;
-  if (!targetContext) return;
-
-  const dataTransfer = event.dataTransfer;
-  if (!dataTransfer) return;
-
-  let filePaths: string[] = [];
-  const dragData = dataTransfer.getData('application/json');
-
-  if (dragData) {
-    console.log('[INFO] Drop event is from internal file explorer.');
-    try {
-      const droppedNode: TreeNode = JSON.parse(dragData);
-      filePaths = getFilePathsFromFolder(droppedNode);
-
-      if (workspaceStore.activeWorkspace?.absolutePath) {
-        const basePath = workspaceStore.activeWorkspace.absolutePath;
-        const separator = basePath.includes('\\') ? '\\' : '/';
-        filePaths = filePaths.map(relativePath => {
-          const cleanRelativePath = relativePath.startsWith('/') ? relativePath.substring(1) : relativePath;
-          const parts = [basePath.replace(/[/\\]$/, ''), ...cleanRelativePath.split('/')];
-          return parts.join(separator);
-        });
-      }
-    } catch (error) {
-      console.error('Failed to parse dropped node data:', error);
-    }
-  } else if (windowNodeContextStore.isEmbeddedWindow && dataTransfer.files.length > 0 && window.electronAPI) {
-    console.log('[INFO] Drop event from native OS in Electron.');
-    const files = Array.from(dataTransfer.files);
-    const pathPromises = files.map(f => window.electronAPI.getPathForFile(f));
-    const paths = (await Promise.all(pathPromises)).filter((p): p is string => Boolean(p));
-    filePaths = paths;
-    console.log('[INFO] Received native file paths from preload bridge:', filePaths);
-  } else if (!windowNodeContextStore.isEmbeddedWindow && dataTransfer.files.length > 0) {
-    console.log('[INFO] Drop event from native OS in browser, using filenames as fallback.');
-    filePaths = Array.from(dataTransfer.files).map(file => file.name);
-  }
-
-  insertFilePaths(filePaths, targetContext);
+  const dropContext = targetContext.value;
+  if (!dropContext) return;
+  insertFilePaths(await resolveDroppedFilePaths(event), dropContext);
 };
 
 const handleKeyDown = (event: KeyboardEvent) => {
+  if (skillMenu.onKeydown(event)) return;
   if (event.key === 'Enter' && !event.shiftKey && !event.ctrlKey && !event.altKey) {
     event.preventDefault();
     handlePrimaryAction();
@@ -356,40 +276,13 @@ const handleResize = () => {
   adjustTextareaHeight();
 };
 
-const stopRecordingTimer = () => {
-  if (recordingTimer) {
-    clearInterval(recordingTimer);
-    recordingTimer = null;
-  }
-};
-
-watch(
-  () => voiceInputStore.isRecording,
-  (isRecording) => {
-    stopRecordingTimer();
-    if (!isRecording) {
-      recordingElapsedSeconds.value = 0;
-      return;
-    }
-
-    recordingStartedAt = Date.now();
-    recordingElapsedSeconds.value = 0;
-    recordingTimer = setInterval(() => {
-      recordingElapsedSeconds.value = Math.floor((Date.now() - recordingStartedAt) / 1000);
-    }, 250);
-  },
-);
-
 onMounted(async () => {
   await nextTick();
-  await voiceInputStore.initialize();
   adjustTextareaHeight();
   window.addEventListener('resize', handleResize);
 });
 
 onUnmounted(() => {
-  void voiceInputStore.cancelOperationForSource('composer');
-  stopRecordingTimer();
   window.removeEventListener('resize', handleResize);
 });
 </script>

@@ -1,0 +1,22 @@
+C01 Pass Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED
+C02 Pass Landing: / → /chat, Chat first with pencil, New chat defaults
+C03 Pass Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation
+C04 Pass Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model
+C05 Pass Live run view (D-17): product header and box; ⚙ run settings locked while live (REQ-011 R3, VIS-026)
+C06 Pass Terminate → Offline → ⚙ save → reload → ⚙ save → resume uses the saved model (D-08 via run settings)
+C07 Pass Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied
+C08 Pass Catalog Run (form unchanged) → /chat?id=temp-* → first send → permanent URL and streamed reply
+C09 Pass @agent scoped /, × back to Daily Assistant, tree + preset
+C10 Pass Team quick path with an attachment: uniform member config, coordinator reads the file, Team view with the unchanged box
+C11 Pass RSK-005 redirects, missing and unregistered ids, tool strip collapsed
+C12 Pass Narrow 390×844: no horizontal overflow; model menu is a bottom sheet with drill-in
+C14 Pass D-15 Rule 1 (V-D): a user-owned workspace skill wins for the Daily Assistant; a configured agent still fails fast
+C15 Pass D-19: configured agent with an on-disk duplicate uses the catalog copy — same link and marker as the Daily Assistant, no Rule 2/3 dispositions, private copy untouched, link removed after both end
+C16 Pass D-16 / AC-018: Chat model labels follow the launch-form policy (rows, trigger, search, fixed list, launch-form parity, 390×844)
+C17 Pass D-17 frame: chat run view geometry equals the Team view; strip Files/Terminal open exact tabs in Chat and Team; defaults; reopen keeps its tab; collapsed state is shared
+C18 Pass D-17 draft ⚙ (AR-011): catalog draft and failed first send edit the draft model locally (no server call) and the send uses it
+C19 Pass CR-005: ⚙ stays with its run — New chat (success, failed first send) and Team quick path land on their conversation; header ＋ opens a preset New chat
+C20 Pass V-F under D-19 (UF-04): a configured agent naming a skill bundled in another agent resolves the catalog copy and starts next to a live Daily Assistant chat; one shared link
+C21 Pass AC-021: out-of-band duplicate → amber Skills banner "Some skills share a name…"; Show details lists the used and ignored paths
+C22 Pass AC-020 UI: add folder / Create skill / package import / package reload with a duplicate → "Duplicate skill names" pop-up with both paths, nothing changes; tier-4 duplicate accepted with the "Ignored N skills…" toast
+C13 Pass Daily Assistant restart lifecycle: user edit preserved; deleted config restored from the template

@@ -101,26 +101,37 @@ These defaults are consumed by:
 
 The generic Applications host no longer launches embedded agents directly at page-load time.
 
+## Skill Scope
+
+Every agent definition carries `skillScope` (`AgentSkillScope`), persisted in `agent-config.json` and exposed through GraphQL create/update/read and the agent-definition tools as `skill_scope`:
+
+- `CONFIGURED` (default; also used for any missing or unknown persisted value) exposes only the configured `skillNames`.
+- `ALL_INSTALLED` exposes every enabled installed skill in the catalog at run start. `skillNames` is kept in the definition but is not consulted while the scope is `ALL_INSTALLED`.
+
+`normalizeAgentSkillScope` in `src/agent-definition/domain/models.ts` is the single normalization point. Effective skill resolution for either scope is owned by `SkillService` (see `skills.md`); runtime factories never branch on the scope themselves.
+
 ## Built-In Agent Sync
 
-Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-agents/`. This subsystem owns platform infrastructure agent templates, syncs the registry-defined built-in agent ids into the normal runtime agent folder under `<appDataDir>/agents/`, resolves them through `AgentDefinitionService`, and initializes server settings that select infrastructure agents when required.
+Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-agents/`. This subsystem owns platform built-in agent templates, syncs the registry-defined built-in agent ids into the normal runtime agent folder under `<appDataDir>/agents/`, resolves them through `AgentDefinitionService`, and initializes server settings that select infrastructure agents when required.
 
-Built-in templates are centralized under `src/built-in-agents/templates/`:
+Built-in templates are centralized under `src/built-in-agents/templates/`, and each registry entry declares a `syncPolicy`:
 
-- `memory-compactor/` syncs the normal shared `agents/autobyteus-memory-compactor/` definition with display name **Memory Compactor**.
-- `retrospective-skill-improver/` syncs the normal shared `agents/autobyteus-retrospective-skill-improver/` definition with display name **Retrospective Skill Improver**. The persisted clean-state definition id is `autobyteus-retrospective-skill-improver`.
+- `memory-compactor/` syncs the shared `agents/autobyteus-memory-compactor/` definition with display name **Memory Compactor** (`overwrite`).
+- `retrospective-skill-improver/` syncs the shared `agents/autobyteus-retrospective-skill-improver/` definition with display name **Retrospective Skill Improver** (`overwrite`). The persisted clean-state definition id is `autobyteus-retrospective-skill-improver`.
+- `daily-assistant/` seeds the shared `agents/autobyteus-daily-assistant/` definition with display name **Daily Assistant** (`seedIfMissing`). It is the default agent of the web Chat entry, ships with the general tool set and `skillScope: ALL_INSTALLED`, and is exported as `DAILY_ASSISTANT_AGENT_DEFINITION_ID`.
 
 The built-in-agent bootstrapper owns this lifecycle:
 
-- registry-defined built-in `agent.md` and `agent-config.json` files are overwritten from the built-in template registry on startup;
+- `overwrite` built-ins have their `agent.md` and `agent-config.json` rewritten from the template on every startup; app-data edits to those ids are product-managed and do not survive restart;
+- `seedIfMissing` built-ins are copied from the template only for files or folders that do not exist yet, so user edits to the Daily Assistant (prompt, tools, model defaults, skill scope) persist across restarts and upgrades; deleting a file restores the template copy on the next startup;
 - standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
 - the Memory Compactor is synchronized at fixed id `autobyteus-memory-compactor` without creating a user-selectable server-setting default;
 - `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-retrospective-skill-improver` only when the setting is blank; and
 - the agent-definition cache is refreshed after built-in definitions resolve.
 
-Internal built-in agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting; app-data edits to registry-defined built-in ids are product-managed and will be overwritten by startup sync.
+Internal infrastructure-agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting.
 
-Do not add separate one-off built-in-agent bootstrappers or scatter platform templates under feature-runtime folders. The current `structured-json` compaction strategy always resolves the fixed built-in `autobyteus-memory-compactor`; it does not own the template/sync lifecycle and does not read `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`. A stale custom value for that removed selector is inert. The separate process-global `AUTOBYTEUS_COMPACTION_STRATEGY` setting selects the registered working-context algorithm for subsequent operations and must not be added to `AgentConfig` or agent definitions. Daily Assistant is not a server built-in or server-selected featured default; keep it in a user/private agent package such as `/Users/normy/autobyteus_org/autobyteus-private-agents/agents/daily-assistant/` and feature it through Settings when desired.
+Do not add separate one-off built-in-agent bootstrappers or scatter platform templates under feature-runtime folders. The current `structured-json` compaction strategy always resolves the fixed built-in `autobyteus-memory-compactor`; it does not own the template/sync lifecycle and does not read `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`. A stale custom value for that removed selector is inert. The separate process-global `AUTOBYTEUS_COMPACTION_STRATEGY` setting selects the registered working-context algorithm for subsequent operations and must not be added to `AgentConfig` or agent definitions. The Daily Assistant is not auto-featured; featured placement stays an operator choice in Settings.
 
 ## Notes
 

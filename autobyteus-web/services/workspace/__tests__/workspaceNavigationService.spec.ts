@@ -51,7 +51,9 @@ vi.mock('~/stores/agentSelectionStore', () => ({
 }))
 
 import {
+  buildAgentRunChatRoute,
   buildWorkspaceExecutionRoute,
+  resolveSelectionRoute,
   createWorkspaceExecutionLinkSignature,
   openWorkspaceExecutionLink,
   parseWorkspaceExecutionLinkQuery,
@@ -59,25 +61,24 @@ import {
 } from '../workspaceNavigationService'
 
 describe('workspaceNavigationService', () => {
-  it('builds and parses agent execution routes', () => {
+  it('routes agent execution links to the chat view and never parses them from /workspace', () => {
     const route = buildWorkspaceExecutionRoute({
       kind: 'agent',
       runId: 'agent-run-1',
     })
 
-    expect(route).toEqual({
-      path: '/workspace',
-      query: {
-        workspaceExecutionKind: 'agent',
-        workspaceExecutionRunId: 'agent-run-1',
-      },
-    })
-
-    expect(parseWorkspaceExecutionLinkQuery((route as any).query as LocationQuery)).toEqual({
-      kind: 'agent',
-      runId: 'agent-run-1',
-    })
+    expect(route).toEqual({ path: '/chat', query: { id: 'agent-run-1' } })
+    expect(buildAgentRunChatRoute('agent-run-1')).toEqual(route)
+    expect(parseWorkspaceExecutionLinkQuery({
+      workspaceExecutionKind: 'agent',
+      workspaceExecutionRunId: 'agent-run-1',
+    })).toBeNull()
     expect(createWorkspaceExecutionLinkSignature({ kind: 'agent', runId: 'agent-run-1' })).toBe('agent:agent-run-1')
+  })
+
+  it('resolves committed selections to the chat view for agents and the workspace for teams', () => {
+    expect(resolveSelectionRoute({ type: 'agent', runId: 'run-9' })).toEqual({ path: '/chat', query: { id: 'run-9' } })
+    expect(resolveSelectionRoute({ type: 'team', runId: 'team-1' })).toBe('/workspace')
   })
 
   it('builds and parses team execution routes with member focus', () => {

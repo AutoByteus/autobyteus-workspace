@@ -14,6 +14,8 @@ export class AgentContext {
   // UI-specific and session state, now co-located with the agent run.
   public requirement: string;
   public contextFilePaths: ContextFilePath[];
+  /** Skill tags chosen with `/` for the next message; cleared with the requirement on submission. */
+  public requestedSkillNames: string[];
   public submissionPending: boolean;
 
   constructor(config: AgentRunConfig, state: AgentRunState) {
@@ -23,6 +25,7 @@ export class AgentContext {
     // Initialize session state
     this.requirement = '';
     this.contextFilePaths = [];
+    this.requestedSkillNames = [];
     this.submissionPending = false;
   }
   

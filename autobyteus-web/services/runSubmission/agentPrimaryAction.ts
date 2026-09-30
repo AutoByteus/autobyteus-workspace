@@ -40,3 +40,21 @@ export const resolveAgentPrimaryAction = (
   }
   return { kind: 'send', enabled: true };
 };
+
+export interface SendableDraft {
+  requirement: string;
+  requestedSkillNames: readonly string[];
+  contextFilePaths: readonly unknown[];
+}
+
+/**
+ * Whether a composer holds something to send. Text or a skill tag always counts.
+ * Context files alone count only in the Chat box (standalone agents); the team and
+ * org run-view boxes keep their text-required behavior.
+ */
+export const hasSendableDraft = (
+  draft: SendableDraft,
+  options: { attachmentsAreSendable: boolean },
+): boolean => Boolean(draft.requirement.trim())
+  || draft.requestedSkillNames.length > 0
+  || (options.attachmentsAreSendable && draft.contextFilePaths.length > 0);

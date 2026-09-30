@@ -1,0 +1,61 @@
+{
+  "startedAt": "2026-09-29T13:35:26.514Z",
+  "checks": {
+    "U1": {
+      "title": "Skills page banner for an out-of-band duplicate (REQ-024): text, details, used and ignored paths",
+      "bannerText": "Some skills share a name. AutoByteus uses one copy per name.\n\nShow details",
+      "row": "ui-dup\nRename or remove one copy.\nUsed:\n/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/.autobyteus/development/server-data/skills/ui-dup\nIgnored:\n/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/.autobyteus/development/server-data/agents/ui-fixture-agent/skills/ui-dup",
+      "result": "Pass",
+      "listedOnce": 7
+    },
+    "U2": {
+      "title": "Duplicate skill names",
+      "rows": [
+        "ui-dup\nAlready installed:\n/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/.autobyteus/development/server-data/skills/ui-dup\nNew:\n/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-ui-5qXYny/folder/ui-dup"
+      ],
+      "okFocused": "skill-name-conflict-ok",
+      "onTop": true,
+      "closed": true,
+      "folderListed": false,
+      "inlineError": 0,
+      "result": "Pass"
+    },
+    "U3": {
+      "title": "Create skill with a name a package already has → pop-up; OK closes it; the create dialog stays open for a rename; nothing created",
+      "rows": [
+        "ui-dup-pkg\nAlready installed:\n/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/.autobyteus/development/server-data/agents/ui-fixture-agent/skills/ui-dup-pkg\nNew:\n/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/.autobyteus/development/server-data/skills/ui-dup-pkg"
+      ],
+      "createDialogOpen": true,
+      "nameKept": "ui-dup-pkg",
+      "created": false,
+      "result": "Pass"
+    },
+    "U4": {
+      "title": "Settings → Agent Packages → import a package with a duplicate → pop-up; backdrop click closes it; package not imported",
+      "rows": [
+        "ui-dup\nAlready installed:\n/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/.autobyteus/development/server-data/skills/ui-dup\nNew:\n/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-ui-5qXYny/pkg/agents/ui-pkg-agent/skills/ui-dup"
+      ],
+      "closed": true,
+      "listed": false,
+      "successShown": 0,
+      "inlineError": 0,
+      "result": "Pass"
+    },
+    "U5": {
+      "title": "Narrow 390×844: the pop-up fits and paths truncate with full-path tooltips",
+      "fits": true,
+      "titles": [
+        "/Users/someone/.autobyteus/server-data/skills/ui-dup",
+        "/Users/someone/work/a/very/long/package/path/agents/ui-pkg-agent/skills/ui-dup"
+      ],
+      "result": "Pass"
+    }
+  },
+  "pageErrors": [],
+  "cleanup": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/.autobyteus/development/server-data/skills/ui-dup",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/chat-interface-entry/.autobyteus/development/server-data/agents/ui-fixture-agent",
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-ui-5qXYny"
+  ],
+  "completedAt": "2026-09-29T13:35:39.487Z"
+}

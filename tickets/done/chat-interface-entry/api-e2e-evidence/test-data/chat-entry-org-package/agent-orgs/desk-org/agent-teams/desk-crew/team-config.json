@@ -1,0 +1,5 @@
+{
+  "coordinatorMemberName": "crew_member",
+  "members": [{ "memberName": "crew_member", "ref": "crew-member", "refType": "agent", "refScope": "team_local" }],
+  "handoffs": []
+}

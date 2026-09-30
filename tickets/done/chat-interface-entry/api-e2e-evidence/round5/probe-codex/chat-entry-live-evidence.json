@@ -1,0 +1,290 @@
+{
+  "startedAt": "2026-09-29T10:06:12.679Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C01": {
+      "title": "Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED",
+      "result": "Pass",
+      "ms": 32,
+      "details": {
+        "da": {
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "skillScope": "ALL_INSTALLED",
+          "skillNames": []
+        },
+        "legacy": {
+          "id": "probe-legacy",
+          "name": "Probe Legacy",
+          "skillScope": "CONFIGURED",
+          "skillNames": [
+            "probe-alpha"
+          ]
+        }
+      }
+    },
+    "C02": {
+      "title": "Landing: / → /chat, Chat first with pencil, New chat defaults",
+      "result": "Pass",
+      "ms": 6610,
+      "details": {
+        "nav": [
+          "Chat",
+          "Agents",
+          "Agent Teams"
+        ],
+        "workspace": "Temp workspace",
+        "approval": "Auto-approve",
+        "model": "Choose a model\nAutoByteus"
+      }
+    },
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 3405,
+      "details": {
+        "model": "gpt-5.5",
+        "skills": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 22071,
+      "details": {
+        "runId": "daily_assistant_a378284c7d6549789c1628e6f87cceb8",
+        "exposure": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "GPT-5.5 (default reasoning: medium) · Codex",
+        "triggerFirstSeen": "gpt-5.5",
+        "triggerSettledAfterMs": 4015
+      }
+    },
+    "C05": {
+      "title": "Live run view (D-17): product header and box; ⚙ run settings locked while live (REQ-011 R3, VIS-026)",
+      "result": "Fail",
+      "ms": 3649,
+      "error": "Run settings not locked while live",
+      "details": {
+        "note": 0,
+        "saveDisabled": true,
+        "modelDisabled": true
+      }
+    },
+    "C06": {
+      "title": "Terminate → Offline → ⚙ save → reload → ⚙ save → resume uses the saved model (D-08 via run settings)",
+      "result": "Fail",
+      "ms": 25423,
+      "error": "Run settings not locked again after resume",
+      "details": null
+    },
+    "C07": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 9918,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_a8b8292a2d544d89923615e951279a70",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uP66qs/folder-ws"
+      }
+    },
+    "C08": {
+      "title": "Catalog Run (form unchanged) → /chat?id=temp-* → first send → permanent URL and streamed reply",
+      "result": "Pass",
+      "ms": 9457,
+      "details": {
+        "runId": "probe_legacy_18928ff639d74dfea99153d09098803b"
+      }
+    },
+    "C09": {
+      "title": "@agent scoped /, × back to Daily Assistant, tree + preset",
+      "result": "Pass",
+      "ms": 2151,
+      "details": {
+        "scoped": [
+          "probe-bundled"
+        ],
+        "presetUrl": "/chat"
+      }
+    },
+    "C10": {
+      "title": "Team quick path with an attachment: uniform member config, coordinator reads the file, Team view with the unchanged box",
+      "result": "Pass",
+      "ms": 13038,
+      "details": {
+        "teamRunId": "probe_team_1e2f2f0869f143d7b9a318fffac1d542",
+        "coordinator": "/lead",
+        "memberConfig": {
+          "runtime_kind": "codex_app_server",
+          "llm_model_identifier": "gpt-5.5",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uP66qs/server-data/temp_workspace"
+        }
+      }
+    },
+    "C11": {
+      "title": "RSK-005 redirects, missing and unregistered ids, tool strip collapsed",
+      "result": "Pass",
+      "ms": 8144,
+      "details": {
+        "orgRunId": "probe_org_cfd68fe3ee8a474d8d3f3134def99c48"
+      }
+    },
+    "C12": {
+      "title": "Narrow 390×844: no horizontal overflow; model menu is a bottom sheet with drill-in",
+      "result": "Pass",
+      "ms": 3213,
+      "details": {
+        "sheet": {
+          "x": 8,
+          "y": 569,
+          "width": 374,
+          "height": 267
+        }
+      }
+    },
+    "C14": {
+      "title": "D-15 Rule 1 (V-D): a user-owned workspace skill wins for the Daily Assistant; a configured agent still fails fast",
+      "result": "Pass",
+      "ms": 10464,
+      "details": {
+        "daRun": "daily_assistant_5a0de8cf826b4dadb302c63ffba78bf9",
+        "strongRun": "probe_shadow_owner_e529b02bdb6b408fa36476d4d5433907",
+        "strongError": "Failed to prepare agent run 'probe_shadow_owner_e529b02bdb6b408fa36476d4d5433907'.",
+        "userFolderIntact": true
+      }
+    },
+    "C15": {
+      "title": "D-15 Rule 2: configured launch re-points a weak-held link (V-B), a new Daily Assistant chat skips a strong-held link (V-A), link removed after all terminate (V-E)",
+      "result": "Pass",
+      "ms": 26277,
+      "details": {
+        "weak1": "daily_assistant_e7cbab0d1bd94a6d814bd3ce757a2ce7",
+        "strong": "probe_shadow_owner_833965ac964c4db187956c3585012955",
+        "weak2": "daily_assistant_472828f077bb4192a3dae7f117a53a60"
+      }
+    },
+    "C16": {
+      "title": "D-16 / AC-018: Chat model labels follow the launch-form policy (rows, trigger, search, fixed list, launch-form parity, 390×844)",
+      "result": "Fail",
+      "ms": 45910,
+      "error": "Timed out waiting for run-settings model label",
+      "details": null
+    },
+    "C17": {
+      "title": "D-17 frame: chat run view geometry equals the Team view; strip Files/Terminal open exact tabs in Chat and Team; defaults; reopen keeps its tab; collapsed state is shared",
+      "result": "Fail",
+      "ms": 18679,
+      "error": "locator.waitFor: Timeout 15000ms exceeded.\nCall log:\n  - waiting for locator('[data-test=\"workspace-right-tool-strip-surface\"]') to be visible\n",
+      "details": null
+    },
+    "C18": {
+      "title": "D-17 draft ⚙ (AR-011): catalog draft and failed first send edit the draft model locally (no server call) and the send uses it",
+      "result": "Pass",
+      "ms": 15665,
+      "details": {
+        "catalogOpsBeforeSend": [],
+        "catalogModel": "gpt-5.6-luna",
+        "resendOpsBeforeSend": [
+          "query GetSkillImprovementCapability"
+        ],
+        "resendModel": "gpt-5.6-sol"
+      }
+    },
+    "C19": {
+      "title": "CR-005: ⚙ stays with its run — New chat (success, failed first send) and Team quick path land on their conversation; header ＋ opens a preset New chat",
+      "result": "Pass",
+      "ms": 13534,
+      "details": {
+        "success": {
+          "runView": true,
+          "settingsOpen": false
+        },
+        "failed": {
+          "runView": true,
+          "settingsOpen": false
+        },
+        "team": {
+          "settingsOpen": false,
+          "textarea": 1
+        },
+        "plus": {
+          "url": "/chat",
+          "chip": "PL\nProbe Legacy",
+          "workspace": "Temp workspace"
+        }
+      }
+    },
+    "C13": {
+      "title": "Daily Assistant restart lifecycle: user edit preserved; deleted config restored from the template",
+      "result": "Pass",
+      "ms": 7388,
+      "details": {
+        "restored": true
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 72947
+    },
+    {
+      "label": "frontend",
+      "pid": 73626
+    },
+    {
+      "label": "backend-restart-1",
+      "pid": 94073
+    },
+    {
+      "label": "backend-restart-2",
+      "pid": 94427
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 94427,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 94073,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 73626,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 72947,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uP66qs"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-uP66qs",
+  "backendUrl": "http://127.0.0.1:52431",
+  "frontUrl": "http://127.0.0.1:52432",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T10:10:41.751Z"
+}

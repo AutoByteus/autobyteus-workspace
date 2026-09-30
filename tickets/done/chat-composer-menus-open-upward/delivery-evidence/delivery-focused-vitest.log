@@ -1,0 +1,54 @@
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/chat-composer-menus-open-upward/autobyteus-web
+
+stderr | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/popover/__tests__/useAnchoredPopover.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatThinkingControl.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatModelMenu.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/chat/__tests__/ChatMessageInput.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | composables/popover/__tests__/useAnchoredPopover.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatThinkingControl.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatModelMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatMessageInput.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/chat/__tests__/ChatWorkspaceMenu.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/popover/__tests__/useAnchoredPopover.spec.ts (10 tests) 18ms
+ ✓ components/chat/__tests__/ChatMessageInput.spec.ts (3 tests) 30ms
+ ✓ components/chat/__tests__/ChatModelMenu.spec.ts (5 tests) 55ms
+ ✓ components/chat/__tests__/ChatThinkingControl.spec.ts (9 tests) 77ms
+ ✓ components/chat/__tests__/ChatWorkspaceMenu.spec.ts (8 tests) 90ms
+
+ Test Files  5 passed (5)
+      Tests  35 passed (35)
+   Start at  08:12:35
+   Duration  6.36s (transform 3.35s, setup 26.34s, collect 733ms, tests 270ms, environment 1.27s, prepare 946ms)
+

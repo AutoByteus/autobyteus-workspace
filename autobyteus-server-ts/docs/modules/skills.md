@@ -2,8 +2,9 @@
 
 ## Scope
 
-The Skills module owns managed skill discovery, catalog and GraphQL CRUD/file
-workflows, and configured runtime skill resolution for agent definitions. It
+The Skills module owns the one-skill-per-name catalog, skill-name validation at
+import, GraphQL CRUD/file workflows, and configured runtime skill resolution for
+agent definitions. It
 does not own an agent-facing skill-tool boundary.
 
 ## TS Source
@@ -14,24 +15,35 @@ does not own an agent-facing skill-tool boundary.
 ## Main Service
 
 - `src/skills/services/skill-service.ts`
+- `src/skills/services/skill-catalog.ts`
 - `src/skills/services/configured-agent-skill-resolver.ts`
+- `src/skills/services/runtime-default-skill-folders.ts`
 
 ## Skills Catalog
 
-The Skills module has a normal catalog surface backed by configured skill
-directories plus bundled skill layouts found in app-data and imported agent
-package definition roots. The catalog is what the GraphQL `skills` and
-`skill(name)` fields expose to the frontend Skills page and Skill Detail/File
-Explorer flow.
+The Skills module has one catalog: exactly one skill per name (D-19, REQ-022).
+`SkillService.listInstalledSkillRecords()` scans every source in precedence
+order and keeps the first copy of each name. The Skills page, `skillStore`, the
+Chat `/` menu, `ALL_INSTALLED` agents and configured agents all use that copy.
 
-Configured/global skill directories are scanned first:
+Precedence (tier, then order within the tier):
 
-- the default skills directory from server config
-- additional skills directories from server config
+1. AutoByteus's own skills folder (`config.getSkillsDir()`).
+2. Definition-root bundles: the app data dir, then the agent package roots
+   (`AUTOBYTEUS_AGENT_PACKAGE_ROOTS`) in order. Within a root: `agents/*` by
+   name, then `agent-teams/*` by name (each team's shared skills, then its
+   agents), then `agent-orgs/*` by name (each Org's org-owned agents by name,
+   then its org-owned teams by name: the team's shared skills, then its local
+   agents). The app data dir's Orgs live in `config.getAgentOrgsDir()`; a
+   package root's in `<packageRoot>/agent-orgs`.
+3. Added skill folders (`AUTOBYTEUS_SKILLS_PATHS`) that are not runtime default
+   folders, in Settings order.
+4. Runtime default folders, only if added: `$CODEX_HOME/skills` (default
+   `~/.codex/skills`), `~/.claude/skills`, `~/.agents/skills`, `~/.grok/skills`.
+   They are recognised by realpath (`runtime-default-skill-folders.ts`) and
+   always come after tiers 1–3, whatever the Settings order.
 
-After those directories, `SkillService.listSkills()` and
-`SkillService.getSkill(name)` scan definition roots from app data and configured
-agent package roots for bundled package skills:
+Bundled layouts inside a definition root:
 
 - shared agent private skill folders:
   `agents/<agent-id>/skills/<skill-name>/SKILL.md`
@@ -39,19 +51,76 @@ agent package roots for bundled package skills:
   `agent-teams/<team-id>/agents/<agent-id>/skills/<skill-name>/SKILL.md`
 - owning-team shared skills:
   `agent-teams/<team-id>/skills/<skill-name>/SKILL.md`
+- Agent Org-owned agents (`agent_private`, the agent folder is the root):
+  `agent-orgs/<org>/agents/<agent>/skills/<skill-name>/SKILL.md`
+- Agent Org-owned teams: shared skills (`team_shared`) in
+  `agent-orgs/<org>/agent-teams/<team>/skills/<skill-name>/SKILL.md`, and their
+  local agents (`agent_private`, the team folder is the root) in
+  `agent-orgs/<org>/agent-teams/<team>/agents/<agent>/skills/<skill-name>/SKILL.md`
 
-Duplicate skill names use deterministic first-seen precedence: configured/global
-skill directories win over later bundled package roots, and later duplicates are
-skipped in the catalog.
+Org-owned agent and team folders come from the exact owned-source correlation
+(`correlateAgentOrgOwnedMembers` in
+`agent-org-definition/providers/agent-org-owned-definition-correlation.ts`,
+read synchronously for the catalog by `listAgentOrgOwnedDefinitionSourcesSync`
+and asynchronously for the definition providers by
+`listAgentOrgOwnedDefinitionSources`). A folder that no `org_local` member
+correlates with is not scanned, and an Org has no org-level `skills/` folder.
 
-Catalog skills remain the source for normal Skills-page browsing, Skill Detail
-loading, File Explorer workspaces, and UI selection during agent authoring.
-Create/edit behavior still depends on the existing Skills and File Explorer
-operations plus the underlying filesystem permissions of each resolved skill
-root. Repository-backed history, tags, and rollbacks are external to AutoByteus.
+An added skill folder is scanned both as a skills folder (including nested
+`skills` folders; a nested link back to a scanned folder is skipped) and as a
+definition root. A folder reached through two sources is one copy. Symlinked
+skill folders and folders without a parsable `SKILL.md` are not catalog copies;
+a folder is catalogued under the name its `SKILL.md` declares.
+
+Each record (`src/skills/domain/installed-skill-record.ts`) carries the parsed
+`Skill`, its `origin` (`global`, `agent_private` or `team_shared`), the
+trusted and configured roots of its layout, its `tier` and its `sourcePath`.
+
+### Ignored copies (REQ-024)
+
+A later copy of a name is ignored. `SkillService.listSkillNameIssues()` returns
+`{ name, usedPath, ignoredPaths, kind }`: `conflict` when the ignored copies are
+in tiers 1–3 (the user should fix them), `shadowed_runtime_default` when they
+are in a runtime default folder (informational). The issues are logged whenever
+they change, and the GraphQL `skillNameIssues` query feeds the Skills page
+banner. Ignored copies are not addressable by name.
+
+### Name-based operations (AR-013)
+
+`SkillService.getSkill(name)` is `resolveCatalogRecord(name)?.skill`, the used
+copy. GraphQL `skill(name)`, the file tree, `updateSkill`, `deleteSkill`,
+enable/disable, file upload/read/delete, `getSkills` and the skill file
+workspace therefore always act on the used copy, never on an ignored one.
+Edit and delete still depend on the filesystem permissions of that copy.
 
 The administrative catalog is broader than any one agent's runtime configuration.
 Listing or browsing a catalog skill does not grant an agent permission to use it.
+
+### Import validation (REQ-023)
+
+`SkillService.validateIncomingSkillNames(source)` checks an incoming source
+against the installed copies; `assertNoIncomingSkillNameConflicts` throws
+`SkillNameConflictError` on a conflict. A second copy of a name among tiers 1–3
+is a conflict, including two copies inside the incoming source. A duplicate
+against a runtime default folder is not an error: the tier 1–3 copy wins and a
+notice is logged. The incoming source's own folders are not counted as existing
+copies, so reloading or updating a package in place only conflicts with other
+sources. Every caller validates before it commits, so a rejected operation
+changes nothing:
+
+- `SkillService.addSkillSource`, before `AUTOBYTEUS_SKILLS_PATHS` is persisted;
+- `SkillService.createSkill`, against tiers 1–3;
+- `AgentPackageService.importAgentPackage`: a local path before it is
+  registered; a GitHub download before it is recorded (a rejected download is
+  deleted);
+- `AgentPackageService.updateAgentPackage`: the staged revision is rolled back
+  and the record and update status stay as they were;
+- `AgentPackageService.reloadAgentPackage` (R-3): the previous registration is
+  kept. Files already on disk stay; the catalog and the banner reflect them.
+
+GraphQL surfaces the error as `Duplicate skill names: <names>` with
+`extensions: { code: 'SKILL_NAME_CONFLICT', conflicts: [{ name, existingPath,
+incomingPath }] }` (`src/api/graphql/errors/skill-name-conflict-graphql-error.ts`).
 
 ### Catalog Reload
 
@@ -60,65 +129,59 @@ for refreshing the Skills page after files under already configured skill source
 folders change on disk. It delegates to `SkillService.reloadSkillCatalog()`,
 which performs a fresh catalog scan through the same `listSkills()` path and
 returns refreshed `skills` plus refreshed `skillSources` metadata from
-`getSkillSources()`.
-
-Reload is global for all configured skill sources. It preserves existing
-discovery ordering, duplicate first-seen precedence, malformed-skill
-warning/skip behavior, and disabled-skill lookup by skill name. It refreshes
-administrative browsing and future selections. It does not rewrite a running
-native agent's launch-time skill catalog; direct reads against an already
-advertised path can still observe current file contents.
+`getSkillSources()`. It does not rewrite a running native agent's launch-time
+skill catalog; direct reads against an already advertised path can still
+observe current file contents.
 
 ## Configured Agent Skill Resolution
 
-`agent-config.json.skillNames` is an ordered list of logical skill names. Runtime
-bootstrap paths must resolve that list through the contextual configured-skill
-resolver rather than calling the global catalog APIs directly.
+`agent-config.json.skillNames` is an ordered list of logical skill names. Every
+safe configured name resolves by name against the catalog
+(`resolveCatalogRecord`), the same copy the Skills page and `ALL_INSTALLED`
+agents use. An agent that ships its own copy of a name uses it only if that copy
+is the catalog's (DEC-017); import validation keeps custom sources free of such
+duplicates.
 
 `SkillService.resolveConfiguredSkillBindingsForAgent(agentDefinition)` keeps
 one ordered result for every safe configured name: a `resolved` binding carries
-the current `Skill`, while an `unresolved` binding preserves the validated
-logical name for runtime workspace reconciliation. Consumers that need only
-available skills use the resolved-only
-`resolveConfiguredSkillsForAgent(agentDefinition)` projection.
+the catalog `Skill` and its source roots, while an `unresolved` binding
+preserves the validated logical name for runtime workspace reconciliation.
+Consumers that need only available skills use the resolved-only
+`resolveConfiguredSkillsForAgent(agentDefinition)` projection. Unsafe configured
+names (absolute paths, path separators, empty names, `..` traversal) are skipped
+with a warning. Missing configured skills remain non-blocking.
 
-The contextual resolver uses source metadata attached by the agent-definition
-providers:
+The detailed (AGY) variant builds each binding from the catalog record through
+`ConfiguredAgentSkillResolver.resolveInstalledRecordDetailed(record)`: the
+record path applies the provenance, source-safety, manifest and fingerprint
+checks, and a bundled folder whose name does not match its manifest `name` is
+reported as `name_mismatch`. A name the catalog does not have is
+`certified_absent`.
 
-- `sourceInfo.agentDirPath` is the folder that contains the agent's `agent.md`
-  and `agent-config.json`.
-- `sourceInfo.teamDirPath` is present for team-local agents and points at the
-  owning team folder.
+**Boundary: application-owned agents.** Agents with
+`ownershipScope: 'application_owned'` are sandboxed bundles, not installed
+skills. They resolve each configured name from their bundle first
+(`sourceInfo.agentDirPath/skills/<name>`, then `sourceInfo.teamDirPath/skills/<name>`,
+whose manifest name must match), then from the catalog.
 
-For each configured skill name, resolution proceeds in this order:
+### `ALL_INSTALLED` scope
 
-1. agent-private skill folder:
-   `<agentDirPath>/skills/<skillName>/SKILL.md`
-2. owning-team shared skill for team-local agents:
-   `<teamDirPath>/skills/<skillName>/SKILL.md`
-3. configured/global skill-directory fallback
+When an agent definition has `skillScope: ALL_INSTALLED`,
+`resolveConfiguredSkillBindingsForAgent(Detailed)` does not read `skillNames`.
+It builds bindings from the enabled catalog records at run start, so a skill
+bundled inside another agent package folder binds to that folder.
 
-Contextual candidates must contain `SKILL.md`, and that file's frontmatter
-`name` must exactly match the configured skill name. Unsafe configured names
-such as absolute paths, path separators, empty names, or `..` traversal are
-skipped with a warning and never become filesystem paths. Safe names whose
-current source is missing or invalid remain `unresolved` bindings so Codex and
-Claude can remove a stale broken runtime link before warning and omitting the
-skill. Missing or invalid configured skills remain non-blocking.
-
-This lets an imported package carry private skill content beside its agent or
-team while preserving source-context-first runtime resolution. Runtime fallback
-is deliberately limited to configured/global skill directories, not the full
-package-scanning catalog, so one package agent does not accidentally resolve a
-different agent's private package skill. Duplicate skill names across
-configured/default/private/team-shared sources should still be avoided; the
-catalog uses first-seen precedence and the runtime resolver prefers the owning
-context before global fallback.
+`SkillService.hasEffectiveSkills(agentDefinition)` answers whether the
+definition would expose any skill under its scope (any non-empty configured name for
+`CONFIGURED`; any enabled catalog record for `ALL_INSTALLED`). Runtime
+factories use it instead of inspecting `skillNames` so that an
+`ALL_INSTALLED` agent with an empty `skillNames` list still enables skill
+support. For `ALL_INSTALLED`, disabled skills are excluded from both the
+bindings and this check.
 
 ## Runtime Consumption
 
-Runtime bootstraps consume contextual configured-skill results, not a
-package-wide private skill scan. Native AutoByteus uses the resolved `Skill[]`
+Runtime bootstraps consume the catalog-backed configured-skill results. Native AutoByteus uses the resolved `Skill[]`
 projection. Codex and Claude use the complete ordered binding projection so
 their provider workspace paths can be reconciled even when an optional skill no
 longer has a source.
@@ -156,15 +219,20 @@ name remains inert and does not recreate a compatibility tool.
 Codex and Claude use one profile-driven `WorkspaceSkillMaterializer` policy,
 with provider-specific roots at `.codex/skills/<sanitized-skill-name>` and
 `.claude/skills/<sanitized-skill-name>`. A resolved link targets the exact
-contextual `Skill.rootPath`; no package-wide catalog lookup or source-tree copy
-is performed.
+catalog `Skill.rootPath`; no source-tree copy is performed.
 
-Codex first asks `skills/list` which logical names the provider already
-discovers. A discoverable name does not bypass reconciliation: a missing
-AutoByteus workspace path remains absent, while a broken AutoByteus workspace
-symlink is repaired to the current resolved source. Claude exposes every
-resolved binding through its conventional workspace path. If provider discovery
-fails, Codex falls back to resolved workspace-link exposure.
+Codex first asks `skills/list` which skills the provider already discovers.
+Codex also reads its own default folder and does not de-duplicate same-named
+skills, so a name is `reconcile-discoverable` only when every enabled entry
+Codex lists for it has the catalog copy's directory (the realpath of its
+`SKILL.md` directory). Otherwise the chosen copy is exposed through the
+workspace link, and a differing Codex copy is logged as `codex-runtime-duplicate`
+(name, Codex paths, chosen path). A discoverable name does not bypass
+reconciliation: a missing AutoByteus workspace path remains absent, while a
+broken AutoByteus workspace symlink is repaired to the current resolved source.
+Claude exposes every resolved binding through its conventional workspace path.
+If provider discovery fails, Codex falls back to resolved workspace-link
+exposure.
 
 The shared path-state policy is deliberately narrow and non-destructive:
 
@@ -175,7 +243,8 @@ The shared path-state policy is deliberately narrow and non-destructive:
 - a same-source runtime link is reused, with path-keyed holder tracking and
   guarded cleanup after the final owner releases it;
 - a live different-target symlink, file, directory, or other non-symlink path is
-  a fatal collision and is never overwritten or trusted; and
+  a collision and is never overwritten or trusted (a fatal one for configured
+  requests; see the workspace collision policy below); and
 - batch failure rolls back links acquired by that invocation without replacing
   the original failure.
 
@@ -183,6 +252,28 @@ Warnings include the runtime, run, skill, path, relevant old/current target, and
 repair/skip disposition. Claude and Codex continue to use their
 provider-specific bootstrap paths; the native catalog-only processor does not
 replace those paths.
+
+### Workspace collision policy (`ALL_INSTALLED` versus configured)
+
+The same materializer also serves ACP/Grok (`.grok/skills`). With one skill per
+name, runs that share a workspace ask for the same source for a name and share
+its link (one holder per acquisition; the link is removed once no holder
+remains, and only while it still points at the entry's source). A different
+source for a live path only follows an out-of-band catalog change and fails
+fast with the source collision error.
+
+Every call carries one `workspaceCollisionPolicy` for the run, which the
+bootstrappers and factories (Codex, Claude, ACP/Grok, AGY) derive from
+`SkillService.resolveSkillScope` through `workspaceCollisionPolicyForScope`.
+The materializers never read `skillScope` themselves.
+
+- **Rule 1 — a user-owned workspace entry** (a non-symlink, or a link the
+  registry does not own): `prefer_workspace` (`ALL_INSTALLED`) leaves it in
+  place, omits its own copy and logs `skipped-workspace-owned`; the runtime
+  discovers the workspace skill natively. `fail` (configured) keeps the path
+  collision error. AGY applies the same rule to
+  `<workspace>/.agents/skills/<name>` (`AGY_SKILL_NAME_COLLISION` for `fail`
+  only).
 
 ### Access modes and historical context
 
@@ -231,10 +322,9 @@ agent-teams/review-team/
       private-tone/SKILL.md
 ```
 
-Skill names should be unique across configured global, agent-private, and
-team-shared sources. The catalog applies first-seen precedence for duplicate
-names, while runtime resolution checks the owning agent/team context before it
-falls back to configured/global skill directories.
+Skill names must be unique across AutoByteus's skills folder, agent packages
+and added skill folders: import validation rejects a duplicate, and the catalog
+uses exactly one copy of a name if a duplicate appears outside the app.
 
 ## Operational Limits
 

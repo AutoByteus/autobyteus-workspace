@@ -108,7 +108,7 @@ import type { RuntimeModelConfigSchemaState } from '~/types/agent/RuntimeModelCo
 import { useRuntimeCurrentModelDescriptor } from '~/composables/useRuntimeCurrentModelDescriptor'
 import { normalizeModelConfigSchema } from '~/utils/llmConfigSchema'
 import type { GroupedOption } from '~/components/agentTeams/SearchableGroupedSelect.vue'
-import { getModelSelectionOptionDescription, getModelSelectionOptionLabel, getModelSelectionSelectedLabel } from '~/utils/modelSelectionLabel'
+import { existingRunChoiceLabelInput, getModelSelectionOptionDescription, getModelSelectionOptionLabel, getModelSelectionSelectedLabel } from '~/utils/modelSelectionLabel'
 
 const { t } = useLocalization()
 
@@ -215,12 +215,10 @@ const runChoice = computed<ExistingRunModelChoice | null>(() => {
     ? props.modelOptions?.options?.currentModel ?? null
     : props.modelOptions?.options?.replacements.find((row) => row.llmModelIdentifier === props.llmModelIdentifier) ?? null
 })
-const choiceLabel = (choice: ExistingRunModelChoice) => ({ modelIdentifier: choice.llmModelIdentifier,
-  name: choice.displayName, canonicalName: choice.canonicalName, description: choice.description })
 const selectedModelDisplay = computed(() => {
   if (props.originalModelIdentifier !== undefined && props.llmModelIdentifier === props.originalModelIdentifier) {
     const current = props.modelOptions?.options?.currentModel
-    return current ? getModelSelectionSelectedLabel(current.providerName, choiceLabel(current), effectiveRuntimeKind.value)
+    return current ? getModelSelectionSelectedLabel(current.providerName, existingRunChoiceLabelInput(current), effectiveRuntimeKind.value)
       : props.originalModelIdentifier
   }
   return props.llmModelIdentifier === props.seedModelIdentifier ? currentSeed.selectedDisplay.value : null
@@ -231,9 +229,9 @@ const selectableModelOptions = computed<GroupedOption[]>(() => {
   for (const row of props.modelOptions?.options?.replacements ?? []) {
     const group = groups.get(row.providerName) ?? { label: row.providerName, items: [] }
     group.items.push({ id: row.llmModelIdentifier,
-      name: getModelSelectionOptionLabel(choiceLabel(row), effectiveRuntimeKind.value),
-      selectedLabel: getModelSelectionSelectedLabel(row.providerName, choiceLabel(row), effectiveRuntimeKind.value),
-      description: getModelSelectionOptionDescription(choiceLabel(row), effectiveRuntimeKind.value),
+      name: getModelSelectionOptionLabel(existingRunChoiceLabelInput(row), effectiveRuntimeKind.value),
+      selectedLabel: getModelSelectionSelectedLabel(row.providerName, existingRunChoiceLabelInput(row), effectiveRuntimeKind.value),
+      description: getModelSelectionOptionDescription(existingRunChoiceLabelInput(row), effectiveRuntimeKind.value),
       recommended: row.recommended })
     groups.set(row.providerName, group)
   }

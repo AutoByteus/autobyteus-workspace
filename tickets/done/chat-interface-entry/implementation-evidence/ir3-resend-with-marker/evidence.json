@@ -1,0 +1,233 @@
+{
+  "scenario": "resend",
+  "startedAt": "2026-09-28T23:05:08.086Z",
+  "runtime": "codex_app_server",
+  "iterations": [
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 2517,
+      "permanentRunId": "daily_assistant_ad153474b02846dea00a5c68dcb42060",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [],
+      "iteration": 1,
+      "ms": 10355,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 4161,
+      "permanentRunId": "daily_assistant_a7811e1b8b274a6d9dad9d875683290e",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [],
+      "iteration": 2,
+      "ms": 10063,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 1584,
+      "permanentRunId": "daily_assistant_b25790dd67fd43f9b5a444ba550687a3",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [],
+      "iteration": 3,
+      "ms": 8900,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 4338,
+      "permanentRunId": "daily_assistant_e9ae7fcfaf834f81b5a44013a092168f",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [],
+      "iteration": 4,
+      "ms": 9615,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 4041,
+      "permanentRunId": "daily_assistant_c09a1527b642474fb808ec2898adfc23",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [],
+      "iteration": 5,
+      "ms": 9515,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 1991,
+      "permanentRunId": "daily_assistant_392745137d8f4d218946ebe6de6875a9",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [],
+      "iteration": 6,
+      "ms": 7902,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 4985,
+      "permanentRunId": "daily_assistant_e360bae1035245d6b1cf78462d396539",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [
+        {
+          "url": "ws://127.0.0.1:54600/ws/agent/daily_assistant_ad153474b02846dea00a5c68dcb42060",
+          "stack": "Error: WebSocket.close\n    at NativeWebSocket.close (<anonymous>:27:90)\n    at WebSocketClient.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:127:10)\n    at AgentStreamingService.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/AgentStreamingService.ts:84:19)\n    at Proxy.disconnectAgentStream (http://127.0.0.1:54601/_nuxt/stores/agentRunStore.ts:273:15)\n    at Proxy.wrappedAction (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:1067:18)\n    at store.<computed> (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:745:44)\n    at reconcileDiscoveredActiveRuns (http://127.0.0.1:54601/_nuxt/stores/runHistoryLoadActions.ts:175:21)"
+        }
+      ],
+      "iteration": 7,
+      "ms": 10163,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 1455,
+      "permanentRunId": "daily_assistant_0961183b64dc4b71a6c094883c227796",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [
+        {
+          "url": "ws://127.0.0.1:54600/ws/agent/daily_assistant_a7811e1b8b274a6d9dad9d875683290e",
+          "stack": "Error: WebSocket.close\n    at NativeWebSocket.close (<anonymous>:27:90)\n    at WebSocketClient.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:127:10)\n    at AgentStreamingService.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/AgentStreamingService.ts:84:19)\n    at Proxy.disconnectAgentStream (http://127.0.0.1:54601/_nuxt/stores/agentRunStore.ts:273:15)\n    at Proxy.wrappedAction (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:1067:18)\n    at store.<computed> (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:745:44)\n    at reconcileDiscoveredActiveRuns (http://127.0.0.1:54601/_nuxt/stores/runHistoryLoadActions.ts:175:21)"
+        }
+      ],
+      "iteration": 8,
+      "ms": 7841,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 5337,
+      "permanentRunId": "daily_assistant_8516b0f91519432ead850cd2138c7cf0",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [
+        {
+          "url": "ws://127.0.0.1:54600/ws/agent/daily_assistant_b25790dd67fd43f9b5a444ba550687a3",
+          "stack": "Error: WebSocket.close\n    at NativeWebSocket.close (<anonymous>:27:90)\n    at WebSocketClient.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:127:10)\n    at AgentStreamingService.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/AgentStreamingService.ts:84:19)\n    at Proxy.disconnectAgentStream (http://127.0.0.1:54601/_nuxt/stores/agentRunStore.ts:273:15)\n    at Proxy.wrappedAction (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:1067:18)\n    at store.<computed> (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:745:44)\n    at reconcileDiscoveredActiveRuns (http://127.0.0.1:54601/_nuxt/stores/runHistoryLoadActions.ts:175:21)"
+        }
+      ],
+      "iteration": 9,
+      "ms": 11168,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 4642,
+      "permanentRunId": "daily_assistant_35b844b95de241348cd33947cd040c95",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [
+        {
+          "url": "ws://127.0.0.1:54600/ws/agent/daily_assistant_e9ae7fcfaf834f81b5a44013a092168f",
+          "stack": "Error: WebSocket.close\n    at NativeWebSocket.close (<anonymous>:27:90)\n    at WebSocketClient.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:127:10)\n    at AgentStreamingService.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/AgentStreamingService.ts:84:19)\n    at Proxy.disconnectAgentStream (http://127.0.0.1:54601/_nuxt/stores/agentRunStore.ts:273:15)\n    at Proxy.wrappedAction (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:1067:18)\n    at store.<computed> (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:745:44)\n    at reconcileDiscoveredActiveRuns (http://127.0.0.1:54601/_nuxt/stores/runHistoryLoadActions.ts:175:21)"
+        }
+      ],
+      "iteration": 10,
+      "ms": 10032,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 1953,
+      "permanentRunId": "daily_assistant_64eaf86bfcdc4afbb193a38f4dbb98f5",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [
+        {
+          "url": "ws://127.0.0.1:54600/ws/agent/daily_assistant_c09a1527b642474fb808ec2898adfc23",
+          "stack": "Error: WebSocket.close\n    at NativeWebSocket.close (<anonymous>:27:90)\n    at WebSocketClient.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:127:10)\n    at AgentStreamingService.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/AgentStreamingService.ts:84:19)\n    at Proxy.disconnectAgentStream (http://127.0.0.1:54601/_nuxt/stores/agentRunStore.ts:273:15)\n    at Proxy.wrappedAction (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:1067:18)\n    at store.<computed> (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:745:44)\n    at reconcileDiscoveredActiveRuns (http://127.0.0.1:54601/_nuxt/stores/runHistoryLoadActions.ts:175:21)"
+        }
+      ],
+      "iteration": 11,
+      "ms": 7568,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 3108,
+      "permanentRunId": "daily_assistant_c143d13e900c42b486cf1b9251258801",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [
+        {
+          "url": "ws://127.0.0.1:54600/ws/agent/daily_assistant_392745137d8f4d218946ebe6de6875a9",
+          "stack": "Error: WebSocket.close\n    at NativeWebSocket.close (<anonymous>:27:90)\n    at WebSocketClient.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:127:10)\n    at AgentStreamingService.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/AgentStreamingService.ts:84:19)\n    at Proxy.disconnectAgentStream (http://127.0.0.1:54601/_nuxt/stores/agentRunStore.ts:273:15)\n    at Proxy.wrappedAction (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:1067:18)\n    at store.<computed> (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:745:44)\n    at reconcileDiscoveredActiveRuns (http://127.0.0.1:54601/_nuxt/stores/runHistoryLoadActions.ts:175:21)"
+        }
+      ],
+      "iteration": 12,
+      "ms": 8840,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 1984,
+      "permanentRunId": "daily_assistant_763071b9884944e0be80ddd992bb4577",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [
+        {
+          "url": "ws://127.0.0.1:54600/ws/agent/daily_assistant_e360bae1035245d6b1cf78462d396539",
+          "stack": "Error: WebSocket.close\n    at NativeWebSocket.close (<anonymous>:27:90)\n    at WebSocketClient.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:127:10)\n    at AgentStreamingService.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/AgentStreamingService.ts:84:19)\n    at Proxy.disconnectAgentStream (http://127.0.0.1:54601/_nuxt/stores/agentRunStore.ts:273:15)\n    at Proxy.wrappedAction (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:1067:18)\n    at store.<computed> (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:745:44)\n    at reconcileDiscoveredActiveRuns (http://127.0.0.1:54601/_nuxt/stores/runHistoryLoadActions.ts:175:21)"
+        }
+      ],
+      "iteration": 13,
+      "ms": 7463,
+      "passed": true
+    },
+    {
+      "model": "gpt-5.5",
+      "pauseMs": 5504,
+      "permanentRunId": "daily_assistant_50098a7a643a48cbaab44ee59eee21cc",
+      "replied": true,
+      "error": null,
+      "agentSocketCloses": [
+        {
+          "url": "ws://127.0.0.1:54600/ws/agent/daily_assistant_0961183b64dc4b71a6c094883c227796",
+          "stack": "Error: WebSocket.close\n    at NativeWebSocket.close (<anonymous>:27:90)\n    at WebSocketClient.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/transport/WebSocketClient.ts:127:10)\n    at AgentStreamingService.disconnect (http://127.0.0.1:54601/_nuxt/services/agentStreaming/AgentStreamingService.ts:84:19)\n    at Proxy.disconnectAgentStream (http://127.0.0.1:54601/_nuxt/stores/agentRunStore.ts:273:15)\n    at Proxy.wrappedAction (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:1067:18)\n    at store.<computed> (http://127.0.0.1:54601/_nuxt/node_modules/.cache/vite/client/deps/pinia.js?v=bb2bf81f:745:44)\n    at reconcileDiscoveredActiveRuns (http://127.0.0.1:54601/_nuxt/stores/runHistoryLoadActions.ts:175:21)"
+        }
+      ],
+      "iteration": 14,
+      "ms": 10962,
+      "passed": true
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 99061
+    },
+    {
+      "label": "frontend",
+      "pid": 99087
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 99087,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 99061,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d14-4Tls7t"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d14-4Tls7t",
+  "backendUrl": "http://127.0.0.1:54600",
+  "frontUrl": "http://127.0.0.1:54601",
+  "summary": {
+    "iterations": 14,
+    "losses": 0,
+    "failures": 0
+  },
+  "completedAt": "2026-09-28T23:07:26.077Z"
+}

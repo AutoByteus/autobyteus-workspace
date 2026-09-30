@@ -1,0 +1,28 @@
+{
+  "startedAt": "2026-09-29T09:49:49.259Z",
+  "checks": {
+    "D0": {
+      "title": "Open the chat under test (when run with --run-id)",
+      "details": {
+        "tab": "progress"
+      }
+    },
+    "L": {
+      "title": "CR-005: ⚙ left open on a chat, then a New chat (pencil) and send → the new chat shows its conversation (also on a failed first send)",
+      "details": {
+        "firstSend": {
+          "url": "http://127.0.0.1:3000/chat?id=daily_assistant_025f7b982a754d2baf2e49ccfbcfbfe5",
+          "settingsShown": 0,
+          "conversationBox": true
+        },
+        "failedFirstSend": {
+          "url": "http://127.0.0.1:3000/chat?id=temp-chat-1790675404669-3",
+          "settingsShown": 0,
+          "conversationBox": true
+        }
+      }
+    }
+  },
+  "pageErrors": [],
+  "completedAt": "2026-09-29T09:50:06.114Z"
+}

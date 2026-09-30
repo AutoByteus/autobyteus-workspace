@@ -1,0 +1,52 @@
+{
+  "scenario": "stale-resume",
+  "startedAt": "2026-09-28T23:04:34.339Z",
+  "runtime": "codex_app_server",
+  "iterations": [
+    {
+      "model": "gpt-5.5",
+      "runId": "daily_assistant_328283e672db46edae81011a0ff0d38e",
+      "staleServedAt": 1790636689663,
+      "replied": true,
+      "error": null,
+      "closesOfP": [],
+      "socketsOfP": [],
+      "status": "Running",
+      "iteration": 1,
+      "ms": 10792,
+      "passed": true
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 96979
+    },
+    {
+      "label": "frontend",
+      "pid": 97001
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 97001,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 96979,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d14-NlUfwj"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d14-NlUfwj",
+  "backendUrl": "http://127.0.0.1:54505",
+  "frontUrl": "http://127.0.0.1:54506",
+  "summary": {
+    "iterations": 1,
+    "losses": 0,
+    "failures": 0
+  },
+  "completedAt": "2026-09-28T23:04:52.878Z"
+}

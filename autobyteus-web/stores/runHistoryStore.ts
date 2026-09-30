@@ -55,7 +55,6 @@ import {
   teamMemberInspectionIdentity,
 } from './runHistoryTeamMemberInspectionActions';
 import type { TeamMemberInspectionResult } from '~/services/runOpen/teamMemberInspectionCoordinator';
-import { createDraftRunForHistoryStore } from './runHistoryDraftActions';
 import { getApolloClient } from '~/utils/apolloClient';
 import { GetAgentRunResumeConfig, GetTeamRunResumeConfig } from '~/graphql/queries/runHistoryQueries';
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts';
@@ -66,6 +65,7 @@ export const useRunHistoryStore = defineStore('runHistory', {
     agentOrgHistory: [] as AgentOrgRunHistoryItem[],
     historyFamilyErrors: { workspace: null, agentOrg: null } as RunHistoryFamilyErrors,
     agentOrgRequestGeneration: 0,
+    workspaceRequestGeneration: 0,
     workspaceHistoryLoadingById: {} as Record<string, boolean>,
     workspaceHistoryErrorById: {} as Record<string, string | null>,
     agentAvatarByDefinitionId: {} as Record<string, string>,
@@ -127,14 +127,6 @@ export const useRunHistoryStore = defineStore('runHistory', {
       const result = await openHistoricalRun(this, runId, options);
       if (result.disposition === 'committed') this.refreshRunNavigationTopology('standalone-open');
       return result;
-    },
-
-    async createDraftRun(options: {
-      workspaceRootPath: string;
-      agentDefinitionId: string;
-      selectionIntent?: WorkspaceSelectionIntent;
-    }): Promise<WorkspaceSelectionOutcome> {
-      return createDraftRunForHistoryStore(this, options);
     },
 
     async createWorkspace(rootPath: string): Promise<string> {

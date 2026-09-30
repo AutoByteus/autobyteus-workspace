@@ -50,7 +50,7 @@ const runScopedMcpMessage = async (kind: "team" | "org") => {
   const factory = new AgyAgentRunBackendFactory(
     { getAgentDefinitionById: async () => ({ name: "MCP team member", description: "Team messenger.",
       instructions: "When asked, call the AutoByteus send_message_to tool exactly once.", toolNames: ["send_message_to"], skillNames: [] }) } as never,
-    { resolveConfiguredSkillBindingsForAgent: () => [] } as never,
+    { resolveSkillScope: () => "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () => [] } as never,
     { resolveWorkingDirectory: async () => workspace } as never,
     authority.runSessions,
   );

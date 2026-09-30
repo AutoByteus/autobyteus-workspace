@@ -1,0 +1,106 @@
+{
+  "startedAt": "2026-09-29T15:04:37.721Z",
+  "checks": {
+    "K0": {
+      "title": "Catalog: package desk-alpha used over the Codex copy; codex-only used from CODEX_HOME/skills (AC-019)",
+      "result": "Pass"
+    },
+    "K1": {
+      "title": "Stale CODEX_HOME copy → codex-runtime-duplicate logged and the catalog copy exposed",
+      "run": {
+        "data": {
+          "createAgentRun": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "desk_lead_30a8717a194b48e7962a377c5530c527"
+          }
+        }
+      },
+      "link": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-rev-006-codexdup-Oet9XQ/server-data/agents/desk-helper/skills/desk-alpha",
+      "log": [
+        "codex-runtime-duplicate: skill='desk-alpha', codexPaths='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-rev-006-codexdup-Oet9XQ/codex-home/skills/desk-alpha', chosenPath='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-rev-006-codexdup-Oet9XQ/server-data/agents/desk-helper/skills/desk-alpha'; exposing the chosen copy in the workspace."
+      ],
+      "result": "Pass"
+    },
+    "K2": {
+      "title": "Used copy is the Codex copy → reconcile-discoverable: no workspace link, no duplicate log",
+      "run": {
+        "data": {
+          "createAgentRun": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "codex_user_0dd9124ed745492ca8fef26bc2838187"
+          }
+        }
+      },
+      "workspaceSkillEntries": [],
+      "duplicateLog": [],
+      "result": "Pass"
+    }
+  },
+  "cleanup": [
+    {
+      "removed": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-rev-006-codexdup-Oet9XQ"
+    }
+  ],
+  "codexHomeEntries": [
+    "skills"
+  ],
+  "catalog": {
+    "skills": [
+      {
+        "name": "codex-only",
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-rev-006-codexdup-Oet9XQ/codex-home/skills/codex-only"
+      },
+      {
+        "name": "desk-alpha",
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-rev-006-codexdup-Oet9XQ/server-data/agents/desk-helper/skills/desk-alpha"
+      },
+      {
+        "name": "desk-beta",
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-rev-006-codexdup-Oet9XQ/server-data/agents/desk-helper/skills/desk-beta"
+      },
+      {
+        "name": "retrospective-skill-improver",
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-rev-006-codexdup-Oet9XQ/server-data/agents/autobyteus-retrospective-skill-improver/skills/retrospective-skill-improver"
+      }
+    ],
+    "skillNameIssues": [
+      {
+        "name": "desk-alpha",
+        "usedPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-rev-006-codexdup-Oet9XQ/server-data/agents/desk-helper/skills/desk-alpha",
+        "ignoredPaths": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/api-rev-006-codexdup-Oet9XQ/codex-home/skills/desk-alpha"
+        ],
+        "kind": "shadowed_runtime_default"
+      }
+    ]
+  },
+  "codexHomeEntriesAfter": [
+    ".sandbox_migration",
+    ".tmp",
+    "config.toml",
+    "goals_1.sqlite",
+    "goals_1.sqlite-shm",
+    "goals_1.sqlite-wal",
+    "installation_id",
+    "logs_2.sqlite",
+    "logs_2.sqlite-shm",
+    "logs_2.sqlite-wal",
+    "memories_1.sqlite",
+    "memories_1.sqlite-shm",
+    "memories_1.sqlite-wal",
+    "queue_1.sqlite",
+    "queue_1.sqlite-shm",
+    "queue_1.sqlite-wal",
+    "shell_snapshots",
+    "skills",
+    "state_5.sqlite",
+    "state_5.sqlite-shm",
+    "state_5.sqlite-wal",
+    "thread-writer-locks",
+    "tmp"
+  ],
+  "authPresentInOwnedCodexHome": false,
+  "completedAt": "2026-09-29T15:04:44.768Z"
+}

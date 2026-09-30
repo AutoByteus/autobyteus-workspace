@@ -8,11 +8,6 @@ import {
 
 interface RunHistorySelectionStoreLike {
   selectTreeRun: (row: RunTreeRow | TeamMemberFocusTarget, options: { selectionIntent: WorkspaceSelectionIntent }) => Promise<WorkspaceSelectionOutcome>;
-  createDraftRun: (options: {
-    workspaceRootPath: string;
-    agentDefinitionId: string;
-    selectionIntent: WorkspaceSelectionIntent;
-  }) => Promise<WorkspaceSelectionOutcome>;
 }
 
 interface SelectionStoreLike {
@@ -33,7 +28,8 @@ export const useWorkspaceHistorySelectionActions = (params: {
     agentRunId: string,
   ) => boolean;
   emitRunSelected: (payload: { type: 'agent' | 'team'; runId: string }) => void;
-  emitRunCreated: (payload: { type: 'agent'; definitionId: string }) => void;
+  /** `+` on an agent row: a New chat preset to that agent and workspace. */
+  startPresetChat: (preset: { workspaceRootPath: string; agentDefinitionId: string }) => Promise<void>;
   presentTeamStreamRecoveryFeedback: (feedback: TeamStreamRecoverySelectionFeedback) => void;
 }) => {
   const flattenTeamRows = (rows: readonly TeamMemberTreeRow[]): TeamMemberTreeRow[] =>
@@ -127,13 +123,12 @@ export const useWorkspaceHistorySelectionActions = (params: {
     workspaceRootPath: string,
     agentDefinitionId: string,
   ): Promise<void> => {
-    const intent = params.selectionStore.beginSelectionIntent();
+    // A new user intent supersedes any in-flight run open.
+    params.selectionStore.beginSelectionIntent();
     try {
-      const result = await params.runHistoryStore.createDraftRun({ workspaceRootPath, agentDefinitionId, selectionIntent: intent });
-      if (result.disposition !== 'committed' || !intent.isCurrent()) return;
-      params.emitRunCreated({ type: 'agent', definitionId: agentDefinitionId });
+      await params.startPresetChat({ workspaceRootPath, agentDefinitionId });
     } catch (error) {
-      if (intent.isCurrent()) console.error('Failed to create draft run:', error);
+      console.error('Failed to start a chat:', error);
     }
   };
 

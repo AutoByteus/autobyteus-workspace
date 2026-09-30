@@ -160,4 +160,43 @@ describe('AgentDefinitionForm', () => {
     const payload = (wrapper.emitted('submit') || [])[0]?.[0] as Record<string, any>
     expect(payload.defaultLaunchConfig).toBeNull()
   })
+
+  it('defaults new agents to CONFIGURED skills and emits ALL_INSTALLED when "Use all installed skills" is on', async () => {
+    const wrapper = createWrapper()
+    await wrapper.get('input#name').setValue('Helper')
+    await wrapper.get('textarea#description').setValue('Helps')
+    await wrapper.get('textarea#instructions').setValue('Help.')
+
+    await wrapper.get('form').trigger('submit.prevent')
+    expect(((wrapper.emitted('submit') || [])[0]?.[0] as Record<string, unknown>).skillScope).toBe('CONFIGURED')
+
+    await wrapper.get('input#skill_scope_all_installed').setValue(true)
+    await wrapper.get('form').trigger('submit.prevent')
+    expect(((wrapper.emitted('submit') || [])[1]?.[0] as Record<string, unknown>).skillScope).toBe('ALL_INSTALLED')
+  })
+
+  it('loads an ALL_INSTALLED definition with the option on and the skill picker disabled', async () => {
+    const wrapper = mount(AgentDefinitionForm, {
+      props: {
+        isSubmitting: false,
+        submitButtonText: 'Save',
+        isCreateMode: false,
+        initialData: {
+          name: 'Daily Assistant',
+          description: 'General',
+          instructions: 'Help.',
+          skillNames: [],
+          skillScope: 'ALL_INSTALLED',
+          toolNames: [],
+        },
+      },
+      global: {
+        stubs: { GroupableTagInput: true, DefinitionLaunchPreferencesSection: true },
+        mocks: { $t: (key: string) => key },
+      },
+    })
+
+    expect((wrapper.get('input#skill_scope_all_installed').element as HTMLInputElement).checked).toBe(true)
+    expect(wrapper.find('[aria-disabled="true"]').exists()).toBe(true)
+  })
 })

@@ -132,7 +132,7 @@ describe("Brief package team prompt authority", () => {
       } as never,
       definitions.agentDefinitionService,
       {
-        resolveConfiguredSkillBindingsForAgent: vi.fn(() => []),
+        resolveSkillScope: () => "CONFIGURED", resolveConfiguredSkillBindingsForAgent: vi.fn(() => []),
       } as never,
       {
         acquireClient: vi.fn(),

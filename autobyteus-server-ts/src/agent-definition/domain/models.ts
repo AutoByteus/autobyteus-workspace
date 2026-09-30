@@ -4,6 +4,14 @@ export type AgentDefinitionOwnershipScope = "shared" | "team_local" | "agent_org
 
 export type AgentDefinitionDefaultLaunchConfig = DefaultLaunchConfig;
 
+/** Which skills an agent definition runs with: its configured names, or every installed, enabled skill. */
+export type AgentSkillScope = "CONFIGURED" | "ALL_INSTALLED";
+
+export const DEFAULT_AGENT_SKILL_SCOPE: AgentSkillScope = "CONFIGURED";
+
+export const normalizeAgentSkillScope = (value: unknown): AgentSkillScope =>
+  value === "ALL_INSTALLED" ? "ALL_INSTALLED" : DEFAULT_AGENT_SKILL_SCOPE;
+
 export type AgentDefinitionSourceInfo = {
   agentDirPath: string;
   teamDirPath?: string | null;
@@ -24,6 +32,7 @@ export class AgentDefinition {
   toolInvocationPreprocessorNames: string[];
   lifecycleProcessorNames: string[];
   skillNames: string[];
+  skillScope: AgentSkillScope;
   ownershipScope: AgentDefinitionOwnershipScope;
   ownerTeamId?: string | null;
   ownerTeamName?: string | null;
@@ -51,6 +60,7 @@ export class AgentDefinition {
     toolInvocationPreprocessorNames?: string[];
     lifecycleProcessorNames?: string[];
     skillNames?: string[];
+    skillScope?: AgentSkillScope;
     ownershipScope?: AgentDefinitionOwnershipScope;
     ownerTeamId?: string | null;
     ownerTeamName?: string | null;
@@ -77,6 +87,7 @@ export class AgentDefinition {
     this.toolInvocationPreprocessorNames = options.toolInvocationPreprocessorNames ?? [];
     this.lifecycleProcessorNames = options.lifecycleProcessorNames ?? [];
     this.skillNames = options.skillNames ?? [];
+    this.skillScope = options.skillScope ?? DEFAULT_AGENT_SKILL_SCOPE;
     this.ownershipScope = options.ownershipScope ?? "shared";
     this.ownerTeamId = options.ownerTeamId ?? null;
     this.ownerTeamName = options.ownerTeamName ?? null;
@@ -105,5 +116,6 @@ export type AgentDefinitionUpdate = {
   toolInvocationPreprocessorNames?: string[];
   lifecycleProcessorNames?: string[];
   skillNames?: string[];
+  skillScope?: AgentSkillScope;
   defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
 };

@@ -5,6 +5,7 @@ import { setActivePinia } from 'pinia'
 import SkillSourcesModal from './SkillSourcesModal.vue'
 import { useSkillSourcesStore } from '~/stores/skillSourcesStore'
 import { useSkillStore } from '~/stores/skillStore'
+import { useSkillNamesStore } from '~/stores/skillNamesStore'
 
 const flushPromises = async () => {
   await Promise.resolve()
@@ -47,6 +48,9 @@ const mountComponent = async () => {
   sourcesStore.fetchSkillSources = vi.fn().mockResolvedValue(undefined)
   sourcesStore.removeSkillSource = vi.fn().mockResolvedValue(undefined)
   skillStore.fetchAllSkills = vi.fn().mockResolvedValue(undefined)
+  const skillNames = useSkillNamesStore()
+  skillNames.fetchIssues = vi.fn().mockResolvedValue([])
+  skillNames.runWithSkillNameChecks = vi.fn((action: () => Promise<unknown>) => action()) as typeof skillNames.runWithSkillNameChecks
 
   const wrapper = mount(SkillSourcesModal, {
     global: {
@@ -69,7 +73,7 @@ const mountComponent = async () => {
   })
 
   await flushPromises()
-  return { wrapper, sourcesStore, skillStore }
+  return { wrapper, sourcesStore, skillStore, skillNames }
 }
 
 describe('SkillSourcesModal', () => {
@@ -87,5 +91,30 @@ describe('SkillSourcesModal', () => {
     expect(sourcesStore.removeSkillSource).toHaveBeenCalledWith('/custom/skills')
     expect(skillStore.fetchAllSkills).toHaveBeenCalledTimes(1)
     expect(wrapper.text()).toContain('Skill source removed. Skills list refreshed.')
+  })
+
+  it('adds a folder through the skill-name checks (D-19) and reports the added count', async () => {
+    const { wrapper, sourcesStore, skillNames } = await mountComponent()
+    sourcesStore.addSkillSource = vi.fn().mockResolvedValue(undefined)
+
+    await wrapper.get('.input-group input').setValue('/extra/skills')
+    await wrapper.get('.btn-add').trigger('click')
+    await flushPromises()
+
+    expect(skillNames.runWithSkillNameChecks).toHaveBeenCalledTimes(1)
+    expect(sourcesStore.addSkillSource).toHaveBeenCalledWith('/extra/skills')
+  })
+
+  it('keeps the typed path when a duplicate name rejects the folder', async () => {
+    const { wrapper, sourcesStore, skillNames } = await mountComponent()
+    sourcesStore.addSkillSource = vi.fn().mockRejectedValue(new Error('Duplicate skill names: dup'))
+    skillNames.runWithSkillNameChecks = vi.fn((action: () => Promise<unknown>) => action()) as typeof skillNames.runWithSkillNameChecks
+
+    await wrapper.get('.input-group input').setValue('/dup/skills')
+    await wrapper.get('.btn-add').trigger('click')
+    await flushPromises()
+
+    expect((wrapper.get('.input-group input').element as HTMLInputElement).value).toBe('/dup/skills')
+    expect(wrapper.find('.success-alert').exists()).toBe(false)
   })
 })

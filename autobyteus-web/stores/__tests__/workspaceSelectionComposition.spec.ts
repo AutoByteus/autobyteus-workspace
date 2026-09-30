@@ -55,10 +55,10 @@ const setup = async () => {
   useAgentSelectionStore().selectRun('prior-team', 'team');
   let actions!: ReturnType<typeof useWorkspaceHistorySelectionActions>;
   let execute!: ReturnType<typeof useWorkspaceHistorySubjectActions>['execute'];
-  const History = defineComponent({ emits: ['run-selected', 'run-created'], setup(_, { emit }) {
+  const History = defineComponent({ emits: ['run-selected'], setup(_, { emit }) {
     actions = useWorkspaceHistorySelectionActions({ runHistoryStore: history, selectionStore: useAgentSelectionStore(),
       setTeamExpanded: vi.fn(), toggleTeam: vi.fn(), presentTeamStreamRecoveryFeedback: vi.fn(),
-      emitRunSelected: payload => emit('run-selected', payload), emitRunCreated: payload => emit('run-created', payload) });
+      emitRunSelected: payload => emit('run-selected', payload), startPresetChat: async () => undefined });
     execute = useWorkspaceHistorySubjectActions().execute;
     return () => h('div', ['worker', 'third'].map(id => h('button', { 'data-test': id, onClick: () => actions.onSelectTeamMember(member(id)) }, id)));
   } });

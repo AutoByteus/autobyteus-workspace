@@ -15,6 +15,7 @@ import {
   type InterruptGenerationCommandAckPayload,
   type InterruptCommandTransportFailure,
   type PendingInterruptCommand,
+  type SendMessageCommandAckPayload,
 } from './protocol';
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport';
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
@@ -47,6 +48,8 @@ export interface AgentStreamingServiceOptions {
   wsClient?: IWebSocketClient;
   onInterruptCommandResult?: (ack: InterruptGenerationCommandAckPayload) => void;
   onInterruptCommandTransportFailure?: (failure: InterruptCommandTransportFailure) => void;
+  /** Every SEND_MESSAGE acknowledgement, before it is projected onto the conversation. */
+  onSendMessageCommandAck?: (ack: SendMessageCommandAckPayload) => void;
 }
 
 export class AgentStreamingService {
@@ -57,6 +60,7 @@ export class AgentStreamingService {
   private readonly pendingInterruptCommands = new Map<string, PendingInterruptCommand>();
   private readonly onInterruptCommandResult: (ack: InterruptGenerationCommandAckPayload) => void;
   private readonly onInterruptCommandTransportFailure: (failure: InterruptCommandTransportFailure) => void;
+  private readonly onSendMessageCommandAck: (ack: SendMessageCommandAckPayload) => void;
 
   /**
    * Create an AgentStreamingService.
@@ -70,6 +74,7 @@ export class AgentStreamingService {
     this.onInterruptCommandResult = options.onInterruptCommandResult ?? (() => undefined);
     this.onInterruptCommandTransportFailure = options.onInterruptCommandTransportFailure
       ?? (() => undefined);
+    this.onSendMessageCommandAck = options.onSendMessageCommandAck ?? (() => undefined);
   }
 
   get connectionState(): ConnectionState {
@@ -198,6 +203,9 @@ export class AgentStreamingService {
       ) {
         this.handleInterruptCommandAck(message.payload);
         return;
+      }
+      if (message.type === 'AGENT_COMMAND_ACK' && message.payload.command_type === 'SEND_MESSAGE') {
+        this.onSendMessageCommandAck(message.payload);
       }
       this.logMessage(message);
       this.dispatchMessage(message, this.context);

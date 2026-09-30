@@ -18,6 +18,7 @@ export const GetAgentDefinitions = gql`
       toolInvocationPreprocessorNames
       lifecycleProcessorNames
       skillNames
+      skillScope
       ownershipScope
       ownerTeamId
       ownerTeamName

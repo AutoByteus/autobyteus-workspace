@@ -26,7 +26,8 @@
 
     <div :class="cardClass">
       <h2 :class="headingWithMarginClass">{{ $t('agents.components.agents.AgentDetail.skillsHeading') }}</h2>
-      <ul v-if="agentDef.skillNames && agentDef.skillNames.length" class="space-y-2">
+      <p v-if="agentDef.skillScope === 'ALL_INSTALLED'" class="text-sm text-gray-700">{{ $t('agents.components.agents.AgentDetail.allInstalledSkillsDescription') }}</p>
+      <ul v-else-if="agentDef.skillNames && agentDef.skillNames.length" class="space-y-2">
         <li v-for="item in agentDef.skillNames" :key="item" class="rounded-md border border-gray-200 bg-gray-50 px-4 py-2 font-mono text-sm text-gray-800">
           {{ item }}
         </li>

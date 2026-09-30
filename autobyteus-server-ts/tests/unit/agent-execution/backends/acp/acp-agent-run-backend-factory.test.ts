@@ -46,7 +46,9 @@ const launchProfileFor = (fixture: string, recordFile: string): AcpAgentLaunchPr
   normalizeModels: () => [],
 });
 
-const createFactory = (fixture: string, options: { mcpActive?: boolean } = {}) => {
+const createFactory = (fixture: string, options: {
+  mcpActive?: boolean; skillScope?: "CONFIGURED" | "ALL_INSTALLED"; skillMaterializer?: unknown;
+} = {}) => {
   const recordFile = path.join(tempDir("acp-record-"), "client.jsonl");
   const workingDirectory = tempDir("acp-ws-");
   const mcpSessions = { activateForRun: vi.fn(() => options.mcpActive
@@ -57,10 +59,10 @@ const createFactory = (fixture: string, options: { mcpActive?: boolean } = {}) =
     definitions: { getAgentDefinitionById: async () => new AgentDefinition({
       id: "def-1", name: "Reviewer", role: "Code reviewer", description: "Reviews code", toolNames: [],
     }) } as unknown as AgentDefinitionService,
-    skills: { resolveConfiguredSkillBindingsForAgent: () => [] } as unknown as SkillService,
+    skills: { resolveSkillScope: () => options.skillScope ?? "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () => [] } as unknown as SkillService,
     workspaces: { resolveWorkingDirectory: async () => workingDirectory },
     mcpSessions: mcpSessions as unknown as AgentToolMcpRunSessionActivator,
-    skillMaterializer: getGrokWorkspaceSkillMaterializer(),
+    skillMaterializer: (options.skillMaterializer ?? getGrokWorkspaceSkillMaterializer()) as ReturnType<typeof getGrokWorkspaceSkillMaterializer>,
   });
   const recorded = () => fs.existsSync(recordFile)
     ? fs.readFileSync(recordFile, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line)) : [];
@@ -108,6 +110,16 @@ describe("AcpAgentRunBackendFactory", () => {
     expect(types[1]).toBe(AgentRunEventType.TURN_STARTED);
     expect(backend.getLifecycleSnapshot()).toMatchObject({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
   });
+
+  it.each([["CONFIGURED", "fail"], ["ALL_INSTALLED", "prefer_workspace"]] as const)(
+    "materializes .grok/skills with the collision policy of the %s scope (D-15 Rule 1)", async (skillScope, workspaceCollisionPolicy) => {
+      const materialize = vi.fn(async () => { throw new Error("stop after materialization"); });
+      const { factory } = createFactory("unused.json", { skillScope,
+        skillMaterializer: { materializeConfiguredWorkspaceSkills: materialize, cleanupMaterializedWorkspaceSkills: vi.fn() } });
+
+      await expect(factory.createBackend(config(), "run-strength")).rejects.toThrow("stop after materialization");
+      expect(materialize).toHaveBeenCalledWith(expect.objectContaining({ runId: "run-strength", workspaceCollisionPolicy }));
+    });
 
   it("attaches Agent Tools MCP over HTTP and waits until the agent reports it ready", async () => {
     const { factory, recorded } = createFactory(writeCustomFixture([...readFixture("handshake"), mcpStatus("ready")]), { mcpActive: true });

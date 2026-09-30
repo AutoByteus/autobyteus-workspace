@@ -5,6 +5,7 @@ import { createPinia, setActivePinia } from 'pinia';
 import CollaborationOverviewPanel from '~/components/workspace/collaboration/CollaborationOverviewPanel.vue';
 import AgentTeamEventMonitor from '../AgentTeamEventMonitor.vue';
 import AgentUserInputTextArea from '~/components/agentInput/AgentUserInputTextArea.vue';
+import { useComposerTarget } from '~/composables/agentInput/useComposerTarget';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
@@ -30,7 +31,8 @@ const WorkflowHarness = defineComponent({
   props: {
     messages: { type: Object as PropType<CollaborationMessagesContextView>, required: true },
   },
-  template: '<div><CollaborationOverviewPanel :messages="messages" /><AgentTeamEventMonitor /><AgentUserInputTextArea data-test="workflow-composer" /></div>',
+  setup: () => ({ composerTarget: useComposerTarget() }),
+  template: '<div><CollaborationOverviewPanel :messages="messages" /><AgentTeamEventMonitor /><AgentUserInputTextArea data-test="workflow-composer" :target="composerTarget" /></div>',
 });
 
 const CollaborationMessagesPanelStub = defineComponent({

@@ -12,7 +12,7 @@ import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { ContextFilePath } from '~/types/conversation';
 import type { ToolApprovalTarget } from '~/types/segments';
 import { AgentStatus } from '~/types/agent/AgentStatus';
-import { resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction';
+import { hasSendableDraft, resolveAgentPrimaryAction } from '~/services/runSubmission/agentPrimaryAction';
 import { useAgentOrgContextsStore } from './agentOrgContextsStore';
 import type {
   ActiveAgentWorkspaceTarget,
@@ -224,7 +224,9 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       status: context.state.currentStatus,
       submissionPending: context.submissionPending,
       isUploading: contextFileUploadStore.isUploading,
-      hasDraft: Boolean(context.requirement.trim()),
+      hasDraft: hasSendableDraft(context, {
+        attachmentsAreSendable: activeWorkspaceTarget.value?.kind === 'standalone_agent',
+      }),
     });
     if (action.kind !== 'send') {
       console.warn(`Send action aborted: Primary action is '${action.kind}'.`);
@@ -251,7 +253,9 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       status: context.state.currentStatus,
       submissionPending: context.submissionPending,
       isUploading: contextFileUploadStore.isUploading,
-      hasDraft: Boolean(context.requirement.trim()),
+      hasDraft: hasSendableDraft(context, {
+        attachmentsAreSendable: activeWorkspaceTarget.value?.kind === 'standalone_agent',
+      }),
     });
     if (action.kind !== 'interrupt') {
       console.warn(`Interrupt action aborted: Primary action is '${action.kind}'.`);

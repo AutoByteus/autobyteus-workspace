@@ -1,0 +1,238 @@
+{
+  "startedAt": "2026-09-28T21:45:29.548Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C01": {
+      "title": "Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED",
+      "result": "Pass",
+      "ms": 9,
+      "details": {
+        "da": {
+          "id": "autobyteus-daily-assistant",
+          "name": "Daily Assistant",
+          "skillScope": "ALL_INSTALLED",
+          "skillNames": []
+        },
+        "legacy": {
+          "id": "probe-legacy",
+          "name": "Probe Legacy",
+          "skillScope": "CONFIGURED",
+          "skillNames": [
+            "probe-alpha"
+          ]
+        }
+      }
+    },
+    "C02": {
+      "title": "Landing: / → /chat, Chat first with pencil, New chat defaults",
+      "result": "Pass",
+      "ms": 4382,
+      "details": {
+        "nav": [
+          "Chat",
+          "Agents",
+          "Agent Teams"
+        ],
+        "workspace": "Temp workspace",
+        "approval": "Auto-approve",
+        "model": "Choose a model\nAutoByteus"
+      }
+    },
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 2035,
+      "details": {
+        "model": "gpt-5.5",
+        "skills": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 13370,
+      "details": {
+        "runId": "daily_assistant_35f5f0ed988448d097e9c87d2157006d",
+        "exposure": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "gpt-5.5 · Codex"
+      }
+    },
+    "C05": {
+      "title": "Live run footer: model and thinking locked (REQ-011, UIS-004, VIS-015)",
+      "result": "Fail",
+      "ms": 5408,
+      "error": "Locked thinking control missing on a live run opened fresh (F-01)",
+      "details": {
+        "footer": "gpt-5.5\nCodex",
+        "cfg": {
+          "isActive": true,
+          "metadataConfig": {
+            "llmModelIdentifier": "gpt-5.5",
+            "llmConfig": null,
+            "runtimeKind": "codex_app_server",
+            "autoExecuteTools": true,
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-OJvF2v/server-data/temp_workspace"
+          },
+          "modelConfigEditability": {
+            "editable": false,
+            "reason": "RUN_ACTIVE"
+          }
+        }
+      }
+    },
+    "C06": {
+      "title": "Terminate → Offline → runtime-fixed save → reload (D-08) → save → resume uses the saved model",
+      "result": "Pass",
+      "ms": 13500,
+      "details": {
+        "saved": [
+          "gpt-5.6-luna",
+          "gpt-5.6-sol"
+        ],
+        "resumed": {
+          "llmModelIdentifier": "gpt-5.6-sol",
+          "llmConfig": null,
+          "runtimeKind": "codex_app_server",
+          "autoExecuteTools": true,
+          "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-OJvF2v/server-data/temp_workspace"
+        }
+      }
+    },
+    "C07": {
+      "title": "Failed first send → /chat?id=temp-* with the error → resend → permanent URL, reply streams (D-04/D-13); folder + Ask first applied",
+      "result": "Pass",
+      "ms": 6499,
+      "details": {
+        "injected": 1,
+        "runId": "daily_assistant_ddcb091904c048ecb59b066a815e95f8",
+        "workspace": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-OJvF2v/folder-ws"
+      }
+    },
+    "C08": {
+      "title": "Catalog Run (form unchanged) → /chat?id=temp-* → first send → permanent URL and streamed reply",
+      "result": "Pass",
+      "ms": 8811,
+      "details": {
+        "runId": "probe_legacy_47cacd4bb3a34c428fd614ba95f03c93"
+      }
+    },
+    "C09": {
+      "title": "@agent scoped /, × back to Daily Assistant, tree + preset",
+      "result": "Pass",
+      "ms": 1807,
+      "details": {
+        "scoped": [
+          "probe-bundled"
+        ],
+        "presetUrl": "/chat"
+      }
+    },
+    "C10": {
+      "title": "Team quick path with an attachment: uniform member config, coordinator reads the file, Team view with the unchanged box",
+      "result": "Pass",
+      "ms": 8778,
+      "details": {
+        "teamRunId": "probe_team_c6b822a2c6984722b9103a1eda0f1ba7",
+        "coordinator": "/lead",
+        "memberConfig": {
+          "runtime_kind": "codex_app_server",
+          "llm_model_identifier": "gpt-5.5",
+          "llm_config": null,
+          "auto_execute_tools": true,
+          "skill_access_mode": "PRELOADED_ONLY",
+          "workspace_root_path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-OJvF2v/server-data/temp_workspace"
+        }
+      }
+    },
+    "C11": {
+      "title": "RSK-005 redirects, missing and unregistered ids, tool strip collapsed",
+      "result": "Pass",
+      "ms": 7664,
+      "details": {
+        "orgRunId": "probe_org_b6632764c67f46ccad69675631f667aa"
+      }
+    },
+    "C12": {
+      "title": "Narrow 390×844: no horizontal overflow; model menu is a bottom sheet with drill-in",
+      "result": "Pass",
+      "ms": 2149,
+      "details": {
+        "sheet": {
+          "x": 8,
+          "y": 569,
+          "width": 374,
+          "height": 267
+        }
+      }
+    },
+    "C13": {
+      "title": "Daily Assistant restart lifecycle: user edit preserved; deleted config restored from the template",
+      "result": "Pass",
+      "ms": 3634,
+      "details": {
+        "restored": true
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 61632
+    },
+    {
+      "label": "frontend",
+      "pid": 61657
+    },
+    {
+      "label": "backend-restart-1",
+      "pid": 67099
+    },
+    {
+      "label": "backend-restart-2",
+      "pid": 67106
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 67106,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 67099,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 61657,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 61632,
+      "stop": "already-exited"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-OJvF2v"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-OJvF2v",
+  "backendUrl": "http://127.0.0.1:51018",
+  "frontUrl": "http://127.0.0.1:51019",
+  "browserErrors": [],
+  "completedAt": "2026-09-28T21:46:57.233Z"
+}

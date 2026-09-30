@@ -1,0 +1,73 @@
+{
+  "startedAt": "2026-09-29T03:33:35.938Z",
+  "runtime": "codex_app_server",
+  "cases": {
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 7584,
+      "details": {
+        "model": "gpt-5.5",
+        "skills": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 1
+      }
+    },
+    "C04": {
+      "title": "Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model",
+      "result": "Pass",
+      "ms": 13648,
+      "details": {
+        "runId": "daily_assistant_854c9e062ea44b7bb2389ac0a2ec40b0",
+        "exposure": [
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "summary": "Reply with the two markers from these skills, separated by a space, and nothing else.",
+        "preselected": "GPT-5.5 (default reasoning: medium) · Codex",
+        "triggerFirstSeen": "gpt-5.5",
+        "triggerSettledAfterMs": 617
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 53909
+    },
+    {
+      "label": "frontend",
+      "pid": 53917
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 53917,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 53909,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-OwrdzM"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-OwrdzM",
+  "backendUrl": "http://127.0.0.1:54076",
+  "frontUrl": "http://127.0.0.1:54077",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T03:34:08.502Z"
+}

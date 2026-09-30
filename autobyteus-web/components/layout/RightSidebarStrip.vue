@@ -46,14 +46,15 @@ const emit = defineEmits<{
   (event: 'request-redock'): void
 }>();
 
-const { visibleTabs, activeTab, setActiveTab } = useRightSideTabs();
+const { visibleTabs, activeTab, selectTabExplicitly } = useRightSideTabs();
 
 const stripClasses = computed(() =>
   'relative flex h-full w-[50px] flex-none flex-col items-center border-l border-gray-200 bg-white py-4',
 );
 
 const selectTab = (tabName: TabName, event: MouseEvent) => {
-  setActiveTab(tabName);
+  // The panel opens on exactly this tab; no contextual default overrides it.
+  selectTabExplicitly(tabName);
 
   if (props.stripActivation === 'redock-panel') {
     emit('request-redock');

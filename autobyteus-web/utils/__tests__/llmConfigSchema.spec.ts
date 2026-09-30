@@ -234,3 +234,21 @@ describe('sanitizeModelConfigAgainstSchema', () => {
     expect(config).toEqual({ budget: 0, mode: 'turbo', code: 'lower', enabled: 'yes' });
   });
 });
+
+describe('applyModelConfigSchemaDefaults (D-18: the launch form’s non-thinking defaults)', () => {
+  it('fills non-thinking defaults, skips thinking keys, and adds the Claude budget only with thinking on', async () => {
+    const { applyModelConfigSchemaDefaults } = await import('../llmConfigSchema')
+    const schema = {
+      temperature: { type: 'number', default: 0.7 },
+      top_p: { type: 'number' },
+      thinking_enabled: { type: 'boolean', default: false },
+      thinking_budget_tokens: { type: 'integer', default: 1024 },
+    }
+    expect(applyModelConfigSchemaDefaults(schema, null)).toEqual({ temperature: 0.7 })
+    expect(applyModelConfigSchemaDefaults(schema, { thinking_enabled: true }))
+      .toEqual({ thinking_enabled: true, temperature: 0.7, thinking_budget_tokens: 1024 })
+    const complete = { temperature: 0.2 }
+    expect(applyModelConfigSchemaDefaults({ temperature: { type: 'number', default: 0.7 } }, complete)).toBe(complete)
+    expect(applyModelConfigSchemaDefaults(null, null)).toBeNull()
+  })
+})

@@ -134,8 +134,11 @@ import type {
   AgentPackageUpdateStatus,
 } from '~/stores/agentPackagesStore'
 import { useAgentPackagesStore } from '~/stores/agentPackagesStore'
+import { useSkillNamesStore } from '~/stores/skillNamesStore'
 
 const store = useAgentPackagesStore()
+// Import, update and reload validate skill names; a duplicate opens the conflict pop-up (D-19).
+const skillNames = useSkillNamesStore()
 const { agentPackages, loading, checkingUpdates, error } = storeToRefs(store)
 
 const newSource = ref('')
@@ -219,10 +222,10 @@ const handleImport = async (): Promise<void> => {
 
   try {
     const normalizedSource = normalizeImportSource(newSource.value)
-    await store.importAgentPackage({
+    await skillNames.runWithSkillNameChecks(() => store.importAgentPackage({
       sourceKind: detectSourceKind(normalizedSource),
       source: normalizedSource,
-    })
+    }))
     successMessage.value = 'Agent package imported.'
     newSource.value = ''
   } catch {
@@ -235,7 +238,7 @@ const handleReload = async (packageId: string): Promise<void> => {
   store.clearError()
 
   try {
-    await store.reloadAgentPackage(packageId)
+    await skillNames.runWithSkillNameChecks(() => store.reloadAgentPackage(packageId))
     successMessage.value = 'Agent package reloaded.'
   } catch {
     // Store exposes error state.
@@ -259,7 +262,7 @@ const handleUpdate = async (packageId: string): Promise<void> => {
   store.clearError()
 
   try {
-    await store.updateAgentPackage(packageId)
+    await skillNames.runWithSkillNameChecks(() => store.updateAgentPackage(packageId))
     successMessage.value = 'Agent package updated.'
   } catch {
     // Store exposes error state.

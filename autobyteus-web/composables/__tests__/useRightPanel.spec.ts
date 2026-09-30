@@ -112,4 +112,16 @@ describe('useRightPanel', () => {
     expect(panel.isRightPanelVisible.value).toBe(false)
     expect(panel.rightPanelWidth.value).toBe(450)
   })
+
+  it('shares one visibility preference, open by default, across the Team, Org and chat views', async () => {
+    const { useRightPanel } = await loadSubject()
+    const teamView = useRightPanel()
+    const chatView = useRightPanel()
+
+    expect(teamView.isRightPanelVisible.value).toBe(true)
+    teamView.setRightPanelVisible(false)
+    expect(chatView.isRightPanelVisible.value).toBe(false)
+    chatView.openRightPanel()
+    expect(teamView.isRightPanelVisible.value).toBe(true)
+  })
 })

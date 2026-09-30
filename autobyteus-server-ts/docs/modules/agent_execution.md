@@ -93,8 +93,8 @@ See
 for the authoring contract and concrete foundation, Bash, skill, and tool
 examples.
 
-Configured agent skills are resolved before runtime-specific bootstrap through
-the contextual configured-skill resolver. Native AutoByteus consumes
+Configured agent skills are resolved before runtime-specific bootstrap against
+the one-skill-per-name catalog (see [Skills](./skills.md)). Native AutoByteus consumes
 `SkillService.resolveConfiguredSkillsForAgent(agentDefinition)`, the
 resolved-only `Skill[]` projection. Codex and Claude consume
 `resolveConfiguredSkillBindingsForAgent(agentDefinition)`, which preserves safe
@@ -122,10 +122,9 @@ to configured-only behavior.
 
 Native AutoByteus runs consume the resolved `Skill.rootPath` values directly in
 `AgentConfig.skills`. For imported package agents this includes exact canonical
-package-private skill roots under `skills/<skillName>`. The separate normal Skills
-catalog also exposes bundled package skills for browsing/opening, but runtime
-configured-skill fallback stays limited to configured global skill directories
-so package agents keep source-context-first resolution.
+package-private skill roots under `skills/<skillName>`. Runs and the Skills page
+use the same catalog copy of every name; application-owned agents resolve from
+their own bundle first.
 
 `AgentRunManager` also owns active-run sidecars that must be attached independently of websocket clients. For Codex and Claude runs with a `memoryDir`, it attaches `AgentRunMemoryRecorder` so accepted user commands and normalized runtime events are written to server-owned local memory even when no browser is subscribed to the live stream. Native AutoByteus runs are skipped by that recorder because their memory remains owned by the native `autobyteus-ts` memory manager.
 

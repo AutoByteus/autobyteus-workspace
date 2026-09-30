@@ -15,7 +15,7 @@
         <button data-test="select-team" type="button" @click="selectTeam">Nested team member</button>
       </div>
       <div class="mt-6 rounded-lg border border-slate-200">
-        <AgentUserInputTextArea />
+        <AgentUserInputTextArea :target="composerTarget" />
       </div>
     </section>
   </main>
@@ -24,6 +24,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted } from 'vue';
 import AgentUserInputTextArea from '~/components/agentInput/AgentUserInputTextArea.vue';
+import { useComposerTarget } from '~/composables/agentInput/useComposerTarget';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import { useAgentRunStore } from '~/stores/agentRunStore';
@@ -38,6 +39,8 @@ import type { AgentRunConfig } from '~/types/agent/AgentRunConfig';
 import type { Conversation } from '~/types/conversation';
 import { useToasts } from '~/composables/useToasts';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+
+const composerTarget = useComposerTarget();
 
 const STANDALONE_RUN_ID = 'browser-agent-run';
 const TEAM_RUN_ID = 'browser-team-run';

@@ -74,6 +74,7 @@ export const beginLocalUserSubmission = (
   context.state.conversation.updatedAt = occurredAt;
   context.requirement = '';
   context.contextFilePaths = [];
+  context.requestedSkillNames = [];
   context.submissionPending = true;
   applyLocalSubmissionNavigation(context, options.navigationTarget, occurredAt);
 

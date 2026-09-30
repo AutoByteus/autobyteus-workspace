@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 import zhCnAgentTeamsMessages from '../zh-CN/agentTeams.generated';
 import zhCnAgentsMessages from '../zh-CN/agents.generated';
 import zhCnApplicationsMessages from '../zh-CN/applications.generated';
+import zhCnChatMessages from '../zh-CN/chat';
 import zhCnMemoryMessages from '../zh-CN/memory.generated';
 import zhCnSettingsGeneratedMessages from '../zh-CN/settings.generated';
 import zhCnSettingsMessages from '../zh-CN/settings';
@@ -22,6 +23,7 @@ const scopedCatalogs = {
   memory: zhCnMemoryMessages,
   applications: zhCnApplicationsMessages,
   tools: zhCnToolsMessages,
+  chat: zhCnChatMessages,
 };
 
 const deprecatedGlossary = ['代理', '经纪人', '特工团队', '工作空间', '跑步', '队伍', '会员', '球队'];

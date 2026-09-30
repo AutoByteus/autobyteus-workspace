@@ -89,6 +89,8 @@ const { agentRunState, teamRunState, agentContextState, teamContextState, teamRu
   agentContextState: {
     activeRun: null,
     createRunFromTemplate: vi.fn(),
+    draftRuns: {} as Record<string, unknown>,
+    getRun(id: string) { return (this as any).draftRuns[id] ?? null },
   },
   teamContextState: {
     activeTeamContext: null,
@@ -1102,4 +1104,38 @@ describe('RunConfigPanel', () => {
     expect(wrapper.find('.run-btn').exists()).toBe(false)
   })
 
+
+  it('edits a selected temp-* draft locally (DraftRunConfigEditor), never through the existing-run store', async () => {
+    const { useExistingRunConfigStore } = await import('~/stores/existingRunConfigStore')
+    const existing = useExistingRunConfigStore()
+    const load = vi.spyOn(existing, 'loadAgentCanonical')
+    const clear = vi.spyOn(existing, 'clear')
+    const draftConfig = {
+      agentDefinitionId: 'agent-1', agentDefinitionName: 'Agent agent-1', runtimeKind: 'codex_app_server',
+      llmModelIdentifier: 'gpt-5.5', llmConfig: null, autoExecuteTools: true, isLocked: false,
+      workspaceId: null, workspaceMetadata: { workspaceRootPath: '/tmp/chat-ws' },
+    }
+    agentContextState.draftRuns = { 'temp-draft-1': { config: draftConfig, state: { runId: 'temp-draft-1' } } }
+    useAgentSelectionStore().selectRun('temp-draft-1', 'agent')
+
+    const wrapper = mount(RunConfigPanel, {
+      global: { stubs: { AgentRunConfigForm: { name: 'AgentRunConfigForm', props: { config: Object, workspaceLocked: Boolean, workspaceSelection: Object }, template: '<div data-test="form" />' }, TeamRunConfigForm: true, ExistingRunConfigEditor: true } },
+    })
+
+    expect(wrapper.find('[data-test="draft-run-config-editor"]').exists()).toBe(true)
+    expect(wrapper.findComponent({ name: 'ExistingRunConfigEditor' }).exists()).toBe(false)
+    const form = wrapper.getComponent({ name: 'AgentRunConfigForm' })
+    // The form edits the draft context's own config; the workspace is fixed.
+    expect(form.props('config')).toStrictEqual(draftConfig)
+    expect(form.props('workspaceLocked')).toBe(true)
+    expect(form.props('workspaceSelection')).toMatchObject({ newWorkspacePath: '/tmp/chat-ws' })
+    expect(wrapper.find('.run-btn').exists()).toBe(false)
+
+    await wrapper.get('[data-test="run-config-back-to-events"]').trigger('click')
+    expect(workspaceCenterViewStoreMock.showChat).toHaveBeenCalled()
+    expect(load).not.toHaveBeenCalled()
+    expect(clear).not.toHaveBeenCalled()
+    agentContextState.draftRuns = {}
+  })
 })
+

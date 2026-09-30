@@ -17,6 +17,9 @@ import {
 
 export type AgentDefinitionOwnershipScope = DefinitionOwnershipScope
 
+/** CONFIGURED: the agent's own skillNames. ALL_INSTALLED: every installed, enabled skill. */
+export type AgentSkillScope = 'CONFIGURED' | 'ALL_INSTALLED'
+
 export interface AgentDefinition {
   __typename?: 'AgentDefinition'
   id: string
@@ -33,6 +36,7 @@ export interface AgentDefinition {
   toolInvocationPreprocessorNames: string[]
   lifecycleProcessorNames: string[]
   skillNames: string[]
+  skillScope: AgentSkillScope
   ownershipScope?: AgentDefinitionOwnershipScope | null
   ownerTeamId?: string | null
   ownerTeamName?: string | null
@@ -57,6 +61,7 @@ export interface CreateAgentDefinitionInput {
   toolInvocationPreprocessorNames?: string[]
   lifecycleProcessorNames?: string[]
   skillNames?: string[]
+  skillScope?: AgentSkillScope
   defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 
@@ -75,6 +80,7 @@ export interface UpdateAgentDefinitionInput {
   toolInvocationPreprocessorNames?: string[]
   lifecycleProcessorNames?: string[]
   skillNames?: string[]
+  skillScope?: AgentSkillScope
   defaultLaunchConfig?: DefaultLaunchConfig | null
 }
 

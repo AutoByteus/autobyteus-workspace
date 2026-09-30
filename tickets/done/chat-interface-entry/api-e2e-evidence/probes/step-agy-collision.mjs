@@ -1,0 +1,24 @@
+export default async ({ page, front, out }) => {
+  const r = { urls: [] };
+  page.on('framenavigated', (f) => { if (f === page.mainFrame()) r.urls.push(f.url().replace(front, '')); });
+  await page.goto(`${front}/chat`, { waitUntil: 'domcontentloaded' });
+  await page.locator('[data-test="chat-new"]').waitFor({ timeout: 90000 });
+  await page.waitForTimeout(1500);
+  await page.locator('[data-test="chat-workspace-trigger"]').click();
+  await page.locator('[data-test="chat-workspace-open-folder"]').click();
+  const form = page.locator('[data-test="chat-workspace-folder-form"]');
+  await form.locator('input').fill('/tmp/chat-entry-live-g5kZ/agy-collision-ws');
+  await form.locator('input').press('Enter');
+  await page.locator('[data-test="chat-model-trigger"]').click();
+  await page.locator('[data-test="chat-runtime-antigravity_cli"]').click();
+  await page.locator('[data-test="chat-model-option-claude-sonnet-4-6"]').click();
+  const input = page.locator('[data-test="chat-message-input"] textarea, textarea[data-test="chat-message-input"]').first();
+  await input.fill('Reply with exactly COLLISION-CHECK.');
+  await page.locator('[data-test="chat-primary-action"]').first().click();
+  await page.waitForURL(/\/chat\?id=/, { timeout: 120000 });
+  await page.waitForTimeout(15000);
+  r.url = page.url().replace(front, '');
+  r.view = (await page.locator('[data-test="chat-page"]').innerText()).slice(0, 1200);
+  await page.screenshot({ path: `${out}/agy-collision.png` });
+  return r;
+};

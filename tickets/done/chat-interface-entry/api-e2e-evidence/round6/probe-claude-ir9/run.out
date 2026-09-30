@@ -1,0 +1,9 @@
+C01 Pass Fresh data root seeds Daily Assistant (ALL_INSTALLED); pre-existing config reads as CONFIGURED
+C03 Pass Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation
+C04 Pass Send with two skill tags: D-13 permanent URL, server content, ALL_INSTALLED exposure, reply, reload chips, last-used model
+C05 Pass Live run view (D-17): product header and box; ⚙ run settings locked while live (REQ-011 R3, VIS-026)
+C15 Pass D-19: configured agent with an on-disk duplicate uses the catalog copy — same link and marker as the Daily Assistant, no Rule 2/3 dispositions, private copy untouched, link removed after both end
+C20 Pass V-F under D-19 (UF-04): a configured agent naming a skill bundled in another agent resolves the catalog copy and starts next to a live Daily Assistant chat; one shared link
+C21 Pass AC-021: out-of-band duplicate → amber Skills banner "Some skills share a name…"; Show details lists the used and ignored paths
+C22 Pass AC-020 UI: add folder / Create skill / package import / package reload with a duplicate → "Duplicate skill names" pop-up with both paths, nothing changes; tier-4 duplicate accepted with the "Ignored N skills…" toast
+C23 Pass DEC-017a: Agent Org agents use their own skills — org skills on the Skills page and in /, org agent and org team-local agent reply with their skill markers, links point to the org folders

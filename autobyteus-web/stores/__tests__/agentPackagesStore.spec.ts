@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
+import { SkillNameConflictError } from '~/utils/skills/skillNames'
 
 const {
   apolloClientMock,
@@ -151,4 +152,19 @@ describe('agentPackagesStore', () => {
     expect(store.isPackageActionLoading('github:pkg')).toBe(false)
     expectDependentCatalogRefresh()
   })
+
+  it.each(['importAgentPackage', 'reloadAgentPackage', 'updateAgentPackage'] as const)(
+    '%s turns SKILL_NAME_CONFLICT into a typed error without a store error or catalog refresh (D-19)', async (action) => {
+      apolloClientMock.mutate.mockRejectedValue({ message: 'Duplicate skill names: dup', graphQLErrors: [{ message: 'Duplicate skill names: dup', extensions: { code: 'SKILL_NAME_CONFLICT', conflicts: [{ name: 'dup', existingPath: '/skills/dup', incomingPath: '/pkg/agents/a/skills/dup' }] } }] })
+      const store = useAgentPackagesStore()
+
+      const error = await (action === 'importAgentPackage'
+        ? store.importAgentPackage({ sourceKind: 'LOCAL_PATH', source: '/tmp/pkg' })
+        : store[action]('pkg-1')).catch((caught: unknown) => caught)
+
+      expect(error).toBeInstanceOf(SkillNameConflictError)
+      expect((error as SkillNameConflictError).conflicts).toEqual([{ name: 'dup', existingPath: '/skills/dup', incomingPath: '/pkg/agents/a/skills/dup' }])
+      expect(store.error).toBe('')
+      expect(applicationStoreMock.invalidateApplications).not.toHaveBeenCalled()
+    })
 })

@@ -105,6 +105,7 @@ describe("AgentRunService fresh definition runtime integration", () => {
       workspaceManager: workspaceManager as any,
       skillService: {
         getSkill: () => null,
+        hasEffectiveSkills: () => false,
       } as any,
       registries: {
         input: {

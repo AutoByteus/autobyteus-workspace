@@ -47,8 +47,12 @@
           </div>
 
           <div class="flex items-start gap-2">
-            <span class="min-w-[4rem] text-xs font-semibold text-slate-700">{{ $t('agents.components.agents.AgentCard.skillsSummary', { count: totalSkills }) }}</span>
-            <div class="flex min-w-0 flex-wrap gap-1.5">
+            <span v-if="usesAllInstalledSkills" class="min-w-[4rem] text-xs font-semibold text-slate-700">{{ $t('agents.components.agents.AgentDetail.skillsLabel') }}</span>
+            <span v-else class="min-w-[4rem] text-xs font-semibold text-slate-700">{{ $t('agents.components.agents.AgentCard.skillsSummary', { count: totalSkills }) }}</span>
+            <div v-if="usesAllInstalledSkills" class="flex min-w-0 flex-wrap gap-1.5">
+              <span class="rounded-md bg-indigo-50 px-2 py-0.5 text-xs font-medium text-indigo-700">{{ $t('agents.components.agents.AgentCard.allInstalledSkills') }}</span>
+            </div>
+            <div v-else class="flex min-w-0 flex-wrap gap-1.5">
               <span
                 v-for="(skill, index) in visibleSkills"
                 :key="`${skill}-${index}`"
@@ -104,6 +108,7 @@ const MAX_TAG_PREVIEW = 3;
 
 const toolNames = computed(() => agentDef.value.toolNames ?? []);
 const skillNames = computed(() => agentDef.value.skillNames ?? []);
+const usesAllInstalledSkills = computed(() => agentDef.value.skillScope === 'ALL_INSTALLED');
 
 const totalTools = computed(() => toolNames.value.length);
 const totalSkills = computed(() => skillNames.value.length);

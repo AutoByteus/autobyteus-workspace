@@ -104,7 +104,7 @@ describe('AgentOrgRunConfigPanel mounted-Team hierarchy', () => {
     agentStore.agentDefinitions = [{
       id: 'requirements-agent', name: 'Requirements Engineer', description: '', instructions: '',
       toolNames: [], inputProcessorNames: [], llmResponseProcessorNames: [],
-      toolExecutionResultProcessorNames: [], toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], skillNames: [],
+      toolExecutionResultProcessorNames: [], toolInvocationPreprocessorNames: [], lifecycleProcessorNames: [], skillNames: [], skillScope: 'CONFIGURED',
     }]
     for (const id of ['designer-agent', 'prototyper-agent', 'architect-agent', 'implementer-agent']) {
       agentStore.agentDefinitions.push({ ...agentStore.agentDefinitions[0]!, id, name: id })

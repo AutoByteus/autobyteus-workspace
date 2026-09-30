@@ -112,6 +112,24 @@ export const useAgentContextsStore = defineStore('agentContexts', {
     },
 
     /**
+     * Register a prepared, not-yet-sent `temp-*` context (the New chat draft) and select it.
+     * The context becomes a normal pre-first-send run owned by this store.
+     */
+    registerDraftRun(context: AgentContext): string {
+      const runId = context.state.runId;
+      if (!runId.startsWith('temp-')) {
+        throw new Error(`Only a temporary draft context can be registered; got '${runId}'.`);
+      }
+      if (this.runs.has(runId)) {
+        throw new Error(`Draft context '${runId}' is already registered.`);
+      }
+      primeRecentEventMonitorBaseline(context);
+      this.runs.set(runId, context);
+      useAgentSelectionStore().selectRunWithoutShellNavigation(runId, 'agent');
+      return runId;
+    },
+
+    /**
      * Remove a run.
      * If the removed run was selected, auto-select another remaining run.
      */

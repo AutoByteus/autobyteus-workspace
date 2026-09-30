@@ -1,4 +1,5 @@
 import agentInputMessages from './agentInput.generated';
+import chatMessages from './chat';
 import agentOrgMessages from './agentOrgs';
 import agentTeamGeneratedMessages from './agentTeams.generated';
 import agentTeamMessages from './agentTeams';
@@ -30,6 +31,7 @@ import type { TranslationCatalog } from '../../runtime/types';
 
 const zhCnMessages: TranslationCatalog = {
   ...agentInputMessages,
+  ...chatMessages,
   ...agentOrgMessages,
   ...agentTeamGeneratedMessages,
   ...agentTeamMessages,

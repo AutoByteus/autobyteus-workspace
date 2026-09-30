@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import { AgentRunContext, type RuntimeAgentRunContext } from "../../../domain/agent-run-context.js";
@@ -32,12 +33,16 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const workspacePath = await this.workspaces.resolveWorkingDirectory(config.workspaceId);
     const definition = await this.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`AGY_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
-    const skillAccessMode = resolveSkillAccessMode(config.skillAccessMode, definition.skillNames?.length ?? 0);
+    const skillAccessMode = resolveSkillAccessMode(
+      config.skillAccessMode,
+      this.skills.hasEffectiveSkills(definition) ? 1 : 0,
+    );
     const bindings = skillAccessMode === "NONE" ? [] : this.skills.resolveConfiguredSkillBindingsForAgentDetailed(definition);
     const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext });
     const descriptor = this.activateMcp(runId, config, workspacePath, definition);
     const capsule = await createAgyRunCapsule({ runId, memoryDir, workspacePath, identity,
       agentDefinitionId: config.agentDefinitionId, configuredSkillBindings: bindings,
+      workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skills.resolveSkillScope(definition)),
       skillAccessMode, mcpDescriptor: descriptor });
     return this.launch(config, runId, capsule, null);
   }

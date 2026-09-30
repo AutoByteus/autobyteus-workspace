@@ -13,12 +13,12 @@
       >
         <nav :aria-label="$t('shell.components.AppLeftPanel.primary_navigation')">
           <ul class="space-y-1">
-            <li v-for="item in primaryNavItems" :key="item.key" class="relative">
+            <li v-for="(item, itemIndex) in primaryNavItems" :key="item.key" class="relative">
               <button
                 type="button"
                 class="flex w-full items-center gap-2 rounded-md px-3 py-2 text-left text-sm font-medium transition-colors"
                 :class="[
-                  item.key === 'agents' ? 'pr-12' : '',
+                  item.key === 'chat' ? 'pr-20' : itemIndex === 0 ? 'pr-12' : '',
                   isPrimaryNavActive(item.key)
                     ? 'bg-gray-100 text-gray-900'
                     : 'text-gray-700 hover:bg-gray-100',
@@ -49,7 +49,22 @@
               </button>
 
               <button
-                v-if="item.key === 'agents'"
+                v-if="item.key === 'chat'"
+                type="button"
+                data-test="app-left-panel-new-chat"
+                class="absolute right-10 top-1/2 inline-flex -translate-y-1/2 rounded-md p-2 transition-colors"
+                :title="$t('shell.components.AppLeftPanel.new_chat')"
+                :aria-label="$t('shell.components.AppLeftPanel.new_chat')"
+                :class="isPrimaryNavActive(item.key)
+                  ? 'text-gray-500 hover:bg-gray-200 hover:text-gray-700'
+                  : 'text-gray-400 hover:bg-gray-100 hover:text-gray-600'"
+                @click.stop="startNewChat"
+              >
+                <Icon icon="heroicons:pencil-square" class="h-[1.125rem] w-[1.125rem]" aria-hidden="true" />
+              </button>
+
+              <button
+                v-if="itemIndex === 0"
                 type="button"
                 class="absolute right-1.5 top-1/2 hidden -translate-y-1/2 rounded-md p-2 transition-colors md:inline-flex"
                 :title="$t('shell.components.AppLeftPanel.collapse_left_panel')"
@@ -80,10 +95,7 @@
         class="min-h-0 flex-1 border-b border-gray-200 bg-white outline-none"
       >
         <div class="h-full">
-          <WorkspaceAgentRunsTreePanel
-            @run-selected="onRunningRunSelected"
-            @run-created="onRunningRunCreated"
-          />
+          <WorkspaceAgentRunsTreePanel @run-selected="onRunningRunSelected" />
         </div>
       </section>
     </div>
@@ -119,6 +131,8 @@ import {
   type ShellPrimaryNavKey,
 } from '~/composables/useShellPrimaryNavigation';
 import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
+import { useChatDraftStore } from '~/stores/chatDraftStore';
+import { resolveSelectionRoute, type RunSelectionRouteInput } from '~/services/workspace/workspaceNavigationService';
 
 const { t } = useLocalization();
 const {
@@ -151,7 +165,16 @@ const pushRoute = async (target: RouteLocationRaw): Promise<void> => {
 
 const navigateToPrimary = async (key: ShellPrimaryNavKey): Promise<void> => {
   useAgentSelectionStore().beginSelectionIntent();
+  // Chat always opens a fresh New chat.
+  if (key === 'chat') useChatDraftStore().startNewChat();
   await pushRoute(resolvePrimaryRoute(key));
+};
+
+// The pencil on the Chat item always opens a fresh New chat.
+const startNewChat = async (): Promise<void> => {
+  useAgentSelectionStore().beginSelectionIntent();
+  useChatDraftStore().startNewChat();
+  await pushRoute('/chat');
 };
 
 const navigateToSettings = async (): Promise<void> => {
@@ -159,17 +182,20 @@ const navigateToSettings = async (): Promise<void> => {
   await pushRoute('/settings');
 };
 
-const isPlainWorkspaceRoute = (): boolean =>
-  route.path === '/workspace' && Object.keys(route.query).length === 0;
-
-const onRunningRunSelected = async (): Promise<void> => {
-  if (isPlainWorkspaceRoute()) return;
-  await pushRoute('/workspace');
+const isCurrentRoute = (target: RouteLocationRaw): boolean => {
+  if (typeof target === 'string') return route.path === target && Object.keys(route.query).length === 0;
+  const location = target as { path?: string; query?: Record<string, unknown> };
+  const query = location.query ?? {};
+  return route.path === location.path
+    && Object.keys(route.query).length === Object.keys(query).length
+    && Object.entries(query).every(([key, value]) => route.query[key] === value);
 };
 
-const onRunningRunCreated = async (): Promise<void> => {
-  if (isPlainWorkspaceRoute()) return;
-  await pushRoute('/workspace');
+// Standalone agent runs open in the chat view; team runs in the workspace Team view.
+const onRunningRunSelected = async (selection: RunSelectionRouteInput): Promise<void> => {
+  const target = resolveSelectionRoute(selection);
+  if (isCurrentRoute(target)) return;
+  await pushRoute(target);
 };
 
 onMounted(() => {

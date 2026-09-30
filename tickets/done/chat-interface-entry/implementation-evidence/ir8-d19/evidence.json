@@ -1,0 +1,207 @@
+{
+  "startedAt": "2026-09-29T13:31:50.222Z",
+  "checks": {
+    "P1": {
+      "title": "Precedence, real layout: `~/.codex/skills` listed first in Settings, `autobyteus-skills` wins (AC-019)",
+      "skill": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/resume-designer",
+        "content": "MAINTAINED COPY"
+      },
+      "issue": {
+        "name": "resume-designer",
+        "usedPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/resume-designer",
+        "ignoredPaths": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/resume-designer"
+        ],
+        "kind": "shadowed_runtime_default"
+      },
+      "listedOnce": true,
+      "result": "Pass"
+    },
+    "AR13-T4": {
+      "title": "AR-013 (tier 4 vs tier 3): detail, file tree, read, update and delete act on the used copy; the ignored copy is untouched",
+      "detail": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/ar13-t4",
+        "content": "USED T3"
+      },
+      "treeHasUsedOnlyFile": true,
+      "read": "USED FILE T4",
+      "issue": {
+        "name": "ar13-t4",
+        "usedPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/ar13-t4",
+        "ignoredPaths": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/ar13-t4"
+        ],
+        "kind": "shadowed_runtime_default"
+      },
+      "updated": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/ar13-t4",
+        "content": "EDITED"
+      },
+      "usedManifestEdited": true,
+      "deleted": {
+        "success": true
+      },
+      "usedGone": true,
+      "ignoredUntouched": true,
+      "afterDelete": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/ar13-t4"
+      },
+      "result": "Pass"
+    },
+    "AR13-T2": {
+      "title": "AR-013 (tier 2 vs tier 3): detail, file tree, read, update and delete act on the used copy; the ignored copy is untouched",
+      "detail": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/ar13-agent/skills/ar13-t2",
+        "content": "USED T2"
+      },
+      "treeHasUsedOnlyFile": true,
+      "read": "USED FILE T2",
+      "issue": {
+        "name": "ar13-t2",
+        "usedPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/ar13-agent/skills/ar13-t2",
+        "ignoredPaths": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/ar13-t2"
+        ],
+        "kind": "conflict"
+      },
+      "updated": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/ar13-agent/skills/ar13-t2",
+        "content": "EDITED"
+      },
+      "usedManifestEdited": true,
+      "deleted": {
+        "success": true
+      },
+      "usedGone": true,
+      "ignoredUntouched": true,
+      "afterDelete": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/ar13-t2"
+      },
+      "result": "Pass"
+    },
+    "I1": {
+      "title": "Add a skill folder with a tiers 1–3 duplicate → SKILL_NAME_CONFLICT; the setting is unchanged",
+      "outcome": {
+        "code": "SKILL_NAME_CONFLICT",
+        "message": "Duplicate skill names: desk-alpha",
+        "conflicts": [
+          {
+            "name": "desk-alpha",
+            "existingPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha",
+            "incomingPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/incoming-folder/desk-alpha"
+          }
+        ]
+      },
+      "unchanged": true,
+      "result": "Pass"
+    },
+    "I2": {
+      "title": "Create a skill whose name exists in tiers 1–3 → SKILL_NAME_CONFLICT; nothing is created",
+      "outcome": {
+        "code": "SKILL_NAME_CONFLICT",
+        "message": "Duplicate skill names: desk-alpha",
+        "conflicts": [
+          {
+            "name": "desk-alpha",
+            "existingPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha",
+            "incomingPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/skills/desk-alpha"
+          }
+        ]
+      },
+      "created": false,
+      "result": "Pass"
+    },
+    "I3": {
+      "title": "Create a skill that only duplicates a runtime default copy → accepted; the new copy wins, the Codex copy is shadowed",
+      "created": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/skills/codex-only-dup"
+      },
+      "used": {
+        "rootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/skills/codex-only-dup"
+      },
+      "issue": {
+        "name": "codex-only-dup",
+        "usedPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/skills/codex-only-dup",
+        "ignoredPaths": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/codex-only-dup"
+        ],
+        "kind": "shadowed_runtime_default"
+      },
+      "result": "Pass"
+    },
+    "I4": {
+      "title": "Import a local package with a duplicate → SKILL_NAME_CONFLICT; packages unchanged",
+      "outcome": {
+        "code": "SKILL_NAME_CONFLICT",
+        "message": "Duplicate skill names: resume-designer",
+        "conflicts": [
+          {
+            "name": "resume-designer",
+            "existingPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills/resume-designer",
+            "incomingPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/pkg-conflict/agents/dup-agent/skills/resume-designer"
+          }
+        ]
+      },
+      "packagesUnchanged": true,
+      "result": "Pass"
+    },
+    "I5": {
+      "title": "R-3: a reload after an out-of-band duplicate is rejected, keeps the registration; the banner lists the on-disk conflict",
+      "packageId": "local:%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fcie-d19-aKNdOm%2Fpkg-ok",
+      "outcome": {
+        "code": "SKILL_NAME_CONFLICT",
+        "message": "Duplicate skill names: desk-alpha",
+        "conflicts": [
+          {
+            "name": "desk-alpha",
+            "existingPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha",
+            "incomingPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/pkg-ok/agents/ok-agent/skills/desk-alpha"
+          }
+        ]
+      },
+      "stillRegistered": true,
+      "issue": {
+        "name": "desk-alpha",
+        "usedPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha",
+        "ignoredPaths": [
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/pkg-ok/agents/ok-agent/skills/desk-alpha"
+        ],
+        "kind": "conflict"
+      },
+      "result": "Pass"
+    },
+    "C1": {
+      "title": "Codex: a stale `CODEX_HOME/skills` copy → the catalog copy is exposed and `codex-runtime-duplicate` is logged",
+      "model": "gpt-5.5",
+      "run": {
+        "success": true,
+        "message": "Agent run created successfully.",
+        "runId": "desk_lead_a04b2887dbf9490d9b68cb71807aff6b"
+      },
+      "linkTarget": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha",
+      "duplicateLog": [
+        "codex-runtime-duplicate: skill='desk-alpha', codexPaths='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills/desk-alpha', chosenPath='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/agents/desk-helper/skills/desk-alpha'; exposing the chosen copy in the workspace."
+      ],
+      "linkAfterTerminate": "absent",
+      "result": "Pass"
+    }
+  },
+  "cleanup": [
+    {
+      "removed": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm"
+    }
+  ],
+  "owned": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm",
+  "backendUrl": "http://127.0.0.1:51427",
+  "layout": {
+    "skillsDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/server-data/skills",
+    "codexDefault": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills",
+    "autobyteusSkills": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills",
+    "settingsOrder": [
+      "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/codex-home/skills",
+      "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/cie-d19-aKNdOm/autobyteus-skills"
+    ]
+  },
+  "completedAt": "2026-09-29T13:31:55.468Z"
+}

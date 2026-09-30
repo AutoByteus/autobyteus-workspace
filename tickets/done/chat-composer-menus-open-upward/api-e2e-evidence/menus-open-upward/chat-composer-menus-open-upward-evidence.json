@@ -1,0 +1,678 @@
+{
+  "startedAt": "2026-09-30T06:07:13.018Z",
+  "cases": {
+    "U01": {
+      "title": "Layout at four wide viewports: pt-[14vh] pb-10, centered, 10vh−40px lower, hint under the composer (AC-003)",
+      "result": "Pass",
+      "ms": 10133,
+      "details": {
+        "1512x952": {
+          "paddingTop": 133.28,
+          "paddingBottom": 40,
+          "headingTop": 378.6,
+          "composerTop": 480.6,
+          "composerBottom": 640.6,
+          "hintTop": 650.6,
+          "movedDownPx": 55.2,
+          "expectedMovePx": 55.2,
+          "overflow": false
+        },
+        "1280x720": {
+          "paddingTop": 100.8,
+          "paddingBottom": 40,
+          "headingTop": 246.4,
+          "composerTop": 348.4,
+          "composerBottom": 508.4,
+          "hintTop": 518.4,
+          "movedDownPx": 32,
+          "expectedMovePx": 32,
+          "overflow": false
+        },
+        "1024x520": {
+          "paddingTop": 72.8,
+          "paddingBottom": 40,
+          "headingTop": 132.4,
+          "composerTop": 234.4,
+          "composerBottom": 394.4,
+          "hintTop": 404.4,
+          "movedDownPx": 12,
+          "expectedMovePx": 12,
+          "overflow": false
+        },
+        "1024x440": {
+          "paddingTop": 61.6,
+          "paddingBottom": 40,
+          "headingTop": 86.8,
+          "composerTop": 188.8,
+          "composerBottom": 348.8,
+          "hintTop": 358.8,
+          "movedDownPx": 4,
+          "expectedMovePx": 4,
+          "overflow": false
+        }
+      }
+    },
+    "U02": {
+      "title": "@ and / open above the composer card at four wide viewports; scroll, keyboard, choose, Escape, outside click (AC-001, AC-004, AC-005)",
+      "result": "Pass",
+      "ms": 8687,
+      "details": {
+        "1512x952": {
+          "at": {
+            "menuTop": 175.6,
+            "menuBottom": 475.6,
+            "cardTop": 480.6,
+            "maxHeight": "300px",
+            "limit": 300,
+            "rows": 11,
+            "scrolls": true
+          },
+          "slash": {
+            "menuTop": 175.6,
+            "menuBottom": 475.6,
+            "cardTop": 480.6,
+            "maxHeight": "300px",
+            "limit": 300,
+            "rows": 13,
+            "scrolls": true
+          }
+        },
+        "1280x720": {
+          "at": {
+            "menuTop": 43.4,
+            "menuBottom": 343.4,
+            "cardTop": 348.4,
+            "maxHeight": "300px",
+            "limit": 300,
+            "rows": 11,
+            "scrolls": true
+          },
+          "slash": {
+            "menuTop": 43.4,
+            "menuBottom": 343.4,
+            "cardTop": 348.4,
+            "maxHeight": "300px",
+            "limit": 300,
+            "rows": 13,
+            "scrolls": true
+          }
+        },
+        "1024x520": {
+          "at": {
+            "menuTop": 17.4,
+            "menuBottom": 229.4,
+            "cardTop": 234.4,
+            "maxHeight": "212px",
+            "limit": 212,
+            "rows": 11,
+            "scrolls": true
+          },
+          "slash": {
+            "menuTop": 17.4,
+            "menuBottom": 229.4,
+            "cardTop": 234.4,
+            "maxHeight": "212px",
+            "limit": 212,
+            "rows": 13,
+            "scrolls": true
+          }
+        },
+        "1024x440": {
+          "at": {
+            "menuTop": 17.8,
+            "menuBottom": 183.8,
+            "cardTop": 188.8,
+            "maxHeight": "166px",
+            "limit": 166,
+            "rows": 11,
+            "scrolls": true
+          },
+          "slash": {
+            "menuTop": 17.8,
+            "menuBottom": 183.8,
+            "cardTop": 188.8,
+            "maxHeight": "166px",
+            "limit": 166,
+            "rows": 13,
+            "scrolls": true
+          }
+        }
+      }
+    },
+    "U03": {
+      "title": "Workspace, Model (flyout, search) and Thinking open above their trigger at four wide viewports (AC-002, AC-004)",
+      "result": "Pass",
+      "ms": 37738,
+      "details": {
+        "1512x952": {
+          "workspace": {
+            "menuTop": 177.6,
+            "menuBottom": 597.6,
+            "anchorTop": 603.6,
+            "maxHeight": "420px",
+            "limit": 420,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 369.1,
+            "menuBottom": 597.6,
+            "anchorTop": 603.6,
+            "maxHeight": "360px",
+            "limit": 360,
+            "runtimes": 5
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 141.6,
+              "bottom": 471.6,
+              "rowBottom": 466.6,
+              "listMax": "320px",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "right",
+              "left": 1182.3,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 241.1,
+              "bottom": 503.1,
+              "rowBottom": 498.1,
+              "listMax": "320px",
+              "rows": 8,
+              "listScrolls": false,
+              "side": "right",
+              "left": 1182.3,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 204.6,
+              "bottom": 534.6,
+              "rowBottom": 529.6,
+              "listMax": "320px",
+              "rows": 10,
+              "listScrolls": true,
+              "side": "right",
+              "left": 1182.3,
+              "catalogLoaded": true
+            },
+            "antigravity_cli": {
+              "top": 236.1,
+              "bottom": 566.1,
+              "rowBottom": 561.1,
+              "listMax": "320px",
+              "rows": 14,
+              "listScrolls": true,
+              "side": "right",
+              "left": 1182.3,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 538.1,
+              "bottom": 597.6,
+              "rowBottom": 592.6,
+              "listMax": "320px",
+              "rows": 1,
+              "listScrolls": false,
+              "side": "right",
+              "left": 1182.3,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 66,
+            "menuHeight": 360,
+            "limit": 360,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 376.1,
+            "menuBottom": 597.6,
+            "anchorTop": 603.6,
+            "maxHeight": "240px",
+            "limit": 240,
+            "height": 221.5,
+            "rows": 6
+          }
+        },
+        "1280x720": {
+          "workspace": {
+            "menuTop": 45.4,
+            "menuBottom": 465.4,
+            "anchorTop": 471.4,
+            "maxHeight": "420px",
+            "limit": 420,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 236.9,
+            "menuBottom": 465.4,
+            "anchorTop": 471.4,
+            "maxHeight": "360px",
+            "limit": 360,
+            "runtimes": 5
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 12.4,
+              "bottom": 339.4,
+              "rowBottom": 334.4,
+              "listMax": "317px",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "left",
+              "left": 488.3,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 108.9,
+              "bottom": 370.9,
+              "rowBottom": 365.9,
+              "listMax": "320px",
+              "rows": 8,
+              "listScrolls": false,
+              "side": "left",
+              "left": 488.3,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 72.4,
+              "bottom": 402.4,
+              "rowBottom": 397.4,
+              "listMax": "320px",
+              "rows": 10,
+              "listScrolls": true,
+              "side": "left",
+              "left": 488.3,
+              "catalogLoaded": true
+            },
+            "antigravity_cli": {
+              "top": 103.9,
+              "bottom": 433.9,
+              "rowBottom": 428.9,
+              "listMax": "320px",
+              "rows": 14,
+              "listScrolls": true,
+              "side": "left",
+              "left": 488.3,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 405.9,
+              "bottom": 465.4,
+              "rowBottom": 460.4,
+              "listMax": "320px",
+              "rows": 1,
+              "listScrolls": false,
+              "side": "left",
+              "left": 488.3,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 66,
+            "menuHeight": 360,
+            "limit": 360,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 243.9,
+            "menuBottom": 465.4,
+            "anchorTop": 471.4,
+            "maxHeight": "240px",
+            "limit": 240,
+            "height": 221.5,
+            "rows": 6
+          }
+        },
+        "1024x520": {
+          "workspace": {
+            "menuTop": 16.4,
+            "menuBottom": 351.4,
+            "anchorTop": 357.4,
+            "maxHeight": "335px",
+            "limit": 335,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 122.9,
+            "menuBottom": 351.4,
+            "anchorTop": 357.4,
+            "maxHeight": "335px",
+            "limit": 335,
+            "runtimes": 5
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 12.4,
+              "bottom": 225.4,
+              "rowBottom": 220.4,
+              "listMax": "203px",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 12.9,
+              "bottom": 256.9,
+              "rowBottom": 251.9,
+              "listMax": "234px",
+              "rows": 8,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 12.4,
+              "bottom": 288.4,
+              "rowBottom": 283.4,
+              "listMax": "266px",
+              "rows": 10,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "antigravity_cli": {
+              "top": 12.9,
+              "bottom": 319.9,
+              "rowBottom": 314.9,
+              "listMax": "297px",
+              "rows": 14,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 291.9,
+              "bottom": 351.4,
+              "rowBottom": 346.4,
+              "listMax": "320px",
+              "rows": 1,
+              "listScrolls": false,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 66,
+            "menuHeight": 335,
+            "limit": 335,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 129.9,
+            "menuBottom": 351.4,
+            "anchorTop": 357.4,
+            "maxHeight": "240px",
+            "limit": 240,
+            "height": 221.5,
+            "rows": 6
+          }
+        },
+        "1024x440": {
+          "workspace": {
+            "menuTop": 16.8,
+            "menuBottom": 305.8,
+            "anchorTop": 311.8,
+            "maxHeight": "289px",
+            "limit": 289,
+            "scrolls": true
+          },
+          "model": {
+            "menuTop": 77.3,
+            "menuBottom": 305.8,
+            "anchorTop": 311.8,
+            "maxHeight": "289px",
+            "limit": 289,
+            "runtimes": 5
+          },
+          "flyouts": {
+            "autobyteus": {
+              "top": 12.8,
+              "bottom": 179.8,
+              "rowBottom": 174.8,
+              "listMax": "157px",
+              "rows": 33,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "codex_app_server": {
+              "top": 12.3,
+              "bottom": 211.3,
+              "rowBottom": 206.3,
+              "listMax": "189px",
+              "rows": 8,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "claude_agent_sdk": {
+              "top": 12.8,
+              "bottom": 242.8,
+              "rowBottom": 237.8,
+              "listMax": "220px",
+              "rows": 10,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "antigravity_cli": {
+              "top": 12.3,
+              "bottom": 274.3,
+              "rowBottom": 269.3,
+              "listMax": "252px",
+              "rows": 14,
+              "listScrolls": true,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            },
+            "grok_build": {
+              "top": 246.3,
+              "bottom": 305.8,
+              "rowBottom": 300.8,
+              "listMax": "283px",
+              "rows": 1,
+              "listScrolls": false,
+              "side": "left",
+              "left": 302.8,
+              "catalogLoaded": true
+            }
+          },
+          "modelSearch": {
+            "results": 66,
+            "menuHeight": 289,
+            "limit": 289,
+            "scrolls": true
+          },
+          "chosenModel": {
+            "chosen": "opus",
+            "triggerTitle": "claude-opus-5-5 · Claude Agent SDK"
+          },
+          "thinking": {
+            "menuTop": 84.3,
+            "menuBottom": 305.8,
+            "anchorTop": 311.8,
+            "maxHeight": "240px",
+            "limit": 240,
+            "height": 221.5,
+            "rows": 6
+          }
+        }
+      }
+    },
+    "U04": {
+      "title": "Very short window, page scrolled: menus still open above and stay on screen; a Thinking menu taller than its limit scrolls (REQ-003)",
+      "result": "Pass",
+      "ms": 6854,
+      "details": {
+        "viewport": "1024x300",
+        "scrolledBy": 70,
+        "thinking": {
+          "limit": 175,
+          "maxHeight": "175px",
+          "height": 175,
+          "top": 16,
+          "scrolls": true,
+          "contentHeight": 188
+        },
+        "@": {
+          "limit": 52,
+          "maxHeight": "52px",
+          "height": 52,
+          "top": 17,
+          "bottom": 69,
+          "rowsInside": false,
+          "scrolls": true
+        },
+        "workspace": {
+          "limit": 175,
+          "maxHeight": "175px",
+          "height": 175,
+          "top": 16,
+          "bottom": 191,
+          "rowsInside": false,
+          "scrolls": true
+        },
+        "model": {
+          "limit": 175,
+          "maxHeight": "175px",
+          "height": 175,
+          "top": 16,
+          "bottom": 191,
+          "rowsInside": false,
+          "scrolls": false
+        }
+      }
+    },
+    "U05": {
+      "title": "Narrow 390x844: @, /, Workspace, Model and Thinking are the unchanged bottom sheet (AC-005)",
+      "result": "Pass",
+      "ms": 4564,
+      "details": {
+        "layout": {
+          "paddingTop": 118.16,
+          "paddingBottom": 40,
+          "headingTop": 271.078125
+        },
+        "at": {
+          "position": "fixed",
+          "top": 519.5,
+          "bottom": 836,
+          "left": 8,
+          "right": 382,
+          "classes": "z-50 fixed inset-x-2 bottom-2 [&>div]:w-auto",
+          "backdrop": true
+        },
+        "slash": {
+          "position": "fixed",
+          "top": 519.5,
+          "bottom": 836,
+          "left": 8,
+          "right": 382,
+          "classes": "z-50 fixed inset-x-2 bottom-2 [&>div]:w-auto",
+          "backdrop": true
+        },
+        "workspace": {
+          "position": "fixed",
+          "top": 160.8,
+          "bottom": 836,
+          "left": 8,
+          "right": 382,
+          "classes": "z-50 flex flex-col overflow-hidden rounded-lg border border-gray-200 bg-white text-left shadow-lg fixed inset-x-2 bottom-2 max-h-[80vh]",
+          "backdrop": true
+        },
+        "model": {
+          "position": "fixed",
+          "top": 607.5,
+          "bottom": 836,
+          "left": 8,
+          "right": 382,
+          "classes": "z-50 flex flex-col rounded-lg border border-gray-200 bg-white text-left shadow-lg fixed inset-x-2 bottom-2 max-h-[80vh]",
+          "backdrop": true
+        },
+        "thinking": {
+          "position": "fixed",
+          "top": 646,
+          "bottom": 836,
+          "left": 8,
+          "right": 382,
+          "classes": "z-50 rounded-lg border border-gray-200 bg-white p-1 shadow-lg fixed inset-x-2 bottom-2",
+          "backdrop": true
+        }
+      }
+    },
+    "U06": {
+      "title": "Running conversation at 1512x952: / opens the skill menu above the run composer, placement policy unchanged (AC-005)",
+      "result": "Pass",
+      "ms": 6876,
+      "details": {
+        "model": "opus",
+        "runId": "daily_assistant_e1f5dab2799045109906205bdc52a0e1",
+        "runtimeReplied": true,
+        "menu": {
+          "position": "absolute",
+          "classes": "z-50 absolute left-2 bottom-full mb-1.5",
+          "inlineMaxHeight": "",
+          "top": 538.5,
+          "bottom": 855,
+          "anchorTop": 861,
+          "textareaTop": 861,
+          "rows": 13,
+          "vh": 952
+        },
+        "chips": [
+          "probe-skill-02"
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 93630
+    },
+    {
+      "label": "frontend",
+      "pid": 93985
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 93985,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 93630,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-composer-menus-open-upward-uxWlvd",
+  "backendUrl": "http://127.0.0.1:58922",
+  "frontUrl": "http://127.0.0.1:58923",
+  "completedAt": "2026-09-30T06:08:38.402Z"
+}

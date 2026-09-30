@@ -1,0 +1,75 @@
+{
+  "startedAt": "2026-09-29T14:45:34.865Z",
+  "runtime": "antigravity_cli",
+  "cases": {
+    "C03": {
+      "title": "Menus: model search/runtime rows, thinking, / skills (bundled in, disabled out), @ targets, folder validation",
+      "result": "Pass",
+      "ms": 6851,
+      "details": {
+        "model": "claude-opus-4-6-thinking",
+        "skills": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill",
+          "probe-alpha",
+          "probe-bundled",
+          "retrospective-skill-improver"
+        ],
+        "targets": [
+          "autobyteus-memory-compactor",
+          "autobyteus-retrospective-skill-improver",
+          "probe-borrower",
+          "probe-bundle-owner",
+          "probe-legacy",
+          "probe-shadow-owner",
+          "probe-team"
+        ],
+        "thinking": 0
+      }
+    },
+    "C23": {
+      "title": "DEC-017a: Agent Org agents use their own skills — org skills on the Skills page and in /, org agent and org team-local agent reply with their skill markers, links point to the org folders",
+      "result": "Pass",
+      "ms": 35611,
+      "details": {
+        "writerRun": "org_writer_1ca51271ab934c97a51654c7d5454ba9",
+        "memberRun": "crew_member_ba7faaa01444480bab14ebe65640a691",
+        "slash": [
+          "org-crew-shared",
+          "org-member-skill",
+          "org-writer-skill"
+        ],
+        "links": {}
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 81827
+    },
+    {
+      "label": "frontend",
+      "pid": 81863
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 81863,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 81827,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-YI0B5p"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/chat-entry-live-YI0B5p",
+  "backendUrl": "http://127.0.0.1:59647",
+  "frontUrl": "http://127.0.0.1:59648",
+  "browserErrors": [],
+  "completedAt": "2026-09-29T14:46:30.563Z"
+}

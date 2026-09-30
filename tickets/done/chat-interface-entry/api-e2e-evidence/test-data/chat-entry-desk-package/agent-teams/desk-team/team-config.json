@@ -1,0 +1,8 @@
+{
+  "coordinatorMemberName": "lead",
+  "members": [
+    { "memberName": "lead", "ref": "desk-lead", "refType": "agent", "refScope": "shared" },
+    { "memberName": "helper", "ref": "desk-helper", "refType": "agent", "refScope": "shared" }
+  ],
+  "handoffs": []
+}

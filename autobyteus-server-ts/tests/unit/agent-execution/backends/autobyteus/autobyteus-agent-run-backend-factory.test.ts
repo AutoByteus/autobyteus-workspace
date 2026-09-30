@@ -144,7 +144,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
     const rawLlmConfig = {
@@ -232,7 +233,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           getBasePath: () => path.join("/tmp", "workspace-1"),
         }),
       } as any,
-      skillService: { getSkill: () => null } as any,
+      skillService: { hasEffectiveSkills: () => false, resolveConfiguredSkillsForAgent: () => [] } as any,
     });
     const applicationExecutionContext = {
       applicationId: "app-a",
@@ -332,7 +333,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -406,7 +408,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -484,7 +487,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -546,7 +550,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -617,7 +622,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -706,7 +712,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
     });
 
@@ -794,7 +801,8 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         }),
       } as any,
       skillService: {
-        getSkill: () => null,
+        hasEffectiveSkills: () => false,
+        resolveConfiguredSkillsForAgent: () => [],
       } as any,
       compactionAgentRunnerFactory,
     });
@@ -851,7 +859,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           getBasePath: () => path.join("/tmp", "workspace-1"),
         }),
       } as any,
-      skillService: { getSkill: () => null } as any,
+      skillService: { hasEffectiveSkills: () => false, resolveConfiguredSkillsForAgent: () => [] } as any,
       compactionAgentRunnerFactory,
     });
 
@@ -893,7 +901,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
           getBasePath: () => path.join("/tmp", "workspace-1"),
         }),
       } as any,
-      skillService: { getSkill: () => null } as any,
+      skillService: { hasEffectiveSkills: () => false, resolveConfiguredSkillsForAgent: () => [] } as any,
       compactionAgentRunnerFactory: runnerFactory,
     });
 

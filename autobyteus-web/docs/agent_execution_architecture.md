@@ -81,6 +81,7 @@ The Pinia stores act as the primary interface for the UI components to interact 
 - **Role**: Manages the execution lifecycle of individual agents.
 - **Key Actions**:
   - `sendUserInputAndSubscribe()`: After validation, immediately begins a local user submission by appending the user message, clearing the composer/staged context files, and setting `isSending`. For a new temporary run it calls `PrepareAgentRun` to create a durable prepared run identity without starting runtime, promotes the local context to that run id, finalizes attachments, opens the WebSocket stream, and sends `SEND_MESSAGE` with required `message_id` / `dedupe_key`. Existing inactive runs do not call `RestoreAgentRun` before send; backend `SEND_MESSAGE` owns restore/start/send lifecycle. Finalized attachment locators reconcile onto the same canonical reactive UserMessage retained by the submission handle and visible conversation, updating its mounted chip rather than a raw alias or duplicate row. The current first text Send/Open scope is recorded below; storage and opener behavior are unchanged. The visible lifecycle status remains backend-owned and comes from streamed `AGENT_STATUS` / `AGENT_COMMAND_ACK.status` payloads, not a frontend lifecycle placeholder.
+  - Activation-pending marker (`markActivationPending` / `clearActivationPending` / `isActivationPending`): a send to a run the client does not consider live (a first send, marked with the permanent id right after promotion, or a resume of an Offline/Error run) is marked before the stream connects. History reconcile (`reconcileDiscoveredActiveRuns`) skips a marked run: a snapshot taken before activation must not disconnect it or apply Offline cleanup. The marker ends when a snapshot lists the run as active (`isActive || shouldConnectStream`), on a handled send failure (including the connect timeout), on a rejected `SEND_MESSAGE` ack (`AgentStreamingService` `onSendMessageCommandAck`), and on terminate/close. Live `AGENT_STATUS` events never end it: the backend reports `offline` as soon as the stream connects, before `SEND_MESSAGE`. `submissionPending` keeps its UI meaning and is not a reconcile guard. The workspace branch of `fetchRunHistoryTree` carries a request generation, like the Agent Org branch, so an older snapshot is never applied or reconciled after a newer one.
   - `connectToAgentStream(runId)`: Listens for real-time events specific to an agent run via WebSocket. For standalone runs, connect attaches to a durable run identity and receives backend status projection without forcing runtime restore; the later `SEND_MESSAGE` command performs backend-owned activation/restore when needed.
   - `interruptGeneration()`: Generates a fresh `client_interrupt_*` command id and asks `AgentStreamingService` to admit the backend `INTERRUPT_GENERATION` control command. Its boolean result means connected-socket admission only. A matching rejected/failed server result or local not-connected/send/disconnect completion produces one localized error toast; accepted produces no success toast or optimistic idle. `isSending` is cleared only by later backend lifecycle/status handling after the runtime settles the active turn.
   - `terminateRun(runId)`: Sends backend `TerminateAgentRun` for persisted runs before local teardown, then disconnects the stream, marks the run inactive in history, and refreshes the history tree. Row-level terminate actions delegate here without selecting the row; follow-up chat recovery still uses the restore-aware send path rather than treating terminate as a local-only close.
@@ -186,10 +187,11 @@ The Pinia stores act as the primary interface for the UI components to interact 
 ### AgentOrg Workspace Subject And Current-Member Configuration
 
 Standalone Agent/Team selection and AgentOrg selection are mutually exclusive
-center subjects. `AppLeftPanel.isPlainWorkspaceRoute()` accepts only an exact
-query-free `/workspace` as the canonical standalone route; selecting or creating
-a standalone run therefore removes any stale AgentOrg query before the existing
-standalone selection owns the center. In the reverse direction,
+center subjects. `AppLeftPanel` routes a running-run selection through
+`resolveSelectionRoute()`: a standalone agent run opens `/chat?id=<runId>` (see
+`chat.md`) and a team run opens query-free `/workspace`, so selecting a run
+removes any stale AgentOrg query before the standalone selection owns the
+center. In the reverse direction,
 `useWorkspaceHistorySubjectActions` clears the standalone selection before it
 connects/selects the exact Org context and publishes the typed AgentOrg route.
 URL, center content, and one highlighted history row consequently describe the
@@ -1062,8 +1064,11 @@ canonicalizing the supplied absolute path.
 
 ### Existing Run Model Configuration
 
-`RunConfigPanel.vue` routes a selected persisted Agent or Team to
-`ExistingRunConfigEditor.vue` instead of reusing the new-run launch buffer. The
+`RunConfigPanel.vue` routes a selected persisted Agent or Team run to
+`ExistingRunConfigEditor.vue` instead of reusing the new-run launch buffer, and
+a selected standalone `temp-*` draft to `DraftRunConfigEditor.vue`, which edits
+the draft context's config locally without an existing-run load (see `chat.md`).
+The
 editor and `existingRunConfigStore` own a Settings-scoped canonical network
 load, local draft, schema readiness, mutation state, and reconciliation. Cached
 history lifecycle state may conservatively relock the current target but cannot
@@ -1296,8 +1301,10 @@ the UI must not imply improver completion proves downstream improvement.
 
 ### New Run From Existing Run
 
-When the user clicks the workspace header add/new-run action while an existing
-single-agent or team run is selected, the frontend treats that selected run as a
+On a standalone agent run (the Chat run view), the header ＋ does not copy the
+run: it starts a New chat preset to that run's agent and workspace and routes
+to `/chat` (see `chat.md`). When the user clicks the workspace header
+add/new-run action while an existing team run is selected, the frontend treats that selected run as a
 launch template for the new editable draft. The selected run itself remains a
 persisted existing-run context whose eligible model settings can be edited only
 through Settings; the add/new-run action instead seeds a separate editable

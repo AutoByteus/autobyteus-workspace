@@ -106,6 +106,7 @@ import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useExistingRunConfigStore } from '~/stores/existingRunConfigStore'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentDefinitionStore } from '~/stores/agentDefinitionStore'
+import { useWorkspaceStore } from '~/stores/workspace'
 import type { AgentRunConfig, SkillAccessMode } from '~/types/agent/AgentRunConfig'
 import type { WorkspaceSelectionState } from '~/types/workspace/WorkspaceSelectionState'
 import { projectExistingTeamRunFormModel } from '~/services/runConfigEditing/existingTeamRunFormModel'
@@ -185,11 +186,17 @@ const agentConfig = computed<AgentRunConfig | null>(() => {
 const agentDefinition = computed(() => agentConfig.value
   ? definitions.getAgentDefinitionById(agentConfig.value.agentDefinitionId) ?? { name: agentConfig.value.agentDefinitionName }
   : null)
-const agentWorkspaceSelection = computed<WorkspaceSelectionState>(() => ({
-  mode: 'existing',
-  existingWorkspaceId: agentConfig.value?.workspaceId ?? null,
-  newWorkspacePath: draft.value?.kind === 'agent' ? draft.value.metadata.workspaceRootPath : '',
-}))
+const workspaceStore = useWorkspaceStore()
+// A run reopened from history carries a history-derived workspace id; show the known workspace
+// with the same root (e.g. the temp workspace) instead of an empty selector.
+const agentWorkspaceSelection = computed<WorkspaceSelectionState>(() => {
+  const rootPath = draft.value?.kind === 'agent' ? draft.value.metadata.workspaceRootPath : ''
+  const workspaceId = agentConfig.value?.workspaceId ?? null
+  const knownWorkspaceId = workspaceId && workspaceStore.workspaces[workspaceId]
+    ? workspaceId
+    : (rootPath ? workspaceStore.findWorkspaceInfoByRootPath(rootPath)?.workspaceId : null) ?? workspaceId
+  return { mode: 'existing', existingWorkspaceId: knownWorkspaceId, newWorkspacePath: rootPath }
+})
 const agentModelConfigFieldErrors = computed<Record<string, string>>(() => Object.fromEntries(
   draftStore.fieldErrors.flatMap((error) => {
     const match = /^llmConfig\.([^.[]+)/.exec(error.path)

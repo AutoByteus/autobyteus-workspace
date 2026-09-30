@@ -20,6 +20,33 @@ listed as normal rows on the Skills page when their package roots are available.
 Opening them uses the same Skill Detail and File Explorer flow as other skills;
 read/write behavior is determined by the underlying filesystem permissions.
 
+## One Skill Per Name (D-19)
+
+The server keeps exactly one copy of every skill name (its skills folder, then
+agent packages, then added folders, then runtime default folders such as
+`~/.codex/skills`). The Skills page, `/` tags, agents and the Daily Assistant
+all use that copy, and opening, editing or deleting a skill acts on it.
+
+- **Duplicates are rejected at import.** Adding a skill folder
+  (`SkillSourcesModal`), importing, updating or reloading an agent package
+  (`AgentPackagesManager`) and creating a skill (`SkillsList`) run through
+  `skillNamesStore.runWithSkillNameChecks`. A `SKILL_NAME_CONFLICT` error
+  (parsed from `extensions.conflicts` by the stores; `utils/skills/skillNames.ts`)
+  opens `SkillNameConflictDialog.vue`, mounted once in `app.vue` on
+  `components/common/Modal.vue`: "Duplicate skill names", one row per name with
+  the existing and the new path, and an OK button (Esc and a backdrop click also
+  close it). Nothing is added or changed, and the store shows no error of its own.
+- **Runtime default copies are notices.** A duplicate only against a runtime
+  default folder is accepted; the store compares `skillNameIssues` before and
+  after the action and shows a toast such as "Ignored 2 skills from the Codex
+  default folder because your own copies take precedence."
+- **Out-of-band duplicates** (a `git pull`, a Finder copy) are listed by the
+  amber `SkillNameIssuesBanner.vue` on the Skills page, fed by the
+  `skillNameIssues` query: "Some skills share a name. AutoByteus uses one copy
+  per name." with "Show details" (name, used path, ignored paths). Conflicts ask
+  the user to rename or remove one copy; ignored runtime default copies are
+  informational. Ignored copies are read-only there.
+
 ## Module Structure
 
 ```
@@ -31,9 +58,12 @@ autobyteus-web/
 │   ├── SkillCard.vue                   # Individual skill card
 │   ├── SkillDetail.vue                 # Skill explorer & file viewer
 │   ├── SkillDescriptionSummary.vue     # Compact description summary + inline More/Less disclosure
+│   ├── SkillNameConflictDialog.vue     # "Duplicate skill names" pop-up (D-19)
+│   ├── SkillNameIssuesBanner.vue       # Skills page banner for ignored same-name copies
 │   └── SkillWorkspaceLoader.vue        # Transient workspace lifecycle manager
 ├── stores/
 │   ├── skillStore.ts                   # Skills CRUD operations
+│   ├── skillNamesStore.ts              # Ignored copies, conflict pop-up state, tier-4 notices
 │   └── workspace.ts                    # Workspace registration (incl. skill workspaces)
 └── graphql/
     ├── queries/skillQueries.ts
@@ -203,7 +233,11 @@ bundled package skills that are visible in the normal Skills catalog.
 - **Data Field**: `skillNames` (List of strings)
 
 When an agent is created, the selected `skillNames` are sent to the backend
-`AgentDefinition`.
+`AgentDefinition`. The **Use all installed skills** checkbox sets
+`skillScope: ALL_INSTALLED` instead; the picker is then disabled and the backend
+binds every enabled installed skill from its own discovered root at run start.
+In Chat, `/` offers the skills the current agent can use (enabled installed
+skills for `ALL_INSTALLED`, configured names otherwise).
 
 The backend treats `skillNames` as logical names at runtime. For package-authored
 agents, runtime resolution is context-first: those names may resolve to

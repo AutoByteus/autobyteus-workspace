@@ -631,7 +631,7 @@ describe("Agent package private skills GraphQL e2e", () => {
     expect(multiBackend.getContext().config.workspaceId).toBe(workspaceId);
     await multiBackend.terminate();
   });
-  it("imports shared agents with canonical single-skill, multi-skill, context-bound private, and global fallback skills with catalog visibility", async () => {
+  it("imports shared agents with canonical single-skill, multi-skill, one-catalog private, and global fallback skills with catalog visibility", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const { externalRoot } = await bootstrapPackageService(unique);
 
@@ -683,9 +683,9 @@ describe("Agent package private skills GraphQL e2e", () => {
     );
 
     await writeAgentDefinition(externalRoot, foreignPrivateAgentId, {
-      name: "Foreign Private Skill Guard Agent",
-      description: "Must not resolve another agent's private skill",
-      instructions: "Do not resolve a private skill from another agent directory.",
+      name: "Foreign Private Skill Agent",
+      description: "Names a skill bundled in another agent's folder",
+      instructions: "Uses the one catalog copy of a skill bundled elsewhere (D-19).",
       skillNames: [singleSkillName],
     });
 
@@ -702,10 +702,10 @@ describe("Agent package private skills GraphQL e2e", () => {
       "Shared private outline skill",
       "Global fallback skill",
     ]);
-    const foreignWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    await expect(resolveAgentSkillDescriptions(foreignPrivateAgentId)).resolves.toEqual([]);
-    expect(foreignWarnSpy).toHaveBeenCalledWith(expect.stringContaining(singleSkillName));
-    foreignWarnSpy.mockRestore();
+    // D-19: one skill per name. Another agent that names this skill gets the same catalog copy.
+    await expect(resolveAgentSkillDescriptions(foreignPrivateAgentId)).resolves.toEqual([
+      "Shared single private skill",
+    ]);
 
     const catalog = await execGraphql<{
       skills: Array<{ name: string; rootPath: string }>;
@@ -776,7 +776,7 @@ describe("Agent package private skills GraphQL e2e", () => {
     );
   });
 
-  it("imports team-local private and team-shared skills with context guards plus warn-and-skip guards", async () => {
+  it("imports team-local private and team-shared skills through the one catalog plus warn-and-skip guards", async () => {
     const unique = `${Date.now()}_${Math.random().toString(16).slice(2)}`;
     const { externalRoot } = await bootstrapPackageService(unique);
 
@@ -923,14 +923,18 @@ describe("Agent package private skills GraphQL e2e", () => {
     ]);
 
     const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    await expect(resolveAgentSkillDescriptions(foreignLocalDefinitionId)).resolves.toEqual([]);
-    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(localSingleSkillName));
+    // D-19: one skill per name. A sibling team-local agent gets the same catalog copy.
+    await expect(resolveAgentSkillDescriptions(foreignLocalDefinitionId)).resolves.toEqual([
+      "Team-local single private skill",
+    ]);
     await expect(resolveAgentSkillDescriptions(invalidDefinitionId)).resolves.toEqual([]);
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Skipping unsafe configured skill name '../escape'"));
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Skipping unsafe configured skill name 'a/b'"));
     expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining("Skipping unsafe configured skill name 'a\\b'"));
-    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(`wrong_${mismatchAgentSkillName}`));
-    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(`wrong_${mismatchTeamSkillName}`));
+    // A folder whose manifest declares another name is catalogued under that name (D-19), so the
+    // configured names stay unresolved.
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(`Skill '${mismatchAgentSkillName}' defined in agent definition`));
+    expect(warnSpy).toHaveBeenCalledWith(expect.stringContaining(`Skill '${mismatchTeamSkillName}' defined in agent definition`));
 
     const catalog = await execGraphql<{
       skills: Array<{ name: string }>;
