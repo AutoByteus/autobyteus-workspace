@@ -18,6 +18,7 @@ import type {
 import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
 import { memberAddressBasename, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import { collectConfiguredAgents } from './teamExecutionTreeSelectors'
+import { teamAgentSourceAt, type TeamAgentSource } from '~/services/collaborators/agentSourceSelectors'
 import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
 import { resolvedTeamRunLaunchConfigsEqual } from '~/utils/teamRunConfigUtils'
 
@@ -34,7 +35,7 @@ const immutableLlmConfig = (value: AgentLaunchConfigurationDto['llm_config']): R
 export const configuredAgentAtAddress = (tree: TeamRunExecutionTreeDto, address: AgentTeamAddress): ConfiguredAgentExecutionDto | null =>
   collectConfiguredAgents(tree).find((agent) => agent.address === address) ?? null
 
-const agentConfig = (input: { source: ConfiguredAgentExecutionDto; workspaceMetadata: WorkspaceMetadata | null }): AgentRunConfig => ({
+const agentConfig = (input: { source: TeamAgentSource; workspaceMetadata: WorkspaceMetadata | null }): AgentRunConfig => ({
   agentDefinitionId: input.source.agent_definition_id,
   agentDefinitionName: memberAddressBasename(input.source.address),
   llmModelIdentifier: input.source.launch_configuration.llm_model_identifier,
@@ -63,7 +64,8 @@ export const createTeamAgentContext = (input: {
   address: AgentTeamAddress
   workspaceMetadata: WorkspaceMetadata | null
 }): AgentContext | null => {
-  const source = configuredAgentAtAddress(input.tree, input.address)
+  // A task execution at a collaborator address takes its source from the collaborator entry.
+  const source = teamAgentSourceAt(input.tree, input.address)
   if (!source) return null
   const conversation = {
     id: input.agentRunId, messages: [], createdAt: input.tree.created_at, updatedAt: input.tree.created_at,

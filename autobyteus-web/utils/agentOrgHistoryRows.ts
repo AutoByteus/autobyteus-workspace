@@ -9,6 +9,7 @@ import {
   type AgentOrgTaskTeamMember,
 } from '~/types/collaboration/agentOrgExecution'
 import { foldTeamAggregateStatus, type TeamStatusAuthority } from '~/utils/workspaceTeamAggregateStatus'
+import { collaboratorTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
 
 export type AgentOrgHistoryAgentRow = Readonly<{
   key: string; kind: 'agent'; address: string; agentRunId: string; status: AgentStatus; depth: number
@@ -99,9 +100,13 @@ const statusSource = (
       address: addresses.get(delegatorAgentRunId) ?? null,
     }),
     coordinatorFor: (team) => {
-      const source = (context?.executionTree ?? run.executionTree).rootOrg.members.find((member) =>
-        'teamRunId' in member && member.address === team.address)
-      if (!source || !('teamRunId' in source)) throw new Error(`Missing captured Team source '${team.address}'.`)
+      const rootOrg = (context?.executionTree ?? run.executionTree).rootOrg
+      const configured = rootOrg.members.find((member) => 'teamRunId' in member && member.address === team.address)
+      // A task Team at a collaborator address takes its layout from the collaborator entry.
+      const source = configured && 'teamRunId' in configured
+        ? configured
+        : collaboratorTeamSourceAt(rootOrg.collaborators ?? [], team.address)
+      if (!source) throw new Error(`Missing captured Team source '${team.address}'.`)
       const findMembers = (node: TaskTeamNode): { agentRunId: string; address: string }[] => node.members.flatMap((member) =>
         'agentRunId' in member ? [member] : findMembers(member))
       const matches = findMembers(team).filter((member) => member.address === source.coordinatorAddress)

@@ -1,6 +1,7 @@
 import { reactive } from 'vue';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ContextAttachment, UserMessage } from '~/types/conversation';
+import type { RequestedCollaboratorMention } from '~/utils/collaborators/collaboratorMentionText';
 import {
   commitRecentEventMonitorEffect,
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
@@ -12,6 +13,8 @@ export interface BeginLocalUserSubmissionOptions {
   attachments: ContextAttachment[];
   // Null keeps local composer/conversation effects without optimistic history navigation.
   navigationTarget: LocalUserSubmissionNavigationTarget | null;
+  /** `@` mentions sent with this message; their names render as inline chips. */
+  mentions?: readonly RequestedCollaboratorMention[];
 }
 
 export type LocalUserSubmissionNavigationTarget =
@@ -67,6 +70,7 @@ export const beginLocalUserSubmission = (
     text: options.text,
     timestamp: new Date(occurredAt),
     contextFilePaths: [...options.attachments],
+    ...(options.mentions?.length ? { mentionNames: options.mentions.map((mention) => mention.name) } : {}),
   });
 
   context.state.conversation.messages.push(submittedMessage);
@@ -75,6 +79,7 @@ export const beginLocalUserSubmission = (
   context.requirement = '';
   context.contextFilePaths = [];
   context.requestedSkillNames = [];
+  context.requestedMentions = [];
   context.submissionPending = true;
   applyLocalSubmissionNavigation(context, options.navigationTarget, occurredAt);
 

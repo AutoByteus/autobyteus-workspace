@@ -83,6 +83,7 @@ const agentOrgDefinitionGroup = (): AgentOrgHistoryDefinitionGroup => {
         applicationBinding: null,
         handoffs: [],
         rootOrg: {
+          collaborators: [],
           address: '/', orgDefinitionId: 'org-definition', orgDefinitionName: 'Delivery Org', orgRunId: 'org-run',
           defaultLaunchConfiguration: launch, taskExecutions: [],
           members: [{
@@ -442,7 +443,9 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(actions.onSelectTeamMember).toHaveBeenCalledWith({
       teamRunId: 'team-run-1', memberAddress: '/study_group/reviewer', agentRunId: taskChildRunId,
     }, 'workspace:/ws/a');
-    expect(wrapper.text()).toContain('Started by worker');
+    // REQ-009: the starter is not a visible line; it stays in the accessible label.
+    expect(wrapper.text()).not.toContain('Started by worker');
+    expect(taskRows[0].attributes('aria-label')).toContain('Started by worker');
   });
 
   it('removes transient execution rows when the exact live projection disappears', async () => {

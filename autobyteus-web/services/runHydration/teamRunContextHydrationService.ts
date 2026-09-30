@@ -35,6 +35,7 @@ import {
   collectAgentExecutionLocations,
   findConfiguredAgentByAddress,
 } from '~/services/teamExecution/teamExecutionTreeSelectors';
+import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
 
 export interface LoadTeamRunContextHydrationInput {
   teamRunId: string;
@@ -172,8 +173,8 @@ const stageProjection = (input: {
   expectedActivityRevision: number;
 }): ActivityProjectionReplacement | null => {
   if (!input.projection) return null;
-  const configured = findConfiguredAgentByAddress(input.tree, input.address);
-  if (!configured) throw new Error(`AgentRun '${input.agentRunId}' has no configured placement.`);
+  const configured = teamAgentSourceAt(input.tree, input.address);
+  if (!configured) throw new Error(`AgentRun '${input.agentRunId}' has no configured or collaborator placement.`);
   input.context.state.conversation = buildConversationFromProjection(
     input.agentRunId,
     input.projection.conversation ?? [],

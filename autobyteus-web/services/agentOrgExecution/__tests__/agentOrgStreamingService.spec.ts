@@ -90,6 +90,7 @@ const snapshot = {
         subjectKind: 'agent_org', createdAt: '2026-09-01T00:00:00.000Z',
         archivedAt: null, applicationBinding: null, handoffs: [],
         rootOrg: {
+          collaborators: [],
           address: '/', orgDefinitionId: 'org-def', orgDefinitionName: 'Org', orgRunId: 'org-run',
           defaultLaunchConfiguration: launch, taskExecutions: [],
           members: [{

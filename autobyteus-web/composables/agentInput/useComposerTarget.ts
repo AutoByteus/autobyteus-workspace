@@ -2,6 +2,7 @@ import { computed, type ComputedRef } from 'vue';
 import { useActiveContextStore } from '~/stores/activeContextStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget';
+import { resolveRunMentionScope, type RunMentionScope } from '~/composables/agentInput/runMentionScope';
 import {
   buildAgentDraftContextFileOwner,
   buildOrgMemberDraftContextFileOwner,
@@ -28,6 +29,8 @@ export interface ComposerTarget {
   /** Owner under which draft uploads are stored, or null when uploads are not allowed. */
   readonly draftOwner: DraftContextFileOwnerDescriptor | null;
   readonly access: ComposerTargetAccess;
+  /** The live run `@` brings collaborators into; absent for launch drafts and read-only views. */
+  readonly mentionScope?: RunMentionScope | null;
   send(): Promise<void>;
   interrupt?(): Promise<void> | void;
 }
@@ -58,6 +61,7 @@ export function useComposerTarget(): ComputedRef<ComposerTarget | null> {
       context: target.context,
       draftOwner: resolveDraftOwner(target),
       access: target.access === 'read_only' ? 'read_only' : 'live',
+      mentionScope: resolveRunMentionScope(target),
       send: () => activeContextStore.send(),
       interrupt: () => activeContextStore.interruptGeneration(),
     });

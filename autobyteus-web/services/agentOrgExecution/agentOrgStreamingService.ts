@@ -16,6 +16,7 @@ import { stageAgentOrgExecutionContext } from './agentOrgContextHydration'
 import {
   AgentOrgExecutionContext,
 } from './agentOrgExecutionContext'
+import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
 type PendingCommand = Readonly<{
@@ -195,13 +196,15 @@ export class AgentOrgStreamingService {
   }
 
   sendPrepared(input: Readonly<{ agentRunId: string; content: string;
-    attachments: readonly ContextFilePath[]; messageId: string; dedupeKey: string }>): Promise<void> {
+    attachments: readonly ContextFilePath[]; messageId: string; dedupeKey: string;
+    mentions?: readonly CollaboratorMentionDto[] }>): Promise<void> {
     const context = this.requireReadyContext()
     if (!context.index.requireAgent(input.agentRunId).live) throw new Error('AgentOrg send target is not live.')
     return this.command({ type: 'SEND_MESSAGE', payload: {
       ...this.commandRoot(input.agentRunId), content: input.content,
       context_file_paths: input.attachments.map(attachmentLocator), image_urls: [],
       message_id: input.messageId, dedupe_key: input.dedupeKey,
+      ...(input.mentions?.length ? { mentions: input.mentions.map((mention) => ({ ...mention })) } : {}),
     } })
   }
 

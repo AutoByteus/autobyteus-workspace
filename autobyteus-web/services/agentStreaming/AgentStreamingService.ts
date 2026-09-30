@@ -6,6 +6,7 @@
  */
 
 import type { AgentContext } from '~/types/agent/AgentContext';
+import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
 import { WebSocketClient, ConnectionState, type IWebSocketClient } from './transport';
 import {
   parseServerMessage,
@@ -129,7 +130,7 @@ export class AgentStreamingService {
     content: string,
     contextFilePaths?: string[],
     imageUrls?: string[],
-    command?: { messageId: string; dedupeKey: string },
+    command?: { messageId: string; dedupeKey: string; mentions?: readonly CollaboratorMentionDto[] },
   ): void {
     const message: ClientMessage = {
       type: 'SEND_MESSAGE',
@@ -139,6 +140,7 @@ export class AgentStreamingService {
         image_urls: imageUrls,
         message_id: command?.messageId ?? '',
         dedupe_key: command?.dedupeKey ?? '',
+        ...(command?.mentions?.length ? { mentions: command.mentions.map((mention) => ({ ...mention })) } : {}),
       },
     };
     this.wsClient.send(serializeClientMessage(message));

@@ -41,21 +41,23 @@ const mountOrg = (isActive: boolean, mutate: (tree: OrgTree) => OrgTree = (tree)
 };
 
 describe('Org history delegated rows', () => {
-  it('shows the plain name and a "Started by" line for a direct delegated Agent and a delegated Team, with no task labels', () => {
+  it('shows the plain name, keeps the starter in the accessible label only, and uses the member marker for a task Agent', () => {
     const wrapper = mountOrg(false);
     expect(wrapper.text()).not.toMatch(/Task:/);
 
     const agentRow = wrapper.get('[data-test="agent-org-task-agent-row-agent-worker-task"]');
     expect(agentRow.text()).toContain('worker');
-    expect(wrapper.get('[data-test="agent-org-task-agent-started-by-agent-worker-task"]').text()).toBe('Started by director');
+    expect(wrapper.find('[data-test="agent-org-task-agent-started-by-agent-worker-task"]').exists()).toBe(false);
+    expect(agentRow.text()).not.toContain('Started by');
     expect(agentRow.attributes('aria-label')).toContain('Started by director');
+    expect(agentRow.find('[data-test="agent-org-task-agent-avatar"]').text()).toBe('W');
     // A stopped run reports every delegated child with the standard offline status.
     expect(agentRow.attributes('data-status')).toBe('offline');
     expect(agentRow.attributes('aria-label')).toContain('offline');
 
     const teamRow = wrapper.get('[data-test="agent-org-task-team-row-team-task"]');
     expect(teamRow.text()).toContain('team');
-    expect(wrapper.get('[data-test="agent-org-task-team-started-by-team-task"]').text()).toBe('Started by director');
+    expect(wrapper.find('[data-test="agent-org-task-team-started-by-team-task"]').exists()).toBe(false);
     expect(teamRow.attributes('aria-label')).toContain('Started by director');
     expect(teamRow.attributes('aria-label')).not.toMatch(/Task:/);
   });
@@ -92,7 +94,7 @@ describe('Org history delegated rows', () => {
         taskExecutions: tree.rootOrg.taskExecutions.map((task, index) => index === 0 ? { ...task, delegatorAgentRunId: 'ghost-run' } : task),
       },
     }) as OrgTree);
-    expect(wrapper.get('[data-test="agent-org-task-agent-started-by-agent-worker-task"]').text()).toBe('Started by ghost-run');
+    expect(wrapper.get('[data-test="agent-org-task-agent-row-agent-worker-task"]').attributes('aria-label')).toContain('Started by ghost-run');
   });
 });
 

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
+import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
 import { getApolloClient } from '~/utils/apolloClient'
 import { CancelPreparedAgentRun, PrepareAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
@@ -161,10 +162,13 @@ export const useAgentRunStore = defineStore('agentRun', {
       const initialSummary = userText.trim() ? userText : messageContent;
       const draftAttachments = [...currentAgent.contextFilePaths];
       const draftOwner = buildAgentDraftContextFileOwner(runId);
+      // `@` mentions exist only for an existing run; a first message never carries them.
+      const mentions = isNewAgent ? [] : mentionsPresentInText(userText, currentAgent.requestedMentions);
       const localSubmission = beginLocalUserSubmission(currentAgent, {
         text: messageContent,
         attachments: draftAttachments,
         navigationTarget: { kind: 'standalone', runId },
+        mentions,
       });
 
       let preparedRunId: string | null = null;
@@ -246,6 +250,7 @@ export const useAgentRunStore = defineStore('agentRun', {
           {
             messageId,
             dedupeKey: `agent_run_input:${finalRunId}:${messageId}`,
+            mentions: toCollaboratorMentionDtos(userText, mentions),
           },
         );
         preparedRunId = null;

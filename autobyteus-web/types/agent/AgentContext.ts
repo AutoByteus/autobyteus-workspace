@@ -1,6 +1,7 @@
 import type { AgentRunConfig } from './AgentRunConfig';
 import type { AgentRunState } from './AgentRunState';
 import type { ContextFilePath, Conversation, AIMessage } from '~/types/conversation';
+import type { RequestedCollaboratorMention } from '~/utils/collaborators/collaboratorMentionText';
 
 /**
  * A container class that holds the complete context for a single agent run.
@@ -16,6 +17,8 @@ export class AgentContext {
   public contextFilePaths: ContextFilePath[];
   /** Skill tags chosen with `/` for the next message; cleared with the requirement on submission. */
   public requestedSkillNames: string[];
+  /** `@` mentions chosen for the next live-run message; a mention counts only while its `@Name` is in the text. */
+  public requestedMentions: RequestedCollaboratorMention[];
   public submissionPending: boolean;
 
   constructor(config: AgentRunConfig, state: AgentRunState) {
@@ -26,6 +29,7 @@ export class AgentContext {
     this.requirement = '';
     this.contextFilePaths = [];
     this.requestedSkillNames = [];
+    this.requestedMentions = [];
     this.submissionPending = false;
   }
   

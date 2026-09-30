@@ -27,6 +27,7 @@ const tree = (): TeamRunExecutionTreeDto => ({
   application_binding: null,
   handoffs: [{ from: '/Teacher', to: '/StudentStudyGroup', rules: ['Delegate study work.'] }],
   root_team: {
+    collaborators: [],
     address: '/',
     team_definition_id: 'classroom-definition',
     team_definition_name: 'Classroom',

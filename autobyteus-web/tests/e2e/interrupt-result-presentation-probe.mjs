@@ -36,6 +36,7 @@ const teamExecutionTree = {
   application_binding: null,
   handoffs: [],
   root_team: {
+    collaborators: [],
     team_definition_id: 'browser-team-definition',
     team_definition_name: 'Browser Team',
     team_run_id: TEAM_RUN_ID,

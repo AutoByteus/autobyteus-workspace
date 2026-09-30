@@ -177,6 +177,7 @@ const teamTree = {
   application_binding: null,
   handoffs: [],
   root_team: {
+    collaborators: [],
     address: '/',
     team_definition_id: 'team-definition-browser-1',
     team_definition_name: 'Browser Probe Team',

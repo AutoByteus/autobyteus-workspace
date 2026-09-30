@@ -24,6 +24,8 @@ import {
   projectAgentOrgCommunicationPerspective,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
+import { collaboratorAgentSourceAt, collaboratorTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
+import { collaboratorCandidatesService } from '~/services/collaborators/collaboratorCandidatesService'
 
 export type AgentOrgSyncPhase = 'hydrating' | 'live' | 'historical' | 'reopen_required' | 'closed'
 export type AgentOrgEventApplication = 'applied' | 'checkpoint_required'
@@ -202,6 +204,16 @@ export class AgentOrgExecutionContext {
       // A new delegated child needs new contexts; reload through a checkpoint.
       this.validateTaskExecutionStarted(event)
       return 'checkpoint_required'
+    } else if (event.kind === 'collaborator_added') {
+      // An entry precedes any task execution at its address; it has no run of its own.
+      const root = this.view.execution_tree.rootOrg
+      if ((root.collaborators ?? []).some((entry) => entry.address === event.collaborator.address)
+        || this.index.configured.has(event.collaborator.address)) {
+        this.correlationFailure(`AgentOrg collaborator address '${event.collaborator.address}' is already in use.`)
+      }
+      this.commitView({ ...this.view, execution_tree: { ...this.view.execution_tree,
+        rootOrg: { ...root, collaborators: [...(root.collaborators ?? []), event.collaborator] } } })
+      collaboratorCandidatesService.invalidate('agent_org', this.orgRunId)
     } else {
       try {
         assertAgentOrgCommunicationMessagesCorrelated(this.index, [event.message])
@@ -243,13 +255,18 @@ export class AgentOrgExecutionContext {
   private validateTaskExecutionStarted(event: TaskExecutionStartedEvent): void {
     const execution = event.execution
     const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId
-    const source = this.index.configured.get(parseAgentTeamAddress(execution.address))
+    const address = parseAgentTeamAddress(execution.address)
+    const configured = this.index.configured.get(address)
+    const collaborators = this.view.execution_tree.rootOrg.collaborators ?? []
+    const source = configured
+      ?? collaboratorAgentSourceAt(collaborators, address)
+      ?? collaboratorTeamSourceAt(collaborators, address)
     const hostKnown = event.host_kind === 'root'
       ? event.host_run_id === this.orgRunId
       : this.index.teams.has(event.host_run_id)
     // A newly started child always records its delegator.
     if (!execution.delegatorAgentRunId || !this.index.agents.has(execution.delegatorAgentRunId) || !hostKnown || !source
-      || ('agentRunId' in source) !== ('agentRunId' in execution)
+      || ('agentDefinitionId' in source) !== ('agentRunId' in execution)
       || this.index.agents.has(runId) || this.index.teams.has(runId)) {
       this.correlationFailure(`AgentOrg delegated execution '${runId}' identity mismatch.`)
     }

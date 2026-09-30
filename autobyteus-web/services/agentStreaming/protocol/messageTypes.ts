@@ -307,6 +307,8 @@ export interface SendMessagePayload {
   image_urls?: string[];
   message_id?: string;
   dedupe_key?: string;
+  /** `@` mentions of shared Agents and Teams to bring into this run; the server re-validates them. */
+  mentions?: Array<{ kind: 'agent' | 'agent_team'; definition_id: string }>;
 }
 
 export interface ToolActionPayload {

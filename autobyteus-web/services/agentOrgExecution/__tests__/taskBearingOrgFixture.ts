@@ -60,6 +60,7 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
           taskExecutions: [],
         },
       ],
+      collaborators: [],
       taskExecutions: [{
         address: '/worker',
         agentRunId: 'agent-worker-task',

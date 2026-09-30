@@ -135,21 +135,18 @@
               <button type="button" v-else-if="display.row.kind === 'task_agent'" @click="actions.onInspectAgentOrgExecution?.(run, display.row.agentRunId, display.row.address)" :aria-selected="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm" :class="isMemberSelected(run.rootRunId, display.row.address, display.row.agentRunId) ? 'is-selected text-indigo-900' : 'text-gray-600 hover:bg-gray-50'" :title="`${display.row.address} · ${display.row.agentRunId}`" :style="rowStyle(display.row.depth)" :aria-label="agentRowLabel(display.row)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-agent-row-${display.row.agentRunId}`" :data-agent-run-id="display.row.agentRunId" :data-status="display.row.status" role="treeitem">
                 <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
                 <span class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
-                <StatusDot class="mr-1.5 flex-none" :status="display.row.status" :variant="display.row.taskKind === 'direct' ? 'transient' : 'solid'" />
-                <span class="flex min-w-0 flex-col py-0.5">
-                  <span class="truncate">{{ label(display.row.address) }}</span>
-                  <span v-if="display.row.delegatedBy" class="truncate text-[0.6875rem] leading-4 text-gray-400" :data-test="`agent-org-task-agent-started-by-${display.row.agentRunId}`">{{ startedBy(display.row.delegatedBy) }}</span>
-                </span>
+                <!-- A task Agent shows the same solid status dot and initials as a member; no visible
+                     "Started by" line. The starter stays in the accessible label. -->
+                <StatusDot class="mr-1.5 flex-none" :status="display.row.status" />
+                <span class="mr-1.5 inline-flex h-4 w-4 flex-none items-center justify-center rounded-full bg-gray-200 text-[0.5625rem] font-semibold text-gray-600" data-test="agent-org-task-agent-avatar">{{ initials(display.row.address) }}</span>
+                <span class="truncate">{{ label(display.row.address) }}</span>
               </button>
               <button type="button" v-else @click="selectTaskTeam(run, display.row)" class="org-execution-row relative flex min-h-7 w-full items-center rounded-md text-left text-sm text-gray-600 hover:bg-gray-50" :title="`${display.row.address} · ${display.row.teamRunId}`" :aria-label="taskTeamRowLabel(display.row)" :aria-expanded="display.row.hasChildren ? display.row.expanded : undefined" :style="rowStyle(display.row.depth)" :aria-level="display.row.depth + 1" :data-test="`agent-org-task-team-row-${display.row.teamRunId}`" role="treeitem">
                 <WorkspaceHierarchyBranches :depth="display.row.depth" :continuing-ancestor-depths="display.continuingAncestorDepths" :has-following-sibling="display.hasFollowingSibling" />
                 <Icon v-if="display.row.hasChildren" icon="heroicons:chevron-down-20-solid" class="ml-2 mr-1 h-3.5 w-3.5 flex-none text-gray-400" :class="display.row.expanded ? '' : '-rotate-90'" :data-test="`agent-org-task-team-disclosure-${display.row.teamRunId}`" aria-hidden="true" />
                 <span v-else class="ml-2 mr-1 h-3.5 w-3.5 flex-none" aria-hidden="true" />
                 <Icon icon="heroicons:user-group-20-solid" class="mr-1.5 h-3.5 w-3.5 flex-none text-indigo-600" />
-                <span class="flex min-w-0 flex-col py-0.5">
-                  <span class="truncate">{{ label(display.row.address) }}</span>
-                  <span v-if="display.row.delegatedBy" class="truncate text-[0.6875rem] leading-4 text-gray-400" :data-test="`agent-org-task-team-started-by-${display.row.teamRunId}`">{{ startedBy(display.row.delegatedBy) }}</span>
-                </span>
+                <span class="truncate">{{ label(display.row.address) }}</span>
               </button>
             </template>
           </div>

@@ -44,6 +44,7 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { findConfiguredAgentByAddress } from '~/services/teamExecution/teamExecutionTreeSelectors';
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { useRightSideTabs } from '~/composables/useRightSideTabs';
+import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
 
 const teamStreamingServices = new Map<string, TeamStreamingService>();
 const inputDedupeKey = (rootTeamRunId: string, agentRunId: string, messageId: string) =>
@@ -253,6 +254,10 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
       let localSubmission: LocalUserSubmissionHandle | null = null;
       let retryAttachments = contextAttachments.map(cloneContextAttachment);
       let draftOwnerId = draft?.draftId ?? rootTeamRunId;
+      // `@` mentions exist only in a live run; a launch draft's first message never carries them.
+      const mentions = team && !draft && targetAgentRunId
+        ? mentionsPresentInText(text, team.view.getAgentContext(targetAgentRunId)?.requestedMentions ?? [])
+        : [];
       try {
         if (draft) {
           const launched = await this.launchDraft(draft);
@@ -284,6 +289,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         localSubmission = beginLocalUserSubmission(member, {
           text, attachments: contextAttachments,
           navigationTarget: { kind: 'team_member', teamRunId: rootTeamRunId, agentRunId: targetAgentRunId },
+          mentions,
         });
         const draftOwner = options.attachmentDraftOwner
           ?? buildTeamMemberDraftContextFileOwner(draftOwnerId, location.memberAddress);
@@ -305,12 +311,13 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         useRunHistoryStore().markTeamAsActive(rootTeamRunId);
         void useRunHistoryStore().refreshTreeQuietly();
         const service = await this.ensureTeamStreamConnected(rootTeamRunId);
-        await service.sendMessage(text, targetAgentRunId, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey });
+        await service.sendMessage(text, targetAgentRunId, plan.executable.contextFilePaths, plan.executable.imageUrls, { messageId, dedupeKey, mentions: toCollaboratorMentionDtos(text, mentions) });
       } catch (error) {
         if (localSubmission) {
           failLocalSubmission(localSubmission, error);
           localSubmission.context.requirement = text;
           localSubmission.context.contextFilePaths = retryAttachments;
+          localSubmission.context.requestedMentions = [...mentions];
           applyOfflineOrTerminalCleanup(localSubmission.context, AgentStatus.Error);
           return;
         }

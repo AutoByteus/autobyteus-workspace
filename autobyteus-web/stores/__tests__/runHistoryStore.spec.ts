@@ -155,6 +155,7 @@ const buildAgentOrgHistoryRow = (input: {
       applicationBinding: null,
       handoffs: [],
       rootOrg: {
+        collaborators: [],
         address: '/',
         orgDefinitionId: input.definitionId ?? 'org-definition',
         orgDefinitionName: input.definitionName ?? 'Delivery Org',
