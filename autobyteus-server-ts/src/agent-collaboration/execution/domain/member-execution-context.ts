@@ -47,17 +47,26 @@ export class MemberCollaborationContext {
 
 export class MemberExecutionContext {
   readonly identity: CollaborationMemberExecutionIdentity;
+  /**
+   * Whether the member belongs to a Team: a member of a Team or Org root (configured or task)
+   * or of a task Team in any root. The Agent-root host and a task Agent directly under an
+   * Agent root are not; they get no `get_handoff_rules`.
+   */
+  readonly teamScoped: boolean;
   readonly authoredEnclosingScopeInstruction: string | null;
   readonly collaboration: MemberCollaborationContext;
   readonly tasks: MemberTaskCommandCapability;
 
   constructor(input: {
     identity: CollaborationMemberExecutionIdentity;
+    teamScoped: boolean;
     authoredEnclosingScopeInstruction?: string | null;
     collaboration: MemberCollaborationContext;
     tasks: MemberTaskCommandCapability;
   }) {
+    if (typeof input.teamScoped !== "boolean") throw new Error("teamScoped is required.");
     this.identity = cloneCollaborationMemberExecutionIdentity(input.identity);
+    this.teamScoped = input.teamScoped;
     this.authoredEnclosingScopeInstruction = optional(input.authoredEnclosingScopeInstruction);
     this.collaboration = new MemberCollaborationContext(input.collaboration);
     this.tasks = requireMemberTaskCommandCapability(input.tasks);

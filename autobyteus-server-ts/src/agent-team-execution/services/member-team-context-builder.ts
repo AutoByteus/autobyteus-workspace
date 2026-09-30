@@ -55,6 +55,7 @@ export class MemberExecutionContextBuilder {
     const summary = await this.resolveSummary(input.teamContext.teamNode.teamDefinitionId);
     return new MemberExecutionContext({
       identity,
+      teamScoped: true,
       authoredEnclosingScopeInstruction: summary.instruction,
       collaboration,
       tasks: input.taskCommands,

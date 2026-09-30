@@ -56,6 +56,7 @@ export class AgentOrgExecutionScopeBuilder {
     const callbacks: FlatTeamExecutionCallbacks = Object.freeze({
       buildMemberExecutionContext: async ({ identity }) => new MemberExecutionContext({
         identity,
+        teamScoped: true,
         authoredEnclosingScopeInstruction: input.activationMode === "fresh"
           ? await this.resolveFreshInstruction(input.state, identity.memberAddress)
           : null,
