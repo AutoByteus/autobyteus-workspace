@@ -25,3 +25,6 @@ Long-lived docs: **No impact beyond already committed IR-003 documentation**; co
 
 ## Continuation
 Result: Pass. Next: explicit fresh user verification of this new candidate. Full E2E inherited failures remain disclosed in handoff/release report, not claimed fixed. Parent DR-001..003 are ancestry only, not new-ticket validation.
+
+## Final DR-005 update
+User accepted current candidate and explicitly requested beta. Ticket archived; beta.6 published and verified; release report/handoff/revision record updated with actual outcomes and residual failures. Runtime/testing source docs remain unchanged and accurate. Final cumulative inventory: `final-package-manifest.json`.

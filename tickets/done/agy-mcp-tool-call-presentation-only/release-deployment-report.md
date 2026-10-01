@@ -1,59 +1,61 @@
-# Current finalization status — DR-005
+# Delivery / Release / Deployment Report — DR-005
 
-User explicitly accepted current-candidate finalization with “finalize and release a new beta” after the verification prompt. Exact wording/limits: `user-beta-finalization-approval.md`. Initial fresh verification gate is satisfied by explicit acceptance, not an invented personal test transcript. Final remote refresh unchanged at b0b077b02; no renewed verification needed. Isolated user-verification instance stopped/data removed/ports released. Archiving and repository finalization now proceeding; release not yet completed.
+## Final status
+**Delivery Completed — agy-mcp-tool-call-presentation-only.**
 
-## DR-004 historical preparation record (statuses below superseded by DR-005)
+Approved SR-006 / IR-003 / API-REV-003; Small / Low / Direct Low-Risk. Independent architecture/source/test-code reviews N/A — not applicable. Parent expanded work is preserved, excluded, and not declared complete.
 
-# Delivery / Release / Deployment Report — DR-004
+## User verification / authorization
+After the explicit current-candidate verification prompt, user replied **“finalize and release a new beta”**. This is the current-candidate acceptance and beta direction; no unreported manual testing steps/results are invented. Exact record: `user-beta-finalization-approval.md`. Earlier parent verification alone was not reused.
 
-## Scope / current status
-`agy-mcp-tool-call-presentation-only`, approved SR-006 / IR-003 / API-REV-003. Small / Low / Direct Low-Risk; independent architecture/source/test-code review N/A — not applicable. **Awaiting fresh user verification; not Delivery Completed.** Only original AGY presentation behavior and related tests/docs are included. Parent expanded repairs/API-F001 remain preserved/deferred.
+User verification app `iso-62420-42b7` was stopped normally; own temporary data removed and both ports released. Final fetch after user signal left base unchanged, so no renewed verification needed.
 
-## Handoff
-- `handoff-summary.md`: Updated.
-- `delivery-revision-record.md`: DR-004, first new-ticket delivery round; DR-001..003 are retained parent ancestry.
+## Integration / validation / docs
+- Candidate `cb7688c4e25d0d990d1f196ea59142dff824d0ea`, exact base `origin/personal@b0b077b02571098a6bf7993ab46b67a69fdb8f9d`.
+- Delivery fetch and merge check: already current. No source/test changes or new base, so fresh API-REV-003 remains applicable without redundant rerun. Source/index clean before delivery artifact edits.
+- Build/bootstrap, AGY units 168 pass/5skip, fake transports 9/9, live 3pass/1skip, third-party capture, old-writer/current-reader hashes/projections, browser and packaged desktop lifecycle: passed per API-REV-003.
+- **Full E2E remains non-green:195pass/43fail/133skip.** 41 identities reproduced in full production-equivalent baseline; other 2 reproduced in ordered token cohort on both base/current. Baseline is converter source/dist replacement, not a clean separate checkout. Full unit/architecture/integration not rerun; API-F001 deferred; no masking or broad repair. Specific live model-selected delegate_task not repeated.
+- `docs-sync-report.md`: canonical runtime/testing documentation already matches narrow implementation. Current handoff/release notes updated, no excluded fixes advertised. Repository artifact hygiene passed before ticket finalization.
 
-## Initial integration refresh
-- Bootstrap/latest fetched base: `origin/personal@b0b077b02571098a6bf7993ab46b67a69fdb8f9d`.
-- Candidate: `cb7688c4e25d0d990d1f196ea59142dff824d0ea`.
-- Fetch succeeded; merge check: Already up to date, 1 ahead / 0 behind.
-- Base advanced/new commits integrated: No / No. Method: Already current. Integration: Completed.
-- Checkpoint: Not needed; tracked/index clean.
-- Executable rerun: No. Rationale: candidate and base identical to fresh API-REV-003; no delivery source/test edits. Its pass remains applicable; full E2E is not green.
-- Delivery docs edits only after integration check: Yes. Evidence `delivery-evidence/dr004/integration-check.json`.
+## Repository finalization — Completed
+- Archived before final commit: `tickets/done/agy-mcp-tool-call-presentation-only/`.
+- Ticket commit/push: `f794f2e88e7e771b2716a8275dede7b6cc836c2d`, remote `origin/codex/agy-mcp-tool-call-presentation-only`.
+- Target updated from remote then explicit ticket merge/push: `4ac5d55806ecf400c04a58bc8689aabc7eae9c18` on `personal`.
+- Beta version commit/push: `eb8547e30d86eb9abf8caeaf30bcb5b19d7a13d7`; tag `v1.4.92-beta.6` peeled to same SHA. Durable completion-record commit follows this release SHA on personal; its exact SHA is included in terminal receipt.
+- No additional production edits. Parent Team/migration/preflight/API-F001 changes not imported.
 
-## User verification
-- Fresh explicit verification for this candidate: **No — pending**.
-- Prior parent testing/release wording retained in `user-finalize-release-request-20261001.md`; new-ticket scope approval in `user-original-scope-approval-20261001.md` explicitly does not verify the new build.
-- Current packaged build opened via `pnpm --silent isolated-app start --from-worktree`; startup/readiness succeeded. Instance `iso-62420-42b7`, own temporary data, backend 62421/control 62420; receipt under `delivery-evidence/dr004/`.
-- Instance intentionally left running for user verification. No test assertion pass inferred from launch. No user production app/data modified.
-- Subsequent re-integration / renewed verification decision: pending final refresh after user signal.
+## Release / publication — Completed
+- Public prerelease: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.6
+- Method: documented `bash scripts/desktop-release.sh beta --branch finalize/agy-mcp-tool-call-presentation-only --no-push` in clean temporary release worktree, then fast-forward personal/push personal/push generated tag. Main worktree's unrelated untracked files were preserved. No manual tag construction or duplicate workflow dispatch.
+- Beta script selected next unused beta, version matched tag. Beta workflow generated notes; archived `release-notes.md` is supporting narrow-scope handoff, curated upload Not required.
 
-## Docs sync
-`docs-sync-report.md`: No additional long-lived impact; IR-003 runtime doc/testing rows match final candidate. Ticket handoff/release notes/reports refreshed for narrow scope. Original parent delivery docs snapshotted under `delivery-evidence/dr004/inherited-parent-delivery/`.
+| Workflow | Run | Final result |
+| --- | --- | --- |
+| Desktop Release | 36875245734 | Success: macOS ARM64/x64, Linux x64/ARM64, Windows x64 builds and publish |
+| Android APK Release | 36875245735 | Success: APK and checksum published |
+| iOS App Store Connect Release | 36875245973 | Success on attempt 2: tests and Archive And Upload To App Store Connect |
+| Server Docker Release | 36875245714 | Success: multi-architecture build and image push |
 
-## Ticket / repository finalization
-- Bootstrap source: `solution-handoff.md`; target `origin/personal`.
-- Ticket remains `tickets/in-progress/agy-mcp-tool-call-presentation-only`; archive: No.
-- Existing implementation commit `cb7688c4e`; final delivery commit: not performed.
-- Ticket push, target update/merge/push: not performed; held for user verification.
-- After verification: refresh remote again, protect delivery edits, re-integrate/recheck if advanced, obtain renewed verification if material state changes, archive before final commit, push ticket then update/merge/push target.
+### iOS retry
+Attempt 1 failed when XCTest could not type into `connection.input` because neither element nor descendants had keyboard focus. No iOS source/workflow changes versus base, prior beta.5 workflow succeeded. Retried only failed jobs once via `gh run rerun 36875245973 --failed`; identical source/assertions passed and upload succeeded. Original failed log and retry receipt retained. No test was disabled or repaired here; transient CI simulator interaction failure, resolved by same-tag retry.
 
-## Version / release / deployment
-- Release applicable: Yes, per user release direction. Planned personal beta path; no stable channel/version inferred.
-- Documented method: `scripts/desktop-release.sh beta` after repository finalization; select next available beta then, not now. Beta method generates release notes; does not accept a curated release-notes file. Ticket `release-notes.md` retained for handoff/reference; curated-file upload Not required for documented beta path.
-- Version bump/tag/publish/rollout: not performed; blocked pending verification/finalization.
-- No manual tag or duplicate workflow dispatch. Release success and assets/workflow require verification before terminal return.
+## Publication / rollout verification — Completed
+`release.json`, `publication-verification.json`, downloaded `updater/*.yml` and per-workflow job receipts under `delivery-evidence/dr005/`.
+- GitHub release is published, non-draft, prerelease. 17 nonempty assets: macOS DMG/ZIP plus blockmaps for both architectures, Linux AppImages for both, Windows installer, Android APK/checksum, four updater YAML files.
+- All four updater files specify 1.4.92-beta.6; every referenced asset exists on release. CI validated metadata and signed/notarized macOS packaging.
+- Release workflows all succeeded at exact release SHA. iOS upload success is not a claim of App Store review/approval or immediate public availability.
+- No installation into user's production app or extra environment deployment required; publication is the documented rollout. Downloaded installers were not locally re-executed; candidate packaged smoke is API-REV-003.
 
-## Validation / known risks
-API-REV-003 is authoritative: build passed, AGY units 168 pass/5 skip, fake transport 9/9, live 3 pass/1 skip, third-party capture/history hashes/browser/packaged desktop journeys passed. Specific live delegate_task selection not repeated. Full E2E 195 pass/43 fail/133 skip; all 43 identities baseline-reproduced across full (41) and ordered token cohort (2), using production-equivalent converter replacement, not a clean separate checkout. Full unit/architecture/integration not rerun. API-F001 remains deferred, not fixed/waived. No scope expansion or test masking.
+## Cleanup — Completed
+- Isolated verification app stopped; own data deleted/ports released.
+- Ticket worktree and clean release worktree removed; local ticket and release branches deleted; worktrees pruned.
+- Safety: both tips were ancestors of remote personal; tracked state clean, remaining untracked files only generated SDK outputs; no ignored ticket evidence. Archived package durable on personal.
+- Remote ticket branch retained: Not required to delete, useful audit reference.
+- Expanded parent worktree and unrelated main-worktree work preserved; not cleanup targets.
+- Receipts: `cleanup-preflight.json`, `cleanup-completed.json`.
 
 ## Persisted data / rollback
-DEC-004: Directly Usable / No Migration. No delivery data transition required. Old-writer→current-reader evidence preserves projection and file hashes. If AGY projection regresses, revert the narrow change through a new forward release; do not rewrite historical runs or retarget published tags.
+DEC-004: Directly Usable / No Migration. No user-data transition or rewrite. Roll back an AGY regression by reverting narrow merge 4ac5d5580 via a new forward release; never retarget published tags. Old stored histories stay unchanged.
 
-## Cleanup / terminal gates
-- Current verification instance must be stopped after user session (`pnpm --silent isolated-app stop iso-62420-42b7`); cleanup currently pending by design.
-- New ticket worktree/local branch cleanup: pending finalization/release. Generated output/evidence preserved; parent worktree explicitly not a cleanup target.
-- Explicit current user testing: No. Finalization: No. Release/rollout: No. Applicable cleanup: No.
-- Blocker: fresh candidate user verification, not an unresolved in-scope code failure.
-- Successful terminal package eligible/sent: No / No. No upstream classification reroute needed for ordinary verification hold.
+## Terminal gate
+Current-candidate acceptance, repository finalization, release/publication/rollout and safe cleanup: all Completed or explicitly Not required above. No unresolved delivery blocker. Terminal eligible: Yes. Current report, handoff, revision record and cumulative package manifest are authoritative; terminal message is dispatched after completion-record push, with tool receipt as transmission evidence.

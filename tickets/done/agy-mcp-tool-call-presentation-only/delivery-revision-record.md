@@ -11,7 +11,7 @@ Current ticket: `agy-mcp-tool-call-presentation-only`. DR-001..003 below are cop
 | DR-003 | User-directed latest-base refresh; provenance recovered | DR-002 Unclear scope | Integration completed, focused pass; overall release held for expanded recovery | `latest-base-integration-result-20261001.md`, delivery reports, `delivery-evidence/latest-base-20261001/` |
 | DR-004 | API-REV-003 Pass, new AGY-only ticket | No prior delivery of new candidate; DR-001..003 parent ancestry | Already current, docs synced, fresh user verification hold | Current handoff/docs/release reports and `delivery-evidence/dr004/` |
 
-| DR-005 | Explicit current-candidate acceptance and new-beta request | DR-004 verification hold | Finalization/release in progress | Approval, archived ticket and release evidence |
+| DR-005 | Explicit current-candidate acceptance and new-beta request | DR-004 verification hold | Delivery Completed — beta.6 published, verified and cleaned | Approval, archived ticket and release evidence |
 
 ## Revision Entries
 
@@ -78,3 +78,12 @@ Current ticket: `agy-mcp-tool-call-presentation-only`. DR-001..003 below are cop
 - Final remote refresh unchanged at b0b077b02571098a6bf7993ab46b67a69fdb8f9d, so no integration rerun or renewed verification needed.
 - Verification instance iso-62420-42b7 stopped, data removed and ports released.
 - Current result: repository finalization/release in progress, not Delivery Completed yet. Actual commit/push/tag/workflow/cleanup results to be recorded before terminal return.
+
+- Repository finalization now completed: archived ticket, ticket commit/push f794f2e88, target merge/push 4ac5d5580, release commit/push eb8547e30 and tag v1.4.92-beta.6. Script used clean release worktree with --no-push then explicit personal/tag pushes to preserve unrelated main-worktree files.
+- Release workflows now monitored; no terminal completion yet. Actual receipts under `delivery-evidence/dr005/`.
+
+- DR-005 final result: **Delivery Completed**. All four tag-push workflows succeeded; iOS attempt1 keyboard-focus failure resolved by one failed-job retry on identical source/assertions, attempt2 successful including upload.17 nonempty release assets and all four updater metadata versions/references verified.
+- Release URL: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.6 ; workflow IDs and exact commit/push details in authoritative release report.
+- Cleanup completed: user instance/data/ports, narrow ticket and scratch release worktrees/local branches; remote ticket branch retained, parent/unrelated work preserved. No outstanding blocker.
+- Authoritative final artifacts: `release-deployment-report.md`, `handoff-summary.md`, `docs-sync-report.md`, `release-notes.md`, `final-package-manifest.json`, `delivery-evidence/dr005/`.
+- Terminal now eligible; dispatch to the exact returned Solution Designer recipient after final completion-record push. Tool message receipt is transmission authority; no earlier terminal success is inferred.

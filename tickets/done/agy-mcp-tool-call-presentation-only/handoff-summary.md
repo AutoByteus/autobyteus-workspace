@@ -1,39 +1,19 @@
-# DR-005 — User accepted finalization; beta release in progress
+# Final Handoff — agy-mcp-tool-call-presentation-only
 
-Exact current-candidate acceptance: “finalize and release a new beta”; `user-beta-finalization-approval.md`. No additional manual test details claimed. Remote unchanged, user instance cleaned up. Narrow AGY scope remains unchanged. Ticket is being archived before final commit; push/merge/release completion will be recorded with actual outcomes.
+**Delivery Completed — DR-005.** Release: [v1.4.92-beta.6](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.6).
 
-## DR-004 historical preparation summary
+- Approved SR-006 / IR-003 / API-REV-003, Small / Low / Direct Low-Risk. Independent reviews N/A — not applicable; historical parent reports are ancestry, not current passes.
+- Scope: only AGY real MCP names/own arguments and structured object/array output, related tests/docs; native behavior and stored old histories preserved. No Team/history/migration/broad repairs imported.
+- Exact acceptance: “finalize and release a new beta” after current-candidate verification prompt; `user-beta-finalization-approval.md`. No unreported manual test details inferred.
+- Candidate cb7688c4e over unchanged latest base b0b077b02; API-REV-003 validation remained current.
+- Archived ticket commit/push f794f2e88; personal merge/push 4ac5d5580; release commit/push eb8547e30 and tag v1.4.92-beta.6. Completion artifacts subsequently committed/pushed on personal.
+- Desktop, Android, iOS and Docker workflows succeeded. iOS needed one same-tag failed-job retry after simulator keyboard-focus failure; original evidence retained.17 release assets/updater version/references verified.
+- Verification app/data/ports cleaned. Narrow ticket and release worktrees/local branches removed; remote ticket branch retained. Expanded parent and unrelated main work untouched.
 
-# Handoff Summary — agy-mcp-tool-call-presentation-only
+## Validation limits retained
+Fresh build, AGY 168 unit pass/5skip, fake 9/9, live 3pass/1skip, real third-party capture, old history hashes, browser and packaged desktop journeys passed. Full E2E 195pass/43fail/133skip: all failure identities baseline-reproduced across full/ordered runs; baseline converter replacement, not clean separate checkout. No full unit/integration rerun; API-F001 deferred. Specific live delegate_task selection not repeated. These are not a green-full-suite or broad-repair claim.
 
-## Current result — DR-004
-**Integrated, docs synced, awaiting fresh user verification. Not Delivery Completed.**
+## Authority and cumulative package
+`release-deployment-report.md` records all gates, commits, workflows, retry, asset checks, cleanup and rollback. `docs-sync-report.md`, `delivery-revision-record.md`, `release-notes.md` and `final-package-manifest.json` complete delivery authority. Current requirements/design/investigation/solution history, implementation, API evidence and historical/deferred supplements remain archived together. Absolute paths in the manifest point to the durable main workspace.
 
-- Authority: approved SR-006 / IR-003 / API-REV-003. Small / Low / Direct Low-Risk; architecture/source/test-code independent reviews N/A — not applicable. Copied parent review/delivery history is not current approval.
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only`.
-- Branch/source candidate: `codex/agy-mcp-tool-call-presentation-only` / `cb7688c4e25d0d990d1f196ea59142dff824d0ea`.
-- Target/base: `origin/personal@b0b077b02571098a6bf7993ab46b67a69fdb8f9d`. Fresh fetch and merge check: already current, 1 ahead / 0 behind. No checkpoint or rerun necessary; no source/test edits and identical API-REV-003 candidate.
-- Source delta: exactly two AGY converter/helper production files; directly related tests/docs only. No expanded Team/migration/preflight/API-F001 fixes imported. Parent worktree remains untouched and preserved.
-
-## Current validation (API-REV-003)
-- Fresh build/bootstrap passed; AGY units 168 passed / 5 existing live opt-ins skipped.
-- Enabled fake transports 9/9; live AGY Team/Org/native-image 3 passed / 1 optional imported-package case skipped.
-- Fresh third-party MCP capture, old-base-writer→current-reader identical history/run-file hashes, browser Activity/reload/reopen, packaged desktop scripted MCP plus real native command/restart: passed.
-- Specific live model-selected delegate_task not repeated; exact projection and renderer assertions use scripted provider steps. No skipped case counted as passed.
-- **Full E2E: 195 passed / 43 failed / 133 skipped.** Full production-equivalent baseline reproduced 41 identities; ordered token cohort reproduced the other 2 on current and baseline (12 passed / 2 failed each). Baseline used exact converter source/dist replacement, not a separate clean checkout. No AGY-origin failure found, no broad-suite green claim.
-- API-F001 remains deferred; full unit/architecture/integration suites not rerun in the narrow round.
-- Authority: `api-e2e-execution-coverage-report.md`; `api-e2e-evidence/api-rev-003/failure-provenance.md` and `final-failure-provenance.json`.
-
-## User verification hold
-Prior verification related to an earlier parent candidate; scope-reset approval is not fresh verification of this new build. Delivery has opened the current worktree's previously validated packaged app in a separate test-owned instance:
-- Instance: `iso-62420-42b7`; backend port 62421, control port 62420.
-- Receipt: `delivery-evidence/dr004/user-verification-instance.json`.
-- Check an Antigravity MCP call in Activity: actual name, own args/results, then reload/reopen; native tools should remain unchanged.
-- The instance is intentionally left running for user testing, with its own temporary data. Do not use the installed production app to verify this unmerged candidate. Stop this exact instance after the verification session; never stop other instances.
-- User response: pending. Do not archive, push, merge to target or release until explicit candidate-appropriate verification.
-
-## Delivery / release
-`docs-sync-report.md`: long-lived docs already accurate; current ticket delivery artifacts refreshed. `release-notes.md` is narrow-only. Prior user release direction retained; planned personal beta workflow, not stable authorization. Final version/tag to resolve only at release time. `release-deployment-report.md` is authoritative for gates.
-
-## Cumulative package
-Current requirements, investigation, design, solution handoff/revision/approval; implementation handoff/revision and IR-003 evidence; API coverage investigation/report/ledger/revision and API-REV-003 evidence; current delivery reports/revision/notes. Historical architecture/code review reports, repair ledgers, DR-001..003 and recovery supplements remain preserved and explicitly ancestry/deferred, not current passes.
+Return to Solution Designer to verify this terminal receipt before returning Terminal to the user/caller.
