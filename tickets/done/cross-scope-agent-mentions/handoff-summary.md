@@ -2,7 +2,11 @@
 
 ## Status
 
-- Delivery state: **User verified on 2026-10-01**: "finalize and release a new beta version." The ticket is archived, finalized into `personal` and released as a new beta; see `release-deployment-report.md` for the final state (DR-004).
+- Delivery state: **User verified on 2026-10-01**: "finalize and release a new beta version." The ticket is archived and finalized into `personal` (`d057801c8`), and tag `v1.4.92-beta.5` is pushed.
+  - The release is **partially published.** Android, iOS and Docker succeeded.
+  - The desktop release is **blocked**: Apple notarization refused both macOS builds with "A required agreement is missing or has expired" (HTTP 403). The desktop installers were therefore not published.
+  - Recovery: sign or renew the Apple Developer agreement, then `gh run rerun 36845911969 --failed`.
+  - See `release-deployment-report.md` (DR-004).
   - **R-1:** the user gave no separate instruction, so delivery applies its stated recommendation: the host-label casing is accepted as-is.
   - DR-002 added the desktop evidence (API-REV-004, CRR-008).
   - DR-003 closed OBS-D3: a manual user click, not a product issue.

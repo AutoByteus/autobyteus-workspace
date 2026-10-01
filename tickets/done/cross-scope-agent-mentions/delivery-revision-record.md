@@ -9,6 +9,7 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | DR-001 | Delivery package from `code_reviewer` (CRR-005, API-REV-002/003, CRR-007) | N/A | Docs synced on the current base; awaiting user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`; 9 long-lived docs |
 | DR-002 | Evidence update from `code_reviewer` (CRR-008, API-REV-004 desktop journeys) | DR-001 | Same delivery state; evidence 96%; OBS-D3 carried as an open observation; still awaiting user verification | `handoff-summary.md`, `release-deployment-report.md` |
 | DR-003 | CRR-008 factual correction from `code_reviewer`: OBS-D3 closed | DR-002 | Same delivery state; OBS-D3 removed from the open observations; still awaiting user verification | `handoff-summary.md`, `release-deployment-report.md` |
+| DR-004 | User verification: "finalize and release a new beta version" | DR-003 | Ticket archived; `personal` finalized at `d057801c8`; `v1.4.92-beta.5` tagged; Android/iOS/Docker published; **Desktop Release blocked** (Apple notarization agreement, 403); cleanup done | `handoff-summary.md`, `release-deployment-report.md`, ticket moved to `tickets/done/` |
 
 ## Revision Entries
 
@@ -81,5 +82,34 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Next recipient/action: the user (verification, R-1, release choice).
 - Remaining blockers, rollback concerns, or untested scope:
   - Blocker: user verification.
+  - Untested: R-4 (Grok) and R-5 (application-owned runs).
+  - Rollback: downgrade rejects trees whose collaborator entries carry run IDs.
+
+### DR-004 — Finalized into personal; beta.5 tagged; desktop release blocked by Apple notarization agreement
+
+- Delivery round and trigger: round 4. The user verified on 2026-10-01: "finalize and release a new beta version."
+- Triggering upstream report, verification, or evidence: the user's message; release workflow runs at `d057801c8`.
+- Prior authoritative result: DR-003 (awaiting user verification).
+- Current authoritative result:
+  - R-1 accepted as-is (no separate instruction; delivery's recommendation).
+  - Ticket moved to `tickets/done/`.
+  - Ticket branch committed and pushed: `e666d726f`.
+  - `personal` fast-forwarded and pushed: `8caa610ff..d057801c8`, with release commit `d057801c8` and tag `v1.4.92-beta.5`.
+  - Android APK, iOS App Store Connect and Server Docker workflows succeeded.
+  - Desktop Release run 36845911969 failed. Both macOS builds were refused at Apple notarization (HTTP 403 "A required agreement is missing or has expired"), so Publish was skipped. The pre-release has only the Android APK, and desktop installs are not offered beta.5.
+  - Ticket worktree and local branch removed.
+- Docs sync report: `docs-sync-report.md` (unchanged)
+- Handoff summary: `handoff-summary.md` (status)
+- Release/publication/deployment report: `release-deployment-report.md` (finalization, release, cleanup, blocker)
+- Integration and post-integration verification: target re-fetched after verification and before the push; still `8caa610ff`, so the fast-forward was clean.
+- User verification/finalization state: verified; repository finalization `Completed`; release `Blocked` (desktop only).
+- Terminal return to `/solution_designer`: `Blocked`. It will be sent once the desktop release completes.
+- Terminal message/reference: N/A
+- Why this delivery revision was recorded: finalization completed, and a release blocker occurred.
+- Next recipient/action:
+  1. The user signs or renews the Apple Developer agreement.
+  2. Delivery runs `gh run rerun 36845911969 --failed`, verifies that the desktop assets and updater files are published, records DR-005, and sends the terminal return.
+- Remaining blockers, rollback concerns, or untested scope:
+  - Blocker: Apple agreement.
   - Untested: R-4 (Grok) and R-5 (application-owned runs).
   - Rollback: downgrade rejects trees whose collaborator entries carry run IDs.
