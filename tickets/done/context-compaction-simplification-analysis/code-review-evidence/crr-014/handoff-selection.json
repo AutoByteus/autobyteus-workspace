@@ -1,0 +1,15 @@
+{
+  "review": "CRR-014",
+  "result": "Pass \u2014 integrated implementation-source review",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selected": {
+    "when": "When implementation review passes and the cumulative package is ready for API, end-to-end, and executable coverage work.",
+    "recipient_address": "/api_e2e_engineer"
+  },
+  "recipient_address": "/api_e2e_engineer",
+  "reason": "Completed implementation review passes; this is not post-API/E2E test review, failure-origin or a completed API-owned Local Fix. Latest developer single-most-specific-recipient instruction excludes an additional informational outcome notification. Reviewer provenance incident is disclosed, not an implementation correction handoff.",
+  "confirmation": "accepted=true / DELIVERED",
+  "target_agent_run_id": "api_e2e_engineer_96e63b834264434986f16a8037990c3f",
+  "attachedReferenceCount": 3697
+}

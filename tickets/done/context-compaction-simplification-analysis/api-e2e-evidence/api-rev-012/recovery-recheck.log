@@ -1,0 +1,41 @@
+{
+  "result": "Pass",
+  "recovery": [
+    {
+      "kind": "a",
+      "native": "20846854-7813-40de-891a-cb3fc477a9e0",
+      "parentTurnRequestIds": [
+        30,
+        31,
+        32
+      ],
+      "fifo": [
+        "API11-A-HELD-A",
+        "API11-A-QUEUED-B",
+        "API11-A-RECOVERY-C"
+      ],
+      "rawCountPerInput": 1
+    },
+    {
+      "kind": "t",
+      "native": "ed1a639f-3dc6-4d94-af49-86cd007d36c9",
+      "parentTurnRequestIds": [
+        26,
+        27,
+        28
+      ],
+      "fifo": [
+        "API11-T-HELD-A",
+        "API11-T-QUEUED-B",
+        "API11-T-RECOVERY-C"
+      ],
+      "rawCountPerInput": 1
+    }
+  ],
+  "requestsBefore": 24,
+  "requestsAfter": 32,
+  "successfulCompactions": 2,
+  "newParentTurns": 6,
+  "remote": 0,
+  "scope": "normal C composer input after two true reloads authorizes once-only native FIFO continuation; scripted model output is not semantic quality"
+}

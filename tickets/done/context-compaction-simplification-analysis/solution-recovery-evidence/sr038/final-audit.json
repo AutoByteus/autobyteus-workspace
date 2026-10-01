@@ -1,0 +1,51 @@
+{
+  "utc": "2026-10-01T15:44:11.027682+00:00",
+  "pinCount": 11391,
+  "unchangedCount": 11387,
+  "changed": [
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+      "before": "535e367c89d3eef22e015e41938dc0ce825202308064da040f16722a22c2c98b",
+      "after": "6195bb39684637418650848aab6c8c0ad869d6ba6c8c0797c809c9e7d9c0a682"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+      "before": "0d1c0f46d59f82ef02b023ea09441d3422a7a6689a9c896e063478f7b33c6a3f",
+      "after": "90ca3662aafd42fc5481bcc9e1bdbd0b65d2699dbf3faed2257dc831b07b0e7a"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+      "before": "61e3a50e77cac04626999e011346aa4fb53f937516eb9f49d126f4a304f6c878",
+      "after": "fbc424d2a0965a70a8703b6c223e16d3cd488c0e2bbca3b4706102430cfa081d"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+      "before": "bd7029189edc29dde6fcbf5e32ac1a99cb6435d6fcd1ff972001729c09bce331",
+      "after": "e16e49e34898fe39e96f4eef79b1af04e7b5f12e2158ad4108b33507da10ca45"
+    }
+  ],
+  "allowedOwnedCanonicalPaths": [
+    "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+    "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md"
+  ],
+  "unexpectedChanged": [],
+  "gitUnchanged": {
+    "head": true,
+    "merge": true,
+    "branch": true,
+    "index": true,
+    "stash": true,
+    "indexSha256": true
+  },
+  "buildAssetsUnchanged": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar": true,
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/isolated-launch.json": true
+  },
+  "sourceEvidenceChanged": [],
+  "mergeInProgress": true,
+  "stagedPaths": 672,
+  "unmergedEntries": 0,
+  "scope": "11,378 selected source/test/dist pins plus13 canonical artifacts; not a new test run or historical-evidence private-data census"
+}

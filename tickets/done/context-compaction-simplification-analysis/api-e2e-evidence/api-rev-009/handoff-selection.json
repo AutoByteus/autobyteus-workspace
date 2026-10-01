@@ -1,0 +1,12 @@
+{
+  "result": "Fail",
+  "confidence": 77.9,
+  "selected": {
+    "when": "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.",
+    "recipient_address": "/code_reviewer"
+  },
+  "excluded": "Not a successful-test review or Requirement/Design Gap. Single most-specific executable-failure rule; no Delivery/Designer notification.",
+  "confirmed": true,
+  "referenceCount": 4196,
+  "targetAgentRunId": "code_reviewer_7bd4b2c09af543088c0238d792d0fd98"
+}

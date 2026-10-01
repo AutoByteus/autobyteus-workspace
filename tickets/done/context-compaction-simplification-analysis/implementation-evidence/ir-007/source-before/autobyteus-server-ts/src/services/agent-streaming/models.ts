@@ -1,0 +1,78 @@
+export enum ClientMessageType {
+  SEND_MESSAGE = "SEND_MESSAGE",
+  INTERRUPT_GENERATION = "INTERRUPT_GENERATION",
+  APPROVE_TOOL = "APPROVE_TOOL",
+  DENY_TOOL = "DENY_TOOL",
+}
+
+export enum ServerMessageType {
+  SYSTEM_INSTRUCTIONS_SUPPLIED = "SYSTEM_INSTRUCTIONS_SUPPLIED",
+  TURN_STARTED = "TURN_STARTED",
+  TURN_COMPLETED = "TURN_COMPLETED",
+  TURN_INTERRUPTED = "TURN_INTERRUPTED",
+  SEGMENT_START = "SEGMENT_START",
+  SEGMENT_CONTENT = "SEGMENT_CONTENT",
+  SEGMENT_END = "SEGMENT_END",
+  AGENT_STATUS = "AGENT_STATUS",
+  AGENT_COMMAND_ACK = "AGENT_COMMAND_ACK",
+  AGENT_INPUT_STATE = "AGENT_INPUT_STATE",
+  COMPACTION_BLOCKED = "COMPACTION_BLOCKED",
+  COMPACTION_RESUMED = "COMPACTION_RESUMED",
+  COMPACTION_STATUS = "COMPACTION_STATUS",
+  TOKEN_USAGE_UPDATED = "TOKEN_USAGE_UPDATED",
+  TOOL_APPROVAL_REQUESTED = "TOOL_APPROVAL_REQUESTED",
+  TOOL_APPROVED = "TOOL_APPROVED",
+  TOOL_DENIED = "TOOL_DENIED",
+  TOOL_EXECUTION_STARTED = "TOOL_EXECUTION_STARTED",
+  TOOL_EXECUTION_SUCCEEDED = "TOOL_EXECUTION_SUCCEEDED",
+  TOOL_EXECUTION_FAILED = "TOOL_EXECUTION_FAILED",
+  TOOL_EXECUTION_INTERRUPTED = "TOOL_EXECUTION_INTERRUPTED",
+  TOOL_LOG = "TOOL_LOG",
+  ASSISTANT_COMPLETE = "ASSISTANT_COMPLETE",
+  BACKGROUND_TASK_UPDATED = "BACKGROUND_TASK_UPDATED",
+  MEMBER_INPUT_MESSAGE = "MEMBER_INPUT_MESSAGE",
+  INTER_AGENT_MESSAGE = "INTER_AGENT_MESSAGE",
+  TEAM_COMMUNICATION_MESSAGE = "TEAM_COMMUNICATION_MESSAGE",
+  SYSTEM_TASK_NOTIFICATION = "SYSTEM_TASK_NOTIFICATION",
+  TEAM_RUN_LIFECYCLE = "TEAM_RUN_LIFECYCLE",
+  ARTIFACT_PERSISTED = "ARTIFACT_PERSISTED",
+  FILE_CHANGE = "FILE_CHANGE",
+  ERROR = "ERROR",
+  CONNECTED = "CONNECTED",
+}
+
+export type ServerMessagePayload = Record<string, unknown>;
+
+export class ServerMessage {
+  readonly type: ServerMessageType;
+  readonly payload: ServerMessagePayload;
+
+  constructor(type: ServerMessageType, payload: ServerMessagePayload) {
+    this.type = type;
+    this.payload = payload;
+  }
+
+  toJson(): string {
+    return JSON.stringify({
+      type: this.type,
+      payload: this.payload,
+    });
+  }
+}
+
+export function createConnectedMessage(agentRunId: string, sessionId: string): ServerMessage {
+  return new ServerMessage(ServerMessageType.CONNECTED, {
+    agent_id: agentRunId,
+    session_id: sessionId,
+  });
+}
+
+export function createErrorMessage(code: string, message: string): ServerMessage {
+  return new ServerMessage(ServerMessageType.ERROR, {
+    code,
+    message,
+    error_scope: null,
+    error_effect: null,
+    turn_id: null,
+  });
+}

@@ -1,0 +1,50 @@
+[
+  [
+    "API-C01",
+    "Live harness AgentRun prerequisite",
+    "AC-001/002/006/007; ENG-001",
+    "pnpm -C autobyteus-server-ts exec vitest run tests/unit/secret-management/live-e2e-harness.test.ts tests/unit/secret-management/live-e2e-compaction-boundary.test.ts --no-watch"
+  ],
+  [
+    "API-C02",
+    "Direct summary, commit faults, retry, repeated mechanics and strict-v5 restore",
+    "AC-001\u2013009/011",
+    "pnpm -C autobyteus-ts exec vitest run tests/unit/memory tests/integration/agent/runtime/agent-runtime-compaction.test.ts tests/integration/agent/working-context-snapshot-restore-flow.test.ts --no-watch"
+  ],
+  [
+    "API-C03",
+    "Provider completion/options, current model config and stream metadata",
+    "AC-005/006/010/011",
+    "pnpm -C autobyteus-ts exec vitest run tests/unit/llm/api tests/unit/llm/llm-factory-config-composition.test.ts tests/unit/clients tests/unit/agent/streaming tests/unit/agent/loop/llm-phase-compaction.test.ts tests/unit/agent/loop/llm-phase-memory-compaction-configuration.test.ts --no-watch"
+  ],
+  [
+    "API-C04",
+    "Server factory/request/status, startup settings and history readers",
+    "AC-005/006/008/009/010",
+    "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/compaction tests/unit/startup/compaction-model-settings-migration.test.ts tests/unit/services/server-settings-service.test.ts tests/unit/agent-memory tests/unit/agent-execution/backends/autobyteus tests/unit/agent-execution/agent-provider-factory-builder.test.ts tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts --no-watch"
+  ],
+  [
+    "API-C05",
+    "Real GraphQL schema settings and historical memory",
+    "AC-009/010",
+    "pnpm -C autobyteus-server-ts exec vitest run tests/e2e/server-settings/server-settings-graphql.e2e.test.ts tests/e2e/memory/memory-view-graphql.e2e.test.ts tests/e2e/memory/memory-explorer-graphql.e2e.test.ts --no-watch"
+  ],
+  [
+    "API-C06",
+    "Web settings/status/history durable regressions",
+    "AC-010; DS-004/005",
+    "pnpm -C autobyteus-web test:nuxt components/settings/__tests__/CompactionConfigCard.spec.ts components/settings/__tests__/CompactionModelSettings.spec.ts components/settings/__tests__/ServerSettingsCompactionFailure.spec.ts components/progress/__tests__/CompactionActivityItem.spec.ts components/workspace/agent/__tests__/AgentCompactionLiveFlow.spec.ts components/workspace/agent/__tests__/CompactionStatusRow.spec.ts tests/stores/serverSettingsStore.test.ts services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts services/agentStreaming/__tests__/AgentStreamingService.spec.ts services/eventMonitor/__tests__/recentEventMonitorPresentationWitness.spec.ts --run"
+  ],
+  [
+    "API-C07",
+    "Strict current presentation contract",
+    "AC-010",
+    "pnpm -C autobyteus-agent-presentation-contracts test"
+  ],
+  [
+    "API-B01",
+    "Documented shared/server build prerequisite",
+    "ENG-001; API-C08/09 readiness",
+    "pnpm --filter autobyteus-server-ts build"
+  ]
+]

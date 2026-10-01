@@ -1,0 +1,18 @@
+{
+  "at": "2026-09-30T21:10:59.234915+00:00",
+  "endpoint": "http://127.0.0.1:65101/graphql",
+  "key": "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+  "before": {
+    "errors": null,
+    "setting": []
+  },
+  "write": {
+    "data": {
+      "updateServerSetting": "Sensitive settings must use their write-only credential editor."
+    }
+  },
+  "after": {
+    "errors": null,
+    "setting": []
+  }
+}

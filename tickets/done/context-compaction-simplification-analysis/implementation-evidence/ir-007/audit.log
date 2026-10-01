@@ -1,0 +1,16 @@
+{
+  "head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "entry_pin_count": 1736,
+  "unexpected_changes": [],
+  "api_paths_unchanged": true,
+  "ir007_owned_paths": 31,
+  "source_limits": {
+    "production_file_count": 22,
+    "test_file_count": 9,
+    "over_500": [],
+    "over_220_changed": [],
+    "baseline_mismatches": []
+  },
+  "staged_diff_stat": ""
+}

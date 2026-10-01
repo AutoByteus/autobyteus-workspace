@@ -1,0 +1,9 @@
+{
+  "currentReferenceCount": 3416,
+  "missingInheritedReferences": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-org-execution/domain/frozen-agent-org-termination-scope.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-org-execution/services/agent-org-root-agent-execution-registry.ts",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-org-execution/services/agent-org-team-execution-directory.ts"
+  ],
+  "note": "Missing obsolete references are not inferred to have prior results; retained input index and beforeimages carry provenance."
+}

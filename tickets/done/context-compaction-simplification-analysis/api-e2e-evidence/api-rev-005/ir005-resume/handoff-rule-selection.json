@@ -1,0 +1,7 @@
+{
+  "selected_when": "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.",
+  "recipient_address": "/code_reviewer",
+  "outcome": "Fail",
+  "reason": "Valid current API-F007 executable settings failure, preliminary production Local Fix; not upstream requirement ambiguity or successful-test review.",
+  "single_recipient": true
+}

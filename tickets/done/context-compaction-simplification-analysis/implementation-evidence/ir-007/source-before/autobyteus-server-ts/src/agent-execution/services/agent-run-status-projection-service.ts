@@ -1,0 +1,205 @@
+import { appConfigProvider } from "../../config/app-config-provider.js";
+import { AgentRunManager } from "./agent-run-manager.js";
+import {
+  buildAgentStatusPayload,
+  type AgentApiStatus,
+  type AgentStatusPayload,
+} from "../domain/agent-status-payload.js";
+import type { RunKnownStatus } from "../../run-history/domain/agent-run-history-index-types.js";
+import {
+  AgentRunMetadataService,
+  getAgentRunMetadataService,
+} from "../../run-history/services/agent-run-metadata-service.js";
+import {
+  AgentRunCommandStatusOverlayStore,
+  getAgentRunCommandStatusOverlayStore,
+} from "./agent-run-command-status-overlay-store.js";
+import {
+  AgentRunCommandRegistry,
+  getAgentRunCommandRegistry,
+} from "./agent-run-command-registry.js";
+
+export type AgentRunStatusSource =
+  | "COMMAND_OVERLAY"
+  | "ACTIVE_RUNTIME"
+  | "PREPARED_IDENTITY"
+  | "HISTORICAL_METADATA"
+  | "TERMINATED_METADATA"
+  | "MISSING";
+
+export type AgentRunStatusProjection = {
+  runId: string;
+  status: AgentApiStatus;
+  isActive: boolean;
+  shouldConnectStream: boolean;
+  lastKnownStatus: RunKnownStatus;
+  statusSource: AgentRunStatusSource;
+  statusPayload: AgentStatusPayload;
+  command?: {
+    messageId: string;
+    state: "STARTING" | "ADMITTED" | "HELD" | "FORWARDED" | "FAILED";
+    updatedAt: string;
+  } | null;
+};
+
+export class AgentRunStatusProjectionService {
+  constructor(private readonly deps: {
+    agentRunManager?: AgentRunManager;
+    metadataService?: Pick<AgentRunMetadataService, "readMetadata">;
+    overlayStore?: AgentRunCommandStatusOverlayStore;
+    commandRegistry?: AgentRunCommandRegistry;
+  } = {}) {}
+
+  getCatalogListStatusProjection(runId: string): AgentRunStatusProjection {
+    const normalizedRunId = runId.trim();
+    const liveProjection = this.getOverlayOrActiveProjection(normalizedRunId);
+    if (liveProjection) {
+      return liveProjection;
+    }
+    return this.fromMetadataFallback({
+      runId: normalizedRunId,
+      status: "offline",
+      lastKnownStatus: "IDLE",
+      statusSource: "HISTORICAL_METADATA",
+    });
+  }
+
+  async getRunStatusProjection(runId: string): Promise<AgentRunStatusProjection> {
+    const normalizedRunId = runId.trim();
+    const metadataService = this.deps.metadataService ?? getAgentRunMetadataService();
+    const liveProjection = this.getOverlayOrActiveProjection(normalizedRunId);
+    if (liveProjection) {
+      return liveProjection;
+    }
+
+    const metadata = normalizedRunId ? await metadataService.readMetadata(normalizedRunId) : null;
+    if (!metadata) {
+      return this.fromMetadataFallback({
+        runId: normalizedRunId,
+        status: "offline",
+        lastKnownStatus: "TERMINATED",
+        statusSource: "MISSING",
+      });
+    }
+
+    if (metadata.preparedAt && !metadata.startedAt) {
+      return this.fromMetadataFallback({
+        runId: normalizedRunId,
+        status: "offline",
+        lastKnownStatus: "IDLE",
+        statusSource: "PREPARED_IDENTITY",
+      });
+    }
+
+    return this.fromMetadataFallback({
+      runId: normalizedRunId,
+      status: "offline",
+      lastKnownStatus: "IDLE",
+      statusSource: "HISTORICAL_METADATA",
+    });
+  }
+
+  private getOverlayOrActiveProjection(normalizedRunId: string): AgentRunStatusProjection | null {
+    if (!normalizedRunId) {
+      return null;
+    }
+    const agentRunManager = this.deps.agentRunManager ?? AgentRunManager.getInstance();
+    const overlayStore = this.deps.overlayStore ?? getAgentRunCommandStatusOverlayStore();
+    const commandRegistry = this.deps.commandRegistry ?? getAgentRunCommandRegistry();
+
+    const activeRun = agentRunManager.getActiveRun(normalizedRunId);
+    const outstanding = commandRegistry.getPresentedOutstandingRecord(normalizedRunId);
+
+    if (activeRun) {
+      const snapshot = activeRun.getStatusSnapshot();
+      return this.buildProjection({
+        runId: normalizedRunId,
+        status: snapshot.status,
+        isActive: true,
+        shouldConnectStream: true,
+        lastKnownStatus: snapshot.status === "error" ? "ERROR" : "ACTIVE",
+        statusSource: "ACTIVE_RUNTIME",
+        statusPayload: snapshot,
+        command: outstanding ? {
+          messageId: outstanding.messageId,
+          state: this.toProjectedCommandState(outstanding.state),
+          updatedAt: outstanding.updatedAt,
+        } : null,
+      });
+    }
+
+    const overlay = overlayStore.getOverlay(normalizedRunId);
+    if (overlay) {
+      const overlayRecord = overlay.messageId
+        ? commandRegistry.getRecord(normalizedRunId, overlay.messageId)
+        : outstanding;
+      return this.buildProjection({
+        runId: normalizedRunId,
+        status: overlay.status,
+        isActive: overlay.status === "initializing",
+        shouldConnectStream: overlay.status === "initializing",
+        lastKnownStatus: overlay.status === "error" ? "ERROR" : "ACTIVE",
+        statusSource: "COMMAND_OVERLAY",
+        statusPayload: overlay.statusPayload,
+        command: overlayRecord ? {
+          messageId: overlayRecord.messageId,
+          state: this.toProjectedCommandState(overlayRecord.state),
+          updatedAt: overlayRecord.updatedAt,
+        } : null,
+      });
+    }
+
+    return null;
+  }
+
+
+  private toProjectedCommandState(
+    state: "STARTING" | "ADMITTED" | "HELD" | "FORWARDED" | "COMPLETED" | "FAILED" | "REJECTED" | "CANCELLED",
+  ): "STARTING" | "ADMITTED" | "HELD" | "FORWARDED" | "FAILED" {
+    if (state === "HELD") return "HELD";
+    if (state === "FORWARDED") {
+      return "FORWARDED";
+    }
+    if (state === "ADMITTED") {
+      return "ADMITTED";
+    }
+    if (state === "FAILED" || state === "REJECTED" || state === "CANCELLED") {
+      return "FAILED";
+    }
+    return "STARTING";
+  }
+
+  private fromMetadataFallback(input: {
+    runId: string;
+    status: AgentApiStatus;
+    lastKnownStatus: RunKnownStatus;
+    statusSource: AgentRunStatusSource;
+  }): AgentRunStatusProjection {
+    return this.buildProjection({
+      ...input,
+      isActive: false,
+      shouldConnectStream: false,
+      statusPayload: buildAgentStatusPayload({
+        status: input.status,
+        agentId: input.runId,
+      }),
+      command: null,
+    });
+  }
+
+  private buildProjection(input: AgentRunStatusProjection): AgentRunStatusProjection {
+    return input;
+  }
+}
+
+let cachedAgentRunStatusProjectionService: AgentRunStatusProjectionService | null = null;
+let cachedProjectionMemoryDir: string | null = null;
+
+export const getAgentRunStatusProjectionService = (): AgentRunStatusProjectionService => {
+  const memoryDir = appConfigProvider.config.getMemoryDir();
+  if (!cachedAgentRunStatusProjectionService || cachedProjectionMemoryDir !== memoryDir) {
+    cachedAgentRunStatusProjectionService = new AgentRunStatusProjectionService();
+    cachedProjectionMemoryDir = memoryDir;
+  }
+  return cachedAgentRunStatusProjectionService;
+};

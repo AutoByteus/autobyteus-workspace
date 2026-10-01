@@ -1,0 +1,2259 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+stderr | tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > keeps unknown completion eligible and observer/cleanup errors diagnostic only
+Compaction isolated LLM cleanup failed. { invocationId: 'compaction_3a039b40-c595-4d1f-bb7e-048e6b5aa0c0' }
+
+ ✓ tests/unit/memory/direct-llm-compression-strategy.test.ts (30 tests) 17ms
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > initializes components and registers context
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: f76b81ca-7ef1-4506-9fc8-bbe40f96a9ef).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > start delegates to worker
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 75fc12a5-5ccf-42de-b54c-9be6b123762d).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+AgentRuntime for 'agent-1': Starting worker.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > start is idempotent when worker alive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 2d7c71f0-aa81-4181-9e58-7b8cdb44756e).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stderr | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > start is idempotent when worker alive
+AgentRuntime for 'agent-1' is already running. Ignoring start request.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop runs full flow when worker alive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: a2a40df7-adcb-4e42-8b81-b659cf091fe0).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop runs full flow when worker alive
+AgentRuntime for 'agent-1': Context unregistered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop runs full flow when worker alive
+AgentRuntime for 'agent-1' stop() method completed.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop returns early when worker not alive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 45025574-b2e7-4feb-adde-2de047d7ba48).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > handles worker completion with error
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: db63e8f5-8978-40a9-addf-f7aa42f226ca).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stderr | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > handles worker completion with error
+AgentRuntime 'agent-1': Worker loop terminated with an exception: Error: Worker crashed
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > exposes currentStatus and isRunning
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 2c7ee810-6b49-4d78-ac48-6c0c7911107a).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > interrupt returns no_active_turn when worker is inactive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: a1c33434-76a0-44eb-8538-be64eb119702).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > interrupt signals the active turn without stopping the worker
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 72a1dc3c-26f6-4d3a-aa80-4ce7bf018021).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > interrupt rejects mismatched turn ids without signaling the active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 203e8596-e6ff-4841-88f3-1fba4247450c).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > posts tool approvals as awaitable AgentEventInbox active-turn events
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: b16a91d8-bc99-4398-916d-998fb7907477).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > posts external tool results as awaitable AgentEventInbox active-turn events
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: e86eaa94-b06b-44dd-8e6d-dee62a47149a).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > returns runtime_stopped for tool approvals/results when the worker is inactive or stopping
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 58d101e2-61fa-4bfd-b604-5ab78476ebc0).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > routes external turn-starting input through AgentEventInbox
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: b1332bf3-c0c6-47f7-ad9e-ccd6027a774a).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > rejects unsupported turn-local operational events instead of queuing them as lifecycle input
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 076befda-f3e3-4db4-a501-97079103efd2).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+ ✓ tests/unit/memory/memory-manager-compaction-coordinator.test.ts (5 tests) 5ms
+ ✓ tests/unit/agent/runtime/agent-runtime.test.ts (15 tests) 13ms
+stderr | tests/unit/memory/pending-compaction-executor.test.ts > PendingCompactionExecutor direct path > treats postcommit prune/reporter failure as committed and restores from that same snapshot
+Compaction committed; raw archive cleanup failed. Active duplicates retained. { operationId: 'compaction_operation_mup243ky_1' }
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'test_tester_9737'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test_tester_9737': No tools provided in config.
+Agent 'test_tester_9737': LLM instance 'RecordingMainLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'test_tester_9737'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test_tester_9737' with config: 'test'.
+AgentWorker initialized for agent_id 'test_tester_9737'.
+Registered AgentContext for agent_id 'test_tester_9737'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test_tester_9737'. Context registered.
+Agent facade initialized for agent_id 'test_tester_9737'.
+Agent 'test_tester_9737' created and stored successfully.
+Agent 'test_tester_9737' requesting runtime to start.
+AgentRuntime for 'test_tester_9737': Starting worker.
+AgentWorker 'test_tester_9737': Starting...
+AgentWorker 'test_tester_9737' asyncRun(): Starting.
+Agent 'test_tester_9737': Runtime init completed (event store initialized).
+Agent 'test_tester_9737': Runtime init completed (status deriver initialized).
+Agent 'test_tester_9737': Runtime init completed (AgentEventInbox initialized).
+Agent 'test_tester_9737': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+Agent 'test_tester_9737': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+Agent 'test_tester_9737': Bootstrapper starting direct lifecycle execution.
+Agent 'test_tester_9737': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'test_tester_9737': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+Agent 'test_tester_9737': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'test_tester_9737': Executing SystemPromptProcessingStep.
+Agent 'test_tester_9737': No configured skills. Skipping skill catalog.
+Agent 'test_tester_9737': Final processed system prompt configured and captured. Trace ID: rt_1790830285187_e20c2161-2912-4fe9-896e-7fd6157c6e1f. Final length: 28.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+Agent 'test_tester_9737': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentWorker 'test_tester_9737' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_tester_9737',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_tester_9737',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_tester_9737',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_tester_9737',
+  prompt_tokens: 7000,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: true,
+  threshold_episode_decision: 'requested'
+}
+compaction_requested {
+  agent_id: 'test_tester_9737',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup243qr_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null
+}
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'test_tester_9737',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup243qr_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+compaction_completed {
+  agent_id: 'test_tester_9737',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup243qr_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  compaction_model_identifier: 'summary',
+  summarizer_provider: 'OPENAI',
+  compaction_invocation_id: 'compaction_fba110a3-e995-4d82-a5b7-a759f188ba4d',
+  completion_status: 'complete',
+  completion_reason: null,
+  summary_char_count: 573,
+  summary_token_count: 157,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_tester_9737',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (13 tests) 499ms
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+Agent 'test_tester_9737' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentWorker 'test_tester_9737': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentExternalEventNotifier (NotifierID: 76218b2f-6b82-4a01-bef9-caa25839dcf1, AgentID: test_tester_9737) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_tester_9737' asyncRun() loop has finished.
+AgentWorker 'test_tester_9737': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentWorker 'test_tester_9737': Shutdown resource cleanup completed successfully.
+AgentWorker 'test_tester_9737': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+Unregistered AgentContext for agent_id 'test_tester_9737'.
+AgentRuntime for 'test_tester_9737': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=false
+AgentRuntime for 'test_tester_9737' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'test_tester_7351'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'test_tester_7351': No tools provided in config.
+Agent 'test_tester_7351': LLM instance 'RecordingMainLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'test_tester_7351'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'test_tester_7351' with config: 'test'.
+AgentWorker initialized for agent_id 'test_tester_7351'.
+Registered AgentContext for agent_id 'test_tester_7351'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'test_tester_7351'. Context registered.
+Agent facade initialized for agent_id 'test_tester_7351'.
+Agent 'test_tester_7351' created and stored successfully.
+Agent 'test_tester_7351' requesting runtime to start.
+AgentRuntime for 'test_tester_7351': Starting worker.
+AgentWorker 'test_tester_7351': Starting...
+AgentWorker 'test_tester_7351' asyncRun(): Starting.
+Agent 'test_tester_7351': Runtime init completed (event store initialized).
+Agent 'test_tester_7351': Runtime init completed (status deriver initialized).
+Agent 'test_tester_7351': Runtime init completed (AgentEventInbox initialized).
+Agent 'test_tester_7351': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+Agent 'test_tester_7351': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+Agent 'test_tester_7351': Bootstrapper starting direct lifecycle execution.
+Agent 'test_tester_7351': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'test_tester_7351': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+Agent 'test_tester_7351': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'test_tester_7351': Executing SystemPromptProcessingStep.
+Agent 'test_tester_7351': No configured skills. Skipping skill catalog.
+Agent 'test_tester_7351': Final processed system prompt configured and captured. Trace ID: rt_1790830285356_4afea68e-8961-4772-9b6e-f19163c2c83c. Final length: 28.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+Agent 'test_tester_7351': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentWorker 'test_tester_7351' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_tester_7351',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_tester_7351',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_tester_7351',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_tester_7351',
+  prompt_tokens: 7000,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: true,
+  threshold_episode_decision: 'requested'
+}
+compaction_requested {
+  agent_id: 'test_tester_7351',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup243ve_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null
+}
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'test_tester_7351',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup243ve_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/unit/llm/api/compaction-single-attempt-transport.test.ts > compaction invocation-local SDK retry bound > 'geminiProject' status 401 makes one SDK fetch
+The user provided project/location will take precedence over the API key from the environment variables.
+
+stdout | tests/unit/llm/api/compaction-single-attempt-transport.test.ts > compaction invocation-local SDK retry bound > 'geminiProject' status 429 makes one SDK fetch
+The user provided project/location will take precedence over the API key from the environment variables.
+
+stdout | tests/unit/llm/api/compaction-single-attempt-transport.test.ts > compaction invocation-local SDK retry bound > 'geminiProject' status 503 makes one SDK fetch
+The user provided project/location will take precedence over the API key from the environment variables.
+
+stderr | tests/unit/llm/api/compaction-single-attempt-transport.test.ts > compaction invocation-local SDK retry bound > counts one remote generation request through the real axios client (not remote host internal work)
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+ ✓ tests/unit/llm/api/compaction-single-attempt-transport.test.ts (37 tests) 52ms
+stderr | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+compaction_failed {
+  agent_id: 'test_tester_7351',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup243ve_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  compaction_model_identifier: 'summary',
+  summarizer_provider: 'OPENAI',
+  compaction_invocation_id: 'compaction_141df971-309d-4be5-8db5-5db4c9045830',
+  completion_status: 'complete',
+  completion_reason: null,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [invalid_summary]: Expected exactly one complete compaction_summary block.'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'test_tester_7351',
+  turn_id: 'turn_0005',
+  compaction_operation_id: 'compaction_operation_mup243ve_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0005',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+compaction_completed {
+  agent_id: 'test_tester_7351',
+  turn_id: 'turn_0005',
+  compaction_operation_id: 'compaction_operation_mup243ve_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0005',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  compaction_model_identifier: 'summary',
+  summarizer_provider: 'OPENAI',
+  compaction_invocation_id: 'compaction_ae00d50b-e0ec-4ac8-ae1f-da16bacc1b8f',
+  completion_status: 'complete',
+  completion_reason: null,
+  summary_char_count: 573,
+  summary_token_count: 157,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'test_tester_7351',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+Agent 'test_tester_7351' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentWorker 'test_tester_7351': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentExternalEventNotifier (NotifierID: 0db0026b-69ac-4ebd-a4df-24b890c6d117, AgentID: test_tester_7351) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'test_tester_7351' asyncRun() loop has finished.
+AgentWorker 'test_tester_7351': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentWorker 'test_tester_7351': Shutdown resource cleanup completed successfully.
+AgentWorker 'test_tester_7351': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+Unregistered AgentContext for agent_id 'test_tester_7351'.
+AgentRuntime for 'test_tester_7351': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > direct compaction narrow runtime integration > continues with one summary; explicit user retry=true
+AgentRuntime for 'test_tester_7351' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'held_tester_3673'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'held_tester_3673': No tools provided in config.
+Agent 'held_tester_3673': LLM instance 'RecordingMainLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'held_tester_3673'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'held_tester_3673' with config: 'held'.
+AgentWorker initialized for agent_id 'held_tester_3673'.
+Registered AgentContext for agent_id 'held_tester_3673'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'held_tester_3673'. Context registered.
+Agent facade initialized for agent_id 'held_tester_3673'.
+Agent 'held_tester_3673' created and stored successfully.
+Agent 'held_tester_3673' requesting runtime to start.
+AgentRuntime for 'held_tester_3673': Starting worker.
+AgentWorker 'held_tester_3673': Starting...
+AgentWorker 'held_tester_3673' asyncRun(): Starting.
+Agent 'held_tester_3673': Runtime init completed (event store initialized).
+Agent 'held_tester_3673': Runtime init completed (status deriver initialized).
+Agent 'held_tester_3673': Runtime init completed (AgentEventInbox initialized).
+Agent 'held_tester_3673': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+Agent 'held_tester_3673': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+Agent 'held_tester_3673': Bootstrapper starting direct lifecycle execution.
+Agent 'held_tester_3673': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'held_tester_3673': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+Agent 'held_tester_3673': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'held_tester_3673': Executing SystemPromptProcessingStep.
+Agent 'held_tester_3673': No configured skills. Skipping skill catalog.
+Agent 'held_tester_3673': Final processed system prompt configured and captured. Trace ID: rt_1790830288513_018916d0-3f47-4e1e-8cd7-1c5a924f4cc2. Final length: 28.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+Agent 'held_tester_3673': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentWorker 'held_tester_3673' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_3673',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_3673',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_3673',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'held_tester_3673',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246av_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+compaction_failed {
+  agent_id: 'held_tester_3673',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246av_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: fixture host failure'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'held_tester_3673',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246av_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+compaction_completed {
+  agent_id: 'held_tester_3673',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246av_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 573,
+  summary_token_count: 157,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_3673',
+  prompt_tokens: 1,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_3673',
+  prompt_tokens: 1,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+Agent 'held_tester_3673' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentWorker 'held_tester_3673': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentExternalEventNotifier (NotifierID: aeaf315b-af2e-4d75-af38-daa9d07ca561, AgentID: held_tester_3673) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'held_tester_3673' asyncRun() loop has finished.
+AgentWorker 'held_tester_3673': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentWorker 'held_tester_3673': Shutdown resource cleanup completed successfully.
+AgentWorker 'held_tester_3673': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+Unregistered AgentContext for agent_id 'held_tester_3673'.
+AgentRuntime for 'held_tester_3673': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can recover
+AgentRuntime for 'held_tester_3673' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'held_tester_1800'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'held_tester_1800': No tools provided in config.
+Agent 'held_tester_1800': LLM instance 'RecordingMainLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'held_tester_1800'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'held_tester_1800' with config: 'held'.
+AgentWorker initialized for agent_id 'held_tester_1800'.
+Registered AgentContext for agent_id 'held_tester_1800'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'held_tester_1800'. Context registered.
+Agent facade initialized for agent_id 'held_tester_1800'.
+Agent 'held_tester_1800' created and stored successfully.
+Agent 'held_tester_1800' requesting runtime to start.
+AgentRuntime for 'held_tester_1800': Starting worker.
+AgentWorker 'held_tester_1800': Starting...
+AgentWorker 'held_tester_1800' asyncRun(): Starting.
+Agent 'held_tester_1800': Runtime init completed (event store initialized).
+Agent 'held_tester_1800': Runtime init completed (status deriver initialized).
+Agent 'held_tester_1800': Runtime init completed (AgentEventInbox initialized).
+Agent 'held_tester_1800': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+Agent 'held_tester_1800': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+Agent 'held_tester_1800': Bootstrapper starting direct lifecycle execution.
+Agent 'held_tester_1800': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'held_tester_1800': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+Agent 'held_tester_1800': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'held_tester_1800': Executing SystemPromptProcessingStep.
+Agent 'held_tester_1800': No configured skills. Skipping skill catalog.
+Agent 'held_tester_1800': Final processed system prompt configured and captured. Trace ID: rt_1790830288671_36c44f60-f1d3-4cfa-b756-bc6d1bc175f6. Final length: 28.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+Agent 'held_tester_1800': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentWorker 'held_tester_1800' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_1800',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_1800',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_1800',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'held_tester_1800',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246f9_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+compaction_failed {
+  agent_id: 'held_tester_1800',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246f9_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: fixture host failure'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+Agent 'held_tester_1800' requesting runtime interrupt.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+Agent 'held_tester_1800' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentWorker 'held_tester_1800': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 15c872ae-5f12-4478-aeb1-03c7a961f9ac, AgentID: held_tester_1800) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'held_tester_1800' asyncRun() loop has finished.
+AgentWorker 'held_tester_1800': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentWorker 'held_tester_1800': Shutdown resource cleanup completed successfully.
+AgentWorker 'held_tester_1800': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+Unregistered AgentContext for agent_id 'held_tester_1800'.
+AgentRuntime for 'held_tester_1800': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can interrupt
+AgentRuntime for 'held_tester_1800' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'held_tester_4638'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'held_tester_4638': No tools provided in config.
+Agent 'held_tester_4638': LLM instance 'RecordingMainLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'held_tester_4638'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'held_tester_4638' with config: 'held'.
+AgentWorker initialized for agent_id 'held_tester_4638'.
+Registered AgentContext for agent_id 'held_tester_4638'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'held_tester_4638'. Context registered.
+Agent facade initialized for agent_id 'held_tester_4638'.
+Agent 'held_tester_4638' created and stored successfully.
+Agent 'held_tester_4638' requesting runtime to start.
+AgentRuntime for 'held_tester_4638': Starting worker.
+AgentWorker 'held_tester_4638': Starting...
+AgentWorker 'held_tester_4638' asyncRun(): Starting.
+Agent 'held_tester_4638': Runtime init completed (event store initialized).
+Agent 'held_tester_4638': Runtime init completed (status deriver initialized).
+Agent 'held_tester_4638': Runtime init completed (AgentEventInbox initialized).
+Agent 'held_tester_4638': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+Agent 'held_tester_4638': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+Agent 'held_tester_4638': Bootstrapper starting direct lifecycle execution.
+Agent 'held_tester_4638': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'held_tester_4638': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+Agent 'held_tester_4638': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'held_tester_4638': Executing SystemPromptProcessingStep.
+Agent 'held_tester_4638': No configured skills. Skipping skill catalog.
+Agent 'held_tester_4638': Final processed system prompt configured and captured. Trace ID: rt_1790830288806_fa92fd8c-1d46-4cbb-9e18-acf1f8ed89e6. Final length: 28.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+Agent 'held_tester_4638': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentWorker 'held_tester_4638' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_4638',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_4638',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'held_tester_4638',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'held_tester_4638',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246j3_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+compaction_failed {
+  agent_id: 'held_tester_4638',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246j3_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: fixture host failure'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+Agent 'held_tester_4638' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentWorker 'held_tester_4638': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_turn_interrupted. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'held_tester_4638' asyncRun() loop has finished.
+AgentWorker 'held_tester_4638': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentWorker 'held_tester_4638': Shutdown resource cleanup completed successfully.
+AgentWorker 'held_tester_4638': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+Unregistered AgentContext for agent_id 'held_tester_4638'.
+AgentRuntime for 'held_tester_4638': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentExternalEventNotifier (NotifierID: fb1c6010-e6d5-4f60-9ade-14148742d4f8, AgentID: held_tester_4638) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > retains original unsent A, runs its pipeline once, and can stop
+AgentRuntime for 'held_tester_4638' stop() method completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentFactory (Singleton) initialized.
+AgentRuntimeState initialized for agent_id 'next_tester_1868'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'next_tester_1868': No tools provided in config.
+Agent 'next_tester_1868': LLM instance 'RecordingMainLLM' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'next_tester_1868'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'next_tester_1868' with config: 'next'.
+AgentWorker initialized for agent_id 'next_tester_1868'.
+Registered AgentContext for agent_id 'next_tester_1868'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'next_tester_1868'. Context registered.
+Agent facade initialized for agent_id 'next_tester_1868'.
+Agent 'next_tester_1868' created and stored successfully.
+Agent 'next_tester_1868' requesting runtime to start.
+AgentRuntime for 'next_tester_1868': Starting worker.
+AgentWorker 'next_tester_1868': Starting...
+AgentWorker 'next_tester_1868' asyncRun(): Starting.
+Agent 'next_tester_1868': Runtime init completed (event store initialized).
+Agent 'next_tester_1868': Runtime init completed (status deriver initialized).
+Agent 'next_tester_1868': Runtime init completed (AgentEventInbox initialized).
+Agent 'next_tester_1868': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+Agent 'next_tester_1868': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+Agent 'next_tester_1868': Bootstrapper starting direct lifecycle execution.
+Agent 'next_tester_1868': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'next_tester_1868': Executing McpServerPrewarmingStep.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+Agent 'next_tester_1868': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'next_tester_1868': Executing SystemPromptProcessingStep.
+Agent 'next_tester_1868': No configured skills. Skipping skill catalog.
+Agent 'next_tester_1868': Final processed system prompt configured and captured. Trace ID: rt_1790830288945_da92b840-1fe3-4b48-936b-d6785d85e14c. Final length: 28.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+Agent 'next_tester_1868': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentWorker 'next_tester_1868' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'next_tester_1868',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'next_tester_1868',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'next_tester_1868',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'next_tester_1868',
+  prompt_tokens: 7000,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: true,
+  threshold_episode_decision: 'requested'
+}
+compaction_requested {
+  agent_id: 'next_tester_1868',
+  phase: 'requested',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246mz_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: null,
+  selected_block_count: null,
+  compacted_block_count: null,
+  raw_trace_count: null
+}
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'next_tester_1868',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246mz_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+compaction_failed {
+  agent_id: 'next_tester_1868',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mup246mz_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: exhausted'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'next_tester_1868',
+  turn_id: 'turn_0005',
+  compaction_operation_id: 'compaction_operation_mup246mz_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0005',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+compaction_completed {
+  agent_id: 'next_tester_1868',
+  turn_id: 'turn_0005',
+  compaction_operation_id: 'compaction_operation_mup246mz_1',
+  requested_turn_id: 'turn_0004',
+  execution_turn_id: 'turn_0005',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 573,
+  summary_token_count: 157,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'next_tester_1868',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'next_tester_1868',
+  prompt_tokens: 1,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+Agent 'next_tester_1868' requesting runtime to stop (timeout: 2s).
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentWorker 'next_tester_1868': Stop requested.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentExternalEventNotifier (NotifierID: ce1bf1dd-2699-4395-9a3e-38003e62355d, AgentID: next_tester_1868) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'next_tester_1868' asyncRun() loop has finished.
+AgentWorker 'next_tester_1868': Running shutdown sequence on worker loop.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentWorker 'next_tester_1868': Shutdown resource cleanup completed successfully.
+AgentWorker 'next_tester_1868': Shutdown sequence completed.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+Unregistered AgentContext for agent_id 'next_tester_1868'.
+AgentRuntime for 'next_tester_1868': Context unregistered.
+
+stdout | tests/integration/agent/runtime/agent-runtime-compaction.test.ts > live core recovery positions (no provider) > completes consumed A once, blocks prequeued B, and uses fresh C permission for oldest B without replay
+AgentRuntime for 'next_tester_1868' stop() method completed.
+
+ ✓ tests/integration/agent/runtime/agent-runtime-compaction.test.ts (6 tests) 4001ms
+     ✓ continues with one summary; explicit user retry=true  3156ms
+
+ Test Files  6 passed (6)
+      Tests  106 passed (106)
+   Start at  06:51:24
+   Duration  4.88s (transform 1.81s, setup 116ms, import 2.98s, tests 4.59s, environment 0ms)
+

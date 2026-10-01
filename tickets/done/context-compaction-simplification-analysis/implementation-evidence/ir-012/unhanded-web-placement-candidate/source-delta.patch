@@ -1,0 +1,114 @@
+--- autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts
++++ autobyteus-web/tests/integration/native-accepted-input-history.integration.test.ts
+@@ -2,20 +2,20 @@
+ import { describe, it, expect, vi } from 'vitest';
+ import { createPinia, setActivePinia } from 'pinia';
+ import { readFileSync, writeFileSync } from 'node:fs';
+-import { AgentInputUserMessage } from '../../../../autobyteus-ts/dist/agent/message/agent-input-user-message.js';
+-import { ContextFile } from '../../../../autobyteus-ts/dist/agent/message/context-file.js';
+-import { ContextFileType } from '../../../../autobyteus-ts/dist/agent/message/context-file-type.js';
+-import { SenderType } from '../../../../autobyteus-ts/dist/agent/sender-type.js';
++import { AgentInputUserMessage } from '../../../autobyteus-ts/dist/agent/message/agent-input-user-message.js';
++import { ContextFile } from '../../../autobyteus-ts/dist/agent/message/context-file.js';
++import { ContextFileType } from '../../../autobyteus-ts/dist/agent/message/context-file-type.js';
++import { SenderType } from '../../../autobyteus-ts/dist/agent/sender-type.js';
+ import path from 'node:path';
+-import { createNativeRootFixture, HOST } from '../../../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture';
+-import { eventually, summary } from '../../../../autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture';
+-import { projectAgentCollaborationView } from '../../../../autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector';
+-import { toMemoryTraceEvent } from '../../../../autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer';
+-import { buildHistoricalReplayEvents } from '../../../../autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events';
+-import { buildRunProjectionBundleFromEvents } from '../../../../autobyteus-server-ts/src/run-history/projection/run-projection-utils';
+-import { dedupeRunProjectionConversationEntries } from '../../../../autobyteus-server-ts/src/run-history/projection/run-projection-dedupe';
++import { createNativeRootFixture, HOST } from '../../../autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture';
++import { eventually, summary } from '../../../autobyteus-server-ts/tests/unit/agent-execution/recovery-native-fixture';
++import { projectAgentCollaborationView } from '../../../autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector';
++import { toMemoryTraceEvent } from '../../../autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer';
++import { buildHistoricalReplayEvents } from '../../../autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events';
++import { buildRunProjectionBundleFromEvents } from '../../../autobyteus-server-ts/src/run-history/projection/run-projection-utils';
++import { dedupeRunProjectionConversationEntries } from '../../../autobyteus-server-ts/src/run-history/projection/run-projection-dedupe';
+ import { AgentRootExecutionViewDtoSchema } from '@autobyteus/collaboration-stream-contracts';
+-import { stageAgentRunCollaborationContext } from '../agentRunCollaborationHydration';
++import { stageAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration';
+ import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
+ 
+ const query = vi.hoisted(() => vi.fn());
+--- before/TESTING.md
++++ after/TESTING.md
+@@ -14,6 +14,7 @@
+ | Layer | What it proves | Command |
+ | --- | --- | --- |
+ | Web unit and component tests | Nuxt renderer components, stores, utilities (colocated `__tests__`) | `pnpm -C autobyteus-web test:nuxt` |
++| Native-to-web integration tests | In-process core/server production paths joined to real frontend hydration (`autobyteus-web/tests/integration/`) | `pnpm -C autobyteus-web test:nuxt tests/integration/native-accepted-input-history.integration.test.ts --run` |
+ | Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
+ | All web tests | Both of the above | `pnpm -C autobyteus-web test` |
+ | Server tests | Backend unit, integration and E2E suites (Vitest) | `pnpm -C autobyteus-server-ts test` — one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
+@@ -28,6 +29,18 @@
+ 
+ Notes:
+ 
++- **Native-to-web integration** belongs in `autobyteus-web/tests/integration/`,
++  alongside the native-to-live projection checks, not in production `services/`
++  or its colocated unit tests. It may use core/server test fixtures; production
++  web code must not import the core runtime. The native accepted-input check uses
++  current core `dist` outputs (build changed core source first with
++  `pnpm -C autobyteus-ts build`) and controlled model/provisioning/Apollo doubles;
++  it does not prove HTTP, packaged renderer reload or external-provider behavior.
++  Both hosted Agent and Team cases run through the normal Nuxt test command.
++  Before a desktop build, check `pnpm -C autobyteus-web guard:web-boundary`;
++  guard contract checks run with `pnpm -C autobyteus-web test:nuxt
++  tests/integration/web-boundary-guard.integration.test.ts --run`.
++  A guard pass is only a build prerequisite, not a full build or product pass.
+ - **Real-provider credentials** live in the encrypted vault of the target
+   database. Provision them with the importer, never by editing `.env` files:
+   `pnpm secrets:import -- --source <file> --database-url file:<absolute db path>`
+--- before/autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts
++++ after/autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts
+@@ -0,0 +1,47 @@
++import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
++import { tmpdir } from 'node:os';
++import path from 'node:path';
++import { spawnSync } from 'node:child_process';
++import { afterEach, describe, expect, it } from 'vitest';
++
++const guardPath = path.resolve('scripts/guard-web-boundary.mjs');
++const roots: string[] = [];
++
++// Run the unchanged production guard against disposable roots, never mutate
++// real services or node_modules to test its rejection and test-only boundary.
++const runGuard = (relativePath: string) => {
++  const root = mkdtempSync(path.join(tmpdir(), 'web-boundary-guard-'));
++  roots.push(root);
++  writeFileSync(path.join(root, 'package.json'), JSON.stringify({
++    devDependencies: { '@autobyteus/team-stream-contracts': 'workspace:*' },
++  }));
++  const filePath = path.join(root, relativePath);
++  mkdirSync(path.dirname(filePath), { recursive: true });
++  writeFileSync(filePath,
++    "import { AgentInputUserMessage } from '../../../autobyteus-ts/dist/agent/message/agent-input-user-message.js';\n");
++  return spawnSync(process.execPath, [guardPath], { cwd: root, encoding: 'utf8' });
++};
++
++afterEach(() => {
++  for (const root of roots.splice(0)) rmSync(root, { recursive: true, force: true });
++});
++
++describe('web boundary guard test placement contract', () => {
++  it.each([
++    'services/nativeInput.ts',
++    'services/__tests__/nativeInput.spec.ts',
++  ])('rejects a core import under %s', (relativePath) => {
++    const result = runGuard(relativePath);
++    expect(result.error).toBeUndefined();
++    expect(result.status).toBe(1);
++    expect(result.stderr).toContain('Direct autobyteus-ts dependencies are not allowed');
++    expect(result.stderr).toContain(relativePath + ':1:');
++  });
++
++  it('allows native cross-layer tests in the test-owned integration directory', () => {
++    const result = runGuard('tests/integration/native-input.integration.test.ts');
++    expect(result.error).toBeUndefined();
++    expect(result.status).toBe(0);
++    expect(result.stdout).toContain('[guard:web-boundary] Passed.');
++  });
++});

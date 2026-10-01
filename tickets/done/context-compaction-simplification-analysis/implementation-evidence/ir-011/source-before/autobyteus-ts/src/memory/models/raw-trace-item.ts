@@ -1,0 +1,120 @@
+import { contextFileReferenceToDict, type ContextFileReference } from '../../agent/message/context-file-reference.js';
+import { parseRawTraceFileAttachments, validateFileAttachments } from './raw-trace-attachments.js';
+import { MemoryType, MemoryItem } from './memory-types.js';
+
+export type RawTraceMedia = {
+  images?: string[];
+  audio?: string[];
+  video?: string[];
+};
+
+export type RawTraceItemOptions = {
+  id: string;
+  ts: number;
+  turnId: string;
+  seq: number;
+  traceType: string;
+  content: string;
+  sourceEvent: string;
+  media?: RawTraceMedia | null;
+  fileAttachments?: readonly ContextFileReference[];
+  toolName?: string | null;
+  toolCallId?: string | null;
+  toolArgs?: Record<string, unknown> | null;
+  toolResult?: unknown;
+  toolError?: string | null;
+  correlationId?: string | null;
+  senderId?: string | null;
+};
+
+export class RawTraceItem implements MemoryItem {
+  id: string;
+  ts: number;
+  turnId: string;
+  seq: number;
+  traceType: string;
+  content: string;
+  sourceEvent: string;
+  media: RawTraceMedia | null;
+  readonly fileAttachments: readonly ContextFileReference[];
+  toolName: string | null;
+  toolCallId: string | null;
+  toolArgs: Record<string, unknown> | null;
+  toolResult: unknown | undefined;
+  toolError: string | null | undefined;
+  correlationId: string | null;
+  senderId: string | null;
+
+  constructor(options: RawTraceItemOptions) {
+    this.id = options.id;
+    this.ts = options.ts;
+    this.turnId = options.turnId;
+    this.seq = options.seq;
+    this.traceType = options.traceType;
+    this.content = options.content;
+    this.sourceEvent = options.sourceEvent;
+    this.media = options.media ?? null;
+    this.fileAttachments = validateFileAttachments(options.fileAttachments ?? []);
+    if (this.traceType !== 'user' && this.fileAttachments.length) {
+      throw new TypeError('Only user raw traces may contain file_attachments.');
+    }
+    this.toolName = options.toolName ?? null;
+    this.toolCallId = options.toolCallId ?? null;
+    this.toolArgs = options.toolArgs ?? null;
+    this.toolResult = options.toolResult;
+    this.toolError = options.toolError;
+    this.correlationId = options.correlationId ?? null;
+    this.senderId = options.senderId ?? null;
+  }
+
+  get memoryType(): MemoryType {
+    return MemoryType.RAW_TRACE;
+  }
+
+  toDict(): Record<string, unknown> {
+    const data: Record<string, unknown> = {
+      id: this.id,
+      ts: this.ts,
+      turn_id: this.turnId,
+      seq: this.seq,
+      trace_type: this.traceType,
+      content: this.content,
+      source_event: this.sourceEvent
+    };
+
+    if (this.media) data.media = this.media;
+    if (this.fileAttachments.length) data.file_attachments = this.fileAttachments.map(contextFileReferenceToDict);
+    if (this.toolName) data.tool_name = this.toolName;
+    if (this.toolCallId) data.tool_call_id = this.toolCallId;
+    if (this.toolArgs) data.tool_args = this.toolArgs;
+    if (this.toolResult !== undefined) data.tool_result = this.toolResult;
+    if (this.toolError !== undefined) data.tool_error = this.toolError;
+    if (this.correlationId) data.correlation_id = this.correlationId;
+    if (this.senderId) data.sender_id = this.senderId;
+
+    return data;
+  }
+
+  static fromDict(data: Record<string, unknown>): RawTraceItem {
+    return new RawTraceItem({
+      id: String(data.id),
+      ts: Number(data.ts),
+      turnId: String(data.turn_id),
+      seq: Number(data.seq),
+      traceType: String(data.trace_type),
+      content: typeof data.content === 'string' ? data.content : '',
+      sourceEvent: String(data.source_event),
+      fileAttachments: parseRawTraceFileAttachments(data.file_attachments, String(data.trace_type)),
+      media: (data.media as RawTraceMedia | undefined) ?? null,
+      toolName: typeof data.tool_name === 'string' ? data.tool_name : null,
+      toolCallId: typeof data.tool_call_id === 'string' ? data.tool_call_id : null,
+      toolArgs: (data.tool_args as Record<string, unknown> | undefined) ?? null,
+      toolResult: Object.prototype.hasOwnProperty.call(data, 'tool_result') ? data.tool_result : undefined,
+      toolError: Object.prototype.hasOwnProperty.call(data, 'tool_error')
+        ? typeof data.tool_error === 'string' ? data.tool_error : null
+        : undefined,
+      correlationId: typeof data.correlation_id === 'string' ? data.correlation_id : null,
+      senderId: typeof data.sender_id === 'string' ? data.sender_id : null
+    });
+  }
+}

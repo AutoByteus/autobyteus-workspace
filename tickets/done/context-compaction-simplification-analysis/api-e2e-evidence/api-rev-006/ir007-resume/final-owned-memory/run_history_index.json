@@ -1,0 +1,12 @@
+[
+  {
+    "runId": "api6_terminal_fixture_8d65dd87b63f463c9221098e314be84e",
+    "agentDefinitionId": "api6-terminal-fixture",
+    "agentName": "API6 Terminal Fixture",
+    "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aTgPtO/server-data/temp_workspace",
+    "summary": "API6-SEED1 Synthetic inventory record; owner Mira Chen; customer Northwind Helios. Synthetic inve...",
+    "createdAt": "2026-10-01T05:17:08.230Z",
+    "archivedAt": null,
+    "terminatedAt": "2026-10-01T05:23:23.018Z"
+  }
+]

@@ -1,0 +1,23 @@
+{
+  "case": "API-C11",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts",
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/memory/working-context-snapshot-store.test.ts",
+    "tests/unit/memory/native-working-context-snapshot-shapes.test.ts",
+    "tests/unit/memory/native-working-context-snapshot-v5-converter.test.ts",
+    "tests/unit/memory/memory-manager-working-context-snapshot-persistence.test.ts",
+    "tests/unit/memory/working-context-snapshot-bootstrapper.test.ts",
+    "tests/unit/memory/working-context-snapshot-serializer.test.ts",
+    "tests/unit/agent/bootstrap-steps/working-context-snapshot-restore-step.test.ts",
+    "tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+    "--no-watch"
+  ],
+  "started": "2026-09-30T21:08:02.884257+00:00",
+  "mode": "No remote provider flags; repository validation",
+  "exitCode": 1,
+  "finished": "2026-09-30T21:08:04.809037+00:00"
+}

@@ -1,0 +1,7 @@
+{
+  "result": "CRR-006 focused failure-origin Unclear cause/remedy; cumulative API Fail retained",
+  "when": "When review identifies a Design Impact, Requirement Gap, or Unclear issue that requires upstream requirements or design revision.",
+  "recipient_address": "/solution_designer",
+  "scope": "Solution recovery/disposition owner, not an asserted requirement gap or proven prompt/design defect",
+  "singleRecipient": true
+}

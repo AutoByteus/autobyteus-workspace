@@ -1,0 +1,15 @@
+{
+  "runId": "api6_recovery_fixture_f8489c814ff7482684a5b361ee4e263a",
+  "agentDefinitionId": "api6-recovery-fixture",
+  "workspaceRootPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/fixture-workspace",
+  "memoryDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-iQGmDq/server-data/memory/agents/api6_recovery_fixture_f8489c814ff7482684a5b361ee4e263a",
+  "llmModelIdentifier": "api6-deterministic-32768:lmstudio@127.0.0.1:51087",
+  "llmConfig": null,
+  "autoExecuteTools": false,
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "api6_recovery_fixture_f8489c814ff7482684a5b361ee4e263a",
+  "preparedAt": "2026-09-30T22:02:24.975Z",
+  "preparedExpiresAt": "2026-10-01T22:02:24.975Z",
+  "startedAt": "2026-09-30T22:02:25.074Z",
+  "applicationExecutionContext": null
+}

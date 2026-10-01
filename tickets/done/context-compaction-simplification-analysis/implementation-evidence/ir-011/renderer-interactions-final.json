@@ -1,0 +1,8 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"tab_id\": \"0a81af\",\n  \"result_json\": \"{\\\"cleared\\\":0,\\\"scopes\\\":[{\\\"scope\\\":\\\"agent\\\",\\\"statuses\\\":[\\\"Held until memory compaction succeeds\\\",\\\"Queued\\\"],\\\"files\\\":[\\\"Open Preview image.svg\\\",\\\"Open Original acceptance report.txt\\\"],\\\"width\\\":360},{\\\"scope\\\":\\\"team\\\",\\\"statuses\\\":[\\\"Held until memory compaction succeeds\\\",\\\"Queued\\\"],\\\"files\\\":[\\\"Open Preview image.svg\\\",\\\"Open Original acceptance report.txt\\\"],\\\"width\\\":360}],\\\"overflow\\\":false,\\\"focus\\\":\\\"reconstruct\\\"}\"\n}"
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+[
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+    "upstream_sha256": "cdbd05b6253ad29210f12d2fdfe685bf4a1fd6aaef5fd6e52d13d0c26ce7278c",
+    "actual_sha256": "cdbd05b6253ad29210f12d2fdfe685bf4a1fd6aaef5fd6e52d13d0c26ce7278c",
+    "matches": true,
+    "review_sha256": "cdbd05b6253ad29210f12d2fdfe685bf4a1fd6aaef5fd6e52d13d0c26ce7278c",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/isolated-launch.json",
+    "upstream_sha256": "a207be8c23d958da1c0d4097f11c2a41396b7417c60cd57336f51f54efc9983b",
+    "actual_sha256": "a207be8c23d958da1c0d4097f11c2a41396b7417c60cd57336f51f54efc9983b",
+    "matches": true,
+    "review_sha256": "a207be8c23d958da1c0d4097f11c2a41396b7417c60cd57336f51f54efc9983b",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/live-e2e/live-e2e-harness.ts",
+    "upstream_sha256": "9fa2e9803657830e1e6788b7d2003ffbe1ba7dc9a5633b9f26ecfd12b3cb2eed",
+    "actual_sha256": "9fa2e9803657830e1e6788b7d2003ffbe1ba7dc9a5633b9f26ecfd12b3cb2eed",
+    "matches": true,
+    "review_sha256": "9fa2e9803657830e1e6788b7d2003ffbe1ba7dc9a5633b9f26ecfd12b3cb2eed",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/live-e2e/run-live-e2e.mjs",
+    "upstream_sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+    "actual_sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+    "matches": true,
+    "review_sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/live-e2e/compaction-quality-checks.ts",
+    "upstream_sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+    "actual_sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+    "matches": true,
+    "review_sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/test-support/live-e2e/live-e2e-safe-error.ts",
+    "upstream_sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+    "actual_sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+    "matches": true,
+    "review_sha256": "34337c41d8aa3cb079c13058b253f1dc6bc306ed715f7e7fb488b758508b25f6",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+    "upstream_sha256": "f0e664d467c0b64e9c7f861ba9c7e2d1475f5b0488c4d4688ae63048c792f318",
+    "actual_sha256": "f0e664d467c0b64e9c7f861ba9c7e2d1475f5b0488c4d4688ae63048c792f318",
+    "matches": true,
+    "review_sha256": "f0e664d467c0b64e9c7f861ba9c7e2d1475f5b0488c4d4688ae63048c792f318",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+    "upstream_sha256": "9f478b85f9f815bfdf2d7abe103fbf2e3d9ff42300a1923392227e0ac1df60d5",
+    "actual_sha256": "9f478b85f9f815bfdf2d7abe103fbf2e3d9ff42300a1923392227e0ac1df60d5",
+    "matches": true,
+    "review_sha256": "9f478b85f9f815bfdf2d7abe103fbf2e3d9ff42300a1923392227e0ac1df60d5",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+    "upstream_sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+    "actual_sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+    "matches": true,
+    "review_sha256": "94d3bb8f4266a38009dd5f834c95c9069448e5e479eccb7bd2e7de7990af48a5",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "upstream_sha256": "24a46dd6b66c7a5ea6a27d9f84488bf40c3bff65a4074773927c3bfb596a6be2",
+    "actual_sha256": "24a46dd6b66c7a5ea6a27d9f84488bf40c3bff65a4074773927c3bfb596a6be2",
+    "matches": true,
+    "review_sha256": "24a46dd6b66c7a5ea6a27d9f84488bf40c3bff65a4074773927c3bfb596a6be2",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+    "upstream_sha256": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586",
+    "actual_sha256": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586",
+    "matches": true,
+    "review_sha256": "500476ea336799d460d5217f6f495d47031f2d1f65e8e907c02bed4f596f4586",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+    "upstream_sha256": "ad8cbb7d3a92e0359a80b1962ec2255f9b8ef0c3555736d86eea7ccf6a7a78c2",
+    "actual_sha256": "ad8cbb7d3a92e0359a80b1962ec2255f9b8ef0c3555736d86eea7ccf6a7a78c2",
+    "matches": true,
+    "review_sha256": "ad8cbb7d3a92e0359a80b1962ec2255f9b8ef0c3555736d86eea7ccf6a7a78c2",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/retainedActivityTermination.spec.ts",
+    "upstream_sha256": "23ef21b66c0572ba2c7d25ac39958402b31c22a3fa503f2e896bfdb08707fdf5",
+    "actual_sha256": "23ef21b66c0572ba2c7d25ac39958402b31c22a3fa503f2e896bfdb08707fdf5",
+    "matches": true,
+    "review_sha256": "23ef21b66c0572ba2c7d25ac39958402b31c22a3fa503f2e896bfdb08707fdf5",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts",
+    "upstream_sha256": "1f3856f1fd521caf91c928e42e6bbe75f756e9848e5bc9c4706296764771ce16",
+    "actual_sha256": "1f3856f1fd521caf91c928e42e6bbe75f756e9848e5bc9c4706296764771ce16",
+    "matches": true,
+    "review_sha256": "1f3856f1fd521caf91c928e42e6bbe75f756e9848e5bc9c4706296764771ce16",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root-fixture.ts",
+    "upstream_sha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+    "actual_sha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+    "matches": true,
+    "review_sha256": "96f3f93acef896b68f7da9ebae74942889ada97392ecc61439ce11fb20bfba85",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-compaction-root.integration.test.ts",
+    "upstream_sha256": "9487ad982819b0f82acf67c14b606f27d82fa0751eceace85caf5cf86d05e952",
+    "actual_sha256": "9487ad982819b0f82acf67c14b606f27d82fa0751eceace85caf5cf86d05e952",
+    "matches": true,
+    "review_sha256": "9487ad982819b0f82acf67c14b606f27d82fa0751eceace85caf5cf86d05e952",
+    "review_matches": true
+  },
+  {
+    "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/integration/agent-run-collaboration/native-root-termination.integration.test.ts",
+    "upstream_sha256": "e0be9c10dea9c193d94b01f3d31b9acbaa073ee9de829f4a364c272c89bb0cf9",
+    "actual_sha256": "e0be9c10dea9c193d94b01f3d31b9acbaa073ee9de829f4a364c272c89bb0cf9",
+    "matches": true,
+    "review_sha256": "e0be9c10dea9c193d94b01f3d31b9acbaa073ee9de829f4a364c272c89bb0cf9",
+    "review_matches": true
+  }
+]

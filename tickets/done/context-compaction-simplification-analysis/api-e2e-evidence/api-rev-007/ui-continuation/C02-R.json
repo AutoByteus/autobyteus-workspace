@@ -1,0 +1,19 @@
+{
+  "case": "C02-R",
+  "argv": [
+    "pnpm",
+    "-C",
+    "autobyteus-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/memory",
+    "tests/integration/agent/runtime/agent-runtime-compaction.test.ts",
+    "tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+    "--no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T06:53:31.152579+00:00",
+  "finished": "2026-10-01T06:53:41.592744+00:00",
+  "exit": 0
+}

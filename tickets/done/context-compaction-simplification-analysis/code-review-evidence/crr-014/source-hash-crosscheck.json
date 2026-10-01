@@ -1,0 +1,126 @@
+[
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts.map",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js.map",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/tests/agent-run-collaboration-dtos.test.mjs",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-root-collaborators.test.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRootFixture.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/services/rootExecution/__tests__/rootExecutionViewState.spec.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunStore.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-input-snapshot.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/composables/agentCollaboration/__tests__/useAgentRunCollaborationSync.spec.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts",
+    "matches": true
+  },
+  {
+    "path": "autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts",
+    "matches": true
+  }
+]

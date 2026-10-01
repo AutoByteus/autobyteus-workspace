@@ -1,0 +1,28 @@
+{
+  "fixturePid": 46078,
+  "fixtureCommand": "node /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/ir007-resume/loopback-provider-corrected.mjs",
+  "fixtureStopped": true,
+  "portsReleased": {
+    "51536": true,
+    "51625": true,
+    "51626": true
+  },
+  "dataRootRemoved": true,
+  "appStop": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-51625-2dca",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aTgPtO",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "originalFixtureStopped": "fixture-stop-for-repair.json",
+  "otherProcessesTouched": false
+}

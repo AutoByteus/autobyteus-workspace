@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-01T18:20:31.754004+00:00",
+  "status": "Retained intentionally awaiting required native reload; NOT cleanup complete",
+  "instance": {
+    "instanceId": "iso-62666-3bea",
+    "pid": 91688,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:62667",
+    "graphqlUrl": "http://127.0.0.1:62667/graphql",
+    "controlEndpoint": "http://127.0.0.1:62666",
+    "controlPort": 62666,
+    "serverPort": 62667,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-gHZ5Ll",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-gHZ5Ll/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-62666-3bea.log"
+  },
+  "provider": {
+    "pid": 93358,
+    "port": 62749,
+    "url": "http://127.0.0.1:62749",
+    "model": "api11-deterministic-32768",
+    "started": "2026-10-01T18:07:00.981Z"
+  },
+  "providerState": {
+    "armed": false,
+    "mode": "disarm",
+    "requests": 24,
+    "parent": 6,
+    "compaction": 18,
+    "phase": 2,
+    "closed": false,
+    "held": 0
+  },
+  "resume": "Do not restart backend. Restore native UI control or user View > Reload once; verify changed timeOrigin and removed sentinel, then reselect each child and snapshot before any send. Repeat document replacement; success-mode fixture and genuinely new C authorize FIFO recovery. Product Stop follows.",
+  "deadline": "Provider self-exits 60 minutes after its recorded start; it is disarmed now. No remote service or credential is used. App/backend retained to preserve the ephemeral queue; stop using documented exact instance id after validation or if abandonment requested.",
+  "backup": "build-backup.json and earlier backups retained; only own synthetic app logs copied"
+}

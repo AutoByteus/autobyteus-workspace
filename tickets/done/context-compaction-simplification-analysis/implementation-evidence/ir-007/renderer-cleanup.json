@@ -1,0 +1,6 @@
+{
+  "owned_tab": "e11144",
+  "tab_closed": true,
+  "owned_vite_pid": 88003,
+  "action": "SIGTERM only to owned preview PID; no unrelated app/tab/service touched"
+}

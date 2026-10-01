@@ -1,0 +1,12 @@
+{
+  "at": "2026-09-30T21:59:57.895250+00:00",
+  "endpoint": "http://127.0.0.1:50927/graphql",
+  "errors": null,
+  "setting": [
+    {
+      "key": "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE",
+      "value": "16000",
+      "isEditable": true
+    }
+  ]
+}

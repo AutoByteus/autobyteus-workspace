@@ -1,0 +1,10 @@
+{
+  "result": "Architecture Design Complete",
+  "requirements": "Approved SR033",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selected_recipient_address": "/architecture_reviewer",
+  "selected_when": "When Solution Designer classifies a completed or revised architecture package as Architecture Design Complete with task_size=Large or architectural_risk=High, and the aligned cumulative solution package is ready for independent architecture review. Requirements and behavior-defining supplements must have current explicit user approval.",
+  "other_rules": "Do not match: not Low risk/direct, not Delivery receipt. No additional recipient.",
+  "handoff_file": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-handoff.sr033.md"
+}

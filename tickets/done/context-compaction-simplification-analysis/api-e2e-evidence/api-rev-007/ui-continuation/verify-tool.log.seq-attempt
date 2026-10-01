@@ -1,0 +1,6 @@
+Traceback (most recent call last):
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-007/ui-continuation/verify-tool.py", line 6, in <module>
+    tr.sort(key=lambda t:t['seq'])
+  File "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-007/ui-continuation/verify-tool.py", line 6, in <lambda>
+    tr.sort(key=lambda t:t['seq'])
+KeyError: 'seq'

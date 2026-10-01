@@ -1,0 +1,621 @@
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { AgentStreamingService } from '../AgentStreamingService';
+import { primeRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
+import { AgentStatus } from '~/types/agent/AgentStatus';
+// import { AgentContext } from '~/types/agent/AgentContext'; // We can just mock the context interface for testing
+
+const { handleBrowserToolExecutionSucceededMock } = vi.hoisted(() => ({
+    handleBrowserToolExecutionSucceededMock: vi.fn(),
+}));
+
+// Mock WebSocketClient
+vi.mock('../transport', () => {
+    return {
+        WebSocketClient: vi.fn().mockImplementation(() => ({
+            connect: vi.fn(),
+            disconnect: vi.fn(),
+            send: vi.fn(),
+            on: vi.fn(),
+            off: vi.fn(),
+            state: 'disconnected',
+        })),
+        ConnectionState: {
+            DISCONNECTED: 'disconnected',
+            CONNECTING: 'connecting',
+            CONNECTED: 'connected',
+            RECONNECTING: 'reconnecting',
+        }
+    };
+});
+
+vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
+    handleBrowserToolExecutionSucceeded: handleBrowserToolExecutionSucceededMock,
+}));
+
+describe('AgentStreamingService', () => {
+    let service: AgentStreamingService;
+    let mockAgentContext: any;
+    let mockConversation: any;
+
+    beforeEach(() => {
+        handleBrowserToolExecutionSucceededMock.mockReset();
+        service = new AgentStreamingService('ws://localhost:8000/ws/agent');
+        mockConversation = {
+            messages: [],
+            updatedAt: '',
+        };
+        mockAgentContext = {
+            state: {
+                runId: 'test-agent-id',
+                conversation: mockConversation,
+                compactionStatus: null,
+                currentStatus: AgentStatus.Idle,
+                eventMonitorPresentationRevision: 0,
+                markEventMonitorPresentationChanged() {
+                    this.eventMonitorPresentationRevision += 1;
+                },
+            },
+            conversation: mockConversation,
+            submissionPending: false,
+            config: {}
+        };
+    });
+
+    it('holds a mention send until its ack: resolves on acceptance, rejects a failed add without an error segment', async () => {
+        service.connect('test-agent-id', mockAgentContext);
+        const ack = (messageId: string, extra: Record<string, unknown>) => (service as any).handleMessage(JSON.stringify({
+            type: 'AGENT_COMMAND_ACK',
+            payload: { command_type: 'SEND_MESSAGE', run_id: 'test-agent-id', message_id: messageId, dedupe_key: messageId, duplicate: false, ...extra },
+        }));
+        const accepted = service.sendMessageAwaitingAdmission('Ask @Product Team', [], [], { messageId: 'm-ok', dedupeKey: 'm-ok' });
+        ack('m-ok', { state: 'accepted', accepted: true });
+        await expect(accepted).resolves.toBeUndefined();
+
+        const rejected = service.sendMessageAwaitingAdmission('Ask @Marketing Team', [], [], { messageId: 'm-no', dedupeKey: 'm-no' });
+        ack('m-no', { state: 'rejected', accepted: false, code: 'COLLABORATOR_ADD_FAILED', message: 'Its model is not available.', collaborator_name: 'Marketing Team' });
+        await expect(rejected).rejects.toMatchObject({ name: 'CollaboratorAddRejection', collaboratorName: 'Marketing Team' });
+        // Nothing was posted, so the conversation gets no error message (the notice reports it).
+        expect(mockConversation.messages).toEqual([]);
+    });
+
+    it('should initialize with disconnected state', () => {
+        expect((service as any).wsClient).toBeDefined();
+    });
+
+    it('should connect and set agent context', async () => {
+        const agentRunId = 'test-agent-id';
+        service.connect(agentRunId, mockAgentContext);
+
+        expect((service as any).context).toBe(mockAgentContext);
+        const clientMock = (service as any).wsClient;
+        expect(clientMock.connect).toHaveBeenCalledWith(expect.stringContaining(agentRunId));
+    });
+
+    it('uses the transport as the sole connection-readiness authority', () => {
+        const clientMock = (service as any).wsClient;
+        clientMock.state = 'connected';
+        expect(service.connectionState).toBe('connected');
+        expect(service.isReady).toBe(true);
+
+        clientMock.state = 'disconnected';
+        expect(service.connectionState).toBe('disconnected');
+        expect(service.isReady).toBe(false);
+    });
+
+    it('logs system-instruction diagnostics without serializing exact prompt content', () => {
+        const debugWindow = window as typeof window & { __AUTOBYTEUS_DEBUG_STREAMING__?: boolean };
+        const previousDebugValue = debugWindow.__AUTOBYTEUS_DEBUG_STREAMING__;
+        const sentinel = 'SYSTEM_PROMPT_SENTINEL_🔒_DO_NOT_LOG';
+        const consoleLog = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+        debugWindow.__AUTOBYTEUS_DEBUG_STREAMING__ = true;
+
+        try {
+            (service as any).logMessage({
+                type: 'SYSTEM_INSTRUCTIONS_SUPPLIED',
+                payload: {
+                    trace_id: 'rt_debug_1',
+                    content: sentinel,
+                    ts: 1_776_000_000.25,
+                },
+            });
+
+            expect(consoleLog).toHaveBeenCalledWith('[stream][system-instructions]', {
+                type: 'SYSTEM_INSTRUCTIONS_SUPPLIED',
+                trace_id: 'rt_debug_1',
+                ts: 1_776_000_000.25,
+                contentLength: Array.from(sentinel).length,
+            });
+            expect(JSON.stringify(consoleLog.mock.calls)).not.toContain(sentinel);
+        } finally {
+            consoleLog.mockRestore();
+            if (previousDebugValue === undefined) {
+                delete debugWindow.__AUTOBYTEUS_DEBUG_STREAMING__;
+            } else {
+                debugWindow.__AUTOBYTEUS_DEBUG_STREAMING__ = previousDebugValue;
+            }
+        }
+    });
+
+    it('routes successful tool execution through the browser-owned post-success handler', () => {
+        const payload = {
+            invocation_id: 'call-1',
+            tool_name: 'open_tab',
+            result: {
+                tab_id: 'browser-session-1',
+                status: 'opened',
+                url: 'https://example.com',
+                title: 'Example',
+            },
+        };
+
+        (service as any).dispatchMessage(
+            {
+                type: 'TOOL_EXECUTION_SUCCEEDED',
+                payload,
+            },
+            mockAgentContext,
+        );
+
+        expect(handleBrowserToolExecutionSucceededMock).toHaveBeenCalledWith(payload);
+    });
+
+    it('renders standalone system task notifications as conversation segments', () => {
+        (service as any).dispatchMessage(
+            {
+                type: 'SYSTEM_TASK_NOTIFICATION',
+                payload: {
+                    sender_id: 'system.skill_improvement',
+                    content: 'Improve skills finished for this run. Future runs will use any updated skill guidance.',
+                },
+            },
+            mockAgentContext,
+        );
+
+        expect(mockConversation.messages).toHaveLength(1);
+        expect(mockConversation.messages[0].segments).toContainEqual({
+            type: 'system_task_notification',
+            senderId: 'system.skill_improvement',
+            content: 'Improve skills finished for this run. Future runs will use any updated skill guidance.',
+        });
+    });
+
+    it.each([
+        ['TURN_STARTED', { turn_id: 'turn-a' }],
+        ['SEGMENT_START', { id: 'segment-1', turn_id: 'turn-a', segment_type: 'text' }],
+        ['TOOL_APPROVAL_REQUESTED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', arguments: {} }],
+        ['TOOL_EXECUTION_STARTED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a' }],
+        ['TOOL_EXECUTION_SUCCEEDED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', result: 'done' }],
+        ['TOOL_EXECUTION_FAILED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', error: 'failed' }],
+        ['TOOL_EXECUTION_INTERRUPTED', { invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a', reason: 'stopped' }],
+        ['TOOL_LOG', { log_entry: 'late log', tool_invocation_id: 'call-1', tool_name: 'run', turn_id: 'turn-a' }],
+        ['BACKGROUND_TASK_UPDATED', { task_id: 'task-1', kind: 'shell', description: 'sleep 20', status: 'running', summary: null, started_at: '2026-09-29T16:48:20.000Z' }],
+        ['INTER_AGENT_MESSAGE', { content: 'late message' }],
+        ['SYSTEM_TASK_NOTIFICATION', { sender_id: 'system', content: 'late task' }],
+    ])('keeps canonical error for ordinary %s activity', (type, payload) => {
+        mockAgentContext.state.currentStatus = AgentStatus.Error;
+        mockAgentContext.submissionPending = false;
+
+        (service as any).dispatchMessage({ type, payload }, mockAgentContext);
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Error);
+        expect(mockAgentContext.submissionPending).toBe(false);
+    });
+
+    it('recovers error only when canonical AGENT_STATUS running arrives', () => {
+        mockAgentContext.state.currentStatus = AgentStatus.Error;
+
+        (service as any).dispatchMessage(
+            { type: 'AGENT_STATUS', payload: { recoverableBlock: null, status: 'running' } },
+            mockAgentContext,
+        );
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
+    });
+
+    it('keeps lifecycle status event-driven for non-error live activity', () => {
+        mockAgentContext.state.currentStatus = AgentStatus.Idle;
+        mockAgentContext.submissionPending = false;
+
+        (service as any).dispatchMessage(
+            {
+                type: 'SEGMENT_START',
+                payload: {
+                    id: 'segment-1',
+                    turn_id: 'turn-1',
+                    segment_type: 'text',
+                },
+            },
+            mockAgentContext,
+        );
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
+        expect(mockAgentContext.submissionPending).toBe(false);
+    });
+
+    it('does not convert transport errors into lifecycle errors', () => {
+        mockAgentContext.state.currentStatus = AgentStatus.Running;
+        (service as any).attachContext(mockAgentContext);
+
+        (service as any).handleError(new Error('socket failed'));
+        (service as any).handleDisconnect('network reset');
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
+        expect((service as any).context).toBe(mockAgentContext);
+    });
+
+    it('serializes and exactly matches an admitted standalone interrupt', () => {
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+        } as any;
+        const onResult = vi.fn();
+        const admittedService = new AgentStreamingService('ws://localhost:8000/ws/agent', {
+            wsClient,
+            onInterruptCommandResult: onResult,
+        });
+        mockAgentContext.state.currentStatus = AgentStatus.Running;
+        admittedService.connect('run-1', mockAgentContext);
+
+        expect(admittedService.interruptGeneration('client_interrupt_1')).toBe(true);
+        expect(JSON.parse(wsClient.send.mock.calls[0][0])).toEqual({
+            type: 'INTERRUPT_GENERATION',
+            payload: { command_id: 'client_interrupt_1' },
+        });
+        callbacks.get('onMessage')?.(JSON.stringify({
+            type: 'AGENT_COMMAND_ACK',
+            payload: {
+                command_type: 'INTERRUPT_GENERATION', command_id: 'client_interrupt_1',
+                state: 'accepted', target: { target_kind: 'standalone_run', run_id: 'wrong-run' },
+            },
+        }));
+        expect(onResult).not.toHaveBeenCalled();
+        callbacks.get('onMessage')?.(JSON.stringify({
+            type: 'AGENT_COMMAND_ACK',
+            payload: {
+                command_type: 'INTERRUPT_GENERATION', command_id: 'client_interrupt_1',
+                state: 'accepted', target: { target_kind: 'standalone_run', run_id: 'run-1' },
+            },
+        }));
+        expect(onResult).toHaveBeenCalledTimes(1);
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
+
+        callbacks.get('onMessage')?.(JSON.stringify({
+            type: 'AGENT_STATUS', payload: { recoverableBlock: null, status: 'idle' },
+        }));
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Idle);
+    });
+
+    it('reports every SEND_MESSAGE ack to onSendMessageCommandAck and still projects it', () => {
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+        } as any;
+        const onSendMessageCommandAck = vi.fn();
+        const ackService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient, onSendMessageCommandAck });
+        ackService.connect('run-1', mockAgentContext);
+        const rejected = {
+            command_type: 'SEND_MESSAGE', run_id: 'run-1', message_id: 'm-1', dedupe_key: 'agent_run_input:run-1:m-1',
+            state: 'rejected', accepted: false, duplicate: false, code: 'ACTIVATION_FAILED', message: 'Activation failed.',
+        };
+
+        callbacks.get('onMessage')?.(JSON.stringify({ type: 'AGENT_COMMAND_ACK', payload: rejected }));
+        callbacks.get('onMessage')?.(JSON.stringify({ type: 'AGENT_STATUS', payload: { recoverableBlock: null, status: 'offline' } }));
+
+        expect(onSendMessageCommandAck).toHaveBeenCalledTimes(1);
+        expect(onSendMessageCommandAck).toHaveBeenCalledWith(expect.objectContaining({ run_id: 'run-1', accepted: false, code: 'ACTIVATION_FAILED' }));
+        expect(mockConversation.messages.at(-1)?.segments).toContainEqual(
+            expect.objectContaining({ type: 'error', code: 'ACTIVATION_FAILED' }));
+    });
+
+    it.each(['disconnected', 'connecting', 'reconnecting'])('rejects standalone interrupt while %s without sending', (state) => {
+        const wsClient = {
+            state, connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), on: vi.fn(), off: vi.fn(),
+        } as any;
+        const onFailure = vi.fn();
+        const blockedService = new AgentStreamingService('ws://localhost:8000/ws/agent', {
+            wsClient,
+            onInterruptCommandTransportFailure: onFailure,
+        });
+        blockedService.connect('run-1', mockAgentContext);
+
+        expect(blockedService.interruptGeneration(`client_interrupt_${state}`)).toBe(false);
+        expect(wsClient.send).not.toHaveBeenCalled();
+        expect(onFailure).toHaveBeenCalledWith(expect.objectContaining({
+            target: { target_kind: 'standalone_run', run_id: 'run-1' },
+            reason: expect.objectContaining({ code: 'INTERRUPT_TRANSPORT_NOT_CONNECTED', connectionState: state }),
+        }));
+        expect((blockedService as any).pendingInterruptCommands.size).toBe(0);
+    });
+
+    it('completes reentrant disconnect-plus-send-throw exactly once', () => {
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'connected', connect: vi.fn(), disconnect: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+            send: vi.fn(() => {
+                callbacks.get('onDisconnect')?.('socket closed');
+                throw new Error('native send failed');
+            }),
+        } as any;
+        const onFailure = vi.fn();
+        const failingService = new AgentStreamingService('ws://localhost:8000/ws/agent', {
+            wsClient,
+            onInterruptCommandTransportFailure: onFailure,
+        });
+        failingService.connect('run-1', mockAgentContext);
+
+        expect(failingService.interruptGeneration('client_interrupt_throw')).toBe(false);
+        callbacks.get('onDisconnect')?.('again');
+        expect(onFailure).toHaveBeenCalledTimes(1);
+        expect((failingService as any).pendingInterruptCommands.size).toBe(0);
+    });
+
+    it('serializes standalone send command identity on SEND_MESSAGE', () => {
+        service.sendMessage('hello', ['ctx-1'], ['img-1'], {
+            messageId: 'client-msg-1',
+            dedupeKey: 'agent_run_input:run-1:client-msg-1',
+        });
+
+        const clientMock = (service as any).wsClient;
+        expect(clientMock.send).toHaveBeenCalledTimes(1);
+        expect(JSON.parse(clientMock.send.mock.calls[0][0])).toEqual({
+            type: 'SEND_MESSAGE',
+            payload: {
+                content: 'hello',
+                context_file_paths: ['ctx-1'],
+                image_urls: ['img-1'],
+                message_id: 'client-msg-1',
+                dedupe_key: 'agent_run_input:run-1:client-msg-1',
+            },
+        });
+    });
+
+    it('applies command ack status and surfaces rejected commands as errors', () => {
+        (service as any).dispatchMessage(
+            {
+                type: 'AGENT_COMMAND_ACK',
+                payload: {
+                    command_type: 'SEND_MESSAGE',
+                    run_id: 'test-agent-id',
+                    message_id: 'client-msg-1',
+                    dedupe_key: 'agent_run_input:test-agent-id:client-msg-1',
+                    state: 'rejected',
+                    accepted: false,
+                    duplicate: false,
+                    code: 'RUN_COMMAND_IN_PROGRESS',
+                    message: 'Another command is already running.',
+                    status: {
+                        status: 'initializing',
+                    },
+                },
+            },
+            mockAgentContext,
+        );
+
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Initializing);
+        expect(mockConversation.messages).toHaveLength(1);
+        expect(mockConversation.messages[0].segments).toContainEqual(
+            expect.objectContaining({
+                type: 'error',
+                code: 'RUN_COMMAND_IN_PROGRESS',
+                message: 'Another command is already running.',
+            }),
+        );
+    });
+
+    it('routes compaction lifecycle messages through the compaction status handler', () => {
+        (service as any).dispatchMessage(
+            {
+                type: 'COMPACTION_STATUS',
+                payload: {
+                    phase: 'started',
+                    turn_id: 'turn-1',
+                    selected_block_count: 3,
+                    compacted_block_count: 2,
+                    raw_trace_count: 4,
+                    summary_char_count: 1,
+                    compaction_operation_id: 'operation-1',
+                    requested_turn_id: 'turn-requested',
+                    execution_turn_id: 'turn-1',
+                    compaction_invocation_id: 'memory-compactor',
+                    summarizer_provider: 'openai',
+                    completion_status: 'complete',
+                    compaction_model_identifier: 'compaction-model',
+                    completion_reason: 'compaction-run-1',
+                    summary_token_count: 120,
+                },
+            },
+            mockAgentContext,
+        );
+
+        expect(mockAgentContext.state.compactionStatus).toEqual(expect.objectContaining({
+            activityId: 'compaction:operation:operation-1',
+            phase: 'started',
+            message: 'Compacting memory…',
+            turnId: 'turn-1',
+            compactionOperationId: 'operation-1',
+            requestedTurnId: 'turn-requested',
+            executionTurnId: 'turn-1',
+            selectedBlockCount: 3,
+            compactedBlockCount: 2,
+            rawTraceCount: 4,
+            summaryCharCount: 1,
+            compactionInvocationId: 'memory-compactor',
+            summarizerProvider: 'openai',
+            completionStatus: 'complete',
+            compactionModelIdentifier: 'compaction-model',
+            completionReason: 'compaction-run-1',
+            summaryTokenCount: 120,
+            errorMessage: null,
+        }));
+    });
+
+    it('increments the visible presentation revision once for actual center changes and not for no-op traffic', () => {
+        (service as any).dispatchMessage({ type: 'CONNECTED', payload: {} }, mockAgentContext);
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(0);
+
+        const start = {
+            type: 'SEGMENT_START',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
+        };
+        (service as any).dispatchMessage(start, mockAgentContext);
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(1);
+
+        (service as any).dispatchMessage(start, mockAgentContext);
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(1);
+
+        (service as any).dispatchMessage({
+            type: 'SEGMENT_CONTENT',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
+        }, mockAgentContext);
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(2);
+    });
+
+    it('projects each server-shaped standalone content message immediately', () => {
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'disconnected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+        } as any;
+        const scheduledService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient });
+        scheduledService.connect('test-agent-id', mockAgentContext);
+        const onMessage = callbacks.get('onMessage')!;
+
+        onMessage(JSON.stringify({
+            type: 'SEGMENT_START',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
+        }));
+        vi.setSystemTime(new Date('2026-08-01T10:00:00.001Z'));
+        onMessage(JSON.stringify({
+            type: 'AGENT_STATUS',
+            payload: { recoverableBlock: null, status: 'running', agent_id: 'test-agent-id' },
+        }));
+        expect(mockAgentContext.state.currentStatus).toBe(AgentStatus.Running);
+        onMessage(JSON.stringify({
+            type: 'SEGMENT_CONTENT',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'hello' },
+        }));
+        vi.setSystemTime(new Date('2026-08-01T10:00:00.050Z'));
+        onMessage(JSON.stringify({
+            type: 'AGENT_STATUS',
+            payload: { recoverableBlock: null, status: 'running', agent_id: 'test-agent-id' },
+        }));
+        expect(mockConversation.messages[0].segments[0].content).toBe('hello');
+        onMessage(JSON.stringify({
+            type: 'SEGMENT_CONTENT',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: ' world' },
+        }));
+
+        expect(mockConversation.messages[0].segments[0].content).toBe('hello world');
+        expect(mockConversation.updatedAt).toBe('2026-08-01T10:00:00.050Z');
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(3);
+
+        vi.setSystemTime(new Date('2026-08-01T10:00:00.100Z'));
+        onMessage(JSON.stringify({
+            type: 'SEGMENT_CONTENT',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: '!' },
+        }));
+        onMessage(JSON.stringify({
+            type: 'AGENT_STATUS',
+            payload: { recoverableBlock: null, status: 'running', agent_id: 'test-agent-id' },
+        }));
+        expect(mockConversation.messages[0].segments[0].content).toBe('hello world!');
+        onMessage(JSON.stringify({
+            type: 'SEGMENT_END',
+            payload: { id: 'segment-1', turn_id: 'turn-1' },
+        }));
+        expect(mockConversation.messages[0].segments[0].content).toBe('hello world!');
+        expect(mockConversation.messages[0].segments[0]._streamSegmentIdentity.presentationComplete).toBe(true);
+    });
+
+    it('preserves already projected standalone content when disconnect detaches context', () => {
+        const scheduledService = new AgentStreamingService('ws://localhost:8000/ws/agent');
+        scheduledService.attachContext(mockAgentContext);
+        (scheduledService as any).dispatchMessage({
+            type: 'SEGMENT_CONTENT',
+            payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text', delta: 'final bytes' },
+        }, mockAgentContext);
+
+        scheduledService.disconnect();
+
+        expect(mockConversation.messages[0].segments[0].content).toBe('final bytes');
+        expect((scheduledService as any).context).toBe(null);
+    });
+
+    it('keeps immediately projected content on each context across replacement and remote disconnect', () => {
+        const callbacks = new Map<string, (payload?: any) => void>();
+        const wsClient = {
+            state: 'disconnected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+            on: vi.fn((event: string, callback: (payload?: any) => void) => callbacks.set(event, callback)),
+        } as any;
+        const scheduledService = new AgentStreamingService('ws://localhost:8000/ws/agent', { wsClient });
+        scheduledService.connect('test-agent-id', mockAgentContext);
+        (scheduledService as any).dispatchMessage({
+            type: 'SEGMENT_CONTENT',
+            payload: { id: 'old-segment', turn_id: 'turn-old', segment_type: 'text', delta: 'old bytes' },
+        }, mockAgentContext);
+
+        const replacementConversation: any = { messages: [], updatedAt: '' };
+        const replacementContext = {
+            ...mockAgentContext,
+            state: {
+                ...mockAgentContext.state,
+                conversation: replacementConversation,
+                eventMonitorPresentationRevision: 0,
+            },
+            conversation: replacementConversation,
+        };
+        scheduledService.attachContext(replacementContext as any);
+
+        expect(mockConversation.messages[0].segments[0].content).toBe('old bytes');
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(1);
+
+        (scheduledService as any).dispatchMessage({
+            type: 'SEGMENT_CONTENT',
+            payload: { id: 'new-segment', turn_id: 'turn-new', segment_type: 'text', delta: 'new bytes' },
+        }, replacementContext);
+        callbacks.get('onDisconnect')?.('remote closed');
+
+        expect(replacementConversation.messages[0].segments[0].content).toBe('new bytes');
+        expect(replacementContext.state.eventMonitorPresentationRevision).toBe(1);
+        expect((scheduledService as any).context).toBe(replacementContext);
+    });
+
+    it('does not revise the center presentation for supported tool log and result-only traffic', () => {
+        const tool: any = {
+            type: 'tool_call',
+            invocationId: 'tool-1',
+            toolName: 'search',
+            arguments: { query: 'weather' },
+            status: 'success',
+            approvalTarget: null,
+            logs: [],
+            result: null,
+            error: null,
+        };
+        mockConversation.messages.push({
+            type: 'ai', text: '', timestamp: new Date(0), isComplete: false, segments: [tool],
+        });
+        primeRecentEventMonitorBaseline(mockAgentContext);
+
+        (service as any).dispatchMessage({
+            type: 'TOOL_LOG',
+            payload: {
+                tool_invocation_id: 'tool-1', tool_name: 'search', turn_id: 'turn-1', log_entry: 'Activity detail',
+            },
+        }, mockAgentContext);
+        (service as any).dispatchMessage({
+            type: 'TOOL_EXECUTION_SUCCEEDED',
+            payload: {
+                invocation_id: 'tool-1', tool_name: 'search', turn_id: 'turn-1',
+                arguments: { query: 'weather' }, result: { output: 'Activity result' },
+            },
+        }, mockAgentContext);
+
+        expect(tool.logs).toEqual(['Activity detail']);
+        expect(tool.result).toEqual({ output: 'Activity result' });
+        expect(mockAgentContext.state.eventMonitorPresentationRevision).toBe(0);
+    });
+});

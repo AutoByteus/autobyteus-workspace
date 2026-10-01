@@ -149,6 +149,25 @@ This is live in-memory queue ownership, not durable same-ID workflow replay or
 a promise to resume held input across backend restart. Standalone, Team and Org
 adapters project the same recovery facts; stream loss is not input authority.
 
+### Accepted Input Identity In New Native History
+
+Native user-input ingestion records the original accepted input's optional
+`message_id` and `dedupe_key`, together with sender and attachment facts. The
+path is `MemoryIngestInputProcessor` → `MemoryManager.ingestUserMessage` →
+`buildNativeUserMessageTrace` → `RawTraceItem`. These keys are presentation
+correlation facts, not raw trace IDs, turn IDs, retry permits or a durable queue.
+Only nonblank strings are retained; surrounding whitespace is trimmed, while
+case and interior characters are preserved. Other trace kinds do not acquire
+user-input identity fields.
+
+The ordinary raw codec preserves those known optional fields. Older keyless
+rows remain readable and unknown: do not infer keys from text, time, position,
+raw IDs or hashes. This is correct **future writing and reading**, with no
+migration, backfill, old-live-input retrofit or startup gate. Same-turn recovery
+does not ingest held input a second time. Live pending state can therefore join
+new saved history after a renderer reload on the same native instance; a backend
+restart still does not promise recovery of the in-memory queue.
+
 ## 5. Accepted Replacement And Commit Point
 
 A successful replacement summarizes the prior compacted region plus a nonempty

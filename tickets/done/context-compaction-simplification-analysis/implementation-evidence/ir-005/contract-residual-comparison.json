@@ -1,0 +1,24 @@
+{
+  "baseline": [
+    "requires explicit family and exact matching branch",
+    "parses a native AGY Org snapshot at root, direct Agent, nested Team and nested Agent scopes",
+    "keeps all pre-existing Org snapshot runtime kinds valid",
+    "requires one correlated status for every live Agent execution",
+    "rejects duplicate and sidecar AgentOrg member identities",
+    "requires each configured Team coordinator to be one of that Team's direct Agents",
+    "correlates task-bearing restored or migrated state by fresh run identity while reusing configured addresses"
+  ],
+  "current": [
+    "requires explicit family and exact matching branch",
+    "parses a native AGY Org snapshot at root, direct Agent, nested Team and nested Agent scopes",
+    "keeps all pre-existing Org snapshot runtime kinds valid",
+    "requires one correlated status for every live Agent execution",
+    "rejects duplicate and sidecar AgentOrg member identities",
+    "requires each configured Team coordinator to be one of that Team's direct Agents",
+    "correlates task-bearing restored or migrated state by fresh run identity while reusing configured addresses"
+  ],
+  "same_failure_names": true,
+  "baseline_source": "unchanged HEAD both contract packages, isolated build",
+  "current_new_tests_pass": 3,
+  "not_waived": true
+}

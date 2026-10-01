@@ -1651,8 +1651,9 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
   outcomes and accumulated diagnostic facts are retained, not reclassified.
 - A confirmed terminate action reconciles only unresolved native operations for
   the exact captured context/service/generation/node/member identities. Team/Org
-  reconciliation covers all loaded retained members of the root, not just the
-  selected member. Retired/replaced contexts and failed commands cannot mutate
+  and standalone Agent-root reconciliation cover all loaded retained children,
+  including hosted-Team native members, not just the selected member. The host
+  retains its standalone lifecycle; child snapshots never duplicate the host. Retired/replaced contexts and failed commands cannot mutate
   successors. Org retires its stream before the mutation and reconciles success
   before historical marking/inspection refresh; it cannot depend on a late event.
 - Backend terminal latching/pump drain and client reconciliation are complementary.
@@ -1670,6 +1671,36 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
 - Queue ownership is live-runtime only; no same-ID replay across backend restart,
   universal model success or immediate preparation/shutdown latency is promised.
   Detailed budget figures remain runtime diagnostics, not a live debug panel.
+
+### Saved Input Identity And Live Pending Overlay
+
+New native history carries the accepted input's optional `messageId` and
+`dedupeKey` through typed server replay into browser hydration. The shared pure
+presentation-contract helper selects a trimmed, nonblank **tagged** primary key:
+`messageId` first, otherwise `dedupeKey`. History dedupe is scoped to the exact
+recipient conversation plus kind/role/sender facts. Different IDs, key types or
+senders stay distinct; equal body/time or a shared secondary token is not a join.
+Old keyless history is not repaired or backfilled.
+
+On a fresh renderer document connected to the **same live native instance**,
+strict child input snapshots overlay a saved accepted user row as Held once,
+while separately accepted B remains Queued. Pending upsert preserves the saved
+timestamp, mention/sender presentation and richer attachment names, unions exact
+locator/type attachments, and applies live original text and pending state. It
+never sends input, creates a retry permit or starts compaction by itself. An
+unmatched identified input appends once; unknown identity does not authorize a
+heuristic match. Normal accepted echoes use their existing replacement policy
+for executable attachments, not the pending-overlay union.
+
+Agent-root binding revisions guard async hydrate/refresh/termination writes.
+Saved projection and live input/Activity state remain different authorities:
+renderer reload/reconnect is supported, not queue persistence across backend
+restart or cold reconstruction of native terminal cards.
+
+Boundary validation follows repository `TESTING.md`: the native producer/history
+integration harness lives at workspace `test-support/native-input-history`, not
+inside web. Web source and web-owned tests may not depend on native core; the
+unchanged web-boundary guard runs before `pnpm test:native-input-history`.
 
 ---
 

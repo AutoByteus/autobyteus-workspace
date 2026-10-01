@@ -1,0 +1,19 @@
+{
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "nineDurableHashesMatchAPI003": true,
+  "authorities": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/acceptance-disposition.sr020.md": "c54399510910452dab5df08ec84cb9846a56c6352465f377179969fed9edb92e",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md": "3c8b538f93fe407a843263f00a4f103e6835b050aa9e42d6989b952c3f321d64",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md": "37420682b90ded65707ff8ec9465a963288a676cc8a15d9f3c421435d36e59d6",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md": "7ffbf7e95190f4ad5b2f0ae8dcccd3d28fcba3f078391dae87f5fa5efa10b0f1",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md": "c74335e580deb04fca3aa0136b8d6ce6ba04e680aedf4cfa5a6414633904c943",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md": "735c4638562acd80b7f32eef7499433302024256f78107e02ae6d9f427c579a6",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/proposed-compaction-prompt.md": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/output-format-and-coverage.md": "3fcb030d7129ed5ee6771ffa710aabe3ee86a3449b855ae08c72892d57d5cdd5",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md": "c8100a7cb0b335c455da9bc47a90f5289026eceb771aa61f9603d7e93b7166c7",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md": "daf524caa1406a3fab659122714dfa2d54e8776802679a927a5475a0aab65678"
+  },
+  "priorAPI": "API-REV-003 Fail82.9 historical, not rescored",
+  "priorF005": "User accepted known deviation/non-blocking\u2014not fixed or Pass",
+  "priorF004": "Unexplained historical continuation; no Qwen reproduction"
+}

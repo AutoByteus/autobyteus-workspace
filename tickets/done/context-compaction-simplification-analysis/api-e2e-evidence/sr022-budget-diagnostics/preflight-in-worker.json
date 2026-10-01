@@ -1,0 +1,9 @@
+{
+  "scenarioId": "deepseek.compaction-agent-flow",
+  "health": "READY",
+  "configured": [
+    "provider.deepseek.api-key"
+  ],
+  "missing": [],
+  "instructionCode": null
+}

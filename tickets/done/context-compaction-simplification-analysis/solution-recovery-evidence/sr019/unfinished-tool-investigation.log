@@ -1,0 +1,5 @@
+PASS Writer cut point: 0 snapshot / 0 raw results restores without losing summary
+PASS Writer cut point: 1 snapshot / 1 raw results restores without losing summary
+PASS Writer cut point: 2 snapshot / 2 raw results restores without losing summary
+PASS Writer cut point: 0 snapshot / 2 raw results restores without losing summary
+Owned temporary data removed

@@ -1,0 +1,20 @@
+{
+  "time": "2026-10-01T18:48:55.378225+00:00",
+  "pinCount": 10626,
+  "unchanged": 10621,
+  "unexpectedChanges": [],
+  "unexpectedMissing": [],
+  "gitChecks": {
+    "head": true,
+    "mergeHead": true,
+    "branch": true,
+    "stash": true,
+    "rawIndex": true,
+    "logicalIndex": true,
+    "zeroUnmerged": true
+  },
+  "stagedCount": 672,
+  "api15Preserved": true,
+  "limitations": "Enumerated entry pins, not machine/private-data census. Documented full build regenerated derived outputs; old packaged/prebuild outputs archived, not substituted. No runtime sources edited."
+}
+derivedChanged 1 missing 0

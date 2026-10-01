@@ -1,0 +1,26 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts (0 test)
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  23:54:10
+   Duration  112ms (transform 22ms, setup 0ms, import 0ms, tests 0ms, environment 0ms)
+
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts [ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts ]
+Error: Cannot find package 'autobyteus-ts/llm/extensions/base-extension.js' imported from '/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts'
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr014-diagnostics/direct-diagnostics.test.ts:3:1
+      1| import fs from 'node:fs';
+      2| import { afterAll,beforeAll,expect,it,vi } from 'vitest';
+      3| import { LLMExtension } from 'autobyteus-ts/llm/extensions/base-extens…
+       | ^
+      4| import { Message,MessageRole } from 'autobyteus-ts/llm/utils/messages.…
+      5| import { DirectLlmCompactionSummarizer } from 'autobyteus-ts/memory/co…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+

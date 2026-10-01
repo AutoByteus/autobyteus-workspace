@@ -1,0 +1,280 @@
+import { AgentStatus } from '../../status/status-enum.js';
+import {
+  assertRequiredKeys,
+  BaseStreamPayload,
+  isRecord
+} from './stream-event-payload-utils.js';
+
+export class AgentStatusData extends BaseStreamPayload {
+  status: AgentStatus;
+  previous_status?: AgentStatus | null;
+  trigger?: string;
+  tool_name?: string;
+  error_message?: string;
+  error_details?: string;
+
+  constructor(data: Record<string, any>) {
+    assertRequiredKeys(data, ['status'], 'AgentStatusData');
+    super(data);
+    this.status = data.status;
+    this.previous_status = data.previous_status ?? undefined;
+    this.trigger = data.trigger ?? undefined;
+    this.tool_name = data.tool_name ?? undefined;
+    this.error_message = data.error_message ?? undefined;
+    this.error_details = data.error_details ?? undefined;
+  }
+}
+
+export class TurnLifecycleData extends BaseStreamPayload {
+  turn_id: string;
+
+  constructor(data: Record<string, any>) {
+    assertRequiredKeys(data, ['turn_id'], 'TurnLifecycleData');
+    super(data);
+    this.turn_id = String(data.turn_id ?? '');
+  }
+}
+
+export class ErrorEventData extends BaseStreamPayload {
+  code: string;
+  message: string;
+  details?: string;
+  provider_status?: number | string | null;
+  provider_code?: string | null;
+  provider_request_id?: string | null;
+  error_scope?: string;
+  error_effect?: string;
+  turn_id?: string;
+
+  constructor(data: Record<string, any>) {
+    assertRequiredKeys(data, ['code', 'message'], 'ErrorEventData');
+    if (typeof data.code !== 'string' || !data.code.trim()) {
+      throw new Error('ErrorEventData requires a non-empty code.');
+    }
+    if (typeof data.message !== 'string' || !data.message.trim()) {
+      throw new Error('ErrorEventData requires a non-empty message.');
+    }
+    super(data);
+    this.code = String(data.code ?? '');
+    this.message = String(data.message ?? '');
+    this.details = data.details ?? undefined;
+    this.provider_status = typeof data.provider_status === 'number' || typeof data.provider_status === 'string'
+      ? data.provider_status
+      : data.provider_status === null ? null : undefined;
+    this.provider_code = typeof data.provider_code === 'string' ? data.provider_code : data.provider_code === null ? null : undefined;
+    this.provider_request_id = typeof data.provider_request_id === 'string'
+      ? data.provider_request_id
+      : data.provider_request_id === null ? null : undefined;
+    this.error_scope = typeof data.error_scope === 'string' ? data.error_scope : undefined;
+    this.error_effect = typeof data.error_effect === 'string' ? data.error_effect : undefined;
+    this.turn_id = typeof data.turn_id === 'string' ? data.turn_id : undefined;
+  }
+}
+
+export class CompactionStatusData extends BaseStreamPayload {
+  phase: string;
+  turn_id?: string | null;
+  compaction_operation_id?: string | null;
+  requested_turn_id?: string | null;
+  execution_turn_id?: string | null;
+  selected_block_count?: number | null;
+  compacted_block_count?: number | null;
+  raw_trace_count?: number | null;
+  summary_char_count?: number | null;
+  compaction_invocation_id?: string | null;
+  summarizer_provider?: string | null;
+  completion_status?: 'complete' | 'incomplete' | 'unknown' | null;
+  compaction_model_identifier?: string | null;
+  completion_reason?: string | null;
+  summary_token_count?: number | null;
+  error_message?: string | null;
+
+  constructor(data: Record<string, any>) {
+    assertRequiredKeys(data, ['phase'], 'CompactionStatusData');
+    super(data);
+    this.phase = String(data.phase ?? '');
+    this.turn_id = typeof data.turn_id === 'string' ? data.turn_id : data.turn_id ?? undefined;
+    this.compaction_operation_id = typeof data.compaction_operation_id === 'string' ? data.compaction_operation_id : data.compaction_operation_id ?? undefined;
+    this.requested_turn_id = typeof data.requested_turn_id === 'string' ? data.requested_turn_id : data.requested_turn_id ?? undefined;
+    this.execution_turn_id = typeof data.execution_turn_id === 'string' ? data.execution_turn_id : data.execution_turn_id ?? undefined;
+    this.selected_block_count = typeof data.selected_block_count === 'number' ? data.selected_block_count : data.selected_block_count ?? undefined;
+    this.compacted_block_count = typeof data.compacted_block_count === 'number' ? data.compacted_block_count : data.compacted_block_count ?? undefined;
+    this.raw_trace_count = typeof data.raw_trace_count === 'number' ? data.raw_trace_count : data.raw_trace_count ?? undefined;
+    this.summary_char_count = data.summary_char_count;
+    this.compaction_invocation_id = data.compaction_invocation_id;
+    this.summarizer_provider = data.summarizer_provider;
+    this.completion_status = data.completion_status;
+    this.compaction_model_identifier = typeof data.compaction_model_identifier === 'string' ? data.compaction_model_identifier : data.compaction_model_identifier ?? undefined;
+    this.completion_reason = data.completion_reason;
+    this.summary_token_count = data.summary_token_count;
+    this.error_message = typeof data.error_message === 'string' ? data.error_message : data.error_message ?? undefined;
+  }
+}
+
+export class SegmentEventData extends BaseStreamPayload {
+  event_type: string;
+  segment_id: string;
+  segment_type?: string;
+  turn_id: string;
+  payload: Record<string, any>;
+
+  constructor(data: Record<string, any>) {
+    const eventType = data.event_type ?? data.type;
+    assertRequiredKeys(
+      { ...data, event_type: eventType },
+      ['event_type', 'segment_id', 'turn_id'],
+      'SegmentEventData'
+    );
+    super(data);
+    const segmentId = typeof data.segment_id === 'string' ? data.segment_id.trim() : '';
+    const turnId = typeof data.turn_id === 'string' ? data.turn_id.trim() : '';
+    if (!segmentId || !turnId) {
+      throw new Error('SegmentEventData requires non-empty segment_id and turn_id');
+    }
+    this.event_type = eventType;
+    this.segment_id = segmentId;
+    this.segment_type = data.segment_type ?? undefined;
+    this.turn_id = turnId;
+    this.payload = data.payload ?? {};
+  }
+}
+
+export class SystemTaskNotificationData extends BaseStreamPayload {
+  sender_id: string;
+  content: string;
+
+  constructor(data: Record<string, any>) {
+    assertRequiredKeys(data, ['sender_id', 'content'], 'SystemTaskNotificationData');
+    super(data);
+    this.sender_id = String(data.sender_id ?? '');
+    this.content = String(data.content ?? '');
+  }
+}
+
+export class InterAgentMessageData extends BaseStreamPayload {
+  sender_agent_id: string;
+  recipient_role_name: string;
+  content: string;
+  message_type: string;
+
+  constructor(data: Record<string, any>) {
+    assertRequiredKeys(
+      data,
+      ['sender_agent_id', 'recipient_role_name', 'content', 'message_type'],
+      'InterAgentMessageData'
+    );
+    super(data);
+    this.sender_agent_id = String(data.sender_agent_id ?? '');
+    this.recipient_role_name = String(data.recipient_role_name ?? '');
+    this.content = String(data.content ?? '');
+    this.message_type = String(data.message_type ?? '');
+  }
+}
+
+export class ArtifactPersistedData extends BaseStreamPayload {
+  artifact_id: string;
+  path: string;
+  agent_id: string;
+  type: string;
+  workspace_root?: string;
+  url?: string;
+
+  constructor(data: Record<string, any>) {
+    assertRequiredKeys(data, ['artifact_id', 'path', 'agent_id', 'type'], 'ArtifactPersistedData');
+    super(data);
+    this.artifact_id = String(data.artifact_id ?? '');
+    this.path = String(data.path ?? '');
+    this.agent_id = String(data.agent_id ?? '');
+    this.type = String(data.type ?? '');
+    this.workspace_root = data.workspace_root ?? undefined;
+    this.url = data.url ?? undefined;
+  }
+}
+
+export class ArtifactUpdatedData extends BaseStreamPayload {
+  artifact_id?: string;
+  path: string;
+  agent_id: string;
+  type: string;
+  workspace_root?: string;
+
+  constructor(data: Record<string, any>) {
+    assertRequiredKeys(data, ['path', 'agent_id', 'type'], 'ArtifactUpdatedData');
+    super(data);
+    this.artifact_id = data.artifact_id ?? undefined;
+    this.path = String(data.path ?? '');
+    this.agent_id = String(data.agent_id ?? '');
+    this.type = String(data.type ?? '');
+    this.workspace_root = data.workspace_root ?? undefined;
+  }
+}
+
+export class EmptyData extends BaseStreamPayload {}
+
+export const createAgentStatusData = (statusData: unknown): AgentStatusData => {
+  if (!isRecord(statusData)) {
+    throw new Error('Cannot create AgentStatusData from non-object');
+  }
+  return new AgentStatusData(statusData);
+};
+
+export const createTurnLifecycleData = (turnData: unknown): TurnLifecycleData => {
+  if (!isRecord(turnData)) {
+    throw new Error('Cannot create TurnLifecycleData from non-object');
+  }
+  return new TurnLifecycleData(turnData);
+};
+
+export const createErrorEventData = (errorData: unknown): ErrorEventData => {
+  if (!isRecord(errorData)) {
+    throw new Error('Cannot create ErrorEventData from non-object');
+  }
+  return new ErrorEventData(errorData);
+};
+
+export const createCompactionStatusData = (statusData: unknown): CompactionStatusData => {
+  if (!isRecord(statusData)) {
+    throw new Error('Cannot create CompactionStatusData from non-object');
+  }
+  return new CompactionStatusData(statusData);
+};
+
+export const createSegmentEventData = (eventData: unknown): SegmentEventData => {
+  if (eventData instanceof SegmentEventData) {
+    return eventData;
+  }
+  if (!isRecord(eventData)) {
+    throw new Error('Cannot create SegmentEventData from non-object');
+  }
+  return new SegmentEventData(eventData);
+};
+
+export const createInterAgentMessageData = (msgData: unknown): InterAgentMessageData => {
+  if (!isRecord(msgData)) {
+    throw new Error('Cannot create InterAgentMessageData from non-object');
+  }
+  return new InterAgentMessageData(msgData);
+};
+
+export const createSystemTaskNotificationData = (
+  notificationData: unknown
+): SystemTaskNotificationData => {
+  if (!isRecord(notificationData)) {
+    throw new Error('Cannot create SystemTaskNotificationData from non-object');
+  }
+  return new SystemTaskNotificationData(notificationData);
+};
+
+export const createArtifactPersistedData = (data: unknown): ArtifactPersistedData => {
+  if (!isRecord(data)) {
+    throw new Error('Cannot create ArtifactPersistedData from non-object');
+  }
+  return new ArtifactPersistedData(data);
+};
+
+export const createArtifactUpdatedData = (data: unknown): ArtifactUpdatedData => {
+  if (!isRecord(data)) {
+    throw new Error('Cannot create ArtifactUpdatedData from non-object');
+  }
+  return new ArtifactUpdatedData(data);
+};

@@ -1,0 +1,8 @@
+{
+  "reason": "Concurrent reviewer-owned CRR018 clarification received before any IR012 handoff; exact two changed review canonicals, no implementation edits to them.",
+  "paths": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md": "b9495806e29c116a685e755e8b4938eaa1db784d5a808c5d6445728e31943904",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-revision-record.md": "15c62dbebb8059eaf8a4b5524c56e7bf4ca5c9760015c23f5d2797e470d21eff"
+  },
+  "authority": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/crr-018/user-boundary-clarification.json"
+}

@@ -1,0 +1,642 @@
+[
+  {
+    "id": "cut-zero",
+    "results": [
+      {
+        "toolCallId": "a",
+        "toolName": "inspect",
+        "toolResult": null,
+        "toolError": "Tool 'inspect' failed: operation did not complete or was interrupted before a result was recorded (invocation 'a')."
+      },
+      {
+        "toolCallId": "b",
+        "toolName": "inspect",
+        "toolResult": null,
+        "toolError": "Tool 'inspect' failed: operation did not complete or was interrupted before a result was recorded (invocation 'b')."
+      }
+    ],
+    "payload": {
+      "agent_id": "cut-zero",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Synthetic system",
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": null,
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [],
+              "turnId": null
+            }
+          }
+        },
+        {
+          "role": "user",
+          "content": "Keep checkpoint 🧠; approval pending.",
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": null,
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "composed_user",
+              "constituents": [
+                {
+                  "kind": "compacted_memory",
+                  "textRange": {
+                    "start": 0,
+                    "end": 37
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_calls": [
+              {
+                "id": "a",
+                "name": "inspect",
+                "arguments": {
+                  "id": "a"
+                }
+              },
+              {
+                "id": "b",
+                "name": "inspect",
+                "arguments": {
+                  "id": "b"
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_1790771091366_turn_0001_a_call",
+                "rt_1790771091366_turn_0001_b_call"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        },
+        {
+          "role": "tool",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_call_id": "a",
+            "tool_name": "inspect",
+            "tool_result": null,
+            "tool_error": "Tool 'inspect' failed: operation did not complete or was interrupted before a result was recorded (invocation 'a')."
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_recovery_turn_0001_a_1790771093102"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        },
+        {
+          "role": "tool",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_call_id": "b",
+            "tool_name": "inspect",
+            "tool_result": null,
+            "tool_error": "Tool 'inspect' failed: operation did not complete or was interrupted before a result was recorded (invocation 'b')."
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_recovery_turn_0001_b_1790771093102"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "cut-partial",
+    "results": [
+      {
+        "toolCallId": "a",
+        "toolName": "inspect",
+        "toolResult": {
+          "committed": 0
+        },
+        "toolError": null
+      },
+      {
+        "toolCallId": "b",
+        "toolName": "inspect",
+        "toolResult": null,
+        "toolError": "Tool 'inspect' failed: operation did not complete or was interrupted before a result was recorded (invocation 'b')."
+      }
+    ],
+    "payload": {
+      "agent_id": "cut-partial",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Synthetic system",
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": null,
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [],
+              "turnId": null
+            }
+          }
+        },
+        {
+          "role": "user",
+          "content": "Keep checkpoint 🧠; approval pending.",
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": null,
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "composed_user",
+              "constituents": [
+                {
+                  "kind": "compacted_memory",
+                  "textRange": {
+                    "start": 0,
+                    "end": 37
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_calls": [
+              {
+                "id": "a",
+                "name": "inspect",
+                "arguments": {
+                  "id": "a"
+                }
+              },
+              {
+                "id": "b",
+                "name": "inspect",
+                "arguments": {
+                  "id": "b"
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_1790771091387_turn_0001_a_call",
+                "rt_1790771091387_turn_0001_b_call"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        },
+        {
+          "role": "tool",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_call_id": "a",
+            "tool_name": "inspect",
+            "tool_result": {
+              "committed": 0
+            },
+            "tool_error": null
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_1790771091388_turn_0001_a_result"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        },
+        {
+          "role": "tool",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_call_id": "b",
+            "tool_name": "inspect",
+            "tool_result": null,
+            "tool_error": "Tool 'inspect' failed: operation did not complete or was interrupted before a result was recorded (invocation 'b')."
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_recovery_turn_0001_b_1790771093105"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "cut-complete",
+    "results": [
+      {
+        "toolCallId": "a",
+        "toolName": "inspect",
+        "toolResult": {
+          "committed": 0
+        },
+        "toolError": null
+      },
+      {
+        "toolCallId": "b",
+        "toolName": "inspect",
+        "toolResult": {
+          "committed": 1
+        },
+        "toolError": null
+      }
+    ],
+    "payload": {
+      "agent_id": "cut-complete",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Synthetic system",
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": null,
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [],
+              "turnId": null
+            }
+          }
+        },
+        {
+          "role": "user",
+          "content": "Keep checkpoint 🧠; approval pending.",
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": null,
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "composed_user",
+              "constituents": [
+                {
+                  "kind": "compacted_memory",
+                  "textRange": {
+                    "start": 0,
+                    "end": 37
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_calls": [
+              {
+                "id": "a",
+                "name": "inspect",
+                "arguments": {
+                  "id": "a"
+                }
+              },
+              {
+                "id": "b",
+                "name": "inspect",
+                "arguments": {
+                  "id": "b"
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_1790771091403_turn_0001_a_call",
+                "rt_1790771091403_turn_0001_b_call"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        },
+        {
+          "role": "tool",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_call_id": "a",
+            "tool_name": "inspect",
+            "tool_result": {
+              "committed": 0
+            },
+            "tool_error": null
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_1790771091403_turn_0001_a_result"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        },
+        {
+          "role": "tool",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_call_id": "b",
+            "tool_name": "inspect",
+            "tool_result": {
+              "committed": 1
+            },
+            "tool_error": null
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_1790771091404_turn_0001_b_result"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "cut-raw-ahead",
+    "results": [
+      {
+        "toolCallId": "a",
+        "toolName": "inspect",
+        "toolResult": {
+          "committed": 0
+        },
+        "toolError": null
+      },
+      {
+        "toolCallId": "b",
+        "toolName": "inspect",
+        "toolResult": {
+          "committed": 1
+        },
+        "toolError": null
+      }
+    ],
+    "payload": {
+      "agent_id": "cut-raw-ahead",
+      "messages": [
+        {
+          "role": "system",
+          "content": "Synthetic system",
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": null,
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [],
+              "turnId": null
+            }
+          }
+        },
+        {
+          "role": "user",
+          "content": "Keep checkpoint 🧠; approval pending.",
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": null,
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "composed_user",
+              "constituents": [
+                {
+                  "kind": "compacted_memory",
+                  "textRange": {
+                    "start": 0,
+                    "end": 37
+                  }
+                }
+              ]
+            }
+          }
+        },
+        {
+          "role": "assistant",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_calls": [
+              {
+                "id": "a",
+                "name": "inspect",
+                "arguments": {
+                  "id": "a"
+                }
+              },
+              {
+                "id": "b",
+                "name": "inspect",
+                "arguments": {
+                  "id": "b"
+                }
+              }
+            ]
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_1790771091416_turn_0001_a_call",
+                "rt_1790771091416_turn_0001_b_call"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        },
+        {
+          "role": "tool",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_call_id": "a",
+            "tool_name": "inspect",
+            "tool_result": {
+              "committed": 0
+            },
+            "tool_error": null
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_1790771091417_turn_0001_a_result"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        },
+        {
+          "role": "tool",
+          "content": null,
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": {
+            "tool_call_id": "b",
+            "tool_name": "inspect",
+            "tool_result": {
+              "committed": 1
+            },
+            "tool_error": null
+          },
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "single",
+              "rawTraceIds": [
+                "rt_1790771091417_turn_0001_b_result"
+              ],
+              "turnId": "turn_0001"
+            }
+          }
+        }
+      ]
+    }
+  },
+  {
+    "id": "released-v5",
+    "results": [],
+    "payload": {
+      "agent_id": "released-v5",
+      "messages": [
+        {
+          "role": "user",
+          "content": "Keep checkpoint 🧠; approval pending.",
+          "reasoning_content": null,
+          "image_urls": [],
+          "audio_urls": [],
+          "video_urls": [],
+          "tool_payload": null,
+          "metadata": {
+            "autobyteus_memory_provenance": {
+              "kind": "composed_user",
+              "constituents": [
+                {
+                  "kind": "retained_user",
+                  "textRange": {
+                    "start": 0,
+                    "end": 37
+                  },
+                  "rawTraceIds": [
+                    "history-raw-1"
+                  ],
+                  "turnId": "turn-1",
+                  "imageRange": {
+                    "start": 0,
+                    "end": 0
+                  },
+                  "audioRange": {
+                    "start": 0,
+                    "end": 0
+                  },
+                  "videoRange": {
+                    "start": 0,
+                    "end": 0
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+]

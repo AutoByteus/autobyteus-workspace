@@ -1,0 +1,29 @@
+{
+  "result": "Pass",
+  "confidencePercent": 95.0,
+  "categories": [
+    95,
+    95,
+    95,
+    95,
+    95,
+    95,
+    95
+  ],
+  "broader": "Required and executed; further Not Required for API stage",
+  "classification": {
+    "task_size": "Large",
+    "architectural_risk": "High"
+  },
+  "testReview": "Required \u2014 cumulative11durablepaths",
+  "notClaimed": [
+    "fullsuite",
+    "fulltypecheck",
+    "release",
+    "allmodels",
+    "nativephysicalgesture",
+    "sevenmemberUI",
+    "CG033fasttermination"
+  ],
+  "basis": "canonical execution coverage report"
+}

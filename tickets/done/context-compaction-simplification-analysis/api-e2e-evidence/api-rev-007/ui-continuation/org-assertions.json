@@ -1,0 +1,11 @@
+{
+  "result": "Pass scoped ordinary Org root heldA/B recovery",
+  "parent_order": [
+    "API7-ORG-SEED1",
+    "API7-ORG-SEED2",
+    "API7-ORG-A",
+    "API7-ORG-B"
+  ],
+  "accepted_total": 24,
+  "member_scope": "3configured/1recovering"
+}

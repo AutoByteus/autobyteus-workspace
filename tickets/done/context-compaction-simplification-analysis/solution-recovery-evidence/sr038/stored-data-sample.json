@@ -1,0 +1,39 @@
+{
+  "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr036/sd-diagnostic/before-raw-0.jsonl",
+  "bytes": 42338,
+  "rows": 6,
+  "userRows": 3,
+  "userKeys": [
+    [
+      "id",
+      "ts",
+      "turn_id",
+      "seq",
+      "trace_type",
+      "content",
+      "source_event",
+      "media"
+    ],
+    [
+      "id",
+      "ts",
+      "turn_id",
+      "seq",
+      "trace_type",
+      "content",
+      "source_event",
+      "media"
+    ],
+    [
+      "id",
+      "ts",
+      "turn_id",
+      "seq",
+      "trace_type",
+      "content",
+      "source_event",
+      "media"
+    ]
+  ],
+  "origin": "SD fresh native-produced test-owned capture; NOT released installed data census"
+}

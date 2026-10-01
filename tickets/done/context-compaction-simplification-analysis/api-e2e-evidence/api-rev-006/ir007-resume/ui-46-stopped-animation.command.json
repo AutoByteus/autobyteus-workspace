@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-01T05:30:24.948Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=51625",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "874AE1E81D71BE579A534ACAFD17046D",
+    "--script",
+    "()=>({icons:[...document.querySelectorAll('[data-testid*=\"compaction\"]')].map(e=>({testid:e.getAttribute('data-testid'),cls:e.getAttribute('class'),animation:getComputedStyle(e).animationName,color:getComputedStyle(e).color})),activeAnimations:document.getAnimations().map(a=>({state:a.playState,cls:a.effect?.target?.getAttribute?.('class')}))})"
+  ]
+}

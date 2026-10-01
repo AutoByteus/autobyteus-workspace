@@ -1,0 +1,22 @@
+{
+  "case": "API008-TR001-RED",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets",
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+    "-t",
+    "retires unsupported omission-pressure reporting",
+    "--no-watch"
+  ],
+  "startedAt": "2026-10-01T07:17:59.957733+00:00",
+  "finishedAt": "2026-10-01T07:18:00.164381+00:00",
+  "durationSeconds": 0.206,
+  "exitCode": 1,
+  "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-008/API008-TR001-RED.log",
+  "scope": "offline unit/reporting contract only; no real-provider or UI run"
+}

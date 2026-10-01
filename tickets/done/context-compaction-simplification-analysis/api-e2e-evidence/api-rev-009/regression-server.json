@@ -1,0 +1,27 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/agent-execution/agent-run-compaction-recovery.test.ts",
+    "tests/unit/agent-execution/agent-run-compaction-races.test.ts",
+    "tests/unit/agent-execution/native-compaction-terminal-drain.test.ts",
+    "tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts",
+    "tests/unit/agent-collaboration/frozen-root-termination-scope.test.ts",
+    "tests/unit/agent-collaboration/collaborators/collaborator-mention-admission.test.ts",
+    "tests/unit/run-history/services/agent-run-history-service.test.ts",
+    "tests/unit/services/agent-streaming/agent-team-stream-handler.test.ts",
+    "tests/unit/services/agent-streaming/agent-org-stream-handler.test.ts",
+    "tests/unit/secret-management/live-e2e-harness.test.ts",
+    "tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+    "tests/unit/secret-management/live-e2e-compaction-observation.test.ts",
+    "tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+    "--no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "exit": 0,
+  "finished": "2026-10-01T12:45:57.067858+00:00"
+}

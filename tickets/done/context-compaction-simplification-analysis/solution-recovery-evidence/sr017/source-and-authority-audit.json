@@ -1,0 +1,8 @@
+{
+  "head": "599cc4776a2da6c746be9719064fd1a7efdfa36e",
+  "guidelineSha256": "39e6e2a528824850f0dd185d5dd5bfa0ef8502015e36b9284d60ce5670a500f0",
+  "approvedPromptSha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "noProviderOrTestsRun": true,
+  "noProductionEdits": true,
+  "settingsDecision": "No old compactor preference import; absent current setting uses current parent model"
+}

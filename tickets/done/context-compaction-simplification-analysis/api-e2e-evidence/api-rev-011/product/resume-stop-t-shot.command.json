@@ -1,0 +1,15 @@
+{
+  "time": "2026-10-01T18:42:40.340224+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "screenshot",
+    "--tab-id",
+    "2EBDE1BCA8FCFB7F5A2DAACA80B77548",
+    "--output-file",
+    "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-011/product/resume-stop-t.png",
+    "--viewport-only"
+  ],
+  "controlPort": 62666
+}

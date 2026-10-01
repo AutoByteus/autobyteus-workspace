@@ -1,0 +1,23 @@
+{
+  "ownedApp": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-58629-0f2e",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "portsReleased": {
+    "58629": true,
+    "58630": true,
+    "58634": true
+  },
+  "dataRootAbsent": true
+}

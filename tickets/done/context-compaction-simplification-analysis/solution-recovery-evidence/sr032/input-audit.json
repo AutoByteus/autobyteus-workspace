@@ -1,0 +1,33 @@
+{
+  "date": "2026-10-01",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "HEAD": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "source_sha256": {
+    "autobyteus-web/stores/agentRunStore.ts": "bca4fd40a660c1d318cece9f96af920c8a60aa5bf55b0e87743d78ac754c4976",
+    "autobyteus-web/services/runStatus/agentRuntimeStatusState.ts": "ee472d8cda0d29ae651a80c7fc1f146f4ce2295eb061278777247d0c96ace9ca",
+    "autobyteus-web/services/agentStreaming/handlers/agentStatusHandler.ts": "f0b262cde4a943dc6f7f7d02bed4cdda27abef3cc47c7850094ed9cc4ce199cf",
+    "autobyteus-web/utils/compactionActivityPresentation.ts": "b1437fd0efffe08e393a194fca6e11e6d5eb451264dbdc365698d9b56a91270b",
+    "autobyteus-web/types/agent/AgentRunState.ts": "e629ccd2de6b6901b4c35d328d6ac53ef69ed4f19771e4f16adc3a508a4277b0",
+    "autobyteus-web/components/workspace/agent/CompactionStatusRow.vue": "ffabf28186ba279cd853163fcc11afa216e966dd88eab26f90d53588802448f6",
+    "autobyteus-ts/src/memory/compaction/pending-compaction-executor.ts": "aefb343aed80844c1cf5f7585d27a0f5b86aba68d33159d7721d1a0b0beb60ce",
+    "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts": "d59d91d46b8806c6704e0b255c6d922f52c245d4dcac277e0c43316ea6c071f8",
+    "autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts": "d2db90a864dc12fe45c2d741c379ea89e94aa08d5c6639ec224c3a327af41325"
+  },
+  "ui_sha256": {
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/ui-58-terminated.json": "8e519f4f6b52237973abb9795d2fe945feffc1ef5016727739f5381d778a0656",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/ui-60-saved-view.json": "fbf3d70a98ae094024b9d44f2e90289ba0d83cb65068f39f7eeb1af598e36b07",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/ui-62-I-response.json": "4d979fa08d4d515d7f56e8d84930d183f2e908cb19e8cf673646b97e81ef803b"
+  },
+  "owned_before": {
+    "requirements-doc.md": "8ac16d72c23db479ec2e7f100c07349f38724f269b7609bd96adab67b8c19f12",
+    "design-spec.md": "3da8a3b11359c089a5cced19fcfb3419c4211fbe83a74a7dce9c0c03ccbff95b",
+    "investigation-notes.md": "eacf219c35882cd9f33d7788262fc8c1ea46ad6ce67cb1c202a1972811714fc7",
+    "solution-revision-record.md": "2597612099d557135ce6bce7ffbe159a6e37eb3117abf215531b56fc0cd5d9ea",
+    "solution-progress-result.md": "6bcc5d64cd75bab0d54cdf00a7bf9756e3eaafecd7b6c0ff4b6c974893e1a483"
+  },
+  "tests_run": 0,
+  "provider_calls": 0,
+  "source_edits": 0,
+  "remote_refresh": false
+}

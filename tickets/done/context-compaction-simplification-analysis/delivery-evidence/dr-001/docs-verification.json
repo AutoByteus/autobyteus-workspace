@@ -1,0 +1,363 @@
+{
+  "scope": "new local doc links/anchors, explicit core owner paths, docs diff whitespace; not runtime or full-site validation",
+  "docsUpdated": 14,
+  "localLinksChecked": 57,
+  "sourcePathsChecked": 14,
+  "links": [
+    {
+      "from": "autobyteus-ts/docs/agent_memory_design.md",
+      "link": "../../autobyteus-server-ts/docs/modules/agent_memory.md",
+      "fileExists": true
+    },
+    {
+      "from": "autobyteus-ts/docs/agent_memory_design.md",
+      "link": "../../autobyteus-web/docs/settings.md#server-settings-working-context-compaction",
+      "fileExists": true,
+      "anchorExists": true
+    },
+    {
+      "from": "autobyteus-ts/docs/agent_memory_design.md",
+      "link": "../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity",
+      "fileExists": true,
+      "anchorExists": true
+    },
+    {
+      "from": "autobyteus-ts/docs/agent_memory_design_nodejs.md",
+      "link": "./agent_memory_design.md",
+      "fileExists": true
+    },
+    {
+      "from": "autobyteus-server-ts/docs/modules/agent_memory.md",
+      "link": "../../../autobyteus-ts/docs/agent_memory_design.md",
+      "fileExists": true
+    },
+    {
+      "from": "autobyteus-server-ts/docs/modules/agent_memory.md",
+      "link": "../../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity",
+      "fileExists": true,
+      "anchorExists": true
+    },
+    {
+      "from": "autobyteus-server-ts/docs/ARCHITECTURE.md",
+      "link": "../../autobyteus-ts/docs/agent_memory_design.md",
+      "fileExists": true
+    },
+    {
+      "from": "autobyteus-server-ts/docs/ARCHITECTURE.md",
+      "link": "modules/agent_memory.md",
+      "fileExists": true
+    },
+    {
+      "from": "autobyteus-server-ts/docs/ARCHITECTURE.md",
+      "link": "../../autobyteus-web/docs/settings.md#server-settings-working-context-compaction",
+      "fileExists": true,
+      "anchorExists": true
+    },
+    {
+      "from": "autobyteus-server-ts/docs/ARCHITECTURE.md",
+      "link": "../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity",
+      "fileExists": true,
+      "anchorExists": true
+    },
+    {
+      "from": "autobyteus-web/docs/settings.md",
+      "link": "../../autobyteus-ts/docs/agent_memory_design.md",
+      "fileExists": true
+    },
+    {
+      "from": "autobyteus-web/docs/settings.md",
+      "link": "./agent_execution_architecture.md#compaction-lifecycle-activity-and-center-feed",
+      "fileExists": true,
+      "anchorExists": true
+    },
+    {
+      "from": "autobyteus-web/docs/settings.md",
+      "link": "./agent_execution_architecture.md#run-level-compaction-activity",
+      "fileExists": true,
+      "anchorExists": true
+    },
+    {
+      "from": "autobyteus-web/docs/agent_execution_architecture.md",
+      "link": "#run-level-compaction-activity",
+      "fileExists": true,
+      "anchorExists": true
+    },
+    {
+      "from": "autobyteus-web/docs/memory.md",
+      "link": "../../autobyteus-ts/docs/agent_memory_design.md",
+      "fileExists": true
+    },
+    {
+      "from": "autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md",
+      "link": "./agent_memory_design.md#4-failure-held-input-and-retry-permission",
+      "fileExists": true,
+      "anchorExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/docs-sync-report.md",
+      "link": "delivery-evidence/dr-001/integration-refresh.json",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/docs-sync-report.md",
+      "link": "delivery-evidence/dr-001/entry-audit.json",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/docs-sync-report.md",
+      "link": "delivery-evidence/dr-001/final-audit.json",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/docs-sync-report.md",
+      "link": "delivery-evidence/dr-001/docs-verification.json",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/docs-sync-report.md",
+      "link": "handoff-summary.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "delivery-evidence/dr-001/final-audit.json",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "requirements-doc.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "investigation-notes.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "solution-revision-record.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "design-spec.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "design-review-report.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "architecture-review-revision-record.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "implementation-handoff.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "implementation-revision-record.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "code-review-report.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "code-review-revision-record.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "api-e2e-coverage-investigation.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "api-e2e-test-case-ledger.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "api-e2e-execution-coverage-report.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "api-e2e-revision-record.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "api-e2e-test-review-report.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "proposed-compaction-prompt.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "output-format-and-coverage.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "input-hold-proposal.sr027.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "acceptance-disposition.sr020.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "production-scenario-clarification.sr031.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "solution-recovery-evidence/sr033/approval.json",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "delivery-evidence/dr-001/incoming-reference-index.json",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "delivery-evidence/dr-001/entry-audit.json",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "docs-sync-report.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "api-e2e-evidence/api-rev-008/historical-claim-annotation.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "release-deployment-report.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "delivery-revision-record.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/handoff-summary.md",
+      "link": "release-notes.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/release-deployment-report.md",
+      "link": "handoff-summary.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/release-deployment-report.md",
+      "link": "docs-sync-report.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/release-deployment-report.md",
+      "link": "delivery-revision-record.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/release-deployment-report.md",
+      "link": "release-notes.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/delivery-revision-record.md",
+      "link": "docs-sync-report.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/delivery-revision-record.md",
+      "link": "handoff-summary.md",
+      "fileExists": true
+    },
+    {
+      "from": "tickets/in-progress/context-compaction-simplification-analysis/delivery-revision-record.md",
+      "link": "release-deployment-report.md",
+      "fileExists": true
+    }
+  ],
+  "sourcePaths": [
+    {
+      "path": "src/memory/compaction/compression-strategy.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/compaction/direct-llm-compression-strategy.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/compaction/compaction-content-builder.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/compaction/compaction-summary-prompt.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/compaction/compaction-summary-parser.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/compaction/pending-compaction-executor.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/compaction/accepted-compaction-builder.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/compaction/accepted-compaction-committer.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/memory-manager-compaction-coordinator.ts",
+      "exists": true
+    },
+    {
+      "path": "src/agent/compaction/compaction-recovery-controller.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/working-context-snapshot-serializer.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/restore/working-context-snapshot-bootstrapper.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/migration/native-working-context-snapshot-shapes.ts",
+      "exists": true
+    },
+    {
+      "path": "src/memory/presentation/unicode-safe-text.ts",
+      "exists": true
+    }
+  ],
+  "errors": [],
+  "diffCheckExit": 0,
+  "canonicalUnexpectedWhitespace": []
+}

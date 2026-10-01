@@ -1,0 +1,76 @@
+{
+  "revision": "CRR-003",
+  "entryPoint": "API/E2E Failure-Origin Review",
+  "base": "046279298f53fb98d7688ee9dc2b2ba0fa827685",
+  "sourceCommit": "7886aeb78449fa54a09ce715fc6e0d74134b386f",
+  "packageHead": "c948605e2aa5e9dac77b69819eb8f366226c4112",
+  "failure": "API-F001",
+  "case": "API-C01",
+  "wrapperUnchangedAtBase": true,
+  "wrapper": "export const wrapProductAgentBackendForLiveE2e = (\n  backend: AgentRunBackend,\n): LiveE2eAgentBackend => new AgentRun({\n  context: backend.getContext(),\n  backend,\n});",
+  "domainFileUnchangedAtBase": true,
+  "reviewedPathsUnmodifiedSinceHEAD": true,
+  "sourceHashes": [
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "9b9a81b0d146669618ef8b0f93a6b24f7b7107a33c713c0e62e2c216d2a8b209"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "sha256": "56c1eefda5d2180a6b04f3b74077c0db40be0cc029eab2603df0ecb887f25f9a"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+      "sha256": "e99856737c49d96ca9891ec96e4437cac577707cdb39618f7231416dab7c7284"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+      "sha256": "9680b76d280ac0b1c758d45114bec76d9b46ab6837f386d5ae32ccbbb250e4e9"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-execution/input/agent-run-provider-input-normalizer.ts",
+      "sha256": "c47468ba9665ea6cc242edeea5f16e5f0286b534aafab585320fd00c854b67e9"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "sha256": "69667e309f4cccb2126253bb18792f08b88da3e3fe8ae0c6edf1c6d1c8e9bbac"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "sha256": "783ae2c49be8f796166afbf7704c68150a0e8f147c34d6629466667fb69e7a52"
+    }
+  ],
+  "evidenceHashes": [
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+      "sha256": "e7fa9c4a769d1cb8f50785984425c0a4fd11a7f342def407bce068d98c69c68c"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+      "sha256": "4a015ddfcf11b6404d10481233aba9a80631ea1323923375660d5aefe9b0e654"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md",
+      "sha256": "b3f947df9318537fc2743aee649d6b085b16c11832513ffc6970442e64c5de41"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+      "sha256": "7577d35a64f8c63356917292d5120737971f475b3c2cb3dfdd85d41f8d6d437f"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C01.log",
+      "sha256": "0d52a07acf7d356d1f58ffab0d33a185b2e093fd9e2933dca25c8760106d30ae"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/prerequisite-triage.json",
+      "sha256": "4344c4501089e049f6e9297e5d8c80d05c6a154d64b39bdcdcb19d2a6f9ad78d"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/code-review-evidence/residual-comparison.json",
+      "sha256": "58c7c86395e8b13a26acff4d9059aaf3418a31e516ff152416593c6d69704bbb"
+    }
+  ],
+  "classification": "Local Fix \u2014 API/E2E-owned shared test-support construction",
+  "productionDefectEstablished": false,
+  "newReviewGap": false
+}

@@ -1,0 +1,5 @@
+{"id":"rt_1790837347330_4ee712f3-e0d5-4508-829a-05209fbe4e1c","ts":1790837347.33,"turn_id":"turn_0001","seq":5,"trace_type":"assistant","content":"ACK API7-TOOL-READ","source_event":"LlmPhase"}
+{"id":"rt_1790837365354","ts":1790837365.354,"turn_id":"turn_0002","seq":1,"trace_type":"user","content":"API7-TOOL-A Continue after the consumed read. Do not read again.","source_event":"LLMUserMessageReadyEvent","media":{"images":[],"audio":[],"video":[]}}
+{"id":"rt_1790837400329_49243e96-6d0a-4f38-b6c5-114e0b218fef","ts":1790837400.329,"turn_id":"turn_0002","seq":2,"trace_type":"assistant","content":"ACK API7-TOOL-A","source_event":"LlmPhase"}
+{"id":"rt_1790837400347","ts":1790837400.347,"turn_id":"turn_0003","seq":1,"trace_type":"user","content":"API7-TOOL-B Retry compaction. Continue A then B; never repeat the consumed tool.","source_event":"LLMUserMessageReadyEvent","media":{"images":[],"audio":[],"video":[]}}
+{"id":"rt_1790837400355_90f1f91f-9860-4355-9fa1-a2e70b08f949","ts":1790837400.355,"turn_id":"turn_0003","seq":2,"trace_type":"assistant","content":"ACK API7-TOOL-B","source_event":"LlmPhase"}

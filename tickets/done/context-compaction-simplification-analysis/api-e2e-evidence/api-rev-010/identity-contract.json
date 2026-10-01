@@ -1,0 +1,11 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "pnpm -C autobyteus-agent-presentation-contracts exec tsc -p tsconfig.build.json --noEmit && node --test autobyteus-agent-presentation-contracts/tests/*.test.mjs"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T16:57:52.184747+00:00",
+  "finished": "2026-10-01T16:57:53.459244+00:00",
+  "exit": 0
+}

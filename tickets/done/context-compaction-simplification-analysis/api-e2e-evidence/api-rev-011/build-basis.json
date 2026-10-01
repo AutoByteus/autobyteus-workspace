@@ -1,0 +1,16 @@
+{
+  "time": "2026-10-01T18:17:49.361616+00:00",
+  "fullBuildExit": 0,
+  "files": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar",
+      "sha256": "eae14a8149c6b7b628f6d7e5bedf9e462169ef27bbfa60cf53b109d55672d496",
+      "size": 312663540
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/isolated-launch.json",
+      "sha256": "a207be8c23d958da1c0d4097f11c2a41396b7417c60cd57336f51f54efc9983b",
+      "size": 34
+    }
+  ]
+}

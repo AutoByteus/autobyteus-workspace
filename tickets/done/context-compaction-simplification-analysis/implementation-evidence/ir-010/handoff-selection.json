@@ -1,0 +1,8 @@
+{
+  "result": "Design Impact",
+  "finding": "IR010-DI001",
+  "trigger": "CRR015 / API009-F001",
+  "when": "When implementation identifies a Design Impact, Requirement Gap, or Unclear issue that must be resolved in the requirements or design before implementation continues.",
+  "recipient_address": "/solution_designer",
+  "reason": "Local Fix is incomplete; accepted-key retention conflicts with explicit unchanged native reader/writer decision. No source-review, API or Delivery completion condition applies."
+}

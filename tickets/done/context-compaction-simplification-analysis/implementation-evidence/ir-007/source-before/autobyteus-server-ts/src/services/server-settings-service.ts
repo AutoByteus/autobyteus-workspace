@@ -1,0 +1,440 @@
+import { appConfigProvider } from "../config/app-config-provider.js";
+import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
+import {
+  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+  SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
+} from "../skill-improvement/domain/settings.js";
+import { PROJECTS_CAPABILITY_SETTING_KEY } from "../projects/domain/settings.js";
+import {
+  CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+  CODEX_SANDBOX_MODES,
+} from "../runtime-management/codex/codex-sandbox-mode-setting.js";
+import {
+  DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+  DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
+  MEDIA_DEFAULT_MODEL_SETTING_KEYS,
+} from "../config/media-default-model-settings.js";
+import {
+  FEATURED_CATALOG_ITEMS_SETTING_KEY,
+  normalizeFeaturedCatalogItemsSettingForPersistence,
+} from "../config/featured-catalog-items-setting.js";
+import { reloadMediaToolSchemas } from "../agent-tools/media/register-media-tools.js";
+import {
+  COMPACTION_MODEL_SETTINGS_KEY,
+  normalizeCompactionModelSettingsForPersistence,
+} from "../config/compaction-model-settings.js";
+import {
+  normalizeStreamingContentFlushIntervalForPersistence,
+  resolveStreamingContentFlushIntervalMs,
+  STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+} from "../config/streaming-content-flush-interval-setting.js";
+import {
+  normalizeTaskExecutionIdleShutdownGraceForPersistence,
+  TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
+} from "../config/task-execution-idle-shutdown-setting.js";
+import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
+
+export {
+  DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+  DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+  DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
+} from "../config/media-default-model-settings.js";
+
+const logger = {
+  info: (...args: unknown[]) => console.info(...args),
+  error: (...args: unknown[]) => console.error(...args),
+};
+
+export class ServerSettingDescription {
+  constructor(
+    public readonly key: string,
+    public readonly description: string,
+    public readonly isEditable: boolean = true,
+    public readonly isDeletable: boolean = false,
+    public readonly valueValidation: ServerSettingValueValidation | null = null,
+  ) {}
+}
+
+type ServerSettingValueValidation = {
+  readonly allowedValues?: readonly string[];
+  readonly normalizeForPersistence?: (value: string) => [true, string] | [false, string];
+  readonly trimBeforePersist?: boolean;
+};
+
+const CUSTOM_SETTING_DESCRIPTION = "Custom user-defined setting";
+const ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY = "AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE";
+const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?KEY|CREDENTIAL)/i;
+const isSensitiveSettingName = (key: string): boolean =>
+  // This exact public key counts context tokens; it does not contain an access token.
+  key !== ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY && SENSITIVE_SETTING_NAME.test(key);
+export { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID, SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY };
+
+export class ServerSettingsService {
+  private settingsInfo = new Map<string, ServerSettingDescription>();
+
+  constructor() {
+    this.initializeSettings();
+  }
+
+  private initializeSettings(): void {
+    this.registerPredefinedSetting(
+      "AUTOBYTEUS_LLM_SERVER_HOSTS",
+      "Comma-separated URLs of AUTOBYTEUS LLM servers",
+    );
+
+    this.registerPredefinedSetting(
+      "AUTOBYTEUS_SERVER_HOST",
+      "Public URL of this server. Managed at startup by the launch environment and not editable here.",
+      false,
+    );
+
+    this.registerPredefinedSetting(
+      "AUTOBYTEUS_VNC_SERVER_HOSTS",
+      "Comma-separated host:port values for AutoByteus VNC WebSocket endpoints (e.g., localhost:6080,localhost:6081)",
+    );
+
+    this.registerPredefinedSetting(
+      "OLLAMA_HOSTS",
+      "Comma-separated host URLs for Ollama servers (e.g., http://localhost:11434)",
+    );
+
+    this.registerPredefinedSetting(
+      "LMSTUDIO_HOSTS",
+      "Comma-separated host URLs for LM Studio servers (e.g., http://localhost:1234)",
+    );
+
+    this.registerPredefinedSetting(
+      "MEDIA_OPERATION_TIMEOUT_MS",
+      "Capability-owned timeout in milliseconds for synchronous image generation (10,000-3,600,000; default 300,000).",
+    );
+
+    this.registerPredefinedSetting(
+      "AUTOBYTEUS_COMPACTION_TRIGGER_RATIO",
+      "Decimal compaction trigger ratio used for post-response budget checks (default 0.8)",
+    );
+
+    this.registerPredefinedSetting(
+      COMPACTION_MODEL_SETTINGS_KEY,
+      "Direct compaction model/configuration. Null model inherits the current parent model.",
+      true,
+      {
+        normalizeForPersistence: normalizeCompactionModelSettingsForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      FEATURED_CATALOG_ITEMS_SETTING_KEY,
+      "Versioned JSON list of featured catalog agents and agent teams shown on the Agents and Agent Teams pages.",
+      true,
+      {
+        normalizeForPersistence: normalizeFeaturedCatalogItemsSettingForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY,
+      "Optional effective context ceiling override in tokens for compaction budgeting",
+    );
+
+    this.registerPredefinedSetting(
+      "AUTOBYTEUS_COMPACTION_DEBUG_LOGS",
+      "Enable detailed compaction and token-budget diagnostic logs",
+    );
+
+    this.registerPredefinedSetting(
+      APPLICATIONS_CAPABILITY_SETTING_KEY,
+      "Controls whether the Applications module is available for this node at runtime.",
+    );
+
+    this.registerPredefinedSetting(
+      SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
+      "Controls whether manual Skill Improvement is available for this node at runtime. Defaults to disabled.",
+    );
+
+    this.registerPredefinedSetting(
+      PROJECTS_CAPABILITY_SETTING_KEY,
+      "Controls whether the Projects module is available for this node at runtime. Defaults to disabled.",
+    );
+
+    this.registerPredefinedSetting(
+      AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+      "Agent definition id for the Retrospective Skill Improver. Blank runtime/model fields on the selected improver inherit from the target run.",
+    );
+
+    this.registerPredefinedSetting(
+      CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
+      "Codex app server filesystem sandbox mode for future sessions. Allowed values: read-only, workspace-write, danger-full-access. danger-full-access disables filesystem sandboxing.",
+      true,
+      {
+        allowedValues: CODEX_SANDBOX_MODES,
+        trimBeforePersist: true,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
+      "Milliseconds between live response content updates. Smaller values update more frequently; larger values reduce UI and transport work. Recommended default: 500.",
+      true,
+      {
+        normalizeForPersistence: normalizeStreamingContentFlushIntervalForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
+      "Milliseconds a delegated agent or team may stay quiet before it is shut down. A message to its run ID restores it with its conversation. Default: 600000 (10 minutes); allowed range 60000 to 86400000.",
+      true,
+      {
+        normalizeForPersistence: normalizeTaskExecutionIdleShutdownGraceForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
+      "Default image editing model identifier used by future media tool calls.",
+    );
+
+    this.registerPredefinedSetting(
+      DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
+      "Default image generation model identifier used by future media tool calls.",
+    );
+
+    this.registerPredefinedSetting(
+      DEFAULT_SPEECH_GENERATION_MODEL_SETTING_KEY,
+      "Default speech generation model identifier used by future text-to-speech media tool calls.",
+    );
+
+    this.registerPredefinedSetting(
+      DEFAULT_VIDEO_GENERATION_MODEL_SETTING_KEY,
+      "Default video generation model identifier used by future media tool calls.",
+    );
+
+    logger.info(
+      `Initialized server settings service with ${this.settingsInfo.size} predefined settings`,
+    );
+  }
+
+  private registerPredefinedSetting(
+    key: string,
+    description: string,
+    isEditable = true,
+    valueValidation: ServerSettingValueValidation | null = null,
+  ): void {
+    this.settingsInfo.set(
+      key,
+      new ServerSettingDescription(key, description, isEditable, false, valueValidation),
+    );
+  }
+
+  private getSettingDescription(key: string): ServerSettingDescription {
+    return (
+      this.settingsInfo.get(key) ??
+      new ServerSettingDescription(key, CUSTOM_SETTING_DESCRIPTION, true, true)
+    );
+  }
+
+  private getVisibleSettingKeys(configData: Record<string, string>): string[] {
+    const visibleKeys = new Set<string>();
+
+    for (const key of Object.keys(configData)) {
+      if (!isSensitiveSettingName(key)) {
+        visibleKeys.add(key);
+      }
+    }
+
+    for (const key of this.settingsInfo.keys()) {
+      const value = appConfigProvider.config.get(key);
+      if (typeof value === "string" && value.trim().length > 0) {
+        visibleKeys.add(key);
+      }
+    }
+
+    return Array.from(visibleKeys).sort((a, b) => a.localeCompare(b));
+  }
+
+  getAvailableSettings(): Array<{
+    key: string;
+    value: string;
+    description: string;
+    isEditable: boolean;
+    isDeletable: boolean;
+  }> {
+    const config = appConfigProvider.config;
+    const configData = config.getConfigData();
+
+    const result: Array<{
+      key: string;
+      value: string;
+      description: string;
+      isEditable: boolean;
+      isDeletable: boolean;
+    }> = [];
+
+    for (const key of this.getVisibleSettingKeys(configData)) {
+      const value = appConfigProvider.config.get(key) ?? configData[key];
+      if (value === undefined) {
+        continue;
+      }
+      const metadata = this.getSettingDescription(key);
+      result.push({
+        key,
+        value: String(value),
+        description: metadata.description,
+        isEditable: metadata.isEditable,
+        isDeletable: metadata.isDeletable,
+      });
+    }
+
+    return result;
+  }
+
+  updateSetting(key: string, value: string): [boolean, string] {
+    try {
+      if (isSensitiveSettingName(key)) {
+        return [false, "Sensitive settings must use their write-only credential editor."];
+      }
+      const metadata = this.settingsInfo.get(key);
+      if (metadata && !metadata.isEditable) {
+        return [false, `Server setting '${key}' is managed by the system and cannot be updated here.`];
+      }
+
+      const [isValueValid, normalizedValueOrError] = this.normalizeSettingValueForPersistence(
+        key,
+        value,
+        metadata,
+      );
+      if (!isValueValid) {
+        return [false, normalizedValueOrError];
+      }
+
+      const config = appConfigProvider.config;
+      if (key === COMPACTION_MODEL_SETTINGS_KEY) config.setDurably(key, normalizedValueOrError);
+      else config.set(key, normalizedValueOrError);
+      this.refreshDependentSettingsAfterUpdate(key);
+
+      if (!this.settingsInfo.has(key)) {
+        this.settingsInfo.set(
+          key,
+          new ServerSettingDescription(key, CUSTOM_SETTING_DESCRIPTION, true, true),
+        );
+        logger.info(`Added new custom server setting: ${key}`);
+      }
+
+      logger.info(`Server setting '${key}' updated`);
+      return [true, `Server setting '${key}' has been updated successfully.`];
+    } catch (error) {
+      logger.error(`Error updating server setting '${key}'`);
+      return [false, "Error updating server setting: SERVER_SETTING_UPDATE_REJECTED"];
+    }
+  }
+
+  private normalizeSettingValueForPersistence(
+    key: string,
+    value: string,
+    metadata: ServerSettingDescription | undefined,
+  ): [true, string] | [false, string] {
+    const validation = metadata?.valueValidation;
+    if (!validation) {
+      return [true, value];
+    }
+
+    const normalizedValue = validation.trimBeforePersist === false ? value : value.trim();
+    if (validation.normalizeForPersistence) {
+      return validation.normalizeForPersistence(normalizedValue);
+    }
+
+    if (validation.allowedValues && !validation.allowedValues.includes(normalizedValue)) {
+      return [
+        false,
+        `Server setting '${key}' must be one of: ${validation.allowedValues.join(", ")}.`,
+      ];
+    }
+
+    return [true, normalizedValue];
+  }
+
+  private refreshDependentSettingsAfterUpdate(key: string): void {
+    if (key === 'AUTOBYTEUS_LLM_SERVER_HOSTS'
+      || key === 'OLLAMA_HOSTS'
+      || key === 'LMSTUDIO_HOSTS') {
+      getModelCatalogService().notifySettingsChange(key);
+    }
+    if (MEDIA_DEFAULT_MODEL_SETTING_KEYS.has(key)) {
+      reloadMediaToolSchemas();
+    }
+  }
+
+  deleteSetting(key: string): [boolean, string] {
+    try {
+      const metadata = this.getSettingDescription(key);
+      if (!metadata.isDeletable) {
+        return [false, `Server setting '${key}' is managed by the system and cannot be removed.`];
+      }
+
+      const config = appConfigProvider.config;
+      const allSettings = config.getConfigData();
+      if (!Object.prototype.hasOwnProperty.call(allSettings, key)) {
+        return [false, `Server setting '${key}' does not exist.`];
+      }
+
+      config.delete(key);
+      this.settingsInfo.delete(key);
+      logger.info(`Server setting '${key}' deleted`);
+      return [true, `Server setting '${key}' has been deleted successfully.`];
+    } catch (error) {
+      logger.error(`Error deleting server setting '${key}': ${String(error)}`);
+      return [false, `Error deleting server setting: ${String(error)}`];
+    }
+  }
+
+  isValidSetting(_key: string): boolean {
+    return true;
+  }
+
+  getBooleanSetting(key: string): boolean | null {
+    const rawValue = appConfigProvider.config.get(key)?.trim();
+    if (!rawValue) {
+      return null;
+    }
+
+    return rawValue.toLowerCase() === "true";
+  }
+
+  setBooleanSetting(key: string, enabled: boolean): void {
+    appConfigProvider.config.set(key, enabled ? "true" : "false");
+  }
+
+  getSettingValue(key: string): string | null {
+    const rawValue = appConfigProvider.config.get(key);
+    if (typeof rawValue !== "string") {
+      return null;
+    }
+    const normalized = rawValue.trim();
+    return normalized.length > 0 ? normalized : null;
+  }
+
+  getEffectiveStreamingContentFlushIntervalMs(): number {
+    return resolveStreamingContentFlushIntervalMs();
+  }
+
+  getSkillImprovementDefaultImproverAgentDefinitionId(): string | null {
+    return this.getSettingValue(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
+  }
+
+  getFeaturedCatalogItemsSettingValue(): string | null {
+    return this.getSettingValue(FEATURED_CATALOG_ITEMS_SETTING_KEY);
+  }
+
+}
+
+let cachedServerSettingsService: ServerSettingsService | null = null;
+
+export const getServerSettingsService = (): ServerSettingsService => {
+  if (!cachedServerSettingsService) {
+    cachedServerSettingsService = new ServerSettingsService();
+  }
+  return cachedServerSettingsService;
+};

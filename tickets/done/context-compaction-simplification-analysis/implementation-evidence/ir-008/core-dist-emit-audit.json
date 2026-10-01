@@ -1,0 +1,72 @@
+{
+  "beforeArchive": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-delivery-safety/ir-008-core-dist-20261001T102637Z/core-dist-before.tar.gz",
+  "beforeArchiveSha256": "ffceacc8f49250cb3a4edf63d5ac7f8d3b9f9e1183dddfecbe23ccf5873ba620",
+  "archiveCurrentSha256": "ffceacc8f49250cb3a4edf63d5ac7f8d3b9f9e1183dddfecbe23ccf5873ba620",
+  "beforeCount": 1744,
+  "afterCount": 1748,
+  "changed": [
+    {
+      "path": "autobyteus-ts/dist/memory/raw-trace-ingestion.js",
+      "before": "1ce5582137ddece166e38457a506cb9b77e99785b9387e5b7631016cf13d8874",
+      "after": "3cf666aa8de1ad6081add9d7a63bda3cb7cb73629a77d8015c4ebb0cd225d79d"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/memory-manager.js",
+      "before": "b4ba01190575c1dbcf479bbb48721c487240d8cb9f55bb9b7cd0b69b04c176b8",
+      "after": "9940052f69696ac71deaaa8cadae9b6a4ea67eb164ca6283927dffb55fd7896a"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/memory-manager.d.ts",
+      "before": "904458e139f18a84fb64fdd73cfdbce12ddbe582bbf73abe1f908a9ac3ac737e",
+      "after": "a2091246f3145a833a54ec390c749989d2e57fb63eed929b50686e968102a48c"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/raw-trace-ingestion.d.ts",
+      "before": "afa1932b8aa065b31c49e87f11649c3176378938c23e72ce4c141867ce981d31",
+      "after": "4ef44ad7bd981d76c65b5f18b90d9704ee8086e7060612803eba6ef37ab72623"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/raw-trace-ingestion.d.ts.map",
+      "before": "3552ebeb2c610e173dccf23373d92b9cc8dd80c1a19585efec4eff66f5948139",
+      "after": "05adbf81bbf9f902ce221fb2c3c1d5c177f8eaf1d1f4c9f147e3c90128846a11"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/raw-trace-ingestion.js.map",
+      "before": "51fe927b284699dff96d3cb18241ee9a49efeb878ebacf446407786ab6f4fc64",
+      "after": "43e26edbca5279090d106c793e3cad320a1a286b7d9bab4b15c9b5660d549d6c"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/memory-manager.js.map",
+      "before": "dd7f5d5f392b5f62510e6d584414ee7566ec7ec6d6d5ec2fef043167931e8456",
+      "after": "5a78a9a594bb8d36df716a40406536bf70bac88a963a77f05dbaf18612745c95"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/memory-manager.d.ts.map",
+      "before": "60e00e087cc997aa8fde0af5f145208a6b033601a3fa1400649c1bf0cd4d278b",
+      "after": "de4922f48159464151ff7cd3ab7ae397f523c07c08b79aca5b3bc90c7e3284ef"
+    },
+    {
+      "path": "autobyteus-ts/dist/agent/input-processor/memory-ingest-input-processor.d.ts.map",
+      "before": "ba510c0276d4af75945d0e6ee13568be696f2c1aca43bb38b81b105ba0dda076",
+      "after": "60abe93064c42d9ea69eb81c349fa41d6973bc4ecc4d761e83d0780471cffda2"
+    },
+    {
+      "path": "autobyteus-ts/dist/agent/input-processor/memory-ingest-input-processor.js.map",
+      "before": "5df441464da327cf1e09fb531fbe520dfbe8589e324241d103c37a8f5f10697d",
+      "after": "2a99143c983fd9e89ae1334f17bec9d4801e21eb1a29c8405eba0fabc8e26696"
+    },
+    {
+      "path": "autobyteus-ts/dist/agent/input-processor/memory-ingest-input-processor.js",
+      "before": "2977784a8ff4a532646baaa45e070b199acb75034aa276f65f6b8e6f7ab8c925",
+      "after": "7dabdf8c31a3659820251af7812b7788096546300d24474ae8f22fa8f27ecdc5"
+    }
+  ],
+  "new": {
+    "autobyteus-ts/dist/agent/message/inter-agent-sender.js": "4adf4026cf4b72408006a20061d821ca7619f1b456948907ac839aa96908a9ab",
+    "autobyteus-ts/dist/agent/message/inter-agent-sender.d.ts.map": "afefcab23a195cec4e72d033a4f375a268d75ba9584109398c247561d2c570be",
+    "autobyteus-ts/dist/agent/message/inter-agent-sender.js.map": "4de637f3663567f5c92b6fd5bb55475fed3a44467c0567e6dd6fa9d65fa08730",
+    "autobyteus-ts/dist/agent/message/inter-agent-sender.d.ts": "be07584e6037a8811d17e283885abd65cb103c446f5263157bb969d57eaaf7d8"
+  },
+  "removed": [],
+  "cleanDistRun": false
+}

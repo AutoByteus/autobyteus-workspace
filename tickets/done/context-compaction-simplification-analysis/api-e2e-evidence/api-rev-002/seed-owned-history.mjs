@@ -1,0 +1,23 @@
+// Synthetic strict-v5 historical fixture for real API/browser read validation, no private history.
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { Message, MessageRole } from '../../../../../autobyteus-ts/dist/llm/utils/messages.js';
+import { WorkingContextFinalizer, createCompactedMemoryUserMessage } from '../../../../../autobyteus-ts/dist/memory/working-context-finalizer.js';
+import { WorkingContextSnapshotSerializer } from '../../../../../autobyteus-ts/dist/memory/working-context-snapshot-serializer.js';
+import { AgentRunMetadataStore } from '../../../../../autobyteus-server-ts/dist/run-history/store/agent-run-metadata-store.js';
+import { RawTraceItem } from '../../../../../autobyteus-ts/dist/memory/models/raw-trace-item.js';
+import { RunMemoryFileStore } from '../../../../../autobyteus-ts/dist/memory/store/run-memory-file-store.js';
+import { executeGraphql } from '../../../../../test-support/live-e2e/test-runtime-bootstrap.mjs';
+import { createHash } from 'node:crypto';
+const here=path.dirname(fileURLToPath(import.meta.url));const server=JSON.parse(fs.readFileSync(path.join(here,'owned-server.json')));
+const runId='api-rev-002-historical-v5';const memory=path.join(server.runtimeRoot,'memory');const dir=path.join(memory,'agents',runId);if(fs.existsSync(dir))throw Error('Fixture already exists');fs.mkdirSync(dir,{recursive:true});
+const context=new WorkingContextFinalizer().finalize({messages:[new Message(MessageRole.SYSTEM,{content:'Synthetic historical system head.'}),createCompactedMemoryUserMessage('Historical checkpoint: audit-only plan for INC-042. No deployment approved. Verification has not run.'),new Message(MessageRole.ASSISTANT,{content:'The risk assessment remains pending.'}),new Message(MessageRole.USER,{content:'Latest retained request: compare rollback options.'})]});
+const snapshot=WorkingContextSnapshotSerializer.serialize(context,{agent_id:runId});if(!WorkingContextSnapshotSerializer.validate(snapshot))throw Error('Strict v5 fixture invalid');fs.writeFileSync(path.join(dir,'working_context_snapshot.json'),JSON.stringify(snapshot));
+for(const [name,data] of [['episodic',{summary:'Historical inventory phase completed; no deployment.'}],['semantic',{fact:'Historical owner: Mira Chen.'}]])fs.writeFileSync(path.join(dir,name+'.jsonl'),JSON.stringify(data)+'\n');
+const raw=new RunMemoryFileStore(dir);raw.appendRawTrace(new RawTraceItem({id:'history-user',traceType:'user',sourceEvent:'AgentRun.postUserMessage',content:'Synthetic raw request INC-042',ts:1790450000,turnId:'turn-history',seq:1}));
+await new AgentRunMetadataStore(memory).writeMetadata(runId,{runId,agentDefinitionId:'api-rev-002-historical-agent',workspaceRootPath:'/synthetic/helios',memoryDir:dir,llmModelIdentifier:'fixture-only-model',llmConfig:null,autoExecuteTools:false,skillAccessMode:null,runtimeKind:'autobyteus',platformAgentRunId:null,startedAt:'2026-09-26T20:00:00Z'});
+const q='query($id:String!){getAgentRunMemoryView(runId:$id){runId workingContext{role content} episodic semantic rawTraces{id content}}}';
+const response=await fetch(server.serverUrl+'/graphql',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({query:q,variables:{id:runId}})}).then(r=>r.json());
+const hashes=Object.fromEntries(fs.readdirSync(dir).filter(x=>x.endsWith('.json')||x.endsWith('.jsonl')).map(name=>[name,createHash('sha256').update(fs.readFileSync(path.join(dir,name))).digest('hex')]));
+fs.writeFileSync(path.join(here,'API-C09-history-fixture.json'),JSON.stringify({runId,dir,snapshot,hashes,response},null,2));console.log(JSON.stringify(response));

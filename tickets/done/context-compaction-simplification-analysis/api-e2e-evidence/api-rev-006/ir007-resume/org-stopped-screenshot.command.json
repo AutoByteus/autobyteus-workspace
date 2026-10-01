@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-01T05:45:43.459Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=51625",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "screenshot",
+    "--tab-id",
+    "058FB67A1696E17A8D8FE36226991FF8",
+    "--output-file",
+    "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-006/ir007-resume/org-stopped.png",
+    "--viewport-only"
+  ]
+}

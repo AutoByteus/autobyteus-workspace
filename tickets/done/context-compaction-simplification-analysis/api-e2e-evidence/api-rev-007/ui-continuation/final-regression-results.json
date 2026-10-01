@@ -1,0 +1,52 @@
+[
+  {
+    "case": "C02-R",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/unit/memory",
+      "tests/integration/agent/runtime/agent-runtime-compaction.test.ts",
+      "tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T06:53:31.152579+00:00",
+    "finished": "2026-10-01T06:53:41.592744+00:00",
+    "exit": 0
+  },
+  {
+    "case": "C05-R",
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-server-ts",
+      "exec",
+      "vitest",
+      "run",
+      "tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "tests/e2e/memory/memory-view-graphql.e2e.test.ts",
+      "tests/e2e/memory/memory-explorer-graphql.e2e.test.ts",
+      "--no-watch"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T06:53:41.594676+00:00",
+    "finished": "2026-10-01T06:53:57.600305+00:00",
+    "exit": 0
+  },
+  {
+    "case": "C07-R",
+    "argv": [
+      "node",
+      "--test",
+      "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T06:53:57.602423+00:00",
+    "finished": "2026-10-01T06:53:57.811460+00:00",
+    "exit": 0
+  }
+]

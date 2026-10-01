@@ -1,0 +1,990 @@
+--- entry/autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts
++++ current/autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts
+@@ -1,6 +1,7 @@
+ import { z } from "zod";
+ import {
+   agentAddressSchema,
++  agentInputStateSchema,
+   agentPresentationMessageSchema,
+   nonEmptyStringSchema,
+ } from "@autobyteus/agent-presentation-contracts";
+@@ -43,6 +44,7 @@
+   execution_tree: agentRunCollaborationTreeDtoSchema,
+   communication_messages: agentRunCollaborationCommunicationMessagesDtoSchema,
+   agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
++  agent_input_states: z.array(z.object({ agent_run_id: nonEmptyStringSchema, state: agentInputStateSchema }).strict()),
+ }).strict();
+ 
+ export const agentRunCollaborationEventDtoSchema = z.discriminatedUnion("kind", [
+--- entry/autobyteus-collaboration-stream-contracts/tests/agent-run-collaboration-dtos.test.mjs
++++ current/autobyteus-collaboration-stream-contracts/tests/agent-run-collaboration-dtos.test.mjs
+@@ -46,10 +46,11 @@
+         messageType: "agent_message", referenceFiles: [], createdAt: "2026-09-30T00:00:02.000Z",
+       }],
+     },
++    agent_input_states: [],
+     agent_statuses: [
+-      { member_address: "/code_reviewer", agent_run_id: "reviewer-run", status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null },
+-      { member_address: "/product_team/lead", agent_run_id: "lead-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null },
+-      { member_address: "/code_reviewer", agent_run_id: "reviewer-copy-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null },
++      { member_address: "/code_reviewer", agent_run_id: "reviewer-run", status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
++      { member_address: "/product_team/lead", agent_run_id: "lead-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
++      { member_address: "/code_reviewer", agent_run_id: "reviewer-copy-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+     ],
+     ...overrides,
+   },
+@@ -107,3 +108,16 @@
+   const { collaborators: _omitted, ...withoutCollaborators } = tree.rootOrg;
+   assert.throws(() => agentOrgExecutionTreeDtoSchema.parse({ ...tree, rootOrg: withoutCollaborators }));
+ });
++
++
++test("Agent-root live input projection is required and carries held/queued recovery facts", () => {
++  const view = agentView();
++  const state = { run_instance_id: "native-instance", revision: 2, entries: [], recoverableBlock: {
++    operationId: "op", failureEpoch: 1, position: { kind: "next_turn", failedTurnId: "A" },
++    state: "awaiting_user", code: "failed", message: "retry required",
++  } };
++  view.root_agent.agent_input_states.push({ agent_run_id: "reviewer-run", state });
++  assert.deepEqual(RootExecutionViewDtoSchema.parse(view).root_agent.agent_input_states[0].state, state);
++  delete view.root_agent.agent_input_states;
++  assert.throws(() => RootExecutionViewDtoSchema.parse(view));
++});
+--- entry/autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs
++++ current/autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs
+@@ -6,7 +6,7 @@
+ const state={run_instance_id:'instance',revision:2,recoverableBlock:block,entries:[{sequence:1,message_id:'A',dedupe_key:'input:A',turn_id:'turn-A',state:'held',content:'real A',sender_type:'user',file_attachments:[]}]};
+ const snapshot=()=>({root_subject_kind:'agent_org',root_run_id:'org',root_org:{
+  base_change_sequence:0,is_active:true,
+- execution_tree:{subjectKind:'agent_org',createdAt:'2026-09-01',archivedAt:null,applicationBinding:null,handoffs:[],rootOrg:{address:'/',orgDefinitionId:'definition',orgDefinitionName:'Org',orgRunId:'org',defaultLaunchConfiguration:launch,members:[{address:'/worker',agentDefinitionId:'worker',role:null,description:null,agentRunId:'run',platformAgentRunId:null,launchConfiguration:launch}],taskExecutions:[]}},
++ execution_tree:{subjectKind:'agent_org',createdAt:'2026-09-01',archivedAt:null,applicationBinding:null,handoffs:[],rootOrg:{address:'/',orgDefinitionId:'definition',orgDefinitionName:'Org',orgRunId:'org',defaultLaunchConfiguration:launch,collaborators:[],members:[{address:'/worker',agentDefinitionId:'worker',role:null,description:null,agentRunId:'run',platformAgentRunId:null,launchConfiguration:launch}],taskExecutions:[]}},
+  communication_messages:{schemaVersion:1,subjectKind:'agent_org',orgRunId:'org',messages:[]},
+  agent_statuses:[{member_address:'/worker',agent_run_id:'run',status:'error',trigger:null,tool_name:null,error_message:null,error_details:null,recoverableBlock:block}],
+  agent_input_states:[{agent_run_id:'run',state:structuredClone(state)}],
+--- entry/autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
++++ current/autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts
+@@ -1,3 +1,4 @@
++import { collectAgentRootInputSnapshots } from "../services/agent-run-collaboration-input-snapshot.js";
+ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+ import type { AgentRun } from "../../agent-execution/domain/agent-run.js";
+ import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+@@ -66,6 +67,7 @@
+   tree: AgentRunCollaborationTreeSnapshot;
+   messages: AgentRunCollaborationMessagesFileV1;
+   statuses: readonly CollaborationAgentStatusSnapshot[];
++  inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
+ }>;
+ 
+ /**
+@@ -314,6 +316,10 @@
+       tree: this.tree,
+       messages: this.messages,
+       statuses: this.getAgentStatusSnapshots(),
++      inputStates: collectAgentRootInputSnapshots(this.index, [
++        ...this.options.rootAgents.getInputStateSnapshots(),
++        ...this.options.teams.list().flatMap(team => team.getInputStateSnapshots()),
++      ]),
+     }));
+   }
+ 
+--- entry/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts
++++ current/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts
+@@ -208,7 +208,7 @@
+     const tree = await this.store.readTree(dir, hostRunId);
+     if (!tree) return null;
+     const messages = await this.store.readMessages(dir, hostRunId) ?? emptyAgentRunCollaborationMessages(hostRunId);
+-    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, snapshot: Object.freeze({ tree, messages, statuses: Object.freeze([]) }) });
++    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, snapshot: Object.freeze({ tree, messages, statuses: Object.freeze([]), inputStates: Object.freeze([]) }) });
+   }
+ 
+   private async load(metadata: AgentRunMetadata): Promise<AgentRunCollaborationRoot> {
+--- entry/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts
++++ current/autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts
+@@ -162,7 +162,8 @@
+     if (!this.isActive()) return [];
+     return [...this.configured.listHandles().flatMap(handle => handle.getInputStateSnapshots()),
+       ...this.taskAgents.getInputStateSnapshots(),
+-      ...this.taskTeams.listTeamRuns().flatMap(run => run.getInputStateSnapshots())];
++      ...this.taskTeams.listTeamRuns().flatMap(run => run.getInputStateSnapshots()),
++      ...this.collaboratorTeams.list().flatMap(run => run.getInputStateSnapshots())];
+   }
+   getLeafAgentStatusSnapshots(): TeamAgentStatusSnapshot[] {
+     if (!this.isActive()) return [];
+--- entry/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts
++++ current/autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts
+@@ -25,6 +25,7 @@
+     is_active: input.isActive,
+     execution_tree: input.snapshot.tree,
+     communication_messages: input.snapshot.messages,
++    agent_input_states: input.snapshot.inputStates,
+     agent_statuses: input.snapshot.statuses.map((status) => ({
+       member_address: status.execution.memberAddress,
+       agent_run_id: status.execution.agentRunId,
+@@ -33,6 +34,7 @@
+       tool_name: null,
+       error_message: status.details.errorMessage,
+       error_details: null,
++      recoverableBlock: status.details.recoverableBlock,
+     })),
+   },
+ });
+--- entry/autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts
++++ current/autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts
+@@ -16,7 +16,7 @@
+ async function ingress(kind:'agent_team'|'agent_org', f:Awaited<ReturnType<typeof createRecoveryFixture>>) {
+  const root=kind==='agent_team'?createTeamRootExecutionIdentity('team-run-root'):createAgentOrgRootExecutionIdentity('org-run-1');
+  const identity=createCollaborationMemberExecutionIdentity({root,memberAddress:'/product_manager',agentRunId:f.run.runId});
+- const memberExecutionContext=new MemberExecutionContext({identity,
++ const memberExecutionContext=new MemberExecutionContext({identity,teamScoped:true,
+   collaboration:new MemberCollaborationContext({deliverLogicalMessage:async()=>({accepted:true})}),
+   tasks:{root,delegateTask:vi.fn(),submitTaskResult:vi.fn(),reviewTaskResult:vi.fn()}});
+  const prepareNewAgentRun=vi.fn(async()=>({runId:f.run.runId,runtimeKind:'autobyteus',platformAgentRunId:null,
+@@ -36,6 +36,7 @@
+  let handler:AgentTeamStreamHandler|AgentOrgStreamHandler;
+  if(kind==='agent_team') {
+   const tree=JSON.parse(fs.readFileSync(path.resolve('tests/fixtures/current-team-run-v2/case-001-nested-task-team/team_run_execution_tree.json'),'utf8').replaceAll('agent-run-product-manager',f.run.runId));
++  tree.rootTeam.collaborators=[];
+   const run={teamRunId:root.rootRunId,getExecutionTreeSnapshot:()=>tree,executeAgentCommand,
+    openPackageSnapshotConnection:()=>publisher.openSnapshotConnection(()=>({tree,messages:{schemaVersion:1,teamRunId:root.rootRunId,messages:[]},statuses:[],inputStates:handle.getInputStateSnapshots()}))};
+   handler=new AgentTeamStreamHandler(new AgentSessionManager(),{resolveActiveTeamRun:async()=>run,getActiveTeamRun:()=>run,recordRunActivity:async()=>{}} as any,
+--- entry/autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts
++++ current/autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts
+@@ -42,6 +42,7 @@
+       // Mirrors ConfiguredAgentExecutionHandle: an errored configured Agent still holds open work.
+       hasOpenExecutionWork: () => status === "running" || status === "initializing" || status === "error",
+       getStatusSnapshot: snapshot,
++      getInputStateSnapshots: vi.fn(() => [] as unknown[]),
+       prepareConfiguredActivation: vi.fn(async () => {
+         emit("initializing");
+         if (activationFailure) throw activationFailure;
+--- entry/autobyteus-server-ts/tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts
++++ current/autobyteus-server-ts/tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts
+@@ -1,3 +1,5 @@
++import { projectAgentCollaborationView } from "../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
++import { CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
+ import fs from "node:fs/promises";
+ import os from "node:os";
+ import path from "node:path";
+@@ -140,6 +142,32 @@
+     expect(await f.manager.ensureRoot(metadata(f.memoryDir, { launchPurpose: "server_helper" }))).toBeNull();
+   });
+ 
++  it("captures hosted Agent/Team live inputs only, deduplicates recursive leaves, and keeps inspection non-restoring", async () => {
++    const f = await buildManager();
++    const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
++    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, content: "Review",
++      mentions: [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" }] });
++    await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: '/product_team' as never, content: 'Wake team' });
++    const block = { operationId: "op", failureEpoch: 1, position: { kind: "held_turn", turnId: "A" },
++      state: "awaiting_user", code: "failed", message: "retry required" };
++    const state = { run_instance_id: "native-instance", revision: 3, recoverableBlock: block,
++      entries: ["A", "B"].map((id, index) => ({ sequence: index + 1, message_id: id, dedupe_key: `input:${id}`,
++        turn_id: index ? null : "A", state: index ? "queued" : "held", content: id, sender_type: "user", file_attachments: [] })) };
++    for (const [id, observed] of f.handles) Object.assign(observed.handle, {
++      getInputStateSnapshots: () => id === "designer-run-3" ? [] : [{ agent_run_id: id, state }, { agent_run_id: id, state }],
++    });
++    f.host.crash();
++    const inspection = (await f.manager.getInspection(HOST))!;
++    expect(f.restores).not.toHaveBeenCalled();
++    const projected = projectAgentCollaborationView(inspection);
++    if (projected.root_subject_kind !== 'agent') throw new Error('Wrong root');
++    expect(projected.root_agent.agent_input_states.map(s => s.agent_run_id).sort()).toEqual(["code-reviewer-run-1", "lead-run-2"]);
++    expect(projected.root_agent.agent_input_states[0]!.state.entries.map(e => e.state)).toEqual(["held", "queued"]);
++    expect(projected.root_agent.agent_input_states.some(s => s.agent_run_id === HOST)).toBe(false);
++    Object.assign(f.handles.get("code-reviewer-run-1")!.handle, { getInputStateSnapshots: () => [{ agent_run_id: HOST, state }] });
++    await expect(root.openPackageSnapshotConnection()).rejects.toThrow('not an Agent-root child');
++  });
++
+   it("creates the package on the first admitted mention, hosts each collaborator once, messages it, copies it and restores", async () => {
+     const f = await buildManager();
+     const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
+@@ -179,6 +207,18 @@
+       expect.arrayContaining([["/code_reviewer", "offline"], ["/product_team/lead", "offline"], ["/product_team/designer", "offline"]]),
+     );
+ 
++    for (const observed of f.handles.values()) Object.assign(observed.handle, { getInputStateSnapshots: () => [] });
++    const snapshotConnection = await root.openPackageSnapshotConnection();
++    const projected = projectAgentCollaborationView({ hostRunId: HOST, isActive: true,
++      snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence });
++    expect(projected.root_subject_kind === 'agent' && projected.root_agent.agent_statuses).toHaveLength(3);
++    if (projected.root_subject_kind === 'agent') {
++      expect(projected.root_agent.agent_statuses.every(s => s.recoverableBlock === null)).toBe(true);
++      expect(projected.root_agent.agent_input_states).toEqual([]);
++    }
++    expect(CollaborationStreamServerMessageSchema.safeParse({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: projected }).success).toBe(true);
++    snapshotConnection.close();
++
+     // send_message_to by address reaches the one hosted instance and starts it.
+     const reviewerHandle = f.handles.get("code-reviewer-run-1")!;
+     expect(reviewerHandle.input.physicalScope).toEqual({ root: createAgentRootExecutionIdentity(HOST), ancestorTeamRunIds: [] });
+@@ -205,6 +245,7 @@
+     await expect(root.delegateTask({ identity: lead.input.identity }, { recipient_address: "/product_team/designer", description: "Mock it" }))
+       .resolves.toMatchObject({ target_agent_run_id: "designer-run-5" });
+     await flushMicrotasks();
++    for (const observed of f.handles.values()) Object.assign(observed.handle, { getInputStateSnapshots: () => [] });
+     const tree = root.getExecutionTreeSnapshot();
+     expect(tree.taskExecutions.map((task) => task.address)).toEqual(["/code_reviewer"]);
+     const team = tree.collaborators[1]!;
+--- entry/autobyteus-server-ts/tests/unit/agent-team-execution/team-root-collaborators.test.ts
++++ current/autobyteus-server-ts/tests/unit/agent-team-execution/team-root-collaborators.test.ts
+@@ -111,6 +111,17 @@
+ };
+ 
+ describe("collaborators hosted in a Team root (AR-006)", () => {
++  it("includes a hosted collaborator Team's live input snapshots in the root package", async () => {
++    const f = await harness(); await admitBoth(f.root);
++    const { lead } = entriesOf(f.root);
++    await f.root.executeAgentCommand(lead.agentRunId, { kind: "post_message", message: { content: "Work" } as never });
++    const state = { run_instance_id: 'instance', revision: 1, entries: [], recoverableBlock: null };
++    f.handles.get(lead.agentRunId)!.handle.getInputStateSnapshots.mockReturnValue([{ agent_run_id: lead.agentRunId, state }]);
++    const connection = await f.root.openPackageSnapshotConnection();
++    expect(connection.snapshot.inputStates).toEqual([{ agent_run_id: lead.agentRunId, state }]);
++    connection.close();
++  });
++
+   it("adds each collaborator once at admission, Offline, persisted with its run IDs and published", async () => {
+     const f = await harness();
+     const events: TeamRunEvent[] = [];
+--- entry/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts
++++ current/autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts
+@@ -12,7 +12,7 @@
+ const fakeRoot = () => ({
+   getExecutionTreeSnapshot: () => tree,
+   openPackageSnapshotConnection: vi.fn(async () => ({
+-    snapshot: { tree, messages: emptyAgentRunCollaborationMessages(HOST), statuses: [] },
++    snapshot: { tree, messages: emptyAgentRunCollaborationMessages(HOST), statuses: [], inputStates: [] },
+     baseChangeSequence: 0,
+     subscribe: vi.fn(() => () => undefined),
+     close: vi.fn(),
+--- entry/autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts
++++ current/autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts
+@@ -2,13 +2,14 @@
+ import { useAgentContextsStore } from '~/stores/agentContextsStore'
+ import { useAgentSelectionStore } from '~/stores/agentSelectionStore'
+ import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
++import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
+ import { AgentStatus } from '~/types/agent/AgentStatus'
+ 
+ const TEMPORARY_RUN_ID_PREFIX = 'temp-'
+ 
+ /**
+  * Keeps the selected standalone run's collaboration view in step with its host: the live
+- * stream while the host runs (Initializing, Idle or Running), the stored view otherwise.
++ * stream while the host runs (including Error with live compaction recovery), inspection otherwise.
+  * A stopped or crashed host is never restored by viewing.
+  */
+ export function useAgentRunCollaborationSync(): void {
+@@ -22,10 +23,11 @@
+     const runId = context?.state.runId
+     if (!context || !runId || runId.startsWith(TEMPORARY_RUN_ID_PREFIX)) return null
+     const status = context.state.currentStatus
+-    return { runId, running: status !== AgentStatus.Offline && status !== AgentStatus.Error }
++    return { runId, running: status !== AgentStatus.Offline
++      && (status !== AgentStatus.Error || !!context.state.recoverableBlock) }
+   })
+ 
+-  watch(() => host.value && `${host.value.runId}:${host.value.running}`, () => {
++  watch(() => host.value && `${host.value.runId}:${host.value.running}:${useWindowNodeContextStore().bindingRevision}`, () => {
+     if (host.value) collaboration.syncHost(host.value.runId, host.value.running)
+   }, { immediate: true })
+ }
+--- entry/autobyteus-web/services/agentCollaboration/__tests__/agentRootFixture.ts
++++ current/autobyteus-web/services/agentCollaboration/__tests__/agentRootFixture.ts
+@@ -3,7 +3,8 @@
+ export const created = '2026-09-30T00:00:00.000Z'
+ export const launch = { runtimeKind: 'codex_app_server' as const, llmModelIdentifier: 'root-model', llmConfig: null, autoExecuteTools: false, workspaceRootPath: '/ws' }
+ 
+-export const agentRootView = (): AgentRunCollaborationViewDto => ({
++type MutableView = { -readonly [K in keyof AgentRunCollaborationViewDto]: AgentRunCollaborationViewDto[K] }
++export const agentRootView = (): MutableView => ({
+   base_change_sequence: 4,
+   is_active: true,
+   execution_tree: {
+@@ -26,10 +27,10 @@
+     messageId: 'm1', senderAgentRunId: 'cua-run', receiverAgentRunId: 'host-run', content: 'Done, research assistant.',
+     messageType: 'direct_message', referenceFiles: [], createdAt: created,
+   }] },
++  agent_input_states: [],
+   agent_statuses: [
+-    { agent_run_id: 'cua-run', member_address: '/computer_use_agent', status: 'idle' },
+-    { agent_run_id: 'pp-run', member_address: '/product_team/prototyper', status: 'running' },
+-    { agent_run_id: 'pb-run', member_address: '/product_team/bootstrapper', status: 'offline' },
++    { agent_run_id: 'cua-run', member_address: '/computer_use_agent', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
++    { agent_run_id: 'pp-run', member_address: '/product_team/prototyper', status: 'running', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
++    { agent_run_id: 'pb-run', member_address: '/product_team/bootstrapper', status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+   ],
+-} as AgentRunCollaborationViewDto)
+-
++} as MutableView)
+--- entry/autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
++++ current/autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+@@ -95,3 +95,63 @@
+     expect(parseAgentTeamAddress(context.index.hostAddress)).toBe('/research_assistant')
+   })
+ })
++
++const recovery = { operationId: 'native-op', failureEpoch: 1,
++  position: { kind: 'held_turn' as const, turnId: 'A' }, state: 'awaiting_user' as const, code: 'failed', message: 'Retry on user input' }
++const inputState = (revision = 3) => ({ run_instance_id: 'runtime-1', revision, recoverableBlock: recovery,
++  entries: ['A', 'B'].map((text, index) => ({ sequence: index + 1, message_id: text, dedupe_key: `input:${text}`, turn_id: index ? null : 'A',
++    state: index ? 'queued' as const : 'held' as const, content: text, sender_type: 'user' as const, file_attachments: [] })) })
++
++it('hydrates hosted Agent and Team held/queued identities and applies same-instance live revisions without resending', () => {
++  const view = agentRootView()
++  view.agent_input_states = ['cua-run', 'pp-run'].map(id => ({ agent_run_id: id, state: inputState() }))
++  view.agent_statuses[0]!.status = 'error'; view.agent_statuses[0]!.recoverableBlock = recovery
++  const root = build(view)
++  for (const id of ['cua-run', 'pp-run']) {
++    const ctx = root.getAgentContext(id)!
++    expect(ctx.state.inputProjection).toEqual({ runInstanceId: 'runtime-1', revision: 3 })
++    expect(ctx.state.recoverableBlock).toEqual(recovery)
++    expect(ctx.state.currentStatus).toBe('error')
++    expect(ctx.conversation.messages).toMatchObject([
++      { type: 'user', messageId: 'A', pendingInput: { state: 'held' } },
++      { type: 'user', messageId: 'B', pendingInput: { state: 'queued' } },
++    ])
++  }
++  const ctx = root.getAgentContext('cua-run')!
++  expect(root.applyEvent(5, { kind: 'agent_presentation', agent_run_id: 'cua-run', member_address: '/computer_use_agent',
++    message: { type: 'AGENT_INPUT_STATE', payload: inputState(2) } } as any)).toBe('applied')
++  expect(ctx.state.inputProjection?.revision).toBe(3)
++  const fresh = inputState(4); fresh.entries = [fresh.entries[1]!]
++  root.applyEvent(6, { kind: 'agent_presentation', agent_run_id: 'cua-run', member_address: '/computer_use_agent',
++    message: { type: 'AGENT_INPUT_STATE', payload: fresh } } as any)
++  expect(ctx.conversation.messages).toHaveLength(2)
++  expect(ctx.conversation.messages[0]).not.toHaveProperty('pendingInput')
++  expect(ctx.state.inputProjection?.revision).toBe(4)
++})
++
++it('post-response recovery projects no held A and cold dormant contexts invent no input projection', () => {
++  const view = agentRootView()
++  view.agent_statuses[0]!.status = 'error'
++  view.agent_statuses[0]!.recoverableBlock = { ...recovery, position: { kind: 'next_turn', failedTurnId: 'consumed-A' } }
++  view.agent_input_states = [{ agent_run_id: 'cua-run', state: { ...inputState(), entries: [],
++    recoverableBlock: view.agent_statuses[0]!.recoverableBlock } }]
++  const live = build(view).getAgentContext('cua-run')!
++  expect(live.conversation.messages).toEqual([]); expect(live.state.recoverableBlock?.position.kind).toBe('next_turn')
++  const cold = agentRootView(); cold.is_active = false; cold.agent_statuses.forEach(s => { s.status = 'offline' })
++  const saved = build(cold).getAgentContext('cua-run')!
++  expect(saved.state.inputProjection).toBeNull(); expect(saved.state.recoverableBlock).toBeNull()
++})
++
++it.each(['host-input', 'unknown-input', 'duplicate-input', 'duplicate-status', 'wrong-address'])(
++  'rejects %s rather than applying a partial snapshot', kind => {
++    const view = agentRootView()
++    const value = { agent_run_id: 'cua-run', state: inputState() }
++    view.agent_input_states = [value]
++    if (kind === 'host-input') value.agent_run_id = 'host-run'
++    if (kind === 'unknown-input') value.agent_run_id = 'unknown'
++    if (kind === 'duplicate-input') view.agent_input_states.push(value)
++    if (kind === 'duplicate-status') view.agent_statuses.push(view.agent_statuses[0]!)
++    if (kind === 'wrong-address') view.agent_statuses[0]!.member_address = '/wrong'
++    expect(() => build(view)).toThrow(/identity/)
++  },
++)
+--- entry/autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts
++++ current/autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts
+@@ -1,3 +1,4 @@
++import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler'
+ import { reactive, shallowReactive } from 'vue'
+ import { memberDisplayName } from '~/utils/collaboration/memberDisplayName'
+ import type {
+@@ -73,11 +74,27 @@
+     }
+     if (this.contexts.size !== this.index.agents.size) throw new Error('Agent collaboration context scope is incomplete.')
+     this.assertMessagesCorrelated(this.view.communication_messages.messages)
++    const statuses = new Set<string>()
++    const inputs = new Set<string>()
+     for (const status of input.view.agent_statuses) {
+-      if (this.index.agents.get(status.agent_run_id)?.address !== status.member_address) {
+-        throw new Error(`Agent collaboration status '${status.agent_run_id}' has no exact child identity.`)
+-      }
+-      this.contexts.get(status.agent_run_id)!.state.currentStatus = status.status as AgentStatus
++      if (statuses.has(status.agent_run_id) || this.index.agents.get(status.agent_run_id)?.address !== status.member_address) {
++        throw new Error(`Agent collaboration status '${status.agent_run_id}' has no unique exact child identity.`)
++      }
++      statuses.add(status.agent_run_id)
++    }
++    for (const inputState of input.view.agent_input_states) {
++      if (inputs.has(inputState.agent_run_id) || !this.index.agents.has(inputState.agent_run_id)) {
++        throw new Error(`Agent collaboration input '${inputState.agent_run_id}' has no unique child identity.`)
++      }
++      inputs.add(inputState.agent_run_id)
++    }
++    for (const status of input.view.agent_statuses) {
++      const state = this.contexts.get(status.agent_run_id)!.state
++      state.currentStatus = status.status as AgentStatus
++      state.recoverableBlock = status.recoverableBlock
++    }
++    for (const inputState of input.view.agent_input_states) {
++      handleAgentInputState(inputState.state, this.contexts.get(inputState.agent_run_id)!)
+     }
+     this.phase = input.view.is_active ? 'live' : 'historical'
+   }
+@@ -148,17 +165,37 @@
+     this.phase = 'reopen_required'
+   }
+ 
+-  /** Carries the local composer and runtime state of children that are still present. */
+-  adoptLocalContexts(previous: AgentRunCollaborationContext): void {
+-    for (const [agentRunId, context] of this.contexts) {
++  listAgentContextEntries(): readonly AgentRunCollaborationContextEntry[] {
++    return [...this.contexts].map(([agentRunId, context]) => Object.freeze({
++      agentRunId, memberAddress: this.index.requireAgent(agentRunId).address, context,
++    }))
++  }
++
++  /** Preflight every retained identity before the caller commits any activities. */
++  prepareLocalContextAdoption(previous: AgentRunCollaborationContext): () => void {
++    if (previous.hostRunId !== this.hostRunId) throw new Error('Agent collaboration retained host mismatch.')
++    const pairs: { agentRunId: string; old: AgentContext; next: AgentContext }[] = []
++    for (const [agentRunId, next] of this.contexts) {
+       const old = previous.getAgentContext(agentRunId)
+       if (!old) continue
+-      if (previous.index.requireAgent(agentRunId).address !== this.index.requireAgent(agentRunId).address) {
+-        throw new Error('Agent collaboration retained address mismatch.')
+-      }
+-      old.config = context.config
+-      old.state = context.state
+-      this.contexts.set(agentRunId, old)
++      if (old.state.runId !== agentRunId || next.state.runId !== agentRunId
++        || previous.index.requireAgent(agentRunId).address !== this.index.requireAgent(agentRunId).address) {
++        throw new Error('Agent collaboration retained identity mismatch.')
++      }
++      const before = old.state.inputProjection
++      const after = next.state.inputProjection
++      if (before && after && before.runInstanceId === after.runInstanceId && after.revision < before.revision) {
++        throw new Error('Agent collaboration input snapshot revision is stale.')
++      }
++      pairs.push({ agentRunId, old, next })
++    }
++    // Synchronous assignment only: all validation precedes the activity transaction.
++    return () => {
++      for (const { agentRunId, old, next } of pairs) {
++        old.config = next.config
++        old.state = next.state
++        this.contexts.set(agentRunId, old)
++      }
+     }
+   }
+ 
+--- entry/autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts
++++ current/autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts
+@@ -4,12 +4,7 @@
+   AgentRootExecutionViewDtoSchema,
+   type AgentRunCollaborationViewDto,
+ } from '@autobyteus/collaboration-stream-contracts'
+-import { AgentContext } from '~/types/agent/AgentContext'
+-import { AgentRunState } from '~/types/agent/AgentRunState'
+-import { AgentStatus } from '~/types/agent/AgentStatus'
+-import type { AgentRunConfig } from '~/types/agent/AgentRunConfig'
+ import type { WorkspaceMetadata } from '~/types/workspace/WorkspaceMetadata'
+-import { initializeRuntimeStatusState } from '~/services/runStatus/agentRuntimeStatusState'
+ import { buildConversationFromProjection, type RunProjectionConversationEntry } from '~/services/runHydration/runProjectionConversation'
+ import { buildActivitiesFromProjection, type RunProjectionActivityEntry } from '~/services/runHydration/runProjectionActivityHydration'
+ import { primeRecentEventMonitorBaseline, resetRecentEventMonitorBaseline } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator'
+@@ -74,8 +69,12 @@
+   hostRunId: string
+   view: AgentRunCollaborationViewDto
+   isCurrent?(): boolean
++  activityRevisions?: ReadonlyMap<string, number>
+ }>): Promise<{ context: AgentRunCollaborationContext; commitActivities(): void }> => {
+   const index = new AgentRunCollaborationIndex(input.view.execution_tree)
++  const activityStore = useAgentActivityStore()
++  const revisions = new Map([...index.agents.keys()].map(id => [id,
++    input.activityRevisions?.get(id) ?? activityStore.getActivityContentRevision(id)]))
+   const workspaces = new Map<string, Promise<WorkspaceMetadata | null>>()
+   const workspaceFor = (root: string | null) => {
+     if (!root) return Promise.resolve(null)
+@@ -98,7 +97,7 @@
+       entry: Object.freeze({ agentRunId: child.agentRunId, memberAddress: child.address, context }),
+       activities: Object.freeze({
+         runId: child.agentRunId,
+-        expectedRevision: useAgentActivityStore().getActivityContentRevision(child.agentRunId),
++        expectedRevision: revisions.get(child.agentRunId)!,
+         activities: buildActivitiesFromProjection(projection.activities),
+       }),
+     }
+@@ -109,6 +108,7 @@
+   return {
+     context,
+     commitActivities: () => {
++      if (input.isCurrent && !input.isCurrent()) throw new Error('Agent collaboration hydration ownership released.')
+       if (replacements.length && useAgentActivityStore().replaceProjectionActivitiesIfRevisions(replacements) === 'conflict') {
+         throw new Error(`Agent collaboration activity changed before '${input.hostRunId}' hydration could commit.`)
+       }
+--- entry/autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts
++++ current/autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts
+@@ -47,6 +47,7 @@
+ 
+   constructor(private readonly options: Readonly<{
+     hostRunId: string
++    isCurrent(): boolean
+     publish(context: AgentRunCollaborationContext, commitActivities: () => void): void
+     onInactive(): void
+     reportError(message: string): void
+@@ -55,7 +56,7 @@
+   }>) {}
+ 
+   connect(): void {
+-    if (this.released || this.socket) return
++    if (this.released || !this.options.isCurrent() || this.socket) return
+     const endpoint = `${useWindowNodeContextStore().getBoundEndpoints().agentCollaborationWs}/${encodeURIComponent(this.options.hostRunId)}`
+     const socket = new WebSocket(buildAuthenticatedWebSocketUrl(endpoint, getActiveRemoteAccessCredential() ?? ''))
+     this.socket = socket
+@@ -66,7 +67,7 @@
+     }
+     socket.onerror = () => undefined
+     socket.onclose = (event) => {
+-      if (this.socket !== socket) return
++      if (this.socket !== socket || !this.options.isCurrent()) return
+       this.socket = null
+       this.phase = 'disconnected'
+       this.rejectPending('The Agent collaboration stream closed before command acknowledgement.')
+@@ -77,7 +78,7 @@
+   }
+ 
+   isReady(): boolean {
+-    return !this.released && this.phase === 'ready' && this.context?.phase === 'live'
++    return !this.released && this.options.isCurrent() && this.phase === 'ready' && this.context?.phase === 'live'
+       && this.socket?.readyState === WebSocket.OPEN
+   }
+ 
+@@ -147,11 +148,11 @@
+   }
+ 
+   private async processFrame(socket: WebSocket, raw: string): Promise<void> {
+-    if (this.socket !== socket) return
++    if (this.socket !== socket || !this.options.isCurrent()) return
+     try {
+       await this.handleMessage(socket, raw)
+     } catch (cause) {
+-      if (this.socket !== socket) return
++      if (this.socket !== socket || !this.options.isCurrent()) return
+       const detail = cause instanceof Error ? cause.message : String(cause)
+       this.context?.requireReopen(detail)
+       this.closeSocket('Invalid Agent collaboration stream')
+@@ -179,9 +180,9 @@
+         throw new Error('Agent collaboration snapshot arrived out of order.')
+       }
+       const staged = await stageAgentRunCollaborationContext({
+-        hostRunId: this.options.hostRunId, view: message.payload.root_agent, isCurrent: () => this.socket === socket,
++        hostRunId: this.options.hostRunId, view: message.payload.root_agent, isCurrent: () => this.socket === socket && this.options.isCurrent(),
+       })
+-      if (this.socket !== socket) return
++      if (this.socket !== socket || !this.options.isCurrent()) return
+       const candidate = shallowReactive(staged.context)
+       this.options.publish(candidate, staged.commitActivities)
+       this.context = candidate
+@@ -228,7 +229,7 @@
+   }
+ 
+   private scheduleRecovery(detail: string): void {
+-    if (this.released || this.recoveryTimer || this.socket) return
++    if (this.released || !this.options.isCurrent() || this.recoveryTimer || this.socket) return
+     if (this.recoveryAttempts >= MAX_RECOVERY_ATTEMPTS) {
+       this.options.reportError(detail)
+       this.settleReadiness(new Error(detail))
+--- entry/autobyteus-web/services/rootExecution/__tests__/rootExecutionViewState.spec.ts
++++ current/autobyteus-web/services/rootExecution/__tests__/rootExecutionViewState.spec.ts
+@@ -70,11 +70,12 @@
+     },
+   },
+   communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', messages: [] },
++  agent_input_states: [],
+   agent_statuses: [
+-    { member_address: '/direct', agent_run_id: 'agent-direct', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null },
+-    { member_address: '/team/coordinator', agent_run_id: 'agent-coordinator', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null },
+-    { member_address: '/team/member', agent_run_id: 'agent-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null },
+-    { member_address: '/other/member', agent_run_id: 'agent-other-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null },
++    { member_address: '/direct', agent_run_id: 'agent-direct', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
++    { member_address: '/team/coordinator', agent_run_id: 'agent-coordinator', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
++    { member_address: '/team/member', agent_run_id: 'agent-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
++    { member_address: '/other/member', agent_run_id: 'agent-other-member', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
+   ],
+ })
+ const agentContext = (runId: string, name: string) => new AgentContext({
+@@ -145,7 +146,7 @@
+       kind: 'agent_presentation', member_address: '/direct', agent_run_id: 'agent-direct',
+       message: { type: 'AGENT_STATUS', payload: {
+         status: 'running', trigger: 'user', tool_name: null,
+-        error_message: null, error_details: null,
++        error_message: null, error_details: null, recoverableBlock: null,
+       } },
+     })
+     expect(context.getAgentContext('agent-direct')?.state.currentStatus).toBe(AgentStatus.Running)
+@@ -303,13 +304,13 @@
+     })
+     snapshot.agent_statuses.push({
+       member_address: '/team/member', agent_run_id: 'agent-task-fresh', status: 'idle',
+-      trigger: null, tool_name: null, error_message: null, error_details: null,
++      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+     }, {
+       member_address: '/team/member', agent_run_id: 'agent-task-team-member', status: 'idle',
+-      trigger: null, tool_name: null, error_message: null, error_details: null,
++      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+     }, {
+       member_address: '/team/coordinator', agent_run_id: 'agent-task-team-coordinator', status: 'idle',
+-      trigger: null, tool_name: null, error_message: null, error_details: null,
++      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+     })
+     snapshot.communication_messages.messages.push({
+       messageId: 'message-to-task', senderAgentRunId: 'agent-direct', receiverAgentRunId: 'agent-task-fresh',
+@@ -386,7 +387,9 @@
+     })
+     expect(() => build(corrupt, entries)).toThrow("AgentRun 'missing-run' is not a retained Org execution.")
+     const unknownDelegator = structuredClone(snapshot)
+-    unknownDelegator.execution_tree.rootOrg.taskExecutions[0]!.delegatorAgentRunId = 'missing-delegator'
++    unknownDelegator.execution_tree.rootOrg.taskExecutions[0] = {
++      ...unknownDelegator.execution_tree.rootOrg.taskExecutions[0]!, delegatorAgentRunId: 'missing-delegator',
++    }
+     expect(() => build(unknownDelegator, entries)).toThrow("Delegated execution 'agent-task-fresh' delegator is not in this AgentOrg.")
+   })
+ 
+@@ -407,7 +410,7 @@
+     })
+     snapshot.agent_statuses.push({
+       member_address: '/team/member', agent_run_id: 'agent-task-fresh', status: 'idle',
+-      trigger: null, tool_name: null, error_message: null, error_details: null,
++      trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
+     })
+     const { context } = build(snapshot, [{
+       agentRunId: 'agent-task-fresh', memberAddress: parseAgentTeamAddress('/team/member'),
+--- entry/autobyteus-web/stores/agentRunCollaborationStore.ts
++++ current/autobyteus-web/stores/agentRunCollaborationStore.ts
+@@ -1,5 +1,7 @@
++import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
++import { useAgentActivityStore } from '~/stores/agentActivityStore'
+ import { defineStore } from 'pinia'
+-import { shallowReactive, shallowRef } from 'vue'
++import { shallowReactive, shallowRef, watch } from 'vue'
+ import type { AgentContext } from '~/types/agent/AgentContext'
+ import type { ContextFilePath } from '~/types/conversation'
+ import type { ActiveAgentWorkspaceTarget } from '~/types/workspace/activeAgentWorkspaceTarget'
+@@ -37,6 +39,12 @@
+   const services = new Map<string, AgentRunCollaborationStreamingService>()
+   const inspections = new Map<string, Promise<void>>()
+   const autoExpanded = new Set<string>()
++  const terminations = new Map<string, object>()
++  const binding = useWindowNodeContextStore()
++  const activities = useAgentActivityStore()
++  const assertNotTerminating = (id: string) => {
++    if (terminations.has(id)) throw new Error('This Agent collaboration is being stopped.')
++  }
+ 
+   const setContext = (hostRunId: string, context: AgentRunCollaborationContext | null) => {
+     const next = { ...contexts.value }
+@@ -58,8 +66,9 @@
+ 
+   const publish = (hostRunId: string, context: AgentRunCollaborationContext, commitActivities: () => void) => {
+     const previous = contexts.value[hostRunId]
+-    if (previous) context.adoptLocalContexts(previous)
++    const adopt = previous ? context.prepareLocalContextAdoption(previous) : () => undefined
+     commitActivities()
++    adopt()
+     setContext(hostRunId, context)
+     errors[hostRunId] = null
+     openNewTaskTeams(hostRunId, context)
+@@ -68,14 +77,22 @@
+   }
+ 
+   const attach = (hostRunId: string): AgentRunCollaborationStreamingService => {
++    assertNotTerminating(hostRunId)
++    inspections.delete(hostRunId)
+     const existing = services.get(hostRunId)
+     if (existing) return existing
++    const revision = binding.bindingRevision
++    const isCurrent = () => services.get(hostRunId) === service
++      && binding.bindingRevision === revision && !terminations.has(hostRunId)
+     const service = new AgentRunCollaborationStreamingService({
+-      hostRunId,
+-      publish: (context, commit) => publish(hostRunId, context, commit),
+-      onInactive: () => { services.delete(hostRunId) },
+-      reportError: (message) => { errors[hostRunId] = message },
+-      onCollaboratorAdded: (context) => openNewTaskTeams(hostRunId, context),
++      hostRunId, isCurrent,
++      publish: (context, commit) => {
++        if (!isCurrent()) throw new Error('Agent collaboration stream ownership released.')
++        publish(hostRunId, context, commit)
++      },
++      onInactive: () => { if (isCurrent()) services.delete(hostRunId) },
++      reportError: (message) => { if (isCurrent()) errors[hostRunId] = message },
++      onCollaboratorAdded: (context) => { if (isCurrent()) openNewTaskTeams(hostRunId, context) },
+     })
+     services.set(hostRunId, service)
+     service.connect()
+@@ -83,27 +100,85 @@
+   }
+ 
+   const detach = (hostRunId: string) => {
+-    services.get(hostRunId)?.disconnect()
++    const service = services.get(hostRunId)
+     services.delete(hostRunId)
++    service?.disconnect()
+   }
+ 
+   /** Loads the stored (or live) view without restoring anything. */
+   const inspect = (hostRunId: string): Promise<void> => {
++    if (terminations.has(hostRunId) || services.has(hostRunId)) return Promise.resolve()
+     const pending = inspections.get(hostRunId)
+     if (pending) return pending
++    const revision = binding.bindingRevision
++    const activityRevisions = new Map(contexts.value[hostRunId]?.listAgentContextEntries()
++      .map(entry => [entry.agentRunId, activities.getActivityContentRevision(entry.agentRunId)]))
++    const isCurrent = () => inspections.get(hostRunId) === attempt
++      && binding.bindingRevision === revision && !services.has(hostRunId) && !terminations.has(hostRunId)
+     const attempt = (async () => {
+       try {
+         const view = await readAgentRunCollaboration(hostRunId)
+-        if (services.get(hostRunId)?.isReady()) return
++        if (!isCurrent()) return
+         if (!view) { setContext(hostRunId, null); return }
+-        const staged = await stageAgentRunCollaborationContext({ hostRunId, view })
+-        publish(hostRunId, staged.context, staged.commitActivities)
++        const staged = await stageAgentRunCollaborationContext({ hostRunId, view, isCurrent, activityRevisions })
++        if (isCurrent()) publish(hostRunId, staged.context, staged.commitActivities)
+       } catch (cause) {
+-        errors[hostRunId] = cause instanceof Error ? cause.message : String(cause)
++        if (isCurrent()) errors[hostRunId] = cause instanceof Error ? cause.message : String(cause)
+       }
+-    })().finally(() => inspections.delete(hostRunId))
++    })().finally(() => { if (inspections.get(hostRunId) === attempt) inspections.delete(hostRunId) })
+     inspections.set(hostRunId, attempt)
+     return attempt
++  }
++
++  /** One request-local exclusion owned here, never a server receipt or input ledger. */
++  const beginHostTermination = (hostRunId: string) => {
++    assertNotTerminating(hostRunId)
++    const token = {}
++    const revision = binding.bindingRevision
++    const root = contexts.value[hostRunId]
++    const view = root?.view
++    const children = root?.listAgentContextEntries().map(entry => ({ ...entry,
++      state: entry.context.state, runtimeKind: entry.context.config.runtimeKind,
++      instance: entry.context.state.inputProjection?.runInstanceId,
++      activityIds: activities.getNativeCompactionActivityIds(entry.agentRunId),
++    })) ?? []
++    terminations.set(hostRunId, token)
++    inspections.delete(hostRunId)
++    // Deliberate retirement BEFORE the command: absence later is not a transport receipt.
++    detach(hostRunId)
++    root?.requireReopen('Agent collaboration requires fresh inspection after Stop.')
++    let confirmed = false
++    const ownsScope = () => terminations.get(hostRunId) === token
++      && binding.bindingRevision === revision && contexts.value[hostRunId] === root
++      && root?.view === view && !services.has(hostRunId)
++    return Object.freeze({
++      confirm: (): boolean => {
++        if (confirmed || !ownsScope() || (root?.listAgentContextEntries().length ?? 0) !== children.length) return false
++        // Validate the WHOLE batch before even one activity or context changes.
++        if (children.some(child => root?.getAgentContext(child.agentRunId) !== child.context
++          || root?.getChild(child.agentRunId)?.address !== child.memberAddress
++          || child.context.state !== child.state || child.state.runId !== child.agentRunId
++          || child.context.config.runtimeKind !== child.runtimeKind
++          || (!!child.state.inputProjection?.runInstanceId && child.state.inputProjection.runInstanceId !== child.instance))) return false
++        for (const child of children) {
++          if (child.runtimeKind === 'autobyteus') {
++            child.state.compactionStatus = activities.applyConfirmedNativeTermination(child.agentRunId,
++              [...child.activityIds, ...activities.getNativeCompactionActivityIds(child.agentRunId)], child.state.compactionStatus)
++          }
++        }
++        root?.setActive(false)
++        confirmed = true
++        return true
++      },
++      finish: (): void => {
++        if (terminations.get(hostRunId) !== token) return
++        // setActive replaced our captured view on success; all other ownership still holds.
++        const inspectConfirmed = confirmed && binding.bindingRevision === revision
++          && contexts.value[hostRunId] === root && !services.has(hostRunId)
++        terminations.delete(hostRunId)
++        if (inspectConfirmed) void inspect(hostRunId)
++      },
++    })
+   }
+ 
+   /**
+@@ -111,6 +186,8 @@
+    * view otherwise. Called for the selected standalone run.
+    */
+   const syncHost = (hostRunId: string, hostRunning: boolean) => {
++    if (terminations.has(hostRunId)) return
++    if (contexts.value[hostRunId]?.phase === 'reopen_required' && !services.has(hostRunId)) return
+     if (hostRunning) attach(hostRunId)
+     else {
+       detach(hostRunId)
+@@ -144,13 +221,14 @@
+ 
+   const submit = async (hostRunId: string, agentRunId: string, context: AgentContext,
+     content: string, paths: readonly ContextFilePath[]): Promise<void> => {
++    assertNotTerminating(hostRunId)
++    if (contexts.value[hostRunId]?.getAgentContext(agentRunId) !== context) throw new Error('Agent collaboration child was replaced.')
+     if (context.submissionPending) throw new Error('A message to this collaborator is already pending.')
+     const mentions = mentionsPresentInText(content, context.requestedMentions)
+     let attachments = paths.map((attachment) => ({ ...attachment }))
+     const messageId = crypto.randomUUID()
+     const dedupeKey = `member_input:${hostRunId}:${agentRunId}:${messageId}`
+-    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions })
+-    Object.assign(submission.message, { messageId, dedupeKey })
++    const submission = beginLocalUserSubmission(context, { text: content, attachments, navigationTarget: null, mentions, identity: { messageId, dedupeKey } })
+     try {
+       // Attaching makes the root command-ready; a stopped host is restored first.
+       const service = attach(hostRunId)
+@@ -183,7 +261,7 @@
+     const child = agentRunId ? collaboration?.getChild(agentRunId) : null
+     const context = agentRunId ? collaboration?.getAgentContext(agentRunId) : null
+     if (!collaboration || !child || !context) return null
+-    const service = () => services.get(hostRunId)
++    const service = () => { assertNotTerminating(hostRunId); return services.get(hostRunId) }
+     return Object.freeze({
+       kind: child.kind === 'task_team_member' ? 'agent_run_task_team_member' as const : 'agent_run_task_agent' as const,
+       host: Object.freeze({ hostRunId }),
+@@ -204,13 +282,23 @@
+   }
+ 
+   const release = (hostRunId: string) => {
++    inspections.delete(hostRunId)
++    terminations.delete(hostRunId)
+     detach(hostRunId)
+     setContext(hostRunId, null)
+     delete selection[hostRunId]
+-  }
++    delete expandedTeams[hostRunId]
++    delete errors[hostRunId]
++  }
++
++  watch(() => binding.bindingRevision, () => {
++    const ids = new Set([...Object.keys(contexts.value), ...services.keys(), ...inspections.keys(), ...terminations.keys()])
++    ids.forEach(release)
++    autoExpanded.clear()
++  }, { flush: 'sync' })
+ 
+   return {
+-    contexts, errors, contextFor, syncHost, inspect, attach, release,
++    contexts, errors, contextFor, syncHost, inspect, attach, release, beginHostTermination,
+     selectChild, selectedChild, isTaskTeamExpanded, toggleTaskTeam, taskRows, hostMessagesView, childTargetFor, submit,
+   }
+ })
+--- entry/autobyteus-web/stores/agentRunStore.ts
++++ current/autobyteus-web/stores/agentRunStore.ts
+@@ -1,4 +1,5 @@
+ import { useAgentActivityStore } from '~/stores/agentActivityStore';
++import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
+ import { defineStore } from 'pinia';
+ import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
+ import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
+@@ -455,7 +456,9 @@
+         return true;
+       }
+ 
++      let childStop: ReturnType<ReturnType<typeof useAgentRunCollaborationStore>['beginHostTermination']> | undefined;
+       try {
++        childStop = useAgentRunCollaborationStore().beginHostTermination(runId);
+         const client = getApolloClient();
+         const { data, errors } = await client.mutate({
+           mutation: TerminateAgentRun,
+@@ -472,6 +475,7 @@
+         }
+ 
+         if (!ownsRequest()) return false;
++        childStop.confirm();
+         if (context?.config.runtimeKind === 'autobyteus' && state) {
+           state.compactionStatus = activities.applyConfirmedNativeTermination(runId,
+             [...activityIds, ...activities.getNativeCompactionActivityIds(runId)], state.compactionStatus);
+@@ -483,6 +487,8 @@
+       } catch (error) {
+         console.error(`Error terminating run '${runId}':`, error);
+         return false;
++      } finally {
++        childStop?.finish();
+       }
+     },
+ 
+--- entry/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-input-snapshot.ts
++++ current/autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-input-snapshot.ts
+@@ -0,0 +1,16 @@
++import type { LiveAgentInputSnapshot } from "../../agent-collaboration/execution/domain/live-agent-input-snapshot.js";
++import type { AgentRunCollaborationExecutionIndex } from "./agent-run-collaboration-execution-index.js";
++
++/** Team recursion may report the same leaf; the host never belongs to this projection. */
++export const collectAgentRootInputSnapshots = (
++  index: AgentRunCollaborationExecutionIndex,
++  snapshots: readonly LiveAgentInputSnapshot[],
++): readonly LiveAgentInputSnapshot[] => {
++  const children = new Set(index.listChildAgents().map(child => child.agentRunId));
++  const inputs = new Map<string, LiveAgentInputSnapshot>();
++  for (const snapshot of snapshots) {
++    if (!children.has(snapshot.agent_run_id)) throw new Error(`Input snapshot '${snapshot.agent_run_id}' is not an Agent-root child.`);
++    inputs.set(snapshot.agent_run_id, snapshot);
++  }
++  return Object.freeze([...inputs.values()]);
++};
+--- entry/autobyteus-web/composables/agentCollaboration/__tests__/useAgentRunCollaborationSync.spec.ts
++++ current/autobyteus-web/composables/agentCollaboration/__tests__/useAgentRunCollaborationSync.spec.ts
+@@ -0,0 +1,26 @@
++import { beforeEach, expect, it, vi } from 'vitest'
++import { effectScope, nextTick, reactive } from 'vue'
++import { useAgentRunCollaborationSync } from '../useAgentRunCollaborationSync'
++const calls = vi.hoisted(() => ({ syncHost: vi.fn() }))
++let selection: any; let agents: any; let node: any
++vi.mock('~/stores/agentSelectionStore', () => ({ useAgentSelectionStore: () => selection }))
++vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => agents }))
++vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => node }))
++vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => calls }))
++beforeEach(() => {
++  calls.syncHost.mockClear(); selection = reactive({ selectedType: 'agent' }); node = reactive({ bindingRevision: 1 })
++  agents = reactive({ activeRun: { state: { runId: 'host', currentStatus: 'error', recoverableBlock: null } } })
++})
++it('only current recovery makes Error live, watches recovery changes at unchanged status and bound node', async () => {
++  const scope = effectScope(); scope.run(useAgentRunCollaborationSync)
++  expect(calls.syncHost).toHaveBeenLastCalledWith('host', false)
++  agents.activeRun.state.recoverableBlock = { operationId: 'op', failureEpoch: 1, state: 'awaiting_user', position: { kind: 'held_turn', turnId: 'A' } }
++  await nextTick(); expect(calls.syncHost).toHaveBeenLastCalledWith('host', true)
++  node.bindingRevision++; await nextTick(); expect(calls.syncHost).toHaveBeenCalledTimes(3)
++  agents.activeRun.state.recoverableBlock = null
++  await nextTick(); expect(calls.syncHost).toHaveBeenLastCalledWith('host', false)
++  agents.activeRun.state.currentStatus = 'offline'
++  agents.activeRun.state.recoverableBlock = { operationId: 'stale' }
++  await nextTick(); expect(calls.syncHost).toHaveBeenLastCalledWith('host', false)
++  scope.stop()
++})
+--- entry/autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
++++ current/autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts
+@@ -36,7 +36,7 @@
+   socket.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view } })
+   return { service, socket, options, context, commit, finish: () => resolve({ context, commitActivities: commit }), retireOwner: () => { current = false } }
+ }
+-it('buffers live input behind publication; duplicate/older same-instance snapshot events do not regress it', async () => {
++it('buffers live input until the snapshot activity commit and context publication complete', async () => {
+   const f = setup(); await flush()
+   f.socket.frame({ type: 'ROOT_EXECUTION_EVENT', payload: { root_subject_kind: 'agent', root_run_id: 'host-run', change_sequence: 5,
+     event: { kind: 'agent_presentation', agent_run_id: 'cua-run', member_address: '/computer_use_agent', message: {
+--- entry/autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts
++++ current/autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts
+@@ -195,3 +195,25 @@
+   expect(commit).not.toHaveBeenCalled(); expect(old.state).toBe(state); expect(old.config).toBe(config)
+   expect(store.contextFor('host-run')).toBe(root); expect(activities.getCompactionActivities('cua-run')[0].phase).toBe('started')
+ })
++
++
++it('release invalidates old stream callbacks and old inspection finally cannot delete a new read slot', async () => {
++  const { store, root } = await setup()
++  const oldRead = deferred(); io.query.mockReturnValueOnce(oldRead.promise)
++  const oldPending = store.inspect('host-run')
++  const oldStream = store.attach('host-run') as any
++  store.release('host-run')
++  const nextRead = deferred(); io.query.mockReturnValueOnce(nextRead.promise)
++  const nextPending = store.inspect('host-run')
++  oldRead.resolve(envelope(null)); await oldPending
++  const queriesBefore = io.query.mock.calls.length
++  const coalesced = store.inspect('host-run')
++  expect(io.query.mock.calls.length).toBe(queriesBefore)
++  nextRead.resolve(envelope(view)); await nextPending; await coalesced
++  const nextRoot = store.contextFor('host-run')
++  const nextStream = store.attach('host-run')
++  oldStream.options.onInactive(); oldStream.options.reportError('stale')
++  expect(() => oldStream.options.publish(root, vi.fn())).toThrow('ownership released')
++  expect(store.attach('host-run')).toBe(nextStream); expect(store.contextFor('host-run')).toBe(nextRoot)
++  expect(store.errors['host-run']).toBeNull()
++})

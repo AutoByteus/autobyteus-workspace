@@ -1,0 +1,36 @@
+{
+  "basis": "SR033 supplied preservation census, not a reviewer initial snapshot; expected SD-owned authority deltas retained",
+  "count": 1421,
+  "mismatches": [
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+      "expected": "274d0047c51f61f6dd151e716c6af4930db791eb61b836eddcfe500b47a9c5ba",
+      "actual": "e4183533f751af3f3ddcd90a33506a43dab5cef1acf8a6bdb61dba2d8642ef40"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+      "expected": "47b204c31d663af5d49328b8513aec73acd1e5f5b23f746c76487fe582f6bf30",
+      "actual": "3fb01e3e6a5aac0b5dc8297ea1589ae438a9b062ba694332fc0a3092ce55c3f9"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+      "expected": "2d71dd4c0c431dd64f6398cf9f6a9713e9525f4981ef36695effd688bddc4119",
+      "actual": "999ff0aab0dbffc861dfc4c7ebd1c242ff53017e5e097bcf421ed82918808215"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+      "expected": "c17fb75522184bc6c79b4159c42c9dbd9edf443588529d45978029c611b28d64",
+      "actual": "ec539d35d695c8576a1c89e5268e5800d1e6662f194f998405aa5fa51e4e9042"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+      "expected": "662b5e1353c9102181de5e694d3c43f7fc48ca6f479add635aa73844858237de",
+      "actual": "3e2cce18c49cd1d8d8b88773e046e241558cb15578a9e1da9d0016b053567d28"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/terminal-compaction-activity.sr032.md",
+      "expected": "73472425ae879a4175381205124b2fde9c53f55b3020983c0f77b46a1d38dae2",
+      "actual": "95a7bf74dd23f40987f09ee882df26c1b26cfa44754434d6c8a97b36999e996b"
+    }
+  ]
+}

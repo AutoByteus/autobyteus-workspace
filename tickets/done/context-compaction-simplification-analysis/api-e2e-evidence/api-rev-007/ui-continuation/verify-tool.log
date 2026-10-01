@@ -1,0 +1,68 @@
+{
+  "tool": {
+    "result": "Pass",
+    "parents": [
+      "API7-TOOL-READ",
+      "API7-TOOL-READ",
+      "API7-TOOL-A",
+      "API7-TOOL-B"
+    ],
+    "tool_response_count": 1,
+    "wire_event_counts": {
+      "CONNECTED": 1,
+      "AGENT_STATUS": 15,
+      "AGENT_INPUT_STATE": 83,
+      "AGENT_COMMAND_ACK": 3,
+      "SYSTEM_INSTRUCTIONS_SUPPLIED": 1,
+      "TURN_STARTED": 3,
+      "SEGMENT_START": 4,
+      "SEGMENT_CONTENT": 4,
+      "SEGMENT_END": 4,
+      "TOKEN_USAGE_UPDATED": 4,
+      "TOOL_APPROVAL_REQUESTED": 1,
+      "TOOL_APPROVED": 1,
+      "TOOL_EXECUTION_STARTED": 1,
+      "TOOL_LOG": 3,
+      "TOOL_EXECUTION_SUCCEEDED": 1,
+      "COMPACTION_STATUS": 7,
+      "COMPACTION_BLOCKED": 3,
+      "ERROR": 2,
+      "ASSISTANT_COMPLETE": 3,
+      "TURN_COMPLETED": 3,
+      "COMPACTION_RESUMED": 5
+    },
+    "accepted_total": 35,
+    "tool_raw_files": [
+      "final-memory/agents/api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195/raw_traces_active.jsonl",
+      "final-memory/agents/api7_tool_fixture_affe7c25536449f3a92cf4db88f6d195/raw_traces_000001.jsonl"
+    ],
+    "raw_tool_call": 1,
+    "raw_tool_result": 1,
+    "raw_user": 3,
+    "actual_tool_executions": 1,
+    "decoderCorrection": "Initial assertion used unsorted glob shard order; corrected recorded timestamp sort (seq is per-turn and absent on system instruction); unchanged raw evidence"
+  },
+  "cleanup": {
+    "ownedApp": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-58629-0f2e",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-kroTMn",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "portsReleased": {
+      "58629": true,
+      "58630": true,
+      "58634": true
+    },
+    "dataRootAbsent": true
+  }
+}

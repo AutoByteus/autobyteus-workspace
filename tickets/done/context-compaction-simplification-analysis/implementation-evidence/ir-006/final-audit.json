@@ -1,0 +1,71 @@
+{
+  "head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "head_unchanged": true,
+  "branch": "codex/context-compaction-simplification-analysis",
+  "staged_paths": "",
+  "pending_preservation": {
+    "unchanged_count": 1164,
+    "changed": [
+      {
+        "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md",
+        "before": "28416e6e399c220b92a4209e3494f843c39215d64314dab4254660c414725456",
+        "after": "1f6807c1cf69a91c7457f9769963b8978bed3416a17acf271d16cc87bb6ecae2",
+        "authorized": true
+      },
+      {
+        "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md",
+        "before": "bec3f0f15b7abe64bab25f32803dcbb56a3e9567389cdfdeeceab0eab3f5d5f8",
+        "after": "8cbaf40aa1bf22827a4fa6916dd631f63ce3008af2fc3e0612d2179d2f0cb86d",
+        "authorized": true
+      }
+    ],
+    "exempt_ir006_evidence": [],
+    "unexpected_changes": []
+  },
+  "reference_preservation": {
+    "unchanged_count": 1376,
+    "changed": [
+      {
+        "path": "autobyteus-server-ts/src/services/server-settings-service.ts",
+        "before": "67811fdb7d7369f7bd8f7cc262be553cd1d319f8f8a7e7c9eba1586a9fad8997",
+        "after": "2f1a379c431a9f3b5ec358f90478f5942c8b3dff01693a4a034239e61b24eb80",
+        "authorized": true
+      },
+      {
+        "path": "autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts",
+        "before": "07e7eaf7fd0d075f65679ddc81fab67a6dba2373c5d570915558d237f08bf8de",
+        "after": "fa0b81bf525ec6d7cb75e6201fc6b0fdd01ca25aa7187af3f73cbba9cafc8f39",
+        "authorized": true
+      },
+      {
+        "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-handoff.md",
+        "before": "28416e6e399c220b92a4209e3494f843c39215d64314dab4254660c414725456",
+        "after": "1f6807c1cf69a91c7457f9769963b8978bed3416a17acf271d16cc87bb6ecae2",
+        "authorized": true
+      },
+      {
+        "path": "tickets/in-progress/context-compaction-simplification-analysis/implementation-revision-record.md",
+        "before": "bec3f0f15b7abe64bab25f32803dcbb56a3e9567389cdfdeeceab0eab3f5d5f8",
+        "after": "8cbaf40aa1bf22827a4fa6916dd631f63ce3008af2fc3e0612d2179d2f0cb86d",
+        "authorized": true
+      }
+    ],
+    "exempt_ir006_evidence": [],
+    "unexpected_changes": []
+  },
+  "owned_paths": [
+    "autobyteus-server-ts/src/services/server-settings-service.ts",
+    "autobyteus-server-ts/tests/integration/services/server-settings-service.integration.test.ts",
+    "autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts"
+  ],
+  "new_file_whitespace": {
+    "autobyteus-server-ts/tests/integration/services/server-settings-service.integration.test.ts": [],
+    "autobyteus-server-ts/src/services/server-settings-service.ts": [],
+    "autobyteus-server-ts/tests/unit/services/server-settings-service.test.ts": []
+  },
+  "api10_unchanged": true,
+  "no_provider_calls": true,
+  "no_remote_operations": true,
+  "current_result": "Completed Local Fix for source re-review; API-F007 independent closure pending",
+  "current_api_result": "API005 Fail78.6 \u2014 not rescored"
+}

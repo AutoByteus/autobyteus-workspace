@@ -1,0 +1,22 @@
+{
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-ts",
+    "exec",
+    "vitest",
+    "run",
+    "tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts",
+    "tests/unit/memory/direct-llm-compression-strategy.test.ts",
+    "tests/unit/memory/pending-compaction-executor.test.ts",
+    "tests/unit/memory/accepted-compaction-committer.test.ts",
+    "tests/unit/memory/compaction-content-builder.test.ts",
+    "tests/integration/agent/working-context-snapshot-restore-flow.test.ts",
+    "tests/integration/agent/runtime/agent-runtime-compaction.test.ts",
+    "tests/unit/llm/api/compaction-single-attempt-transport.test.ts",
+    "--no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "exit": 0,
+  "finished": "2026-10-01T12:45:58.467447+00:00"
+}

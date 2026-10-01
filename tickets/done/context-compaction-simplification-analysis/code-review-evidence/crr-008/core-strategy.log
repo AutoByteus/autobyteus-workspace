@@ -1,0 +1,31 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+stderr | tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > keeps unknown completion eligible and observer/cleanup errors diagnostic only
+Compaction isolated LLM cleanup failed. { invocationId: 'compaction_1f96a167-2632-4f86-a226-247e83aa39b5' }
+
+ ✓ tests/unit/memory/direct-llm-compression-strategy.test.ts (30 tests) 16ms
+ ✓ tests/unit/memory/memory-manager-compaction-coordinator.test.ts (5 tests) 4ms
+stderr | tests/unit/memory/pending-compaction-executor.test.ts > PendingCompactionExecutor direct path > treats postcommit prune/reporter failure as committed and restores from that same snapshot
+Compaction committed; raw archive cleanup failed. Active duplicates retained. { operationId: 'compaction_operation_muokhezt_1' }
+
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (7 tests) 265ms
+stdout | tests/unit/llm/api/compaction-single-attempt-transport.test.ts > compaction invocation-local SDK retry bound > 'geminiProject' status 401 makes one SDK fetch
+The user provided project/location will take precedence over the API key from the environment variables.
+
+stdout | tests/unit/llm/api/compaction-single-attempt-transport.test.ts > compaction invocation-local SDK retry bound > 'geminiProject' status 429 makes one SDK fetch
+The user provided project/location will take precedence over the API key from the environment variables.
+
+stdout | tests/unit/llm/api/compaction-single-attempt-transport.test.ts > compaction invocation-local SDK retry bound > 'geminiProject' status 503 makes one SDK fetch
+The user provided project/location will take precedence over the API key from the environment variables.
+
+stderr | tests/unit/llm/api/compaction-single-attempt-transport.test.ts > compaction invocation-local SDK retry bound > counts one remote generation request through the real axios client (not remote host internal work)
+SECURITY WARNING: SSL certificate verification is DISABLED because the 'AUTOBYTEUS_SSL_CERT_FILE' environment variable is not set.
+
+ ✓ tests/unit/llm/api/compaction-single-attempt-transport.test.ts (37 tests) 43ms
+
+ Test Files  4 passed (4)
+      Tests  79 passed (79)
+   Start at  22:37:52
+   Duration  871ms (transform 726ms, setup 72ms, import 1.35s, tests 329ms, environment 0ms)
+

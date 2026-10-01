@@ -1,0 +1,129 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > initializes components and registers context
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 5b392d72-6c0b-482a-89ee-ca6edadd8c48).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > start delegates to worker
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: c214ad5b-59cf-4d89-aa6e-35f669279eb7).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+AgentRuntime for 'agent-1': Starting worker.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > start is idempotent when worker alive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 9a2f619a-b6b4-4f8c-a04c-6e51a9f442b3).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stderr | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > start is idempotent when worker alive
+AgentRuntime for 'agent-1' is already running. Ignoring start request.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop runs full flow when worker alive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: ff879eb3-86ce-4456-b9ef-4d9db5569464).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop runs full flow when worker alive
+AgentRuntime for 'agent-1': Context unregistered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop runs full flow when worker alive
+AgentRuntime for 'agent-1' stop() method completed.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > stop returns early when worker not alive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: a3ec586d-720c-4320-a0a7-6543a513e17c).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > handles worker completion with error
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 7dfe1986-fc6e-4386-a915-3281f9f3492f).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stderr | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > handles worker completion with error
+AgentRuntime 'agent-1': Worker loop terminated with an exception: Error: Worker crashed
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > exposes currentStatus and isRunning
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: cd46a171-3c38-4e16-90d3-60384bb5dc61).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > interrupt returns no_active_turn when worker is inactive
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: cd999a2a-78f5-45f0-91ad-27092de9268d).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > interrupt signals the active turn without stopping the worker
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 6bf76589-e588-4a9e-8e7d-db7f7289084a).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > interrupt rejects mismatched turn ids without signaling the active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: e59bb66e-a0a5-46e0-a9b7-30632ea2b141).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > posts tool approvals as awaitable AgentEventInbox active-turn events
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: eb09357b-8377-42c2-801b-1bdcd1bb3bd7).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > posts external tool results as awaitable AgentEventInbox active-turn events
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: c846aed6-7c7b-44a2-b99a-9ddbf7ff243c).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > returns runtime_stopped for tool approvals/results when the worker is inactive or stopping
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 6894541f-7ddb-4340-a39e-7a7d2013669d).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > routes external turn-starting input through AgentEventInbox
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: 7d2f9cf6-1e21-4cbc-9ce6-cee7be734422).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+stdout | tests/unit/agent/runtime/agent-runtime.test.ts > AgentRuntime > rejects unsupported turn-local operational events instead of queuing them as lifecycle input
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+AgentExternalEventNotifier initialized for agent_id 'agent-1' (NotifierID: dc460218-ff28-4a60-80dd-ac33bd86fb98).
+AgentRuntime initialized for agent_id 'agent-1'. Context registered.
+
+ ✓ tests/unit/agent/runtime/agent-runtime.test.ts (15 tests) 10ms
+ ✓ tests/unit/agent/runtime/agent-worker.test.ts (8 tests) 82ms
+
+ Test Files  2 passed (2)
+      Tests  23 passed (23)
+   Start at  22:21:01
+   Duration  429ms (transform 397ms, setup 33ms, import 452ms, tests 91ms, environment 0ms)
+

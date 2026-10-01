@@ -1,0 +1,304 @@
+# autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts sha256=5c96cbb3962248c1a6db4f67b727e5674ac7dabf06528677bd1b48579e9a8b66
+
+37:     if (message.senderType === SenderType.TOOL) {
+38:       return message;
+39:     }
+40: 
+41:     const llmUserMessage = buildLLMUserMessage(message);
+42:     const original = triggeringEvent.agentInputUserMessage;
+43:     const fileAttachments = original.recordingFileAttachments
+44:       ?? partitionRawTraceAttachments(original.contextFiles ?? []).fileAttachments;
+45:     memoryManager.ingestUserMessage(
+46:       llmUserMessage, turnId, 'LLMUserMessageReadyEvent', fileAttachments,
+47:       resolveInterAgentSenderId(original.metadata),
+48:     );
+49:     console.debug(`MemoryIngestInputProcessor stored processed user input with turnId ${turnId}`);
+
+# autobyteus-ts/src/memory/memory-manager.ts sha256=97efec51b874f6bba60731daa9add34efae9a6829d7ed0c8cb6e65cf7514d9d9
+
+199:   /** `senderId`: the sender AgentRun of an agent-to-agent delivery (null for user input). */
+200:   ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null): void {
+201:     const trace = buildNativeUserMessageTrace(llmUserMessage, {
+202:       turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments, senderId,
+203:     });
+204:     this.store.add([trace]);
+205:   }
+
+# autobyteus-ts/src/memory/raw-trace-ingestion.ts sha256=cfccb7fd3f5adbd8ee0ba846b88871dd866b9e2395a05912e0695ec4e1d44cdd
+
+142: export function buildNativeUserMessageTrace(
+143:   llmUserMessage: LLMUserMessage,
+144:   input: { turnId: string; seq: number; sourceEvent: string; fileAttachments: readonly ContextFileReference[]; senderId?: string | null },
+145: ): RawTraceItem {
+146:   return new RawTraceItem({
+147:     id: `rt_${Date.now()}`, ts: Date.now() / 1000,
+148:     turnId: input.turnId, seq: input.seq, sourceEvent: input.sourceEvent,
+149:     traceType: 'user', content: llmUserMessage.content,
+150:     fileAttachments: input.fileAttachments,
+151:     senderId: input.senderId ?? null,
+152:     media: {
+153:       images: llmUserMessage.image_urls ?? [],
+154:       audio: llmUserMessage.audio_urls ?? [],
+155:       video: llmUserMessage.video_urls ?? [],
+156:     },
+157:   });
+158: }
+
+# autobyteus-ts/src/agent/loop/agent-turn-runner.ts sha256=0ef3a4673b6cf010c9f21a77b301394ed8e852540b49338fbdcea5ef6004e116
+
+43:   async run(trigger: AgentTurnTrigger): Promise<TurnOutcome> {
+44:     const turnId = this.turn.turnId;
+45:     const completedToolResultsForInterruptedProjection: ToolResultEvent[] = [];
+46:     try {
+47:       this.turn.executionScope.throwIfAborted({ kind: 'turn_start' });
+48:       this.notifier?.notifyAgentTurnStarted(turnId);
+49:       await this.applyStatusEvent(trigger);
+50:       this.turn.executionScope.throwIfAborted({ kind: 'external_trigger_status' });
+51:       let nextInput = await this.inputPipeline.processExternalTrigger(trigger, this.context, this.turn, this.notifier);
+52:       this.turn.executionScope.throwIfAborted({ kind: 'input_pipeline' });
+53: 
+54:       while (true) {
+55:         this.turn.executionScope.throwIfAborted({ kind: 'turn_loop' });
+56:         await this.applyStatusEvent(this.buildLlmPhaseReadyEvent(nextInput, turnId));
+57:         this.turn.executionScope.throwIfAborted({ kind: 'llm_phase_ready_status' });
+58:         const llmOutcome = await this.llmPhase.run(nextInput, this.context, this.turn, this.notifier);
+59:         this.turn.executionScope.throwIfAborted({ kind: 'post_llm_phase' });
+60: 
+61:         if (llmOutcome.kind === 'compaction_blocked') {
+62:           const recovery = this.context.state.compactionRecovery;
+63:           if (!recovery) throw new Error('Compaction recovery controller is unavailable.');
+64:           await this.turn.executionScope.runAbortable({ kind: 'compaction_recovery_wait' },
+65:             () => recovery.waitForRetry(turnId, this.turn.executionScope.signal));
+66:           continue; // Same prepared input and turn; never rerun the external input pipeline.
+67:         }
+
+# autobyteus-ts/src/agent/loop/llm-phase.ts sha256=d38d0ce310c2be7ed9ab9625296cee2d441f5ae70e0983bf0fb679ecd76cc45d
+
+150:     let request: RequestPackage;
+151:     try {
+152:       request = await turn.executionScope.runAbortable(
+153:         { kind: 'llm_request_assembly' },
+154:         () => assembler.prepareRequest(
+155:           input.llmUserMessage,
+156:           { turnId: activeTurnId, requestId: llmCallId, isToolContinuation: turn.toolInvocationBatches.length > 0, getParentModelIdentifier: () => (context.state.llmInstance as BaseLLM).model.modelIdentifier, signal: turn.executionScope.signal },
+157:           systemPrompt ?? undefined,
+158:         )
+159:       );
+160:     } catch (error) {
+161:       if (error instanceof CompactionPreparationError) {
+162:         turn.executionScope.throwIfAborted({ kind: 'llm_request_assembly' });
+163:         notifier?.notifyAgentErrorOutputGeneration({
+164:           code: 'LLM_REQUEST_PREPARATION_FAILED',
+165:           message: error.message,
+166:           details: String(error.cause ?? error),
+167:           classification: { scope: 'turn', effect: 'diagnostic', turnId: activeTurnId }
+168:         });
+169:         return { kind: 'compaction_blocked' };
+170:       }
+
+# autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts sha256=f2b629df02a77c2d5c09c980199c2ebb6ccce03dc151bad0c246c3785f2598f2
+
+350:         turnId: entry.associatedTurnId ?? entry.observedTurnId,
+351:       });
+352:     }
+353:     this.activeClaim = null;
+354:     this.resolveQuiescenceWaitersIfReady();
+355:   }
+356: 
+357:   get highWaterMark(): number { return this.nextSequence - 1; }
+358: 
+359:   observeRecovery(block: CompactionRecoveryBlockDto | null): void {
+360:     const held = block?.position.kind === "held_turn" && block.state !== "recovering" ? block.position.turnId : null;
+361:     for (const entry of this.entries) {
+362:       entry.heldTurnId = held && this.terminalMatchesEntry(entry, held) ? held : null;
+363:       this.applyHeldProjection(entry);
+364:     }
+365:   }
+366: 
+367:   pendingSnapshot(): AgentPendingInputDto[] {
+368:     return this.entries.filter(entry => entry.state !== "reserved" && entry.state !== "terminal").map(entry => ({
+369:       sequence: entry.sequence, message_id: requiredString(entry.message.metadata.message_id),
+370:       dedupe_key: requiredString(entry.message.metadata.dedupe_key),
+371:       turn_id: entry.associatedTurnId ?? entry.observedTurnId,
+372:       state: entry.heldTurnId ? "held" : entry.state === "forwarded" ? "forwarded" : "queued",
+373:       content: entry.message.content, sender_type: entry.message.senderType as AgentPendingInputDto["sender_type"],
+374:       file_attachments: (entry.message.recordingFileAttachments ?? entry.message.contextFiles ?? []).map(file => ({
+375:         uri: file.uri, file_type: file.fileType, file_name: file.fileName,
+376:       })),
+377:     }));
+378:   }
+379: 
+380:   private applyHeldProjection(entry: InputEntry): void {
+381:     if (entry.state === "forwarded" && entry.heldTurnId) {
+382:       entry.state = "held"; safeNotify(entry.observer, { kind: "held", turnId: entry.heldTurnId });
+383:     } else if (entry.state === "held" && !entry.heldTurnId) {
+384:       entry.state = "forwarded";
+385:       if (entry.associatedTurnId) safeNotify(entry.observer, { kind: "resumed", turnId: entry.associatedTurnId });
+
+# autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts sha256=289769da9217733e6ad2c1aa2c720af04519c49fdeb17d8539a9622f83a49acb
+
+84:   const staged = await Promise.all([...index.agents.values()].map(async (child) => {
+85:     const context = createChildContext(child, input.view.execution_tree.createdAt,
+86:       await workspaceFor(child.source.launchConfiguration.workspaceRootPath))
+87:     const projection = await fetchProjection(input.hostRunId, child)
+88:     resetRecentEventMonitorBaseline(context)
+89:     context.state.conversation = buildConversationFromProjection(child.agentRunId, projection.conversation, {
+90:       agentDefinitionId: child.source.agentDefinitionId,
+91:       agentName: nameAt(child.address),
+92:       llmModelIdentifier: child.source.launchConfiguration.llmModelIdentifier,
+93:     })
+94:     context.state.hasEarlierActiveTraceEvents = projection.hasEarlierActiveTraceEvents === true
+95:     primeRecentEventMonitorBaseline(context)
+96:     return {
+97:       entry: Object.freeze({ agentRunId: child.agentRunId, memberAddress: child.address, context }),
+98:       activities: Object.freeze({
+99:         runId: child.agentRunId,
+100:         expectedRevision: revisions.get(child.agentRunId)!,
+101:         activities: buildActivitiesFromProjection(projection.activities),
+102:       }),
+103:     }
+104:   }))
+105:   if (input.isCurrent && !input.isCurrent()) throw new Error('Agent collaboration hydration ownership released.')
+106:   const context = new AgentRunCollaborationContext({ hostRunId: input.hostRunId, view: input.view, entries: staged.map((item) => item.entry) })
+107:   const replacements = staged.map((item) => item.activities)
+
+# autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts sha256=682df17c86874e262ccc31ea35600335f9c62b8a1db59bc73f1fd08286cb9f82
+
+86:       if (inputs.has(inputState.agent_run_id) || !this.index.agents.has(inputState.agent_run_id)) {
+87:         throw new Error(`Agent collaboration input '${inputState.agent_run_id}' has no unique child identity.`)
+88:       }
+89:       inputs.add(inputState.agent_run_id)
+90:     }
+91:     for (const status of input.view.agent_statuses) {
+92:       const state = this.contexts.get(status.agent_run_id)!.state
+93:       state.currentStatus = status.status as AgentStatus
+94:       state.recoverableBlock = status.recoverableBlock
+95:     }
+96:     for (const inputState of input.view.agent_input_states) {
+97:       handleAgentInputState(inputState.state, this.contexts.get(inputState.agent_run_id)!)
+98:     }
+99:     this.phase = input.view.is_active ? 'live' : 'historical'
+
+# autobyteus-web/services/runHydration/runProjectionConversation.ts sha256=591c097df375377fd296049913a4be44b29d1c65838aeafc4c7a30f62cd8ed22
+
+7: export interface RunProjectionConversationEntry {
+8:   kind: string;
+9:   invocationId?: string | null;
+10:   role?: string | null;
+11:   content?: string | null;
+12:   toolName?: string | null;
+13:   toolArgs?: Record<string, unknown> | null;
+14:   toolResult?: unknown | null;
+15:   toolError?: string | null;
+16:   media?: Record<string, string[]> | null;
+17:   fileAttachments?: ReadonlyArray<{ uri: string; fileType: string; fileName: string | null }>;
+18:   senderId?: string | null;
+19:   /** `inter_agent_message`: an agent-to-agent delivery (RD-004). */
+20:   senderAgentRunId?: string | null;
+21:   senderAddress?: string | null;
+22:   ts?: number | null;
+23: }
+
+340:     if (entry.kind === 'message' && entry.role === 'user') {
+341:       flushPendingAIMessage();
+342:       messages.push({
+343:         type: 'user',
+344:         text: entry.content || '',
+345:         timestamp,
+346:         contextFilePaths: buildUserContextFilePaths(entry),
+347:       });
+348:       return;
+349:     }
+
+# autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts sha256=c76e1b7d62ab1d6ca367b61b4eb39f513324f30319d3e2abb09a6d2e5b16a361
+
+1: import type { AgentInputStateDto } from '@autobyteus/agent-presentation-contracts';
+2: import type { AgentContext } from '~/types/agent/AgentContext';
+3: import { AgentStatus } from '~/types/agent/AgentStatus';
+4: import { buildUserMessageFromProjectionPayload, upsertUserMessageByIdentity } from './userMessageProjection';
+5: 
+6: /** Same-live-run projection only. Never sends input or replays a historical queue. */
+7: export function handleAgentInputState(payload: AgentInputStateDto, context: AgentContext): boolean {
+8:   const previous = context.state.inputProjection;
+9:   if (previous?.runInstanceId === payload.run_instance_id && payload.revision <= previous.revision) return false;
+10:   context.state.inputProjection = { runInstanceId: payload.run_instance_id, revision: payload.revision };
+11:   context.state.recoverableBlock = payload.recoverableBlock;
+12:   if (payload.recoverableBlock) context.state.currentStatus = payload.recoverableBlock.state === 'recovering'
+13:     ? AgentStatus.Running : AgentStatus.Error;
+14:   for (const message of context.conversation.messages) if (message.type === 'user') delete message.pendingInput;
+15:   for (const entry of payload.entries) {
+16:     // Agent/system deliveries have their existing presentation owner; do not invent user bubbles.
+17:     if (entry.sender_type !== 'user' || (!entry.message_id && !entry.dedupe_key)) continue;
+18:     const message = buildUserMessageFromProjectionPayload({ content: entry.content,
+19:       message_id: entry.message_id, dedupe_key: entry.dedupe_key,
+20:       context_file_paths: entry.file_attachments.map(file => ({ path: file.uri, type: file.file_type })),
+21:     });
+22:     const existing = context.conversation.messages.find(item => item.type === 'user' && (
+23:       !!entry.message_id && item.messageId === entry.message_id || !!entry.dedupe_key && item.dedupeKey === entry.dedupe_key));
+24:     if (existing) message.timestamp = existing.timestamp;
+25:     message.pendingInput = { runInstanceId: payload.run_instance_id, state: entry.state };
+26:     upsertUserMessageByIdentity({ context, userMessage: message, retainExistingNonExecutableContextFiles: true });
+27:   }
+28:   return true;
+29: }
+
+# autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts sha256=d31b2ab33365a87d2e33fd2fa430d9e2a7d3b5e952ee860e7f3a27b32775c720
+
+19: const normalizeIdentity = (value?: string | null): string => value?.trim() || '';
+20: 
+21: const findExistingMessageIndex = (
+22:   messages: AgentContext['conversation']['messages'],
+23:   messageId: string,
+24:   dedupeKey: string,
+25: ): number => {
+26:   if (!messageId && !dedupeKey) {
+27:     return -1;
+28:   }
+29:   return messages.findIndex((message) => {
+30:     if (message.type !== 'user') {
+31:       return false;
+32:     }
+33:     const candidate = message as UserMessage;
+34:     return Boolean(
+35:       (messageId && candidate.messageId === messageId) ||
+36:       (dedupeKey && candidate.dedupeKey === dedupeKey),
+37:     );
+38:   });
+39: };
+40: 
+
+70:   const { context, userMessage, retainExistingNonExecutableContextFiles = false } = input;
+71:   const existingIndex = findExistingMessageIndex(
+72:     context.conversation.messages,
+73:     userMessage.messageId ?? '',
+74:     userMessage.dedupeKey ?? '',
+75:   );
+76:   if (existingIndex >= 0) {
+77:     const existing = context.conversation.messages[existingIndex];
+78:     const existingContextFilePaths = existing.type === 'user' ? existing.contextFilePaths ?? [] : [];
+79:     const incomingContextFilePaths = userMessage.contextFilePaths ?? [];
+80:     const contextFilePaths = retainExistingNonExecutableContextFiles
+81:       ? mergeMemberEchoContextFiles(incomingContextFilePaths, existingContextFilePaths)
+82:       : incomingContextFilePaths;
+83: 
+84:     const nextMessage = {
+85:       ...existing,
+86:       ...userMessage,
+87:       contextFilePaths,
+88:     };
+89:     if (JSON.stringify(existing) === JSON.stringify(nextMessage)) return false;
+90:     context.conversation.messages[existingIndex] = nextMessage;
+91:   } else {
+92:     context.conversation.messages.push(userMessage);
+93:   }
+94:   return true;
+95: };
+96: 
+97: const getContextAttachmentIdentity = (
+98:   attachment: NonNullable<UserMessage['contextFilePaths']>[number],
+99: ): string => attachment.id?.trim() || `${attachment.kind}:${attachment.locator}`;
+100: 
+101: const mergeMemberEchoContextFiles = (
+102:   incoming: NonNullable<UserMessage['contextFilePaths']>,
+103:   existing: NonNullable<UserMessage['contextFilePaths']>,
+104: ): NonNullable<UserMessage['contextFilePaths']> => {

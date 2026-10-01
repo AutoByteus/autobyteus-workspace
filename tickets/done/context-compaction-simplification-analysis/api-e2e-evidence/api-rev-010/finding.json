@@ -1,0 +1,30 @@
+{
+  "id": "API010-F001",
+  "classification": "Preliminary Local Fix \u2014 implementation-owned test/build integration",
+  "testInventory": {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts",
+    "sha256": "b899b1f247129884159414be16adaba46b196435d0e09c43c227a9ce6a726112",
+    "nonempty_lines": 113,
+    "changed_lines": 115,
+    "kind": "test"
+  },
+  "actualTestSha256": "b899b1f247129884159414be16adaba46b196435d0e09c43c227a9ce6a726112",
+  "guardPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/scripts/guard-web-boundary.mjs",
+  "guardSha256": "cf7ce51d0330c9073e4db89fa5ca07eb63636122a4905af4f512aa48d61e8c35",
+  "headGuardSha256": "cf7ce51d0330c9073e4db89fa5ca07eb63636122a4905af4f512aa48d61e8c35",
+  "guardUnchangedVsHead": true,
+  "buildCommand": [
+    "pnpm",
+    "--silent",
+    "isolated-app",
+    "start",
+    "--build"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "outerExit": 3,
+  "innerExit": 1,
+  "failedBefore": "prepare-server/generate/transpile/package/launch",
+  "runtimeDefectClaim": false,
+  "newProductInstance": null,
+  "oldBuildNotReused": true
+}

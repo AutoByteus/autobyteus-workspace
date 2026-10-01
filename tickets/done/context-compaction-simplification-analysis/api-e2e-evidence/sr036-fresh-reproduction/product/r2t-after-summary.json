@@ -1,0 +1,38 @@
+{
+  "agent": {
+    "address": "/sr036_team/lead",
+    "agentDefinitionId": "sr036-lead",
+    "agentRunId": "sr036_lead_6da9c91041b54d8e82937a24c2821592",
+    "platformAgentRunId": null
+  },
+  "state": {
+    "run_instance_id": "d49c2bf2-4ce2-4f0f-aab5-05218f3122a7",
+    "revision": 16,
+    "entries": [
+      {
+        "sequence": 3,
+        "message_id": "9349928e-1e8b-4568-bd8e-7ae1777ba446",
+        "dedupe_key": "member_input:daily_assistant_e663420272024bbcb4d566ddddd49fb4:sr036_lead_6da9c91041b54d8e82937a24c2821592:9349928e-1e8b-4568-bd8e-7ae1777ba446",
+        "turn_id": "turn_0003",
+        "state": "held",
+        "content": "SR036-R2T-HELD",
+        "sender_type": "user",
+        "file_attachments": []
+      }
+    ],
+    "recoverableBlock": {
+      "operationId": "compaction_operation_mupnd09x_1",
+      "failureEpoch": 2,
+      "position": {
+        "kind": "held_turn",
+        "turnId": "turn_0003"
+      },
+      "state": "awaiting_user",
+      "code": "SR036_SYNTHETIC_503",
+      "message": "Compaction failed \u2014 send a message to retry"
+    }
+  },
+  "rawPaths": [
+    "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf/server-data/memory/agents/daily_assistant_e663420272024bbcb4d566ddddd49fb4/collaboration/sr036_team_e5ed81d3e1cc4a60ab7576fe6ee865a0/sr036_lead_6da9c91041b54d8e82937a24c2821592/raw_traces_active.jsonl"
+  ]
+}

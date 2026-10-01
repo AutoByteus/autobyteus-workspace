@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T13:04:31.499791+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "FA898739ADA2BE83540C972F0389B5E8",
+    "--script",
+    "() => ({start:document.body.innerText.slice(0,350),end:document.body.innerText.slice(-1200),buttons:[...document.querySelectorAll(\"button\")].filter(x=>x.getAttribute(\"data-test\")===\"terminate-agent-run\").map(x=>({disabled:x.disabled,title:x.title}))})"
+  ],
+  "controlPort": 56935
+}

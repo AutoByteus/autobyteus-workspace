@@ -1,0 +1,763 @@
+Read-only current-source excerpts; no source edits.
+
+## autobyteus-ts/src/agent/input-processor/memory-ingest-input-processor.ts
+39:     }
+40: 
+41:     const llmUserMessage = buildLLMUserMessage(message);
+42:     const original = triggeringEvent.agentInputUserMessage;
+43:     const fileAttachments = original.recordingFileAttachments
+44:       ?? partitionRawTraceAttachments(original.contextFiles ?? []).fileAttachments;
+45:     memoryManager.ingestUserMessage(
+46:       llmUserMessage, turnId, 'LLMUserMessageReadyEvent', fileAttachments,
+47:       resolveInterAgentSenderId(original.metadata),
+48:     );
+49:     console.debug(`MemoryIngestInputProcessor stored processed user input with turnId ${turnId}`);
+
+## autobyteus-ts/src/memory/memory-manager.ts
+105:   constructor(options: { store: MemoryStore; turnTracker?: TurnTracker;
+106:     memoryCompaction?: MemoryCompactionConfiguration;
+107:     workingContext?: WorkingContext;
+108:     workingContextSnapshotStore?: WorkingContextSnapshotStore | null;
+109:     agentId?: string | null }) {
+110:     this.store = options.store;
+111:     this.turnTracker = options.turnTracker ?? new TurnTracker();
+112:     this.automaticCompactionConfiguration = options.memoryCompaction ?? DEFAULT_MEMORY_COMPACTION_CONFIGURATION;
+113:     this.workingContextSnapshotStore = options.workingContextSnapshotStore ?? null;
+196:     return current;
+197:   }
+198: 
+199:   /** `senderId`: the sender AgentRun of an agent-to-agent delivery (null for user input). */
+200:   ingestUserMessage(llmUserMessage: LLMUserMessage, turnId: string, sourceEvent: string, fileAttachments: readonly ContextFileReference[], senderId: string | null = null): void {
+201:     const trace = buildNativeUserMessageTrace(llmUserMessage, {
+202:       turnId, seq: this.nextSeq(turnId), sourceEvent, fileAttachments, senderId,
+203:     });
+204:     this.store.add([trace]);
+205:   }
+
+## autobyteus-ts/src/memory/raw-trace-ingestion.ts
+140: 
+141: /** Native media and processed text remain LLM-owned; non-media references are captured from original input. */
+142: export function buildNativeUserMessageTrace(
+143:   llmUserMessage: LLMUserMessage,
+144:   input: { turnId: string; seq: number; sourceEvent: string; fileAttachments: readonly ContextFileReference[]; senderId?: string | null },
+145: ): RawTraceItem {
+146:   return new RawTraceItem({
+147:     id: `rt_${Date.now()}`, ts: Date.now() / 1000,
+148:     turnId: input.turnId, seq: input.seq, sourceEvent: input.sourceEvent,
+149:     traceType: 'user', content: llmUserMessage.content,
+150:     fileAttachments: input.fileAttachments,
+151:     senderId: input.senderId ?? null,
+152:     media: {
+153:       images: llmUserMessage.image_urls ?? [],
+154:       audio: llmUserMessage.audio_urls ?? [],
+155:       video: llmUserMessage.video_urls ?? [],
+156:     },
+157:   });
+158: }
+
+## autobyteus-ts/src/memory/models/raw-trace-item.ts
+11: export type RawTraceItemOptions = {
+12:   id: string;
+13:   ts: number;
+14:   turnId: string;
+15:   seq: number;
+16:   traceType: string;
+17:   content: string;
+18:   sourceEvent: string;
+19:   media?: RawTraceMedia | null;
+20:   fileAttachments?: readonly ContextFileReference[];
+21:   toolName?: string | null;
+22:   toolCallId?: string | null;
+23:   toolArgs?: Record<string, unknown> | null;
+24:   toolResult?: unknown;
+25:   toolError?: string | null;
+26:   correlationId?: string | null;
+27:   senderId?: string | null;
+28: };
+29: 
+30: export class RawTraceItem implements MemoryItem {
+31:   id: string;
+74:   toDict(): Record<string, unknown> {
+75:     const data: Record<string, unknown> = {
+76:       id: this.id,
+77:       ts: this.ts,
+78:       turn_id: this.turnId,
+79:       seq: this.seq,
+80:       trace_type: this.traceType,
+81:       content: this.content,
+82:       source_event: this.sourceEvent
+83:     };
+84: 
+85:     if (this.media) data.media = this.media;
+86:     if (this.fileAttachments.length) data.file_attachments = this.fileAttachments.map(contextFileReferenceToDict);
+87:     if (this.toolName) data.tool_name = this.toolName;
+88:     if (this.toolCallId) data.tool_call_id = this.toolCallId;
+89:     if (this.toolArgs) data.tool_args = this.toolArgs;
+90:     if (this.toolResult !== undefined) data.tool_result = this.toolResult;
+91:     if (this.toolError !== undefined) data.tool_error = this.toolError;
+92:     if (this.correlationId) data.correlation_id = this.correlationId;
+93:     if (this.senderId) data.sender_id = this.senderId;
+94: 
+95:     return data;
+96:   }
+97: 
+98:   static fromDict(data: Record<string, unknown>): RawTraceItem {
+99:     return new RawTraceItem({
+100:       id: String(data.id),
+101:       ts: Number(data.ts),
+102:       turnId: String(data.turn_id),
+103:       seq: Number(data.seq),
+104:       traceType: String(data.trace_type),
+105:       content: typeof data.content === 'string' ? data.content : '',
+106:       sourceEvent: String(data.source_event),
+107:       fileAttachments: parseRawTraceFileAttachments(data.file_attachments, String(data.trace_type)),
+108:       media: (data.media as RawTraceMedia | undefined) ?? null,
+109:       toolName: typeof data.tool_name === 'string' ? data.tool_name : null,
+110:       toolCallId: typeof data.tool_call_id === 'string' ? data.tool_call_id : null,
+111:       toolArgs: (data.tool_args as Record<string, unknown> | undefined) ?? null,
+112:       toolResult: Object.prototype.hasOwnProperty.call(data, 'tool_result') ? data.tool_result : undefined,
+113:       toolError: Object.prototype.hasOwnProperty.call(data, 'tool_error')
+114:         ? typeof data.tool_error === 'string' ? data.tool_error : null
+115:         : undefined,
+116:       correlationId: typeof data.correlation_id === 'string' ? data.correlation_id : null,
+117:       senderId: typeof data.sender_id === 'string' ? data.sender_id : null
+118:     });
+119:   }
+120: }
+
+## autobyteus-ts/src/memory/turn-tracker.ts
+1: export class TurnTracker {
+2:   private counter: number;
+3: 
+4:   constructor(start = 1) {
+5:     if (start < 1) {
+6:       throw new Error('start must be >= 1');
+7:     }
+8:     this.counter = start - 1;
+9:   }
+10: 
+11:   nextTurnId(): string {
+12:     this.counter += 1;
+13:     return `turn_${String(this.counter).padStart(4, '0')}`;
+14:   }
+15: }
+
+## autobyteus-ts/src/agent/factory/agent-factory.ts
+107:   private createRuntimeWithId(
+108:     agentId: string,
+109:     config: AgentConfig,
+110:     memoryDirOverride: string | null = null,
+111:     restoreOptions: WorkingContextSnapshotBootstrapOptions | null = null
+112:   ): AgentRuntime {
+113:     this.prepareSkills(agentId, config);
+114: 
+115:     const runtimeState = new AgentRuntimeState(
+116:       agentId,
+117:       config.workspaceRootPath ?? null,
+118:       config.initialCustomData ?? null
+119:     );
+120: 
+121:     const explicitMemoryDir =
+122:       normalizeExplicitMemoryDir(memoryDirOverride) ??
+123:       normalizeExplicitMemoryDir(config.memoryDir ?? null);
+124:     const memoryDir = explicitMemoryDir ?? resolveMemoryBaseDir();
+125:     const memoryLayoutOptions = explicitMemoryDir
+126:       ? { agentRootSubdir: '' }
+127:       : { agentRootSubdir: 'agents' };
+128:     const memoryStore = new FileMemoryStore(memoryDir, agentId, memoryLayoutOptions);
+129:     const snapshotStore = new WorkingContextSnapshotStore(memoryDir, agentId, memoryLayoutOptions);
+130:     runtimeState.memoryManager = new MemoryManager({
+131:       store: memoryStore,
+132:       memoryCompaction: config.memoryCompaction,
+133:       workingContextSnapshotStore: snapshotStore,
+134:       agentId,
+135:     });
+136:     runtimeState.restoreOptions = restoreOptions;
+137: 
+138:     if (!config.inputProcessors.some((processor) => processor instanceof MemoryIngestInputProcessor)) {
+184:   restoreAgent(agentId: string, config: AgentConfig, memoryDir: string | null = null): Agent {
+185:     if (!agentId || typeof agentId !== 'string') {
+186:       throw new Error('restoreAgent requires a non-empty string agentId.');
+187:     }
+188:     if (this.hasKnownAgent(agentId)) {
+189:       throw new Error(`Agent '${agentId}' is already active or stopping.`);
+190:     }
+191: 
+192:     const restoreOptions = new WorkingContextSnapshotBootstrapOptions();
+193:     const runtime = this.createRuntimeWithId(agentId, config, memoryDir, restoreOptions);
+194:     const agent = new Agent(runtime);
+195:     this.agents.set(agentId, { state: 'active', agent });
+196:     console.info(`Agent '${agentId}' restored and stored successfully.`);
+
+## autobyteus-ts/src/agent/loop/agent-turn-runner.ts
+37:   private readonly notifier: AgentExternalEventNotifier | null;
+38: 
+39:   constructor(private readonly context: AgentContext, private readonly turn: AgentTurn) {
+40:     this.notifier = context.statusManager?.notifier ?? null;
+41:   }
+42: 
+43:   async run(trigger: AgentTurnTrigger): Promise<TurnOutcome> {
+44:     const turnId = this.turn.turnId;
+45:     const completedToolResultsForInterruptedProjection: ToolResultEvent[] = [];
+46:     try {
+47:       this.turn.executionScope.throwIfAborted({ kind: 'turn_start' });
+48:       this.notifier?.notifyAgentTurnStarted(turnId);
+49:       await this.applyStatusEvent(trigger);
+50:       this.turn.executionScope.throwIfAborted({ kind: 'external_trigger_status' });
+51:       let nextInput = await this.inputPipeline.processExternalTrigger(trigger, this.context, this.turn, this.notifier);
+52:       this.turn.executionScope.throwIfAborted({ kind: 'input_pipeline' });
+53: 
+54:       while (true) {
+55:         this.turn.executionScope.throwIfAborted({ kind: 'turn_loop' });
+56:         await this.applyStatusEvent(this.buildLlmPhaseReadyEvent(nextInput, turnId));
+57:         this.turn.executionScope.throwIfAborted({ kind: 'llm_phase_ready_status' });
+58:         const llmOutcome = await this.llmPhase.run(nextInput, this.context, this.turn, this.notifier);
+59:         this.turn.executionScope.throwIfAborted({ kind: 'post_llm_phase' });
+60: 
+61:         if (llmOutcome.kind === 'compaction_blocked') {
+62:           const recovery = this.context.state.compactionRecovery;
+63:           if (!recovery) throw new Error('Compaction recovery controller is unavailable.');
+64:           await this.turn.executionScope.runAbortable({ kind: 'compaction_recovery_wait' },
+
+## autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts
+146:   async dispatchUserInput(
+147:     dispatch: AgentRunBackendInputDispatch,
+148:   ): Promise<AgentRunBackendInputDispatchResult> {
+149:     if (dispatch.kind !== "start_turn") {
+150:       return {
+151:         forwarded: false,
+152:         delivery: "not_delivered",
+153:         code: "UNSUPPORTED_RUNTIME_COMMAND",
+154:         message: "AutoByteus does not support active-turn input append.",
+155:         turnId: null,
+156:       };
+157:     }
+158:     if (!this.agent.postUserMessage || !this.isActive()) {
+159:       const result = buildRunNotFoundResult(this.runId);
+160:       return {
+161:         forwarded: false,
+162:         delivery: "not_delivered",
+163:         code: result.code,
+164:         message: result.message,
+165:         turnId: null,
+166:       };
+167:     }
+168:     try {
+169:       await this.pendingSystemInstructionEvent.publishOnce(this.runId, this.sourceListeners);
+170:       await this.agent.postUserMessage(dispatch.message);
+171:       return {
+172:         forwarded: true,
+173:         turnId: null,
+174:         platformAgentRunId: this.getPlatformAgentRunId(),
+175:       };
+
+## autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts
+199:   async restoreBackend(
+200:     context: AgentRunContext<RuntimeAgentRunContext>,
+201:   ): Promise<AutoByteusAgentRunBackend> {
+202:     const built = await this.buildAgentConfig(context.config, context.runId);
+203:     const memoryDir = context.config.memoryDir;
+204:     if (!memoryDir) {
+205:       throw new AgentCreationError(
+206:         `AutoByteus standalone restore for run '${context.runId}' requires an explicit memoryDir.`,
+207:       );
+208:     }
+209:     await fs.mkdir(memoryDir, { recursive: true });
+210:     built.agentConfig.memoryDir = memoryDir;
+211:     const agent = this.agentFactory.restoreAgent(
+212:       context.runId,
+213:       built.agentConfig,
+214:       memoryDir,
+215:     ) as AgentLike;
+216:     agent.start?.();
+217:     await this.waitForIdle(agent as Agent);
+218:     return this.createBackendFromAgent(
+219:       new AgentRunContext({
+
+## autobyteus-server-ts/src/agent-execution/input/agent-run-input-admission-state.ts
+175:       break;
+176:     }
+177:     if (!entry) return null;
+178: 
+179:     let dispatch: AgentRunBackendInputDispatch;
+180:     if (selection.activeTurn.kind === "NONE") {
+181:       dispatch = { kind: "start_turn", message: entry.message };
+182:     } else if (
+183:       selection.activeTurn.kind === "IDENTIFIED" &&
+184:       selection.capabilities.activeTurnAppend === "supported" &&
+185:       entry.notInto !== selection.activeTurn.turnId
+186:     ) {
+187:       dispatch = {
+188:         kind: "append_to_active_turn",
+189:         turnId: selection.activeTurn.turnId,
+190:         message: entry.message,
+191:       };
+192:     } else {
+193:       return null;
+194:     }
+195: 
+196:     entry.state = "claimed";
+197:     entry.dispatchKind = dispatch.kind;
+198:     entry.associatedTurnId = dispatch.kind === "append_to_active_turn" ? dispatch.turnId : null;
+199:     this.activeClaim = entry;
+200:     return { entrySequence: entry.sequence, dispatch };
+295:   observeTurnStarted(turnId: string | null): void {
+296:     if (this.activeClaim?.dispatchKind === "start_turn") {
+297:       if (turnId && this.activeClaim.observedTurnId && this.activeClaim.observedTurnId !== turnId) {
+298:         this.activeClaim.pendingTerminal = {
+299:           kind: "failed",
+300:           code: "AGENT_RUN_INPUT_PROVIDER_PROTOCOL_VIOLATION",
+301:           message: "Provider published conflicting canonical turn-start identities.",
+302:           turnId: this.activeClaim.observedTurnId,
+303:         };
+304:         return;
+305:       }
+306:       this.activeClaim.observedTurnId = turnId;
+307:       return;
+308:     }
+309: 
+310:     const entry = this.entries.find(
+311:       (candidate) => candidate.state === "forwarded" && candidate.associatedTurnId === null,
+312:     );
+313:     if (!entry || !turnId) return;
+314:     entry.associatedTurnId = turnId;
+315:     safeNotify(entry.observer, { kind: "turn_associated", turnId });
+367:   pendingSnapshot(): AgentPendingInputDto[] {
+368:     return this.entries.filter(entry => entry.state !== "reserved" && entry.state !== "terminal").map(entry => ({
+369:       sequence: entry.sequence, message_id: requiredString(entry.message.metadata.message_id),
+370:       dedupe_key: requiredString(entry.message.metadata.dedupe_key),
+371:       turn_id: entry.associatedTurnId ?? entry.observedTurnId,
+372:       state: entry.heldTurnId ? "held" : entry.state === "forwarded" ? "forwarded" : "queued",
+373:       content: entry.message.content, sender_type: entry.message.senderType as AgentPendingInputDto["sender_type"],
+374:       file_attachments: (entry.message.recordingFileAttachments ?? entry.message.contextFiles ?? []).map(file => ({
+375:         uri: file.uri, file_type: file.fileType, file_name: file.fileName,
+376:       })),
+377:     }));
+378:   }
+379: 
+
+## autobyteus-server-ts/src/agent-memory/services/raw-trace-record-normalizer.ts
+55:     id: asString(trace["id"]),
+56:     traceType: asString(trace["trace_type"]) ?? "",
+57:     sourceEvent: asString(trace["source_event"]),
+58:     content: asString(trace["content"]),
+59:     toolName: asString(trace["tool_name"]),
+60:     toolCallId: asString(trace["tool_call_id"]),
+61:     toolArgs: asRecord(trace["tool_args"]),
+62:     media: toRawTraceMedia(trace["media"]),
+63:     turnId: asString(trace["turn_id"]) ?? "",
+64:     seq: traceSeq(trace),
+65:     ts: traceTs(trace),
+66:   };
+67:   const fileAttachments = parseRawTraceFileAttachments(trace["file_attachments"], event.traceType);
+68:   if (fileAttachments.length) event.fileAttachments = fileAttachments;
+69:   if (Object.prototype.hasOwnProperty.call(trace, "tool_result")) {
+70:     event.toolResult = trace["tool_result"];
+71:   }
+72:   if (Object.prototype.hasOwnProperty.call(trace, "tool_error")) {
+73:     event.toolError = asString(trace["tool_error"]);
+74:   }
+75:   const senderId = asString(trace["sender_id"]);
+76:   if (senderId) event.senderId = senderId;
+77:   return event;
+78: };
+79: 
+80: export const normalizeRawTraceRecords = (
+81:   records: RawTraceRecord[],
+
+## autobyteus-server-ts/src/run-history/projection/historical-replay-event-types.ts
+1: import type {
+2:   RunProjectionActivityStatus,
+3:   RunProjectionActivityType,
+4:   RunProjectionCompactionPhase,
+5:   RunProjectionSourceDetailLevel,
+6: } from "./run-projection-types.js";
+7: import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
+8: import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
+9: 
+10: interface HistoricalReplayMessageEventBase {
+11:   eventId: string;
+12:   turnGroupId: string;
+13:   kind: "message";
+14: 
+15:   content: string | null;
+16:   media: RawTraceMedia | null;
+17:   ts: number | null;
+18: }
+19: 
+20: export type HistoricalReplayMessageEvent = HistoricalReplayMessageEventBase & (
+21:   | {
+22:       role: "user";
+23:       fileAttachments?: readonly ContextFileReference[];
+24:       /** The sender AgentRun of an agent-to-agent delivery (RD-004); absent for user input. */
+25:       senderId?: string | null;
+26:     }
+27:   | { role: string | null; fileAttachments?: never; senderId?: never }
+28: );
+29: 
+30: export interface HistoricalReplayReasoningEvent {
+31:   eventId: string;
+
+## autobyteus-server-ts/src/run-history/projection/run-projection-types.ts
+30: export interface RunProjectionConversationEntry {
+31:   kind: string;
+32:   invocationId?: string | null;
+33:   role?: string | null;
+34:   content?: string | null;
+35:   toolName?: string | null;
+36:   toolArgs?: Record<string, unknown> | null;
+37:   toolResult?: unknown | null;
+38:   toolError?: string | null;
+39:   media?: Record<string, string[]> | null;
+40:   fileAttachments?: readonly ContextFileReference[];
+41:   senderId?: string | null;
+42:   /** `inter_agent_message` only: the sender AgentRun and, when its root can resolve it, its address. */
+43:   senderAgentRunId?: string | null;
+44:   senderAddress?: string | null;
+45:   ts?: number | null;
+46: }
+47: 
+48: export interface RunProjectionToolActivityEntry {
+49:   kind: "tool";
+50:   invocationId: string;
+
+## autobyteus-server-ts/src/run-history/projection/run-projection-dedupe.ts
+39:   return true;
+40: };
+41: 
+42: const explicitConversationKey = (entry: RunProjectionConversationEntry): string | null => {
+43:   const metadataRecord = (entry as unknown as { metadata?: unknown }).metadata;
+44:   const metadata =
+45:     metadataRecord && typeof metadataRecord === "object" && !Array.isArray(metadataRecord)
+46:       ? metadataRecord as Record<string, unknown>
+47:       : {};
+48:   const identity =
+49:     normalizeText((entry as unknown as { messageId?: unknown }).messageId) ||
+50:     normalizeText((entry as unknown as { message_id?: unknown }).message_id) ||
+51:     normalizeText(metadata.message_id) ||
+52:     normalizeText(metadata.dedupe_key) ||
+53:     normalizeText(entry.invocationId);
+54:   return identity ? `${entry.kind}:${entry.role ?? ""}:${identity}` : null;
+55: };
+56: 
+57: const conversationSemanticKey = (entry: RunProjectionConversationEntry): string =>
+58:   [
+59:     entry.kind,
+60:     entry.role ?? "",
+61:     normalizeText(entry.content),
+62:     normalizeText(entry.toolName),
+63:     stableJson(entry.toolArgs),
+64:     stableJson(entry.toolResult),
+65:     normalizeText(entry.toolError),
+66:     stableJson(entry.media),
+67:     ...(entry.fileAttachments?.length ? [stableJson(entry.fileAttachments)] : []),
+68:   ].join("\0");
+69: 
+70: const conversationEntriesCanMerge = (
+71:   left: RunProjectionConversationEntry,
+72:   right: RunProjectionConversationEntry,
+73: ): boolean => {
+74:   if (conversationSemanticKey(left) !== conversationSemanticKey(right)) {
+75:     return false;
+76:   }
+77:   const leftTs = normalizeTs(left.ts);
+78:   const rightTs = normalizeTs(right.ts);
+79:   if (leftTs === null && rightTs === null) {
+80:     return false;
+81:   }
+82:   return leftTs === null || rightTs === null || leftTs === rightTs;
+83: };
+84: 
+85: const conversationRichnessScore = (entry: RunProjectionConversationEntry): number =>
+86:   [
+87:     normalizeTs(entry.ts),
+115: export const dedupeRunProjectionConversationEntries = (
+116:   entries: readonly RunProjectionConversationEntry[],
+117: ): RunProjectionConversationEntry[] => {
+118:   const deduped: RunProjectionConversationEntry[] = [];
+119:   const explicitIndexByKey = new Map<string, number>();
+120: 
+121:   for (const entry of entries) {
+122:     const explicitKey = explicitConversationKey(entry);
+123:     if (explicitKey) {
+124:       const existingIndex = explicitIndexByKey.get(explicitKey);
+125:       if (existingIndex !== undefined) {
+126:         deduped[existingIndex] = mergeConversationEntry(deduped[existingIndex], entry);
+127:         continue;
+128:       }
+129:       explicitIndexByKey.set(explicitKey, deduped.length);
+130:       deduped.push(entry);
+131:       continue;
+132:     }
+133: 
+134:     const existingIndex = deduped.findIndex((candidate) =>
+135:       !explicitConversationKey(candidate) && conversationEntriesCanMerge(candidate, entry));
+136:     if (existingIndex >= 0) {
+137:       deduped[existingIndex] = mergeConversationEntry(deduped[existingIndex], entry);
+138:       continue;
+139:     }
+140:     deduped.push(entry);
+141:   }
+142: 
+143:   return deduped;
+144: };
+145: 
+
+## autobyteus-server-ts/src/run-history/projection/transformers/raw-trace-to-historical-replay-events.ts
+178:     if (trace.traceType === "user" || trace.traceType === "assistant") {
+179:       events.push({
+180:         ...resolveTraceReplayIdentity(trace, nextLegacyOccurrence),
+181:         kind: "message",
+182:         ...(trace.traceType === "user" ? { role: "user" as const,
+183:           ...(trace.fileAttachments?.length ? { fileAttachments: trace.fileAttachments } : {}),
+184:           ...(trace.senderId ? { senderId: trace.senderId } : {}),
+185:         } : { role: "assistant" as const }),
+186:         content: trace.content ?? null,
+187:         media: trace.media ?? null,
+188:         ts: trace.ts ?? null,
+189:       });
+190:       continue;
+191:     }
+192:     if (trace.traceType === "reasoning") {
+
+## autobyteus-server-ts/src/run-history/projection/transformers/historical-replay-events-to-conversation.ts
+1: import type { EventMonitorReplayEvent } from "../historical-replay-event-types.js";
+2: import type { RunProjectionConversationEntry } from "../run-projection-types.js";
+3: 
+4: export const buildRunProjectionConversation = (
+5:   events: EventMonitorReplayEvent[],
+6: ): RunProjectionConversationEntry[] =>
+7:   events.flatMap<RunProjectionConversationEntry>((event) => {
+8:     if (event.kind === "message" && event.role === "user" && event.senderId) {
+9:       // RD-004: an agent-to-agent delivery replays as "From <Sender>:", not as a user bubble.
+10:       return [{
+11:         kind: "inter_agent_message",
+12:         role: "user",
+13:         senderAgentRunId: event.senderId,
+14:         senderAddress: null,
+15:         ...(event.fileAttachments?.length ? { fileAttachments: event.fileAttachments } : {}),
+16:         content: event.content,
+17:         media: event.media,
+18:         ts: event.ts,
+19:       }];
+20:     }
+21: 
+22:     if (event.kind === "message") {
+23:       return [{
+24:         kind: "message",
+25:         role: event.role,
+26:         ...(event.role === "user" && event.fileAttachments?.length ? { fileAttachments: event.fileAttachments } : {}),
+27:         content: event.content,
+28:         media: event.media,
+29:         ts: event.ts,
+30:       }];
+31:     }
+32: 
+33:     if (event.kind === "reasoning") {
+34:       return [{
+35:         kind: "reasoning",
+
+## autobyteus-server-ts/src/run-history/projection/providers/local-memory-run-view-projection-provider.ts
+40:     const { memoryService, localRunId } = this.resolveMemorySource(input);
+41:     const view = memoryService.getRunMemoryView(localRunId, {
+42:       includeWorkingContext: false,
+43:       includeEpisodic: false,
+44:       includeSemantic: false,
+45:       includeRawTraces: true,
+46:       includeArchive: false,
+47:     });
+48:     const replayEvents = buildHistoricalReplayEvents(view.rawTraces ?? []);
+49:     const selected = selectRecentRunProjectionEvents(replayEvents);
+50:     const projection = buildRunProjectionBundleFromEvents(
+51:       input.source.runId,
+52:       selected.eventMonitorEvents,
+53:       selected.activityEvents,
+54:     );
+55:     projection.hasEarlierActiveTraceEvents = replayEvents.filter(isEventMonitorReplayEvent).length > 100;
+56:     return projection;
+57:   }
+58: 
+59:   async buildActiveTracePage(input: RunProjectionProviderInput & {
+60:     beforeCursor?: string | null;
+
+## autobyteus-web/services/runHydration/runProjectionConversation.ts
+60:   entry.kind,
+61:   entry.role || '',
+62:   normalizeText(entry.content),
+63:   normalizeText(entry.toolName),
+64:   stableJson(entry.toolArgs),
+65:   stableJson(entry.toolResult),
+66:   normalizeText(entry.toolError),
+67:   stableJson(entry.media),
+68:   ...(entry.fileAttachments?.length ? [stableJson(entry.fileAttachments)] : []),
+69: ].join('\0');
+70: 
+71: const projectionEntriesCanMerge = (
+72:   left: RunProjectionConversationEntry,
+73:   right: RunProjectionConversationEntry,
+74: ): boolean => {
+75:   if (projectionEntryKey(left) !== projectionEntryKey(right)) {
+76:     return false;
+77:   }
+78:   const leftTs = normalizeTs(left.ts);
+79:   const rightTs = normalizeTs(right.ts);
+80:   if (leftTs === null && rightTs === null) {
+81:     return false;
+82:   }
+83:   return leftTs === null || rightTs === null || leftTs === rightTs;
+84: };
+85: 
+86: const mergeProjectionEntry = (
+87:   current: RunProjectionConversationEntry,
+338:     }
+339: 
+340:     if (entry.kind === 'message' && entry.role === 'user') {
+341:       flushPendingAIMessage();
+342:       messages.push({
+343:         type: 'user',
+344:         text: entry.content || '',
+345:         timestamp,
+346:         contextFilePaths: buildUserContextFilePaths(entry),
+347:       });
+348:       return;
+349:     }
+350: 
+351:     const segments = buildAssistantSideSegments(runId, entry, index);
+
+## autobyteus-web/services/agentStreaming/handlers/userMessageProjection.ts
+21: const findExistingMessageIndex = (
+22:   messages: AgentContext['conversation']['messages'],
+23:   messageId: string,
+24:   dedupeKey: string,
+25: ): number => {
+26:   if (!messageId && !dedupeKey) {
+27:     return -1;
+28:   }
+29:   return messages.findIndex((message) => {
+30:     if (message.type !== 'user') {
+31:       return false;
+32:     }
+33:     const candidate = message as UserMessage;
+34:     return Boolean(
+35:       (messageId && candidate.messageId === messageId) ||
+36:       (dedupeKey && candidate.dedupeKey === dedupeKey),
+37:     );
+38:   });
+39: };
+65: export const upsertUserMessageByIdentity = (input: {
+66:   context: AgentContext;
+67:   userMessage: UserMessage;
+68:   retainExistingNonExecutableContextFiles?: boolean;
+69: }): boolean => {
+70:   const { context, userMessage, retainExistingNonExecutableContextFiles = false } = input;
+71:   const existingIndex = findExistingMessageIndex(
+72:     context.conversation.messages,
+73:     userMessage.messageId ?? '',
+74:     userMessage.dedupeKey ?? '',
+75:   );
+76:   if (existingIndex >= 0) {
+77:     const existing = context.conversation.messages[existingIndex];
+78:     const existingContextFilePaths = existing.type === 'user' ? existing.contextFilePaths ?? [] : [];
+79:     const incomingContextFilePaths = userMessage.contextFilePaths ?? [];
+80:     const contextFilePaths = retainExistingNonExecutableContextFiles
+81:       ? mergeMemberEchoContextFiles(incomingContextFilePaths, existingContextFilePaths)
+82:       : incomingContextFilePaths;
+83: 
+84:     const nextMessage = {
+85:       ...existing,
+86:       ...userMessage,
+87:       contextFilePaths,
+88:     };
+89:     if (JSON.stringify(existing) === JSON.stringify(nextMessage)) return false;
+90:     context.conversation.messages[existingIndex] = nextMessage;
+91:   } else {
+92:     context.conversation.messages.push(userMessage);
+93:   }
+94:   return true;
+95: };
+96: 
+97: const getContextAttachmentIdentity = (
+98:   attachment: NonNullable<UserMessage['contextFilePaths']>[number],
+99: ): string => attachment.id?.trim() || `${attachment.kind}:${attachment.locator}`;
+
+## autobyteus-web/services/agentStreaming/handlers/agentInputStateHandler.ts
+1: import type { AgentInputStateDto } from '@autobyteus/agent-presentation-contracts';
+2: import type { AgentContext } from '~/types/agent/AgentContext';
+3: import { AgentStatus } from '~/types/agent/AgentStatus';
+4: import { buildUserMessageFromProjectionPayload, upsertUserMessageByIdentity } from './userMessageProjection';
+5: 
+6: /** Same-live-run projection only. Never sends input or replays a historical queue. */
+7: export function handleAgentInputState(payload: AgentInputStateDto, context: AgentContext): boolean {
+8:   const previous = context.state.inputProjection;
+9:   if (previous?.runInstanceId === payload.run_instance_id && payload.revision <= previous.revision) return false;
+10:   context.state.inputProjection = { runInstanceId: payload.run_instance_id, revision: payload.revision };
+11:   context.state.recoverableBlock = payload.recoverableBlock;
+12:   if (payload.recoverableBlock) context.state.currentStatus = payload.recoverableBlock.state === 'recovering'
+13:     ? AgentStatus.Running : AgentStatus.Error;
+14:   for (const message of context.conversation.messages) if (message.type === 'user') delete message.pendingInput;
+15:   for (const entry of payload.entries) {
+16:     // Agent/system deliveries have their existing presentation owner; do not invent user bubbles.
+17:     if (entry.sender_type !== 'user' || (!entry.message_id && !entry.dedupe_key)) continue;
+18:     const message = buildUserMessageFromProjectionPayload({ content: entry.content,
+19:       message_id: entry.message_id, dedupe_key: entry.dedupe_key,
+20:       context_file_paths: entry.file_attachments.map(file => ({ path: file.uri, type: file.file_type })),
+21:     });
+22:     const existing = context.conversation.messages.find(item => item.type === 'user' && (
+23:       !!entry.message_id && item.messageId === entry.message_id || !!entry.dedupe_key && item.dedupeKey === entry.dedupe_key));
+24:     if (existing) message.timestamp = existing.timestamp;
+25:     message.pendingInput = { runInstanceId: payload.run_instance_id, state: entry.state };
+26:     upsertUserMessageByIdentity({ context, userMessage: message, retainExistingNonExecutableContextFiles: true });
+27:   }
+28:   return true;
+29: }
+
+## autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts
+84:   const staged = await Promise.all([...index.agents.values()].map(async (child) => {
+85:     const context = createChildContext(child, input.view.execution_tree.createdAt,
+86:       await workspaceFor(child.source.launchConfiguration.workspaceRootPath))
+87:     const projection = await fetchProjection(input.hostRunId, child)
+88:     resetRecentEventMonitorBaseline(context)
+89:     context.state.conversation = buildConversationFromProjection(child.agentRunId, projection.conversation, {
+90:       agentDefinitionId: child.source.agentDefinitionId,
+91:       agentName: nameAt(child.address),
+92:       llmModelIdentifier: child.source.launchConfiguration.llmModelIdentifier,
+93:     })
+94:     context.state.hasEarlierActiveTraceEvents = projection.hasEarlierActiveTraceEvents === true
+95:     primeRecentEventMonitorBaseline(context)
+96:     return {
+97:       entry: Object.freeze({ agentRunId: child.agentRunId, memberAddress: child.address, context }),
+98:       activities: Object.freeze({
+99:         runId: child.agentRunId,
+100:         expectedRevision: revisions.get(child.agentRunId)!,
+101:         activities: buildActivitiesFromProjection(projection.activities),
+102:       }),
+103:     }
+104:   }))
+105:   if (input.isCurrent && !input.isCurrent()) throw new Error('Agent collaboration hydration ownership released.')
+106:   const context = new AgentRunCollaborationContext({ hostRunId: input.hostRunId, view: input.view, entries: staged.map((item) => item.entry) })
+107:   const replacements = staged.map((item) => item.activities)
+108:   return {
+109:     context,
+
+## autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts
+80:       if (statuses.has(status.agent_run_id) || this.index.agents.get(status.agent_run_id)?.address !== status.member_address) {
+81:         throw new Error(`Agent collaboration status '${status.agent_run_id}' has no unique exact child identity.`)
+82:       }
+83:       statuses.add(status.agent_run_id)
+84:     }
+85:     for (const inputState of input.view.agent_input_states) {
+86:       if (inputs.has(inputState.agent_run_id) || !this.index.agents.has(inputState.agent_run_id)) {
+87:         throw new Error(`Agent collaboration input '${inputState.agent_run_id}' has no unique child identity.`)
+88:       }
+89:       inputs.add(inputState.agent_run_id)
+90:     }
+91:     for (const status of input.view.agent_statuses) {
+92:       const state = this.contexts.get(status.agent_run_id)!.state
+93:       state.currentStatus = status.status as AgentStatus
+94:       state.recoverableBlock = status.recoverableBlock
+95:     }
+96:     for (const inputState of input.view.agent_input_states) {
+97:       handleAgentInputState(inputState.state, this.contexts.get(inputState.agent_run_id)!)
+98:     }
+99:     this.phase = input.view.is_active ? 'live' : 'historical'
+100:   }

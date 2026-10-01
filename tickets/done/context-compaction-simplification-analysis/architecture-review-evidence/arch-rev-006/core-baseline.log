@@ -1,0 +1,36 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+ ✓ tests/unit/memory/raw-trace-item.test.ts (3 tests) 3ms
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > ingests user message into the already-active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn_0001
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > records the sender of an agent-to-agent delivery on the user trace (RD-004)
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+MemoryIngestInputProcessor stored processed user input with turnId turn_0002
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > records the sender of an agent-to-agent delivery on the user trace (RD-004)
+MemoryIngestInputProcessor stored processed user input with turnId turn_0002
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > keeps TOOL-originated input in the processor lifecycle without a memory write
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+stdout | tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts > MemoryIngestInputProcessor > fails when TOOL continuation input reaches memory ingest without an active turn
+AgentConfig created for name='name', role='role'.
+AgentRuntimeState initialized for agent_id 'agent-1'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+AgentContext composed for agent_id 'agent-1'. Config and State linked.
+
+ ✓ tests/unit/agent/input-processor/memory-ingest-input-processor.test.ts (4 tests) 5ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  17:47:24
+   Duration  272ms (transform 195ms, setup 34ms, import 206ms, tests 8ms, environment 0ms)
+

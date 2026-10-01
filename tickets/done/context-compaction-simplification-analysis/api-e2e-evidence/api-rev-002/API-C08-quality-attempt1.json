@@ -1,0 +1,24 @@
+{
+  "id": "API-C08-quality",
+  "started": "2026-09-26T20:58:57.092Z",
+  "completed": "2026-09-26T20:59:54.745Z",
+  "command": [
+    "pnpm",
+    "exec",
+    "vitest",
+    "run",
+    "tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+    "--no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts",
+  "environment": {
+    "RUN_REAL_E2E": "1",
+    "AUTOBYTEUS_TEST_RUNTIME_ROOT": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-002-owned",
+    "AUTOBYTEUS_TEST_SERVER_URL": "http://127.0.0.1:55688",
+    "AUTOBYTEUS_TEST_DATABASE_URL": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-002-owned.db",
+    "LMSTUDIO_HOSTS": "http://localhost:1234",
+    "AUTOBYTEUS_LIVE_E2E_SCENARIOS": "lmstudio.qwen36.compaction-agent-flow"
+  },
+  "status": 1,
+  "signal": null
+}

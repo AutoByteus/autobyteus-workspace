@@ -1,0 +1,6 @@
+{
+  "scannedMembers": 14875,
+  "scope": "Ticket regular files <30MB plus immediate tar members <30MB; common explicit credential patterns only, not proof of zero secrets",
+  "findings": [],
+  "oversizeGitFiles": []
+}

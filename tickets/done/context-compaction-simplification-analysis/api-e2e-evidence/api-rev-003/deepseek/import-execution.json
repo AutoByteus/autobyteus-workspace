@@ -1,0 +1,19 @@
+{
+  "command": [
+    "pnpm",
+    "secrets:import",
+    "--",
+    "--source",
+    "/Users/normy/.autobyteus/server-data/.env",
+    "--database-url",
+    "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-003-deepseek.db"
+  ],
+  "confirmation": "IMPORT typed after value-free preview target matched",
+  "exitCode": 0,
+  "targetStatus": "READY",
+  "configured": 10,
+  "skipped": 0,
+  "replaced": 0,
+  "sourceHandling": "Read only by documented importer; never displayed or edited; no overwrite flag",
+  "unusedImportedCredentials": "Importer imports recognized aliases as one batch; only DeepSeek scenario selected; entire owned vault removed at end"
+}

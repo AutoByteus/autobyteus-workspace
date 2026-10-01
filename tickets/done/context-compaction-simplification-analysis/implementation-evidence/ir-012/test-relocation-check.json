@@ -1,0 +1,11 @@
+{
+  "old_path": "autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts",
+  "new_path": "test-support/native-input-history/native-accepted-input-history.integration.test.ts",
+  "whole_mock_and_test_body_byte_identical": true,
+  "test_body_sha256": "ce00b65543c0d733570bbbd2190c42c804388ef7e6e702b49ad7eae485f959ba",
+  "only_import_depth_and_frontend_alias_retargeted": true,
+  "old_active_path_removed": true,
+  "interim_web_integration_candidate_removed": true,
+  "core_import_is_explicit_in_workspace_harness_only": true,
+  "meaningful_native_assertions_deleted": false
+}

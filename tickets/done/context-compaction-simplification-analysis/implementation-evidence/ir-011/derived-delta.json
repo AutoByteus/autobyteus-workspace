@@ -1,0 +1,101 @@
+{
+  "checked": 1772,
+  "note": "Exclude macOS tar-generated AppleDouble metadata, not workspace files. New helper dist files enumerated separately.",
+  "changes": [
+    {
+      "path": "autobyteus-ts/dist/agent/input-processor/memory-ingest-input-processor.d.ts.map",
+      "before": "60abe93064c42d9ea69eb81c349fa41d6973bc4ecc4d761e83d0780471cffda2",
+      "after": "e5d298aee007025f36591f1a30ddc2475a873b8a0a5a61041987ac1b9d2ef2d2"
+    },
+    {
+      "path": "autobyteus-ts/dist/agent/input-processor/memory-ingest-input-processor.js.map",
+      "before": "2a99143c983fd9e89ae1334f17bec9d4801e21eb1a29c8405eba0fabc8e26696",
+      "after": "4d6bba69c8a2740d3b24cd2794cabc8807861dbafcbc32be8a72869631ad6c09"
+    },
+    {
+      "path": "autobyteus-ts/dist/agent/input-processor/memory-ingest-input-processor.js",
+      "before": "7dabdf8c31a3659820251af7812b7788096546300d24474ae8f22fa8f27ecdc5",
+      "after": "1a703933b083e5cb4b04cefe84be776199980fd566a092a633f08515aedd1127"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/raw-trace-ingestion.js",
+      "before": "3cf666aa8de1ad6081add9d7a63bda3cb7cb73629a77d8015c4ebb0cd225d79d",
+      "after": "6e250fb18bf36d4204f89165d01d232f5d9cfff3005b13c1404bb4244e68f481"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/memory-manager.js",
+      "before": "9940052f69696ac71deaaa8cadae9b6a4ea67eb164ca6283927dffb55fd7896a",
+      "after": "98cbc4a48db5486ed9c0c26b85d6e8437f88f5dfef9870a646d8c0a2f6dcd53b"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/memory-manager.d.ts",
+      "before": "a2091246f3145a833a54ec390c749989d2e57fb63eed929b50686e968102a48c",
+      "after": "3247ca2760f387b69e81c7d3314a169d0fd2a78336c21f4930ea859bab314656"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/raw-trace-ingestion.d.ts",
+      "before": "4ef44ad7bd981d76c65b5f18b90d9704ee8086e7060612803eba6ef37ab72623",
+      "after": "9e0641c099e812a1641942df93304c6842ef20da73542783b8c5621197a0eaba"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/raw-trace-ingestion.d.ts.map",
+      "before": "05adbf81bbf9f902ce221fb2c3c1d5c177f8eaf1d1f4c9f147e3c90128846a11",
+      "after": "142bd9ef637062da4354b0b2dca04bd9e21df2a8a1de9ef3ecd4bc809be3c86f"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/raw-trace-ingestion.js.map",
+      "before": "43e26edbca5279090d106c793e3cad320a1a286b7d9bab4b15c9b5660d549d6c",
+      "after": "e60066a7c0e5cb3a2aecdf8ebc3886edf19db6af10aca5f5361a18ed8cb1ed3c"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/memory-manager.js.map",
+      "before": "5a78a9a594bb8d36df716a40406536bf70bac88a963a77f05dbaf18612745c95",
+      "after": "ca5192d71348c0619a4bfbf8c7165590fdce49d8874c87e929b6cfcb410aaf2b"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/memory-manager.d.ts.map",
+      "before": "de4922f48159464151ff7cd3ab7ae397f523c07c08b79aca5b3bc90c7e3284ef",
+      "after": "31336cc5271ecb616d958977e46d24e6a3143afa8f250faeed6c916f1da263a3"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/models/raw-trace-item.d.ts.map",
+      "before": "ddf03cd70ce035d22a2fd607d809aa647bdeffa096f9cd14a7d6afe8a5719c3c",
+      "after": "d25e352a3ce9ccd0d33b96e01aed329acdd5ec4f1e8d45abfb7075e799771a2f"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/models/raw-trace-item.d.ts",
+      "before": "9b49575d9450066e98d1559f4ef661b034396d69a8078e98b129bd87ff0a56ab",
+      "after": "9698fad72d864c0b60a4a7e6699e6c81bfa536c686436fbe5341100d41e4c8db"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/models/raw-trace-item.js.map",
+      "before": "d4482bbcdac3b9a7e479ede6952af8337fa94dc0a7015b452445391e2d99be2c",
+      "after": "d7608742d527671b489d3ea7e936248755c1ccad31a3f112b2df87ccd9e6fdc6"
+    },
+    {
+      "path": "autobyteus-ts/dist/memory/models/raw-trace-item.js",
+      "before": "b0dbf63e00efe3865245ab62a268f342c8c9642b100ef049f54db5edebb623cd",
+      "after": "2b82d5561bb1a06f86142fc72323be34b90ed8d4f57cf661098ee4cd078dbe49"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.js",
+      "before": "32718e10c3bd99265e505b5c72da3d431887a7fb7f942a697be69a2098b32a0b",
+      "after": "cf876a3d1aa7141f2e97131dc9374f8edf3b2a3b211620d6a3806da6efb1959b"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.js.map",
+      "before": "2bc6c89b5746434d07514bdd8b6181f9dfe7857c5028c3d92be0de128415a2c0",
+      "after": "35cfea6255f5febb97d1c7741336c34be3ab42e1a9b5ce43dff90a24a53d62cc"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.d.ts",
+      "before": "0c729035c302e41973c4f4aa5ad4a1a69d76e448d7bdf5d258ca775507753f1a",
+      "after": "3e56acc6f0e26ac5c84b44c12120adf172463a1e65027cab05303db25eaaca22"
+    },
+    {
+      "path": "autobyteus-agent-presentation-contracts/dist/index.d.ts.map",
+      "before": "4f15664f9e7edd2270efffcd44f0fe0864556080b578ebadc4247737ce24f910",
+      "after": "531e131eac0d12890378c2f6cbb5b6c4f6328220c135f693b70e3ad054c46a0b"
+    }
+  ]
+}

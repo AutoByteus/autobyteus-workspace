@@ -1,0 +1,37 @@
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-009/finding/reconnect-identity.probe.test.ts (2 tests | 2 failed) 9ms
+   × API009-F001 real native projection plus live held input > reconnects hosted agent without duplicating the accepted held input 7ms
+     → expected [ { type: 'user', …(3) }, …(1) ] to have a length of 1 but got 2
+   × API009-F001 real native projection plus live held input > reconnects hosted team without duplicating the accepted held input 1ms
+     → expected [ { type: 'user', …(3) }, …(1) ] to have a length of 1 but got 2
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-009/finding/reconnect-identity.probe.test.ts > API009-F001 real native projection plus live held input > reconnects hosted agent without duplicating the accepted held input
+ FAIL  ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-009/finding/reconnect-identity.probe.test.ts > API009-F001 real native projection plus live held input > reconnects hosted team without duplicating the accepted held input
+AssertionError: expected [ { type: 'user', …(3) }, …(1) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ ../tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-009/finding/reconnect-identity.probe.test.ts:29:20
+     27|     const copies = context.conversation.messages.filter(message => mes…
+     28|     // Must fail on current integrated code: one anonymous historical …
+     29|     expect(copies).toHaveLength(1)
+       |                    ^
+     30|     expect(copies[0]).toMatchObject({ messageId: held.message_id, pend…
+     31|   })
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  15:11:42
+   Duration  371ms (transform 98ms, setup 0ms, collect 120ms, tests 9ms, environment 0ms, prepare 66ms)
+

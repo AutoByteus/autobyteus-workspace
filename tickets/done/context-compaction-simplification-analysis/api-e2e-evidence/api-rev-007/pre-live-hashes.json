@@ -1,0 +1,12 @@
+{
+  "manifest.json": "887d90299fdf6b3dd80a3a0bd951bda4c87373620981e4a9cf0865ce988726d5",
+  "plan.md": "c930e1534c279fe8dbc1d979fdab3e953c51ba2975c07c79b99f55c0b5f83327",
+  "run.mjs": "83c2fe0640030083b795a20cd09b5ea412cfe3356e6afa8d9eb34b5a5fc872d7",
+  "bounded-worker.mjs": "8befdfb143e01b8cf89a2f0fa914b2dafda9fc9fe8c9cb6e7b1312e74f91ef70",
+  "bounded-fetch.ts": "73113de11ae771c166995f1685fa150fa18f1ca06fc32fe4abd91e4ee1e26bac",
+  "live-setup.ts": "83abc7f07105f51235532007cba5b1e8bd4a57bffc0764f8632b2612044e8a79",
+  "capture-observation.ts": "5d73c040b40cf46382a7927cd80818d2d94af82e0b3b82d9cdfe56968bd38d8b",
+  "observer.test.ts": "8f0fba38369a5750a8932528c95a1edfc922c1db5130436cecf202d8c75b0a6d",
+  "vitest-live.config.mts": "1a2c861f021a02459358e8dfdbff880a9c56b0826c73a644ecfccac0fd5e9650",
+  "vitest-observer.config.mts": "eca02a6b619083b2e549a4653bcd2929b3b7fcc6b6d64a8f2b78de2d04dc1ffa"
+}

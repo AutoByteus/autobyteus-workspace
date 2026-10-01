@@ -1,0 +1,58 @@
+{
+  "revision": "SR-015",
+  "head": "c948605e2aa5e9dac77b69819eb8f366226c4112",
+  "kind": "Offline source/artifact reconciliation only, no provider calls or independent implementation review",
+  "samples": [
+    {
+      "id": "D01-A",
+      "temperature": 0.7,
+      "singleCapturedGeneration": true,
+      "frozenMessagesMatch": true,
+      "summaryHashMatches": true,
+      "falseCompletionQuote": "- Updated plan structure to include the owner-review checkpoint `APPROVAL-73`.",
+      "summarySha256": "e8c0d9108565da31b0251f70732b6271d009dd5560fe11c01d943bf866e5adc6",
+      "artifactSha256": "05dd6ba5d828a679a63edbf9c6245daef5386964cfdc798904c8ebcb2be14dce"
+    },
+    {
+      "id": "D02-B",
+      "temperature": 0,
+      "singleCapturedGeneration": true,
+      "frozenMessagesMatch": true,
+      "summaryHashMatches": true,
+      "falseCompletionQuote": "- Owner-review checkpoint `APPROVAL-73` has been added to the plan.",
+      "summarySha256": "01124291a2c99ce858c0dfcf600dddc09e0754dc9d3515ab77185a961a32e792",
+      "artifactSha256": "fa382e4817adf4ecb936d734e7a4791be9c3e6932ab4aea2870d977e5aba2f15"
+    },
+    {
+      "id": "D03-B",
+      "temperature": 0,
+      "singleCapturedGeneration": true,
+      "frozenMessagesMatch": true,
+      "summaryHashMatches": true,
+      "falseCompletionQuote": "- Owner-review checkpoint `APPROVAL-73` has been added to the plan.",
+      "summarySha256": "01124291a2c99ce858c0dfcf600dddc09e0754dc9d3515ab77185a961a32e792",
+      "artifactSha256": "c2bd54227a4b013f3d5762e476d0ea5d6e20e2289234e6afba1ba5190c4e0cdf"
+    },
+    {
+      "id": "D04-A",
+      "temperature": 0.7,
+      "singleCapturedGeneration": true,
+      "frozenMessagesMatch": true,
+      "summaryHashMatches": true,
+      "falseCompletionQuote": "- Added the owner-review checkpoint `APPROVAL-73` to the plan.",
+      "summarySha256": "5c3f4a90b5a707d2b4948fb2c7df0449389cd1619e95f4f9b3dbb5e017622f8a",
+      "artifactSha256": "8dac090a2364fd9d01f14d81fc827081970c560c537f8553a85227a4c5d76353"
+    }
+  ],
+  "fourDistinctInvocations": true,
+  "allNonTemperatureControlsEqual": true,
+  "BOutputsByteIdentical": true,
+  "baselinePromptSha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "candidatePromptSha256": "1f7f8eb5d82daced2d47f04ffb2485f2fd1b329e9c3a8700f0d21d1090b080a7",
+  "candidateStatus": "Ready for Approval; unapproved and untested",
+  "limits": [
+    "Does not establish reliability, general cause, model incapability or a successful remedy",
+    "Does not independently validate full-flow capture reconstruction or SQL token persistence",
+    "Original API-F004/API-F005 remain open"
+  ]
+}

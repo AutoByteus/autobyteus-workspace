@@ -1,0 +1,18 @@
+{
+  "basis": "API010 executed regression command/log groups; only IR012 harness relocation/guard negative/command guidance changed; all IR011 runtime17 plus API15 remain unchanged. No addition of overlapping totals. All bounded differences disclosed. Current fresh workspace/native and web guard checks replace the old web-native location run.",
+  "checked": 6312,
+  "differences": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/TESTING.md",
+      "before": "3a5a2d4d3d6f7a689292cde97f4305c54c5e054aa3c287e1a76d8a4bc00c9450",
+      "current": "32810b791533ce882f5967d1f7358cbdd77386703d21b92822d299422b144588",
+      "exists": true
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts",
+      "before": "b899b1f247129884159414be16adaba46b196435d0e09c43c227a9ce6a726112",
+      "current": null,
+      "exists": false
+    }
+  ]
+}

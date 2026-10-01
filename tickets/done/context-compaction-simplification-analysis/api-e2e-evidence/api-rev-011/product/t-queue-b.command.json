@@ -1,0 +1,14 @@
+{
+  "time": "2026-10-01T18:17:40.915132+00:00",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "2EBDE1BCA8FCFB7F5A2DAACA80B77548",
+    "--script",
+    "async()=>{const a=await __abDemo.type({selector:\"main textarea\"},\"API11-T-QUEUED-B\",{clear:true,delayMs:0});if(!a.ok)throw Error(JSON.stringify(a));return await __abDemo.click({text:\"Send message\"});}"
+  ],
+  "controlPort": 62666
+}

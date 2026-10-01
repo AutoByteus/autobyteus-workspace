@@ -1,0 +1,5 @@
+components/progress/__tests__/CompactionActivityItem.spec.ts(5,36): error TS2307: Cannot find module '../CompactionActivityItem.vue' or its corresponding type declarations.
+components/workspace/agent/__tests__/CompactionStatusRow.spec.ts(5,33): error TS2307: Cannot find module '../CompactionStatusRow.vue' or its corresponding type declarations.
+stores/__tests__/agentTeamRunStore.spec.ts(6,28): error TS2307: Cannot find module '~/components/workspace/config/RunConfigPanel.vue' or its corresponding type declarations.
+stores/__tests__/agentTeamRunStore.spec.ts(7,31): error TS2307: Cannot find module '~/components/workspace/config/TeamRunConfigForm.vue' or its corresponding type declarations.
+stores/__tests__/nativeOrgCompactionTermination.spec.ts(9,26): error TS2307: Cannot find module '~/components/progress/ActivityFeed.vue' or its corresponding type declarations.

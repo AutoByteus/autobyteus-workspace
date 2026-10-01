@@ -1,0 +1,10 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+ ✓ tests/unit/startup/compaction-model-settings-migration.test.ts (14 tests) 14ms
+
+ Test Files  1 passed (1)
+      Tests  14 passed (14)
+   Start at  11:35:14
+   Duration  143ms (transform 27ms, setup 0ms, import 36ms, tests 14ms, environment 0ms)
+

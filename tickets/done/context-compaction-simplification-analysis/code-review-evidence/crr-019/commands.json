@@ -1,0 +1,30 @@
+[
+  {
+    "argv": [
+      "pnpm",
+      "test:native-input-history"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T17:49:34.433107+00:00",
+    "finished": "2026-10-01T17:49:48.734273+00:00",
+    "exit": 0,
+    "NATIVE_INPUT_CAPTURE_DIR": "explicitly unset"
+  },
+  {
+    "argv": [
+      "pnpm",
+      "-C",
+      "autobyteus-web",
+      "test:nuxt",
+      "tests/integration/web-boundary-guard.integration.test.ts",
+      "services/runHydration/__tests__/acceptedInputIdentity.spec.ts",
+      "tests/integration/electron-package-boundary.integration.test.ts",
+      "--run"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T17:49:48.734804+00:00",
+    "finished": "2026-10-01T17:49:57.438011+00:00",
+    "exit": 0,
+    "NATIVE_INPUT_CAPTURE_DIR": "explicitly unset"
+  }
+]

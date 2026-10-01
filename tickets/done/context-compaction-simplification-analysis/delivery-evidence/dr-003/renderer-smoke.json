@@ -1,0 +1,14 @@
+{
+  "kind": "read-only CUA native-app accessibility observation, then Raise window",
+  "appPath": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app",
+  "observedRenderer": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "observed": [
+    "What should we work on?",
+    "Primary navigation: Chat, Agents, Agent Teams, Agent Orgs, Skills, Memory, Nodes, Settings",
+    "Empty composer and disabled Send message",
+    "Workspace path under own isolated dataRoot"
+  ],
+  "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5ucjCa",
+  "modelWork": "No input, provider configuration, credential import or model/tool request initiated",
+  "limit": "Launch/renderer shell smoke only, not user verification or compaction exercise"
+}

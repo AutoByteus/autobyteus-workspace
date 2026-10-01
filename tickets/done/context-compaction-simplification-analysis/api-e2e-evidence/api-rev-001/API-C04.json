@@ -1,0 +1,12 @@
+{
+  "id": "API-C04",
+  "name": "Server factory/request/status, startup settings and history readers",
+  "criteria": "AC-005/006/008/009/010",
+  "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/compaction tests/unit/startup/compaction-model-settings-migration.test.ts tests/unit/services/server-settings-service.test.ts tests/unit/agent-memory tests/unit/agent-execution/backends/autobyteus tests/unit/agent-execution/agent-provider-factory-builder.test.ts tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts --no-watch",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-09-26T20:24:53.397195+00:00",
+  "completed": "2026-09-26T20:25:09.613721+00:00",
+  "exitCode": 0,
+  "result": "Pass",
+  "log": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/api-rev-001/API-C04.log"
+}

@@ -1,0 +1,135 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/unit/secret-management/live-e2e-harness.test.ts
+AgentFactory (Singleton) initialized.
+
+ ❯ tests/unit/secret-management/live-e2e-harness.test.ts (17 tests | 1 failed) 88ms
+     ✓ keeps the tracked template exact, non-secret, and inside the ignored test DB root 3ms
+     ✓ matches one database target by normalized path rather than file URL spelling 1ms
+     × adapts the raw product backend through the canonical AgentRun event facade 5ms
+     ✓ accepts only the fixed launch schema and rejects unknown, duplicate, dynamic, or unsafe values 1ms
+     ✓ materializes fixed keys into an ordinary runtime .env while preserving mutable Settings 4ms
+     ✓ constructs a clean child environment without database or provider aliases 0ms
+     ✓ masks Vitest database aliases only while selecting the persistent live-E2E vault 0ms
+     ✓ keeps all native model fixtures in code and mapped to their static product factories 2ms
+     ✓ selects only known code-owned scenarios 0ms
+     ✓ registers managed DeepSeek compaction as a five-percent real agent flow 0ms
+     ✓ registers local Qwen compaction without a provider secret 0ms
+     ✓ classifies only the exact value-free AutoByteus discovery-unavailable boundary 0ms
+     ✓ executes every declared agent operation and returns only value-free summaries 2ms
+     ✓ rejects an invalid agent operation before backend provisioning 0ms
+     ✓ detects exact, encoded, and structural synthetic leaks 0ms
+     ✓ captures and releases clean full-run output through the canonical process boundary 35ms
+     ✓ fails the canonical capture/artifact path without echoing seeded content 33ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/secret-management/live-e2e-harness.test.ts > one-database live E2E runtime and evidence boundary > adapts the raw product backend through the canonical AgentRun event facade
+Error: AgentRun provider input normalizer is required.
+ ❯ new AgentRun src/agent-execution/domain/agent-run.ts:77:13
+     75|     this.backend = options.backend;
+     76|     if (!options.providerInputNormalizer || typeof options.providerInp…
+     77|       throw new Error("AgentRun provider input normalizer is required.…
+       |             ^
+     78|     this.providerInputNormalizer = options.providerInputNormalizer;
+     79|     this.commandObservers = [...(options.commandObservers ?? [])];
+ ❯ wrapProductAgentBackendForLiveE2e ../test-support/live-e2e/live-e2e-harness.ts:94:27
+ ❯ tests/unit/secret-management/live-e2e-harness.test.ts:143:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 16 passed (17)
+   Start at  22:09:16
+   Duration  3.68s (transform 2.19s, setup 15ms, import 3.10s, tests 88ms, environment 0ms)
+

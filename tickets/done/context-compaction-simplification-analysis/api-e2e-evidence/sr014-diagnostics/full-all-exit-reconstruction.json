@@ -1,0 +1,37 @@
+{
+  "method": "Exact reporter-fragment concatenation; raw full.log preserved. Not a pristine JSON stdout record.",
+  "sourceSha256": "80845d23f893012eef8cd7d9421d17f8f9726937445558096a68112ae0901a0b",
+  "fragments": [
+    {
+      "line1Based": 371,
+      "keptCharacters": 65434,
+      "sha256": "b0775fbf03c8a04b4c1ad2835068549a0a424320867a625a8dfba10564513f3d"
+    },
+    {
+      "line1Based": 385,
+      "keptCharacters": 130973,
+      "sha256": "c46eceeb9446305b192a9ed5f1d01773b6b4b0222b53d97007ec605fa616f608"
+    },
+    {
+      "line1Based": 403,
+      "keptCharacters": 65536,
+      "sha256": "24dc0f66e1177a3ecc0b3ce6b2df53376bdb8e278e4ed35a5f9a9d0a89c9f5bf"
+    },
+    {
+      "line1Based": 405,
+      "keptCharacters": 65536,
+      "sha256": "b7bd6d94015aa9d48929ba067fbbb6b0c7b20c2928251ec8c53f3fc55970c2b9"
+    },
+    {
+      "line1Based": 411,
+      "keptCharacters": 22584,
+      "sha256": "0ad93be97bfdce9e5d3775e6ce0aa5a4bc7c2c8f3689daad4ca986289101130e"
+    }
+  ],
+  "concatenatedSha256": "c4d21b8b87724f48f8238f331688192e1b2689a96619412ab25558c3a651ebee",
+  "parentRequests": 8,
+  "parentResponses": 8,
+  "summaryRequests": 1,
+  "summaryResponses": 1,
+  "eventCount": 2056
+}

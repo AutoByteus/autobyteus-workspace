@@ -1,0 +1,25 @@
+{
+  "prior_cumulative_index": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr029/reference-index.json",
+  "still_relevant_supplements": [
+    "architecture-review-handoff.sr028.md",
+    "architecture-review-clarification.sr029.md",
+    "api-retry-policy-request.md",
+    "input-hold-proposal.sr027.md",
+    "acceptance-disposition.sr020.md",
+    "output-format-and-coverage.md",
+    "proposed-compaction-prompt.md",
+    "strategy-boundary-analysis.sr021.md",
+    "strategy-execution-investigation.sr025.md",
+    "solution-revision.sr026.md"
+  ],
+  "current_absolute_paths": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/architecture-review-clarification.sr030.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md"
+  ],
+  "source_evidence": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/solution-recovery-evidence/sr030/source-evidence.json",
+  "note": "Previous complete index retains all independent review/implementation/API and evidence paths; their authorities/history unmodified. SR030 supersedes only conflicting technical assertions, not approved intended behavior."
+}

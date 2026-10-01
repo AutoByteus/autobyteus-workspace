@@ -1,0 +1,10 @@
+{
+  "head": "5cb7b049ae3158108bff2cb70ed80e89540586d9",
+  "recorded_remote_ref": "8caa610ff438c288d9aca9f2efe2c33924fbf517",
+  "non_owned_changes": [],
+  "approved_prompt_sha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "parked_candidate_sha256": "1f7f8eb5d82daced2d47f04ffb2485f2fd1b329e9c3a8700f0d21d1090b080a7",
+  "source_test_provider_calls": 0,
+  "no_current_endpoint_probe": true,
+  "historical_results_unchanged": true
+}

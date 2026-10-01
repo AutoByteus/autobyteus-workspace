@@ -1,0 +1,195 @@
+diff --git a/autobyteus-server-ts/docs/modules/agent_memory.md b/autobyteus-server-ts/docs/modules/agent_memory.md
+index f477c8a50..a12718531 100644
+--- a/autobyteus-server-ts/docs/modules/agent_memory.md
++++ b/autobyteus-server-ts/docs/modules/agent_memory.md
+@@ -6,6 +6,22 @@
+ 
+ This module is intentionally separate from run-history projection: agent-memory exposes persisted memory artifacts for exploration and inspection, while `src/run-history` converts runtime or local-memory sources into historical replay bundles. Run-history metadata is used only to enrich memory explorer summaries and to group memory-bearing runs by stable agent/team identity.
+ 
++## Native Accepted Input Recording And Projection
++
++Native ingestion now preserves optional `message_id` / `dedupe_key` from the
++original accepted user input in new raw user traces, alongside sender and
++attachment facts. The core raw codec and server `raw-trace-record-normalizer`
++retain these known nonblank fields. Run-history transports them as typed
++`messageId` / `dedupeKey` through replay and conversation projection; memory
++inspection does not allocate or guess identity.
++
++Old missing keys remain unknown. No migration, backfill, historical raw rewrite
++or old-live-input repair is part of this change. Reading history or reconnecting
++the renderer does not authorize a summary or resend. The pending queue and
++failure-epoch permission remain native runtime memory, not a persisted outbox.
++See [run-history identity](run_history.md#accepted-input-presentation-identity)
++for the scoped primary-key rule used to join new saved and live presentation.
++
+ ## Storage Layout
+ 
+ Memory files live under the configured memory root:
+diff --git a/autobyteus-server-ts/docs/modules/agent_run_collaboration.md b/autobyteus-server-ts/docs/modules/agent_run_collaboration.md
+index 550a5bd56..d6b06793d 100644
+--- a/autobyteus-server-ts/docs/modules/agent_run_collaboration.md
++++ b/autobyteus-server-ts/docs/modules/agent_run_collaboration.md
+@@ -16,7 +16,7 @@ Collaborators, admission and the candidate policy are shared by all roots; see
+ ## Which runs host collaborators
+ 
+ A standalone run can host collaborators unless it is a server helper run
+-(`launchPurpose: "server_helper"`, such as the memory compactor and the skill improver) or an
++(`launchPurpose: "server_helper"`, such as the skill improver) or an
+ application-owned run (`applicationExecutionContext`). This one rule
+ (`isCollaborationEligibleStandaloneRun`) decides both the root and the host's member context.
+ An eligible host always has `send_message_to` and `delegate_task` from its first turn and a short
+@@ -98,6 +98,32 @@ service resolves a child through the third root family `agents`.
+   ordinary standalone owners.
+ - **Message references.** `/rest/agent-collaborations/:host/communication/messages/:messageId/references/:referenceId/content`.
+ 
++## Native Compaction, Live Input And Whole-Host Stop
++
++Agent-root children use the same native recovery/admission contract as Team/Org
++members: accepted A may remain Held before parent dispatch; later accepted B
++remains Queued and can permit the current failed epoch. Successful recovery
++resumes FIFO without replaying consumed work. The host retains its standalone
++stream/command owner; collaboration commands and snapshots target children,
++including native leaves in hosted Teams, not the host a second time.
++
++`collectAgentRootInputSnapshots` admits exact indexed child run IDs, rejects a
++non-child snapshot and deduplicates repeated Team-recursive leaves. Strict live
++GraphQL and reconnect snapshots expose those input facts; an inactive stored
++package cannot invent pending native state. Renderer projection is not retry
++permission or backend-restart queue persistence.
++
++Whole-host Stop fences root admission, stops children and then stops the host.
++The frontend captures exact root/context/service revisions before awaiting the
++command, retires the matching stream and reconciles confirmed terminal state
++for all loaded children, including hosted-Team members. Failed or superseded
++commands cannot mutate a replacement context. Late compaction output must not
++commit or revive the stopped operation. Existing terminal Activity rows may
++survive an in-memory projection refresh, but a new inactive renderer does not
++synthesize a native compaction journal from Offline status. See
++[frontend activity](../../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity)
++and [memory](agent_memory.md) for the persistence boundaries.
++
+ ## Known limits
+ 
+ - Token usage of children is not rolled up to the host run.
+diff --git a/autobyteus-server-ts/docs/modules/run_history.md b/autobyteus-server-ts/docs/modules/run_history.md
+index 8b6c8f742..34d985ed2 100644
+--- a/autobyteus-server-ts/docs/modules/run_history.md
++++ b/autobyteus-server-ts/docs/modules/run_history.md
+@@ -765,12 +765,28 @@ Claude, or AutoByteus display rows should be fixed by ensuring live normalized
+ events and local raw traces are written correctly, not by merging native runtime
+ history into UI projection.
+ 
+-Projection dedupe is identity-aware at the run-history projection boundary. Rows
+-with explicit message or tool invocation identity are merged by that identity;
+-semantic duplicates with one missing timestamp may merge into the richer row.
+-Repeated user/assistant rows that have no explicit identity and no timestamp are
+-preserved as separate rows so repeated direct messages do not disappear during
+-restore/open.
++### Accepted Input Presentation Identity
++
++Projection dedupe is identity-aware at the run-history boundary. For accepted
++user/inter-agent inputs, the pure shared presentation-contract helper chooses a
++normalized, **tagged primary key**: `messageId` when present, otherwise
++`dedupeKey`. Both sides must have the same key type and value, in the same
++recipient conversation and kind/role/sender scope. Different message IDs never
++merge because text/time matches or a secondary dedupe token is shared. An
++ID-bearing row does not automatically join a dedupe-only or keyless row. Tool
++invocation and non-input projection policies remain separate.
++
++The raw normalizer → typed historical replay → conversation chain preserves the
++optional keys from new native writes. Exact input matches preserve original
++timestamp and sender facts, media and attachment metadata; files match by exact
++locator plus type, retaining richer names. Browser history hydration uses the
++same primary-key policy rather than a second OR/semantic identity rule.
++
++Keyless history stays unknown; no migration/backfill or old-row repair is
++performed. Existing semantic fallback applies only when neither input has a
++known key, never to bridge identified and unknown inputs. Repeated keyless
++user/assistant rows with no timestamps remain separate. Reading saved history
++must not imply admission, a retry permit, parent dispatch or a new summary.
+ 
+ Normalization model:
+ 
+diff --git a/autobyteus-ts/docs/agent_memory_design.md b/autobyteus-ts/docs/agent_memory_design.md
+index 628963232..0d2c20c90 100644
+--- a/autobyteus-ts/docs/agent_memory_design.md
++++ b/autobyteus-ts/docs/agent_memory_design.md
+@@ -149,6 +149,25 @@ This is live in-memory queue ownership, not durable same-ID workflow replay or
+ a promise to resume held input across backend restart. Standalone, Team and Org
+ adapters project the same recovery facts; stream loss is not input authority.
+ 
++### Accepted Input Identity In New Native History
++
++Native user-input ingestion records the original accepted input's optional
++`message_id` and `dedupe_key`, together with sender and attachment facts. The
++path is `MemoryIngestInputProcessor` → `MemoryManager.ingestUserMessage` →
++`buildNativeUserMessageTrace` → `RawTraceItem`. These keys are presentation
++correlation facts, not raw trace IDs, turn IDs, retry permits or a durable queue.
++Only nonblank strings are retained; surrounding whitespace is trimmed, while
++case and interior characters are preserved. Other trace kinds do not acquire
++user-input identity fields.
++
++The ordinary raw codec preserves those known optional fields. Older keyless
++rows remain readable and unknown: do not infer keys from text, time, position,
++raw IDs or hashes. This is correct **future writing and reading**, with no
++migration, backfill, old-live-input retrofit or startup gate. Same-turn recovery
++does not ingest held input a second time. Live pending state can therefore join
++new saved history after a renderer reload on the same native instance; a backend
++restart still does not promise recovery of the in-memory queue.
++
+ ## 5. Accepted Replacement And Commit Point
+ 
+ A successful replacement summarizes the prior compacted region plus a nonempty
+diff --git a/autobyteus-web/docs/agent_execution_architecture.md b/autobyteus-web/docs/agent_execution_architecture.md
+index 386b14a2b..8d617c803 100644
+--- a/autobyteus-web/docs/agent_execution_architecture.md
++++ b/autobyteus-web/docs/agent_execution_architecture.md
+@@ -1651,8 +1651,9 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
+   outcomes and accumulated diagnostic facts are retained, not reclassified.
+ - A confirmed terminate action reconciles only unresolved native operations for
+   the exact captured context/service/generation/node/member identities. Team/Org
+-  reconciliation covers all loaded retained members of the root, not just the
+-  selected member. Retired/replaced contexts and failed commands cannot mutate
++  and standalone Agent-root reconciliation cover all loaded retained children,
++  including hosted-Team native members, not just the selected member. The host
++  retains its standalone lifecycle; child snapshots never duplicate the host. Retired/replaced contexts and failed commands cannot mutate
+   successors. Org retires its stream before the mutation and reconciles success
+   before historical marking/inspection refresh; it cannot depend on a late event.
+ - Backend terminal latching/pump drain and client reconciliation are complementary.
+@@ -1671,6 +1672,36 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
+   universal model success or immediate preparation/shutdown latency is promised.
+   Detailed budget figures remain runtime diagnostics, not a live debug panel.
+ 
++### Saved Input Identity And Live Pending Overlay
++
++New native history carries the accepted input's optional `messageId` and
++`dedupeKey` through typed server replay into browser hydration. The shared pure
++presentation-contract helper selects a trimmed, nonblank **tagged** primary key:
++`messageId` first, otherwise `dedupeKey`. History dedupe is scoped to the exact
++recipient conversation plus kind/role/sender facts. Different IDs, key types or
++senders stay distinct; equal body/time or a shared secondary token is not a join.
++Old keyless history is not repaired or backfilled.
++
++On a fresh renderer document connected to the **same live native instance**,
++strict child input snapshots overlay a saved accepted user row as Held once,
++while separately accepted B remains Queued. Pending upsert preserves the saved
++timestamp, mention/sender presentation and richer attachment names, unions exact
++locator/type attachments, and applies live original text and pending state. It
++never sends input, creates a retry permit or starts compaction by itself. An
++unmatched identified input appends once; unknown identity does not authorize a
++heuristic match. Normal accepted echoes use their existing replacement policy
++for executable attachments, not the pending-overlay union.
++
++Agent-root binding revisions guard async hydrate/refresh/termination writes.
++Saved projection and live input/Activity state remain different authorities:
++renderer reload/reconnect is supported, not queue persistence across backend
++restart or cold reconstruction of native terminal cards.
++
++Boundary validation follows repository `TESTING.md`: the native producer/history
++integration harness lives at workspace `test-support/native-input-history`, not
++inside web. Web source and web-owned tests may not depend on native core; the
++unchanged web-boundary guard runs before `pnpm test:native-input-history`.
++
+ ---
+ 
+ ## Error Event Nuance (Tool vs System)

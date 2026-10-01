@@ -1,0 +1,82 @@
+[detached HEAD e6ff60687] refactor: simplify context compaction to one direct summary
+ Committer: normy <normy@macbookpro.speedport.ip>
+Your name and email address were configured automatically based
+on your username and hostname. Please check that they are accurate.
+You can suppress this message by setting them explicitly. Run the
+following command and follow the instructions in your editor to edit
+your configuration file:
+
+    git config --global --edit
+
+After doing this, you may fix the identity used for this commit with:
+
+    git commit --amend --reset-author
+
+ 173 files changed, 1566 insertions(+), 10272 deletions(-)
+ delete mode 100644 autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts
+ create mode 100644 autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.ts
+ delete mode 100644 autobyteus-server-ts/src/agent-execution/compaction/compaction-run-output-collector.ts
+ delete mode 100644 autobyteus-server-ts/src/agent-execution/compaction/memory-compactor-agent-launch-resolver.ts
+ delete mode 100644 autobyteus-server-ts/src/agent-execution/compaction/server-compaction-agent-runner.ts
+ delete mode 100644 autobyteus-server-ts/src/api/graphql/types/working-context-compaction-strategy.ts
+ delete mode 100644 autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent-config.json
+ delete mode 100644 autobyteus-server-ts/src/built-in-agents/templates/memory-compactor/agent.md
+ create mode 100644 autobyteus-server-ts/src/config/compaction-model-settings.ts
+ delete mode 100644 autobyteus-server-ts/src/config/working-context-compaction-strategy-setting.ts
+ create mode 100644 autobyteus-server-ts/src/startup/compaction-model-settings-migration.ts
+ delete mode 100644 autobyteus-server-ts/tests/integration/agent-execution/compaction/compaction-agent-parent-fallback.integration.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/integration/agent-execution/compaction/recursive-memory-compactor-leaf.integration.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-llm-factory.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-presentation.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-provider-requests.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/agent-execution/compaction/compaction-run-output-collector.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/agent-execution/compaction/memory-compactor-agent-launch-resolver.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/agent-execution/compaction/server-compaction-agent-runner.test.ts
+ delete mode 100644 autobyteus-server-ts/tests/unit/api/graphql/types/working-context-compaction-strategy.test.ts
+ create mode 100644 autobyteus-server-ts/tests/unit/startup/compaction-model-settings-migration.test.ts
+ create mode 100644 autobyteus-ts/src/llm/api/completion-status.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/agent-compaction-summarizer.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/compaction-agent-runner.ts
+ create mode 100644 autobyteus-ts/src/memory/compaction/compaction-execution.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/compaction-response-parser.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/compaction-result-normalizer.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/compaction-result.ts
+ create mode 100644 autobyteus-ts/src/memory/compaction/compaction-summary-parser.ts
+ create mode 100644 autobyteus-ts/src/memory/compaction/compaction-summary-prompt.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/default-working-context-compaction-strategy-registry.ts
+ create mode 100644 autobyteus-ts/src/memory/compaction/direct-llm-compaction-summarizer.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/structured-json-compaction-strategy.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-registry.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-resolver.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/working-context-compaction-strategy-setting.ts
+ delete mode 100644 autobyteus-ts/src/memory/compaction/working-context-compaction-strategy.ts
+ delete mode 100644 autobyteus-ts/src/memory/lineage/compaction-lineage-record.ts
+ delete mode 100644 autobyteus-ts/src/memory/lineage/compaction-lineage-scope.ts
+ delete mode 100644 autobyteus-ts/src/memory/lineage/compaction-lineage-store.ts
+ delete mode 100644 autobyteus-ts/src/memory/projection/compacted-memory-context-projector.ts
+ delete mode 100644 autobyteus-ts/src/memory/projection/compacted-memory-message-builder.ts
+ delete mode 100644 autobyteus-ts/src/memory/projection/compacted-memory-projection-bundle.ts
+ delete mode 100644 autobyteus-ts/src/memory/projection/current-compaction-output-loader.ts
+ delete mode 100644 autobyteus-ts/src/memory/store/file-compaction-lineage-store.ts
+ delete mode 100644 autobyteus-ts/tests/integration/agent/memory-compaction-strategy-tool-lifecycle.test.ts
+ delete mode 100644 autobyteus-ts/tests/integration/agent/runtime/agent-runtime-real-compaction-lmstudio.e2e.test.ts
+ delete mode 100644 autobyteus-ts/tests/integration/memory/working-context-snapshot-restore.test.ts
+ create mode 100644 autobyteus-ts/tests/unit/llm/api/completion-status.test.ts
+ delete mode 100644 autobyteus-ts/tests/unit/memory/agent-compaction-summarizer.test.ts
+ delete mode 100644 autobyteus-ts/tests/unit/memory/compacted-memory-context-projector.test.ts
+ delete mode 100644 autobyteus-ts/tests/unit/memory/compaction-response-parser.test.ts
+ delete mode 100644 autobyteus-ts/tests/unit/memory/compaction-result-normalizer.test.ts
+ delete mode 100644 autobyteus-ts/tests/unit/memory/current-compaction-output-loader.test.ts
+ create mode 100644 autobyteus-ts/tests/unit/memory/direct-compaction-harness.ts
+ create mode 100644 autobyteus-ts/tests/unit/memory/direct-llm-compaction-summarizer.test.ts
+ delete mode 100644 autobyteus-ts/tests/unit/memory/file-compaction-lineage-store.test.ts
+ delete mode 100644 autobyteus-ts/tests/unit/memory/structured-json-compaction-strategy.test.ts
+ delete mode 100644 autobyteus-ts/tests/unit/memory/working-context-compaction-strategy-registry.test.ts
+ create mode 100644 autobyteus-web/components/settings/CompactionModelSettings.vue
+ create mode 100644 autobyteus-web/components/settings/__tests__/CompactionModelSettings.spec.ts
+ delete mode 100644 autobyteus-web/graphql/queries/workingContextCompactionStrategyQueries.ts
+ delete mode 100644 autobyteus-web/stores/workingContextCompactionStrategyCatalog.ts
+ delete mode 100644 autobyteus-web/tests/stores/workingContextCompactionStrategyCatalogStore.test.ts
+ create mode 100644 autobyteus-web/utils/compactionModelSettings.ts
+Rebasing (2/4)Rebasing (3/4)Rebasing (4/4)Successfully rebased and updated refs/heads/codex/context-compaction-simplification-analysis.

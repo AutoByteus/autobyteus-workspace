@@ -1,0 +1,145 @@
+{
+  "runId": "api-rev-002-historical-v5",
+  "dir": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-002-owned/memory/agents/api-rev-002-historical-v5",
+  "snapshot": {
+    "schema_version": 5,
+    "agent_id": "api-rev-002-historical-v5",
+    "messages": [
+      {
+        "role": "system",
+        "content": "Synthetic historical system head.",
+        "reasoning_content": null,
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": [],
+        "tool_payload": null,
+        "metadata": {
+          "autobyteus_memory_provenance": {
+            "kind": "single",
+            "rawTraceIds": [],
+            "turnId": null
+          }
+        }
+      },
+      {
+        "role": "user",
+        "content": "Historical checkpoint: audit-only plan for INC-042. No deployment approved. Verification has not run.",
+        "reasoning_content": null,
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": [],
+        "tool_payload": null,
+        "metadata": {
+          "autobyteus_memory_provenance": {
+            "kind": "composed_user",
+            "constituents": [
+              {
+                "kind": "compacted_memory",
+                "textRange": {
+                  "start": 0,
+                  "end": 101
+                }
+              }
+            ]
+          }
+        }
+      },
+      {
+        "role": "assistant",
+        "content": "The risk assessment remains pending.",
+        "reasoning_content": null,
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": [],
+        "tool_payload": null,
+        "metadata": {
+          "autobyteus_memory_provenance": {
+            "kind": "single",
+            "rawTraceIds": [],
+            "turnId": null
+          }
+        }
+      },
+      {
+        "role": "user",
+        "content": "Latest retained request: compare rollback options.",
+        "reasoning_content": null,
+        "image_urls": [],
+        "audio_urls": [],
+        "video_urls": [],
+        "tool_payload": null,
+        "metadata": {
+          "autobyteus_memory_provenance": {
+            "kind": "composed_user",
+            "constituents": [
+              {
+                "kind": "retained_user",
+                "textRange": {
+                  "start": 0,
+                  "end": 50
+                },
+                "rawTraceIds": [],
+                "turnId": null,
+                "imageRange": {
+                  "start": 0,
+                  "end": 0
+                },
+                "audioRange": {
+                  "start": 0,
+                  "end": 0
+                },
+                "videoRange": {
+                  "start": 0,
+                  "end": 0
+                }
+              }
+            ]
+          }
+        }
+      }
+    ]
+  },
+  "hashes": {
+    "episodic.jsonl": "4838a58f54539ae8ffc2aac2880aff12b19098f045b0f07a59bafb3cb439f769",
+    "raw_traces_active.jsonl": "79fbf497e0829602fceee6fbe6663996832127665494b9190f939c3437e54be6",
+    "run_metadata.json": "73671ba97d5a71fd46d5563c68fdd85e5ab0f266294055af3de647f4a633805d",
+    "semantic.jsonl": "0f408e62bc673495d6ce61dc8b0adb69ae0dd2aa8a5a129088aea09e2f1a6bbe",
+    "working_context_snapshot.json": "d91e4c4c9cf5fb3b1c33c041c479be95671ab0e930717b55b1f94e0d6996662d"
+  },
+  "response": {
+    "data": {
+      "getAgentRunMemoryView": {
+        "runId": "api-rev-002-historical-v5",
+        "workingContext": [
+          {
+            "role": "system",
+            "content": "Synthetic historical system head."
+          },
+          {
+            "role": "user",
+            "content": "Historical checkpoint: audit-only plan for INC-042. No deployment approved. Verification has not run."
+          },
+          {
+            "role": "assistant",
+            "content": "The risk assessment remains pending."
+          },
+          {
+            "role": "user",
+            "content": "Latest retained request: compare rollback options."
+          }
+        ],
+        "episodic": [
+          {
+            "summary": "Historical inventory phase completed; no deployment."
+          }
+        ],
+        "semantic": [
+          {
+            "fact": "Historical owner: Mira Chen."
+          }
+        ],
+        "rawTraces": null
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "when": "When API/E2E failure-origin review confirms that the owning problem is an implementation defect.",
+  "recipient_address": "/implementation_engineer",
+  "reason": "API010-F001 is a bounded integration defect in the IR011 implementation-owned regression test against the mandatory product build guard, plus CRR016 readiness review gap. More specific than generic source Local Fix; not an API-owned stale-test/fixture/report correction. Sole recipient under current developer contract."
+}

@@ -1,0 +1,10 @@
+{
+  "revision": "IR-012",
+  "classification": "Local Fix complete; task_size=Large; architectural_risk=High",
+  "selected": {
+    "when": "When an implementation-owned Local Fix requested by the code reviewer or delivery engineer is complete, the existing package is task_size=Large or architectural_risk=High, and the updated implementation must return for source review.",
+    "recipient_address": "/code_reviewer"
+  },
+  "reason": "More-specific reviewer-requested Local Fix return for source review supersedes generic completed Large/High rule. No new design issue, no direct-route eligibility. Sole outcome recipient.",
+  "other_recipients": []
+}

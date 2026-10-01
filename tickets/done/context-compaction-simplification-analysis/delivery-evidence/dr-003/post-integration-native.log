@@ -1,0 +1,1036 @@
+
+> autobyteus-workspace@ test:native-input-history /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis
+> pnpm -C autobyteus-web guard:web-boundary && pnpm -C autobyteus-web test:nuxt --config ../test-support/native-input-history/vitest.config.mts --run
+
+
+> autobyteus@1.4.92-beta.6 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> node ./scripts/guard-web-boundary.mjs
+
+[guard:web-boundary] Passed.
+
+> autobyteus@1.4.92-beta.6 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest --config ../test-support/native-input-history/vitest.config.mts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentRuntimeState initialized for agent_id 'recovery_tester_7683'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_7683': No tools provided in config.
+Agent 'recovery_tester_7683': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_7683'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_7683' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_7683'.
+Registered AgentContext for agent_id 'recovery_tester_7683'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_7683'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_7683'.
+Agent 'recovery_tester_7683' created and stored successfully.
+Agent 'recovery_tester_7683' requesting runtime to start.
+AgentRuntime for 'recovery_tester_7683': Starting worker.
+AgentWorker 'recovery_tester_7683': Starting...
+AgentWorker 'recovery_tester_7683' asyncRun(): Starting.
+Agent 'recovery_tester_7683': Runtime init completed (event store initialized).
+Agent 'recovery_tester_7683': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_7683': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_7683': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Agent 'recovery_tester_7683': Starting direct runtime bootstrap lifecycle.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Agent 'recovery_tester_7683': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_7683': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_7683': Executing McpServerPrewarmingStep.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Agent 'recovery_tester_7683': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_7683': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_7683': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_7683': Final processed system prompt configured and captured. Trace ID: rt_1790881712673_a5023638-e6f1-4651-80b5-a3bc8cc11d00. Final length: 28.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Agent 'recovery_tester_7683': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentWorker 'recovery_tester_7683' initialized successfully. Entering main event scheduler loop.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentEventStream (ID: fa5df429-6e1b-4561-be37-ba52a0d21da0) initialized for agent_id 'recovery_tester_7683'. Subscribed to notifier.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7683',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event 'b72ee36a-b69d-4a80-a16b-6f010b28c048' for run 'recovery_tester_7683': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7683',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event 'ecf6d982-9bb4-4dca-af90-d93eb6e19b53' for run 'recovery_tester_7683': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7683',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event '7895e111-8fab-446f-9b1c-a06d802ee42b' for run 'recovery_tester_7683': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_7683',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdf7_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+compaction_failed {
+  agent_id: 'recovery_tester_7683',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdf7_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: controlled compaction failure'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_7683',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdf7_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+compaction_failed {
+  agent_id: 'recovery_tester_7683',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdf7_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: second controlled compaction failure'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_7683',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdf7_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+compaction_completed {
+  agent_id: 'recovery_tester_7683',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdf7_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 417,
+  summary_token_count: 118,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7683',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event '81d0dde6-7fc1-4992-812e-c95c5e58c36b' for run 'recovery_tester_7683': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7683',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event '3458160a-2ac6-43bf-9c6e-6e4e4ee22160' for run 'recovery_tester_7683': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_7683',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event 'dcf8c786-52f9-4f3f-98a6-fb6a9ea5ec33' for run 'recovery_tester_7683': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Agent 'recovery_tester_7683' requesting runtime to stop (timeout: 2s).
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentWorker 'recovery_tester_7683': Stop requested.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: 3e40c4c4-96b2-4cac-9e40-8cf1ac5f497a, AgentID: recovery_tester_7683) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_7683' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_7683': Running shutdown sequence on worker loop.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentWorker 'recovery_tester_7683': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_7683': Shutdown sequence completed.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+Unregistered AgentContext for agent_id 'recovery_tester_7683'.
+AgentRuntime for 'recovery_tester_7683': Context unregistered.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentRuntime for 'recovery_tester_7683' stop() method completed.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentEventStream (ID: fa5df429-6e1b-4561-be37-ba52a0d21da0) for 'recovery_tester_7683': close() called. Unsubscribing all listeners and signaling.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent: held A / queued B remains one each across fresh hydration and recovery
+AgentEventStream (ID: fa5df429-6e1b-4561-be37-ba52a0d21da0) for 'recovery_tester_7683': close() called. Unsubscribing all listeners and signaling.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentRuntimeState initialized for agent_id 'recovery_tester_9160'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'recovery_tester_9160': No tools provided in config.
+Agent 'recovery_tester_9160': LLM instance 'Parent' and 0 tools prepared and stored in state.
+AgentContext composed for agent_id 'recovery_tester_9160'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'recovery_tester_9160' with config: 'recovery'.
+AgentWorker initialized for agent_id 'recovery_tester_9160'.
+Registered AgentContext for agent_id 'recovery_tester_9160'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'recovery_tester_9160'. Context registered.
+Agent facade initialized for agent_id 'recovery_tester_9160'.
+Agent 'recovery_tester_9160' created and stored successfully.
+Agent 'recovery_tester_9160' requesting runtime to start.
+AgentRuntime for 'recovery_tester_9160': Starting worker.
+AgentWorker 'recovery_tester_9160': Starting...
+AgentWorker 'recovery_tester_9160' asyncRun(): Starting.
+Agent 'recovery_tester_9160': Runtime init completed (event store initialized).
+Agent 'recovery_tester_9160': Runtime init completed (status deriver initialized).
+Agent 'recovery_tester_9160': Runtime init completed (AgentEventInbox initialized).
+Agent 'recovery_tester_9160': Runtime init completed (AgentEventScheduler initialized).
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Agent 'recovery_tester_9160': Starting direct runtime bootstrap lifecycle.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Agent 'recovery_tester_9160': Bootstrapper starting direct lifecycle execution.
+Agent 'recovery_tester_9160': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'recovery_tester_9160': Executing McpServerPrewarmingStep.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Agent 'recovery_tester_9160': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'recovery_tester_9160': Executing SystemPromptProcessingStep.
+Agent 'recovery_tester_9160': No configured skills. Skipping skill catalog.
+Agent 'recovery_tester_9160': Final processed system prompt configured and captured. Trace ID: rt_1790881712922_a911c694-5b0b-4b84-8214-21e9306d7af1. Final length: 28.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Agent 'recovery_tester_9160': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentWorker 'recovery_tester_9160' initialized successfully. Entering main event scheduler loop.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentEventStream (ID: 395fb016-2ff4-43e9-a1c2-79d1939d60ba) initialized for agent_id 'recovery_tester_9160'. Subscribed to notifier.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_9160',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event '9421b6f4-86b0-4f6f-a016-d0d90718bb6d' for run 'recovery_tester_9160': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_9160',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event 'dbf0ebf5-cf30-4218-8ac0-1650acbef4ea' for run 'recovery_tester_9160': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_9160',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event 'f41c8592-567e-42fe-b5f6-4f38b5392732' for run 'recovery_tester_9160': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_9160',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdm0_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+compaction_failed {
+  agent_id: 'recovery_tester_9160',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdm0_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: controlled compaction failure'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_9160',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdm0_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+compaction_failed {
+  agent_id: 'recovery_tester_9160',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdm0_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'failed',
+  error_message: 'Memory compaction failed before dispatch [execution_failure]: second controlled compaction failure'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_error_output_generation. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_blocked. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+compaction_started {
+  agent_id: 'recovery_tester_9160',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdm0_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  phase: 'started'
+}
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+compaction_completed {
+  agent_id: 'recovery_tester_9160',
+  turn_id: 'turn_0004',
+  compaction_operation_id: 'compaction_operation_mupwqdm0_1',
+  requested_turn_id: 'request',
+  execution_turn_id: 'turn_0004',
+  selected_block_count: 3,
+  raw_trace_count: 3,
+  summary_char_count: 417,
+  summary_token_count: 118,
+  phase: 'completed',
+  compacted_block_count: 3
+}
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_status_updated. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_compaction_resumed. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_9160',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'reset'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event 'd297565a-5043-48e0-b27b-1609768378c9' for run 'recovery_tester_9160': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_9160',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event 'a9f8b467-cb4d-457a-852e-06b468c6ec2d' for run 'recovery_tester_9160': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+compaction_budget_evaluated {
+  agent_id: 'recovery_tester_9160',
+  prompt_tokens: 200,
+  effective_total_context_tokens: 12000,
+  context_derived_input_cap_tokens: 11800,
+  provider_input_cap_tokens: null,
+  effective_input_cap_tokens: 11800,
+  reserved_output_tokens: 200,
+  safety_margin_tokens: 10,
+  input_budget_tokens: 11790,
+  compaction_ratio: 0.5,
+  trigger_threshold_tokens: 5895,
+  trigger_headroom_tokens: 590,
+  quality_retention_cap_tokens: 4126,
+  post_compaction_target_tokens: 4126,
+  budget_key: '11790:5895:4126:590:4126',
+  override_active: false,
+  compaction_required: false,
+  threshold_episode_decision: 'none'
+}
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stderr | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Failed to fold token usage event '5ee170e1-1f01-4b60-8889-0ef254c41b06' for run 'recovery_tester_9160': TokenUsageCapabilityUnavailableError: TOKEN_USAGE_CURRENT_SCHEMA_REQUIRED: Token usage current-schema readiness has not been initialized.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Agent 'recovery_tester_9160' requesting runtime to stop (timeout: 2s).
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentWorker 'recovery_tester_9160': Stop requested.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentExternalEventNotifier (NotifierID: dedbc0d3-723d-4702-aa03-3d272ad7adc0, AgentID: recovery_tester_9160) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'recovery_tester_9160' asyncRun() loop has finished.
+AgentWorker 'recovery_tester_9160': Running shutdown sequence on worker loop.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentWorker 'recovery_tester_9160': Shutdown resource cleanup completed successfully.
+AgentWorker 'recovery_tester_9160': Shutdown sequence completed.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+Unregistered AgentContext for agent_id 'recovery_tester_9160'.
+AgentRuntime for 'recovery_tester_9160': Context unregistered.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentRuntime for 'recovery_tester_9160' stop() method completed.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentEventStream (ID: 395fb016-2ff4-43e9-a1c2-79d1939d60ba) for 'recovery_tester_9160': close() called. Unsubscribing all listeners and signaling.
+
+stdout | ../test-support/native-input-history/native-accepted-input-history.integration.test.ts > native-produced saved history joins actual hosted pending input > agent_team: held A / queued B remains one each across fresh hydration and recovery
+AgentEventStream (ID: 395fb016-2ff4-43e9-a1c2-79d1939d60ba) for 'recovery_tester_9160': close() called. Unsubscribing all listeners and signaling.
+
+ ✓ ../test-support/native-input-history/native-accepted-input-history.integration.test.ts (2 tests) 444ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  21:08:21
+   Duration  11.98s (transform 6.60s, setup 5.67s, collect 5.24s, tests 444ms, environment 215ms, prepare 193ms)
+

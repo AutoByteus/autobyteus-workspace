@@ -6,6 +6,22 @@
 
 This module is intentionally separate from run-history projection: agent-memory exposes persisted memory artifacts for exploration and inspection, while `src/run-history` converts runtime or local-memory sources into historical replay bundles. Run-history metadata is used only to enrich memory explorer summaries and to group memory-bearing runs by stable agent/team identity.
 
+## Native Accepted Input Recording And Projection
+
+Native ingestion now preserves optional `message_id` / `dedupe_key` from the
+original accepted user input in new raw user traces, alongside sender and
+attachment facts. The core raw codec and server `raw-trace-record-normalizer`
+retain these known nonblank fields. Run-history transports them as typed
+`messageId` / `dedupeKey` through replay and conversation projection; memory
+inspection does not allocate or guess identity.
+
+Old missing keys remain unknown. No migration, backfill, historical raw rewrite
+or old-live-input repair is part of this change. Reading history or reconnecting
+the renderer does not authorize a summary or resend. The pending queue and
+failure-epoch permission remain native runtime memory, not a persisted outbox.
+See [run-history identity](run_history.md#accepted-input-presentation-identity)
+for the scoped primary-key rule used to join new saved and live presentation.
+
 ## Storage Layout
 
 Memory files live under the configured memory root:

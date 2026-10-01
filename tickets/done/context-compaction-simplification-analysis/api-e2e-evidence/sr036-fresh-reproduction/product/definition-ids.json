@@ -1,0 +1,7 @@
+{
+  "SR036 Reviewer": "sr036-reviewer",
+  "SR036 Lead": "sr036-lead",
+  "SR036 Peer": "sr036-peer",
+  "SR036 Team": "sr036-team",
+  "model": "sr036-deterministic-32768:lmstudio@127.0.0.1:63405"
+}

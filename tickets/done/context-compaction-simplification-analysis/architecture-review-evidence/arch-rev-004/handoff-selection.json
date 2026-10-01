@@ -1,0 +1,13 @@
+{
+  "decision": "Pass",
+  "revision": "ARCH-REV-004",
+  "requirements": "Approved SR033",
+  "design": "SR034",
+  "task_size": "Large",
+  "architectural_risk": "High",
+  "selected_recipient": "/implementation_engineer",
+  "selected_when": "When the architecture review passes and the cumulative reviewed architecture package is ready for implementation.",
+  "single_recipient_rule": "Governing developer instruction selects only the most-specific primary Pass rule; no duplicate secondary informational/API/Delivery outcome.",
+  "delivery_confirmed": true,
+  "target_agent_run_id": "implementation_engineer_d565b3adf8074d59878dc089de6d3df1"
+}

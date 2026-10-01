@@ -1,0 +1,101 @@
+{
+  "arms": [
+    {
+      "arm": "F-withTarget",
+      "httpStatus": 200,
+      "requestModel": "deepseek-v4-flash",
+      "responseModelLabel": "deepseek-flash",
+      "requestMessagesSha256": "7ad3210432d86efb8bec98a25a3711d8be45b874b2fe402da38d8d27abb6f61b",
+      "bodyUnicodeCodePoints": 3869,
+      "visibleUnicodeCodePointsIncludingMarkers": 3912,
+      "bodyUtf16CodeUnits": 3873,
+      "visibleUtf16CodeUnitsIncludingMarkers": 3916,
+      "completionTokensIncludingReasoning": 1396,
+      "reasoningTokens": 435,
+      "derivedNonReasoningCompletionTokensIncludingMarkers": 961,
+      "elapsedMs": 6125,
+      "completionStatus": "complete",
+      "finishReason": "stop",
+      "outputContract": "Pass",
+      "manualFidelity": "Fail \u2014 unsupported broader constraints; immediate anchors/status retained",
+      "manualEvidence": "semantic-adjudication.md"
+    },
+    {
+      "arm": "F-withoutTarget",
+      "httpStatus": 200,
+      "requestModel": "deepseek-v4-flash",
+      "responseModelLabel": "deepseek-flash",
+      "requestMessagesSha256": "90218075d02a7ec17443d4fc4db5682dcc7967db677443e3929690198f43cef9",
+      "bodyUnicodeCodePoints": 3410,
+      "visibleUnicodeCodePointsIncludingMarkers": 3453,
+      "bodyUtf16CodeUnits": 3410,
+      "visibleUtf16CodeUnitsIncludingMarkers": 3453,
+      "completionTokensIncludingReasoning": 2508,
+      "reasoningTokens": 1532,
+      "derivedNonReasoningCompletionTokensIncludingMarkers": 976,
+      "elapsedMs": 10520,
+      "completionStatus": "complete",
+      "finishReason": "stop",
+      "outputContract": "Pass",
+      "manualFidelity": "Pass \u2014 scoped good/usable, with concision caveats",
+      "manualEvidence": "semantic-adjudication.md"
+    },
+    {
+      "arm": "R-withoutTarget",
+      "httpStatus": 200,
+      "requestModel": "deepseek-v4-flash",
+      "responseModelLabel": "deepseek-flash",
+      "requestMessagesSha256": "85560d33d374ae00f870a197de9800f1e547b158854816ede82aef1fbef88288",
+      "bodyUnicodeCodePoints": 2766,
+      "visibleUnicodeCodePointsIncludingMarkers": 2809,
+      "bodyUtf16CodeUnits": 2766,
+      "visibleUtf16CodeUnitsIncludingMarkers": 2809,
+      "completionTokensIncludingReasoning": 1830,
+      "reasoningTokens": 1168,
+      "derivedNonReasoningCompletionTokensIncludingMarkers": 662,
+      "elapsedMs": 8403,
+      "completionStatus": "complete",
+      "finishReason": "stop",
+      "outputContract": "Pass",
+      "manualFidelity": "Pass \u2014 scoped good/usable, with concision caveats",
+      "manualEvidence": "semantic-adjudication.md"
+    },
+    {
+      "arm": "R-withTarget",
+      "httpStatus": 200,
+      "requestModel": "deepseek-v4-flash",
+      "responseModelLabel": "deepseek-flash",
+      "requestMessagesSha256": "8d324be7e396cb039dacd40267797e978a4158c60cdbe5991bf303d7a72c0cfd",
+      "bodyUnicodeCodePoints": 2875,
+      "visibleUnicodeCodePointsIncludingMarkers": 2918,
+      "bodyUtf16CodeUnits": 2875,
+      "visibleUtf16CodeUnitsIncludingMarkers": 2918,
+      "completionTokensIncludingReasoning": 1878,
+      "reasoningTokens": 1179,
+      "derivedNonReasoningCompletionTokensIncludingMarkers": 699,
+      "elapsedMs": 7366,
+      "completionStatus": "complete",
+      "finishReason": "stop",
+      "outputContract": "Pass",
+      "manualFidelity": "Pass \u2014 scoped good/usable, with concision caveats",
+      "manualEvidence": "semantic-adjudication.md"
+    }
+  ],
+  "pairs": [
+    {
+      "case": "F",
+      "withoutMinusWithBodyCodePoints": -459,
+      "withoutMinusWithBodyPercent": -11.86,
+      "withoutMinusWithDerivedNonReasoningTokens": 15,
+      "withoutMinusWithReasoningTokens": 1097
+    },
+    {
+      "case": "R",
+      "withoutMinusWithBodyCodePoints": -109,
+      "withoutMinusWithBodyPercent": -3.79,
+      "withoutMinusWithDerivedNonReasoningTokens": -37,
+      "withoutMinusWithReasoningTokens": -11
+    }
+  ],
+  "audit": "Pass"
+}

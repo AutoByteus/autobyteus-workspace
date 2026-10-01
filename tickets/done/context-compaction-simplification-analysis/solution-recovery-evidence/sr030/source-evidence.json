@@ -1,0 +1,81 @@
+{
+  "method": "Read-only production source/call-chain tracing, no tests or runtime probes",
+  "sources": [
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/loop/llm-phase.ts",
+      "sha256": "e91b2187f59d462fab519cfd59e8cc1ca12b79c367c1277c803865e4396c537d"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/loop/agent-turn-runner.ts",
+      "sha256": "b4b868977f3e84af2849f661179df35f848d11a82674ad824c808f26d0b0c121"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/runtime/agent-worker.ts",
+      "sha256": "491ab365e94dad1a2ae84e940f32458d79ba18f861e285031eb0c87d9fb16d58"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/runtime/agent-runtime.ts",
+      "sha256": "2d0aa0ee80a1646bad7908c0399e06da9504cd8383850a31f1df7da4ed72cf44"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/compaction/compaction-retry-turn-admission-policy.ts",
+      "sha256": "20d29d0a82df8720283d734344a2889f5648259fbb5fbdb7c4626be3cd85ce17"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/event-inbox/agent-event-scheduler.ts",
+      "sha256": "04ba4d9830578a038628b3e019d8dbd419cceebf6963f05b6805aac6a7c713ec"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/event-inbox/agent-event-inbox.ts",
+      "sha256": "ce95985e0a85e2c792fdce1fb36e545988bed1f52a78500e1fbbef6cae53c7e7"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/status/status-deriver.ts",
+      "sha256": "5b0955fb52f83d136d024d20d832ac2ce513958e5e76d185e9b7d826d928ad2a"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/status/status-update-utils.ts",
+      "sha256": "efb42ddf1b862d4f1682c0c345ebb1d0e40e94ea6761182be9a7bf7e875fcf66"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/agent/status/manager.ts",
+      "sha256": "33d24dae9c0c1bf94bc8e4ec0df41fc89087248131473af4aaa2dcca00bb3b31"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts/src/memory/memory-manager-compaction-coordinator.ts",
+      "sha256": "2173a64d588591641330c375625ea9d41d1bcda267c520f1e58511bed63887aa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+      "sha256": "f0c1bb825b746da22850b11eca9ee25811c8a3dcf297f9f016c7347843f09e44"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/events/processors/lifecycle-status/agent-turn-lifecycle-state.ts",
+      "sha256": "ac945b9ebc48be8dd3ae6686c13b53eaa15fddfa0219bb32085b2f0d9bfc5bb5"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/backends/autobyteus/events/autobyteus-status-projector.ts",
+      "sha256": "7a526510033a6577fcdd5767ec1acae3e6a61fab7e7fda583ca6cd4bf07ab1fa"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.ts",
+      "sha256": "7d0f6aa8a54b4d4c14a8c1deed33f95e6ae15bc00c5d0c8d7a6a3d3c314ffdf0"
+    },
+    {
+      "path": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/src/agent-execution/domain/agent-runtime-lifecycle-snapshot.ts",
+      "sha256": "b9fbaefa6084e2366223bc0e9538557bfd88e3d7e683e055e4e11a0f0ab0f492"
+    }
+  ],
+  "facts": {
+    "post_response": "LlmPhase 352\u2013391 evaluates observed normal response threshold, executes if no tool invocations, catches failure and returns replacement final/isError. Already ingested response is not unsent input.",
+    "settlement": "AgentTurnRunner processes final response/completes; Worker.observeTurnSettlement emits Idle and clears active turn then wakes scheduler.",
+    "admission": "Current retry policy admits any queued user-origin turn; coordinator different-turn check does not prove post-failure admission. Scheduler claimFirstMatching can select prequeued user.",
+    "projection": "Native projector active turn -> running; server lifecycle terminal -> idle, error snapshot retires active; status getter running precedence. A separate unresolved compaction gate must survive genuine turn completion without retaining consumed A.",
+    "hooks": "StatusManager lifecycle processors depend on ordinary phase transitions. Effective error projection must not suppress or duplicate successful response processing/hooks."
+  },
+  "limits": [
+    "No behavior exception approved.",
+    "Current source behavior is evidence, not preservation authority.",
+    "New gate/state integration remains unimplemented and needs independent review/executable validation."
+  ]
+}

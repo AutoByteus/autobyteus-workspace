@@ -1,0 +1,287 @@
+
+> autobyteus@1.4.92-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest stores/__tests__/nativeCompactionActivity.spec.ts stores/__tests__/nativeCompactionTermination.spec.ts stores/__tests__/nativeOrgCompactionTermination.spec.ts components/workspace/agent/__tests__/CompactionStatusRow.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+stderr | stores/__tests__/nativeCompactionActivity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/nativeOrgCompactionTermination.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/nativeCompactionTermination.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/workspace/agent/__tests__/CompactionStatusRow.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | stores/__tests__/nativeOrgCompactionTermination.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/workspace/agent/__tests__/CompactionStatusRow.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/nativeCompactionActivity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/nativeCompactionTermination.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ stores/__tests__/nativeCompactionActivity.spec.ts (15 tests) 9ms
+ ❯ components/workspace/agent/__tests__/CompactionStatusRow.spec.ts (3 tests | 1 failed) 16ms
+   ✓ CompactionStatusRow > spins the centered compaction status icon while compaction is active 8ms
+   ✓ CompactionStatusRow > does not spin completed centered compaction status icons 2ms
+   × renders stopped with exact primary/status text, neutral static icon and no inherited error 5ms
+     → expected 'StoppedStopped' to be 'Stopped Stopped' // Object.is equality
+stderr | stores/__tests__/nativeCompactionTermination.spec.ts > agent rejection/partial failure does not confer stopped or teardown
+Error terminating run 'lead': Error: Failed to terminate run 'lead'.
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:455:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/nativeCompactionTermination.spec.ts:59:10
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/nativeCompactionTermination.spec.ts > team rejection/partial failure does not confer stopped or teardown
+Error terminating Team 'native-team': Error: Team termination failed.
+    at Proxy.terminateTeamRun (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentTeamRunStore.ts:220:58)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/nativeCompactionTermination.spec.ts:59:10
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ❯ stores/__tests__/nativeCompactionTermination.spec.ts (17 tests | 2 failed) 35ms
+   × agent success before final event settles exact native cards before disconnect/history 14ms
+     → vi.mocked(...).mockImplementation is not a function
+   ✓ team success before final event settles exact native cards before disconnect/history 3ms
+   ✓ event completed before response keeps real result while newly observed pending operation is settled 2ms
+   ✓ event failed before response keeps real result while newly observed pending operation is settled 1ms
+   ✓ agent rejection/partial failure does not confer stopped or teardown 2ms
+   ✓ team rejection/partial failure does not confer stopped or teardown 1ms
+   ✓ standalone stale binding success cannot settle or tear down a replacement 1ms
+   ✓ standalone stale state success cannot settle or tear down a replacement 1ms
+   ✓ standalone stale instance success cannot settle or tear down a replacement 2ms
+   ✓ standalone stale context success cannot settle or tear down a replacement 1ms
+   ✓ standalone stale transport success cannot settle or tear down a replacement 2ms
+   ✓ Team stale binding success cannot mutate any member or root 1ms
+   ✓ Team stale member-state success cannot mutate any member or root 1ms
+   ✓ Team stale member-instance success cannot mutate any member or root 1ms
+   × Team stale view success cannot mutate any member or root 1ms
+     → Cannot assign to read only property 'view' of object '#<Object>'
+   ✓ Team stale root success cannot mutate any member or root 1ms
+   ✓ Team stale transport success cannot mutate any member or root 1ms
+stderr | stores/__tests__/nativeOrgCompactionTermination.spec.ts > Org success reconciles every configured/task Agent/Team member before real empty-native projection commit/adoption
+[Vue warn]: Unhandled error during execution of render function 
+  at <CompactionActivityItem key=1 activity= {
+  kind: 'compaction',
+  activityId: 'compaction:operation:op-agent-director',
+  phase: 'stopped',
+  message: 'Stopped',
+  turnId: 'turn-4',
+  compactionOperationId: 'op-agent-director',
+  requestedTurnId: null,
+  executionTurnId: null,
+  selectedBlockCount: null,
+  compactedBlockCount: null,
+  rawTraceCount: 9,
+  summaryCharCount: null,
+  compactionInvocationId: null,
+  summarizerProvider: null,
+  completionStatus: null,
+  compactionModelIdentifier: 'native-model',
+  completionReason: null,
+  summaryTokenCount: null,
+  provider: null,
+  sourceSurface: null,
+  boundaryKey: null,
+  providerEventId: null,
+  providerSessionId: null,
+  trigger: null,
+  preTokens: null,
+  rotationEligible: null,
+  errorMessage: null,
+  timestamp: 2026-10-01T04:18:51.100Z,
+  updatedAt: 2026-10-01T04:18:51.100Z,
+  centerTimelineTimestamp: 2026-10-01T04:18:51.100Z
+} is-highlighted=false > 
+  at <RunActivityItem key="compaction:operation:op-agent-director" activity= {
+  kind: 'compaction',
+  activityId: 'compaction:operation:op-agent-director',
+  phase: 'stopped',
+  message: 'Stopped',
+  turnId: 'turn-4',
+  compactionOperationId: 'op-agent-director',
+  requestedTurnId: null,
+  executionTurnId: null,
+  selectedBlockCount: null,
+  compactedBlockCount: null,
+  rawTraceCount: 9,
+  summaryCharCount: null,
+  compactionInvocationId: null,
+  summarizerProvider: null,
+  completionStatus: null,
+  compactionModelIdentifier: 'native-model',
+  completionReason: null,
+  summaryTokenCount: null,
+  provider: null,
+  sourceSurface: null,
+  boundaryKey: null,
+  providerEventId: null,
+  providerSessionId: null,
+  trigger: null,
+  preTokens: null,
+  rotationEligible: null,
+  errorMessage: null,
+  timestamp: 2026-10-01T04:18:51.100Z,
+  updatedAt: 2026-10-01T04:18:51.100Z,
+  centerTimelineTimestamp: 2026-10-01T04:18:51.100Z
+} runtime-kind="autobyteus"  ... > 
+  at <ActivityFeed ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Unhandled error during execution of component update 
+  at <ActivityFeed ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | stores/__tests__/nativeOrgCompactionTermination.spec.ts > Org success reconciles every configured/task Agent/Team member before real empty-native projection commit/adoption
+[Vue warn]: Unhandled error during execution of component update 
+  at <ActivityFeed ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | stores/__tests__/nativeOrgCompactionTermination.spec.ts > Org success reconciles every configured/task Agent/Team member before real empty-native projection commit/adoption
+[Vue warn]: Unhandled error during execution of directive hook 
+  at <ActivityFeed ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ stores/__tests__/nativeOrgCompactionTermination.spec.ts (9 tests | 1 failed) 132ms
+   × Org success reconciles every configured/task Agent/Team member before real empty-native projection commit/adoption 57ms
+     → Cannot read properties of null (reading 'style')
+   ✓ Org retains actual completed and excludes external runtime while settling other members 14ms
+   ✓ Org retains actual failed and excludes external runtime while settling other members 9ms
+   ✓ Org rejected Stop retires transport but does not synthesize stopped or inspect 8ms
+   ✓ Org stale binding response does not reconcile, mark historical, or inspect 11ms
+   ✓ Org stale state response does not reconcile, mark historical, or inspect 7ms
+   ✓ Org stale instance response does not reconcile, mark historical, or inspect 7ms
+   ✓ Org stale view response does not reconcile, mark historical, or inspect 10ms
+   ✓ success plus inspection failure preserves stopped historical state, without manufacturing a new native activity 8ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  stores/__tests__/nativeCompactionTermination.spec.ts > agent success before final event settles exact native cards before disconnect/history
+TypeError: vi.mocked(...).mockImplementation is not a function
+ ❯ stores/__tests__/nativeCompactionTermination.spec.ts:42:33
+     40|   const {team,lead,activities}=setup();const store=kind==='agent'?useA…
+     41|   const service=kind==='agent'?useAgentRunStore().connectToAgentStream…
+     42|   vi.mocked(service.disconnect).mockImplementation(()=>expect(activiti…
+       |                                 ^
+     43|   io.mutate.mockResolvedValue(response(kind));
+     44|   expect(await (kind==='agent'?(store as ReturnType<typeof useAgentRun…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  stores/__tests__/nativeCompactionTermination.spec.ts > Team stale view success cannot mutate any member or root
+TypeError: Cannot assign to read only property 'view' of object '#<Object>'
+ ❯ stores/__tests__/nativeCompactionTermination.spec.ts:78:27
+     76|   if(change==='member-state')lead.state=Object.assign(Object.create(Ob…
+     77|   if(change==='member-instance')lead.state.inputProjection={runInstanc…
+     78|   if(change==='view')team.view={...team.view};
+       |                           ^
+     79|   if(change==='root')useAgentTeamContextsStore().teams=new Map([[ROOT,…
+     80|   if(change==='transport'){useAgentTeamRunStore().disconnectTeamStream…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  stores/__tests__/nativeOrgCompactionTermination.spec.ts > Org success reconciles every configured/task Agent/Team member before real empty-native projection commit/adoption
+TypeError: Cannot read properties of null (reading 'style')
+ ❯ setDisplay ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:428:6
+ ❯ beforeUnmount ../node_modules/.pnpm/@vue+runtime-dom@3.5.28/node_modules/@vue/runtime-dom/dist/runtime-dom.cjs.js:424:5
+ ❯ callWithErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:200:19
+ ❯ callWithAsyncErrorHandling ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:207:17
+ ❯ invokeDirectiveHook ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:757:7
+ ❯ unmount ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6546:9
+ ❯ unmountChildren ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6658:7
+ ❯ unmount ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6563:9
+ ❯ unmountComponent ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6644:7
+ ❯ unmount ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6539:7
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+ FAIL  components/workspace/agent/__tests__/CompactionStatusRow.spec.ts > renders stopped with exact primary/status text, neutral static icon and no inherited error
+AssertionError: expected 'StoppedStopped' to be 'Stopped Stopped' // Object.is equality
+
+Expected: "Stopped Stopped"
+Received: "StoppedStopped"
+
+ ❯ components/workspace/agent/__tests__/CompactionStatusRow.spec.ts:54:26
+     52| it('renders stopped with exact primary/status text, neutral static ico…
+     53|   const wrapper = mountRow('stopped');
+     54|   expect(wrapper.text()).toBe('Stopped Stopped');
+       |                          ^
+     55|   const icon = wrapper.get('[data-testid="compaction-status-icon"]');
+     56|   expect(icon.attributes('data-icon')).toBe('heroicons:stop-circle-sol…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/4]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 2 unhandled errors during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot read properties of undefined (reading 'border')
+ ❯ ComputedRefImpl.fn components/progress/CompactionActivityItem.vue:83:130
+     81| ]);
+     82| const statusChipClasses = computed(() => currentTone.value.chip);
+     83| const containerClasses = computed(() => props.isHighlighted ? currentT…
+       |                                                                                                                                  ^
+     84| 
+     85| const formatNumber = (value: number | null | undefined): string | null…
+ ❯ refreshComputed ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:397:28
+ ❯ ComputedRefImpl.get value [as value] ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1711:5
+ ❯ unref ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1536:45
+ ❯ Object.get ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:1542:64
+ ❯ Proxy._sfc_render components/progress/CompactionActivityItem.vue:2:66
+ ❯ renderComponentRoot ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:4499:16
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6085:26
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ updateComponent ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5946:18
+
+This error originated in "stores/__tests__/nativeOrgCompactionTermination.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "Org retains actual completed and excludes external runtime while settling other members". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+TypeError: Cannot set properties of null (setting '__vnode')
+ ❯ patchElement ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5646:18
+ ❯ processElement ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5524:9
+ ❯ patch ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5374:11
+ ❯ patchBlockChildren ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5752:7
+ ❯ patchElement ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5670:7
+ ❯ processElement ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5524:9
+ ❯ patch ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:5374:11
+ ❯ ReactiveEffect.componentUpdateFn [as fn] ../node_modules/.pnpm/@vue+runtime-core@3.5.28/node_modules/@vue/runtime-core/dist/runtime-core.cjs.js:6094:9
+ ❯ ReactiveEffect.run ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:243:19
+ ❯ ReactiveEffect.runIfDirty ../node_modules/.pnpm/@vue+reactivity@3.5.28/node_modules/@vue/reactivity/dist/reactivity.cjs.js:281:12
+
+This error originated in "stores/__tests__/nativeOrgCompactionTermination.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "Org retains actual completed and excludes external runtime while settling other members". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  3 failed | 1 passed (4)
+      Tests  4 failed | 40 passed (44)
+     Errors  2 errors
+   Start at  06:18:45
+   Duration  5.82s (transform 3.25s, setup 19.86s, collect 432ms, tests 192ms, environment 664ms, prepare 500ms)
+
+ ELIFECYCLE  Command failed with exit code 1.

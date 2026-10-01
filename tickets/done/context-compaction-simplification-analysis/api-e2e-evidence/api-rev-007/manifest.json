@@ -1,0 +1,55 @@
+{
+  "revision": "API-REV-007",
+  "created": "2026-10-01T06:13:41.067013+00:00",
+  "userApproval": "go ahead, you got my approval.",
+  "precedingRequest": "for the real compression test, you can set the threshold to low, then able to trigger right?",
+  "priorCredentialApproval": "for testing you can actually use lm studio. you can use deepseek v4 flash model for testing. you can use pnpm to import /Users/normy/.autobyteus/server-data/.env for your private vault for testing if needed.",
+  "approvalSource": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-evidence/sr022-budget-diagnostics/manifest.json",
+  "sourcePath": "/Users/normy/.autobyteus/server-data/.env",
+  "sourceStatOnly": {
+    "regular": true,
+    "symlink": false,
+    "size": 3680,
+    "mode": "0o600",
+    "mtimeNs": 1790700220459031401
+  },
+  "targetDatabase": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/db/api-rev-007-deepseek.db",
+  "runtime": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-server-ts/tests/.tmp/api-rev-007-deepseek",
+  "model": "deepseek-v4-flash",
+  "systemSha256": "2018cd60cd6adedbc3c92fa641b8ff3fc632e0fd177db8305d0af036ff5830d7",
+  "maxGenerations": 13,
+  "maxParent": 10,
+  "maxSummary": 3,
+  "maxFlowSummary": 1,
+  "maxQualitySummary": 2,
+  "maxCampaignMs": 720000,
+  "normalExpectedRequests": 11,
+  "phases": [
+    "preflight(no generation)",
+    "flow(max 10 parent + 1 summary)",
+    "quality(first + repeated, max 2 summary)"
+  ],
+  "compactionRatio": 0.05,
+  "settingsScope": "existing registered test AgentRunConfig only; production/default prompt/settings unchanged",
+  "parentConfig": {
+    "temperature": 0,
+    "max_tokens": 1024,
+    "thinking": "disabled"
+  },
+  "summaryConfig": {
+    "temperature": 0.7,
+    "max_tokens": 8192
+  },
+  "stops": [
+    "No outbound without READY preflight",
+    "Only HTTPS api.deepseek.com/chat/completions + exact owned loopback server origin",
+    "Guard violation, non-2xx, transport/capture error, timeout or phase failure closes campaign; no adaptive rerun or model substitution",
+    "At most 13 generations across both sequential workers, counters and absolute deadline persisted; no reset",
+    "No Qwen, v6, prompt edits, production defaults or other provider campaign"
+  ],
+  "evidenceLimits": [
+    "Real backend/tool/model/storage flow, not full desktopUI",
+    "Quality pair invokes real production compactor but not host threshold/commit; flow covers those",
+    "Real samples not universal quality guarantee; preserve F005 exception and all current residuals"
+  ]
+}

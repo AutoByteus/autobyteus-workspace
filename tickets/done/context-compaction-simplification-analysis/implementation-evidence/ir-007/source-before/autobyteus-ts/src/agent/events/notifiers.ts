@@ -1,0 +1,250 @@
+import type { CompactionRecoveryDataInput } from '../streaming/events/compaction-recovery-data.js';
+import { EventEmitter } from '../../events/event-emitter.js';
+import { EventType } from '../../events/event-types.js';
+import { AgentStatus } from '../status/status-enum.js';
+import type { CompleteResponse } from '../../llm/utils/response-types.js';
+import type { LlmTokenUsageObservation } from '../../llm/utils/llm-token-usage-observation.js';
+
+const ENV_VERBOSE_AGENT_EVENT_LOGS = 'AUTOBYTEUS_VERBOSE_AGENT_EVENT_LOGS';
+
+export type AgentErrorNotificationClassification =
+  | { scope: 'turn'; effect: 'diagnostic' | 'terminal'; turnId: string }
+  | { scope: 'runtime'; effect: 'terminal' };
+
+export type AgentErrorNotification = {
+  code: string;
+  message: string;
+  details?: string;
+  provider_status?: number | string | null;
+  provider_code?: string | null;
+  provider_request_id?: string | null;
+  classification: AgentErrorNotificationClassification;
+};
+
+export class AgentExternalEventNotifier extends EventEmitter {
+  agentId: string;
+
+  constructor(agentId: string) {
+    super();
+    this.agentId = agentId;
+    console.debug(
+      `AgentExternalEventNotifier initialized for agent_id '${this.agentId}' (NotifierID: ${this.objectId}).`
+    );
+  }
+
+  private emitEvent(eventType: EventType, payloadContent?: any): void {
+    const emitKwargs: Record<string, any> = { agent_id: this.agentId };
+    if (payloadContent !== undefined) {
+      emitKwargs['payload'] = payloadContent;
+    }
+    this.emit(eventType, emitKwargs);
+
+    const logMessage =
+      `AgentExternalEventNotifier (NotifierID: ${this.objectId}, AgentID: ${this.agentId}) ` +
+      `emitted ${eventType}. Kwarg keys for emit: ${Object.keys(emitKwargs)}`;
+
+    if (eventType === EventType.AGENT_DATA_SEGMENT_EVENT) {
+      if (!this.shouldLogStreamingEventDetails()) {
+        return;
+      }
+      const summary = this.summarizePayload(eventType, payloadContent);
+      if (summary) {
+        console.debug(`${logMessage} | ${summary}`);
+      } else {
+        console.debug(logMessage);
+      }
+    } else {
+      console.info(logMessage);
+    }
+  }
+
+  private shouldLogStreamingEventDetails(): boolean {
+    const rawValue = typeof process !== 'undefined' ? process.env?.[ENV_VERBOSE_AGENT_EVENT_LOGS] : undefined;
+    if (!rawValue) {
+      return false;
+    }
+
+    const normalized = rawValue.trim().toLowerCase();
+    return ['1', 'true', 'yes', 'on'].includes(normalized);
+  }
+
+  private summarizePayload(eventType: EventType, payloadContent?: any): string | null {
+    if (payloadContent === undefined || payloadContent === null) {
+      return null;
+    }
+
+    if (eventType === EventType.AGENT_DATA_SEGMENT_EVENT && typeof payloadContent === 'object') {
+      const segType = payloadContent.segment_type;
+      const segId = payloadContent.segment_id;
+      const segEventType = payloadContent.type;
+      const payload = payloadContent.payload ?? {};
+      const summaryParts = [
+        `segment_id=${segId}`,
+        `segment_type=${segType}`,
+        `event_type=${segEventType}`
+      ];
+      if (payload && typeof payload === 'object') {
+        if ('delta' in payload) {
+          const delta = payload.delta ?? '';
+          summaryParts.push(`delta_len=${String(delta).length}`);
+        }
+        if ('metadata' in payload && payload.metadata && typeof payload.metadata === 'object') {
+          const metaKeys = Object.keys(payload.metadata);
+          if (metaKeys.length) {
+            summaryParts.push(`metadata_keys=${metaKeys.join(',')}`);
+          }
+        }
+      }
+      return summaryParts.join(' ');
+    }
+
+    return null;
+  }
+
+  private emitStatusUpdate(
+    newStatus: AgentStatus,
+    oldStatus?: AgentStatus,
+    additionalData?: Record<string, any> | null
+  ): void {
+    const statusPayload: Record<string, any> = {
+      ...(additionalData ?? {}),
+      status: newStatus,
+      previous_status: oldStatus ?? null
+    };
+    this.emitEvent(EventType.AGENT_STATUS, statusPayload);
+  }
+
+  notifyStatusUpdated(
+    newStatus: AgentStatus,
+    oldStatus?: AgentStatus,
+    additionalData?: Record<string, any> | null
+  ): void {
+    this.emitStatusUpdate(newStatus, oldStatus, additionalData);
+  }
+
+  notifyAgentTurnStarted(turnId: string): void {
+    this.emitEvent(EventType.AGENT_TURN_STARTED, { turn_id: turnId });
+  }
+
+  notifyAgentTurnCompleted(turnId: string): void {
+    this.emitEvent(EventType.AGENT_TURN_COMPLETED, { turn_id: turnId });
+  }
+
+  notifyAgentTurnInterrupted(turnId: string, reason: string): void {
+    this.emitEvent(EventType.AGENT_TURN_INTERRUPTED, { turn_id: turnId, reason, interrupted: true });
+  }
+
+  notifyAgentDataAssistantCompleteResponse(
+    completeResponse: CompleteResponse,
+    isError = false,
+  ): void {
+    this.emitEvent(EventType.AGENT_DATA_ASSISTANT_COMPLETE_RESPONSE, {
+      content: completeResponse.content,
+      reasoning: completeResponse.reasoning,
+      usage: completeResponse.usage,
+      image_urls: completeResponse.image_urls,
+      audio_urls: completeResponse.audio_urls,
+      video_urls: completeResponse.video_urls,
+      is_error: isError,
+    });
+  }
+
+  notifyAgentTokenUsageUpdated(payload: {
+    usage: LlmTokenUsageObservation;
+    usage_event_id?: string;
+    idempotency_key?: string;
+    turn_id?: string | null;
+    llm_call_id?: string | null;
+    call_sequence?: number | null;
+    runtime_kind?: string;
+    ingestion_kind?: string;
+    latest_prompt_tokens?: number | null;
+    effective_context_window_tokens?: number | null;
+    context_window_usage_percent?: number | null;
+    raw_event_json?: Record<string, unknown> | null;
+  }): void {
+    this.emitEvent(EventType.AGENT_TOKEN_USAGE_UPDATED, payload);
+  }
+
+  notifyAgentSegmentEvent(eventDict: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_DATA_SEGMENT_EVENT, eventDict);
+  }
+
+  notifyAgentDataToolLog(logData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_DATA_TOOL_LOG, logData);
+  }
+
+  notifyAgentDataToolLogStreamEnd(): void {
+    this.emitEvent(EventType.AGENT_DATA_TOOL_LOG_STREAM_END);
+  }
+
+  notifyAgentToolApprovalRequested(approvalData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_TOOL_APPROVAL_REQUESTED, approvalData);
+  }
+
+  notifyAgentToolApproved(approvalData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_TOOL_APPROVED, approvalData);
+  }
+
+  notifyAgentToolDenied(denialData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_TOOL_DENIED, denialData);
+  }
+
+  notifyAgentToolExecutionStarted(startData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_TOOL_EXECUTION_STARTED, startData);
+  }
+
+  notifyAgentToolExecutionSucceeded(successData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_TOOL_EXECUTION_SUCCEEDED, successData);
+  }
+
+  notifyAgentToolExecutionFailed(errorData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_TOOL_EXECUTION_FAILED, errorData);
+  }
+
+  notifyAgentToolExecutionInterrupted(interruptedData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_TOOL_EXECUTION_INTERRUPTED, interruptedData);
+  }
+
+  notifyAgentDataSystemTaskNotificationReceived(notificationData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_DATA_SYSTEM_TASK_NOTIFICATION_RECEIVED, notificationData);
+  }
+
+  notifyAgentDataInterAgentMessageReceived(messageData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_DATA_INTER_AGENT_MESSAGE_RECEIVED, messageData);
+  }
+
+  notifyAgentErrorOutputGeneration(notification: AgentErrorNotification): void {
+    if (!notification.code.trim()) throw new Error('Agent error notification code is required.');
+    if (!notification.message.trim()) throw new Error('Agent error notification message is required.');
+    const classification = notification.classification;
+    const payload = {
+      code: notification.code,
+      message: notification.message,
+      ...(notification.details !== undefined ? { details: notification.details } : {}),
+      ...(notification.provider_status !== undefined ? { provider_status: notification.provider_status } : {}),
+      ...(notification.provider_code !== undefined ? { provider_code: notification.provider_code } : {}),
+      ...(notification.provider_request_id !== undefined ? { provider_request_id: notification.provider_request_id } : {}),
+      error_scope: classification.scope,
+      error_effect: classification.effect,
+      ...(classification.scope === 'turn' ? { turn_id: classification.turnId } : {})
+    };
+    this.emitEvent(EventType.AGENT_ERROR_OUTPUT_GENERATION, payload);
+  }
+
+  notifyCompactionRecovery(data: CompactionRecoveryDataInput): void {
+    this.emitEvent(data.recovery?.state === 'awaiting_user' ? EventType.AGENT_COMPACTION_BLOCKED : EventType.AGENT_COMPACTION_RESUMED, data);
+  }
+
+  notifyAgentCompactionStatus(compactionData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_COMPACTION_STATUS_UPDATED, compactionData);
+  }
+
+  notifyAgentArtifactPersisted(artifactData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_ARTIFACT_PERSISTED, artifactData);
+  }
+
+  notifyAgentArtifactUpdated(artifactData: Record<string, any>): void {
+    this.emitEvent(EventType.AGENT_ARTIFACT_UPDATED, artifactData);
+  }
+}

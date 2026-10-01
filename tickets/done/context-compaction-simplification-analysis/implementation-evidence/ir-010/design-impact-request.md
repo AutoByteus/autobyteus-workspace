@@ -1,0 +1,41 @@
+# IR010-DI001 — accepted-input identity across history and live state
+
+**Design Impact; API009-F001 remains open. No production fix applied.**
+Trigger: /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/code-review-report.md, CRR015 / API-REV009. Governing intended behavior remains Approved SR033: REQ012, AC014, AC017, SCN005; Ready SR035 DI001.a, ARCH-REV005. Large / High unchanged. This is not a request to reopen the approved Hold A then B behavior.
+
+## Concrete conflict requiring Solution Designer
+SR035 `Design health / refactor and persisted-data decisions` expressly says **Stored data Not Affected**, and that current tree/message stores and sender-aware raw trace readers/writers remain unchanged. Earlier persisted-data table says raw active/numbered segments **Not Affected in schema**; SR028 says no historical message rewrite. DI001.a nevertheless requires saved conversation followed by exact-identity live upsert, with **A not duplicated**.
+
+Source confirms that the accepted-input identity does not reach saved history. The straightforward repair—carry original message_id/dedupe_key through native ingestion, serialized raw user facts, normal reader, conversation projection and frontend builder—changes precisely the native writer/reader and stored-identity contract excluded by that decision. Even reusing raw `id` or `correlation_id` changes writer semantics; avoiding a new property name does not make that contract unchanged. I have not made that decision on the designer's behalf.
+
+This is a newly concrete challenge to the stored-data/identity assumption, not a rejection of CRR015's implementation-defect finding. The code remains defective. The reviewer explicitly allowed routing an actual design-authority impact. Requirements need not change unless Designer identifies a changed intended outcome.
+
+## Supported witness and independently repeated local observation
+Ordinary single-user hosted Agent / hosted Team lead submission -> native input pipeline ingests A -> pre-parent compaction fails and holds A -> View > Reload replaces renderer while same native run lives -> saved member conversation -> live input snapshot -> two bubbles. CRR015/API009 own actual desktop, raw, response and DOM evidence; no new real-product run was made here.
+
+IR010 independently reran the existing frozen-response probe against current production frontend functions, after reading its config and code. **2 Fail; expected1 / received2; exit1**. Own argv/cwd/time/log are `captured-response-probe-command.json`, `.log`, `.exit`; API outputs were not redirected over. This corroborates presentation failure, not duplicate admission/execution. Existing native raw and live entries remain one each in the captured evidence, and no held parent request was observed there.
+
+## Current identity spine and missing invariant
+| Stage | Current fact / owner |
+|---|---|
+| Child composer / server admission | Original metadata carries message_id and dedupe_key; pendingSnapshot exposes both plus associated turn_id. |
+| Core MemoryIngestInputProcessor -> MemoryManager -> raw trace | Processed text, original attachments and sender provenance retained; accepted keys omitted. Raw `id` is a generated `rt_` timestamp, not the accepted message key. |
+| Normal memory reader -> replay -> conversation | Existing raw identity/turn provenance is not accepted-input identity; user projection does not supply messageId/dedupeKey. |
+| Browser saved conversation -> live input handler | Anonymous history user message cannot match exact-ID upsert, which correctly appends an unmatched accepted input. |
+
+Exact current source pins and bounded line excerpts: `source-evidence.json`, `source-excerpts.txt` (22 paths). Existing history projection dedupe also has semantic/time equality when no explicit identity exists; the frontend projection builder currently compares content/media/time even for entries that might later gain accepted identity. A selected identity repair must preserve distinct accepted inputs through **both** projections, not merely add a field at the final handler. This is a source-derived repair obligation, not a separately executed product finding.
+
+## Alternatives examined, not silently selected
+- **Content/time matching:** rejected as requested; equal text is not identity, attachments must survive.
+- **Raw trace ID or correlation_id reuse:** these are not currently the accepted key. Writing the accepted key there still changes the native writer's identity meaning and must be specified; do not reinterpret generated IDs by shape.
+- **Turn-only live enrichment without persistent changes:** potentially a bounded alternative, but not yet an established identity contract. Native backend explicitly rejects active-turn append, which supports one external input per native turn. However `AgentFactory.restoreAgent` creates a fresh MemoryManager on the same run/memory location; MemoryManager creates `new TurnTracker()`, default counter1, and raw traces do not carry run_instance_id. Therefore `(runId, turnId)` is not established as a globally unique accepted-message identity across retained history. Generic server admission also supports append-to-active-turn for other runtimes. This is a source limitation on substituting keys, **not** a new restart/recovery product-failure claim or a demand to extend pending-queue lifetime. A native-only, scoped ephemeral correlation may be selected if Designer establishes its exact facts/owner/lifetime; I will not invent a latest-by-time/position fallback or shadow ledger.
+
+## Requested bounded design completion
+Specify the existing-owner correlation contract: what exact fact links saved user A to live accepted A, where it is produced/projected, and why distinct accepted identities cannot collapse. If choosing native accepted-key retention, revise the explicit unchanged-writers/stored-data decision and give a proportionate transition decision for identity-less existing rows (no blanket migration/backfill assumed). If choosing no stored change, establish unambiguous native live-to-history correlation and its lifetime without a new durable queue or heuristic matching. Preserve attachments and sender provenance, centralized pending reconciliation, and no-send hydration. Do not require a new schema version, migration, durable queue, cold-history mechanism or generic protocol dedupe solely because this gap exists.
+
+After returned implementation-ready design: add focused regressions using native-produced serialized history plus live held state through hosted Agent and Team hydration; identical text with distinct accepted IDs must stay distinct, A one bubble with Held and attachments, queued B preserved, same-instance revisions respected, consumed entries not replayed and hydration no-send. Then source review -> integrated API/E2E (true same-process new renderer, retry continuation and outstanding negatives) -> proportional successful-test review -> Delivery. No gate waived by this handoff.
+
+## Preservation / limits
+No source, durable test, API/reviewer authority/evidence, built output or Git state intentionally changed. IR010 only owns its evidence and canonical implementation handoff/revision. Entry pins cover9,613 files; incoming CRR015 on-disk reference index has4,226 entries (message attached4,225; receipt now included). Final audit owns exact preservation claims.
+
+F005 remains accepted known/nonfixed/nonPass/Qwen STOP; F004 unknown; SR022 exhausted/v6 unapproved; CG033 unproved/not pump Pass; historical OOM and plain web tsc7078 non-green; 14 wider + 7 baseline failures unwaived. API006 withdrawn claims / API007 unsupported literal stay excluded. ARCH004/IR007/CRR011/API00895.0/CRR013 are pre-integration only. CRR0149.40 is historical, not current Pass; its affected no-duplicate closure was corrected by CRR015. API00977.9% is executable Fail, not semantic rescore. Initial ineffective location.reload claims remain withdrawn. No native cold-history, backend-restart pending queue, power-loss, full-suite, full web typing or semantic acceptance promise. No new provider budget. CRR014 overwrote two IR009 logs; original bytes unavailable, no reconstruction; present copies remain CRR014 replacement evidence.

@@ -1,0 +1,38 @@
+[
+  {
+    "path": "TESTING.md",
+    "sha256": "32810b791533ce882f5967d1f7358cbdd77386703d21b92822d299422b144588",
+    "nonempty_lines": 125,
+    "kind": "testing guidance/command"
+  },
+  {
+    "path": "package.json",
+    "sha256": "efb4628dd84a52d6de95f006d4eb8af2778a739167d276b945def2e0f9981667",
+    "nonempty_lines": 39,
+    "kind": "testing guidance/command"
+  },
+  {
+    "path": "test-support/native-input-history/native-accepted-input-history.integration.test.ts",
+    "sha256": "c93fec88c599984090bca9d19661c499700e534118073691a461e5ad61b220d9",
+    "nonempty_lines": 113,
+    "kind": "test"
+  },
+  {
+    "path": "test-support/native-input-history/vitest.config.mts",
+    "sha256": "4758d3e92a81219ccf023a8c8a9741fe92aeeeb14a679990d799cc0e480f8f92",
+    "nonempty_lines": 25,
+    "kind": "workspace test configuration"
+  },
+  {
+    "path": "test-support/native-input-history/README.md",
+    "sha256": "e03efadd67bcef6093a1bb8b25f2f7bf64011179294178243e56503095e59f48",
+    "nonempty_lines": 28,
+    "kind": "testing guidance/command"
+  },
+  {
+    "path": "autobyteus-web/tests/integration/web-boundary-guard.integration.test.ts",
+    "sha256": "8d9e33338dcf8e9d1d78e491f24d91ae41d4abde58fef2853e1bd5771c049630",
+    "nonempty_lines": 43,
+    "kind": "test"
+  }
+]

@@ -1,0 +1,157 @@
+[
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts",
+    "sha256": "483d7c11eea8378add82d867fa3a8e65196ef7c5e0a6bd658222eccc0bf49b28",
+    "new": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.d.ts.map",
+    "sha256": "9372bf7f747008389367103ccc700c1d5af40187f4d4e5403f94db74f06d1245",
+    "new": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js",
+    "sha256": "3ad4cff17437d0c67b79fbf7a015f52ca5b0c764b69b2db030714ec711be9321",
+    "new": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/agent-run-collaboration-dtos.js.map",
+    "sha256": "a70a7959e127da11860d9f1eecdf48087d89429e4e25aea999a11eb86f7c108e",
+    "new": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts",
+    "sha256": "35f2d41886680f691ed13b9fe07a3907d7a568342e32bd27737376f1f73c7050",
+    "new": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/dist/root-execution-view-dtos.d.ts.map",
+    "sha256": "e6ef737f4713cea7ac8db7e1a05a7334a034f7927ed7a79ae70a673e70cd7632",
+    "new": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/src/agent-run-collaboration-dtos.ts",
+    "sha256": "d17e8dd5eb233ff0a3006eac93ff7ef37b5769e553faa8d880d3d76f7c0e665c",
+    "new": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/tests/agent-run-collaboration-dtos.test.mjs",
+    "sha256": "c910176bbf8f92a94c19d2b0a6ad25ca4d341d3c6ef7365d80a0fff58bffb905",
+    "new": false
+  },
+  {
+    "path": "autobyteus-collaboration-stream-contracts/tests/compaction-input-state.test.mjs",
+    "sha256": "b62adb584a7de0bae5fc9ae25a557ebeb0cfb42fc1d529f24927fb44dd7086e7",
+    "new": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/domain/agent-run-collaboration-root.ts",
+    "sha256": "112688c3376d362f604fd51c60da9d5d0a62cb60c1cbccaa02b26d8835065176",
+    "new": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts",
+    "sha256": "783547fc842ff46a63b53cc2fc5cd2f9d93e6284614daa206109c5eec95ab905",
+    "new": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/local/flat-team-execution-manager.ts",
+    "sha256": "061534d410c7e9292dcb4460c96b37253cf3175e8888e4a5d68fcac47b90fc61",
+    "new": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/services/agent-streaming/agent-collaboration-view-projector.ts",
+    "sha256": "4804294119cffa09ef479d4af03527844d69816a46ba257adf2d24b115e72aa8",
+    "new": false
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/root-recovery-command.test.ts",
+    "sha256": "fa1ce283525ce6017758276c08bff04b0353b158141e2baea4ebac3f6e3ed0e9",
+    "new": false
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-org-execution/helpers/task-publication-handles.ts",
+    "sha256": "408d74df71553b2baee0be27350573abb0d9af39600436b7eb54fe26df60b891",
+    "new": false
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-run-collaboration/agent-run-collaboration-root.test.ts",
+    "sha256": "9d84eceaf8f5b401194352f1b43d193b8181221f7b1d0597c581f44e7938f65b",
+    "new": false
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-root-collaborators.test.ts",
+    "sha256": "d56326b1676a8b28c38158381b18ce6c34e5c46b361b189f2ff695788261905b",
+    "new": false
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/services/agent-streaming/agent-collaboration-stream-handler.test.ts",
+    "sha256": "f4bb6bafe2020e63d75b1ee70a236af00ac0cd4e6d25854a873c7de945c8e654",
+    "new": false
+  },
+  {
+    "path": "autobyteus-web/composables/agentCollaboration/useAgentRunCollaborationSync.ts",
+    "sha256": "3fde64eb0ef8f56f22048e893842479205abc824f5aeec6230d635d6290fd5e6",
+    "new": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRootFixture.ts",
+    "sha256": "ea9b86b43f0018bf76d8848fbcc7baa1af87c02bcff6e880f31736f5a61117ac",
+    "new": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts",
+    "sha256": "5b0570a5d44c2d0af387d6c9b017fd212efb68f4d186a33d1de7754e555d6ecd",
+    "new": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts",
+    "sha256": "682df17c86874e262ccc31ea35600335f9c62b8a1db59bc73f1fd08286cb9f82",
+    "new": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationHydration.ts",
+    "sha256": "289769da9217733e6ad2c1aa2c720af04519c49fdeb17d8539a9622f83a49acb",
+    "new": false
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/agentRunCollaborationStreamingService.ts",
+    "sha256": "695ea6df22c706db1ab7598c7e75f75484758365634219dee50b041279c643c3",
+    "new": false
+  },
+  {
+    "path": "autobyteus-web/services/rootExecution/__tests__/rootExecutionViewState.spec.ts",
+    "sha256": "449e93df8a0b71f72324b66452b55ec51bd2be7761f7ec7f3902ae888d13dad4",
+    "new": false
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunCollaborationStore.ts",
+    "sha256": "49f9683df1ef9a46f96b8346d14c329d1bbc19dad0ac98931e8cf85b5c9c5a28",
+    "new": false
+  },
+  {
+    "path": "autobyteus-web/stores/agentRunStore.ts",
+    "sha256": "536c8c65c14d60d5856b1a08deb7819b08e39f9d507c6a1b2342dd08ae6eaf3c",
+    "new": false
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-run-collaboration/services/agent-run-collaboration-input-snapshot.ts",
+    "sha256": "ded1a2e5907e768774a2a404b9d569f382fe6db154a29f30302c6b3a786bc1a2",
+    "new": true
+  },
+  {
+    "path": "autobyteus-web/composables/agentCollaboration/__tests__/useAgentRunCollaborationSync.spec.ts",
+    "sha256": "ffc634e5ea2eb640b382c5b3854a24dde30901772cdee2ed01f4994a51ff7414",
+    "new": true
+  },
+  {
+    "path": "autobyteus-web/services/agentCollaboration/__tests__/agentRunCollaborationStreamingService.spec.ts",
+    "sha256": "5a346df53c423234ae61b3918ec03288bd1978e66239b1475d887a117b246532",
+    "new": true
+  },
+  {
+    "path": "autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts",
+    "sha256": "eeef4419836c5958ca5eab3d431e7697ec5cd471adae24c43853c2abdfab8a9b",
+    "new": true
+  }
+]

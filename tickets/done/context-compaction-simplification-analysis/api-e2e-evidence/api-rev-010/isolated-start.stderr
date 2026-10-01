@@ -1,0 +1,5 @@
+[guard:web-boundary] Direct autobyteus-ts dependencies are not allowed in active autobyteus-web code:
+services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts:5: import { AgentInputUserMessage } from '../../../../autobyteus-ts/dist/agent/message/agent-input-user-message.js';
+services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts:6: import { ContextFile } from '../../../../autobyteus-ts/dist/agent/message/context-file.js';
+services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts:7: import { ContextFileType } from '../../../../autobyteus-ts/dist/agent/message/context-file-type.js';
+services/agentCollaboration/__tests__/nativeAcceptedInputHistory.spec.ts:8: import { SenderType } from '../../../../autobyteus-ts/dist/agent/sender-type.js';

@@ -1,0 +1,15 @@
+{
+  "result": "Pass scoped ordinary Team input recovery on C after fixture hold deadline",
+  "parent_order": [
+    "API7-TEAM-SEED1",
+    "API7-TEAM-SEED2",
+    "API7-TEAM-A",
+    "API7-TEAM-B",
+    "API7-TEAM-C"
+  ],
+  "requests": 13,
+  "consumed_budget": 13,
+  "fixture_timeout_preserved": true,
+  "firstBRecoverySucceeded": false,
+  "heldAAndQueuedBCRestoredOnce": true
+}

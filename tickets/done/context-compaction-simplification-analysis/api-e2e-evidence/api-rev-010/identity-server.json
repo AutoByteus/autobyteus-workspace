@@ -1,0 +1,11 @@
+{
+  "command": [
+    "bash",
+    "-c",
+    "pnpm -C autobyteus-server-ts exec vitest run tests/unit/run-history/projection/user-file-attachment-projection.test.ts tests/unit/run-history/projection/raw-trace-to-historical-replay-events.test.ts tests/unit/agent-memory/raw-trace-record-normalizer.test.ts --no-watch"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T16:57:54.465451+00:00",
+  "finished": "2026-10-01T16:57:57.919339+00:00",
+  "exit": 0
+}

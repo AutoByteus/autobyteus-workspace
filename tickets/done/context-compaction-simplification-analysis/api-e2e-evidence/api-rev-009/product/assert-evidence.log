@@ -1,0 +1,16 @@
+{
+  evidenceAssertions: 'Pass — validates observations, not product acceptance',
+  productResult: 'Fail',
+  finding: 'API009-F001 duplicate held user bubbles after actual reload',
+  strictRootSnapshots: 13,
+  strictCollaborationFrames: 153,
+  productRequests: 45,
+  parentRequests: 17,
+  compactionRequests: 28,
+  remoteInferenceRequests: 0,
+  threeAttemptFailureGroups: 8,
+  toolResponses: 1,
+  actualSameProcessSnapshotEquality: true,
+  actualColdNativeCardsAbsent: true,
+  duplicateBubbleCopiesPerChild: 2
+}

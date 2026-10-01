@@ -1,0 +1,9 @@
+{
+  "scenarioId": "lmstudio.qwen36.compaction-agent-flow",
+  "health": "READY",
+  "configured": [
+    "local-model.qwen/qwen3.6-35b-a3b"
+  ],
+  "missing": [],
+  "instructionCode": null
+}

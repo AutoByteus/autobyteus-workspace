@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-01T14:48:18.928283+00:00",
+  "providerPid": 42052,
+  "providerSignal": "SIGTERM",
+  "appStop": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "stop",
+    "result": {
+      "instanceId": "iso-63334-9939",
+      "wasRunning": true,
+      "forced": false,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf",
+      "dataRootRemoved": true,
+      "controlPortReleased": true,
+      "serverPortReleased": true,
+      "logPath": null
+    }
+  },
+  "rootStillExists": false
+}

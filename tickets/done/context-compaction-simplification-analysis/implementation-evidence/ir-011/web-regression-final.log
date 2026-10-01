@@ -1,0 +1,135 @@
+
+> autobyteus@1.4.92-beta.5 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/runHydration/__tests__/acceptedInputIdentity.spec.ts services/runHydration/__tests__/runProjectionConversation.spec.ts services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts stores/__tests__/agentRootCompactionIntegration.spec.ts services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts components/conversation/__tests__/UserMessage.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+stderr | services/runHydration/__tests__/runProjectionConversation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/__tests__/UserMessage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runHydration/__tests__/acceptedInputIdentity.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | stores/__tests__/agentRootCompactionIntegration.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runSubmission/__tests__/localUserSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runHydration/__tests__/runProjectionConversation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/agentRootCompactionIntegration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/UserMessage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runHydration/__tests__/acceptedInputIdentity.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/runSubmission/__tests__/localUserSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts (5 tests) 6ms
+ ✓ services/runHydration/__tests__/runProjectionConversation.spec.ts (14 tests) 9ms
+ ✓ components/conversation/__tests__/UserMessage.spec.ts (6 tests) 26ms
+ ✓ services/runHydration/__tests__/acceptedInputIdentity.spec.ts (12 tests) 11ms
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts (10 tests) 9ms
+ ✓ services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts (3 tests) 12ms
+stderr | stores/__tests__/agentRootCompactionIntegration.spec.ts > real host action retires children BEFORE one request, settles all children before real empty-history hydration
+Error terminating run 'host-run': Error: This Agent collaboration is being stopped.
+    at assertNotTerminating (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunCollaborationStore.ts:46:37)
+    at Proxy.beginHostTermination (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunCollaborationStore.ts:135:5)
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:461:53)
+    at Proxy.wrappedAction (file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/pinia@2.3.1_typescript@5.9.3_vue@3.5.28_typescript@5.9.3_/node_modules/pinia/dist/pinia.mjs:1399:26)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts:84:35
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (12 tests) 12ms
+stderr | stores/__tests__/agentRootCompactionIntegration.spec.ts > false is never whole-command confirmation and never auto-wakes the host
+Error terminating run 'host-run': Error: false
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:474:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts:115:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentRootCompactionIntegration.spec.ts > missing is never whole-command confirmation and never auto-wakes the host
+Error terminating run 'host-run': Error: Failed to terminate run 'host-run'.
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:474:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts:115:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentRootCompactionIntegration.spec.ts > transport is never whole-command confirmation and never auto-wakes the host
+Error terminating run 'host-run': Error: lost response
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts:113:46
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentRootCompactionIntegration.spec.ts > children-failed-after-inactive is never whole-command confirmation and never auto-wakes the host
+Error terminating run 'host-run': Error: children-failed-after-inactive
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:474:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts:115:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+stderr | stores/__tests__/agentRootCompactionIntegration.spec.ts > host-failed-after-children is never whole-command confirmation and never auto-wakes the host
+Error terminating run 'host-run': Error: host-failed-after-children
+    at Proxy.terminateRun (/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/agentRunStore.ts:474:17)
+    at processTicksAndRejections (node:internal/process/task_queues:103:5)
+    at /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/stores/__tests__/agentRootCompactionIntegration.spec.ts:115:12
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/node_modules/.pnpm/@vitest+runner@3.2.4/node_modules/@vitest/runner/dist/chunk-hooks.js:752:20
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (7 tests) 16ms
+ ✓ stores/__tests__/agentRootCompactionIntegration.spec.ts (22 tests) 48ms
+
+ Test Files  9 passed (9)
+      Tests  91 passed (91)
+   Start at  18:17:10
+   Duration  6.84s (transform 3.77s, setup 51.66s, collect 1.68s, tests 149ms, environment 2.29s, prepare 1.90s)
+

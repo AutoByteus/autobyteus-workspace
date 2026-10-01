@@ -1,0 +1,433 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-ts
+
+ ❯ tests/unit/memory/memory-compaction-configuration.test.ts (3 tests | 1 failed) 6ms
+     ✓ represents disabled as one complete immutable variant with no policy or createCompressionStrategy 1ms
+     × constructs enabled only with the current policy and a non-null createCompressionStrategy 3ms
+     ✓ copies enabled with fresh mutable policy state and the same createCompressionStrategy identity 1ms
+stderr | tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > keeps unknown completion eligible and observer/cleanup errors diagnostic only
+Compaction isolated LLM cleanup failed. { invocationId: 'compaction_66fb9d8d-949e-470f-81a3-2410edb58216' }
+
+ ❯ tests/unit/memory/direct-llm-compression-strategy.test.ts (30 tests | 30 failed) 21ms
+     × ships the exact approved v5 literal 3ms
+     × extracts one inner body, ignores exterior, and preserves Markdown/CRLF 1ms
+     × rejects invalid envelope  1ms
+     × rejects invalid envelope plain summary 0ms
+     × rejects invalid envelope <compaction_summary></compaction_summary> 0ms
+     × rejects invalid envelope <compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary><compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary> 0ms
+     × rejects invalid envelope <compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+ 0ms
+     × rejects invalid envelope </compaction_summary><compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary> 0ms
+     × rejects invalid envelope <compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Other
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary> 0ms
+     × rejects invalid envelope <compaction_summary>
+## Goal and constraints
+
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary> 0ms
+     × rejects non-body result <compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary> 0ms
+     × rejects non-body result undefined 0ms
+     × rejects non-body result {} 0ms
+     × rejects non-body result ## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Other
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending. 0ms
+     × rejects non-body result prefix
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending. 0ms
+     × succeeds on attempt 1, fresh parent/config/identity, identical content and no numeric prefix 3ms
+     × succeeds on attempt 2, fresh parent/config/identity, identical content and no numeric prefix 1ms
+     × succeeds on attempt 3, fresh parent/config/identity, identical content and no numeric prefix 1ms
+     × exhausts uniformly for 401 with no fourth attempt 1ms
+     × exhausts uniformly for 429 with no fourth attempt 0ms
+     × exhausts uniformly for 503 with no fourth attempt 0ms
+     × exhausts uniformly for timeout with no fourth attempt 0ms
+     × exhausts uniformly for empty with no fourth attempt 0ms
+     × exhausts uniformly for malformed with no fourth attempt 0ms
+     × exhausts uniformly for incomplete with no fourth attempt 2ms
+     × exhausts uniformly for capacity with no fourth attempt 0ms
+     × exhausts uniformly for credentials with no fourth attempt 0ms
+     × keeps unknown completion eligible and observer/cleanup errors diagnostic only 1ms
+     × cancels before construction and rejects late successful output without retry 0ms
+     × does not call again if cancellation occurs during the retry wait 0ms
+ ✓ tests/unit/memory/compaction-content-builder.test.ts (5 tests) 48ms
+stderr | tests/unit/memory/pending-compaction-executor.test.ts > PendingCompactionExecutor direct path > treats postcommit prune/reporter failure as committed and restores from that same snapshot
+Compaction committed; raw archive cleanup failed. Active duplicates retained. { operationId: 'compaction_operation_muoge77i_1' }
+
+ ✓ tests/unit/memory/pending-compaction-executor.test.ts (4 tests) 176ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 31 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > ships the exact approved v5 literal
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > extracts one inner body, ignores exterior, and preserves Markdown/CRLF
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects invalid envelope 
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects invalid envelope plain summary
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects invalid envelope <compaction_summary></compaction_summary>
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects invalid envelope <compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary><compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary>
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects invalid envelope <compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects invalid envelope </compaction_summary><compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary>
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects invalid envelope <compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Other
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary>
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects invalid envelope <compaction_summary>
+## Goal and constraints
+
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary>
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects non-body result <compaction_summary>
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+</compaction_summary>
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects non-body result undefined
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects non-body result {}
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects non-body result ## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Other
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > rejects non-body result prefix
+## Goal and constraints
+- Keep /repo/check.ts; approval pending.
+
+## Decisions and findings
+- Keep /repo/check.ts; approval pending.
+
+## Completed work
+- Keep /repo/check.ts; approval pending.
+
+## Current state
+- Keep /repo/check.ts; approval pending.
+
+## Open work and next steps
+- Keep /repo/check.ts; approval pending.
+
+## Essential references
+- Keep /repo/check.ts; approval pending.
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > succeeds on attempt 1, fresh parent/config/identity, identical content and no numeric prefix
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > succeeds on attempt 2, fresh parent/config/identity, identical content and no numeric prefix
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > succeeds on attempt 3, fresh parent/config/identity, identical content and no numeric prefix
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > exhausts uniformly for 401 with no fourth attempt
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > exhausts uniformly for 429 with no fourth attempt
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > exhausts uniformly for 503 with no fourth attempt
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > exhausts uniformly for timeout with no fourth attempt
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > exhausts uniformly for empty with no fourth attempt
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > exhausts uniformly for malformed with no fourth attempt
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > exhausts uniformly for incomplete with no fourth attempt
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > exhausts uniformly for capacity with no fourth attempt
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > exhausts uniformly for credentials with no fourth attempt
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > keeps unknown completion eligible and observer/cleanup errors diagnostic only
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > cancels before construction and rejects late successful output without retry
+ FAIL  tests/unit/memory/direct-llm-compression-strategy.test.ts > direct compression strategy > does not call again if cancellation occurs during the retry wait
+TypeError: Cannot destructure property 'signal' of 'undefined' as it is undefined.
+ ❯ tests/unit/memory/direct-llm-compression-strategy.test.ts:29:77
+     27| });
+     28| // The production backoff is node:timers/promises, driven with a mocke…
+     29| const waits = vi.hoisted(() => vi.fn(async (_ms: number, _value: unkno…
+       |                                                                             ^
+     30| vi.mock('node:timers/promises', () => ({ setTimeout: waits }));
+     31| beforeEach(() => waits.mockClear());
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/31]⎯
+
+ FAIL  tests/unit/memory/memory-compaction-configuration.test.ts > MemoryCompactionConfiguration > constructs enabled only with the current policy and a non-null createCompressionStrategy
+AssertionError: expected [Function] to throw error matching /createCompressionStrategy/ but got 'Enabled memory compaction requires a …'
+
+- Expected: 
+/createCompressionStrategy/
+
++ Received: 
+"Enabled memory compaction requires a compression strategy factory."
+
+ ❯ tests/unit/memory/memory-compaction-configuration.test.ts:38:8
+     36|       .toThrow(/CompactionPolicy/);
+     37|     expect(() => createEnabledMemoryCompactionConfiguration(policy, nu…
+     38|       .toThrow(/createCompressionStrategy/);
+       |        ^
+     39|   });
+     40| 
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/31]⎯
+
+
+ Test Files  2 failed | 2 passed (4)
+      Tests  31 failed | 11 passed (42)
+   Start at  20:43:24
+   Duration  570ms (transform 493ms, setup 69ms, import 578ms, tests 250ms, environment 0ms)
+

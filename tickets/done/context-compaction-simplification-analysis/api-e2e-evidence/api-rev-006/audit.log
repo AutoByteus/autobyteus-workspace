@@ -1,0 +1,79 @@
+{
+  "at": "2026-09-30T22:24:53.462903+00:00",
+  "head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "entryPending": 1214,
+  "changedEntryPending": [
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+      "before": "52135fbc63d3c9793436b2f5fbfe2e763bd34f0ae6fef60c11b308b156512f9c",
+      "now": "84046f904518dc76c281b5f3024bb5d7982a7f50bd66032e2b9d57f1014bca2d"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+      "before": "58e38a30d59aefcb8b19a7785c2a0c1761daadb323f987db9dfade572ac21532",
+      "now": "394ecd7cfacc1133055cda4593ca53a8547193c9d29bd5a5b84a56090e191d40"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+      "before": "1ab9fd6644ecce9faf955e6aebff718379b563b6fe749c137c61a3051c9492b8",
+      "now": "444d75de75aa177d37b35735535665dbd13bf0485ff83c266a93d8f09c36afa7"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md",
+      "before": "9dadc4804c9e07f4f8cff495c6e02151505462af44302651393b461eea7b9f0c",
+      "now": "eaa43318aa4f26e21b860182869140fd9da8edeb1c10fd1535bce0f80ca56982"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/design-spec.md",
+      "before": "3da8a3b11359c089a5cced19fcfb3419c4211fbe83a74a7dce9c0c03ccbff95b",
+      "now": "307146726a02b7ad2a564e4e50e75d3973d54c75e0257055cd6d9af1bc9a9335"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/investigation-notes.md",
+      "before": "eacf219c35882cd9f33d7788262fc8c1ea46ad6ce67cb1c202a1972811714fc7",
+      "now": "d7295d5eb99b9b6320dbef9ff48087a707908ae790fcb2f48d272b4140b19479"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/requirements-doc.md",
+      "before": "8ac16d72c23db479ec2e7f100c07349f38724f269b7609bd96adab67b8c19f12",
+      "now": "e889a55cdfc2c355daa0633b402d6482128ef007ed735d008b477a0cccc152c0"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-progress-result.md",
+      "before": "6bcc5d64cd75bab0d54cdf00a7bf9756e3eaafecd7b6c0ff4b6c974893e1a483",
+      "now": "89c8772686f3f2a1d9a3dbd7d1eb9d6467be4ca695e21e208cd7a2d997967e63"
+    },
+    {
+      "path": "tickets/in-progress/context-compaction-simplification-analysis/solution-revision-record.md",
+      "before": "2597612099d557135ce6bce7ffbe159a6e37eb3117abf215531b56fc0cd5d9ea",
+      "now": "48a610efd5fb42fbf044a86b3cf7e9d77f97e80371285f596ca79d8eabd85649"
+    }
+  ],
+  "unchangedEntryPending": 1205,
+  "apiMismatches": [],
+  "implementationMismatches": [],
+  "authorityChanges": [
+    {
+      "path": "requirements-doc.md",
+      "before": "8ac16d72c23db479ec2e7f100c07349f38724f269b7609bd96adab67b8c19f12",
+      "now": "e889a55cdfc2c355daa0633b402d6482128ef007ed735d008b477a0cccc152c0"
+    },
+    {
+      "path": "design-spec.md",
+      "before": "3da8a3b11359c089a5cced19fcfb3419c4211fbe83a74a7dce9c0c03ccbff95b",
+      "now": "307146726a02b7ad2a564e4e50e75d3973d54c75e0257055cd6d9af1bc9a9335"
+    },
+    {
+      "path": "solution-revision-record.md",
+      "before": "2597612099d557135ce6bce7ffbe159a6e37eb3117abf215531b56fc0cd5d9ea",
+      "now": "48a610efd5fb42fbf044a86b3cf7e9d77f97e80371285f596ca79d8eabd85649"
+    },
+    {
+      "path": "investigation-notes.md",
+      "before": "eacf219c35882cd9f33d7788262fc8c1ea46ad6ce67cb1c202a1972811714fc7",
+      "now": "d7295d5eb99b9b6320dbef9ff48087a707908ae790fcb2f48d272b4140b19479"
+    }
+  ],
+  "authorityChangeReason": "Concurrent Solution Designer SR032 proposal; not API-owned edits. Approved baseline retained; affected added requirement/design not approved."
+}

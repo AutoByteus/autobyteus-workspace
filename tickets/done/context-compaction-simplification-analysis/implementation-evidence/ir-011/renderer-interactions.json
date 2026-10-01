@@ -1,0 +1,8 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\n  \"tab_id\": \"68acbd\",\n  \"result_json\": \"{\\\"cleared\\\":{\\\"badges\\\":0,\\\"attachments\\\":4},\\\"reconstructed\\\":[{\\\"scope\\\":\\\"agent\\\",\\\"statuses\\\":[\\\"Held until memory compaction succeeds\\\",\\\"Queued\\\"],\\\"attachments\\\":2,\\\"width\\\":360},{\\\"scope\\\":\\\"team\\\",\\\"statuses\\\":[\\\"Held until memory compaction succeeds\\\",\\\"Queued\\\"],\\\"attachments\\\":2,\\\"width\\\":360}],\\\"focus\\\":\\\"reconstruct\\\",\\\"overflow\\\":false}\"\n}"
+    }
+  ]
+}

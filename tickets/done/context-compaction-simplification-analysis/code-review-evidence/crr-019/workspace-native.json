@@ -1,0 +1,11 @@
+{
+  "argv": [
+    "pnpm",
+    "test:native-input-history"
+  ],
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "started": "2026-10-01T17:49:34.433107+00:00",
+  "finished": "2026-10-01T17:49:48.734273+00:00",
+  "exit": 0,
+  "NATIVE_INPUT_CAPTURE_DIR": "explicitly unset"
+}

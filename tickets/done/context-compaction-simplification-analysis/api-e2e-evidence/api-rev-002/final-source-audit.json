@@ -1,0 +1,51 @@
+{
+  "head": "c948605e2aa5e9dac77b69819eb8f366226c4112",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "durablePaths": [
+    {
+      "path": "test-support/live-e2e/live-e2e-harness.ts",
+      "sha256": "e7afbda7403669eb57b6516c4537e338473b32e02a714ae1184a0d654e61c457",
+      "lines": 1321,
+      "trackedAtHead": true
+    },
+    {
+      "path": "test-support/live-e2e/run-live-e2e.mjs",
+      "sha256": "ca2398d3efc7773cad49717e5b0583f5c3aa6cc79120cbee3aee2b3b672f728f",
+      "lines": 69,
+      "trackedAtHead": true
+    },
+    {
+      "path": "test-support/live-e2e/compaction-quality-checks.ts",
+      "sha256": "c59287b4815831d91cadb4db7a7bc0a0d3cbbcc8a0b4f18b20dfdd22cd0df7e4",
+      "lines": 12,
+      "trackedAtHead": false
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+      "sha256": "1a0ddc60272af503f184b509f911d52099ae1aa589aaf7f855ac15079986b548",
+      "lines": 458,
+      "trackedAtHead": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-compaction-boundary.test.ts",
+      "sha256": "96d4c017ee4a8e6573cabc947252c8406b3d9e00c90d27659c6d520286a2a06c",
+      "lines": 105,
+      "trackedAtHead": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/server-settings/server-settings-graphql.e2e.test.ts",
+      "sha256": "7a6d08326f41b84f92fdcd35380781d12ed27711a1e87b09cdfc45f863b7cf91",
+      "lines": 706,
+      "trackedAtHead": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts",
+      "sha256": "08cd9f9dca76a66a9692af01db613178a4c1fe69fa7f71ec80d6e37432c76451",
+      "lines": 110,
+      "trackedAtHead": false
+    }
+  ],
+  "productionDelta": "",
+  "noCommitPushMergeRelease": true,
+  "finalAuditAt": "2026-09-26T21:24:06.977366+00:00"
+}

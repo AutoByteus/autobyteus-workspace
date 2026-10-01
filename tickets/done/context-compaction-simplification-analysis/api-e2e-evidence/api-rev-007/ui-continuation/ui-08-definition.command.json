@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-01T06:37:19.334Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=58629",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "1469900218F0745D8971D3503A116153",
+    "--script",
+    "async()=>{let actions=[];for(const [selector,value] of [['#name','API7 Recovery Fixture'],['#role','Validation'],['#description','Owned offline protocol fixture for terminal compaction checks.'],['#instructions','Acknowledge synthetic API7 inputs. No external action or tool work.']]){const a=await __abDemo.type({selector},value,{delayMs:0});actions.push(a);if(!a.ok)return{actions};}actions.push(await __abDemo.select({selector:'#agent-definition-runtime-kind'},{label:'AutoByteus'}));actions.push(await __abDemo.click({text:'Select a model'}));await new Promise(r=>setTimeout(r,200));return{actions,text:document.body.innerText};}",
+    "--dialog",
+    "accept"
+  ]
+}

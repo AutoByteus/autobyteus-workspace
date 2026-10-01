@@ -1,0 +1,2285 @@
+diff --git a/autobyteus-server-ts/docs/ARCHITECTURE.md b/autobyteus-server-ts/docs/ARCHITECTURE.md
+index 652c68771..33907429b 100644
+--- a/autobyteus-server-ts/docs/ARCHITECTURE.md
++++ b/autobyteus-server-ts/docs/ARCHITECTURE.md
+@@ -147,157 +147,40 @@ under "Production data migrations" in the server `README.md`.
+ 
+ ## Native Working-Context Compaction
+ 
+-Native AutoByteus compaction is composed in `autobyteus-ts` as a proposal /
+-accept / commit boundary. `PendingCompactionExecutor` captures the manager-owned
+-WorkingContext and lineage-head baseline, resolves the configured strategy, and
+-requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns
+-output identities, builds and validates the complete accepted candidate, and
+-publishes it in this order: exact new-raw archive, episode/semantic rows,
+-append-only lineage record, installed WorkingContext, schema-v5 message snapshot,
+-then pending clear. Raw archiving is an independent command; the archive manager
+-owns its descriptor/filename, and neither is copied into the candidate or
+-lineage.
+-
+-The last valid record in `compaction_lineage.jsonl` is the only current-compaction
+-authority. It identifies the exact current output rows, the optional immediately
+-preceding compaction, and execution/prompt audit metadata. There
+-is no mutable current pointer, compaction-state file, compacted-memory manifest,
+-or snapshot-level output identity. Recurrent compaction consumes current output
+-plus new raw-backed work and produces one complete replacement. The built-in
+-Memory Compactor chooses the natural number of episodes and semantic facts
+-required for continuation; accepted output requires at least one episode, but
+-the parser, normalizer, manager publication, lineage, and current projection do
+-not impose the former fixed total-count limits.
+-
+-Native trigger planning is derived from the same input budget and threshold that
+-requested the operation. One immutable operation budget sets a post-compaction
+-target below the threshold with explicit headroom, accounts for required system
+-content, protected final tool protocol, untracked prompt overhead, and
+-replacement memory, and fails closed when the target is unattainable. Finalized
+-accepted context must fit that same target. After success, an actual-observation
+-episode suppresses repeated proactive operations until a normalized prompt
+-observation falls below threshold; missing prompt counts do not mutate the
+-episode, changed budget identity resets it, and hard-input-cap pressure remains
+-an override. The threshold episode is process-local, not persisted memory.
+-
+-The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
+-natural-sizing guidance, and six-array response schema. The initial operation
+-message explicitly identifies the target agent and contains one
+-`<target_agent_conversation_history>` block inside one plain-text target-agent
+-`START` / `END` separator pair, with nothing after the end separator. The
+-renderer reuses `WorkingContextFinalizer` so compatible prior-memory/current-user
+-regions appear as one natural User turn, while assistant and Tool order,
+-redaction, per-value bounds, renamed-boundary escaping, and input non-mutation
+-remain enforced. Generic sender headings are removed from shared input
+-composition; content without readable context remains unchanged, while combined
+-context/message payloads use only neutral `[Context]` and `[Message]` sections.
+-
+-Derived compaction text is normalized to a provider-safe Unicode copy without
+-rewriting canonical raw traces or stored source values. Valid surrogate pairs,
+-multilingual text, code, paths, symbols, emoji, newline, and tab are preserved;
+-lone surrogates are replaced, non-useful C0 controls are removed, and middle/end
+-truncation cannot split a pair. The completed initial or correction prompt is
+-checked before child launch. Failure is typed `input_construction_failure` and
+-performs no child/correction call, target dispatch, or canonical mutation while
+-retaining the user-authorized pending gate.
+-
+-The response boundary validates every exact, fenced, or balanced JSON-object
+-candidate against the six required arrays and accepts only one distinct
+-host-consumed result with a non-empty episode. Harmless extra fields do not fail
+-validation, unrelated JSON cannot mask a later valid object, and multiple valid
+-objects are ambiguous. A typed returned-content failure receives one corrective
+-child attempt with the same selected history. Initial and optional correction
+-children are disabled siblings owned by the parent operation, not recursive
+-descendants, and neither persists child lineage/archive state. Child error
+-completion, interruption, terminal error, timeout, tool approval,
+-launch/rejection, and collection failure retain typed runner identity and bypass
+-response repair. The compactor remains tool-free: the native exposure resolver
+-matches its exact built-in definition ID before ordinary default/team
+-composition, leaving final `AgentConfig.tools` empty while ordinary native
+-agents retain all four foundation tools. Success produces one parent completed
+-lifecycle and one accepted commit; final failure leaves the pending operation
+-and canonical memory unchanged.
+-
+-A new pending operation has one automatic initial attempt. Final failure changes
+-it to `awaiting_user_retry`, stops that target-agent turn before dispatch, and
+-permits one new attempt from each distinct later user-origin turn. Agent/system
+-turn-start entries remain in the core runtime queue; the scheduler may select the
+-earliest user behind them without dropping or reordering them, then resumes
+-ordinary relative FIFO after a successful retry. There is no same-turn,
+-background, or non-user retry and no persistent deferred-message store.
+-
+-New lineage records write `promptContractVersion: 3`. Existing immutable values
+-1 and 2 remain directly readable, mixed `1 -> 2 -> 3` chains remain valid, and
+-any unsupported audit value is rejected without compatibility decoding or file
+-mutation. Existing schema-v1 stored supersets that include the former
+-`rawTraceArchiveFile` field remain directly readable: normalization ignores that
+-extra field without rewriting data or introducing a schema branch, and new rows
+-omit it.
+-
+-`AUTOBYTEUS_COMPACTION_STRATEGY` is resolved for each pending operation through
+-the default registry. The only production registration is `structured-json`; it
+-uses the fixed built-in `autobyteus-memory-compactor`, with blank runtime/model
+-launch values inherited from the parent run. The removed
+-`AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` key is inert, and no arbitrary-agent
+-fallback exists.
+-
+-Automatic compaction is one complete runtime composition owned by core memory:
+-`disabled` has no policy or runner; `enabled` has the existing single
+-`CompactionPolicy` and current strategy runner. `AgentConfig` carries it through
+-`AgentFactory` into `MemoryManager`, and direct core construction defaults to
+-disabled. The server backend selects disabled for the exact built-in compactor
+-on create/restore without invoking the runner factory. Ordinary native agents
+-receive enabled composition; runner construction failure cannot silently turn a
+-normal agent into a disabled one.
+-
+-The generic LLM phase resolves provider/model request capacity for both
+-variants. Enabled agents retain compaction-budget derivation and the current
+-policy/strategy/executor/observation/lifecycle path. Disabled compactor children
+-skip proactive and hard-input-cap classification, pending/execution work, and
+-compaction lifecycle reporting while preserving the original response/tool
+-outcome. Provider-admissible tasks run directly as leaves; oversized tasks fail
+-through existing planning/pre-launch or typed runner handling rather than
+-recursively rewriting their own instruction/history. This is runtime-only
+-composition and requires no persisted-data migration.
+-
+-The backend resolves explicit standalone/team-member lineage scopes for native
+-memory composition. There is no direct/recursive episode/semantic-to-raw origin
+-resolver or server service. `CurrentCompactionOutputLoader` reads only the
+-lineage tail and exact output membership; malformed or unsupported lineage and
+-missing or misordered output rows remain integrity errors, and current projection
+-never opens a raw archive.
+-
+-Server startup migration `20260731_migrate_native_working_context_snapshots_v5`
+-replaces the destructive pre-lineage reset. One exact runtime-location classifier
+-identifies native standalone/team-member targets and supplies `runId` or
+-`memberRunId`. External snapshot cleanup and the retained raw rotation-layout /
+-active-filename migrations run first. Native conversion then applies only when
+-lineage is absent or zero-byte; any nonempty lineage skips the location untouched.
+-The migration validates a strict-v5 candidate built only from truthfully backed
+-same-location active facts before replacing the snapshot, then removes only old
+-episode, semantic, and compacted-memory-manifest files. It never mutates raw
+-traces/manifests or lineage. Ordinary warning/failure results remain recorded and
+-retryable, but the runner returns them and server startup continues. Runtime
+-restore accepts strict v5 only; it has no pre-v5 reader or raw-history projector.
+-
+-LLM request recovery is anchored after any pending compaction. The request
+-assembler captures the stable post-compaction checkpoint immediately before
+-request-specific mutation and carries it in the request package. Assembly or
+-provider failure restores it; normal final output, real Tool ingestion, and
+-supported retained interruption release it exactly once. Recovery never rolls
+-back accepted archive/output/lineage state.
+-
+-`ServerSettingsService` exposes the global strategy setting through the existing
+-`.env`/`process.env` path and rejects values absent from production registry
+-metadata. GraphQL exposes a read-only `{ id, name }` catalog and a separate
+-effective-selection read; Settings -> Server Settings -> Basics consumes those
+-authorities without inferring a default from catalog order. Selected strategy,
+-provider, model, and runtime execution metadata are retained on successful
+-lineage records and lifecycle reporting.
+-
+-See `autobyteus-ts/docs/agent_memory_design.md` for the full persistence,
+-lineage, raw-archive independence, current-context, restore, presentation, and
+-failure contracts.
++Native memory now compresses selected WorkingContext content with one isolated,
++tool-free LLM strategy (`compress(content): Promise<string>`). The executor owns
++planning and provider-safe input construction; the strategy owns up to three
++single-attempt provider generations and exact six-heading Markdown-envelope
++validation. It does not launch a child agent, select a registered strategy, repair
++JSON category arrays or write episodic/semantic/lineage output.
++
++The accepted snapshot `{agent_id, messages}` is the continuation authority. Raw
++archive preparation precedes atomic snapshot replacement; in-memory installation
++and pending clear follow that commit point, with best-effort active pruning last.
++This is per-file atomicity, not a multi-file or whole-power-loss guarantee.
++Normal restore reads current known fields, repairs unmatched native tools from
++active raw facts and validates/saves without category or lineage dependencies.
++The existing historical startup migration retains its frozen conversion rules and
++preserves exact current versionless successor locations unchanged; no new migration
++or successful-ledger reset accompanies this cutover.
++
++Failure retains a pending operation and a failure epoch. A newly accepted user
++message after failure permits retry; a pre-parent held A resumes before later B
++once each on success. Completed-response failures gate the next turn instead of
++replaying work. Root termination and client terminal activity reconciliation are
++identity-scoped, retain facts and reject late output. Native in-memory terminal
++retention is not native cold replay or a general immediate shutdown guarantee.
++
++Server composition uses the optional `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` tuple,
++falling back to the then-current parent model identifier and selected-model
++defaults. Old strategy/compactor-agent settings are inert. Ordinary parent and
++external-provider request/session policies are not replaced.
++
++See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md),
++[server memory](modules/agent_memory.md),
++[settings](../../autobyteus-web/docs/settings.md#server-settings-working-context-compaction)
++and [frontend activity/recovery](../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity)
++for the authoritative ownership and limitations.
+ 
+ ## Agent Work Trace Projection
+ 
+diff --git a/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md b/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md
+index 95003d8fb..5b2e7503c 100644
+--- a/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md
++++ b/autobyteus-server-ts/docs/design/startup_initialization_and_lazy_services.md
+@@ -42,6 +42,13 @@ The server must execute these steps in order:
+   complete candidate before snapshot replacement and only then removes obsolete
+   episode, semantic, and compacted-memory-manifest files. Raw traces/manifests and
+   lineage remain untouched.
++- That historical converter uses a frozen migration-owned codec. Before conversion
++  it preserves exact current versionless successor locations byte-for-byte,
++  including valid pending tool intents, partial batches and raw-ahead states.
++  Invalid versionless-current data fails unchanged rather than converting to
++  empty. Normal bootstrap, not this guard, repairs protocol and saves current
++  `{agent_id, messages}` snapshots. Direct compaction adds no new migration and
++  must not reset a successful ledger record.
+ - `AppDataMigrationRunner` attempts every registered pending migration and
+   persists/returns `SUCCEEDED`, warning, or `FAILED` results without an aggregate
+   startup exception. `startConfiguredServer` logs infrastructure/result failures
+diff --git a/autobyteus-server-ts/docs/modules/agent_definition.md b/autobyteus-server-ts/docs/modules/agent_definition.md
+index 1490fd252..508db069b 100644
+--- a/autobyteus-server-ts/docs/modules/agent_definition.md
++++ b/autobyteus-server-ts/docs/modules/agent_definition.md
+@@ -116,7 +116,6 @@ Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-a
+ 
+ Built-in templates are centralized under `src/built-in-agents/templates/`. Every built-in agent is platform-owned:
+ 
+-- `memory-compactor/` syncs the shared `agents/autobyteus-memory-compactor/` definition with display name **Memory Compactor**.
+ - `retrospective-skill-improver/` syncs the shared `agents/autobyteus-retrospective-skill-improver/` definition with display name **Retrospective Skill Improver**. The persisted clean-state definition id is `autobyteus-retrospective-skill-improver`.
+ - `daily-assistant/` syncs the shared `agents/autobyteus-daily-assistant/` definition with display name **Daily Assistant**. It is the default agent of the web Chat entry, ships with the general tool set (including `read_file`, so it can read cataloged `SKILL.md` files) and `skillScope: ALL_INSTALLED`, and is exported as `DAILY_ASSISTANT_AGENT_DEFINITION_ID`.
+ 
+@@ -124,13 +123,19 @@ The built-in-agent bootstrapper owns this lifecycle:
+ 
+ - every built-in has its `agent.md` and `agent-config.json` rewritten from the template on every startup, and its `skills/` folder mirrored from the template (removed when the template has none); app-data edits to those ids, including edits to the Daily Assistant's prompt, tools, model defaults, skill scope or agent-local skills, do not survive restart;
+ - standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
+-- the Memory Compactor is synchronized at fixed id `autobyteus-memory-compactor` without creating a user-selectable server-setting default;
+ - `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-retrospective-skill-improver` only when the setting is blank; and
+ - the agent-definition cache is refreshed after built-in definitions resolve.
+ 
+ Internal infrastructure-agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting.
+ 
+-Do not add separate one-off built-in-agent bootstrappers or scatter platform templates under feature-runtime folders. The current `structured-json` compaction strategy always resolves the fixed built-in `autobyteus-memory-compactor`; it does not own the template/sync lifecycle and does not read `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID`. A stale custom value for that removed selector is inert. The separate process-global `AUTOBYTEUS_COMPACTION_STRATEGY` setting selects the registered working-context algorithm for subsequent operations and must not be added to `AgentConfig` or agent definitions. The Daily Assistant is not auto-featured; featured placement stays an operator choice in Settings.
++Do not add separate one-off built-in-agent bootstrappers or scatter platform
++templates under feature-runtime folders. Native compaction now constructs an
++isolated tool-free LLM directly; it has no synchronized Memory Compactor agent,
++registry-selected algorithm or child Agent runtime. Old compactor-agent files and
++removed selector/strategy setting values are inert for compaction and are neither
++imported nor deleted. The optional current model/config tuple is server-owned,
++not an AgentDefinition selector. The Daily Assistant is not auto-featured;
++featured placement stays an operator choice in Settings.
+ 
+ ## Notes
+ 
+diff --git a/autobyteus-server-ts/docs/modules/agent_execution.md b/autobyteus-server-ts/docs/modules/agent_execution.md
+index f5100b344..47f4947c6 100644
+--- a/autobyteus-server-ts/docs/modules/agent_execution.md
++++ b/autobyteus-server-ts/docs/modules/agent_execution.md
+@@ -240,9 +240,10 @@ both fields. See [LLM Management](./llm_management.md#persisted-run-model-select
+ 
+ The same run's next normal message/restore consumes the saved pair without a
+ new provider conversation. Save neither activates a backend nor compacts,
+-converts, or resets history. Existing memory/compaction lineage remains in
+-place; ordinary later execution uses its existing runtime algorithm with the
+-selected model, without promising identical future compaction timing.
++converts, or resets history. Existing WorkingContext and raw evidence remain in
++place; historical category/lineage files are not rewritten or made current
++continuation dependencies. Ordinary later execution uses its runtime compaction
++path with the selected model, without promising identical future timing.
+ 
+ Studio adds a separate owner-aware guard before this General lane. A live
+ Application binding locks configuration without exposing Application managers
+diff --git a/autobyteus-server-ts/docs/modules/agent_memory.md b/autobyteus-server-ts/docs/modules/agent_memory.md
+index cd112f38b..f477c8a50 100644
+--- a/autobyteus-server-ts/docs/modules/agent_memory.md
++++ b/autobyteus-server-ts/docs/modules/agent_memory.md
+@@ -41,16 +41,16 @@ Common files/directories:
+   including strict run-scoped `system_instruction` rows when the exact runtime
+   handoff was captured.
+ - `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
+-- `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives, including one exact-new-activity archive per successful native compaction.
+-- `episodic.jsonl` and `semantic.jsonl` — immutable native compacted output rows.
+-- `compaction_lineage.jsonl` — append-only successful native-compaction lineage. Its last valid record is the only current-compaction head and lists exact current output IDs, the optional preceding compaction, and execution/prompt audit metadata; it does not identify a raw archive.
+-- `working_context_snapshot.json` — native AutoByteus continuation state: strict schema-v5 finalized provider-neutral messages and message-local constituent ranges. It contains no output identity, lineage object, or mutable current-state field. Codex and Claude recording no longer creates or updates this file.
++- `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives. Native compaction prepares selected new activity before snapshot commit; a failed preparation/publication can leave copied archive evidence without a successful new summary.
++- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them.
++- `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
++- `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it.
+ 
+-There is no current `compacted_memory_manifest.json` or compaction-state/pointer
+-file. The destructive `20260730_reset_pre_lineage_memory` path is removed.
+-Normal runtime never reads old episodic/semantic/manifest state or a pre-v5
+-snapshot; eligible historical native snapshots are handled only by the
+-forward-only startup migration described below.
++There is no current compacted-memory manifest or pointer. The destructive
++`20260730_reset_pre_lineage_memory` path is removed. Normal restore accepts
++current known fields with zero/one compacted region independently of historical
++category/lineage presence. It performs ordinary active-raw unmatched-tool repair
++before full validation and normal save; it does not generate a new summary.
+ 
+ Startup app-data migration `20260707_raw_trace_active_file_name` renames existing active `raw_traces.jsonl` files to `raw_traces_active.jsonl` for local and imported memory corpora. Runtime steady state reads and writes only `raw_traces_active.jsonl`; the old active filename is not a compatibility alias.
+ 
+@@ -86,6 +86,15 @@ candidate is validated before replacement; only afterward are obsolete
+ Raw traces, manifests, archives, and lineage are never mutated. Warning/failure
+ results are recorded and retryable while ordinary server startup continues.
+ 
++The registered native converter is frozen historical code, not the normal
++versionless reader. Its migration-owned shape guard first preserves an exact
++current versionless successor and the entire location byte-for-byte, including
++valid pending tool intents, partial tool batches and raw-ahead recovery states.
++Invalid versionless-current data fails the item unchanged rather than being
++converted to empty historical data. The guard does not run full request-ready
++validation; ordinary bootstrap owns repair. No new migration or successful-ledger
++reset is required for the direct-summary cutover.
++
+ The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/write target. Historical monolithic archive files are intentionally not read by the approved no-compatibility policy.
+ 
+ ## Conversation Activity Classification For Restore
+@@ -113,198 +122,46 @@ runtime memory provider.
+ 
+ ## Runtime Ownership
+ 
+-Native AutoByteus runs remain owned by the `autobyteus-ts` `MemoryManager`. The server-side recorder must skip `RuntimeKind.AUTOBYTEUS` so native traces, snapshots, archives, outputs, and lineage are not duplicated.
+-
+-Native compaction is a proposal / accept / commit boundary. The executor resolves the process-global strategy, captures the manager-owned WorkingContext and lineage-head baseline, and requests an ID-less proposal. `MemoryManager` verifies the baseline, assigns output identities, and builds a complete accepted candidate whose lineage record is finalized before commit. Commit then executes exact new-raw archive -> output rows -> lineage append -> finalized context -> schema-v5 snapshot -> pending clear. The archive is an independent command: `RawTraceArchiveManager` owns its descriptor and filename, and neither is returned into the candidate or lineage. Recurrent compaction consumes the current head output plus new raw-backed work but archives only the new raw evidence. The lineage tail selects the exact current complete replacement bundle; older successful outputs remain historical rather than being mixed into normal projection.
+-
+-The built-in Memory Compactor chooses the natural number of episodes and
+-semantic facts needed for safe continuation. Accepted output requires at least
+-one episode, but no fixed total episode/fact cap is imposed during parsing,
+-normalization, publication, lineage read/write, or current-head projection.
+-Per-entry bounds, structural validation, cleanup,
+-deduplication, and positive salience remain enforced.
+-
+-Each requested operation captures one immutable trigger-aligned planning budget.
+-For effective input budget `B` and trigger threshold `T`, the post-compaction
+-target is the non-negative smaller of `floor(0.35 * B)` and `T` minus headroom
+-`max(256, ceil(0.10 * T))`. Planning reserves replacement-memory space, required
+-system content, observed-but-untracked prompt overhead, and any complete final
+-tool-protocol group before retaining the newest complete natural units. An
+-unattainable target or absent settled raw-backed compactable prefix fails before
+-the compactor runs; accepted output is re-estimated and must fit the same target.
+-
+-The proactive threshold uses actual normalized prompt observations. Missing
+-usage or missing prompt tokens leaves threshold state unchanged, while numeric
+-zero is a real below-threshold observation. After success, a process-local
+-episode suppresses another proactive request until an actual observation falls
+-below the same threshold. The first still-high observation emits one inadequate-
+-reduction diagnostic; later high observations remain suppressed. Budget-key
+-change resets the episode, and hard-input-cap pressure can still request an
+-operation. This removes the former independent fixed-retention/repeated-success
+-loop without turning the configurable ratio into a hard context-window resize.
+-
+-The persisted `autobyteus-memory-compactor` system prompt owns the stable task,
+-natural-sizing guidance, and exact six-array response schema. The initial
+-operation message identifies the conversation history as belonging to the target
+-agent, surrounds it with one plain-text target-agent `START` / `END` separator
+-pair, and contains exactly one canonical
+-`<target_agent_conversation_history>` block with nothing after the end separator.
+-The renderer reuses `WorkingContextFinalizer`, so compatible prior-memory and
+-current-user regions become one natural User turn and assistant/Tool boundaries
+-remain ordered. It omits reasoning, backend IDs, duplicated schema/count policy,
+-and platform internals while preserving redaction, explicit value bounds, and
+-renamed-boundary escaping.
+-
+-Compaction rendering normalizes only derived provider-facing copies: CR/CRLF
+-becomes LF, non-useful C0 controls are removed while newline/tab remain, lone
+-UTF-16 surrogates become U+FFFD, and valid pairs plus multilingual text, paths,
+-code, symbols, and emoji remain intact. Middle omission and accepted-entry end
+-clamps use surrogate-safe boundaries. Canonical raw traces, tool payloads,
+-archives, stored memory, and lineage are never rewritten by this policy.
+-
+-The complete initial and correction task prompts are finalized and checked
+-again before `ServerCompactionAgentRunner` can launch a child. An invariant
+-failure is `input_construction_failure`: zero child/correction calls, zero target
+-dispatch, zero canonical mutation, and the same retained USER-authorized gate.
+-
+-`UserInputContextBuildingProcessor` no longer applies generic `[User
+-Requirement]`, `[Tool Execution Result]`, `[Message From Agent]`, or `[System
+-Notification]` headings. Authored message content passes through unchanged when
+-no readable context is concatenated; a combined payload uses only neutral
+-`[Context]` and `[Message]` sections. Sender metadata, provider-native tool
+-protocol, and source-specific carrier builders retain their existing ownership.
+-
+-The parser evaluates exact, fenced, and balanced JSON-object candidates against
+-all six required arrays and accepts exactly one distinct host-consumed result
+-with at least one non-empty episode. Harmless extra fields and unusable
+-blank/non-string entries are ignored; unrelated JSON objects cannot mask a later
+-valid object, and multiple distinct valid objects fail as ambiguous.
+-
+-The server child collector returns usable final assistant output or a typed
+-runner failure. Error completion, interruption, terminal error, timeout, tool
+-approval, task rejection, launch failure, and collection failure retain their
+-kind and available child run/task metadata and never enter the JSON parser.
+-
+-Only a typed returned-content validation failure triggers one corrective child
+-run with a new task/run identity. Its deterministic prefix records the validation
+-stage, restates the six-array shape, and resends the same target history. The
+-initial and optional correction are disabled siblings owned by the same parent
+-operation, not a recursive parent/child chain; neither writes child lineage or
+-raw archives. Repair success yields one parent completed lifecycle and one
+-canonical commit. Repair exhaustion yields one parent failed lifecycle, retains
+-the pending operation, and leaves archives, output rows, lineage,
+-WorkingContext, and snapshot unchanged. A runner/provider/transport/timeout
+-failure is terminal for the current attempt, bypasses response repair, and
+-introduces no fallback model.
+-
+-A new pending operation receives one automatic initial attempt. Any final
+-failure moves it to `awaiting_user_retry` and stops the current target-agent turn
+-before further model dispatch. Each distinct `user`-origin turn can authorize
+-one new attempt; `agent` and `system` turn starts remain queued and invoke neither the
+-compactor nor target model. The core scheduler may select the earliest queued
+-user behind those entries without removing them. Retry success clears the
+-operation, dispatches that user turn, and then restores normal relative FIFO;
+-retry failure retains the same gate. The compactor remains zero-tool.
+-
+-The native exposure resolver enforces that least-authority boundary by exact
+-built-in definition ID before ordinary native defaults or team tools are
+-composed, so the final Memory Compactor `AgentConfig.tools` is empty. Ordinary
+-native agents still receive `run_bash`, `read_file`, `edit_file`, and
+-`write_file` as their runtime-derived baseline.
+-
+-New successful lineage records use `promptContractVersion: 3`. Existing
+-immutable values 1 and 2 remain directly usable, mixed `1 -> 2 -> 3` chains are
+-valid, and unsupported values reject without rewriting or compatibility
+-decoding.
+-
+-Existing schema-v1 rows that contain the former `rawTraceArchiveFile` extra field
+-remain directly readable through recognized-field normalization. The stored
+-field is ignored without a data rewrite, version branch, or output-to-raw origin
+-interpretation; new rows omit it.
+-
+-Explicit existing-run restore requires a strict-v5 snapshot; no raw-history
+-projector or pre-v5 runtime reader remains. `LLMRequestAssembler` completes any
+-pending compaction before capturing the request-recovery checkpoint and captures
+-immediately before current request mutation. Assembly/provider failures restore
+-that stable base, while final output, real Tool ingestion, and supported retained
+-interruption release it exactly once. Accepted archive/output/lineage state is
+-never rolled back.
+-
+-An otherwise current schema-v5 snapshot whose native assistant tool call lacks
+-a matching result is repaired during bootstrap before strict message/provenance
+-validation. The bootstrapper validates the v5 envelope and run identity, asks
+-the native `MemoryManager` protocol-safety owner to correlate calls by
+-`(turn_id, tool_call_id)`, and then requires the repaired snapshot to pass the
+-ordinary strict validator. When no committed result exists, repair appends one
+-canonical raw `tool_result` first, preserving the original tool name and
+-arguments while recording `tool_result: null` plus a deterministic non-empty
+-`tool_error`; the working-context snapshot is then rebuilt from raw authority.
+-Repeated restore is idempotent and does not append another result. Only a
+-malformed final physical record in the active raw JSONL file may be truncated as
+-a partial-write tail; earlier malformed records and unrelated snapshot
+-corruption remain integrity failures.
+-
+-There is no server or GraphQL direct/recursive episode/semantic-to-raw origin
+-service. Current output projection reads the lineage tail, loads exactly its
+-episode/semantic membership in stored order, and treats malformed/unsupported
+-lineage or missing/misordered output rows as integrity errors without opening a
+-raw archive.
+-
+-### Global Compaction Strategy Setting
+-
+-`AUTOBYTEUS_COMPACTION_STRATEGY` selects the strategy for subsequent native compaction operations. Blank values normalize to `structured-json`, the only production registration. `ServerSettingsService` validates updates against registry metadata and persists them through the normal `.env` plus current-process environment path, so already-created native agents resolve the new value on their next compaction. This is process-local convergence; no cross-process broadcast or provider-session reconciliation is added.
+-
+-GraphQL keeps option discovery and effective selection separate:
+-
+-- `getWorkingContextCompactionStrategies` projects only registry `{ id, name }` metadata;
+-- `getEffectiveWorkingContextCompactionStrategyId` applies the same normalizer as runtime, so absent/blank selects `structured-json` while an explicit unknown ID stays explicit for truthful recovery UI.
+-
+-Settings -> Server Settings -> Basics uses these reads for a registry-backed Compaction strategy selector. The card keeps the trigger ratio, effective-context override, and detailed-log controls, persists only changed valid fields through the existing per-key mutation, and stops after the first failed write while retaining failed and unsent drafts for retry. Catalog/effective-read errors and unknown IDs are shown without guessing or silently writing a default.
+-
+-The `structured-json` strategy always invokes the built-in `autobyteus-memory-compactor`; blank launch fields inherit the parent run's runtime/model. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is no longer a predefined setting or runtime selection path. A stale custom value is inert, and a missing/invalid built-in definition fails without arbitrary-agent fallback.
+-
+-### Automatic-Compaction Composition
+-
+-Core memory owns a closed `MemoryCompactionConfiguration`: `disabled` has no
+-policy or strategy runner, while `enabled` carries one current
+-`CompactionPolicy` and its required runner. `AgentConfig` supplies that complete
+-value to `AgentFactory` and `MemoryManager`; neither factory nor manager infers
+-or constructs an independent second policy. Direct core construction without an
+-explicit value defaults to disabled.
+-
+-`AutoByteusAgentRunBackendFactory` selects disabled for the exact built-in
+-Memory Compactor definition on create and restore and does not invoke the runner
+-factory. Ordinary native agents receive enabled composition with a fresh current
+-policy and runner; runner construction failure/null is an agent-composition
+-failure, not a silent disabled fallback.
+-
+-The generic LLM phase still resolves provider/model request capacity for both
+-variants. Enabled agents then derive threshold/hard-cap planning and use the
+-existing strategy, executor, pending-operation, observation, and status path.
+-Disabled compactor children skip all of that work even when their reported
+-prompt usage exceeds the proactive threshold or policy hard cap; their original
+-assistant/tool completion remains the runner result. A provider-admissible task
+-therefore produces exactly one initial child plus at most one host-owned
+-correction sibling and no descendant compactor. A task that exceeds actual
+-provider capacity fails through planning/pre-launch or typed runner handling
+-instead of recursively compacting its own task. The configuration is runtime
+-only; no agent-definition, memory, snapshot, or lineage migration is required.
+-
+-`ServerCompactionAgentRunner` allows an ordinarily constructed compactor child
+-up to 300,000 ms (five minutes) to return its final output. This is a
+-runner-owned omitted-option default, not an application setting:
+-`ServerCompactionAgentRunnerOptions.timeoutMs` remains the authoritative
+-explicit override for tests or custom construction. On timeout or another
+-failure, the existing typed error projection, event unsubscription, and child
+-run termination still apply; unrelated process, server-start, and test timeout
+-policies are not derived from this value.
+-
+-Compaction status metadata includes stable `compaction_strategy_id` and
+-`compaction_strategy_name` in addition to operation/turn and current runner
+-diagnostics. Requested, execution, child run, and child task identities remain
+-distinct. A resolver, strategy, planning, typed runner, response-repair,
+-validation, or replacement failure preserves the pending request and does not
+-emit a false completed state.
++Native AutoByteus runs use the core `MemoryManager`. The canonical
++[core memory design](../../../autobyteus-ts/docs/agent_memory_design.md) owns
++planning, provider-safe content construction, direct `compress(content)` output,
++validation, snapshot publication and repair. Server composition uses
++`src/agent-execution/compaction/compaction-llm-factory.ts` to construct an isolated
++tool-free LLM per attempt, not a visible child agent. There is no strategy catalog,
++registered algorithm selector, category-output projector or live lineage head.
++
++`AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` is the optional current model/config tuple.
++Missing/null selection uses the then-current parent model identifier and selected-
++model defaults without a settings write. Controlled prompt/tool/transport fields
++are excluded; the parent instance and its ordinary retry policy stay unchanged.
++The existing trigger-ratio, active-context override and diagnostic settings remain.
++Old built-in Memory Compactor definitions/settings are not imported or deleted.
++
++One strategy execution permits at most three isolated generation attempts.
++Planning/input construction happens before generation. Exhaustion retains the
++same pending operation and exposes a fresh failure epoch. A later accepted user
++message supplies one retry permit; pre-failure queued input and agent/system
++messages do not. At a pre-parent gate A stays held, then B can authorize recovery
++so A dispatches before B once each. Post-response failure is a next-turn gate.
++These are live-queue semantics, not durable workflow replay after restart.
++
++The committer prepares/copies archive evidence while active raw remains intact,
++atomically replaces the versionless snapshot as the commit point, installs the
++owned context and clears the pending operation, then prunes. Prune failure may
++leave active duplicates and cannot reverse committed success. No category or
++lineage write occurs. Per-file atomicity does not promise whole-machine power-loss
++safety or transactionality across every memory file.
++
++Native lifecycle phases include `requested`, `started`, `completed`, `failed` and
++`stopped`, correlated by operation/requested-turn/execution-turn identities.
++Termination aborts execution and drains the concrete backend event pump before
++close within its bounded policy. Late summary output cannot reopen a stopped
++operation. Root Team/Org shutdown freezes its known member scope and coordinates
++preparation before teardown. This is not a new universal immediate-preparation
++latency guarantee: first-auto preparation/quiescence timeout coverage remains a
++separate unproved diagnostic boundary. Client reconciliation retains terminal
++native rows for loaded contexts; it is not durable native cold replay. See
++[frontend execution](../../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity).
+ 
+ Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:
+ 
+diff --git a/autobyteus-server-ts/docs/modules/agent_tools.md b/autobyteus-server-ts/docs/modules/agent_tools.md
+index 25c02fb5a..dda6ccce4 100644
+--- a/autobyteus-server-ts/docs/modules/agent_tools.md
++++ b/autobyteus-server-ts/docs/modules/agent_tools.md
+@@ -62,13 +62,11 @@ legacy local task tools but does not remove any foundation tool. The existing
+ `write_file` trusted-local path, approval, overwrite, and execution contracts
+ remain authoritative.
+ 
+-The product-owned built-in definition ID `autobyteus-memory-compactor` is the
+-least-authority exception. The native resolver returns an empty effective
+-exposure for that exact definition before foundation defaults, configured names,
+-or team tools are composed, so its final `AgentConfig.tools` is empty on create
+-and restore. Display names or arbitrary empty configurations do not activate the
+-exception; ordinary native agents with empty persisted `toolNames` still receive
+-the four-tool baseline.
++Direct native compaction bypasses Agent construction entirely and sends no tool
++schemas to its isolated LLM. The former exact-ID Memory Compactor empty-tool
++exception is removed. It must not be used to infer tool exposure for ordinary
++agents: even an ordinary empty persisted `toolNames` set receives the native
++four-tool baseline and applicable Team tools.
+ 
+ Claude Agent SDK and Codex App Server continue to call the runtime-neutral
+ boundary directly. They do not inherit the native baseline; their configured
+diff --git a/autobyteus-server-ts/docs/modules/agent_work_traces.md b/autobyteus-server-ts/docs/modules/agent_work_traces.md
+index e7b85b069..794596ac0 100644
+--- a/autobyteus-server-ts/docs/modules/agent_work_traces.md
++++ b/autobyteus-server-ts/docs/modules/agent_work_traces.md
+@@ -124,11 +124,11 @@ compaction owns its natural conversation/XML envelope and smaller bound. Its
+ initial operation message identifies the target agent and contains one canonical
+ `<target_agent_conversation_history>` block, composed through
+ `WorkingContextFinalizer`, inside one plain-text target-agent `START` / `END`
+-separator pair. The stable task, natural-sizing guidance, and response schema
+-remain in the built-in Memory Compactor system prompt; only the single bounded
+-correction prefix restates the schema after typed returned-content validation
+-failure. Native compaction never reads Work Evidence Markdown or manifests as
+-memory input or provenance.
++separator pair. The stable task and six-heading Markdown-envelope contract live
++in the bundled direct-compaction system prompt. The isolated tool-free LLM
++strategy owns at most three attempts, not a child-agent correction run or
++category-JSON repair. Native compaction never reads Work Evidence Markdown or
++manifests as memory input or provenance.
+ Exact work trace paths remain visible because consumers need file references.
+ 
+ ## Consumer Contract
+diff --git a/autobyteus-ts/docs/agent_memory_design.md b/autobyteus-ts/docs/agent_memory_design.md
+index 4d38cdf29..ccd81c31e 100644
+--- a/autobyteus-ts/docs/agent_memory_design.md
++++ b/autobyteus-ts/docs/agent_memory_design.md
+@@ -2,115 +2,90 @@
+ 
+ ## 1. Purpose And Authority Boundaries
+ 
+-AutoByteus native memory separates five concerns:
++Native memory separates three authorities:
+ 
+-1. **WorkingContext** is the finalized, provider-neutral message sequence used to
+-   prepare the next LLM request.
+-2. **Raw traces** are original runtime activity evidence. Active and archived raw
+-   records remain the authority for what work occurred.
+-3. **Durable compacted output** is the validated, model-sized episode/semantic
+-   bundle produced by one successful native compaction.
+-4. **Compaction lineage** records a successful output bundle, its immediately
+-   preceding successful compaction, and its execution/prompt audit metadata.
+-5. **Readable presentation** renders conversation/tool evidence for LLM or human
+-   consumption without becoming a storage or provenance authority.
++- **WorkingContext** contains the finalized provider-neutral messages used for
++  the next parent request, including zero or one compacted-memory region.
++- **Raw traces** and their archives retain original activity evidence.
++- **Readable presentation** derives bounded model/human-facing copies without
++  rewriting canonical evidence.
+ 
+-The last valid record in `compaction_lineage.jsonl` is the sole current-compaction
+-head. `working_context_snapshot.json` owns finalized messages and message-local
+-constituent structure only. There is no mutable current pointer, compacted-memory
+-manifest, compaction-state file, or snapshot-level compaction identity.
++A native compaction now produces one validated Markdown summary body. Current
++continuation authority is `working_context_snapshot.json`, not an episodic or
++semantic bundle or a lineage head. Existing category and lineage files remain
++historical data; normal compaction and restore neither consult nor append them.
++There is no new manifest, compaction pointer, or compatibility strategy branch.
++External Codex/Claude provider sessions remain their own continuation authority.
+ 
+-External Codex and Claude runtimes remain storage-only memory producers. Their
+-provider-owned compaction boundaries may rotate raw traces, but do not create or
+-inject AutoByteus episode/semantic memory.
+-
+-## 2. Successful Native Compaction Spine
+-
+-A pending native compaction follows this ownership sequence:
+-
+-```text
+-PendingCompactionExecutor
+-  -> capture MemoryManager baseline (WorkingContext fingerprint + lineage head)
+-  -> resolve configured WorkingContextCompactionStrategy
+-  -> strategy.propose(detached WorkingContext)
+-  -> MemoryManager.prepareCompaction(baseline, ID-less proposal)
+-  -> framework validation of the finalized candidate
+-  -> MemoryManager.commitAcceptedCompaction(candidate)
+-       1. archive exactly the selected new raw traces as an independent command
+-       2. persist assigned episode/semantic rows
+-       3. append one lineage record as the new head
+-       4. install the finalized WorkingContext
+-       5. persist the schema-v5 message snapshot
+-       6. clear the pending operation
+-```
+-
+-The pending operation ID is reused as the successful `compactionId`. A strategy
+-supplies content, selected new raw IDs, retained messages, and execution metadata;
+-it does not assign durable IDs or write storage. `MemoryManager` assigns output
+-IDs, verifies that context and lineage baselines are unchanged, constructs the
+-complete accepted candidate, and owns publication. Raw archive filenames and
+-descriptors are archive-manager results; they are not accepted-candidate or
+-lineage fields.
+-
+-Failures before publication leave output, lineage, snapshot, and installed
+-context unchanged. A newly requested operation receives one automatic initial
+-attempt. Any final planning, runner, response-repair, validation, or commit
+-failure retains the same operation in `awaiting_user_retry`; only a distinct
+-user-origin turn can authorize another attempt. The publication sequence is
+-ordered and validated but is not crash-atomic across its multiple files; an
+-early archive or output side effect can remain when a later step fails. No
+-journal or unsupported recovery inference is implied.
+-
+-## 3. Strategy Contract And Selection
+-
+-Every strategy implements:
++## 2. Direct Compression Boundary
+ 
+ ```ts
+-interface WorkingContextCompactionStrategy {
+-  readonly id: string;
+-  readonly name: string;
+-  propose(workingContext: WorkingContext): Promise<WorkingContextCompactionProposal>;
++interface CompressionStrategy {
++  compress(content: string): Promise<string>;
+ }
+ ```
+ 
+-The construction context supplies run identity, the compaction-agent runner,
+-input budget, per-item bound, and diagnostics. It does not give a strategy the
+-memory store. The proposal is intentionally ID-less and storage-free.
+-
+-`WorkingContextCompactionStrategyRegistry` owns registration metadata and
+-factories. `WorkingContextCompactionStrategyResolver` resolves the process-global
+-`AUTOBYTEUS_COMPACTION_STRATEGY` for each pending operation. Blank or missing
+-values normalize to `structured-json`, the only production registration.
+-
+-The structured strategy uses the fixed built-in
+-`autobyteus-memory-compactor`. Blank runtime/model fields inherit the parent
+-run's launch values. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is not a runtime
+-selector, and no arbitrary-agent fallback is allowed.
+-
+-### Automatic-Compaction Composition And Leaf Runs
+-
+-`MemoryCompactionConfiguration` is the complete runtime composition owned by
+-memory. Its closed variants are `disabled`, with no policy or runner, and
+-`enabled`, with one `CompactionPolicy` plus the current strategy runner.
+-`AgentConfig` carries the composition into `AgentFactory`, which passes it to
+-`MemoryManager` without constructing another policy. Omitted direct core
+-construction defaults to the complete disabled variant.
+-
+-Server agent creation selects disabled for the exact built-in
+-`autobyteus-memory-compactor` on create and restore and does not call the
+-compaction-runner factory. Ordinary native definitions receive enabled
+-composition with a fresh current policy and required runner; runner composition
+-failure does not silently downgrade them to disabled.
+-
+-`LlmPhase` resolves provider/model request capacity for both variants. Enabled
+-runs then derive the compaction budget and use the existing policy, strategy,
+-executor, pending-operation, observation, and lifecycle path. Disabled runs
+-skip all of that automatic-compaction work at both proactive and hard-input-cap
+-pressure and return the original response/tool outcome. A provider-admissible
+-Memory Compactor task therefore runs once as a leaf; an oversized task fails
+-through planning/pre-launch or the typed runner boundary instead of rewriting
+-its own instruction/history recursively. This composition is process/runtime
+-state only and adds no persisted field or migration.
++`PendingCompactionExecutor` captures the live baseline, plans a detached message
++window, and builds the complete input **before** calling the strategy once.
++`CompactionContentBuilder` renders the selected natural conversation, including
++any prior compacted-memory region and new settled raw-backed units. Its plain
++START/END target-history separators enclose the renderer's XML history boundary.
++Private reasoning and backend call IDs are omitted; settled tool interactions
++retain readable names, arguments and result/error facts. Renderer boundary
++imitations are escaped.
++
++Derived input copies normalize CR/CRLF, remove non-useful C0 controls except
++newline/tab, replace lone UTF-16 surrogates, and preserve valid pairs and
++multilingual text. Surrogate-safe head/tail omission never mutates stored raw
++facts. Literal U+FFFD and valid emoji are not globally forbidden. A completed
++input-construction failure is typed `input_construction_failure` before any
++summary generation; it is not a reason to sanitize canonical history.
++
++`DirectLlmCompressionStrategy` owns the provider envelope and bounded generation:
++
++- each attempt creates an isolated LLM using current compaction model settings
++  (or the then-current parent model identifier when no model is selected);
++- it sets the bundled `COMPACTION_SUMMARY_PROMPT` and sends the prepared content
++  as the user message with no tools or child Agent/Team runtime;
++- provider capacity is checked before dispatch;
++- one `compress` execution has at most **three** generation attempts with
++  abortable 1s/2s backoffs; each provider call requests `single_attempt` transport
++  so SDK retries cannot multiply those attempts;
++- abort ends the operation rather than authorizing another attempt;
++- known incomplete output, provider errors and invalid summary content do not
++  become accepted memory; cleanup is bounded and cannot reverse a success;
++- it returns only the validated, untagged summary body.
++
++The parser accepts exactly one `<compaction_summary>...</compaction_summary>`
++block, ignores exterior prose, and requires these exact `##` headings in order:
++
++1. Goal and constraints
++2. Decisions and findings
++3. Completed work
++4. Current state
++5. Open work and next steps
++6. Essential references
++
++The body starts with the first heading. Each section must contain specific
++bullets or `(none)`; duplicate/missing/reordered headings or envelope markers
++inside the body fail validation. There is no six-array JSON schema, corrective
++child run, numeric word/bullet quota or prompt-level target-summary budget.
++Provider output caps and final WorkingContext fit checks still apply. Structural
++acceptance does not guarantee model factual fidelity or future continuation.
++
++The former structured-JSON strategy, registry/resolver, category normalization,
++child-agent runner and built-in Memory Compactor synchronization are removed
++from this path. Old `AUTOBYTEUS_COMPACTION_STRATEGY` and compactor-agent selector
++values are inert; old on-disk agent configuration is not imported or deleted.
++
++## 3. Composition, Planning And Thresholds
++
++`MemoryCompactionConfiguration` has closed `disabled` and `enabled` variants.
++Enabled composition carries one `CompactionPolicy` and a strategy factory with
++execution control; disabled has neither. Direct core construction defaults to
++disabled. The server composes native runs with the direct strategy. The generic
++LLM path always resolves request capacity; disabled runs skip automatic
++compaction, not provider capacity checks. No special compactor child exists.
+ 
+ ### Trigger-Aligned Planning Budget
+ 
+@@ -153,214 +128,121 @@ proactive suppression state. An existing pending operation always takes
+ precedence. This episode is runtime state and resets when the agent runtime is
+ restarted; it is not a persisted memory contract.
+ 
+-### Failed-Pending Attempt And Turn Admission
++## 4. Failure, Held Input And Retry Permission
++
++A pending operation receives one automatic initial execution. Exhausted
++failure retains that operation with a new failure epoch and exposes
++`Compaction failed — send a message to retry`. A later accepted **user-origin**
++message supplies one permit for that exact failed operation/epoch. Agent/system
++messages, same-turn continuations, queued input accepted before failure, and
++stale/duplicate permits are not retry authority. There is no background loop.
++
++For a pre-parent gate, accepted input A remains held with its identity, text and
++attachments; it has not been dispatched to the parent. A user message B accepted
++after the failure permits retry. Success resumes A before B, once each, with no
++resend required. Further failure keeps the recovery gate and advances the epoch;
++it does not turn queued B into future retry credit. Existing consumed reads,
++tool results and follow-up work must not be replayed. A failure after a visible
++final response is a **next-turn** gate, not a replay of the completed response.
++
++This is live in-memory queue ownership, not durable same-ID workflow replay or
++a promise to resume held input across backend restart. Standalone, Team and Org
++adapters project the same recovery facts; stream loss is not input authority.
++
++## 5. Accepted Replacement And Commit Point
++
++A successful replacement summarizes the prior compacted region plus a nonempty
++selected settled raw prefix, then retains the planned recent units. Framework
++validation checks required leading system messages, media, provenance,
++complete tool protocol, zero/one compacted-memory region and final fit. The
++strategy neither assigns persistent output IDs nor writes storage.
++
++Publication is owned by `MemoryManager` and `AcceptedCompactionCommitter`:
++
++1. Recheck operation/attempt identity and baseline fingerprint; copy and validate
++   the finalized context and serialize the complete snapshot.
++2. Prepare/copy and validate the selected raw archive while active evidence is
++   still intact; collect retained raw IDs and check cancellation.
++3. Atomically replace `working_context_snapshot.json` — the durable commit point.
++4. Install the already-owned context, clear the pending operation and set the
++   threshold episode without intervening validation, I/O or caller callbacks.
++5. Prune prepared active raw records afterwards. Prune failure is diagnostic:
++   active duplicates may remain, but committed success is not reclassified.
++
++Failure before snapshot replacement does not publish a new live context or
++summary. Prepared archive evidence can remain; no deletion of active evidence
++is required before the commit point. Completed/failed/stopped observations are
++terminal-latched; late output after cancellation cannot reopen or commit the
++operation. This is per-file atomic replacement, **not** multi-file transaction,
++whole-machine-power-loss durability, or a universal shutdown guarantee.
++
++## 6. Versionless Snapshot And Restore
++
++New snapshots write exactly:
+ 
+-Pending attempt authority is explicit:
+-
+-```text
+-initial_attempt_ready
+-  -> attempt_in_progress(automatic_initial)
+-  -> accepted commit and clear
+-  or awaiting_user_retry
+-       -> attempt_in_progress(user_retry) on a distinct user-origin turn
+-```
+-
+-Failure ends the current target-agent turn before further model dispatch and
+-does not schedule a background, same-turn, agent-authored, or system-authored
+-retry. Turn-start entries carry authoritative `user`, `agent`, or `system`
+-origin before input conversion. While the pending operation awaits user retry,
+-the scheduler may claim the earliest queued user entry even when non-user
+-entries precede it; those non-user entries remain queued in their relative FIFO
+-order. If the retry succeeds, the user message dispatches and normal FIFO
+-service resumes afterward. If it fails, the pending operation and non-user
+-entries remain in place.
+-
+-## 4. Recurrent Complete Replacement
+-
+-Structured compaction implements:
+-
+-```text
+-M(n) = compact(M(n-1) + R(n))
++```json
++{ "agent_id": "...", "messages": [] }
+ ```
+ 
+-`M(n-1)` is the output listed by the current lineage head. `R(n)` is a non-empty
+-set of newly selected, settled raw-backed WorkingContext units. Only `R(n)` is
+-archived for the new compaction; prior-memory ancestry is represented by
+-`previousCompactionId` and is never re-archived as new activity.
+-
+-The proposal is normalized to one complete replacement bundle with at least one
+-non-empty episode. The Memory Compactor chooses the natural number of episodes
+-and semantic facts needed for safe continuation. Parser, normalizer, acceptance,
+-lineage and current projection do not impose a total episode
+-or fact-count cap; per-entry text bounds, structural validation, cleanup,
+-deduplication, and positive salience still apply.
+-
+-The new lineage record lists exactly those assigned output IDs. Current
+-projection loads only that head's bundle, never a retrieval mix or concatenation
+-of earlier outputs. Older rows and lineage records remain immutable historical
+-derivations.
+-
+-## 5. WorkingContext Finalization
++The normal reader projects current known fields. Obsolete root `schema_version`
++and extra root fields have no admission meaning; current identity, message
++shapes, provenance, media and tool facts remain mandatory. A historic payload is
++not admitted merely because its root version is ignored. Zero or one compacted
++region is validated without opening category or lineage files.
+ 
+-`WorkingContext` contains ordered `Message` values and no durable compaction
+-state. `MemoryManager` is the sole live-context owner and exposes detached copies
+-to strategy code.
++Explicit existing-run restore requires a snapshot. Bootstrap decodes the safe
++current shape and identity, installs it for ordinary active-raw tool-protocol
++repair, then fully validates and saves the repaired current snapshot. It does
++not invoke compaction or regenerate a summary merely to reopen a run.
+ 
+-Before snapshot or provider rendering, `WorkingContextFinalizer` produces one
+-canonical provider-neutral context that preserves:
+-
+-- the complete leading system-message run;
+-- exactly one compacted-memory constituent when a lineage head exists;
+-- retained/current user content with explicit message-local constituent ranges;
+-- media payloads; and
+-- complete assistant tool-call/result protocol and provider-native tool context.
+-
+-Compatible user regions may be composed into one user message. The stored
+-provenance describes the structural ranges inside finalized messages; it does
+-not turn the snapshot into a memory-output or lineage authority.
+-
+-`WorkingContextCompactionOutputValidator` rejects aliased output, a changed
+-required system head, invalid message shapes, and incomplete or inconsistent tool
+-protocol before commit.
+-
+-## 6. Schema-V5 Snapshot And Restore
+-
+-Current snapshots have exactly these root fields:
+-
+-```json
+-{
+-  "schema_version": 5,
+-  "agent_id": "...",
+-  "messages": []
+-}
+-```
+-
+-Schema v5 persists finalized messages, media/tool structures, and message-local
+-provenance/constituent ranges. It contains no compaction ID, episode ID, semantic
+-ID, lineage object, epoch, last-compaction timestamp, or current-state field.
+-Unknown root fields, invalid structure, missing message provenance, and pre-v5
+-schemas fail strict validation.
+-
+-Restore rules are current-only:
+-
+-- a valid v5 snapshot is restored and checked against whether a lineage head
+-  exists;
+-- a lineage head requires a v5 snapshot with exactly one compacted-memory
+-  constituent;
+-- no lineage head permits no compacted-memory constituent;
+-- explicit existing-run restore requires a snapshot and fails when it is absent;
+-- new-run initialization is a separate product path that creates and persists
+-  its own current context; and
+-- archived raw traces are never replayed as current conversation activity.
+-
+-Tool-protocol repair runs before the next LLM request and during existing-run
+-snapshot bootstrap. Bootstrap first validates only the current schema-v5 root
+-envelope and agent identity, installs the parseable working context, repairs
+-missing native tool results, and then applies full structural/provenance
+-validation to the repaired snapshot. This ordering repairs the one approved
+-incomplete-protocol shape without treating unrelated current-format corruption
+-as compatible data.
+-
+-For each unmatched native call, `(turn_id, tool_call_id)` is the durable
+-identity. A matching committed raw `tool_result` is reused when present.
+-Otherwise `MemoryManager` first appends one canonical synthetic raw
+-`tool_result` carrying the original tool name/arguments, `tool_result: null`, a
+-deterministic non-empty `tool_error`, and a compound-identity recovery
+-correlation. It then rebuilds the provider-safe result message from raw facts
+-and atomically replaces the schema-v5 working-context snapshot. Repeated
+-bootstrap or repair therefore converges without duplicate terminal results and
+-never assumes that an abandoned tool succeeded.
++For each unmatched native tool call, `(turn_id, tool_call_id)` is the durable
++identity. A matching committed active-raw result is reused. Otherwise ordinary
++repair appends one canonical interrupted result and reconstructs its provider-
++safe message. Repeated repair converges; an abandoned tool is not assumed to
++have succeeded. Archived raw history is not replayed as new conversation work.
++New-run initialization remains a separate path.
+ 
+ The active JSONL reader preserves complete earlier records and truncates only a
+-malformed final physical record left by a partial append. A parse failure in any
+-earlier record remains an integrity error. Existing raw traces and schema-v5
+-snapshots are directly usable; repair appends a terminal fact and rewrites the
+-derived snapshot in the existing shapes, so no persisted-data migration is
+-required.
+-
+-## 7. Persisted Files And Current Authority
+-
+-Run-local native memory uses:
+-
+-- `raw_traces_active.jsonl` — active original raw activity;
+-- `raw_traces_manifest.json` — completed raw archive descriptors;
+-- `raw_traces_<zero-padded-index>.jsonl` — immutable raw archive files;
+-- `episodic.jsonl` — immutable compacted episode rows;
+-- `semantic.jsonl` — immutable compacted semantic rows;
+-- `compaction_lineage.jsonl` — append-only successful-compaction lineage; and
+-- `working_context_snapshot.json` — finalized schema-v5 messages.
+-
+-A lineage record contains schema version, explicit standalone/team-member scope,
+-`compactionId`, optional `previousCompactionId`, exact episode/semantic IDs,
+-derivation time, runtime / provider / model metadata, policy/prompt versions, and
+-optional integrity hashes. It does not copy raw IDs/content, an archive filename
+-or descriptor, prior memory, or rendered prompt content.
+-
+-Existing schema-v1 rows that include the former `rawTraceArchiveFile` extra field
+-remain directly readable. Recognized-field normalization ignores that stored
+-superset field without rewriting the append-only file, introducing a schema
+-branch, or using it as an output-to-raw origin link. New rows omit it.
+-
+-`selectionPolicyVersion` remains `1`. Prompt-contract values `1`, `2`, and `3`
+-are read directly, while every new accepted compaction writes
+-`promptContractVersion: 3` for the explicit target-agent framing and bounded
+-response-repair contract. Mixed immutable `1 -> 2 -> 3` chains are valid without
+-rewriting or decoding earlier records. Any other prompt-contract value is
+-rejected without mutating the append-only lineage file.
+-
+-## 8. Forward-Only Native Snapshot Migration
+-
+-Server startup migration `20260731_migrate_native_working_context_snapshots_v5`
+-replaces the superseded destructive reset. The server classifies exact native
+-standalone and team-member locations, derives the expected `runId` or
+-`memberRunId`, and runs the existing raw-trace rotation-layout and active-file-name
+-migrations before native conversion consumes current active facts.
+-
+-Eligibility is intentionally narrow:
+-
+-- a missing snapshot is a no-op;
+-- every nonempty `compaction_lineage.jsonl` location is skipped byte-for-byte
+-  before snapshot inspection or cleanup; and
+-- an absent or zero-byte lineage file permits conversion of historical v1/v3/v4
+-  or strict-v5 snapshot content.
+-
+-The pure migration converter is the only historical snapshot decoder. It retains
+-only logical units with truthful same-location active-raw backing, omits
+-unsupported, invalid, unsourced, old-compacted, and incomplete/ambiguous Tool
+-units, and may produce a valid metadata-identified `messages: []` snapshot when
+-nothing survives. A parseable identity conflict rejects the location without
+-mutation. The complete strict-v5 candidate is finalized and validated before
+-replacement; only then may the migration remove obsolete `episodic.jsonl`,
+-`semantic.jsonl`, and `compacted_memory_manifest.json`. Raw traces, raw manifests,
+-archives, and lineage are never created, rewritten, inferred, or deleted.
+-
+-Ordinary warning/failure results remain recorded and retryable, but the migration
+-runner returns them and server startup continues. Normal runtime restores strict
+-v5 only and has no pre-v5 reader or raw-history recovery projector. The first
+-successful compaction for a migrated absent/empty-lineage run uses
+-`previousCompactionId: null`.
+-
+-## 9. Lineage And Raw-Archive Independence
+-
+-Compaction lineage is the authority for the current successful output bundle and
+-its predecessor chain. Raw traces, archive manifests, and immutable rotated files
+-remain a separate evidence corpus owned by `RunMemoryFileStore` and
+-`RawTraceArchiveManager`; there is no supported direct or recursive
+-episode/semantic-to-raw origin resolver or server origin service.
+-
+-Before output publication, `archiveCompactedRawTraces(...)` validates and archives
+-the exact selected active raw IDs. Its stable operation identity is
+-`native_compaction_selection:<sha256>` where the digest is computed from the JSON
+-encoding of the sorted selected IDs. The archive manager alone chooses the
+-manifest descriptor and rotated filename. Completion is required before the
+-committer proceeds, but neither result is copied into lineage.
+-
+-Malformed or unsupported lineage, and missing or misordered rows named by the
+-current lineage head, remain integrity errors. `CurrentCompactionOutputLoader`
+-validates exact current episode/semantic membership and never opens or resolves
+-a raw archive.
+-
+-## 10. LLM Request Recovery Boundary
++malformed final physical record from a partial append. Earlier malformed records
++remain integrity errors; relaxing root-version handling does not relax raw facts.
++
++Anthropic native assistant-turn metadata remains private working context. Within
++an active tool cycle, ordered blocks including signed/redacted thinking replay
++with matching tool results. Before a new independent turn the request assembler
++removes earlier replayable thinking atomically while retaining text/tool-use/
++results. Compaction is deferred while continuation needs that signed history;
++accepted client-authored compaction removes stale thinking and validates protocol.
++Outward events must not project private metadata. This does not add a root
++snapshot version.
++
++## 7. Files And Frozen Historical Migration
++
++Current native writes use `working_context_snapshot.json`, active raw traces,
++`raw_traces_manifest.json` and immutable `raw_traces_<index>.jsonl` archives.
++`episodic.jsonl`, `semantic.jsonl` and `compaction_lineage.jsonl` are not current
++write/restore dependencies; existing files remain inspectable historical data.
++There is no new migration for the direct summary/versionless-writer cutover.
++
++The already-registered server migration
++`20260731_migrate_native_working_context_snapshots_v5` remains a historical
++converter with a **frozen migration-owned** codec, independent of the relaxed
++runtime reader. Exact native location/identity classification, missing-snapshot
++no-op and nonempty-lineage byte-preservation eligibility remain unchanged.
++Absent/empty-lineage historical v1/v3/v4/strict-v5 inputs use same-location active
++raw backing; unsupported/unsourced/old-compacted/incomplete units are omitted,
++and the frozen candidate is validated before replacement and obsolete category/
++manifest cleanup. Raw evidence and lineage are not rewritten by conversion.
++
++Before that conversion, an exact current versionless successor shape with the
++correct identity is preserved **whole-location byte-for-byte**, including valid
++pending tool intents, partial result batches and raw-ahead recovery states. This
++is a frozen shape guard, not request-ready full validation; normal bootstrap owns
++repair. Invalid versionless-current data fails per item without falling through
++to historical conversion-to-empty. Migration warnings/failures remain recorded
++and retryable while startup continues. Do not reset a successful migration ledger
++or invent another historical reader to force the cutover.
++
++## 8. LLM Request Recovery Boundary
+ 
+ `MemoryManager` exposes the named LLM request recovery API. The
+ `LLMRequestAssembler` first completes any pending compaction, then captures the
+@@ -380,89 +262,7 @@ durable. An accepted compaction is never rolled back. Every returned checkpoint
+ settles exactly once; recovery returns one diagnostic and does not retry or
+ select a fallback model.
+ 
+-## 11. Natural Compactor Conversation
+-
+-The built-in `autobyteus-memory-compactor` system prompt owns the stable
+-summarization instructions, natural episode/fact sizing guidance, and exact
+-six-array JSON response schema. The initial per-operation user message identifies
+-the input as the conversation history of the target agent, surrounds it with one
+-plain-text `START OF TARGET AGENT CONVERSATION HISTORY` /
+-`END OF TARGET AGENT CONVERSATION HISTORY` separator pair,
+-and contains exactly one renderer-produced
+-`<target_agent_conversation_history>...</target_agent_conversation_history>`
+-block. Nothing follows the end separator, and the initial message does not
+-duplicate the task, schema, size policy, token settings, or platform internals.
+-
+-The compactable logical prefix is rendered as one natural ordered conversation.
+-Before rendering, `WorkingContextFinalizer` composes the selected visible
+-messages into canonical turns. A prior compacted-memory region followed by
+-compatible retained/current user content therefore appears as one `User` turn,
+-not artificial adjacent user labels. Assistant and tool boundaries remain
+-ordered.
+-
+-The renderer omits private reasoning and backend call IDs. Each settled tool
+-interaction is one `Tool` body containing name, status, arguments, and exactly
+-one result or error section. Source text that could imitate the reserved
+-`target_agent_conversation_history` boundary is escaped.
+-
+-All rendered compaction values are derived provider-facing copies. They
+-normalize CR/CRLF to LF, remove non-useful C0 controls while preserving newline
+-and tab, replace a pre-existing lone UTF-16 surrogate with U+FFFD, and preserve
+-valid surrogate pairs, multilingual text, paths, code, symbols, and emoji.
+-Head/tail omission adjusts both slice boundaries so it never splits a valid
+-pair. Canonical raw traces, tool payloads, archives, and stored source values are
+-not rewritten or sanitized.
+-
+-The shared server input processor does not wrap messages in generic sender
+-headings. Authored content passes through unchanged when no readable context is
+-concatenated; when context is present, neutral `[Context]` and `[Message]`
+-sections delimit it without changing sender metadata or provider-native tool
+-protocol.
+-
+-Both the initial and corrective task messages are finalized and rechecked as
+-provider-safe text before child launch. Failure of that completed-prompt
+-invariant is typed as `input_construction_failure`: no child or correction run
+-starts, the target model is not dispatched, canonical memory is unchanged, and
+-the pending operation retains the ordinary user-authorized retry gate.
+-
+-The response parser extracts exact, fenced, and balanced JSON-object candidates,
+-validates every candidate against all six required arrays, and accepts exactly
+-one distinct host-consumed result with at least one non-empty episode. Harmless
+-extra fields and unusable blank/non-string entries are ignored; unrelated JSON
+-objects cannot mask a later valid object, while multiple distinct valid objects
+-are rejected as ambiguous.
+-
+-The compaction-agent boundary returns usable final output or a typed runner
+-failure. Error completions, interruption, terminal error, timeout, tool approval,
+-task rejection, launch failure, and collection failure keep their original
+-failure kind and available child run/task metadata; they do not become parser
+-input.
+-
+-Returned-content validation failure triggers exactly one corrective child run
+-under the same pending compaction operation. The correction prefix records the
+-closed validation stage, restates the six-array shape, and resends the same
+-selected target history. It has a new task/run identity and is a second disabled
+-sibling of the initial child, not a descendant; both remain tool-free and write
+-no child lineage/archive. Any additional or uninspectable new compactor run is
+-outside the bounded operation topology. A runner/provider/transport/timeout
+-failure is terminal for that execution attempt and bypasses the response-repair
+-boundary; the retained operation can run again only through the distinct
+-user-turn policy above.
+-
+-Repair success produces one parent completed lifecycle and reaches the existing
+-proposal/accept/commit boundary exactly once. Repair exhaustion produces one
+-parent failed lifecycle with both stages and available child run IDs, retains the
+-pending operation, and does not advance raw archives, output rows, lineage,
+-WorkingContext, or its snapshot.
+-
+-The compactor may choose any structurally valid natural output size with at least
+-one episode. Prompt rendering is not persisted as lineage evidence; the final
+-successful attempt's optional SHA-256 digest may support integrity/audit metadata
+-without copying content. Accepted episode/fact strings use the same
+-provider-safe end clamp, so later prompt projection cannot create a lone
+-surrogate at an entry-length boundary.
+-
+-## 12. Shared Readable Value And Tool Policy
++## 9. Shared Readable Value And Tool Policy
+ 
+ `ReadableValueRenderer` and `CondensedToolCallRenderer` are core-owned,
+ consumer-neutral presentation policies. They provide deterministic
+@@ -482,7 +282,7 @@ but keep separate sources and envelopes:
+ Work Evidence is derived and regenerable. Native compaction never reads its
+ Markdown or manifest as model input or provenance evidence.
+ 
+-## 13. Raw Traces, Event Monitor, And External Runtimes
++## 10. Raw Traces, Event Monitor, And External Runtimes
+ 
+ Raw traces remain original activity evidence. Successful native compaction may
+ move selected settled records from active storage to one completed archive
+@@ -518,73 +318,57 @@ while Activity may render it inside the same bounded active-file horizon.
+ 
+ Codex and Claude use server raw-trace-only memory recording. They share the
+ native raw-trace and rotation primitives but do not construct, load, or persist
+-an AutoByteus `WorkingContext` snapshot and do not execute AutoByteus semantic
+-working-context strategies. Provider thread/session state remains the
++an AutoByteus `WorkingContext` snapshot and do not execute AutoByteus direct
++working-context compaction. Provider thread/session state remains the
+ continuation authority. Provider/session compaction boundaries can append
+-provenance markers and rotate raw traces; they do not select the native
+-strategy, write episodic/semantic memory, resolve or inject AutoByteus compacted
++provenance markers and rotate raw traces; they do not run native
++compression, write episodic/semantic memory, resolve or inject AutoByteus compacted
+ memory, or change provider session state. The server owns the
+ metadata-classified, best-effort startup cleanup for pre-cutover external
+ snapshot copies. A separate exact-native startup migration converts eligible
+ absent/empty-lineage snapshots to strict v5 without making external snapshots or
+ imported corpora native continuation state.
+ 
+-## 14. Runtime Settings
++## 11. Runtime Settings And Provider Boundaries
+ 
+ | Setting | Meaning |
+ | --- | --- |
+-| `AUTOBYTEUS_COMPACTION_STRATEGY` | Process-global strategy ID resolved for each pending native compaction; blank defaults to `structured-json`. |
++| `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` | Optional JSON tuple `{modelIdentifier, llmConfig}`. Null model uses the then-current parent identifier; null config uses selected-model defaults. |
+ | `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO` | Optional post-response threshold ratio override. |
+ | `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` | Optional effective context budget override. |
+-| `AUTOBYTEUS_COMPACTION_DEBUG_LOGS` | Enables detailed compaction diagnostics. |
+-
+-Server settings validate the strategy against registry metadata and expose the
+-catalog and effective selection separately through GraphQL. Updates affect later
+-pending native operations in the current process; there is no multi-process or
+-external-provider-session convergence guarantee.
+-
+-## 15. Key Source Owners
+-
+-Core domain, acceptance, and publication:
+-
+-- `src/memory/memory-manager.ts`
+-- `src/memory/memory-manager-compaction-coordinator.ts`
++| `AUTOBYTEUS_COMPACTION_DEBUG_LOGS` | Detailed diagnostics. |
++
++Absent model settings select defaults without writing a setting. The server
++clones selected-model defaults and applies permitted generation overrides, then
++forces the approved system prompt, no stop sequences, controlled request fields
++and tool-free single-attempt transport. The hard output cap is a positive
++configured/default cap (fallback 8192), clamped to advertised model capacity.
++Credential-bearing and request-control values are not arbitrary model overrides.
++The active-context token override has an explicit public numeric-setting exception
++to server credential-name protection; the remaining credential checks stay in force. No parent LLM instance, tools,
++conversation state or parent retry policy is mutated.
++
++See [server memory ownership](../../autobyteus-server-ts/docs/modules/agent_memory.md),
++[settings](../../autobyteus-web/docs/settings.md#server-settings-working-context-compaction)
++and [frontend recovery/activity](../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity).
++
++## 12. Key Source Owners
++
++- `src/memory/compaction/compression-strategy.ts`
++- `src/memory/compaction/direct-llm-compression-strategy.ts`
++- `src/memory/compaction/compaction-content-builder.ts`
++- `src/memory/compaction/compaction-summary-prompt.ts`
++- `src/memory/compaction/compaction-summary-parser.ts`
+ - `src/memory/compaction/pending-compaction-executor.ts`
+-- `src/memory/compaction/working-context-compaction-proposal.ts`
+ - `src/memory/compaction/accepted-compaction-builder.ts`
+ - `src/memory/compaction/accepted-compaction-committer.ts`
+-- `src/memory/working-context-finalizer.ts`
+-- `src/memory/working-context-provenance.ts`
+-
+-Current strategy and presentation:
+-
+-- `src/memory/compaction/memory-compaction-configuration.ts`
+-- `src/memory/compaction/structured-json-compaction-strategy.ts`
+-- `src/memory/compaction/working-context-message-window-planner.ts`
+-- `src/memory/compaction/working-context-compaction-prompt-builder.ts`
+-- `src/memory/compaction/compaction-conversation-history-renderer.ts`
+-- `src/memory/presentation/readable-value-renderer.ts`
+-- `src/memory/presentation/condensed-tool-call-renderer.ts`
+-- `src/memory/presentation/unicode-safe-text.ts`
+-
+-Lineage, projection, and restore:
+-
+-- `src/memory/lineage/compaction-lineage-record.ts`
+-- `src/memory/store/file-compaction-lineage-store.ts`
+-- `src/memory/projection/current-compaction-output-loader.ts`
+-- `src/memory/projection/compacted-memory-context-projector.ts`
++- `src/memory/memory-manager-compaction-coordinator.ts`
++- `src/agent/compaction/compaction-recovery-controller.ts`
+ - `src/memory/working-context-snapshot-serializer.ts`
+ - `src/memory/restore/working-context-snapshot-bootstrapper.ts`
+-- `src/memory/migration/native-working-context-snapshot-v5-converter.ts`
+-- `src/memory/migration/native-working-context-snapshot-v5-conversion.ts`
+-- `src/memory/migration/native-working-context-snapshot-v5-omissions.ts`
+-
+-Server composition and transition:
+-
+-- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts`
+-- `autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts`
+-- `autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts`
+-- `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts`
+-- `autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts`
+-- `autobyteus-server-ts/src/server-runtime.ts`
+-- `autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-renderer.ts`
++- `src/memory/migration/native-working-context-snapshot-shapes.ts`
++- `src/memory/presentation/unicode-safe-text.ts`
++
++Server composition is in
++`autobyteus-server-ts/src/agent-execution/compaction/compaction-llm-factory.ts`;
++startup conversion and its ledger remain in `src/app-data-migrations/` there.
+diff --git a/autobyteus-ts/docs/agent_memory_design_nodejs.md b/autobyteus-ts/docs/agent_memory_design_nodejs.md
+index 5f25b0170..a2afb6483 100644
+--- a/autobyteus-ts/docs/agent_memory_design_nodejs.md
++++ b/autobyteus-ts/docs/agent_memory_design_nodejs.md
+@@ -1,601 +1,11 @@
+-# AutoByteus Agent Memory Design (Node.js/TypeScript)
++# AutoByteus Agent Memory Design (Node.js)
+ 
+-## 1. Purpose And Authority Boundaries
++The canonical TypeScript/Node.js memory architecture is maintained in
++[Agent Memory Design](./agent_memory_design.md). Use that document for direct
++compression, input recovery, snapshot publication/restore, frozen historical
++migration and provider-native metadata boundaries. This entry point intentionally
++does not duplicate the contract.
+ 
+-AutoByteus native memory separates five concerns:
+-
+-1. **WorkingContext** is the finalized, provider-neutral message sequence used to
+-   prepare the next LLM request.
+-2. **Raw traces** are original runtime activity evidence. Active and archived raw
+-   records remain the authority for what work occurred.
+-3. **Durable compacted output** is the validated, model-sized episode/semantic
+-   bundle produced by one successful native compaction.
+-4. **Compaction lineage** records a successful output bundle, its immediately
+-   preceding successful compaction, and its execution/prompt audit metadata.
+-5. **Readable presentation** renders conversation/tool evidence for LLM or human
+-   consumption without becoming a storage or provenance authority.
+-
+-The last valid record in `compaction_lineage.jsonl` is the sole current-compaction
+-head. `working_context_snapshot.json` owns finalized messages and message-local
+-constituent structure only. There is no mutable current pointer, compacted-memory
+-manifest, compaction-state file, or snapshot-level compaction identity.
+-
+-External Codex and Claude runtimes remain storage-only memory producers. Their
+-provider-owned compaction boundaries may rotate raw traces, but do not create or
+-inject AutoByteus episode/semantic memory.
+-
+-## 2. Successful Native Compaction Spine
+-
+-A pending native compaction follows this ownership sequence:
+-
+-```text
+-PendingCompactionExecutor
+-  -> capture MemoryManager baseline (WorkingContext fingerprint + lineage head)
+-  -> resolve configured WorkingContextCompactionStrategy
+-  -> strategy.propose(detached WorkingContext)
+-  -> MemoryManager.prepareCompaction(baseline, ID-less proposal)
+-  -> framework validation of the finalized candidate
+-  -> MemoryManager.commitAcceptedCompaction(candidate)
+-       1. archive exactly the selected new raw traces as an independent command
+-       2. persist assigned episode/semantic rows
+-       3. append one lineage record as the new head
+-       4. install the finalized WorkingContext
+-       5. persist the schema-v5 message snapshot
+-       6. clear the pending operation
+-```
+-
+-The pending operation ID is reused as the successful `compactionId`. A strategy
+-supplies content, selected new raw IDs, retained messages, and execution metadata;
+-it does not assign durable IDs or write storage. `MemoryManager` assigns output
+-IDs, verifies that context and lineage baselines are unchanged, constructs the
+-complete accepted candidate, and owns publication. Raw archive filenames and
+-descriptors are archive-manager results; they are not accepted-candidate or
+-lineage fields.
+-
+-Failures before publication leave output, lineage, snapshot, and installed
+-context unchanged. A newly requested operation receives one automatic initial
+-attempt. Any final planning, runner, response-repair, validation, or commit
+-failure retains the same operation in `awaiting_user_retry`; only a distinct
+-user-origin turn can authorize another attempt. The publication sequence is
+-ordered and validated but is not crash-atomic across its multiple files; an
+-early archive or output side effect can remain when a later step fails. No
+-journal or unsupported recovery inference is implied.
+-
+-## 3. Strategy Contract And Selection
+-
+-Every strategy implements:
+-
+-```ts
+-interface WorkingContextCompactionStrategy {
+-  readonly id: string;
+-  readonly name: string;
+-  propose(workingContext: WorkingContext): Promise<WorkingContextCompactionProposal>;
+-}
+-```
+-
+-The construction context supplies run identity, the compaction-agent runner,
+-input budget, per-item bound, and diagnostics. It does not give a strategy the
+-memory store. The proposal is intentionally ID-less and storage-free.
+-
+-`WorkingContextCompactionStrategyRegistry` owns registration metadata and
+-factories. `WorkingContextCompactionStrategyResolver` resolves the process-global
+-`AUTOBYTEUS_COMPACTION_STRATEGY` for each pending operation. Blank or missing
+-values normalize to `structured-json`, the only production registration.
+-
+-The structured strategy uses the fixed built-in
+-`autobyteus-memory-compactor`. Blank runtime/model fields inherit the parent
+-run's launch values. `AUTOBYTEUS_COMPACTION_AGENT_DEFINITION_ID` is not a runtime
+-selector, and no arbitrary-agent fallback is allowed.
+-
+-### Automatic-Compaction Composition And Leaf Runs
+-
+-`MemoryCompactionConfiguration` is the complete runtime composition owned by
+-memory. Its closed variants are `disabled`, with no policy or runner, and
+-`enabled`, with one `CompactionPolicy` plus the current strategy runner.
+-`AgentConfig` carries the composition into `AgentFactory`, which passes it to
+-`MemoryManager` without constructing another policy. Omitted direct core
+-construction defaults to the complete disabled variant.
+-
+-Server agent creation selects disabled for the exact built-in
+-`autobyteus-memory-compactor` on create and restore and does not call the
+-compaction-runner factory. Ordinary native definitions receive enabled
+-composition with a fresh current policy and required runner; runner composition
+-failure does not silently downgrade them to disabled.
+-
+-`LlmPhase` resolves provider/model request capacity for both variants. Enabled
+-runs then derive the compaction budget and use the existing policy, strategy,
+-executor, pending-operation, observation, and lifecycle path. Disabled runs
+-skip all of that automatic-compaction work at both proactive and hard-input-cap
+-pressure and return the original response/tool outcome. A provider-admissible
+-Memory Compactor task therefore runs once as a leaf; an oversized task fails
+-through planning/pre-launch or the typed runner boundary instead of rewriting
+-its own instruction/history recursively. This composition is process/runtime
+-state only and adds no persisted field or migration.
+-
+-### Trigger-Aligned Planning Budget
+-
+-Each threshold or hard-input-cap request captures one immutable planning budget
+-for the whole pending operation, including later user-authorized retries. For an
+-effective input budget `B` and trigger threshold `T`, planning derives:
+-
+-```text
+-quality retention cap = floor(0.35 * B)
+-trigger headroom       = max(256, ceil(0.10 * T))
+-post-compaction target = max(0, min(quality retention cap, T - trigger headroom))
+-replacement reserve   = min(8192, max(1024, floor(0.20 * target)))
+-```
+-
+-The message budget estimates the complete observed prompt rather than only the
+-stored WorkingContext. It accounts for required leading system messages, a
+-complete protected final tool-protocol group, observed-but-untracked overhead,
+-and the replacement-memory reserve before retaining the newest complete natural
+-units that fit. Planning fails closed with `target_unattainable` when those
+-mandatory costs meet or exceed the target, and with `no_compactable_prefix`
+-when no settled raw-backed prefix remains. Acceptance estimates the finalized
+-context again and rejects it when finalized context plus untracked overhead
+-exceeds the captured target.
+-
+-### Actual-Observation Threshold Episode
+-
+-Trigger decisions use the provider-normalized prompt tokens observed for a
+-completed LLM request. Missing usage or an explicitly missing prompt-token count
+-logs a skipped observation and does not mutate threshold state; numeric zero is
+-a genuine below-threshold observation.
+-
+-After one accepted compaction, the process-local threshold episode waits for an
+-actual prompt observation below the same threshold before rearming. The first
+-above-or-equal observation emits one inadequate-reduction diagnostic and moves
+-the episode into suppression; later above-or-equal observations remain
+-suppressed instead of requesting repeated successful compactions. A below-
+-threshold observation rearms the gate, a changed budget key starts a new
+-episode, and hard-input-cap pressure may request compaction regardless of the
+-proactive suppression state. An existing pending operation always takes
+-precedence. This episode is runtime state and resets when the agent runtime is
+-restarted; it is not a persisted memory contract.
+-
+-### Failed-Pending Attempt And Turn Admission
+-
+-Pending attempt authority is explicit:
+-
+-```text
+-initial_attempt_ready
+-  -> attempt_in_progress(automatic_initial)
+-  -> accepted commit and clear
+-  or awaiting_user_retry
+-       -> attempt_in_progress(user_retry) on a distinct user-origin turn
+-```
+-
+-Failure ends the current target-agent turn before further model dispatch and
+-does not schedule a background, same-turn, agent-authored, or system-authored
+-retry. Turn-start entries carry authoritative `user`, `agent`, or `system`
+-origin before input conversion. While the pending operation awaits user retry,
+-the scheduler may claim the earliest queued user entry even when non-user
+-entries precede it; those non-user entries remain queued in their relative FIFO
+-order. If the retry succeeds, the user message dispatches and normal FIFO
+-service resumes afterward. If it fails, the pending operation and non-user
+-entries remain in place.
+-
+-## 4. Recurrent Complete Replacement
+-
+-Structured compaction implements:
+-
+-```text
+-M(n) = compact(M(n-1) + R(n))
+-```
+-
+-`M(n-1)` is the output listed by the current lineage head. `R(n)` is a non-empty
+-set of newly selected, settled raw-backed WorkingContext units. Only `R(n)` is
+-archived for the new compaction; prior-memory ancestry is represented by
+-`previousCompactionId` and is never re-archived as new activity.
+-
+-The proposal is normalized to one complete replacement bundle with at least one
+-non-empty episode. The Memory Compactor chooses the natural number of episodes
+-and semantic facts needed for safe continuation. Parser, normalizer, acceptance,
+-lineage and current projection do not impose a total episode
+-or fact-count cap; per-entry text bounds, structural validation, cleanup,
+-deduplication, and positive salience still apply.
+-
+-The new lineage record lists exactly those assigned output IDs. Current
+-projection loads only that head's bundle, never a retrieval mix or concatenation
+-of earlier outputs. Older rows and lineage records remain immutable historical
+-derivations.
+-
+-## 5. WorkingContext Finalization
+-
+-`WorkingContext` contains ordered `Message` values and no durable compaction
+-state. `MemoryManager` is the sole live-context owner and exposes detached copies
+-to strategy code.
+-
+-Before snapshot or provider rendering, `WorkingContextFinalizer` produces one
+-canonical provider-neutral context that preserves:
+-
+-- the complete leading system-message run;
+-- exactly one compacted-memory constituent when a lineage head exists;
+-- retained/current user content with explicit message-local constituent ranges;
+-- media payloads; and
+-- complete assistant tool-call/result protocol and provider-native tool context.
+-
+-Compatible user regions may be composed into one user message. The stored
+-provenance describes the structural ranges inside finalized messages; it does
+-not turn the snapshot into a memory-output or lineage authority.
+-
+-`WorkingContextCompactionOutputValidator` rejects aliased output, a changed
+-required system head, invalid message shapes, and incomplete or inconsistent tool
+-protocol before commit.
+-
+-## 6. Schema-V5 Snapshot And Restore
+-
+-Current snapshots have exactly these root fields:
+-
+-```json
+-{
+-  "schema_version": 5,
+-  "agent_id": "...",
+-  "messages": []
+-}
+-```
+-
+-Schema v5 persists finalized messages, media/tool structures, and message-local
+-provenance/constituent ranges. It contains no compaction ID, episode ID, semantic
+-ID, lineage object, epoch, last-compaction timestamp, or current-state field.
+-Unknown root fields, invalid structure, missing message provenance, and pre-v5
+-schemas fail strict validation.
+-
+-Restore rules are current-only:
+-
+-- a valid v5 snapshot is restored and checked against whether a lineage head
+-  exists;
+-- a lineage head requires a v5 snapshot with exactly one compacted-memory
+-  constituent;
+-- no lineage head permits no compacted-memory constituent;
+-- explicit existing-run restore requires a snapshot and fails when it is absent;
+-- new-run initialization is a separate product path that creates and persists
+-  its own current context; and
+-- archived raw traces are never replayed as current conversation activity.
+-
+-Tool-protocol repair runs before the next LLM request and during existing-run
+-snapshot bootstrap. Bootstrap first validates only the current schema-v5 root
+-envelope and agent identity, installs the parseable working context, repairs
+-missing native tool results, and then applies full structural/provenance
+-validation to the repaired snapshot. This ordering repairs the one approved
+-incomplete-protocol shape without treating unrelated current-format corruption
+-as compatible data.
+-
+-Anthropic Opus 5.5 native assistant-turn metadata is optional on existing v5
+-messages; it does not change the snapshot version. During one active tool cycle,
+-the ordered assistant blocks, including signed/redacted thinking, remain
+-private in working context and replay with matching tool results. Before a new
+-independent turn, the request assembler removes *all* earlier replayable
+-Anthropic thinking blocks atomically while retaining text, tool-use and tool
+-results. Compaction is deferred while a tool continuation needs signed history;
+-an accepted client-authored compaction also removes stale thinking and validates
+-the remaining tool protocol. Outward events must not project this private
+-metadata.
+-
+-For each unmatched native call, `(turn_id, tool_call_id)` is the durable
+-identity. A matching committed raw `tool_result` is reused when present.
+-Otherwise `MemoryManager` first appends one canonical synthetic raw
+-`tool_result` carrying the original tool name/arguments, `tool_result: null`, a
+-deterministic non-empty `tool_error`, and a compound-identity recovery
+-correlation. It then rebuilds the provider-safe result message from raw facts
+-and atomically replaces the schema-v5 working-context snapshot. Repeated
+-bootstrap or repair therefore converges without duplicate terminal results and
+-never assumes that an abandoned tool succeeded.
+-
+-The active JSONL reader preserves complete earlier records and truncates only a
+-malformed final physical record left by a partial append. A parse failure in any
+-earlier record remains an integrity error. Existing raw traces and schema-v5
+-snapshots are directly usable; repair appends a terminal fact and rewrites the
+-derived snapshot in the existing shapes, so no persisted-data migration is
+-required.
+-
+-## 7. Persisted Files And Current Authority
+-
+-Run-local native memory uses:
+-
+-- `raw_traces_active.jsonl` — active original raw activity;
+-- `raw_traces_manifest.json` — completed raw archive descriptors;
+-- `raw_traces_<zero-padded-index>.jsonl` — immutable raw archive files;
+-- `episodic.jsonl` — immutable compacted episode rows;
+-- `semantic.jsonl` — immutable compacted semantic rows;
+-- `compaction_lineage.jsonl` — append-only successful-compaction lineage; and
+-- `working_context_snapshot.json` — finalized schema-v5 messages.
+-
+-A lineage record contains schema version, explicit standalone/team-member scope,
+-`compactionId`, optional `previousCompactionId`, exact episode/semantic IDs,
+-derivation time, runtime / provider / model metadata, policy/prompt versions, and
+-optional integrity hashes. It does not copy raw IDs/content, an archive filename
+-or descriptor, prior memory, or rendered prompt content.
+-
+-Existing schema-v1 rows that include the former `rawTraceArchiveFile` extra field
+-remain directly readable. Recognized-field normalization ignores that stored
+-superset field without rewriting the append-only file, introducing a schema
+-branch, or using it as an output-to-raw origin link. New rows omit it.
+-
+-`selectionPolicyVersion` remains `1`. Prompt-contract values `1`, `2`, and `3`
+-are read directly, while every new accepted compaction writes
+-`promptContractVersion: 3` for the explicit target-agent framing and bounded
+-response-repair contract. Mixed immutable `1 -> 2 -> 3` chains are valid without
+-rewriting or decoding earlier records. Any other prompt-contract value is
+-rejected without mutating the append-only lineage file.
+-
+-## 8. Forward-Only Native Snapshot Migration
+-
+-Server startup migration `20260731_migrate_native_working_context_snapshots_v5`
+-replaces the superseded destructive reset. The server classifies exact native
+-standalone and team-member locations, derives the expected `runId` or
+-`memberRunId`, and runs the existing raw-trace rotation-layout and active-file-name
+-migrations before native conversion consumes current active facts.
+-
+-Eligibility is intentionally narrow:
+-
+-- a missing snapshot is a no-op;
+-- every nonempty `compaction_lineage.jsonl` location is skipped byte-for-byte
+-  before snapshot inspection or cleanup; and
+-- an absent or zero-byte lineage file permits conversion of historical v1/v3/v4
+-  or strict-v5 snapshot content.
+-
+-The pure migration converter is the only historical snapshot decoder. It retains
+-only logical units with truthful same-location active-raw backing, omits
+-unsupported, invalid, unsourced, old-compacted, and incomplete/ambiguous Tool
+-units, and may produce a valid metadata-identified `messages: []` snapshot when
+-nothing survives. A parseable identity conflict rejects the location without
+-mutation. The complete strict-v5 candidate is finalized and validated before
+-replacement; only then may the migration remove obsolete `episodic.jsonl`,
+-`semantic.jsonl`, and `compacted_memory_manifest.json`. Raw traces, raw manifests,
+-archives, and lineage are never created, rewritten, inferred, or deleted.
+-
+-Ordinary warning/failure results remain recorded and retryable, but the migration
+-runner returns them and server startup continues. Normal runtime restores strict
+-v5 only and has no pre-v5 reader or raw-history recovery projector. The first
+-successful compaction for a migrated absent/empty-lineage run uses
+-`previousCompactionId: null`.
+-
+-## 9. Lineage And Raw-Archive Independence
+-
+-Compaction lineage is the authority for the current successful output bundle and
+-its predecessor chain. Raw traces, archive manifests, and immutable rotated files
+-remain a separate evidence corpus owned by `RunMemoryFileStore` and
+-`RawTraceArchiveManager`; there is no supported direct or recursive
+-episode/semantic-to-raw origin resolver or server origin service.
+-
+-Before output publication, `archiveCompactedRawTraces(...)` validates and archives
+-the exact selected active raw IDs. Its stable operation identity is
+-`native_compaction_selection:<sha256>` where the digest is computed from the JSON
+-encoding of the sorted selected IDs. The archive manager alone chooses the
+-manifest descriptor and rotated filename. Completion is required before the
+-committer proceeds, but neither result is copied into lineage.
+-
+-Malformed or unsupported lineage, and missing or misordered rows named by the
+-current lineage head, remain integrity errors. `CurrentCompactionOutputLoader`
+-validates exact current episode/semantic membership and never opens or resolves
+-a raw archive.
+-
+-## 10. LLM Request Recovery Boundary
+-
+-`MemoryManager` exposes the named LLM request recovery API. The
+-`LLMRequestAssembler` first completes any pending compaction, then captures the
+-stable post-compaction checkpoint immediately before request-specific context
+-mutation and returns it in `RequestPackage`:
+-
+-1. an assembly failure after capture restores locally;
+-2. a provider/stream failure restores through `LlmPhase`; and
+-3. normal final output, real Tool ingestion, and supported retained interruption
+-   release the exact captured checkpoint without restore.
+-
+-The recovery snapshot is limited to active working context and compaction
+-state. Restore persists the recovered working-context snapshot and appends a
+-correlated `llm_request_recovery` raw trace with the request id, reason, and
+-source event. Raw traces and tool facts committed before the request remain
+-durable. An accepted compaction is never rolled back. Every returned checkpoint
+-settles exactly once; recovery returns one diagnostic and does not retry or
+-select a fallback model.
+-
+-## 11. Natural Compactor Conversation
+-
+-The built-in `autobyteus-memory-compactor` system prompt owns the stable
+-summarization instructions, natural episode/fact sizing guidance, and exact
+-six-array JSON response schema. The initial per-operation user message identifies
+-the input as the conversation history of the target agent, surrounds it with one
+-plain-text `START OF TARGET AGENT CONVERSATION HISTORY` /
+-`END OF TARGET AGENT CONVERSATION HISTORY` separator pair,
+-and contains exactly one renderer-produced
+-`<target_agent_conversation_history>...</target_agent_conversation_history>`
+-block. Nothing follows the end separator, and the initial message does not
+-duplicate the task, schema, size policy, token settings, or platform internals.
+-
+-The compactable logical prefix is rendered as one natural ordered conversation.
+-Before rendering, `WorkingContextFinalizer` composes the selected visible
+-messages into canonical turns. A prior compacted-memory region followed by
+-compatible retained/current user content therefore appears as one `User` turn,
+-not artificial adjacent user labels. Assistant and tool boundaries remain
+-ordered.
+-
+-The renderer omits private reasoning and backend call IDs. Each settled tool
+-interaction is one `Tool` body containing name, status, arguments, and exactly
+-one result or error section. Source text that could imitate the reserved
+-`target_agent_conversation_history` boundary is escaped.
+-
+-All rendered compaction values are derived provider-facing copies. They
+-normalize CR/CRLF to LF, remove non-useful C0 controls while preserving newline
+-and tab, replace a pre-existing lone UTF-16 surrogate with U+FFFD, and preserve
+-valid surrogate pairs, multilingual text, paths, code, symbols, and emoji.
+-Head/tail omission adjusts both slice boundaries so it never splits a valid
+-pair. Canonical raw traces, tool payloads, archives, and stored source values are
+-not rewritten or sanitized.
+-
+-The shared server input processor does not wrap messages in generic sender
+-headings. Authored content passes through unchanged when no readable context is
+-concatenated; when context is present, neutral `[Context]` and `[Message]`
+-sections delimit it without changing sender metadata or provider-native tool
+-protocol.
+-
+-Both the initial and corrective task messages are finalized and rechecked as
+-provider-safe text before child launch. Failure of that completed-prompt
+-invariant is typed as `input_construction_failure`: no child or correction run
+-starts, the target model is not dispatched, canonical memory is unchanged, and
+-the pending operation retains the ordinary user-authorized retry gate.
+-
+-The response parser extracts exact, fenced, and balanced JSON-object candidates,
+-validates every candidate against all six required arrays, and accepts exactly
+-one distinct host-consumed result with at least one non-empty episode. Harmless
+-extra fields and unusable blank/non-string entries are ignored; unrelated JSON
+-objects cannot mask a later valid object, while multiple distinct valid objects
+-are rejected as ambiguous.
+-
+-The compaction-agent boundary returns usable final output or a typed runner
+-failure. Error completions, interruption, terminal error, timeout, tool approval,
+-task rejection, launch failure, and collection failure keep their original
+-failure kind and available child run/task metadata; they do not become parser
+-input.
+-
+-Returned-content validation failure triggers exactly one corrective child run
+-under the same pending compaction operation. The correction prefix records the
+-closed validation stage, restates the six-array shape, and resends the same
+-selected target history. It has a new task/run identity and is a second disabled
+-sibling of the initial child, not a descendant; both remain tool-free and write
+-no child lineage/archive. Any additional or uninspectable new compactor run is
+-outside the bounded operation topology. A runner/provider/transport/timeout
+-failure is terminal for that execution attempt and bypasses the response-repair
+-boundary; the retained operation can run again only through the distinct
+-user-turn policy above.
+-
+-Repair success produces one parent completed lifecycle and reaches the existing
+-proposal/accept/commit boundary exactly once. Repair exhaustion produces one
+-parent failed lifecycle with both stages and available child run IDs, retains the
+-pending operation, and does not advance raw archives, output rows, lineage,
+-WorkingContext, or its snapshot.
+-
+-The compactor may choose any structurally valid natural output size with at least
+-one episode. Prompt rendering is not persisted as lineage evidence; the final
+-successful attempt's optional SHA-256 digest may support integrity/audit metadata
+-without copying content. Accepted episode/fact strings use the same
+-provider-safe end clamp, so later prompt projection cannot create a lone
+-surrogate at an entry-length boundary.
+-
+-## 12. Shared Readable Value And Tool Policy
+-
+-`ReadableValueRenderer` and `CondensedToolCallRenderer` are core-owned,
+-consumer-neutral presentation policies. They provide deterministic
+-serialization, secret/backend-field redaction, and explicit head/tail omission
+-with an omitted-character count. `ProviderSafeCompactionText` owns the shared
+-derived-copy Unicode invariant and surrogate-safe slice/end-truncation
+-boundaries. The policy never mutates the canonical input value.
+-
+-Native compaction and generated Work Evidence reuse this value/tool body policy
+-but keep separate sources and envelopes:
+-
+-- compaction renders selected WorkingContext units with its smaller bound,
+-  target-agent separators, and XML boundary; and
+-- Work Evidence renders canonical raw-backed historical events with timestamps,
+-  Markdown files/manifests, and a 20,000-character per-value bound.
+-
+-Work Evidence is derived and regenerable. Native compaction never reads its
+-Markdown or manifest as model input or provenance evidence.
+-
+-## 13. Raw Traces, Event Monitor, And External Runtimes
+-
+-Raw traces remain original activity evidence. Successful native compaction may
+-move selected settled records from active storage to one completed archive
+-without changing their identity/content.
+-
+-The exact AutoByteus-owned instruction string supplied to a runtime is recorded
+-as a run-scoped `system_instruction` raw trace. Its persisted schema is closed
+-to exactly `id`, `ts`, `trace_type: "system_instruction"`, `content`, and
+-`source_event: "SYSTEM_INSTRUCTIONS_SUPPLIED"`; it deliberately has no
+-`turn_id` or `seq`. Native capture happens only after the final prompt has been
+-successfully configured, including the terminal configured-skills catalog.
+-Server adapters apply the same storage contract to the exact Claude SDK
+-`options.systemPrompt` and Codex thread `baseInstructions` handoff strings.
+-Provider-owned hidden or subsequently effective context is not observable and
+-must not be reconstructed or labeled as captured.
+-
+-`recordSystemInstructionSupply(...)` compares the new content with the latest
+-valid active system-instruction row. Exact equality reuses that row without a
+-new write or live fact; changed content appends a new row. This is active-file
+-folding, not a historical backfill, retry ledger, or definition lookup. Existing
+-runs remain directly readable: absence means the instructions were not
+-recorded, and malformed system-instruction rows are omitted rather than coerced
+-into turn traces.
+-
+-Event Monitor and normal active-history paging remain active-raw views; archived
+-records are accessed only by evidence projection or explicit inspection paths.
+-System-instruction rows participate in physical rotation with the active raw
+-evidence preceding a native compaction boundary, but they are never selected as
+-turn-scoped compaction input. Once rotated, they honestly disappear from normal
+-Activity hydration; explicit raw-trace archive inspection remains available.
+-Event Monitor conversation/count/cursor policy excludes the run-scoped row,
+-while Activity may render it inside the same bounded active-file horizon.
+-
+-Codex and Claude use server raw-trace-only memory recording. They share the
+-native raw-trace and rotation primitives but do not construct, load, or persist
+-an AutoByteus `WorkingContext` snapshot and do not execute AutoByteus semantic
+-working-context strategies. Provider thread/session state remains the
+-continuation authority. Provider/session compaction boundaries can append
+-provenance markers and rotate raw traces; they do not select the native
+-strategy, write episodic/semantic memory, resolve or inject AutoByteus compacted
+-memory, or change provider session state. The server owns the
+-metadata-classified, best-effort startup cleanup for pre-cutover external
+-snapshot copies. A separate exact-native startup migration converts eligible
+-absent/empty-lineage snapshots to strict v5 without making external snapshots or
+-imported corpora native continuation state.
+-
+-## 14. Runtime Settings
+-
+-| Setting | Meaning |
+-| --- | --- |
+-| `AUTOBYTEUS_COMPACTION_STRATEGY` | Process-global strategy ID resolved for each pending native compaction; blank defaults to `structured-json`. |
+-| `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO` | Optional post-response threshold ratio override. |
+-| `AUTOBYTEUS_ACTIVE_CONTEXT_TOKENS_OVERRIDE` | Optional effective context budget override. |
+-| `AUTOBYTEUS_COMPACTION_DEBUG_LOGS` | Enables detailed compaction diagnostics. |
+-
+-Server settings validate the strategy against registry metadata and expose the
+-catalog and effective selection separately through GraphQL. Updates affect later
+-pending native operations in the current process; there is no multi-process or
+-external-provider-session convergence guarantee.
+-
+-## 15. Key Source Owners
+-
+-Core domain, acceptance, and publication:
+-
+-- `src/memory/memory-manager.ts`
+-- `src/memory/memory-manager-compaction-coordinator.ts`
+-- `src/memory/compaction/pending-compaction-executor.ts`
+-- `src/memory/compaction/working-context-compaction-proposal.ts`
+-- `src/memory/compaction/accepted-compaction-builder.ts`
+-- `src/memory/compaction/accepted-compaction-committer.ts`
+-- `src/memory/working-context-finalizer.ts`
+-- `src/memory/working-context-provenance.ts`
+-
+-Current strategy and presentation:
+-
+-- `src/memory/compaction/memory-compaction-configuration.ts`
+-- `src/memory/compaction/structured-json-compaction-strategy.ts`
+-- `src/memory/compaction/working-context-message-window-planner.ts`
+-- `src/memory/compaction/working-context-compaction-prompt-builder.ts`
+-- `src/memory/compaction/compaction-conversation-history-renderer.ts`
+-- `src/memory/presentation/readable-value-renderer.ts`
+-- `src/memory/presentation/condensed-tool-call-renderer.ts`
+-- `src/memory/presentation/unicode-safe-text.ts`
+-
+-Lineage, projection, and restore:
+-
+-- `src/memory/lineage/compaction-lineage-record.ts`
+-- `src/memory/store/file-compaction-lineage-store.ts`
+-- `src/memory/projection/current-compaction-output-loader.ts`
+-- `src/memory/projection/compacted-memory-context-projector.ts`
+-- `src/memory/working-context-snapshot-serializer.ts`
+-- `src/memory/restore/working-context-snapshot-bootstrapper.ts`
+-- `src/memory/migration/native-working-context-snapshot-v5-converter.ts`
+-- `src/memory/migration/native-working-context-snapshot-v5-conversion.ts`
+-- `src/memory/migration/native-working-context-snapshot-v5-omissions.ts`
+-
+-Server composition and transition:
+-
+-- `autobyteus-server-ts/src/agent-execution/backends/autobyteus/compaction-lineage-scope-resolver.ts`
+-- `autobyteus-server-ts/src/agent-memory/services/runtime-memory-location-classifier.ts`
+-- `autobyteus-server-ts/src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5-migration.ts`
+-- `autobyteus-server-ts/src/app-data-migrations/app-data-migration-registry.ts`
+-- `autobyteus-server-ts/src/app-data-migrations/app-data-migration-runner.ts`
+-- `autobyteus-server-ts/src/server-runtime.ts`
+-- `autobyteus-server-ts/src/agent-work-traces/services/agent-work-trace-renderer.ts`
++The former structured-JSON child-agent/category/lineage design is not the current
++runtime. Existing historical files are preserved; see the canonical document for
++the distinction between normal runtime reads and historical startup conversion.
+diff --git a/autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md b/autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md
+index 0fc2d840d..714512f92 100644
+--- a/autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md
++++ b/autobyteus-ts/docs/agent_runtime_loop_and_interrupt.md
+@@ -102,15 +102,16 @@ always agent-origin; `UserMessageReceivedEvent` uses its `SenderType.USER`,
+ external turn-start origin. `AgentTurn` retains the resolved origin through LLM
+ request assembly and compaction attempt authorization.
+ 
+-When memory has a failed pending compaction in `awaiting_user_retry`, the
+-compaction retry admission policy makes only user-origin turn starts
+-dispatchable. The scheduler selects the earliest matching user entry without
+-claiming or moving earlier agent/system entries. A distinct user turn authorizes
+-one pending retry before that user's message is appended or dispatched to the
+-model. Success allows the user turn to continue and ordinary FIFO service to
+-resume; failure ends that turn and leaves both the pending operation and the
+-deferred non-user entries intact. This is an in-memory scheduling gate, not a
+-persistent deferred-message store.
++When compaction exhausts its bounded direct-generation attempts, it retains the
++pending operation with a fresh failure epoch. A later accepted user-origin input
++may grant one exact retry permit; agent/system input, stale/duplicate permits and
++input queued before failure cannot. At a pre-parent gate input A remains held
++with its identity/content/attachments. After B grants recovery, success resumes A
++before B once each. Exhaustion retains the gate; B is not future retry credit.
++After-visible-final-response failure gates the next turn rather than replaying
++completed work. This is in-memory admission, not a durable deferred-message
++store or same-ID workflow across backend restart. See
++[Memory Design](./agent_memory_design.md#4-failure-held-input-and-retry-permission).
+ 
+ `AgentRuntime.submitEvent(...)` rejects unsupported operational events instead
+ of hiding them in the lifecycle queue. Tool approval decisions are not
+@@ -150,13 +151,11 @@ uses these collaborators:
+     inter-agent input when structured `reference_files` are present.
+ - `LlmPhase`
+   - assembles memory-backed LLM requests;
+-  - executes an authorized pending compaction before appending the new turn's
+-    user message, and treats final compaction failure as a fail-closed turn
+-    result rather than dispatching the target model;
+-  - treats completed compaction-prompt Unicode validation failure as typed
+-    `input_construction_failure` before any child launch or correction; the
+-    target dispatch remains stopped and the pending operation keeps its
+-    user-authorized retry gate;
++  - executes an authorized pending compaction before parent dispatch; pre-parent
++    input remains held rather than being silently consumed on final failure;
++  - constructs and validates provider-safe compaction input before generation;
++    `input_construction_failure` makes no summary call, blocks parent dispatch
++    and retains the user-authorized recovery gate;
+   - reads one complete memory-owned automatic-compaction configuration:
+     enabled runs retain request-capacity resolution plus the existing
+     policy/strategy/executor/observation path, while disabled leaf runs resolve
+diff --git a/autobyteus-ts/docs/llm_module_design.md b/autobyteus-ts/docs/llm_module_design.md
+index 1ec4e96c9..130cb5d36 100644
+--- a/autobyteus-ts/docs/llm_module_design.md
++++ b/autobyteus-ts/docs/llm_module_design.md
+@@ -391,9 +391,11 @@ OpenAI-compatible caller:
+ - Non-local / cloud OpenAI-compatible providers keep default SDK transport
+   behavior unless a separate review explicitly widens that policy.
+ 
+-This hardening still matters to compaction when the selected visible compactor
+-agent uses a local model and sends a large request before the next parent-agent
+-LLM leg is allowed to continue.
++This hardening also applies when direct compaction selects an isolated local LLM
++and sends a large request before the next parent leg. Compaction calls additionally
++request `single_attempt` transport so their maximum three strategy-owned attempts
++are not multiplied by SDK retries. This compaction-specific control does not
++change ordinary parent request retry policy; there is no visible compactor agent.
+ 
+ ## 6.2 Provider-Native Tool-Call History Rendering
+ 
+diff --git a/autobyteus-web/docs/agent_execution_architecture.md b/autobyteus-web/docs/agent_execution_architecture.md
+index d9900a310..676b7e306 100644
+--- a/autobyteus-web/docs/agent_execution_architecture.md
++++ b/autobyteus-web/docs/agent_execution_architecture.md
+@@ -594,33 +594,22 @@ for a socket close or a later history reload to infer that transition.
+ 
+ ### Compaction Lifecycle Activity And Center Feed
+ 
+-Native AutoByteus memory compaction status is projected as Activity lifecycle
+-state first. The right-side Activity panel should retain the full compaction
+-operation identity and phase progression, including requested/queued,
+-execution, terminal success/failure, timestamps, and surrounding tool-result
+-detail. That lifecycle row is diagnostic/runtime feedback; it must not become
+-LLM-facing text and must not replace the backend memory artifact contract.
+-
+-The center conversation feed is narrower. Requested/queued compaction phases are
+-internal scheduling states and stay out of the center feed so a pending
+-tool-call turn is not split before tool results arrive. The first
+-center-eligible execution phase for a compaction operation marks the current
+-frontend assistant visual block complete, allowing the `Memory compacted` row to
+-appear after the tool-call/result block and before the post-compaction assistant
+-continuation. Completed/failed execution rows may be shown in the center feed;
+-requested/queued rows must not.
+-
+-Historical run reopen uses the backend replay bundle as the display source for
+-actual user, assistant, reasoning, and tool trace content. Normal Event Monitor
+-projection reads only the active raw-trace file, reconstructs its lifecycle
+-evidence, and selects its newest 100 canonical replay events; it does not open
+-archived raw-trace segments. Native compaction projection cards are
+-intentionally live-only center feedback in this slice: reopened historical
+-conversations should replay that active-file recent window and should not
+-synthesize center compaction cards from compaction lifecycle/status entries.
+-Archived segments and manifests remain unchanged and directly usable by their
+-own storage lifecycle. The Event Monitor never pages into those archives; its
+-explicit earlier-browsing path is bounded to the current active trace.
++Native compaction projects one Activity row per operation with requested/start
++and terminal completed/failed/stopped phases, timestamps and diagnostic facts.
++It is runtime feedback, not LLM-facing text or a replacement memory artifact.
++Requested/queued phases stay out of the center feed so pending tool protocol is
++not split; execution starts a new visual boundary after the preceding tool
++block. Terminal rows may remain visible, with failure details or neutral Stopped
++presentation as appropriate.
++
++Historical conversation content is sourced from the backend replay bundle. Event
++Monitor reads the active-raw recent window (newest 100 canonical replay events)
++and does not page archives. Hydration may retain uncovered terminal native
++Activity already loaded in memory under guarded replacement; it must not invent
++native compaction cards on cold reopen from Offline or latest status alone.
++Provider compaction-boundary traces remain their separate durable evidence family.
++See [Run-Level Compaction Activity](#run-level-compaction-activity) for identity,
++termination, retention and recovery rules.
+ 
+ ### System Instruction Activity
+ 
+@@ -1447,7 +1436,7 @@ Incoming events are routed based on their `type`:
+ | `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
+ | `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
+ | `TEAM_RUN_LIFECYCLE`      | `teamHandler.handleTeamRunLifecycle`                | Validates `team_run_id` and updates only root `AgentTeamContext.isActive`; subscription and exact member status remain independent. |
+-| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
++| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`, `stopped`). |
+ | `SYSTEM_INSTRUCTIONS_SUPPLIED` | `systemInstructionActivityHandler.handleSystemInstructionsSupplied` | Upserts one completed `kind: 'system_instruction'` Activity row by raw trace ID without mutating conversation, Event Monitor, or lifecycle. |
+ | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
+ | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
+@@ -1649,18 +1638,37 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
+ 
+ ### Run-Level Compaction Activity
+ 
+-Compaction lifecycle state keeps the latest status on `AgentRunState`, but the
+-visible history is projected through `AgentActivityStore` as `CompactionActivity`
+-rows.
+-
+-- Backend/runtime phases are `requested`, `started`, `completed`, and `failed`; provider-native statuses such as `compacting` and `compacted` are normalized by `compactionActivityProjection.ts`.
+-- `handleCompactionStatus` delegates to the compaction projection, stores the latest status on `context.state.compactionStatus`, and upserts a `kind: 'compaction'` activity row.
+-- AutoByteus semantic compaction uses backend-owned `compaction_operation_id` as the parent Activity identity across deferred lifecycle states. A request may be queued on one turn and executed on a later turn; `requested_turn_id` and `execution_turn_id` are lifecycle metadata, while child `compaction_run_id` and `compaction_task_id` enrich the same row instead of replacing its identity.
+-- Provider-native compaction boundaries remain a separate identity family from AutoByteus semantic compaction operations, so provider boundary keys/operation ids do not collide with backend-owned semantic `compaction_operation_id` rows.
+-- `AgentEventMonitor` receives an explicit run identity from single-agent, focused team-member, and mobile chat shells, sources compaction activities by that `state.runId`, and passes them to `AgentConversationFeed`, which renders `CompactionStatusRow` inside the scrollable event feed. This avoids using display conversation ids such as `teamRunId::routeKey` as activity-store keys.
+-- Frontend compaction rows animate the arrow-path/sync icon only for the active `started` phase using motion-safe animation classes; queued, completed, and failed states stay visually still.
+-- Historical/reopen compaction rows come from durable run projection activity entries, including available `provider_compaction_boundary` traces and AutoByteus semantic compaction events carrying stable operation identity; the frontend does not fabricate rows from latest status alone.
+-- Failure details stay visible in compaction rows, while detailed token-budget numbers remain in server/runtime logs instead of a live frontend debug panel.
++`AgentRunState` holds latest status; `AgentActivityStore` holds operation rows.
++
++- The shared `compactionPhase` contract has `requested`, `started`, `completed`,
++  `failed`, `stopped`. Native operation identity is `compaction_operation_id`;
++  requested/execution turn IDs and isolated LLM invocation metadata enrich it.
++  There is no child compactor run/task identity in the direct strategy.
++- Provider-native boundary identities remain separate. Run-scoped Activity keys
++  use actual run IDs, not display conversation IDs or parsed Team route strings.
++- Only `started` animates. `stopped` is neutral/static; known completed/failed
++  outcomes and accumulated diagnostic facts are retained, not reclassified.
++- A confirmed terminate action reconciles only unresolved native operations for
++  the exact captured context/service/generation/node/member identities. Team/Org
++  reconciliation covers all loaded retained members of the root, not just the
++  selected member. Retired/replaced contexts and failed commands cannot mutate
++  successors. Org retires its stream before the mutation and reconciles success
++  before historical marking/inspection refresh; it cannot depend on a late event.
++- Backend terminal latching/pump drain and client reconciliation are complementary.
++  A late summary cannot resurrect a stopped row or produce a false completion.
++- Projection replacement is revision-guarded and atomic within the Activity store.
++  It preserves uncovered terminal native rows already held in memory and applies
++  the existing bounded 100-item window. This is not durable native cold replay.
++  Cold readers must not synthesize a native compaction event from Offline.
++- Failure uses backend recovery facts to display `Compaction failed — send a
++  message to retry`. Accepted A held before parent dispatch keeps its content,
++  identity and attachments. Later user B can permit the exact failed epoch;
++  successful recovery dispatches A then B once each. Stale permits, agent/system
++  input and input queued before failure are not retry authority. A failure after
++  visible final output gates the next turn, without replaying consumed work.
++- Queue ownership is live-runtime only; no same-ID replay across backend restart,
++  universal model success or immediate preparation/shutdown latency is promised.
++  Detailed budget figures remain runtime diagnostics, not a live debug panel.
+ 
+ ---
+ 
+diff --git a/autobyteus-web/docs/memory.md b/autobyteus-web/docs/memory.md
+index 13c0758a3..28e812996 100644
+--- a/autobyteus-web/docs/memory.md
++++ b/autobyteus-web/docs/memory.md
+@@ -21,6 +21,19 @@ navigates immediately and issues exactly one data request for the target view;
+ detail views show `Loading runs…` until their own data arrives and never show a
+ previous selection's runs.
+ 
++## Current Native Compaction And Historical Categories
++
++Current native compaction stores a six-section Markdown summary inside Working
++Context, whose versionless snapshot is the continuation authority. It does not
++append new Episodic/Semantic records or depend on a lineage head. Existing category
++files remain historical inspection data; an empty category tab is not evidence
++that current compaction failed. Raw traces/archives remain original work evidence.
++Normal reopen uses snapshot decode, active-raw tool repair, validation and save;
++it does not generate another summary. Imported memory remains an inspection
++corpus, not automatic native continuation state.
++
++See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md).
++
+ ## Memory Home
+ 
+ Memory Home starts directly with the functional browser panel rather than a repeated page title. It has three tabs:
+diff --git a/autobyteus-web/docs/settings.md b/autobyteus-web/docs/settings.md
+index ef93f0b32..d16e38b7e 100644
+--- a/autobyteus-web/docs/settings.md
++++ b/autobyteus-web/docs/settings.md
+@@ -110,35 +110,36 @@ contracts.
+ 
+ ## Server Settings: Working-Context Compaction
+ 
+-Settings -> Server Settings -> Basics contains the global Compaction card. Its
+-strategy selector is registry-backed and node-bound:
+-
+-- `getWorkingContextCompactionStrategies` supplies available `{ id, name }`
+-  options from the bound server;
+-- `getEffectiveWorkingContextCompactionStrategyId` supplies the normalized ID
+-  runtime will attempt and is the card's clean baseline; and
+-- generic server settings supply trigger ratio, active-context token override,
+-  and detailed-log values.
+-
+-Absent or blank strategy configuration is returned as effective
+-`structured-json` without writing that default merely because the card loaded or
+-another field was saved. An explicit unknown ID remains visible as unavailable
+-until the user selects a catalog option. Catalog or effective-read failures keep
+-strategy selection unavailable and expose Retry rather than guessing from a web
+-constant or catalog order.
+-
+-Save builds a deterministic list of changed valid fields and awaits the existing
+-one-setting mutation for each key. It stops on the first failure; prior successful
+-writes remain authoritative, while the failed and unsent drafts stay dirty for a
+-remaining-only retry. The card never claims transactionality or whole-card
+-success after a partial failure. Initial settings-read failure is owned by the
+-Server Settings manager and also provides an accessible Retry path.
+-
+-The Compaction card does not fetch agent definitions or expose a compactor-agent
+-selector. `structured-json` uses the server's fixed built-in Memory Compactor and
+-inherits its blank runtime/model launch fields from the parent run. The card
+-stacks navigation/content and uses full-width controls on narrow screens while
+-retaining the desktop sidebar row.
++Settings -> Server Settings -> Basics contains the node-bound Compaction card:
++
++- optional model selection and generation configuration are one persisted JSON
++  tuple, `AUTOBYTEUS_COMPACTION_MODEL_SETTINGS` (`modelIdentifier`, `llmConfig`);
++- null/missing model means the then-current parent model identifier; null config
++  means selected-model defaults, not a copy of the parent's mutable LLM instance;
++- trigger ratio, active-context token override and detailed logs remain separate
++  existing settings.
++
++Reading an absent tuple or saving unrelated controls does not materialize model
++settings. Editing/saving or clearing model selection is explicit. Model/config
++validation follows the bound server catalog; stale node responses must not
++replace current drafts. A failed initial settings read exposes Retry rather than
++claiming a clean usable configuration.
++
++Save sends changed valid fields sequentially through the existing per-setting
++mutation, stopping on the first failure. Prior successful writes remain saved;
++failed/unsent fields stay dirty for remaining-only retry. This is not a transaction
++across all controls. The model/config pair is saved as a single setting value.
++
++There is no strategy or compactor-agent selector. The server creates a fresh
++isolated tool-free LLM for each direct summary attempt and enforces its prompt,
++output cap and request controls; credential-bearing values are not accepted as
++arbitrary model overrides. The active-context token override has an explicit
++public numeric-setting exception; other credential-name checks stay in force.
++Old strategy settings and old Memory Compactor files are not imported/deleted.
++The card retains full-width controls and stacked navigation on narrow screens.
++
++See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md) for
++summary format, retry ownership and current storage boundaries.
+ 
+ ## Server Migrations: Status Evidence
+ 
+@@ -607,33 +608,10 @@ for a socket close or a later history reload to infer that transition.
+ 
+ ### Compaction Lifecycle Activity And Center Feed
+ 
+-Native AutoByteus memory compaction status is projected as Activity lifecycle
+-state first. The right-side Activity panel should retain the full compaction
+-operation identity and phase progression, including requested/queued,
+-execution, terminal success/failure, timestamps, and surrounding tool-result
+-detail. That lifecycle row is diagnostic/runtime feedback; it must not become
+-LLM-facing text and must not replace the backend memory artifact contract.
+-
+-The center conversation feed is narrower. Requested/queued compaction phases are
+-internal scheduling states and stay out of the center feed so a pending
+-tool-call turn is not split before tool results arrive. The first
+-center-eligible execution phase for a compaction operation marks the current
+-frontend assistant visual block complete, allowing the `Memory compacted` row to
+-appear after the tool-call/result block and before the post-compaction assistant
+-continuation. Completed/failed execution rows may be shown in the center feed;
+-requested/queued rows must not.
+-
+-Historical run reopen uses the backend replay bundle as the display source for
+-actual user, assistant, reasoning, and tool trace content. Normal Event Monitor
+-projection reads only the active raw-trace file, reconstructs its lifecycle
+-evidence, and selects its newest 100 canonical replay events; it does not open
+-archived raw-trace segments. Native compaction projection cards are
+-intentionally live-only center feedback in this slice: reopened historical
+-conversations should replay that active-file recent window and should not
+-synthesize center compaction cards from compaction lifecycle/status entries.
+-Archived segments and manifests remain unchanged and directly usable by their
+-own storage lifecycle. The Event Monitor never pages into those archives; its
+-explicit earlier-browsing path is bounded to the current active trace.
++See the canonical [execution architecture](./agent_execution_architecture.md#compaction-lifecycle-activity-and-center-feed)
++for Activity versus center-feed phases, active-raw history windows, and bounded
++retention of already-loaded native terminal rows. These rows are not LLM input
++or durable native cold-replay evidence.
+ 
+ Native AutoByteus memory ingestion persists every non-empty completed reasoning
+ value as a distinct replay-authoritative `reasoning` raw trace immediately
+@@ -1390,7 +1368,7 @@ Incoming events are routed based on their `type`:
+ | `AGENT_STATUS`            | `agentStatusHandler.handleAgentStatus`             | Updates run/member status (`offline`, `initializing`, `idle`, `running`, or `error`) and backend-owned `can_interrupt`; no legacy transition-field names. Team payloads with explicit task-agent or task-team identity update the transient task execution projection and remove it after terminal cleanup; projection routing must not depend on generated run-id patterns or structural team names alone. |
+ | `AGENT_COMMAND_ACK`       | command-specific correlation before generic dispatch | Handles the discriminated `SEND_MESSAGE` and `INTERRUPT_GENERATION` arms separately. Send acknowledgements preserve their status/error behavior. Interrupt acknowledgements must match command id plus exact standalone/team-member target; accepted only clears pending correlation, while rejected/failed invoke one store-owned localized toast without lifecycle or transcript mutation. |
+ | `TEAM_RUN_LIFECYCLE`      | `teamHandler.handleTeamRunLifecycle`                | Validates `team_run_id` and updates only root `AgentTeamContext.isActive`; subscription and exact member status remain independent. |
+-| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`). |
++| `COMPACTION_STATUS`       | `agentStatusHandler.handleCompactionStatus`        | Normalizes compaction lifecycle payloads into latest run state plus `kind: 'compaction'` activity rows (`requested`, `started`, `completed`, `failed`, `stopped`). |
+ | `ASSISTANT_COMPLETE`      | `agentStatusHandler.handleAssistantComplete`       | Legacy completion signal that still marks the current AI message complete. |
+ | `ERROR`                   | `agentStatusHandler.handleError`                   | Surfaces unrecoverable agent/runtime errors into the conversation and terminalizes still-open tool-like rows as errors. |
+ | `TOOL_APPROVAL_REQUESTED` | `toolLifecycleHandler.handleToolApprovalRequested` | Sets segment status to `awaiting-approval`; task-agent approval payloads retain concrete task-agent run id and logical member route/path, while task-team scoped approvals retain task-team run id plus relative child selector for card-level approve/deny routing. |
+@@ -1558,18 +1536,10 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
+ 
+ ### Run-Level Compaction Activity
+ 
+-Compaction lifecycle state keeps the latest status on `AgentRunState`, but the
+-visible history is projected through `AgentActivityStore` as `CompactionActivity`
+-rows.
+-
+-- Backend/runtime phases are `requested`, `started`, `completed`, and `failed`; provider-native statuses such as `compacting` and `compacted` are normalized by `compactionActivityProjection.ts`.
+-- `handleCompactionStatus` delegates to the compaction projection, stores the latest status on `context.state.compactionStatus`, and upserts a `kind: 'compaction'` activity row.
+-- AutoByteus semantic compaction uses backend-owned `compaction_operation_id` as the parent Activity identity across deferred lifecycle states. A request may be queued on one turn and executed on a later turn; `requested_turn_id` and `execution_turn_id` are lifecycle metadata, while child `compaction_run_id` and `compaction_task_id` enrich the same row instead of replacing its identity.
+-- Provider-native compaction boundaries remain a separate identity family from AutoByteus semantic compaction operations, so provider boundary keys/operation ids do not collide with backend-owned semantic `compaction_operation_id` rows.
+-- `AgentEventMonitor` receives an explicit run identity from single-agent, focused team-member, and mobile chat shells, sources compaction activities by that `state.runId`, and passes them to `AgentConversationFeed`, which renders `CompactionStatusRow` inside the scrollable event feed. This avoids using display conversation ids such as `teamRunId::routeKey` as activity-store keys.
+-- Frontend compaction rows animate the arrow-path/sync icon only for the active `started` phase using motion-safe animation classes; queued, completed, and failed states stay visually still.
+-- Historical/reopen compaction rows come from durable run projection activity entries, including available `provider_compaction_boundary` traces and AutoByteus semantic compaction events carrying stable operation identity; the frontend does not fabricate rows from latest status alone.
+-- Failure details stay visible in compaction rows, while detailed token-budget numbers remain in server/runtime logs instead of a live frontend debug panel.
++The canonical [execution/activity contract](./agent_execution_architecture.md#run-level-compaction-activity)
++covers requested/started/completed/failed/stopped phases, held-input recovery,
++identity-scoped termination and retained terminal rows. Native retained in-memory
++activity is not durable native cold replay; provider-boundary rows remain separate.
+ 
+ ---
+ 

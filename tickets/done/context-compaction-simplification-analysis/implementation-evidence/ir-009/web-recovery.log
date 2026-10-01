@@ -1,0 +1,26 @@
+
+> autobyteus@1.4.92-beta.5 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 8 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+stderr | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (12 tests) 15ms
+
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+   Start at  13:41:31
+   Duration  6.91s (transform 4.01s, setup 6.14s, collect 164ms, tests 15ms, environment 210ms, prepare 153ms)
+

@@ -1,0 +1,50 @@
+
+> autobyteus@1.4.92-beta.4 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+> cross-env NUXT_TEST=true vitest services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts services/runSubmission/__tests__/localUserSubmission.spec.ts components/conversation/__tests__/UserMessage.spec.ts components/agentInput/__tests__/AgentUserInputTextArea.spec.ts --run
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Browserslist: browsers data (caniuse-lite) is 7 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+
+ RUN  v3.2.4 /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web
+
+stderr | components/conversation/__tests__/UserMessage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/runSubmission/__tests__/localUserSubmission.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | services/runSubmission/__tests__/localUserSubmission.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/agentInput/__tests__/AgentUserInputTextArea.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/__tests__/UserMessage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/runSubmission/__tests__/localUserSubmission.spec.ts (6 tests) 6ms
+ ✓ components/conversation/__tests__/UserMessage.spec.ts (5 tests) 22ms
+ ✓ services/agentStreaming/handlers/__tests__/agentInputStateHandler.spec.ts (3 tests) 8ms
+ ✓ components/agentInput/__tests__/AgentUserInputTextArea.spec.ts (16 tests) 109ms
+
+ Test Files  4 passed (4)
+      Tests  30 passed (30)
+   Start at  21:24:41
+   Duration  6.14s (transform 3.19s, setup 21.66s, collect 176ms, tests 145ms, environment 906ms, prepare 547ms)
+

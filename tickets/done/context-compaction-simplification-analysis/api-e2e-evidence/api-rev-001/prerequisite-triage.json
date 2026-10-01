@@ -1,0 +1,16 @@
+{
+  "base": "046279298f53fb98d7688ee9dc2b2ba0fa827685",
+  "head": "c948605e2aa5e9dac77b69819eb8f366226c4112",
+  "wrapperUnchangedAtBase": true,
+  "wrapperSource": "export const wrapProductAgentBackendForLiveE2e = (\n  backend: AgentRunBackend,\n): LiveE2eAgentBackend => new AgentRun({\n  context: backend.getContext(),\n  backend,\n});",
+  "agentRunFileUnchangedAtBase": true,
+  "agentRunSha256": "56c1eefda5d2180a6b04f3b74077c0db40be0cc029eab2603df0ecb887f25f9a",
+  "currentScenarioCallSites": [
+    540,
+    671
+  ],
+  "currentFailure": "AgentRun provider input normalizer is required.",
+  "productionCompositionReference": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts:138-167 constructs and injects AgentRunProviderInputNormalizer; no reason to weaken the domain guard",
+  "upstreamBaseTestEvidence": "code-review-evidence/residual-comparison.json; baseline-residuals.log (not rerun by API/E2E)",
+  "interpretation": "Inherited test-support wiring failure, not a demonstrated regression in compaction source. Both configured live compaction scenarios reach the same wrapper after backend creation. Unit setup mocks throw before this boundary. Recommend API/E2E-owned Local Fix, subject to focused Code Reviewer confirmation."
+}

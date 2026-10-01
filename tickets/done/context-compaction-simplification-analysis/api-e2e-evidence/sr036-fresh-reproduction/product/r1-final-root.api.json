@@ -1,0 +1,88 @@
+{
+  "at": "2026-10-01T14:48:01.921155+00:00",
+  "endpoint": "http://127.0.0.1:63335/graphql",
+  "request": {
+    "query": "query{agentRunCollaboration(runId:\"daily_assistant_f1b315041c244c00aac39dd26022c568\")}",
+    "variables": {}
+  },
+  "response": {
+    "data": {
+      "agentRunCollaboration": {
+        "root_subject_kind": "agent",
+        "root_run_id": "daily_assistant_f1b315041c244c00aac39dd26022c568",
+        "root_agent": {
+          "base_change_sequence": 0,
+          "is_active": false,
+          "execution_tree": {
+            "subjectKind": "agent",
+            "createdAt": "2026-10-01T14:38:38.148Z",
+            "host": {
+              "address": "/daily_assistant",
+              "agentRunId": "daily_assistant_f1b315041c244c00aac39dd26022c568",
+              "agentDefinitionId": "autobyteus-daily-assistant"
+            },
+            "collaborators": [
+              {
+                "kind": "agent",
+                "address": "/sr036_reviewer",
+                "agentDefinitionId": "sr036-reviewer",
+                "agentRunId": "sr036_reviewer_3ee01bb1ba754b4187da48b0383d4311",
+                "platformAgentRunId": null,
+                "launchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "sr036-deterministic-32768:lmstudio@127.0.0.1:63405",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf/server-data/temp_workspace"
+                },
+                "addedAt": "2026-10-01T14:39:06.267Z",
+                "addedViaAgentRunId": "daily_assistant_f1b315041c244c00aac39dd26022c568"
+              },
+              {
+                "kind": "agent_team",
+                "address": "/sr036_team",
+                "teamDefinitionId": "sr036-team",
+                "teamRunId": "sr036_team_77ef0209929342edacac8b3af89d6ee7",
+                "coordinatorAddress": "/sr036_team/lead",
+                "members": [
+                  {
+                    "address": "/sr036_team/lead",
+                    "agentDefinitionId": "sr036-lead",
+                    "agentRunId": "sr036_lead_e0dc13a1482d46f6a7ffef3e7792bc2f",
+                    "platformAgentRunId": null
+                  },
+                  {
+                    "address": "/sr036_team/peer",
+                    "agentDefinitionId": "sr036-peer",
+                    "agentRunId": "sr036_peer_34c444b8de2240228312706f9fa29626",
+                    "platformAgentRunId": null
+                  }
+                ],
+                "handoffs": [],
+                "defaultLaunchConfiguration": {
+                  "runtimeKind": "autobyteus",
+                  "llmModelIdentifier": "sr036-deterministic-32768:lmstudio@127.0.0.1:63405",
+                  "llmConfig": null,
+                  "autoExecuteTools": true,
+                  "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-EuLKwf/server-data/temp_workspace"
+                },
+                "taskExecutions": [],
+                "addedAt": "2026-10-01T14:39:06.267Z",
+                "addedViaAgentRunId": "daily_assistant_f1b315041c244c00aac39dd26022c568"
+              }
+            ],
+            "taskExecutions": []
+          },
+          "communication_messages": {
+            "schemaVersion": 1,
+            "subjectKind": "agent",
+            "hostRunId": "daily_assistant_f1b315041c244c00aac39dd26022c568",
+            "messages": []
+          },
+          "agent_statuses": [],
+          "agent_input_states": []
+        }
+      }
+    }
+  }
+}

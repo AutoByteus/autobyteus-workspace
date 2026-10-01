@@ -1,0 +1,24 @@
+{
+  "content": [
+    {
+      "type": "text",
+      "text": "{\"handoffs\":[{\"when\":\"When the architecture review passes and the cumulative reviewed architecture package is ready for implementation.\",\"recipient_address\":\"/implementation_engineer\"},{\"when\":\"When the architecture review is Fail or Blocked with a Design Impact, Requirement Gap, or Unclear finding that requires architecture revision or upstream requirements clarification before implementation.\",\"recipient_address\":\"/solution_designer\"},{\"when\":\"When architecture review passes and Solution Designer needs the informational pass notification after the primary implementation handoff succeeds.\",\"recipient_address\":\"/solution_designer\"}]}"
+    }
+  ],
+  "structuredContent": {
+    "handoffs": [
+      {
+        "when": "When the architecture review passes and the cumulative reviewed architecture package is ready for implementation.",
+        "recipient_address": "/implementation_engineer"
+      },
+      {
+        "when": "When the architecture review is Fail or Blocked with a Design Impact, Requirement Gap, or Unclear finding that requires architecture revision or upstream requirements clarification before implementation.",
+        "recipient_address": "/solution_designer"
+      },
+      {
+        "when": "When architecture review passes and Solution Designer needs the informational pass notification after the primary implementation handoff succeeds.",
+        "recipient_address": "/solution_designer"
+      }
+    ]
+  }
+}

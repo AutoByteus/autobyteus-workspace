@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-01T06:36:19.441Z",
+  "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "argv": [
+    "env",
+    "CHROME_REMOTE_DEBUGGING_PORT=58629",
+    "BROWSER_AUTOMATION_ATTACH_ONLY=1",
+    "bash",
+    "/Users/normy/autobyteus_org/autobyteus-skills/browser-automation/scripts/browser",
+    "run-script",
+    "--tab-id",
+    "1469900218F0745D8971D3503A116153",
+    "--script",
+    "() => {\n if (window.__api7Observer) return {alreadyInstalled:true,timeOrigin:performance.timeOrigin};\n const events=[]; const record=x=>{if(events.length<6000)events.push({at:Date.now(),...x});};\n const fetchOriginal=window.fetch;\n window.fetch=async function(...args) {\n  const url=String(args[0]?.url||args[0]); const body=args[1]?.body;\n  record({kind:'http_request',url,body:typeof body==='string'?body:null});\n  const response=await fetchOriginal.apply(this,args);\n  response.clone().text().then(body=>record({kind:'http_response',url,status:response.status,body})).catch(e=>record({kind:'http_capture_error',message:String(e)}));\n  return response;\n };\n const OriginalSocket=window.WebSocket;\n window.WebSocket=class extends OriginalSocket {\n   constructor(...args){super(...args);const url=String(args[0]);record({kind:'ws_construct',url});\n    this.addEventListener('open',()=>record({kind:'ws_open',url}));\n    this.addEventListener('message',event=>record({kind:'ws_message',url,data:event.data}));\n    this.addEventListener('close',event=>record({kind:'ws_close',url,code:event.code}));\n   }\n   send(data){record({kind:'ws_send',url:this.url,data});return super.send(data);}\n };\n window.__api7Observer={events,marker:crypto.randomUUID(),timeOrigin:performance.timeOrigin};\n return {installed:true,marker:window.__api7Observer.marker,timeOrigin:performance.timeOrigin,href:location.href};\n}"
+  ]
+}

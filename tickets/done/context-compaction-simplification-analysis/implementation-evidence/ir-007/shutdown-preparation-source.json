@@ -1,0 +1,14 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/domain/agent-run.ts",
+    "current_sha256": "d59d91d46b8806c6704e0b255c6d922f52c245d4dcac277e0c43316ea6c071f8",
+    "head_sha256": "d59d91d46b8806c6704e0b255c6d922f52c245d4dcac277e0c43316ea6c071f8",
+    "same_as_HEAD": true
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/services/agent-run-manager.ts",
+    "current_sha256": "b99107838194b016cf432dccebc6ecc8f6f5159536e9b015061e13cb786d7409",
+    "head_sha256": "b99107838194b016cf432dccebc6ecc8f6f5159536e9b015061e13cb786d7409",
+    "same_as_HEAD": true
+  }
+]

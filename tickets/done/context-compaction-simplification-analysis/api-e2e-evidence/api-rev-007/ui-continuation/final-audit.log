@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-01T06:58:28.961838+00:00",
+  "head": "6908ccff483f1eca522caa65bfaaf6dcfcc26750",
+  "branch": "codex/context-compaction-simplification-analysis",
+  "pinned": 2124,
+  "missing": [],
+  "changed": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-coverage-investigation.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-execution-coverage-report.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-revision-record.md",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/in-progress/context-compaction-simplification-analysis/api-e2e-test-case-ledger.md"
+  ],
+  "onlyFourOwnedCanonicalChanges": true,
+  "all11ApiDurableUnchanged": true
+}

@@ -1,0 +1,22 @@
+{
+  "before": [
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-0Ji4GX",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-PzrKy0",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-VM29Bc",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-XGn5we",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-ZGDVoA",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-ezSl89"
+  ],
+  "after": [
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-0Ji4GX",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-PzrKy0",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-VM29Bc",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-XGn5we",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-ZGDVoA",
+    "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/server-recovery-ezSl89"
+  ],
+  "new_remaining": [],
+  "guard_stale_link_before_absent": true,
+  "guard_stale_link_after_absent": true,
+  "scope": "Only enumerated test-owned temporary prefixes, not cleanup of unrelated directories."
+}
