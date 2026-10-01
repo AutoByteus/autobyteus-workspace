@@ -88,20 +88,24 @@ const configuredTeam = z.object({
 const handoff = z.object({ from: agentAddressSchema, to: agentAddressSchema, rules: z.array(nonEmptyStringSchema).min(1) }).strict();
 
 /**
- * One collaborator of a run: a root-level record that makes one shared Agent or Agent Team
- * definition delegable in that run. It has no run of its own; its runs are the task
- * executions at its address.
+ * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
+ * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
  */
 export const collaboratorEntryDtoSchema = z.discriminatedUnion("kind", [
   z.object({
     kind: z.literal("agent"), address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
+    agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
     launchConfiguration: agentOrgLaunchConfigurationDtoSchema, addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
   }).strict(),
   z.object({
     kind: z.literal("agent_team"), address: agentAddressSchema, teamDefinitionId: nonEmptyStringSchema,
-    coordinatorAddress: agentAddressSchema,
-    members: z.array(z.object({ address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema }).strict()).min(1),
+    teamRunId: nonEmptyStringSchema, coordinatorAddress: agentAddressSchema,
+    members: z.array(z.object({
+      address: agentAddressSchema, agentDefinitionId: nonEmptyStringSchema,
+      agentRunId: nonEmptyStringSchema, platformAgentRunId: nullableText,
+    }).strict()).min(1),
     handoffs: z.array(handoff), defaultLaunchConfiguration: agentOrgLaunchConfigurationDtoSchema,
+    taskExecutions: z.array(taskExecution),
     addedAt: timestamp, addedViaAgentRunId: nonEmptyStringSchema,
   }).strict(),
 ]);

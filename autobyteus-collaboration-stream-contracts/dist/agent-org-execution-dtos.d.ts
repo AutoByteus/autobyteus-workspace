@@ -45,14 +45,15 @@ type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 /** Shared by every collaboration root view (Org and Agent roots). */
 export declare const taskExecutionDtoSchema: z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>;
 /**
- * One collaborator of a run: a root-level record that makes one shared Agent or Agent Team
- * definition delegable in that run. It has no run of its own; its runs are the task
- * executions at its address.
+ * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
+ * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
  */
 export declare const collaboratorEntryDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
     kind: z.ZodLiteral<"agent">;
     address: z.ZodString;
     agentDefinitionId: z.ZodString;
+    agentRunId: z.ZodString;
+    platformAgentRunId: z.ZodNullable<z.ZodString>;
     launchConfiguration: z.ZodObject<{
         runtimeKind: z.ZodEnum<{
             autobyteus: "autobyteus";
@@ -72,10 +73,13 @@ export declare const collaboratorEntryDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
     kind: z.ZodLiteral<"agent_team">;
     address: z.ZodString;
     teamDefinitionId: z.ZodString;
+    teamRunId: z.ZodString;
     coordinatorAddress: z.ZodString;
     members: z.ZodArray<z.ZodObject<{
         address: z.ZodString;
         agentDefinitionId: z.ZodString;
+        agentRunId: z.ZodString;
+        platformAgentRunId: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>>;
     handoffs: z.ZodArray<z.ZodObject<{
         from: z.ZodString;
@@ -95,6 +99,7 @@ export declare const collaboratorEntryDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
         autoExecuteTools: z.ZodBoolean;
         workspaceRootPath: z.ZodNullable<z.ZodString>;
     }, z.core.$strict>;
+    taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
     addedAt: z.ZodString;
     addedViaAgentRunId: z.ZodString;
 }, z.core.$strict>], "kind">;
@@ -197,6 +202,8 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
             kind: z.ZodLiteral<"agent">;
             address: z.ZodString;
             agentDefinitionId: z.ZodString;
+            agentRunId: z.ZodString;
+            platformAgentRunId: z.ZodNullable<z.ZodString>;
             launchConfiguration: z.ZodObject<{
                 runtimeKind: z.ZodEnum<{
                     autobyteus: "autobyteus";
@@ -216,10 +223,13 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
             kind: z.ZodLiteral<"agent_team">;
             address: z.ZodString;
             teamDefinitionId: z.ZodString;
+            teamRunId: z.ZodString;
             coordinatorAddress: z.ZodString;
             members: z.ZodArray<z.ZodObject<{
                 address: z.ZodString;
                 agentDefinitionId: z.ZodString;
+                agentRunId: z.ZodString;
+                platformAgentRunId: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>>;
             handoffs: z.ZodArray<z.ZodObject<{
                 from: z.ZodString;
@@ -239,6 +249,7 @@ export declare const agentOrgExecutionTreeDtoSchema: z.ZodObject<{
                 autoExecuteTools: z.ZodBoolean;
                 workspaceRootPath: z.ZodNullable<z.ZodString>;
             }, z.core.$strict>;
+            taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
             addedAt: z.ZodString;
             addedViaAgentRunId: z.ZodString;
         }, z.core.$strict>], "kind">>;
@@ -384,6 +395,8 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                 kind: z.ZodLiteral<"agent">;
                 address: z.ZodString;
                 agentDefinitionId: z.ZodString;
+                agentRunId: z.ZodString;
+                platformAgentRunId: z.ZodNullable<z.ZodString>;
                 launchConfiguration: z.ZodObject<{
                     runtimeKind: z.ZodEnum<{
                         autobyteus: "autobyteus";
@@ -403,10 +416,13 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                 kind: z.ZodLiteral<"agent_team">;
                 address: z.ZodString;
                 teamDefinitionId: z.ZodString;
+                teamRunId: z.ZodString;
                 coordinatorAddress: z.ZodString;
                 members: z.ZodArray<z.ZodObject<{
                     address: z.ZodString;
                     agentDefinitionId: z.ZodString;
+                    agentRunId: z.ZodString;
+                    platformAgentRunId: z.ZodNullable<z.ZodString>;
                 }, z.core.$strict>>;
                 handoffs: z.ZodArray<z.ZodObject<{
                     from: z.ZodString;
@@ -426,6 +442,7 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
                     autoExecuteTools: z.ZodBoolean;
                     workspaceRootPath: z.ZodNullable<z.ZodString>;
                 }, z.core.$strict>;
+                taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
                 addedAt: z.ZodString;
                 addedViaAgentRunId: z.ZodString;
             }, z.core.$strict>], "kind">>;
@@ -492,6 +509,8 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
         kind: z.ZodLiteral<"agent">;
         address: z.ZodString;
         agentDefinitionId: z.ZodString;
+        agentRunId: z.ZodString;
+        platformAgentRunId: z.ZodNullable<z.ZodString>;
         launchConfiguration: z.ZodObject<{
             runtimeKind: z.ZodEnum<{
                 autobyteus: "autobyteus";
@@ -511,10 +530,13 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
         kind: z.ZodLiteral<"agent_team">;
         address: z.ZodString;
         teamDefinitionId: z.ZodString;
+        teamRunId: z.ZodString;
         coordinatorAddress: z.ZodString;
         members: z.ZodArray<z.ZodObject<{
             address: z.ZodString;
             agentDefinitionId: z.ZodString;
+            agentRunId: z.ZodString;
+            platformAgentRunId: z.ZodNullable<z.ZodString>;
         }, z.core.$strict>>;
         handoffs: z.ZodArray<z.ZodObject<{
             from: z.ZodString;
@@ -534,6 +556,7 @@ export declare const agentOrgExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z
             autoExecuteTools: z.ZodBoolean;
             workspaceRootPath: z.ZodNullable<z.ZodString>;
         }, z.core.$strict>;
+        taskExecutions: z.ZodArray<z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>>;
         addedAt: z.ZodString;
         addedViaAgentRunId: z.ZodString;
     }, z.core.$strict>], "kind">;

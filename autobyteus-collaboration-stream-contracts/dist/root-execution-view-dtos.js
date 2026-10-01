@@ -40,6 +40,15 @@ const validateAgentRootCorrelation = (value, context) => {
         }
     };
     visit(view.execution_tree.taskExecutions);
+    // Collaborators are children of the root: one instance each, with their run IDs in the entry.
+    for (const entry of view.execution_tree.collaborators) {
+        if (entry.kind === "agent")
+            visit([entry]);
+        else {
+            visit(entry.members);
+            visit(entry.taskExecutions);
+        }
+    }
     const collaboratorAddresses = new Set(view.execution_tree.collaborators.map((entry) => entry.address));
     if (collaboratorAddresses.size !== view.execution_tree.collaborators.length || collaboratorAddresses.has(view.execution_tree.host.address)) {
         addCorrelationIssue(context, "Agent root collaborator addresses must be unique and differ from the host address.");
@@ -129,6 +138,19 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
         }
     }
     taskIdentities(value.root_org.execution_tree.rootOrg.taskExecutions, rootLive);
+    // Collaborators: hosted instances whose run IDs are in the entry; their addresses are unique.
+    for (const entry of value.root_org.execution_tree.rootOrg.collaborators) {
+        if (configuredAgentAddresses.has(entry.address) || configuredTeamAddresses.has(entry.address)) {
+            addCorrelationIssue(context, `AgentOrg collaborator address '${entry.address}' collides with a configured address.`);
+        }
+        if (entry.kind === "agent") {
+            addAgent(entry, rootLive, "task_member");
+            continue;
+        }
+        addTeam({ address: entry.address, teamRunId: entry.teamRunId, members: entry.members, taskExecutions: entry.taskExecutions }, "task_member");
+        memberIdentities(entry.members, rootLive, "task_member");
+        taskIdentities(entry.taskExecutions, rootLive);
+    }
     for (const message of value.root_org.communication_messages.messages) {
         if (!addressesByRunId.has(message.senderAgentRunId) || !addressesByRunId.has(message.receiverAgentRunId)) {
             addCorrelationIssue(context, `AgentOrg communication message '${message.messageId}' identity mismatch.`);
@@ -161,6 +183,8 @@ const commandAck = z.object({
     root_subject_kind: commandRootSubjectKind, root_run_id: nonEmptyStringSchema,
     command_id: nonEmptyStringSchema, command_type: commandType, target_agent_run_id: nonEmptyStringSchema,
     state: z.enum(["accepted", "rejected", "failed"]), code: nonEmptyStringSchema.nullable(), message: z.string().nullable(),
+    /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */
+    collaborator_name: nonEmptyStringSchema.optional(),
 }).strict();
 export const CollaborationStreamServerMessageSchema = z.discriminatedUnion("type", [
     z.object({ type: z.literal("CONNECTED"), payload: z.object({ root_subject_kind: rootSubjectKind, root_run_id: nonEmptyStringSchema, session_id: nonEmptyStringSchema }).strict() }).strict(),

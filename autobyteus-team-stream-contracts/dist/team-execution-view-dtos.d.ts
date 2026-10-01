@@ -69,13 +69,15 @@ export type ConfiguredTeamExecutionDto = Readonly<{
 }>;
 export type ConfiguredMemberExecutionDto = ConfiguredAgentExecutionDto | ConfiguredTeamExecutionDto;
 /**
- * One collaborator of the run: a root-level record that makes one shared Agent or Agent
- * Team definition delegable. It has no run of its own; its runs are task executions at its address.
+ * One collaborator of the run: one instance of a shared Agent or Agent Team definition added
+ * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
  */
 export type CollaboratorEntryDto = Readonly<{
     kind: "agent";
     address: string;
     agent_definition_id: string;
+    agent_run_id: string;
+    platform_agent_run_id: string | null;
     launch_configuration: AgentLaunchConfigurationDto;
     added_at: string;
     added_via_agent_run_id: string;
@@ -83,10 +85,13 @@ export type CollaboratorEntryDto = Readonly<{
     kind: "agent_team";
     address: string;
     team_definition_id: string;
+    team_run_id: string;
     coordinator_address: string;
     members: readonly Readonly<{
         address: string;
         agent_definition_id: string;
+        agent_run_id: string;
+        platform_agent_run_id: string | null;
     }>[];
     handoffs: readonly Readonly<{
         from: string;
@@ -94,12 +99,13 @@ export type CollaboratorEntryDto = Readonly<{
         rules: readonly string[];
     }>[];
     default_launch_configuration: AgentLaunchConfigurationDto;
+    task_executions: readonly TaskExecutionDto[];
     added_at: string;
     added_via_agent_run_id: string;
 }>;
-export declare const collaboratorEntryDtoSchema: z.ZodType<CollaboratorEntryDto>;
 export declare const taskAgentExecutionDtoSchema: z.ZodType<TaskAgentExecutionDto>;
 export declare const taskTeamExecutionDtoSchema: z.ZodType<TaskTeamExecutionDto>;
+export declare const collaboratorEntryDtoSchema: z.ZodType<CollaboratorEntryDto>;
 export type TeamRunExecutionTreeDto = Readonly<{
     created_at: string;
     archived_at: string | null;

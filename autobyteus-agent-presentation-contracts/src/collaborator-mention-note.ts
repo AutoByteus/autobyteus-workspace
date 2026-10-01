@@ -44,7 +44,7 @@ export type ParsedCollaboratorMentionNote = Readonly<{
 
 const NOTE_HEADING = "[Mentioned collaborators]";
 const NOTE_GUIDANCE =
-  "Use delegate_task with the address to bring one into this run; afterwards message the started instance with send_message_to and its run ID.";
+  "Message a collaborator with send_message_to and its address; it starts on its first message.";
 const KIND_LABELS: Readonly<Record<CollaboratorMentionKind, string>> = Object.freeze({
   agent: "Agent",
   agent_team: "Agent Team",
@@ -67,7 +67,7 @@ const entryLine = (collaborator: MentionedCollaborator): string => {
  * The one owner of the mention-note wording (server compose, web parse):
  *
  *   compose("Please ask @Product Team", [{ name: "Product Team", kind: "agent_team", address: "/product_team" }])
- *   === "Please ask @Product Team\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\nUse delegate_task …"
+ *   === "Please ask @Product Team\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\nMessage a collaborator with send_message_to …"
  */
 export const composeCollaboratorMentionNote = (
   text: string,
@@ -104,6 +104,12 @@ export const parseCollaboratorMentionNote = (content: string): ParsedCollaborato
     collaborators: Object.freeze(collaborators),
   });
 };
+
+/**
+ * The code every transport uses when a mentioned collaborator cannot be added on send: nothing
+ * is added and the message is not posted. Transports carry the collaborator's name with it.
+ */
+export const COLLABORATOR_ADD_FAILED = "COLLABORATOR_ADD_FAILED";
 
 export const collaboratorMentionNote = Object.freeze({
   compose: composeCollaboratorMentionNote,

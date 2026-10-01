@@ -16,7 +16,7 @@ test("composes the note after the user's text and parses it back", () => {
     "[Mentioned collaborators]",
     "- Product Team (Agent Team) at /product_team",
     "- Code Reviewer (v2) (Agent) at /code_reviewer",
-    "Use delegate_task with the address to bring one into this run; afterwards message the started instance with send_message_to and its run ID.",
+    "Message a collaborator with send_message_to and its address; it starts on its first message.",
   ].join("\n"));
   assert.deepEqual(collaboratorMentionNote.parse(content), {
     text: "Please ask @Product Team for a UI",
@@ -33,7 +33,7 @@ test("a mention-only message is the note alone", () => {
 test("no collaborators leaves the text unchanged; foreign text is not parsed", () => {
   assert.equal(collaboratorMentionNote.compose("hello", []), "hello");
   assert.equal(collaboratorMentionNote.parse("hello"), null);
-  assert.equal(collaboratorMentionNote.parse("x\n\n[Mentioned collaborators]\n- bad line\nUse delegate_task with the address to bring one into this run; afterwards message the started instance with send_message_to and its run ID."), null);
+  assert.equal(collaboratorMentionNote.parse("x\n\n[Mentioned collaborators]\n- bad line\nMessage a collaborator with send_message_to and its address; it starts on its first message."), null);
   assert.throws(() => collaboratorMentionNote.compose("x", [{ name: "Root", kind: "agent", address: "/" }]));
 });
 

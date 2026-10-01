@@ -15,13 +15,13 @@ const launchConfiguration = {
 };
 const agentEntry = {
   kind: "agent", address: "/code_reviewer", agentDefinitionId: "reviewer-def",
-  launchConfiguration, addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "host-run",
+  agentRunId: "reviewer-run", platformAgentRunId: null, launchConfiguration, addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "host-run",
 };
 const teamEntry = {
-  kind: "agent_team", address: "/product_team", teamDefinitionId: "product-team-def",
+  kind: "agent_team", address: "/product_team", teamDefinitionId: "product-team-def", teamRunId: "product-team-run",
   coordinatorAddress: "/product_team/lead",
-  members: [{ address: "/product_team/lead", agentDefinitionId: "lead-def" }],
-  handoffs: [], defaultLaunchConfiguration: launchConfiguration,
+  members: [{ address: "/product_team/lead", agentDefinitionId: "lead-def", agentRunId: "lead-run", platformAgentRunId: null }],
+  handoffs: [], defaultLaunchConfiguration: launchConfiguration, taskExecutions: [],
   addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "host-run",
 };
 
@@ -36,7 +36,7 @@ const agentView = (overrides = {}) => ({
       host: { address: "/research_assistant", agentRunId: "host-run", agentDefinitionId: "research-def" },
       collaborators: [agentEntry, teamEntry],
       taskExecutions: [
-        { address: "/code_reviewer", agentRunId: "reviewer-run", platformAgentRunId: null, delegatorAgentRunId: "host-run", startedAt: "2026-09-30T00:00:01.000Z" },
+        { address: "/code_reviewer", agentRunId: "reviewer-copy-run", platformAgentRunId: null, delegatorAgentRunId: "host-run", startedAt: "2026-09-30T00:00:01.000Z" },
       ],
     },
     communication_messages: {
@@ -46,15 +46,20 @@ const agentView = (overrides = {}) => ({
         messageType: "agent_message", referenceFiles: [], createdAt: "2026-09-30T00:00:02.000Z",
       }],
     },
-    agent_statuses: [{ member_address: "/code_reviewer", agent_run_id: "reviewer-run", status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null }],
+    agent_statuses: [
+      { member_address: "/code_reviewer", agent_run_id: "reviewer-run", status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null },
+      { member_address: "/product_team/lead", agent_run_id: "lead-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null },
+      { member_address: "/code_reviewer", agent_run_id: "reviewer-copy-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null },
+    ],
     ...overrides,
   },
 });
 
-test("collaborator entries carry no run identity and are discriminated by kind", () => {
+test("collaborator entries carry their single instance's run identities", () => {
   assert.equal(collaboratorEntryDtoSchema.parse(agentEntry).kind, "agent");
   assert.equal(collaboratorEntryDtoSchema.parse(teamEntry).kind, "agent_team");
-  assert.throws(() => collaboratorEntryDtoSchema.parse({ ...agentEntry, agentRunId: "x" }));
+  const { agentRunId: _omit, ...withoutRun } = agentEntry;
+  assert.throws(() => collaboratorEntryDtoSchema.parse(withoutRun));
   assert.throws(() => collaboratorEntryDtoSchema.parse({ ...teamEntry, members: [] }));
 });
 

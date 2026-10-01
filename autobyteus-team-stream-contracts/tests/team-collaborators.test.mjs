@@ -8,9 +8,11 @@ import {
 
 const launch = { runtime_kind: "autobyteus", llm_model_identifier: "m", llm_config: null, auto_execute_tools: false, workspace_root_path: null };
 const teamCollaborator = {
-  kind: "agent_team", address: "/product_team", team_definition_id: "product-team",
-  coordinator_address: "/product_team/lead", members: [{ address: "/product_team/lead", agent_definition_id: "lead" }],
-  handoffs: [], default_launch_configuration: launch, added_at: "2026-09-30T00:00:00.000Z", added_via_agent_run_id: "member-run",
+  kind: "agent_team", address: "/product_team", team_definition_id: "product-team", team_run_id: "product-team-run",
+  coordinator_address: "/product_team/lead",
+  members: [{ address: "/product_team/lead", agent_definition_id: "lead", agent_run_id: "lead-run", platform_agent_run_id: null }],
+  handoffs: [], default_launch_configuration: launch, task_executions: [],
+  added_at: "2026-09-30T00:00:00.000Z", added_via_agent_run_id: "member-run",
 };
 
 test("SEND_MESSAGE accepts optional mentions", () => {
@@ -36,6 +38,6 @@ test("the Team tree carries collaborators and COLLABORATOR_ADDED carries one ent
     type: "COLLABORATOR_ADDED", payload: { change_sequence: 2, collaborator: teamCollaborator },
   }).payload.collaborator.address, "/product_team");
   assert.throws(() => parseTeamStreamServerMessage({
-    type: "COLLABORATOR_ADDED", payload: { change_sequence: 2, collaborator: { ...teamCollaborator, team_run_id: "x" } },
+    type: "COLLABORATOR_ADDED", payload: { change_sequence: 2, collaborator: { ...teamCollaborator, team_run_id: undefined } },
   }));
 });
