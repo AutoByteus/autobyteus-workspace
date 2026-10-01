@@ -77,7 +77,7 @@ describe("collaborators brought into an AgentOrg run with @", () => {
     expect(events).toEqual([]);
   });
 
-  it("keeps the Org host rule for extra copies: a mounted-Team member's copy stays under that Team (REQ-013)", async () => {
+  it("places extra copies by address: a mounted-Team member's copy of a top-level collaborator goes to the root (REQ-012)", async () => {
     const f = await buildOrg();
     await f.owner.admitCollaboratorMentions({ focusedAgentRunId: "configured-lead", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
     const lead = { identity: createCollaborationMemberExecutionIdentity({ root: f.root, memberAddress: "/target/lead", agentRunId: "configured-lead" }) };
@@ -88,8 +88,9 @@ describe("collaborators brought into an AgentOrg run with @", () => {
       .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
     const tree = f.owner.getExecutionTreeSnapshot();
     const team = tree.rootOrg.members.find((member) => member.address === "/target")!;
-    expect("teamRunId" in team && team.taskExecutions.map((task) => task.address)).toEqual(["/code_reviewer"]);
-    expect(tree.rootOrg.taskExecutions.map((task) => task.address)).toEqual(["/code_reviewer"]);
+    expect("teamRunId" in team && team.taskExecutions).toEqual([]);
+    expect(tree.rootOrg.taskExecutions.map((task) => [task.address, task.delegatorAgentRunId]))
+      .toEqual([["/code_reviewer", "configured-lead"], ["/code_reviewer", "director"]]);
   });
 
   it("offers nothing already in the Org and rejects unmentioned delegation with a reason", async () => {

@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer → implementation handoff (ARCH-REV-003 Pass), round 1 | N/A | `Initial Baseline` | SR-005, ARCH-REV-003, CRR-001 | Implemented; code review **Pass** (CRR-001, 9.3/10, no findings) → api_e2e_engineer |
 | IR-002 | architecture_reviewer (ARCH-REV-004 Pass on SR-006) after API-REV-001 Fail; code_reviewer CRR-002/CRR-003 | CR-001 (F-01), CR-002 (F-02) | `Design Impact` (CR-001 via SR-006) + `Local Fix` (CR-002) | SR-006, ARCH-REV-004, CRR-002, CRR-003, CRR-004, API-REV-001 | Implemented; code review **Pass** (CRR-004, 9.3/10) → api_e2e_engineer |
+| IR-003 | architecture_reviewer (ARCH-REV-005 Pass on SR-007) after DI-01 | DI-01 (REQ-012/AC-013) | `Design Impact` (resolved by SR-007) | SR-007, ARCH-REV-005 | Implemented; to code review |
 
 ## Revision Entries
 
@@ -86,6 +87,33 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Next recipient or routing: `/software_engineering_team/code_reviewer` (Large/High).
 - Remaining limitations or risks: copy members' scope verified by tests, not yet live (API/E2E LE-A2, LE-T1, LE-O1);
   AGY/ACP exposure still unverified live.
+
+### IR-003 — Copy placement by address (DI-01, REQ-012)
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, ARCH-REV-005 Pass on
+  SR-007 (`design-spec.md` § Copy Placement By Address; `design-review-report.md`), after DI-01
+  (`code-review-report.md`).
+- Triggering finding IDs: DI-01.
+- Classification: `Design Impact` resolved by SR-007 (requirements SR-007 add REQ-012/AC-013).
+- Prior authoritative result: IR-002 passed CRR-004. Org and Agent-root copies were placed under the delegator's host;
+  the Team root placed copies by address.
+- Current authoritative result: one pure owner `resolveTaskCopyHost` places every copy by address in all three roots.
+- Related solution revision IDs: SR-007
+- Related architecture-review revision IDs: ARCH-REV-005
+- Related code-review revision IDs: DI-01 (CRR context)
+- Related API/E2E revision IDs: N/A (LE-O1 placement assertion is API/E2E's)
+- Related delivery revision IDs: N/A
+- Why recorded: design revision implementation.
+- Approved behavior or requirement IDs affected: REQ-012, AC-013 (and AC-012 preserved).
+- Implementation delta: new `agent-collaboration/execution/task/task-copy-host.ts`; `agent-org-task-execution-adapter.ts`
+  and `agent-run-collaboration-task-execution-adapter.ts` (activation host); `team-task-execution-adapter.ts`
+  (activation + commit re-check); `team-execution-scope-resolver.ts` removed; docs (`agent_communication.md`,
+  `agent_orgs.md`, `agent_run_collaboration.md`, `agent_team_execution.md`); tests updated/added (see the handoff).
+- Local validation and result: server full suite 4962 tests, 0 new failures vs base (incl. API/E2E's uncommitted
+  durable tests); web full suite 3464 tests, 0 new failures; typecheck clean.
+- Next recipient or routing: `/software_engineering_team/code_reviewer` (Large/High).
+- Remaining limitations or risks: no live render for the Org placement (rows already render root-hosted copies);
+  API/E2E LE-O1 checks it live.
 
 ## Review Outcomes (informational)
 

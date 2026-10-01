@@ -55,8 +55,8 @@ handles, commits the entries (the first commit creates the package), then publis
 emits `collaborator_added`. `AgentRunCollaborationRootBuilder.build` re-hosts stored collaborators
 in `restore` mode, and termination stops them with every other child. Messages resolve the host,
 a collaborator Agent, a collaborator Team (its coordinator) or a collaborator Team member. An
-extra copy is hosted by the delegator's host: the root for a root-level Agent, the collaborator
-TeamRun for its members (recorded in the entry's `taskExecutions`). A collaborator Agent directly
+copy is placed by address (REQ-012, `resolveTaskCopyHost`): a teammate copy inside the delegator's
+own Team instance (recorded in that instance's `taskExecutions`), any other copy at the root. A collaborator Agent directly
 under the root is not Team-scoped; members of a collaborator Team are.
 
 Agents bring collaborators in and delegate to the catalog themselves (REQ-004/005/008).

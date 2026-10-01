@@ -269,6 +269,11 @@ queue.
   `taskExecutions`. `delegate_task` to a collaborator address starts an extra
   copy (`AgentOrgTaskSourceResolver` projects it from the entry). The Org, its
   members and its mounted Teams are never offered with `@`.
+- Copy placement by address (REQ-012, behavior change): a delegated copy is recorded inside the
+  delegator's own Team instance only when the copy's address is a member of it (a teammate copy);
+  any other copy (an Org-level Agent or mounted Team, a collaborator, a catalog Agent or Team) is
+  recorded in `rootOrg.taskExecutions` at the Org top level, with `delegatorAgentRunId`. Earlier copies
+  keep their recorded host. One owner: `resolveTaskCopyHost`.
 - Agent-initiated collaborators and catalog copies: `AgentOrgRecipientResolver`
   resolves `send_message_to(address)` with the shared `MessageRecipientResolution`
   (sender instance, run-wide, then a catalog bring-in through

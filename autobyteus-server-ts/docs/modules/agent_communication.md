@@ -348,9 +348,12 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
 - **Extra copies (REQ-013).** `delegate_task` to a collaborator address (or a
   collaborator Team member address) starts an extra, separate copy: an ordinary
   task execution with the system task notice and its own run IDs, projected from
-  the entry by the root's task source resolver. It is hosted by the delegator's
-  host (the root for a root-level Agent, the collaborator TeamRun for its
-  members).
+  the entry by the root's task source resolver. Every copy (extra or catalog) is
+  placed by address (REQ-012, `resolveTaskCopyHost` in
+  `agent-collaboration/execution/task/task-copy-host.ts`, shared by all roots):
+  inside the delegator's own Team instance whose address is the copy's parent (a
+  teammate copy), otherwise at the root, with its delegator recorded. Existing
+  copies keep their recorded host on restore.
 - **Catalog copies (REQ-005, Q-1).** `delegate_task` to a catalog address that is
   not in the run starts a task copy only (no collaborator entry). Placement
   order: a teammate inside the sender's own catalog Team copy (from that copy's

@@ -17,16 +17,25 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002, after API-REV-001 → CRR-002/CRR-003 → SR-006 / ARCH-REV-004)
+- Implementation cycle: `Rework` (IR-003, after DI-01 → SR-007 / ARCH-REV-005; IR-002 after API-REV-001 → CRR-002/CRR-003 → SR-006 / ARCH-REV-004)
 - Implementation revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (delta over `IR-001`)
-- Related solution revision IDs: `SR-005`, `SR-006`
-- Related architecture-review revision IDs: `ARCH-REV-003`, `ARCH-REV-004`
-- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (failure origin), `CRR-003` (CR-001 → Design Impact)
+- Current implementation revision ID: `IR-003` (delta over `IR-002`)
+- Related solution revision IDs: `SR-005`, `SR-006`, `SR-007`
+- Related architecture-review revision IDs: `ARCH-REV-003`, `ARCH-REV-004`, `ARCH-REV-005`
+- Related code-review revision IDs: `CRR-001` (Pass), `CRR-002` (failure origin), `CRR-003` (CR-001 → Design Impact), `CRR-004` (Pass), DI-01
 - Related API/E2E revision IDs: `API-REV-001` (Fail: F-01, F-02)
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `CR-001` (F-01, via SR-006), `CR-002` (F-02, Local Fix)
+- Triggering finding IDs: `DI-01` (REQ-012/AC-013 via SR-007); earlier `CR-001`, `CR-002`
 - Branch `codex/agent-initiated-collaborators`, base `origin/personal` @ `84224a58d`; IR-001 commit `549510977`; IR-002 commit `9b594693b`.
+
+IR-003 delta (DI-01 / REQ-012 per SR-007 § Copy Placement By Address): see the revision record. In short:
+- **One owner for copy placement:** `agent-collaboration/execution/task/task-copy-host.ts#resolveTaskCopyHost` (pure,
+  over the index's `teamInstancesOf`). Host = the delegator's deepest containing Team instance whose address is the
+  copy's parent; otherwise the root.
+- Org and Agent-root adapters use it instead of `requireAgent(delegator).host`; the Team adapter uses it at activation
+  and at the commit re-check (root placement = the root TeamRun); `team-execution-scope-resolver.ts` removed.
+- Restore paths unchanged; stored copies keep their recorded host (`Directly Usable — No Migration`). Web unchanged:
+  root-hosted copies already render top-level with "Started by" in the accessible label only.
 
 IR-002 delta (CR-001 per SR-006 § Member Collaboration Scope; CR-002):
 - **One owner for member scope:** `agent-collaboration/execution/domain/member-instance-scope.ts#resolveMemberCollaborationScope`
@@ -186,6 +195,14 @@ Web: `services/collaborators/agentSourceSelectors.ts`, Org/Agent view indexes, O
   afterwards.
 
 ## Local Implementation Checks Run
+
+IR-003 (REQ-012): typecheck clean; new `task-copy-host.test.ts`; Org tests (mounted member's catalog `/product_team`
+copy and `/code_reviewer` copies → `rootOrg.taskExecutions` with the delegator; teammate `/target/writer` copy stays
+under `/target`; `/director` copy from inside the mounted Team → root; persisted tree matches); Agent root (copy
+member's `/code_reviewer` → root with delegator, its teammate copy stays in the copy; a collaborator-Team member's
+`/code_reviewer` copy → root; a copy stored under the Team by the earlier rule restores in place under that Team);
+Team root regression unchanged (`team-root-collaborators.test.ts`). Server full suite 4962 tests and web 3464 tests,
+**0 new failures** vs base.
 
 IR-002 (after the CR-001/CR-002 changes):
 - Server typecheck clean; `--noUnusedLocals` clean in touched files.

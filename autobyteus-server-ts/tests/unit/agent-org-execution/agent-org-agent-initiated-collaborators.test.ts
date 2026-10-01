@@ -69,7 +69,7 @@ describe("agent-initiated collaborators and team instances in an AgentOrg", () =
     expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.collaborators).toEqual([]);
   });
 
-  it("catalog copies record their source and add no collaborator; a mounted-Team member can delegate (AC-005, AC-006)", async () => {
+  it("catalog copies record their source and add no collaborator; a mounted-Team member's catalog copy goes to the root (AC-005, AC-006, AC-013)", async () => {
     const f = await buildOrg();
     const lead = identity(f, "/target/lead", "configured-lead");
     await expect(f.owner.delegateTask({ identity: lead }, { recipient_address: "/product_team", description: "Design" }))
@@ -80,9 +80,10 @@ describe("agent-initiated collaborators and team instances in an AgentOrg", () =
     const tree = f.owner.getExecutionTreeSnapshot();
     expect(tree.rootOrg.collaborators).toEqual([]);
     const mounted = tree.rootOrg.members.find((member) => member.address === "/target")!;
-    const [copy] = ("teamRunId" in mounted ? mounted.taskExecutions : []) as TaskTeamExecution[];
+    expect("teamRunId" in mounted && mounted.taskExecutions).toEqual([]);
+    const [copy, reviewer] = tree.rootOrg.taskExecutions as TaskTeamExecution[];
     expect(copy).toMatchObject({ address: "/product_team", delegatorAgentRunId: "configured-lead", source: { kind: "agent_team", teamDefinitionId: "product-team" } });
-    expect(tree.rootOrg.taskExecutions).toEqual([expect.objectContaining({ address: "/code_reviewer", source: expect.objectContaining({ agentDefinitionId: "code-reviewer" }) })]);
+    expect(reviewer).toEqual(expect.objectContaining({ address: "/code_reviewer", source: expect.objectContaining({ agentDefinitionId: "code-reviewer" }) }));
     expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.taskExecutions).toEqual(tree.rootOrg.taskExecutions);
     // Restore reads the recorded source first.
     const sources = new AgentOrgTaskSourceResolver(() => f.owner.getExecutionTreeSnapshot());
@@ -90,5 +91,19 @@ describe("agent-initiated collaborators and team instances in an AgentOrg", () =
       node: { address: "/product_team", teamDefinitionId: "product-team", coordinatorAddress: "/product_team/designer" },
     });
     expect(() => sources.require(copy!.address, "agent_team")).toThrow("is not configured or a collaborator");
+  });
+
+  it("places copies by address from inside a mounted Team: teammate under the Team, Org-level placement at the root (REQ-012, AC-013)", async () => {
+    const f = await buildOrg();
+    const lead = { identity: identity(f, "/target/lead", "configured-lead") };
+    await f.owner.delegateTask(lead, { recipient_address: "/target/writer", description: "Draft" });
+    await f.owner.delegateTask(lead, { recipient_address: "/director", description: "Decide" });
+    await flushMicrotasks();
+    const tree = f.owner.getExecutionTreeSnapshot();
+    const mounted = tree.rootOrg.members.find((member) => member.address === "/target")!;
+    expect("teamRunId" in mounted && mounted.taskExecutions.map((task) => [task.address, task.delegatorAgentRunId]))
+      .toEqual([["/target/writer", "configured-lead"]]);
+    expect(tree.rootOrg.taskExecutions.map((task) => [task.address, task.delegatorAgentRunId])).toEqual([["/director", "configured-lead"]]);
+    expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.taskExecutions).toEqual(tree.rootOrg.taskExecutions);
   });
 });

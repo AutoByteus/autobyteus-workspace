@@ -5,6 +5,7 @@ import type {
   TaskExecutionActivationPreparation,
 } from "../../agent-collaboration/execution/task/root-task-execution-adapter.js";
 import type { DelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
+import { resolveTaskCopyHost } from "../../agent-collaboration/execution/task/task-copy-host.js";
 import type { TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import {
   TaskDelegationError,
@@ -18,6 +19,7 @@ import {
   createRootExecutionPhysicalScope,
   type CollaborationMemberExecutionIdentity,
   type RootExecutionIdentity,
+  createTaskExecutionHostIdentity,
   type TaskExecutionHostIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
@@ -83,7 +85,11 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
   assertCurrentSchemaReady(): void { this.readiness.assertCurrentSchemaReady(); }
 
   async prepareActivation(input: TaskExecutionActivationPreparation<ResolvedAgentOrgRecipient>): Promise<PreparedTaskExecutionActivation> {
-    const host = this.options.getIndex().requireAgent(input.identity.agentRunId).host;
+    // REQ-012: the copy is placed by its address (shared owner), not under the delegator's host.
+    const copyHost = resolveTaskCopyHost(this.options.getIndex(), input.identity.agentRunId, input.placement.address);
+    const host = createTaskExecutionHostIdentity(copyHost.hostKind === "team"
+      ? { root: this.options.root, hostKind: "team", hostRunId: copyHost.hostRunId, hostAddress: copyHost.hostAddress }
+      : { root: this.options.root, hostKind: "root", hostRunId: this.options.root.rootRunId, hostAddress: "/" });
     let prepared: PreparedTaskExecution;
     if (input.placement.kind === "agent") {
       const source = this.sources.require(input.placement.address, "agent", input.placement.source).node;

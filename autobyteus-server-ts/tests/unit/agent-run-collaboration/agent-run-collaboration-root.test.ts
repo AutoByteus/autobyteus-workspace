@@ -404,14 +404,18 @@ describe("agent-initiated collaborators of a standalone run", () => {
       .toEqual(expect.objectContaining({ mock: expect.objectContaining({ calls: [] }) }));
     await expect(root.deliverLogicalMessage(leadOne, { recipientAddress: "/product_team/nobody" as never, content: "?" }))
       .rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
-    // A copy member delegates to the catalog: the copy is hosted by its Team and records its source.
+    // A copy member delegates to the catalog: the top-level copy goes to the root (REQ-012) with its
+    // delegator and source; its own teammate copy stays inside the copy.
     await expect(root.delegateTask({ identity: leadOne }, { recipient_address: "/code_reviewer", description: "Review" }))
       .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await expect(root.delegateTask({ identity: leadOne }, { recipient_address: "/product_team/designer", description: "Mock" }))
+      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
     await flushMicrotasks();
-    const hostCopy = root.getExecutionTreeSnapshot().taskExecutions[0] as { taskExecutions: readonly { address: string; source?: unknown }[] };
-    expect(hostCopy.taskExecutions).toEqual([expect.objectContaining({ address: "/code_reviewer", source: expect.objectContaining({ agentDefinitionId: "code-reviewer" }) })]);
-    // A catalog Agent copy hosted by that Team is not its member: no handoffs, no Team instruction.
-    const reviewerCopy = hostCopy.taskExecutions[0] as unknown as { agentRunId: string };
+    const tasks = root.getExecutionTreeSnapshot().taskExecutions as unknown as { address: string; delegatorAgentRunId?: string; agentRunId?: string; source?: unknown; taskExecutions?: readonly { address: string }[] }[];
+    expect(tasks[0]!.taskExecutions!.map((task) => task.address)).toEqual(["/product_team/designer"]);
+    const reviewerCopy = tasks.find((task) => task.address === "/code_reviewer") as { agentRunId: string };
+    expect(reviewerCopy).toMatchObject({ delegatorAgentRunId: leadOne.agentRunId, source: expect.objectContaining({ agentDefinitionId: "code-reviewer" }) });
+    // A catalog Agent copy is no Team member: no handoffs, no Team instruction.
     expect(f.handles.get(reviewerCopy.agentRunId)!.input.memberExecutionContext).toMatchObject({
       authoredEnclosingScopeInstruction: null, collaboration: expect.objectContaining({ outgoingHandoffs: [] }),
     });
@@ -429,5 +433,38 @@ describe("agent-initiated collaborators of a standalone run", () => {
     const restoredLead = memberRun(two!, "/product_team/lead");
     await reopened.executeAgentCommand(restoredLead, { kind: "post_message", message: { content: "And you?" } as never });
     expect(f.handles.get(restoredLead)!.input.memberExecutionContext).toMatchObject(ownScope);
+  });
+
+  it("a collaborator-Team member's top-level copy goes to the root; a copy stored under a Team restores in place (REQ-012, AC-013)", async () => {
+    const f = await buildManager();
+    const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
+    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent_team", definitionId: "product-team" }] });
+    await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/product_team" as never, content: "Start" });
+    const [product] = root.getExecutionTreeSnapshot().collaborators;
+    if (product?.kind !== "agent_team") throw new Error("not added");
+    const lead = childIdentity("/product_team/lead", product.members[0]!.agentRunId);
+    await expect(root.delegateTask({ identity: lead }, { recipient_address: "/code_reviewer", description: "Review" }))
+      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await flushMicrotasks();
+    const [reviewerCopy] = root.getExecutionTreeSnapshot().taskExecutions as unknown as { address: string; agentRunId: string; delegatorAgentRunId: string }[];
+    expect(reviewerCopy).toMatchObject({ address: "/code_reviewer", delegatorAgentRunId: lead.agentRunId });
+    expect((root.getExecutionTreeSnapshot().collaborators[0] as { taskExecutions: unknown[] }).taskExecutions).toEqual([]);
+
+    // A copy recorded under the Team by the earlier rule keeps its recorded host on restore.
+    expect(await f.manager.terminateRoot(HOST)).toBe(true);
+    const dir = new AgentMemoryLayout(f.memoryDir).getAgentRunCollaborationDirPath(HOST);
+    const stored = (await f.store.readTree(dir, HOST))!;
+    const moved = {
+      ...stored,
+      taskExecutions: [],
+      collaborators: stored.collaborators.map((entry) => entry.kind === "agent_team" ? { ...entry, taskExecutions: stored.taskExecutions } : entry),
+    };
+    expect((await f.store.writeTree(dir, moved as never)).outcome).toBe("committed");
+    const reopened = await f.manager.resolveCommandReadyRoot(HOST);
+    await expect(reopened.executeAgentCommand(reviewerCopy!.agentRunId, { kind: "post_message", message: { content: "Status?" } as never }))
+      .resolves.toMatchObject({ accepted: true });
+    expect(f.handles.get(reviewerCopy!.agentRunId)!.input.activationMode).toBe("restore");
+    expect(f.handles.get(reviewerCopy!.agentRunId)!.input.physicalScope.ancestorTeamRunIds).toEqual([product.teamRunId]);
+    expect(reopened.getExecutionTreeSnapshot().taskExecutions).toEqual([]);
   });
 });

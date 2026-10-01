@@ -433,8 +433,9 @@ message and delegation addressing lives in `services/team-run-message-delivery.t
 (the sender's own Team instance first, then run-wide, then a catalog bring-in via
 `TeamRunCollaborators.ensure` under the held gate), and `delegate_task(address)`
 adds a catalog placement with a source snapshot after configured and
-collaborator placements. Catalog copies are hosted by the root (the host rule is
-unchanged), record `source` on their task execution, and restore from it.
+collaborator placements. Copies are placed by address through the shared
+`resolveTaskCopyHost` (REQ-012; the Team root's rule, now shared by all roots); catalog copies
+record `source` on their task execution and restore from it.
 `listAvailableAgents(sender)` is read-only and takes no gate.
 
 A successful Agent target creates one task Agent at the logical member's

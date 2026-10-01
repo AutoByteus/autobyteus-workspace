@@ -26,7 +26,7 @@ import {
   createTeamAgentStatusSnapshot,
 } from "../domain/team-agent-status.js";
 import type { IndexedTaskExecution } from "../services/team-execution-index.js";
-import { TeamExecutionScopeResolver } from "../services/team-execution-scope-resolver.js";
+import { resolveTaskCopyHost } from "../../agent-collaboration/execution/task/task-copy-host.js";
 import { addTaskExecutionToTree, adoptAgentPlatformBindingInTree } from "../services/team-run-execution-tree-mutator.js";
 import { TeamRunPersistenceFinalizationIndeterminateError } from "../services/team-run-persistence-contract.js";
 import type { TeamDelegationPlacement } from "../services/resolved-team-recipient.js";
@@ -56,10 +56,7 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
   assertCurrentSchemaReady(): void { this.tokenUsageReadiness.assertCurrentSchemaReady(); }
 
   async prepareActivation(input: TaskExecutionActivationPreparation<TeamDelegationPlacement>): Promise<PreparedTaskExecutionActivation> {
-    const host = new TeamExecutionScopeResolver(this.options.getIndex()).resolveTargetOwner({
-      callerAgentRunId: input.identity.agentRunId,
-      recipientAddress: input.placement.address,
-    });
+    const host = Object.freeze({ teamRunId: this.copyHostTeamRunId(input.identity.agentRunId, input.placement.address) });
     const hostRun = await this.options.requireTeamRun(host.teamRunId);
     let prepared: PreparedTaskExecution;
     let reservation: TeamRunRegistrationReservation | null = null;
@@ -112,6 +109,12 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
       }),
       abort: async () => { exactReservation?.cancel(); await prepared.abort(); },
     });
+  }
+
+  /** REQ-012: the shared copy placement; the root placement is the root TeamRun. */
+  private copyHostTeamRunId(delegatorAgentRunId: string, address: TeamDelegationPlacement["address"]): string {
+    const host = resolveTaskCopyHost(this.options.getIndex(), delegatorAgentRunId, address);
+    return host.hostKind === "team" ? host.hostRunId : this.options.rootTeamRunId;
   }
 
   taskExecutionChainFor(agentRunId: string): readonly TaskExecutionReference[] {
@@ -225,11 +228,8 @@ export class TeamTaskExecutionAdapter implements RootTaskExecutionAdapter<TeamDe
     let nextTreeAtCommit: TeamRunExecutionTreeSnapshot | null = null;
     const result = await this.options.commitTaskActivation({
       prepareAgainstCurrent: () => {
-        const expectedHost = new TeamExecutionScopeResolver(this.options.getIndex()).resolveTargetOwner({
-          callerAgentRunId: input.input.identity.agentRunId,
-          recipientAddress: input.input.placement.address,
-        });
-        if (expectedHost.teamRunId !== input.hostTeamRunId) throw new Error("Task host changed before activation commit.");
+        const expectedHostTeamRunId = this.copyHostTeamRunId(input.input.identity.agentRunId, input.input.placement.address);
+        if (expectedHostTeamRunId !== input.hostTeamRunId) throw new Error("Task host changed before activation commit.");
         let nextTree = addTaskExecutionToTree({
           tree: this.options.getTree(),
           ownerTeamRunId: input.hostTeamRunId,
