@@ -8,7 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | architecture_reviewer → implementation handoff (ARCH-REV-003 Pass), round 1 | N/A | `Initial Baseline` | SR-005, ARCH-REV-003, CRR-001 | Implemented; code review **Pass** (CRR-001, 9.3/10, no findings) → api_e2e_engineer |
 | IR-002 | architecture_reviewer (ARCH-REV-004 Pass on SR-006) after API-REV-001 Fail; code_reviewer CRR-002/CRR-003 | CR-001 (F-01), CR-002 (F-02) | `Design Impact` (CR-001 via SR-006) + `Local Fix` (CR-002) | SR-006, ARCH-REV-004, CRR-002, CRR-003, CRR-004, API-REV-001 | Implemented; code review **Pass** (CRR-004, 9.3/10) → api_e2e_engineer |
-| IR-003 | architecture_reviewer (ARCH-REV-005 Pass on SR-007) after DI-01 | DI-01 (REQ-012/AC-013) | `Design Impact` (resolved by SR-007) | SR-007, ARCH-REV-005 | Implemented; to code review |
+| IR-003 | architecture_reviewer (ARCH-REV-005 Pass on SR-007) after DI-01 | DI-01 (REQ-012/AC-013) | `Design Impact` (resolved by SR-007) | SR-007, ARCH-REV-005, CRR-006 | Implemented; code review **Pass** (CRR-006, 9.3/10) → api_e2e_engineer |
 
 ## Revision Entries
 
@@ -127,3 +127,6 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - 2026-10-01 — `/software_engineering_team/code_reviewer` **Pass**, CRR-004 (round 3) on IR-002 (`9b594693b`), score
   9.3/10; CR-001 and CR-002 resolved. The reviewer delivered the next handoff to
   `/software_engineering_team/api_e2e_engineer`. Report: `code-review-report.md`. No implementation action taken.
+- 2026-10-01 — `/software_engineering_team/code_reviewer` **Pass**, CRR-006 (round 5) on IR-003 (`e2c658e3d`), score
+  9.3/10; DI-01 resolved. The reviewer delivered the next handoff to `/software_engineering_team/api_e2e_engineer`.
+  Report: `code-review-report.md`. No implementation action taken.
