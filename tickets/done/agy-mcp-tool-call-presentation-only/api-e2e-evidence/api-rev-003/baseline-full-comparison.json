@@ -1,0 +1,24 @@
+{
+  "candidate": {
+    "numPassedTests": 195,
+    "numFailedTests": 43,
+    "numPendingTests": 133
+  },
+  "baseline": {
+    "numPassedTests": 197,
+    "numFailedTests": 41,
+    "numPendingTests": 133
+  },
+  "sameFailureIdentities": false,
+  "onlyCandidate": [
+    [
+      "e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts",
+      "token usage analytics GraphQL E2E keeps pre-feature run rows directly usable without analytics backfill and persists honest coverage"
+    ],
+    [
+      "e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts",
+      "token usage analytics GraphQL E2E reconciles observation-time ranges, filters, buckets, exact rows, and mixed cost through GraphQL"
+    ]
+  ],
+  "onlyBaseline": []
+}

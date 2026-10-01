@@ -1,0 +1,14 @@
+{
+  "ticket": "agy-mcp-tool-call-presentation-only",
+  "candidate": "cb7688c4e25d0d990d1f196ea59142dff824d0ea",
+  "fetched_base": "b0b077b02571098a6bf7993ab46b67a69fdb8f9d",
+  "fetch_exit": 0,
+  "merge_command": "git merge --no-edit origin/personal",
+  "merge_result": "Already up to date.",
+  "new_base_commits_integrated": false,
+  "tracked_and_index_clean": true,
+  "ahead": 1,
+  "behind": 0,
+  "test_rerun": "Not needed: identical API-REV-003 source and unchanged base; no source/test edits by delivery.",
+  "user_instance": "iso-62420-42b7"
+}

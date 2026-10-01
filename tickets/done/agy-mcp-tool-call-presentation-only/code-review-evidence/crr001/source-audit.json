@@ -1,0 +1,68 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-mcp-tool-call.ts",
+    "nonempty": 33,
+    "added": 37,
+    "removed": 0
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts",
+    "nonempty": 207,
+    "added": 9,
+    "removed": 4
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
+    "nonempty": 275,
+    "added": 3,
+    "removed": 0
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/addresses-and-handoffs.ts",
+    "nonempty": 129,
+    "added": 139,
+    "removed": 0
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/collaborators.ts",
+    "nonempty": 162,
+    "added": 168,
+    "removed": 0
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/record-primitives.ts",
+    "nonempty": 98,
+    "added": 108,
+    "removed": 0
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/schema.ts",
+    "nonempty": 97,
+    "added": 101,
+    "removed": 0
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/task-records.ts",
+    "nonempty": 100,
+    "added": 106,
+    "removed": 0
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/types.ts",
+    "nonempty": 127,
+    "added": 143,
+    "removed": 0
+  },
+  {
+    "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts",
+    "nonempty": 114,
+    "added": 2,
+    "removed": 0
+  },
+  {
+    "path": "autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts",
+    "nonempty": 291,
+    "added": 5,
+    "removed": 0
+  }
+]

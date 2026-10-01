@@ -1,0 +1,35 @@
+ M TESTING.md
+ M autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts
+ M autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts
+ M autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts
+ M autobyteus-server-ts/tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts
+ D autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts
+ M autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+ M autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts
+ M autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.ts
+ M autobyteus-server-ts/tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts
+ M autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts
+ M autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts
+ M autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts
+ M package.json
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+?? tickets/in-progress/agy-mcp-tool-call-presentation/delivery-evidence/
+?? tickets/in-progress/agy-mcp-tool-call-presentation/delivery-revision-record.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/docs-sync-report.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/handoff-summary.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/location-status-20261001.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/release-deployment-report.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/release-notes.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/user-finalize-release-request-20261001.md

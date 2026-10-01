@@ -1,0 +1,44 @@
+diff --git a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+index a2953c0d4..c1381b83d 100644
+--- a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+@@ -834,6 +834,39 @@ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario
+       }),
+     ],
+   });
++  // Preserve the populated task ledger through the complete predecessor → V1 → V2 → Org chain.
++  const tasks = JSON.parse(fs.readFileSync(path.join(orgDir, "agent_org_task_delegation_records.json"), "utf8"));
++  expect(tasks).toEqual({
++    schemaVersion: 1,
++    subjectKind: "agent_org",
++    orgRunId: scenario.rootTeamRunId,
++    records: [{
++      taskId: scenario.supported.taskId,
++      delegatorAgentRunId: `${scenario.rootTeamRunId}-lead-run`,
++      recipientAddress: "/research/reviewer",
++      taskExecution: { agentRunId: scenario.supported.taskAgentRunId },
++      description: "Review the preserved migration package.",
++      referenceFiles: ["/synthetic/migration-task.md"],
++      status: "accepted",
++      updates: [
++        {
++          submissionId: scenario.supported.submissionId,
++          message: "The preserved migration package is valid.",
++          referenceFiles: ["/synthetic/migration-result.md"],
++          createdAt: "2026-08-16T12:04:00.000Z",
++        },
++        {
++          reviewId: `${scenario.supported.taskId}_review_0001`,
++          reviewedSubmissionId: scenario.supported.submissionId,
++          decision: "accept",
++          comment: "Accepted migration evidence.",
++          referenceFiles: [],
++          createdAt: "2026-08-16T12:05:00.000Z",
++        },
++      ],
++      createdAt: "2026-08-16T12:02:00.000Z",
++    }],
++  });
+   expect(fs.readFileSync(path.join(orgDir, `${scenario.rootTeamRunId}-lead-run`, "synthetic-memory.bin")))
+     .toEqual(scenario.supported.memorySentinel);
+ };

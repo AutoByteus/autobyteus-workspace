@@ -1,0 +1,7 @@
+[
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts",
+    "test": "real AutoByteus AGY standalone native image chat starts imported Codex package with bundled workflow skill on a real first turn",
+    "status": "skipped"
+  }
+]

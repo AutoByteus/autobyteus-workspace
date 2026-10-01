@@ -1,0 +1,56 @@
+[
+  {
+    "case": "TC-009",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation",
+    "command": "pnpm -C autobyteus-server-ts build",
+    "log": "server-build.log"
+  },
+  {
+    "case": "TC-009",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts --no-watch --reporter=default --reporter=json --outputFile=/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/migration.json",
+    "log": "migration.log"
+  },
+  {
+    "case": "TC-010",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit tests/architecture --no-watch --reporter=default --reporter=json --outputFile=/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/unit-architecture.json",
+    "log": "unit-architecture.log"
+  },
+  {
+    "case": "TC-011",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/integration --no-watch --reporter=default --reporter=json --outputFile=\"/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/integration.json\"",
+    "log": "integration.log"
+  },
+  {
+    "case": "TC-012",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation",
+    "command": "pnpm test:e2e --reporter=default --reporter=json --outputFile=\"/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/deterministic-e2e.json\"",
+    "log": "deterministic-e2e.log"
+  },
+  {
+    "case": "TC-002/003",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation",
+    "command": "RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=\"/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs\" AGY_MCP_EVIDENCE_DIR=\"/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/fake-agy-evidence\" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts tests/e2e/runtime/agy-failure-transport.e2e.test.ts tests/e2e/runtime/agy-background-task-transport.e2e.test.ts tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts --no-watch --reporter=default --reporter=json --outputFile=\"/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/fake-agy.json\"",
+    "log": "fake-agy.log"
+  },
+  {
+    "case": "TC-005/008",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation",
+    "command": "RUN_AGY_E2E=1 RUN_AGY_CAPABILITY_E2E=1 AGY_CAPABILITY_EVIDENCE_DIR=\"/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/live-native-image\" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts --no-watch --reporter=default --reporter=json --outputFile=\"/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/live-agy.json\"",
+    "log": "live-agy.log"
+  },
+  {
+    "case": "TC-007",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation",
+    "command": "node tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-007-activity-panel-probe.mjs \"/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation\" \"/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/renderer\"",
+    "log": "renderer/probe.log"
+  },
+  {
+    "case": "TC-010 reproduction",
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation",
+    "command": "pnpm -C autobyteus-server-ts exec vitest run tests/architecture/agent-provider-composition-boundaries.test.ts tests/architecture/application-framework-boundaries.test.ts --no-watch --reporter=default --reporter=json --outputFile=\"/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/architecture-reproduction.json\"",
+    "log": "architecture-reproduction.log"
+  }
+]

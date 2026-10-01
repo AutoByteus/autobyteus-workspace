@@ -1,0 +1,24 @@
+{
+  "basis": "Production-equivalent base: only existing changed production converter replaced in source and dist. New helper remains unused. Selected failing tests are byte-identical to base. Not full baseline checkout.",
+  "files": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-server-ts/tests/e2e"
+  ],
+  "identicalFailingTests": true,
+  "command": [
+    "pnpm",
+    "-C",
+    "autobyteus-server-ts",
+    "exec",
+    "vitest",
+    "run",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-server-ts/tests/e2e",
+    "--no-watch",
+    "--reporter=default",
+    "--reporter=json",
+    "--outputFile=/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/baseline-full-e2e.json"
+  ],
+  "exit": 1,
+  "restoredSourceHash": "ecade426b22e7256b0fc0083a5e8d1ae289605d4f4ccd59bcc9edabd69a11d65",
+  "restoredDistHash": "1c630a5035fec0e6bfc38d67e0e27077bb0f81e4cc534a25eec188088bb61233",
+  "restorationExact": true
+}

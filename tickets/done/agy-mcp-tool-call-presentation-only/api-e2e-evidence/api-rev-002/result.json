@@ -1,0 +1,13 @@
+{
+  "revision": "API-REV-002",
+  "result": "Fail",
+  "confidence": 88.6,
+  "finding": "API-F001",
+  "preliminaryClassification": "Unclear",
+  "CR-F001": "correction implemented; 5/5 built migration cases pass; reviewer closure pending",
+  "desktop": "Not Tested; deferred at failing architecture gate",
+  "productionChanges": [],
+  "durableTestChanges": [
+    "autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts"
+  ]
+}

@@ -1,0 +1,1160 @@
+diff --git a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+index a2953c0d4..c1381b83d 100644
+--- a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+@@ -834,6 +834,39 @@ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario
+       }),
+     ],
+   });
++  // Preserve the populated task ledger through the complete predecessor → V1 → V2 → Org chain.
++  const tasks = JSON.parse(fs.readFileSync(path.join(orgDir, "agent_org_task_delegation_records.json"), "utf8"));
++  expect(tasks).toEqual({
++    schemaVersion: 1,
++    subjectKind: "agent_org",
++    orgRunId: scenario.rootTeamRunId,
++    records: [{
++      taskId: scenario.supported.taskId,
++      delegatorAgentRunId: `${scenario.rootTeamRunId}-lead-run`,
++      recipientAddress: "/research/reviewer",
++      taskExecution: { agentRunId: scenario.supported.taskAgentRunId },
++      description: "Review the preserved migration package.",
++      referenceFiles: ["/synthetic/migration-task.md"],
++      status: "accepted",
++      updates: [
++        {
++          submissionId: scenario.supported.submissionId,
++          message: "The preserved migration package is valid.",
++          referenceFiles: ["/synthetic/migration-result.md"],
++          createdAt: "2026-08-16T12:04:00.000Z",
++        },
++        {
++          reviewId: `${scenario.supported.taskId}_review_0001`,
++          reviewedSubmissionId: scenario.supported.submissionId,
++          decision: "accept",
++          comment: "Accepted migration evidence.",
++          referenceFiles: [],
++          createdAt: "2026-08-16T12:05:00.000Z",
++        },
++      ],
++      createdAt: "2026-08-16T12:02:00.000Z",
++    }],
++  });
+   expect(fs.readFileSync(path.join(orgDir, `${scenario.rootTeamRunId}-lead-run`, "synthetic-memory.bin")))
+     .toEqual(scenario.supported.memorySentinel);
+ };
+diff --git a/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-coverage-investigation.md b/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-coverage-investigation.md
+index 91d9c33be..3f462349c 100644
+--- a/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-coverage-investigation.md
++++ b/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-coverage-investigation.md
+@@ -1,3 +1,38 @@
++# Current combined validation — API-REV-002 (2026-10-01)
++
++**Current result: Fail / API-F001; final confidence 88.6%.** Restored CR-F001 assertion passes; reviewer closure pending. Renderer and real AGY pass; desktop deferred/not tested at failed architecture gate. See canonical execution report for final scorecard and evidence.
++
++This section supersedes historical SR-002-only statements below. Basis: SR-005, ARCH-REV-001 Pass, IR-002, **CRR-001 Fail / CR-F001**, DR-003. User-directed ordinary continuation authorizes the test-owned local correction and combined execution, not source-review Pass or release. HEAD a727971dabab141a39404a00ca6f7db46696f0b9; integrated base b0b077b02571098a6bf7993ab46b67a69fdb8f9d. Large / High; independent test review and explicit CR-F001 resolution required before delivery. Checkpoint 9038c218b and all incoming evidence/generated output preserved.
++
++## Current investigation and coverage decisions (before edits)
++
++Read cumulative requirements/design/investigation/history, implementation ledger/handoff, architecture/source reviews, recovery inventory and delivery/API evidence. Applicable instructions: root TESTING.md, server/web AGENTS.md, package manifests, server Vitest config and tests/setup/{prisma-env,prisma-test-config,prisma-global-setup}.ts; root/server README development/testing sections; docs/isolated-app-instances.md. No closer TESTING guideline exists. Full server phases run serially: shared test-owned tests/.tmp/autobyteus-server-test.db is reset by global setup; no concurrent test run observed. Built subprocess tests require fresh server build. Brief Studio packed prerequisites already exist, will be refreshed if needed. Never use installed app/data or disturb other instances.
++
++- SCN-001..004 / AC-001..008: AGY helper/converter/native/fake transport tests Still Valid; reuse TC-001..008 IDs for reruns. Opt-in disabled tests are Not Tested, not Pass. Real CLI/renderer replay evidence from API-REV-001 remains historical only.
++- SCN-005 / AC-009,011: Team preflight focused service tests and built migration suite Still Valid; verify missing/valid/unreadable indexes, no orphan and preserved bytes/independent work.
++- SCN-006 / AC-010,011,013: frozen recognition and cutover tests Still Valid. `team-run-v1-production-upgrade.e2e.test.ts` Needs Update: restore missing populated task record exact equality at `agent_orgs/<root>/agent_org_task_delegation_records.json`, with schemaVersion/subjectKind/orgRunId wrapper. Expected record independently specified by original predecessor fixture and former assertion, NOT derived from runtime conversion. Preserve identity, description/status, task execution, submission/review linkage, references and times. Applies at all existing assertConvertedPackage calls (initial/retry/relaunch). No tests removed or source edits planned.
++- SCN-007 / AC-012..014: all 47 historical cohort files Still Valid after documented IR-002 contract repairs, subject to complete suite verification. No weakening, skips, expected failures or source fixes to obtain green.
++- Changed boundaries: AGY provider/transport/history/renderer; Team lifecycle/catalog; persisted migration startup/retry/current admission; test setup/package integration. No new shell code, but full-product isolated desktop run required by combined package/TESTING.md.
++- Broader validation Required: real built-server migration (including restored full-chain ledger), explicitly enabled fake AGY transport, real CLI Team/Org, rendered Activity and isolated desktop worktree build. Repository confidence will be scored before broader execution; no current Pass inferred.
++
++## Planned serial execution / case mapping
++
++| ID | Surface / requirement | Expected result |
++| --- | --- | --- |
++| TC-009 | Fresh server build + corrected full-chain migration E2E; AC-009..011,013,014 | All 5 cases pass, populated ledger retained |
++| TC-010 | Full server unit + architecture; AC-012..014 | No failures/errors; report opt-in skips |
++| TC-011 | Full server integration; AC-012..014 | No failures/errors; report opt-in skips |
++| TC-012 | pnpm test:e2e (fresh build); AC-012..014 | No deterministic failures; report opt-in skips |
++| TC-001/002/003 | Explicit fake AGY MCP/native/failure/background suites | All enabled assertions pass |
++| TC-005/008 | Live AGY Team/Org and native image | Real CLI outcomes or precise external blocker |
++| TC-007 | Current rendered Activity/reload/reopen probe | Real names, own args, statuses and persisted replay |
++| TC-013 | Isolated desktop current worktree build/start/product smoke/restart/stop | Health, renderer + isolated state and cleanup |
++
++Execution evidence will be retained in api-e2e-evidence/api-rev-002; canonical ledger updated after every case. Source-review finding remains open pending reviewer resolution even after a passing correction test.
++
++---
++## Historical API-REV-001 investigation (basis-limited)
++
+ # API/E2E Coverage Investigation
+ 
+ ## Investigation Meta
+@@ -262,3 +297,31 @@ None.
+ - Reroute Required Before Validation Execution: `No`
+ - Recommended Recipient If Reroute Required: N/A
+ - Notes: final result and confidence are in the execution coverage report.
++
++## API-REV-002 repository checkpoint — full unit/architecture
++
++TC-010: 4126 passed, 2 failed, 6 opt-in skipped in 594 files (589 pass, 2 fail, 3 skip), no unhandled-error summary. Both failures concern `src/agent-collaboration/collaborators/collaborator-definition-catalog.ts`: third `new RunModelSelectionService` construction outside the two host roots, plus two extra Agent/Team definition singleton lookups. Tests expect 2 vs observed 3 validator roots and 26 vs observed 28 definition-getter occurrences. This source and both guard files are byte-identical to integrated b0b077b02 (`architecture-failure-provenance.json`), but baseline origin does not waive AC-012/013.
++
++Validity decision: **Unclear** whether the collaborator addition intentionally supersedes the guarded architectural constraints; do NOT whitelist the file or change production under this ticket without failure-origin review. The source is reached by normal Agent/Team/Org collaborator admission and public candidate queries, not an invented race. Preliminary finding API-F001: Unclear / architecture contract vs source ownership; code reviewer must classify origin. Both tests retained unchanged. Continue full integration/deterministic/fake transport to provide complete bounded failure inventory before routing. CR-F001 correction remains independently passing (5/5 built startup cases).
++
++## API-REV-002 post-repository confidence / broader decision
++
++Full integration 318 pass/64 opt-in skip; deterministic E2E (fresh build) 238 pass/133 opt-in skip; explicitly enabled fake AGY 9/9 pass in 4 files. Historical 47-file cohort: all passed (287 tests), per-file JSON retained. Full unit/architecture remains 2 failures, 4126 pass/6 opt-in skip. No unhandled errors reported by these runners. JSON suite totals include nested suites; console file totals are the file authority.
++
++| Mandatory category | Post-repository | Evidence / gap |
++| --- | --- | --- |
++| Requirements/AC proof | 75% | AGY + migration direct, but AC-012/013 full-layer gate fails and current rendered/live acceptance pending |
++| Changed-boundary directness | 95% | Fresh built migration startup/retry/relaunch; real server WS/history/Files fake AGY |
++| Integration realism/mock gap | 90% | Full integration/E2E pass; AGY scripted rather than live |
++| Environment/configuration/identity/fixture fidelity | 95% | Isolated owned DB, complete historical fixture, fresh builds; no production target |
++| Failure/edge/lifecycle/recovery | 90% | Migration warnings/retry/no-orphan and fake AGY failure; current real CLI pending |
++| User-surface/browser/desktop | 50% | Only historical rendered/desktop evidence; current build not exercised |
++| Durable regression quality | 90% | Exact restored assertion; 47 cohort files pass; two architecture guards need independent origin review |
++
++Simple average 83.6%. **Not Pass** regardless of average: unresolved API-F001 and critical combined gate. Broader validation **Required**. Proceed with targeted live AGY and rendered probe to refresh unchanged original presentation boundary; their success cannot resolve architecture guard failures. Desktop decision remains required on combined candidate; never reuse the installed app or historical instance as proof of current source.
++
++### Broader checkpoint / stop boundary
++
++Live AGY 1.2.14 rerun passed Team and Org messaging and native image (3 passed, 1 unrelated imported-Codex-package capability skip). Current browser Activity/reload/reopen probe is in progress. No production defect inferred from skipped opt-ins.
++
++**TC-013 desktop is Not Tested in this failing round, not an environmental Blocked claim.** Required current isolated desktop/full-product verification is deferred until API-F001 source-vs-test architecture origin is resolved and a stable candidate is available. Historical iso-52483-84f0 is stopped and is NOT current proof; no existing app, data, generated package or other instance is reused/modified. Full web/core/Electron suites are not implied by server full-suite labels; no web/core/shell source changed in this ticket. This is a deliberate reroute at a failed required repository gate, not waiver of desktop or final delivery verification.
+diff --git a/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-execution-coverage-report.md b/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-execution-coverage-report.md
+index 6bb4fd2ae..cd20178ff 100644
+--- a/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-execution-coverage-report.md
++++ b/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-execution-coverage-report.md
+@@ -1,3 +1,99 @@
++# API/E2E Execution Coverage Report — current API-REV-002
++
++## Authoritative result
++
++**Fail — API-F001 (two reproducible architecture guards); 88.6% confidence. Not release-ready.** CR-F001's test-owned correction is implemented and its fresh built-server execution passes, but explicit reviewer closure is pending. No source-review Pass is inferred from that result.
++
++- Date: 2026-10-01. Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation`; branch `codex/agy-mcp-tool-call-presentation`.
++- Validated HEAD: `a727971dabab141a39404a00ca6f7db46696f0b9` plus the one uncommitted durable test correction below. Integrated base: `b0b077b02571098a6bf7993ab46b67a69fdb8f9d`, ancestor verified, not refetched. Delivery owns later freshness.
++- Authority: approved requirements/design **SR-005**, cumulative investigation/solution record and handoff; architecture **ARCH-REV-001 Pass**; implementation **IR-002** and its repair ledger; source review **CRR-001 Fail / CR-F001**. Prior **API-REV-001** is SR-002-only; **DR-003** is focused integration evidence, not current full acceptance.
++- Classification **Large / High**. Input is user-directed ordinary continuation for local test correction despite unresolved source review, NOT a source-review Pass. Output requires **failure-origin review**, not successful-test review or delivery. Proportional changed-test review is required on this reviewed route and remains pending.
++- Evidence directory: `api-e2e-evidence/api-rev-002/` relative to this ticket. Exact commands/cwds in `commands.json`; snapshots of prior API artifacts retained there. Current canonical investigation and test-case ledger were initialized before edits and updated during execution. No requirements/design or production-source changes.
++
++## Durable correction and prior finding
++
++Updated only `autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts`, `assertConvertedPackage` at lines 837–871. Restored exact equality of the populated record at `agent_orgs/<root>/agent_org_task_delegation_records.json`, using the Org wrapper (`schemaVersion:1`, `subjectKind:agent_org`, `orgRunId`). The record expectation is specified independently from the predecessor fixture and the original assertion at b0b077b02, not generated from the converter under test. It retains task/delegator/recipient/execution identity, accepted description/status, submission ID/message and linked review ID/decision/comment, all references and timestamps.
++
++The helper is called after initial conversion, terminal relaunch, repaired-index restart and no-orphan retry. All 5 built-startup tests pass both focused and in full deterministic E2E. No tests deleted, relaxed, skipped or marked expected-failure. No migration implementation changed. `cr-f001-correction.diff` and `durable-change.json` identify the exact uncommitted correction. **CR-F001 resolution is proposed with execution proof; only Code Reviewer can close its finding.**
++
++## Current execution and ledger reconciliation
++
++All phases serial; no live commands remain. Console file totals are used below; Vitest JSON suite counts also include nested suites. No unhandled-error section appeared in these completed runs. Opt-in skips are Not Tested, never added to passing counts; exact skipped names in each `*-not-tested.json`.
++
++| Case / layer | Result | Counts / evidence |
++| --- | --- | --- |
++| TC-009 fresh server build | Pass | `pnpm -C autobyteus-server-ts build`, compilation/shared packages/Prisma/bootstrap exit 0; server-build.log |
++| TC-009 corrected production upgrade | Pass | 5/5 in 1 file; migration.log/json; 23.18s total |
++| TC-010 full server unit + architecture | **Fail** | 4126 pass, 2 fail, 6 skip; 589 pass/2 fail/3 skip files, 594 total; unit-architecture.log/json |
++| TC-011 full server integration | Pass | 318 pass, 64 skip; 68 pass/17 skip files; integration.log/json |
++| TC-012 full deterministic server E2E | Pass | Fresh build through `pnpm test:e2e`; 238 pass, 133 skip; 66 pass/31 skip files; deterministic-e2e.log/json |
++| TC-001/002 AGY unit subset within full run | Pass | Helper 21/21 and converter 44/44; AGY folder 168 passed/5 live opt-in skipped; unit-architecture.json |
++| TC-002/003 explicitly enabled fake AGY transport | Pass | 9/9 in 4 files: MCP, failure, background-task, native-image-step-output; fake-agy.log/json and fake-agy-evidence/ |
++| TC-005/008 real AGY | Pass within enabled scope | 3 pass/1 imported-Codex-package opt-in skip in 2 files; live-agy.log/json, live-native-image/ |
++| TC-007 current renderer | Pass | Chrome → Nuxt → built backend → scripted AGY; live/reload/stop-reopen assertions, no page errors; renderer/ |
++| TC-010 narrow reproduction | **Fail** | Same 2 failures, 32 pass in 2 files, 7.16s; architecture-reproduction.log/json |
++| TC-004/006 earlier-old-run/capture probes | Not Tested afresh | Historical evidence retained; no fresh old-base-writer replay claimed |
++| TC-013 isolated desktop/full product | **Not Tested** | Deferred at failed required architecture gate; required after origin resolution/current candidate rebuild. Not an environmental blocker or waiver. |
++
++The full run confirms all **47 historical cohort files passed (287 tests)**; `historical-cohort-current-results.json` maps each file. IR-002's independent-contract repair rationale remains the rationale; full execution now adds current results. New architecture failures are not part of that earlier 47-file cohort and are not dismissed because they came from base.
++
++Full server means the repository's configured include/exclude set. Existing prompt-engineering exclusions remain configured; no configuration altered. No full core, web-unit or Electron suite is claimed; ticket source changes are server/test-owned. Brief Studio packaged prerequisite was prepared in IR-002 on this unchanged source basis and all its full integration cases pass; no new pack invocation claimed this round.
++
++## Failure-origin request — API-F001
++
++Preliminary classification: **Unclear — retained architecture contract versus new collaborator source ownership**. Recommended adjudicator: Code Reviewer, then the owning role selected by that review. This is not a demonstrated data-loss or runtime failure.
++
++1. `tests/architecture/agent-provider-composition-boundaries.test.ts:581`: expects `RunModelSelectionService` construction only at Studio and standalone host roots. Observed an additional constructor in `src/agent-collaboration/collaborators/collaborator-definition-catalog.ts:38` (3 instead of 2).
++2. `tests/architecture/application-framework-boundaries.test.ts:2995`: expects 26 allowed Agent/Team definition singleton reads. The same collaborator file adds 2 (28 observed), lines 36–37.
++
++Normal reachability: GraphQL `collaboratorMentionCandidates` and Agent/Team/Org collaborator admission call `getCollaboratorMentionAdmission`, whose lazy process coordinator constructs its own model validator/catalog and global definition services. This is ordinary collaborator use, not a contrived concurrency premise. Both guard files and the offending source are byte-identical to integrated base; provenance/hashes in `architecture-failure-provenance.json`, origin commit `33b0d1eef` for the collaborator source. No baseline worktree suite was executed; byte comparison is not misrepresented as one.
++
++Expected/observed diffs and stacks are in full and narrow logs. Exact narrow command:
++
++```sh
++pnpm -C autobyteus-server-ts exec vitest run tests/architecture/agent-provider-composition-boundaries.test.ts tests/architecture/application-framework-boundaries.test.ts --no-watch
++```
++
++Related current acceptance: **AC-012/013, REQ-010/011, SCN-007 / BEH-009** require truthful full validation and no weakening of valid guards. The approved ticket does not decide a new exception for collaborator construction. Neither whitelisting the extra source nor production refactoring is performed here. Request explicit origin/validity determination before changing either tests or runtime.
++
++## Changed boundaries, realistic verification and persisted data
++
++- **AC-001..008**: current helper/converter tests; explicitly enabled real server WebSocket/history/Files fake-AGY tests; real AGY 1.2.14 Team and direct/nested Org `send_message_to`; native-image tool/path/artifact test. Scripted cases prove third-party nested args, JSON result, failure, malformed fallback and MCP media classification without assuming a model will deterministically produce them. No real-provider full-server `delegate_task`, third-party MCP or MCP-media call claimed.
++- **TC-007 rendered AC-001**: actual Chat journey selects AGY/model/workspace and sends; seven Activity titles/statuses match; `delegate_task` owns `{description,recipient_address}` and structured result without wrapper fields; third-party nesting, error and fallback preserved; same after reload and stop/reopen. Backend 58455, frontend 58456, isolated temp root. This proves web-equivalent rendering, **not packaged Electron**. Nuxt emitted app-manifest development warnings; journey completed with zero browser page errors.
++- **AC-009..011**: fresh built child server runs ordinary migration chain, current Org resume/restore/new work, malformed-index refusal/no orphan, warning isolation, correction/restart and terminal relaunch; original Team bytes/invalid stores/accounting controls retained. Representative seeded converted root has nested Team, configured members and populated accepted task/submission/review. Focused suite took 19.49s test time across 5 cases; not a production-volume/performance benchmark. Current flat non-target zero-write/source-cohort/admission controls pass in full unit suite. No user's installed data read as test fixture.
++- **Data decisions**: AGY old traces directly usable/no relabel; Team preflight no migration; existing same-ID historical Team→Org conversion only. No legacy runtime branch, new migration/ledger reset or compatibility-only test introduced. Fresh current-to-current replay proved, fresh pre-change-writer replay remains deferred/historical.
++
++## Confidence and broader-validation gate
++
++Simple category average; failing critical acceptance never hidden by the score.
++
++| Mandatory category | Post-repository | Final | Evidence / remaining uncertainty |
++| --- | ---: | ---: | --- |
++| Requirement/AC proof | 75% | 75% | Current AGY/migration proof strong; AC-012/013 architecture gate fails; desktop/old-writer rerun incomplete |
++| Changed-boundary directness | 95% | 95% | Actual built migration startup and real server event/persistence path |
++| Integration realism/mock gap | 90% | 95% | Live AGY Team/Org + native-image and real browser added; scripted adverse cases explicit |
++| Environment/configuration/identity/fixture fidelity | 95% | 95% | Fresh builds, isolated test DB, faithful historical source and owned temporary stack |
++| Failure/edge/lifecycle/recovery | 90% | 95% | Migration warnings/retry/terminal/new-work, fake errors/fallback and live/reopened run behavior |
++| User-surface/browser/desktop | 50% | 75% | Rendered journey passes; required packaged/full-product check not run on current candidate |
++| Durable regression quality/relevance | 90% | 90% | Restored exact ledger + complete cohort pass; two guards await origin adjudication |
++
++Overall **83.6% → 88.6%**. Default 95% target not met; two categories below 90%. Broader validation **Required, partially executed** (live AGY and renderer). Remaining desktop and old-writer replay are Not Tested, not fabricated Blocked or Pass. Round result **Fail**, independently controlled by API-F001. Reviewer resolution and subsequent required reruns precede delivery.
++
++## Environment, cleanup and preservation
++
++macOS arm64; exact Node/pnpm/AGY/system versions in environment.txt. All Vitest phases used the documented worktree-owned `tests/.tmp/autobyteus-server-test.db`, serially reset by global setup; subprocess E2E isolated their own runtime/DB. No other active Vitest was observed before start. Built-server runtime setup and native CLI auth follow existing test harnesses; credentials were not copied, printed or edited.
++
++Renderer probe closed its owned Chrome and SIGTERM'd backend PID 7435/Nuxt PID 7445; backend logged clean closure; owned temp root removed (JSON cleanup receipt). Tests ran their normal server/socket/root cleanup. AGY may retain its own conversation/native-image artifacts under its normal CLI cache, as existing live tests do; no global cache cleanup attempted. No desktop instance launched; final isolated-app list contains only pre-existing stopped records. Existing installed app/data, checkpoint 9038c218b, incoming dirty solution docs, untracked evidence and generated packages preserved. No fetch/merge/commit/push/tag/release performed. Test correction and API artifacts remain uncommitted for review.
++
++## Cumulative package / handoff
++
++All canonical names below resolve to `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/` and will be attached by absolute path: requirements-doc.md, investigation-notes.md, design-spec.md, solution-handoff.md, solution-revision-record.md, design-review-report.md, architecture-review-revision-record.md, implementation-handoff.md, implementation-revision-record.md, implementation-test-repair-ledger.md, code-review-report.md, code-review-revision-record.md, test-repair-scope-inventory.md, all four canonical API artifacts, delivery-revision-record.md, handoff-summary.md, release-deployment-report.md, docs-sync-report.md, release-notes.md, latest-base-integration-result-20261001.md, test-repair-provenance-result-20261001.md, user-finalize-release-request-20261001.md and relevant evidence directories/probes. No applicable independent review is labelled N/A.
++
++Next action: get current handoff rules and send **Fail/focused failure-origin review** with API-F001 and proposed CR-F001 correction resolution. No successful-test-review Pass or delivery handoff. Stop after confirmed routing.
++
++---
++## Historical API-REV-001 report (SR-002-only; superseded as current result)
++
+ # API/E2E Execution Coverage Report
+ 
+ ## Execution Round Meta
+@@ -254,3 +350,7 @@ N/A — no failure.
+ - Critical acceptance criteria lacking direct proof: none
+ - Next recipient from `get_handoff_rules`: `/delivery_engineer`
+ - Notes: three durable test changes are uncommitted in the worktree.
++
++## API-REV-002 routing receipt status
++
++Current rules selected executable validation Fail → `/code_reviewer` (focused failure-origin review), not the pre-execution upstream-ambiguity rule. Only this recipient will be notified. Required subsequent review/candidate validation/desktop and delivery gates remain open.
+diff --git a/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-revision-record.md b/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-revision-record.md
+index d0e81f4b5..999313177 100644
+--- a/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-revision-record.md
++++ b/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-revision-record.md
+@@ -5,6 +5,7 @@
+ | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
+ | --- | --- | --- | --- | --- |
+ | API-REV-001 | `/implementation_engineer`, `implementation-handoff.md`, round 1 | SR-002, IR-001 | N/A | Pass / 95% |
++| API-REV-002 | User-directed Code Reviewer CRR-001 continuation / CR-F001 | SR-005, ARCH-REV-001, IR-002, CRR-001, DR-003 | API-REV-001 Pass/95% on original scope only | **Fail / 88.6%**, API-F001; restored assertion passing, review pending |
+ 
+ ## Revision Entries
+ 
+@@ -28,3 +29,19 @@ None.
+ - New or remaining failure IDs: none
+ - Recommended recipient: `/delivery_engineer`
+ - Remaining risks, blocked evidence, or untested scope: no live model call of `delegate_task`, a third-party MCP server or an MCP media tool through the full server (covered deterministically and by a real capture); the new e2e is opt-in; `pnpm test:e2e` has 43 failing tests in 12 non-AGY files, 41 reproduced with the base converter and 2 passing in isolation, not investigated
++
++
++### API-REV-002 — Test-owned correction and current combined validation
++
++- Trigger: Code Reviewer ordinary message explicitly requested by user after CRR-001 Fail; not a source-review Pass or release authorization. Large/High unchanged. HEAD a727971dabab141a39404a00ca6f7db46696f0b9, integrated b0b077b02, plus one uncommitted test correction.
++- Current authority: SR-005 / ARCH-REV-001 / IR-002; triggering CR-F001; prior API-REV-001 and DR-003 remain basis-limited. Read full cumulative package and testing instructions before initial investigation, ledger and durable edit.
++- Durable path: `autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts`; restore independently specified exact populated task/submission/review expectation at Org output wrapper. No source changes, test removal or weakening.
++- Prior finding resolution: CR-F001 correction **implemented and executed**, 5/5 fresh built-server cases focused and again in full E2E. **Pending explicit reviewer closure**, not self-declared closed.
++- Current execution: full unit/architecture 4126 pass/2 fail/6 skip; full integration 318 pass/64 skip; deterministic E2E 238 pass/133 skip; enabled fake AGY 9/9; live AGY 3 pass/1 imported-package opt-in skip; current rendered Activity/reload/stop-reopen Pass. All 47 historical cohort files passed (287 tests). Independent focused architecture reproduction repeats both failures (32 pass/2 fail). No unhandled runner errors reported. Exact commands and logs in api-e2e-evidence/api-rev-002/.
++- New finding API-F001: two architecture guards detect a third model-validator constructor and two extra definition singleton reads in collaborator-definition-catalog.ts. Source/guards byte-identical to integrated base; current normal GraphQL/collaborator paths reach it. Preliminary **Unclear** source-vs-test contract ownership; no automatic whitelist/source refactor. Request focused failure-origin review for AC-012/013 / REQ-010/011.
++- Broader decision: Required, partially executed (live AGY + browser). Desktop/current full-product and old-base-writer replay Not Tested/deferred at failing gate, not blocked on a secret/account and not waived. Historical stopped app not reused. Browser/test-owned processes and roots cleaned; external CLI conversation artifacts follow existing harness retention. Incoming evidence/generated artifacts/checkpoint preserved.
++- Confidence: post-repository 83.6%, final 88.6% across mandatory seven categories. Fail regardless of score, critical architecture/full-layer gate unresolved. No release readiness, successful-test review or delivery Pass.
++- Canonical artifacts updated in place: investigation, execution report, ledger, this record; prior snapshots retained as history only. One durable test diff and retained temporary orchestration/probe evidence supplied. No commit/push/release.
++- Next action: current get_handoff_rules → matching Fail/failure-origin recipient; explicit CR-F001 resolution and applicable proportional test review before delivery. Stop after confirmed handoff.
++
++Routing selection: get_handoff_rules returned the executable validation **Fail → /code_reviewer** rule. It is more specific than the pre-execution Unclear-upstream rule because these failures were executed/reproduced. Send only that exact recipient; no Delivery or Solution Designer duplicate. Request focused failure-origin review, carrying pending CR-F001 correction closure; no successful-test-review Pass asserted.
+diff --git a/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-test-case-ledger.md b/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-test-case-ledger.md
+index 3783fb1af..1b8ca5c1e 100644
+--- a/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-test-case-ledger.md
++++ b/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-test-case-ledger.md
+@@ -46,3 +46,30 @@
+ - Interruption, context-compression, or rerun note: none. TC-003 and TC-007 each needed a second run after a correction to my own test/probe code; both noted in their rows.
+ - Reconciled into execution coverage report: `Yes` — `api-e2e-execution-coverage-report.md`, "Test-Case Ledger Reconciliation"
+ - Reconciliation note for any case missing a terminal result: none
++
++## API-REV-002 current combined plan — 2026-10-01
++
++Basis SR-005 / IR-002 / CRR-001; Large/High. TC-009 build/migration, TC-010 full unit/architecture, TC-011 full integration, TC-012 deterministic E2E, TC-001/002/003 fake AGY, TC-005/008 live AGY, TC-007 renderer, TC-013 isolated desktop. All Not Tested at initialization. Prior TC results are historical, not current Pass.
++
++| Case | Event/result | Evidence / next action |
++| --- | --- | --- |
++| TC-009 | Fresh build Pass; corrected migration running | api-e2e-evidence/api-rev-002/server-build.log (exit 0); migration.log/json pending |
++| TC-009 | Pass — fresh build and 5/5 migration cases | server-build.log; migration.json/log; restored exact populated Org task ledger on initial/retry/relaunch paths. CR-F001 reviewer closure pending. |
++| TC-010 | Fail — exit 1; {"numPassedTests": 4126, "numFailedTests": 2, "numPendingTests": 6, "numTotalTests": 4134, "numRuntimeErrorTestSuites": null} | api-e2e-evidence/api-rev-002/unit-architecture.log/json; opt-in pending are Not Tested, not passes |
++| TC-011 | Started; unresolved | integration.log; exact command in commands.json |
++| TC-011 | Pass — exit 0; {"numPassedTests": 318, "numFailedTests": 0, "numPendingTests": 64, "numTotalTests": 382, "numRuntimeErrorTestSuites": null} | api-e2e-evidence/api-rev-002/integration.log/json; opt-in pending are Not Tested, not passes |
++| TC-012 | Started; unresolved | deterministic-e2e.log; exact command in commands.json |
++| TC-012 | Pass — exit 0; {"numPassedTests": 238, "numFailedTests": 0, "numPendingTests": 133, "numTotalTests": 371, "numRuntimeErrorTestSuites": null} | api-e2e-evidence/api-rev-002/deterministic-e2e.log/json; opt-in pending are Not Tested, not passes |
++| TC-002/003 | Started; unresolved | fake-agy.log; exact command in commands.json |
++| TC-002/003 | Pass — exit 0; {"numPassedTests": 9, "numFailedTests": 0, "numPendingTests": 0, "numTotalTests": 9, "numRuntimeErrorTestSuites": null} | api-e2e-evidence/api-rev-002/fake-agy.log/json; opt-in pending are Not Tested, not passes |
++| TC-005/008 | Started — real AGY 1.2.14, live transport and native image | live-agy.log/json; model quota required; Codex package opt-in remains disabled |
++| TC-005/008 | Pass — live AGY 3 passed; 1 Codex-package case Not Tested (missing AGY_CODEX_PACKAGE_ROOT) | live-agy.log/json; Team and direct/nested Org send_message_to plus native image. AGY 1.2.14, 91.78s. |
++| TC-007 | Started — current built backend + Nuxt + headless Chrome, fake AGY | renderer/probe.log; independent temp database and ports |
++| TC-007 | Pass — live/reloaded/stopped-reopened DOM assertions; no page errors | renderer/tc-007-activity-panel-evidence.json and screenshots; owned Chrome/backend/Nuxt/temp root cleaned |
++| TC-013 | Not Tested — deferred at failed architecture gate, not environmentally blocked | No desktop instance launched or existing package overwritten; required after source/test origin resolution |
++| TC-010 | Fail reproduced — 2 same failures / 32 pass in isolated two-file run | architecture-reproduction.log/json; API-F001 requires failure-origin review |
++| TC-001/002 | Pass within full unit run — AGY helper 21/21, converter 44/44; AGY folder 168 pass / 5 live opt-in Not Tested | unit-architecture.json; explicit fake/native transport 9/9 and live E2E separately recorded |
++| TC-004/006 | Not Tested afresh — historical old-run/capture probes remain basis-limited | No current old-base-writer replay claimed; current new-run replay passed in TC-003/007 |
++
++### API-REV-002 reconciliation
++All commands completed; no running or interrupted cases. TC-010 Fail; TC-009/011/012/001/002/003/005/007/008 Pass at their stated boundary; TC-004/006 Not Tested afresh; TC-013 Not Tested/deferred at failed repository gate. Opt-ins are enumerated in *-not-tested.json. No desktop instance launched. Current round overall Fail, not blocked on a secret/account. Reconciled into canonical execution report.
+diff --git a/tickets/in-progress/agy-mcp-tool-call-presentation/design-spec.md b/tickets/in-progress/agy-mcp-tool-call-presentation/design-spec.md
+index ade2e9e97..f33dc171d 100644
+--- a/tickets/in-progress/agy-mcp-tool-call-presentation/design-spec.md
++++ b/tickets/in-progress/agy-mcp-tool-call-presentation/design-spec.md
+@@ -1,285 +1,279 @@
+-# Design Spec
++# Design Spec — AGY presentation and user-requested server test repair
+ 
+ ## Solution And Approval Basis
+ 
+-- Current solution revision ID: `SR-002`
+-- Approved requirements baseline / revision and user-approval reference: `requirements-doc.md` at SR-002, approved by the user in conversation on 2026-09-30 with DEC-001..005 resolved.
+-- Behavior-defining supplements and their approval references: None.
+-- Design status: `Ready`
+-- Canonical investigation-notes path: `tickets/in-progress/agy-mcp-tool-call-presentation/investigation-notes.md`
++- Package: `agy-mcp-tool-call-presentation`; current solution revision `SR-005`.
++- Approved requirements: `requirements-doc.md` SR-005. Original AGY approval at SR-002 unchanged; recovered user repair/inclusion instructions (2026-09-30 transcript lines 315, 992, 995, 1015) and current explicit continue-to-finish instruction after the combined-scope summary authorize the recovered outcomes. No claim of a retroactive September 30 design approval.
++- Design status: `Ready for independent architecture review`.
++- Canonical evidence: `investigation-notes.md`; scope evidence supplement `test-repair-scope-inventory.md`. No Product/UI supplement.
++- Investigated source: `a01cadaea37366fdd6d91196231d1257e25427d2` on `codex/agy-mcp-tool-call-presentation`, including latest checked `origin/personal@b0b077b02571098a6bf7993ab46b67a69fdb8f9d` (6 ahead / 0 behind). Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation`; finalization target remains origin/personal.
++- Existing implementation and tests are a recovery candidate, not accepted combined implementation. DR-003 focused tests passed; full suite/review gates remain. This design does not authorize finalization bypass.
+ 
+ ## Current-State Read
+ 
+-AGY streams every tool as a `step_update` with `tool_name` and `tool_info.parameters`. `AgyStreamEventConverter.tool()` (`autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts:86-129`) is the only place those steps become `AgentRunEvent`s. It copies the provider name and parameters verbatim into `tool_name` / `arguments` and wraps the provider output as `result: {provider_state, output}`. MCP calls therefore surface as `call_mcp_tool` with `{Arguments, ServerName, ToolName}`.
++The AGY converter fix is committed and focused-tested. It projects well-formed MCP wrapper steps to real names/arguments and structured object/array output, leaving native image detection keyed to provider names. Stored old calls remain unchanged.
+ 
+-The owner and boundary are healthy: the converter is the AGY provider adapter and already owns provider-to-platform translation (native image handling, denial classification, background-task closure). There is no structural problem; the MCP translation is simply missing. Downstream consumers (file-change processor, trace sequencer, WebSocket stream, web Activity panel, history replay) read `tool_name`, `arguments` and `result` generically and need no change.
++User-directed follow-up repairs moved from a separate test-repair worktree onto this branch. Team creation previously materialized a package before the catalog's strict index read could reject creation. The local preflight fixes that ordering. The released Team-to-Org cutover previously rejected current unversioned Team trees during retry. The local fix recognizes them, but currently imports a **live tolerant runtime validator as a released source classifier**, contrary to the canonical migration guideline. Its behavior already changed with upstream's collaborator/skill-contract updates. That dependency must be frozen within migration ownership before accepting the repair.
++
++Test repairs retarget stale hierarchical-Team/current launch assumptions, complete history fixtures/admission and test graph setup, build the server before subprocess E2E, and isolate analytics. After latest integration, 33 source/test/docs/package paths differ from base. The historical remainder spans 47 unit/integration files, with some already repaired and others potentially setup failures or real defects. Those are an explicit test-recovery workstream, not blanket permission for arbitrary production changes.
+ 
+ ## Task Size And Architectural Risk (Mandatory)
+ 
+-- Task size: `Small`
+-- Size rationale and supporting evidence: one new small source file and one modified method in the same folder, plus unit tests, three assertion updates in one existing live e2e test, and one documentation paragraph. No frontend change.
+-- Architectural risk: `Low`
+-- Risk rationale and supporting evidence: no event schema, API, persistence schema, security boundary, concurrency, deployment or ownership change. Existing event fields carry different values for AGY MCP calls only. Stored data needs no transformation. Provider shape verified live on AGY 1.2.14 and against 1.2.10 evidence. An unusable wrapper falls back to today's behavior.
+-- Escalation trigger if implementation or validation discovers new impact: any need to change a shared event contract, a downstream processor, the frontend, or history replay; or a live AGY shape that differs from the probe.
++- `task_size=Large`: combined implementation/test recovery spans AGY, Team lifecycle/catalog, released migration classification, build/test support and a finite 47-file historical failure cohort across multiple subsystems. This is not based on Markdown volume.
++- `architectural_risk=High`: persisted-history candidate classification and Team creation admission ordering affect retained data and retry/availability behavior. Current live-schema coupling plus upstream collaborator/skill changes require independent review. Unknown origins of some historical test failures prevent a Low-risk assumption.
++- Original Small/Low direct-route classification applies only to SR-002. It does not govern SR-005.
++- Escalation: any new production behavior beyond REQ-008/009, different availability/data-loss semantics, public API/schema change, startup-wide gate, or need to rewrite terminal migration results returns to Solution Designer. Existing test failures may lead to such recovery; do not hide them or broaden source changes.
+ 
+ ## Architecture Investigation Evidence
+ 
+-| Source / Command / Probe | Exact Path / Reference | Observation | Design Decision Supported | Remaining Uncertainty |
+-| --- | --- | --- | --- | --- |
+-| Code | `agy-stream-event-converter.ts:86-129` | Single translation point; `common` payload is built once and reused for start, terminal and background-close events | Unwrap once when building `common` (REQ-006) | None |
+-| Probe | `agy-mcp-call-shape-probe/summary.json` | ACTIVE, DONE and ERROR steps all carry full `parameters`; output is raw text; error is `{type, message}` | Same projection for every state (REQ-001, 002, 006); JSON text projection (REQ-007) | Undocumented provider shape (RSK-001) |
+-| Code | `src/agent-tools/mcp/agent-tool-mcp-session.ts:16` | `AGENT_TOOLS_MCP_SERVER_NAME = "autobyteus_agent_tools"` | Identify the AutoByteus server by this constant | None |
+-| Code | `events/processors/file-change/file-change-tool-semantics.ts` | Exact-name matching for file mutation and generated-output tools | `mcp__<server>__<tool>` cannot collide; bare AutoByteus media names are recognized (DEC-005) | None |
+-| Code | `agent-memory/services/runtime-tool-trace-sequencer.ts:145-152`, `run-history/projection/transformers/raw-trace-to-historical-replay-events.ts:96` | Both read `provider_state` and `output` from the AGY result | Keep the `{provider_state, output}` result shape (REQ-007) | None |
+-| Search | `grep -rn call_mcp_tool` over server `src` and web sources | No production code keyed on `call_mcp_tool` | No consumer needs updating | None |
+-| Code | `tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts:496, 519, 873` | Live e2e asserts `tool_name === "call_mcp_tool"` and reads the wrapper arguments | These assertions must move to the new name/arguments | Exact assertion bodies to be read by the implementer |
+-| Code | `tests/unit/.../agy-stream-event-converter.test.ts:53-58` | Fixture has `ToolName` but no `ServerName` | Remains valid as the fallback case (REQ-004, REQ-005) | None |
+-
+-## Intended Change
++See investigation notes SR-005 for exact reads/pins. Key evidence:
+ 
+-When the provider tool name is `call_mcp_tool` and its parameters contain a non-blank `ServerName` and `ToolName`, the converter emits the call as the real tool:
++| Source | Observation | Design consequence |
++| --- | --- | --- |
++| `src/agent-team-execution/services/team-run-service.ts`, `src/run-history/services/team-run-history-catalog-service.ts`, `store/team-run-history-index-store.ts` | Team service owns create sequence; catalog owns index; strict read awaits queued writes, missing file means empty, invalid bytes reject | Preserve catalog-facing preflight before manager creation; no direct filesystem read in service |
++| `migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts` | Existing zero-write `flatRoots`, missing-tree warnings, root collision and partial-target plans; local new current validator import | Add frozen unversioned classifier, retain planner dispositions and migration identity |
++| `docs/design/data_migration_guideline.md`, blob `02999a6c80b7df63443c70bc101becd00cc72613` | Frozen source classifiers; current-only runtime; same-ID failed retry, terminal skip; narrow admission | No live runtime source decoder, new global gate, ledger reset or second migration |
++| Current Team tree schema blobs `bf0bfe713b1d1644a20ea2f163f7fa9d77bd96ae` and shared schemas `b69359837b92b9b36698f2688c99395462ddd56f` | Current unversioned writer/reader includes optional-on-read collaborators, current launch shape excludes skill mode; validates identities/delegators | Freeze supported source shape/invariants explicitly, including pre-integration and latest-base current forms |
++| Released v1/v2 migrations, frozen v2 shape bundle, cutover runner and readiness index | Predecessors may retain missing/invalid roots; completed ledger does not prove directory validity | Preserve warnings/exclusions and current admission; test mixed/all-excluded and terminal retry cases |
++| `TESTING.md`, Vitest setup, Brief Studio package script, historical logs and DR-003 | Built-server suites need build; package integration needs packed app; shared DB/global managers can contaminate tests | Current build and test-owned state; per-file evidence and serial suite phases |
+ 
+-- `tool_name`: the bare `ToolName` when `ServerName` is the AutoByteus agent tools server; otherwise `mcp__<ServerName>__<ToolName>`.
+-- `arguments`: the `Arguments` object (an absent or non-object value becomes `{}`).
+-- `result.output`: structured JSON when the provider output is text that parses to a JSON object or array; otherwise unchanged.
++## Intended Change
+ 
+-Anything else is unchanged, including `invocation_id`, event types, `provider_state`, and the wrapper fallback when the parameters are unusable.
++1. Retain the completed AGY projection and original acceptance coverage.
++2. Retain/review the two bounded product repairs: Team index readability checked before package materialization, and current unversioned flat Team classification as untouched non-targets during eligible cutover retry.
++3. Correct the provisional migration helper's dependency on mutable runtime source validators using a migration-owned, pinned source-classification module.
++4. Finish test-only contract/setup repairs in the known cohort, preserving current behavior and routing genuine new product defects instead of making speculative source fixes.
++5. Rebuild/revalidate the combined candidate and restore complete implementation/review/API/delivery evidence. No push/release from this design phase.
+ 
+ ## Relevant Behavior And Production-Path Map (Mandatory)
+ 
+-| Behavior ID | Kind | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
+-| --- | --- | --- | --- | --- | --- | --- |
+-| BEH-001 | System | REQ-001, 002, 006, 007 / AC-001, 002, 004, 008 | AGY model calls an AutoByteus agent tool | Shown as `call_mcp_tool` (notes BEH-001) | Bare canonical name, own arguments, JSON output structured | DS-001 |
+-| BEH-002 | System | REQ-002, 003, 007 / AC-003, 008 | AGY model calls a third-party MCP tool | Shown as `call_mcp_tool` (notes BEH-002) | `mcp__<server>__<tool>`, own arguments | DS-001 |
+-| BEH-003 | System | REQ-005 / AC-007 | AGY native tool | Native name (notes BEH-003) | Preserved | DS-001 (unchanged branch) |
+-| BEH-004 | System | REQ-001, 002, 006 / AC-005, 006 | MCP call fails, is denied, or has an unusable wrapper | Failed `call_mcp_tool` (notes BEH-004) | Failure under real name; unusable wrapper falls back | DS-001 |
+-| BEH-005 | System | REQ-005 / AC-007 | Native `generate_image` completes | Native path resolution only for native tool | Preserved; decided on the provider name, never on the projected name | DS-001 |
+-| BEH-006 | User | DEC-004 | User reopens an older AGY run | Stored name replayed | Preserved; no replay change | N/A — no code path changed |
++Scenario-to-spine mapping: SCN-001, SCN-002, SCN-003 use DS-001; SCN-004 retains unchanged replay. SCN-005 uses DS-002; SCN-006 uses DS-003; SCN-007 uses DS-004. AC-014 explicitly covers DS-004 build/isolation, alongside AC-012 and AC-013.
++
++| Behavior | Requirements / ACs | Trigger / preserved outcome | Target path / spine |
++| --- | --- | --- | --- |
++| BEH-001,002,004 | REQ-001..004,006,007 / AC-001..006,008 | AGY tool start/success/failure/denial; real tool name and arguments; malformed wrapper fallback | DS-001, provider converter → event/trace/WS → Activity |
++| BEH-003,005 | REQ-005 / AC-007 | Native tools/image paths unchanged, MCP named generate_image never native | DS-001 provider-name decision before projection |
++| BEH-006 | DEC-004 | Old stored AGY calls unchanged | Existing history replay; no rewrite |
++| BEH-007 | REQ-008 / AC-009 | Team launch with unreadable index leaves no new package; missing/valid index normal | DS-002, Team service → catalog preflight → manager creation → catalog row |
++| BEH-008 | REQ-009 / AC-010 | Restart-to-retry cutover preserves valid current Team packages | DS-003, runner → candidate planner/frozen classifier → existing cutover → current admission |
++| BEH-010 | REQ-008,009 / AC-011 | Independent work/startup remain available; preserved exclusions and terminal skip | DS-002/003, existing runner/readiness boundary |
++| BEH-009 | REQ-010,011 / AC-012..014 | Reproduce/fix test cohort without weakening production | DS-004, build + isolated test graph → supported entrypoint → assertions/report |
+ 
+ ## Relevant Supplemental Task Artifacts
+ 
+-| Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
+-| --- | --- | --- | --- | --- |
+-| `agy-mcp-call-shape-probe.py`, `agy-mcp-call-shape-probe/` | Raw AGY 1.2.14 stream evidence | REQ-001..004, 006, 007 | Source of unit-test fixtures | Evidence only |
++- `test-repair-scope-inventory.md`: finite failure inventory/directions under REQ-010/011; evidence-only, no competing acceptance authority.
++- `recovery-evidence/test-repair-provenance-20261001/`: original user directions, source-transfer commands, historical logs; SR-004 provenance, not current pass.
++- `recovery-evidence/solution-recovery-sr005/`: pre-recovery snapshots and machine-readable historical cohort, evidence only.
++- `latest-base-integration-result-20261001.md`, `delivery-evidence/latest-base-20261001/`: DR-003 focused integrated proof, not full acceptance.
++- Original `agy-mcp-call-shape-probe.py`, `agy-mcp-call-shape-probe/`, `api-e2e-evidence/`: still relevant AGY shape/behavior evidence; applicability must be reassessed after current changes.
++- Full inventory and ownership are in investigation notes. Independent review artifacts: no combined review yet; prior ones `N/A — not applicable` for SR-002 only.
+ 
+ ## Task Design Health Assessment (Mandatory)
+ 
+-- Change posture: `Behavior Change`
+-- Current design issue found: `No`
+-- Root cause classification: `No Design Issue Found`
+-- Refactor needed now: `No`
+-- Evidence: the converter is the single AGY provider adapter; consumers are name-agnostic; no duplicate translation exists elsewhere.
+-- Design response: add the missing provider-to-platform translation inside the AGY adapter, as a small named concern beside the converter.
+-- Refactor rationale: owner, boundary, event shape and file placement remain correct for this scope.
+-- Intentional deferrals and residual risk, if any: none.
++- Posture: bug fixes plus test-contract cleanup.
++- Root causes: AGY local projection defect; Team creation **Missing Invariant** (precondition checked after side effect); cutover source classifier **Boundary Or Ownership Issue** (current reader used as historical classification); tests drifted from supported contracts/setup.
++- Refactor needed now: **Yes, bounded**—replace mutable runtime classifier dependency with migration-owned frozen recognition. Do not refactor the runner, catalog transaction system or unrelated runtime graph.
++- Catalog preflight owner/API is coherent: service calls catalog rather than reaching into index store. No new generic coordinator or global readiness service.
++- Residuals: preflight is not an atomic transaction against arbitrary concurrent disk tampering or later I/O failures. Existing post-create failure handling remains; no speculative rollback machinery is warranted by this approved defect.
+ 
+ ## Terminology
+ 
+-- **MCP call projection**: the platform-facing `{toolName, arguments}` derived from an AGY `call_mcp_tool` step.
++- **Current unversioned Team**: investigated flat-Team persisted shape written without schemaVersion, including supported earlier skill-era fields and latest-base collaborators where applicable; no inference that any object lacking a version is valid.
++- **Non-target**: migration leaves bytes untouched; this does not itself grant runtime admission.
++- **Repair cohort**: historical failed files enumerated in the supplement, plus previously repaired E2E and required shared test helpers.
++
++## Design Reading Order
++
++Requirements → current evidence → behavior map → data-transition decision → spines/owners → files/dependencies → sequence and verification. Old SR-002 snapshots are historical, not alternate authority.
+ 
+ ## Legacy Removal Policy (Mandatory)
+ 
+-- Policy: `No backward compatibility; remove legacy code paths.`
+-- The wrapper presentation for well-formed MCP calls is replaced, not kept behind a flag. The REQ-004 fallback is approved behavior for an unusable provider payload, not a legacy path.
++No backward-compatibility runtime paths. Replace well-formed call_mcp_tool presentation, remove obsolete current skill inputs and stale nested-Team expectations, retain released source/output fixtures only inside migration tests. Replace the new mutable classifier import; do not remove released migration support. Do not delete the 88 compiled *.test.js artifacts opportunistically—the active suite includes *.test.ts and cleanup was not required for these outcomes.
+ 
+ ## Persisted Data / State Transition Decision
+ 
+-- Stored subject, location, representative shape, and approximate volume: stored AGY run traces holding tool name, arguments and result; volume not measured.
+-- Relevant code-model, serialization, semantic, or physical-store change: none to schema; new AGY MCP calls store different values in the same fields.
+-- Normal reader/writer behavior and representative evidence: replay shows the stored tool name and arguments generically and reads `provider_state`/`output`, which keep their shape.
+-- Required semantics and invariants under direct use: old runs stay readable and keep their recorded presentation (DEC-004).
+-- Decision: `Directly Usable — No Migration`
+-- Decision rationale: readers are value-agnostic; the user explicitly declined relabelling history.
+-- Acceptance criteria or design constraints supported by this decision: BEH-006.
+-
+-## Data-Flow Spine Inventory
++- AGY: **Directly Usable — No Migration**. Existing trace shape/readers unchanged; no old-call relabel.
++- Team preflight: **Directly Usable — No Migration**. No storage format change, no rewrite/delete of existing index or packages. Enforce existing write prerequisite earlier.
++- Historical cutover: **Migration Required — repair of existing same-ID migration only**, not a new migration or new target shape. Existing `20260901_agent_org_flat_team_families_v1` already transforms supported released nested Team histories to its fixed Org target; modify only current-Team source classification so failed/pending attempts can finish correctly. Already-current unversioned packages require no conversion.
++- Stored subjects: `memory/agent_teams/<id>/team_run_execution_tree.json`, Team index, selected historical Team messages/tasks/traces/references and token attribution; Org targets under `memory/agent_orgs/<id>`. Production volume not measured; no invented latency target. Delta adds in-memory recognition of an already-read metadata tree, no new trace scans/copies/hashes/journal.
++- Sources inspected: released V1 promoter, released recursive V2 cutover decoder, frozen flat V2 schema, unversioned current schemas at pre-integration `82996343c` and integrated `a01cadaea`. Real user data not read or mutated; faithful existing released fixtures and DR-003 built-server test are evidence, not a claim of testing an installed dataset.
+ 
+-| Spine ID | Scope | Related Behavior ID(s) | Start | End | Governing Owner | Why It Matters |
+-| --- | --- | --- | --- | --- | --- | --- |
+-| DS-001 | Return-Event | BEH-001..005 | AGY CLI stream step | Activity item in the web app (and stored trace) | `AgyStreamEventConverter` for translation; event pipeline downstream | The only path by which an AGY tool call becomes visible |
++### Migration convention checklist and plan
+ 
+-## Primary Execution Spine(s)
++1. **Need:** no new persisted fact or reinterpretation of current data. Fix classification in the existing cutover; current zero-write packages stay unchanged.
++2. **Availability:** no global startup gate. Index preflight only affects Team creation already unable to record history. Independent Agent work and app/update access remain usable, including all history excluded.
++3. **Source/target:** predecessor V1 can warning-complete while retaining invalid roots/index; V2 `SKIPPED_MISSING` does not promise a tree. Supported nested V2 source converts through existing fixed Org target. Frozen classifiers must not import live current input decoders/types.
++4. **Disposition:** valid frozen flat V2/current unversioned → `flatRoots` / zero-write; supported nested V2 → existing conversion; missing tree → existing bounded warning/preserve; malformed/collision → existing failure/preserve; valid partial target/index-only → existing recovery. Do not invent success or swallow general errors. Current admission remains independent.
++5. **Commit/retry:** reuse existing atomic writer, package rename, history index transition, token transaction and source markers. No new backups/journal/ledger resets. This code-level repair applies to pending/failed eligible attempts only; ordinary startup skips terminal SUCCEEDED/SUCCEEDED_WITH_WARNINGS.
++6. **Boundary/order:** runtime remains current-only. Freeze source closure in migration-owned code. Prisma schema deploy order and historical outputs unchanged; no source-column retirement in this ticket. Earlier skill fields in frozen source/output remain; current projections omit them.
++7. **Cost:** use existing parsed raw tree; no extra filesystem pass for recognition. Team preflight reads one index using its store; no corpus audit. Record representative counts/bytes and cold/retry/terminal-startup differences during validation.
++8. **References:** preserve cutover's context-file locator dependency propagation, root identity, handoff/delegator/unique-run constraints and token ownership. Valid current non-targets must remain untouched next to a failing historical dependency component. No bypass of current package admission for list/load/restore.
++9. **Evidence:** AC-009..011, DR-003 existing tests, plus frozen classifier tests for known unversioned cohorts, with/without collaborators, old skill-era fields, malformed/mismatched IDs, mixed sources, zero-write and terminal-skip controls. Re-run full suite under AC-012..014.
++10. **Lessons/review:** canonical guideline sections 1–10; frozen released-run-package-shapes README, predecessor missing-tree dispositions, runner terminal skip. Avoid old startup lockout and repeated historical audit mistakes. Independent architecture review required by High risk.
+ 
+-`AGY CLI stream -> AgyAgentRunBackend -> AgyStreamEventConverter -> agent run event pipeline (processors, trace persistence) -> WebSocket stream -> web tool lifecycle handler -> Activity panel`
++### Frozen recognition design
+ 
+-## Spine Narratives (Mandatory)
++Add a migration-private snapshot classifier under `src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/`. Capture and document source pins `82996343c` and `a01cadaea` rather than importing `run-history/store/team-run-execution-tree-schema.ts`. Expose `isReleasedUnversionedFlatTeamTree(raw, expectedRootId): boolean`; its only caller is the candidate planner.
+ 
+-| Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
+-| --- | --- | --- | --- | --- |
+-| DS-001 | The backend reads a provider step and hands it to the converter. The converter builds one common tool payload per step index and emits start and terminal events from it. For an MCP call the payload is now built from the MCP call projection. Everything downstream is unchanged. | AGY step, tool event payload | `AgyStreamEventConverter` | MCP call projection; MCP output projection |
++Freeze the known structural variants and all predicates used to distinguish them: top-level timestamps/binding/handoffs/root; root '/' and matching run ID; direct configured Agent members and unique coordinator/address/run IDs; launch configuration; task/delegator identities; optional-on-read collaborators and collaborator invariants introduced by latest base. Preserve supported old-field cohorts explicitly in this source snapshot (skillAccessMode/settledAt where present), with no live runtime enum/type/parser dependency. New-format trees carry no schemaVersion; versioned predecessors remain with their existing frozen validators. Known source variants are accepted deliberately, not by accepting every versionless object. Do not fake a schemaVersion and feed current data into the old V2 classifier or discard collaborators to make it validate.
+ 
+-## Spine Actors / Main-Line Nodes
++Use a small frozen `types.ts` + `schema.ts` split, with local predicate helpers if needed to keep responsibilities legible; a README records source pin, supported shape variants and migration-only ownership. Reuse existing frozen primitives only when their semantics really match; do not modify shared frozen V2 behavior to accommodate this new cohort. Unknown source-shape cases must remain preserved/non-admitted and be investigated rather than guessed. No copies of whole runtime orchestration are needed.
+ 
+-`AgyAgentRunBackend`, `AgyStreamEventConverter`, event pipeline, WebSocket stream, web tool lifecycle handler. Only the converter changes.
++The planner replaces its local `isCurrentTeamRunTree` and live schema import with this frozen predicate, called after frozen flat V2 check and before released nested V2 conversion. `flatRoots` is still only a zero-write migration disposition; it is not the current readiness index.
+ 
+-## Ownership Map
++## Data-Flow Spine Inventory
+ 
+-- `AgyStreamEventConverter`: owns translating AGY steps into platform events, including which provider step is a native image call and how results are wrapped.
+-- `agy-mcp-tool-call.ts` (new, off-spine, serves the converter): owns recognizing an AGY MCP call and deriving its platform tool name, arguments and output presentation. It owns no sequencing and emits no events.
++| ID | Scope / behaviors | Start → end | Governing owner |
++| --- | --- | --- | --- |
++| DS-001 | Return/event / BEH-001..005 | AGY provider step → persisted event + Activity | AgyStreamEventConverter |
++| DS-002 | Primary / BEH-007,010 | User/API Team launch → created/recorded Team or non-writing refusal | TeamRunService, catalog precondition, manager materialization |
++| DS-003 | Primary / BEH-008,010 | Eligible restart → migration dispositions → current admitted history | AppDataMigrationRunner + existing cutover; current admission separately |
++| DS-004 | Operational / BEH-009 | Fresh test prerequisites → product-boundary assertions → recorded complete results | Existing test harness / owning test engineer |
+ 
+-## Thin Entry Facades / Public Wrappers
++## Primary Execution Spines and Spine Narratives
+ 
+-N/A — none involved.
++- **DS-001:** AGY CLI → backend → converter → trace/processors → WebSocket → Activity. Converter projects one common payload reused by start/terminal/background-close. Native detection uses provider name. History replays stored events without relabelling.
++- **DS-002:** GraphQL/launch caller → TeamRunService validates definition/config and plans → catalog `assertHistoryIndexReadable()` → manager creates package/root → catalog records row → caller receives run. On unreadable index, exit before manager call. Root-config entry delegates to same service. Existing later failure termination is retained; no new index reset or delete.
++- **DS-003:** startup runner checks ledger/prerequisites → candidate planner reads metadata/index → frozen source classification → current-Team zero-write OR existing nested conversion/validation/index transition/retirement → runner records truthful aggregate → runtime readiness independently admits valid packages. FAILED is not a whole-app lockout; terminal records skip conversion.
++- **DS-004:** pack/build required artifacts → isolated graph and test DB → supported public/local owner call → strong assertions → exact failure classification/report. No production fallback is added to accommodate an incomplete test mock. New genuine product defects return upstream.
+ 
+-## Removal / Decommission Plan (Mandatory)
++## Spine Actors / Main-Line Nodes and Ownership Map
+ 
+-| Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Scope | Notes |
+-| --- | --- | --- | --- | --- |
+-| Verbatim pass-through of `call_mcp_tool` name and wrapper parameters for well-formed MCP calls | Replaced by the projected name and arguments | `agy-mcp-tool-call.ts` via the converter | In This Change | Fallback for unusable wrappers remains by requirement |
+-| E2E assertions on `tool_name === "call_mcp_tool"` in `agy-team-inter-agent-roundtrip.e2e.test.ts` | They pin the replaced presentation | Assertions on `send_message_to` and unwrapped arguments | In This Change | Prompt text that tells the model to use `call_mcp_tool` stays; it describes the provider tool |
++Converter owns AGY translation; projection helper owns pure wrapper/output mapping. TeamRunService owns sequencing, TeamRunHistoryCatalogService owns history access, index store owns strict read/atomic write, Team manager owns materialization/lifecycle. Runner owns attempts/status/recovery action; cutover owns transformations; planner/frozen schema own source classification; readiness index owns current admission. Test fixtures own only disposable setup, not alternate production behavior.
+ 
+-## Return Or Event Spine(s)
++## Thin Entry Facades / Public Wrappers
+ 
+-DS-001 above.
++GraphQL resolvers delegate to TeamRunService; they must not read the index or create a parallel preflight. Existing wrappers are unchanged. No new public API.
+ 
+-## Bounded Local / Internal Spines
++## Removal / Decommission Plan (Mandatory)
+ 
+-Inside `AgyStreamEventConverter.tool()`: `provider step -> resolve provider name -> (MCP call? project name/arguments) -> build common payload -> emit start -> on terminal: classify -> wrap result -> emit terminal`. The native-image decision is taken from the provider name before projection.
++| Remove/replace | Replacement | Boundary |
++| --- | --- | --- |
++| Well-formed MCP generic wrapper rendering/assertions | AGY projection + canonical names | Original AGY scope |
++| Mutable current-schema import and local predicate in candidate planner | Pinned migration-only classifier | Required technical correction |
++| Old hierarchical Team run-config test file | Renamed flat-Team config test and Org migration assertions | Already checkpointed; verify semantic coverage |
++| Obsolete current skillAccessMode inputs/assertions | Current launch contracts; frozen migration fixtures/output retain historical fields | No runtime compatibility wrapper |
++| Invalid/stale test APIs, incomplete mocks/fixtures | Current owned test construction and supported assertions with per-case rationale | Finite cohort; not blanket test deletion |
+ 
+-## Off-Spine Concerns Around The Spine
++## Return Or Event Spines / Bounded Local Spines
+ 
+-| Off-Spine Concern | Related Spine ID(s) | Serves Which Owner | Responsibility | Why It Exists | Risk If Misplaced On Main Line |
+-| --- | --- | --- | --- | --- | --- |
+-| MCP call projection | DS-001 | `AgyStreamEventConverter` | Recognize `call_mcp_tool`, validate `ServerName`/`ToolName`, produce platform tool name and arguments | Provider wrapper hides the real tool | Inlined it would mix naming policy into event sequencing in an already dense method |
+-| MCP output projection | DS-001 | `AgyStreamEventConverter` | Turn JSON object/array text into structured JSON | Parity with other runtimes | Same |
++DS-001 event sequencing remains as above; errors and provider_state unchanged. DS-002 errors propagate through the existing API. DS-003 status/recovery derives from existing runner, not UI inference. Local planner chain: read already-enumerated tree → frozen flat V2 → frozen unversioned → released nested classifier → plan or preserved diagnostic. No new worker/state machine.
+ 
+-## Ownership Boundaries
++## Off-Spine Concerns Around The Spine
+ 
+-The AGY backend folder is the only place that knows AGY's `call_mcp_tool` wrapper. Shared MCP naming (`src/agent-tools/mcp`) stays provider-agnostic. Downstream processors continue to depend only on the generic event payload.
++| Concern | Serves | Owner / risk control |
++| --- | --- | --- |
++| MCP naming/output JSON | DS-001 | Pure AGY helper; no event emission or native image decisions |
++| Strict index read | DS-002 | Catalog/store; no service-level path/schema parsing |
++| Frozen source shape recognition | DS-003 | Migration-private code; no mutable runtime source decoder |
++| Current admission | DS-002/003 | Existing readiness/package validators; no aggregate-status shortcut |
++| Build/database/mock lifecycle | DS-004 | Test harness; no installed-profile writes or missing-guard production defaults |
+ 
+-## Boundary Encapsulation Map
++## Ownership Boundaries / Boundary Encapsulation Map
+ 
+-| Authoritative Boundary | Internal Owned Mechanism(s) It Encapsulates | Upstream Callers That Must Use The Boundary | Forbidden Bypass Shape | If Boundary API Is Too Thin, Fix By |
+-| --- | --- | --- | --- | --- |
+-| `AgyStreamEventConverter` | `agy-mcp-tool-call.ts` | `AgyAgentRunBackend` | Any processor, the frontend or history replay re-deriving the real tool from `ServerName`/`ToolName` | N/A |
++| Authoritative boundary | Internal mechanism | Upstream caller | Forbidden bypass |
++| --- | --- | --- | --- |
++| AgyStreamEventConverter | MCP projection | AGY backend | UI/history re-unwrapping provider parameters |
++| TeamRunHistoryCatalogService | Team index store | TeamRunService | Service filesystem read/reset of catalog index |
++| Existing cutover | Frozen source classifier/transition helpers | Migration runner | Runtime legacy decoder or current validator as mutable released source classifier |
++| Current package readiness | Current tree/package validation | History list/load/restore | Directory existence or migration success treated as admission |
+ 
+ ## Dependency Rules
+ 
+-- `agy-mcp-tool-call.ts` may import `AGENT_TOOLS_MCP_SERVER_NAME` from `src/agent-tools/mcp/agent-tool-mcp-session.ts` and the local `agy-stream-message.ts` helpers. It must not import event types or other backends.
+-- Only `agy-stream-event-converter.ts` imports `agy-mcp-tool-call.ts`.
+-- No change under `events/processors`, `agent-memory`, `run-history`, `src/agent-tools/mcp`, or `autobyteus-web`.
+-
+-## Interface Boundary Mapping
+-
+-| Interface / API / Query / Command / Method | Subject Owned | Responsibility | Accepted Identity Shape(s) | Notes |
+-| --- | --- | --- | --- | --- |
+-| `projectAgyMcpToolCall(providerToolName, parameters)` | AGY MCP call | Return `{ toolName, arguments }` for a well-formed MCP call, or `null` | Provider tool name string; provider parameters record or null | `null` means "present as the provider reported it" |
+-| `projectAgyMcpToolOutput(output)` | AGY MCP call output | Return structured JSON for object/array JSON text; otherwise return the input unchanged | Unknown provider output | Called only for calls that projected non-null |
++- AGY helper may import AGENT_TOOLS_MCP_SERVER_NAME and local agyRecord/agyString; no downstream event schema changes.
++- Team service calls catalog preflight; catalog alone calls its index store. No independent preflight in each resolver.
++- Released source recognition stays migration-owned with pinned predicates/types. Current runtime never imports migration source modules. Current validators may validate current OUTPUT only; never dynamically redefine old source classification.
++- Tests use current complete graph APIs/explicit fakes; no restoring removed production APIs to satisfy them.
+ 
+-## Interface Boundary Check
++## Interface Boundary Mapping / Check
+ 
+-| Interface | Responsibility Is Singular? | Identity Shape Is Explicit? | Ambiguous Selector Risk | Corrective Action |
+-| --- | --- | --- | --- | --- |
+-| `projectAgyMcpToolCall` | Yes | Yes | Low | None |
+-| `projectAgyMcpToolOutput` | Yes | Yes | Low | None |
++| Interface | Singular subject/responsibility | Identity | Check |
++| --- | --- | --- | --- |
++| projectAgyMcpToolCall(providerName, params) | MCP wrapper → projection or null | provider name/server/tool | Explicit; no change |
++| projectAgyMcpToolOutput(output) | object/array JSON projection only | none | Explicit; no change |
++| catalog.assertHistoryIndexReadable() | Team catalog precondition | injected memoryDir | No caller-supplied ambiguous run/family ID |
++| isReleasedUnversionedFlatTeamTree(raw, expectedRootId) | pure frozen candidate classification | exact Team root ID | Explicit, no writes/admission |
+ 
+ ## Main Domain Subject Naming Check
+ 
+-| Node / Subject | Current / Proposed Name | Name Is Natural And Self-Descriptive? | Naming Drift Risk | Corrective Action |
+-| --- | --- | --- | --- | --- |
+-| New file | `agy-mcp-tool-call.ts` | Yes | Low | None |
++Existing converter/service/catalog/runner names describe owners. `released-unversioned-flat-team-shapes` makes migration source scope explicit; avoid generic `compatibility`, `utils` or `isCurrent` names that imply evolving runtime authority.
+ 
+ ## Existing Capability / Subsystem Reuse Check
+ 
+-| Need / Concern | Existing Capability Area / Subsystem | Decision | Why | If New, Why Existing Areas Are Not Right |
+-| --- | --- | --- | --- | --- |
+-| Identify the AutoByteus agent tools server | `src/agent-tools/mcp/agent-tool-mcp-session.ts` | Reuse | Constant already authoritative | — |
+-| Canonical AutoByteus tool name | `agent-tools-mcp-tool-name.ts` | Not needed | AGY already supplies the bare tool name separately from the server name; there is no prefix to strip | — |
+-| Third-party name format | `agent-tools-mcp-tool-name.ts` (`buildAgentToolsMcpWireToolName`) | Create local | That builder is fixed to the AutoByteus server name | A one-line template local to the AGY projection is clearer than generalizing a shared helper for one caller |
+-| JSON text result projection | `mcp-effective-tool-result-projector.ts` | Create local | The shared projector takes an MCP `{content: [...]}` envelope and a provider union that excludes AGY; AGY delivers already-flattened text | Forcing AGY text into a fake envelope would misuse that contract |
++Reuse AGY adapter, catalog/index store, runner and cutover transitions, current readiness, existing test support and build/isolated-instance tooling. Add only the frozen source recognizer required by guideline; do not create another migration framework, admission service, global test bypass or journaling system.
+ 
+ ## Subsystem / Capability-Area Allocation
+ 
+-| Subsystem / Capability Area | Owns Which Concerns | Related Spine ID(s) | Governing Owner(s) Served | Decision | Notes |
+-| --- | --- | --- | --- | --- | --- |
+-| `agent-execution/backends/antigravity/stream` | AGY stream translation, including MCP call projection | DS-001 | `AgyStreamEventConverter` | Extend | — |
++AGY provider adapter owns presentation; Team lifecycle/catalog owns preflight; app-data migration owns released classification; server test directories own fixtures/assertions with existing setup infrastructure. Existing folder hierarchy remains; no layer restructuring.
+ 
+-## Draft File Responsibility Mapping
++## Draft File Responsibility Mapping → Reusable Structures → Final Mapping
+ 
+-| Candidate File | Owning Subsystem / Capability Area | Owner / Boundary | Concrete Concern | Why This Is One File | Reuses Shared Structure? |
+-| --- | --- | --- | --- | --- | --- |
+-| `stream/agy-mcp-tool-call.ts` | AGY stream | Converter's off-spine concern | MCP call and output projection | One provider-wrapper concern | `AGENT_TOOLS_MCP_SERVER_NAME` |
+-| `stream/agy-stream-event-converter.ts` | AGY stream | Converter | Use the projection when building the tool payload and wrapping output | Existing owner | — |
++The two AGY files retain their existing responsibilities. Team service adds ordering only; catalog adds a domain precondition method. Planner selects dispositions and imports the frozen recognizer. Frozen source types/schema are the only newly extracted shared structure and are used solely within this migration boundary; no mostly-optional general DTO. Test helpers may share complete setup for tests of the same owner, but must fail when a scenario calls an unprovided boundary.
+ 
+-## Reusable Owned Structures Check
++| File/path | Action | Final responsibility |
++| --- | --- | --- |
++| `src/agent-execution/backends/antigravity/stream/agy-mcp-tool-call.ts`, `agy-stream-event-converter.ts` | Retain reviewed candidate / modify only if defect | Original projection and event sequencing |
++| `src/agent-team-execution/services/team-run-service.ts` | Retain/refine bounded preflight | Check catalog prerequisite before manager creation |
++| `src/run-history/services/team-run-history-catalog-service.ts` | Retain bounded method | Expose catalog precondition, no new storage |
++| `src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts` | Modify | Replace mutable source dependency; preserve dispositions |
++| `src/app-data-migrations/legacy/released-unversioned-flat-team-shapes/{types.ts,schema.ts,README.md}` | Add | Pinned source variants, invariants, provenance and pure predicate; local helper split allowed if warranted |
++| `tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts` | Extend | Zero-write current cohorts, invalid controls and mixed/retry/terminal cases |
++| `tests/unit/agent-team-execution/team-run-service.test.ts`, integration equivalent | Retain/extend | Preflight ordering, missing/valid/invalid index controls and complete mocks |
++| Existing E2E repair paths and AGY fixture/tests | Retain/reconcile | Strong current supported scenarios and authentic frozen fixtures; supplement lists exact cohort |
++| Historical 47 unit/integration files + owner-specific existing helpers | Modify as evidence requires | Test-contract/setup repair only; per-case changes documented, new production defects routed |
++| `package.json`, `TESTING.md`, runtime docs | Retain/update | Build prerequisite and truthful testing/runtime guidance |
+ 
+-None — no repeated structure arises.
++All source/test paths above are relative to `autobyteus-server-ts/` except root package/docs. Full existing changed-file set is in investigation evidence. New frozen classifier tests may be colocated under `tests/unit/app-data-migrations/` if that keeps fixtures/test responsibility clearer; do not spread source decoding into tests alone.
+ 
+ ## Shared Structure / Data Model Tightness Check
+ 
+-N/A — no shared structure added or changed.
+-
+-## Final File Responsibility Mapping
+-
+-Same as the draft mapping; no extraction changed it.
++No public DTO/schema change. Frozen source types reflect exact investigated historical meaning, not current runtime aliases. Preserve root-vs-member identity and typed Agent/Team collaborator variants; do not collapse them into one ambiguous ID bag. Missing optional collaborators means none, not permission to omit required identity fields. Existing V2 frozen source/output remains unchanged.
+ 
+ ## Applied Patterns
+ 
+-Adapter: the converter remains the provider adapter; the projection is a pure function it calls.
+-
+-## Target Subsystem / Folder / File Mapping
++Provider adapter/pure projection; service-owned precondition; migration-owned pure classifier; existing repository/atomic commit and runner. No new generic architecture pattern.
+ 
+-| Path | Kind | Owner / Boundary | Responsibility | Why It Belongs Here | Must Not Contain |
+-| --- | --- | --- | --- | --- | --- |
+-| `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-mcp-tool-call.ts` | File (Add) | Converter | `AGY_MCP_CALL_TOOL_NAME`, `projectAgyMcpToolCall`, `projectAgyMcpToolOutput` | AGY-specific provider wrapper knowledge | Event emission, turn state, native image logic |
+-| `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts` | File (Modify) | Converter | Build `common` from the projection; decide `nativeImage` from the provider name; project output for projected MCP calls | Existing owner | Inline `ServerName`/`ToolName` parsing |
+-| `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-tool-call.test.ts` | File (Add) | — | Unit tests of both projections | Mirrors source | — |
+-| `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts` | File (Modify) | — | Event-level tests for AC-001..008 | Existing suite | — |
+-| `autobyteus-server-ts/tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts` | File (Modify) | — | Expect `send_message_to` and unwrapped arguments at lines ~496, ~519, ~873 | Pins the live presentation | — |
+-| `autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md` | File (Modify) | — | State that MCP calls are presented under the real tool name, and the naming rule | Runtime doc | — |
++## Target Subsystem / Folder Mapping and Folder Boundary Check
+ 
+-## Folder Boundary Check
+-
+-| Path / Folder | Intended Structural Depth | Ownership Boundary Is Clear? | Mixed-Layer Or Over-Split Risk | Justification / Corrective Action |
+-| --- | --- | --- | --- | --- |
+-| `backends/antigravity/stream` | Persistence-Provider (provider adapter) | Yes | Low | One small sibling file beside its only caller |
++Use existing `agent-execution/backends/antigravity/stream` provider folder, `agent-team-execution/services` orchestration, `run-history/services` catalog, and `app-data-migrations/legacy` frozen source boundary. Tests mirror owners. This retains clear structural depth without a new folder per execution step. Frozen source directory must contain no runtime services or live schema imports.
+ 
+ ## Concrete Examples / Shape Guidance
+ 
+-| Topic | Good Example | Bad / Avoided Shape | Why The Example Matters |
+-| --- | --- | --- | --- |
+-| AutoByteus tool | Provider `tool_name: "call_mcp_tool"`, `parameters: {ServerName: "autobyteus_agent_tools", ToolName: "delegate_task", Arguments: {description, recipient_address}}` → event `tool_name: "delegate_task"`, `arguments: {description, recipient_address}` | Keeping `ServerName`/`ToolName` alongside the arguments | AC-001 |
+-| Third-party tool | `ServerName: "shape-test"`, `ToolName: "echo_args"` → `tool_name: "mcp__shape-test__echo_args"` | `tool_name: "echo_args"` (could collide with platform names such as `write_file`) | AC-003, DEC-002 |
+-| Unusable wrapper | `parameters: {ToolName: "generate_image"}` (no `ServerName`) → unchanged `call_mcp_tool` with provider parameters | Guessing the server, or throwing | AC-006 |
+-| Native image guard | `nativeImage = providerName === "generate_image"` evaluated before projection | `nativeImage = common.tool_name === "generate_image"` — an AutoByteus MCP `generate_image` would trigger native path resolution | AC-007 |
+-| JSON output | output `"{\n \"target_agent_run_id\": \"x\"}"` → `result: {provider_state: "DONE", output: {target_agent_run_id: "x"}}`; output `"CAPSULE-MCP-MARKER-7318"` or `"42"` → unchanged | Replacing the whole `result` with the parsed object (breaks `provider_state` readers) | AC-008 |
+-| Same name at start and end | The ACTIVE step stores the projected `common`; terminal and background-close events reuse that shape | Projecting only on DONE | REQ-006 |
++- AGY `{ServerName:'autobyteus_agent_tools',ToolName:'delegate_task',Arguments:{description,recipient_address}}` → bare `delegate_task` and own arguments; third-party `shape-test/echo_args` → `mcp__shape-test__echo_args`. Missing server/tool → generic fallback. Output object/array JSON stays inside `{provider_state,output}`; primitives/text unchanged.
++- Invalid Team index: before = index sentinel bytes + N package roots; rejected launch → same bytes and N roots. No delete/rebuild of user history.
++- Retry fixture: valid unversioned Team A with collaborators + supported nested source B + missing-tree C. A stays byte-identical; B follows existing Org conversion; C remains preserved with existing warning. Runtime admission validates each actual current package independently.
++- Do not mark the historical `it.fails` regression as proof of fixed product behavior; final repaired regression must be an ordinary passing test.
+ 
+ ## Backward-Compatibility Rejection Log (Mandatory)
+ 
+-| Candidate Compatibility Mechanism | Why It Was Considered | Rejection Decision | Clean-Cut Replacement / Removal Plan |
+-| --- | --- | --- | --- |
+-| Setting or flag to keep the `call_mcp_tool` presentation | Old runs keep it | Rejected | New calls always project; old stored runs are untouched data, not a code path |
+-| Relabelling old runs at replay time | Consistent history | Rejected (DEC-004) | None |
+-| Frontend-side unwrapping | Request mentioned the frontend | Rejected | Server adapter projection so every consumer sees the real tool |
++Reject frontend unwrapping, old-call replay relabel, flags to restore generic AGY names, live runtime legacy readers, mutable source validators, resurrected nested-Team/current skill APIs, ledger resets and deleting failing fixtures. Frozen released migration decoders are required upgrade support, not compatibility runtime paths. Old stored AGY presentation is retained data, not dual code behavior.
+ 
+ ## Derived Layering
+ 
+-N/A.
++N/A beyond existing owner boundaries; no new layering is necessary.
+ 
+ ## Change / Refactor Sequence
+ 
+-1. Add `agy-mcp-tool-call.ts` with its unit tests (fixtures taken from the probe output).
+-2. Update `AgyStreamEventConverter.tool()`: compute the provider name, take `nativeImage` from it, build `common` from the projection when non-null, and apply the output projection in the generic failure and generic success branches for projected calls.
+-3. Extend the converter unit tests for AC-001..008; keep the existing `ToolName`-only fixture as the fallback case.
+-4. Update the three live e2e assertions and the runtime doc paragraph.
++1. Independent architecture review of SR-005 before accepting/continuing combined source work. No source readiness inferred from earlier Small/Low pass.
++2. Implementation takes over integrated a01cadaea, inventories preserved local artifacts and exact diff; keeps 9038c218b/DR-002 snapshots. Refresh refs if changed, do not drop repairs or overwrite latest upstream contracts.
++3. Correct frozen classifier dependency, retain Team preflight, add focused source regression/negative/coexistence tests; verify unchanged AGY path. No unapproved broad source fixes.
++4. Reproduce historical failure cohort on correct fresh builds and isolated state. Repair fixtures/setup/assertions following current independent contracts and the supplement; retain per-case dispositions. Compare baseline where necessary to establish origin, not to waive requested repair work. Route new genuine defects/ambiguous intended outcomes upstream.
++5. Complete implementation-scoped checks and handoff with exact source/tests, retained/deleted coverage rationale and residuals. Independent source/test review follows configured Large/High route.
++6. API/E2E owns full unit/architecture, integration, deterministic E2E and required realistic migration/AGY validation, with maintained ledger and honest gates/skips. Existing focused DR-003 evidence is reusable only on unchanged basis.
++7. Delivery refreshes integration, docs and final candidate verification, then finalizes/releases under user's existing direction and established channel decision. No forced stable release; no destructive cleanup of unrelated state.
+ 
+ ## Key Tradeoffs
+ 
+-- Local one-line name template and local JSON projection instead of generalizing shared MCP helpers: less reuse, but no change to contracts shared with Codex, Claude and Grok.
+-- Requiring both `ServerName` and `ToolName`: a wrapper missing the server stays generic instead of being shown under a possibly misleading bare name.
++Earlier small projection fix now carries genuine persisted-data and large test-recovery scope. Independent review adds a gate but avoids releasing unreviewed migration semantics. A frozen metadata classifier costs small migration-private source duplication but prevents current schema changes from rewriting released upgrade behavior. Narrow preflight is cheaper and less risky than speculative creation rollback/journals. Test repairs preserve behavior instead of making runtime permissive.
+ 
+ ## Risks
+ 
+-- RSK-001: AGY may change the wrapper shape; mitigated by the fallback and unit fixtures tied to observed versions.
+-- A third-party server named exactly `autobyteus_agent_tools` cannot occur in an AutoByteus run: `agy-mcp-config-materializer.ts` rejects that collision before the run starts.
+-- Live e2e for AGY depends on the local AGY CLI and model quota; validation ownership is downstream.
++- New collaborator and skill-removal contracts must be represented by authentic pinned source fixtures; passing only a pre-integration fixture is insufficient.
++- Preflight may add an index read per creation; no claim of atomicity against arbitrary disk mutation. Measure representative cost, no new full history scan.
++- Broad historical failures may include genuine defects outside the two approved outcomes. These return for requirements/design recovery, not indiscriminate patching or silently accepted failures.
++- Branch now current only as of DR-003 fetched b0b077b02. Subsequent upstream changes require another integration refresh and affected tests.
++- Live provider/browser/Electron full product evidence has not been rerun at current HEAD; Delivery must not infer final user verification from old testing wording alone.
+ 
+ ## Guidance For Implementation
+ 
+-- "Usable" means `ServerName` and `ToolName` are both non-blank strings (use `agyString`). `Arguments` that is absent or not a plain object becomes `{}`.
+-- Do not trim or alter the names beyond what `agyString` validates; build the third-party name as `` `mcp__${server}__${tool}` ``.
+-- JSON projection: only for string output; `JSON.parse` in a try/catch; accept only a non-null object or array result; otherwise return the original value.
+-- Apply output projection only when the call projected non-null. Do not touch the native image branches or the `BACKGROUND_TOOL_OUTPUT` result.
+-- The error message passed as `error`/`reason` stays the provider's error text; denial classification is unchanged.
+-- No changes outside the files listed in the target mapping. If one seems necessary, stop and return a Design Impact.
++Preserve the original AGY helper semantics: agyString validates nonblank names; arguments absent/non-record become {}; output parsing only for projected MCP calls; native image decision uses providerName; no change to denial/error text or background output contracts. Do not reorder current catalog queues or reinterpret statuses as part of the preflight. Implement frozen classification from pinned evidence, not by importing the current runtime reader. Keep test-owned data isolated and immutable released fixtures distinct from current API expectations. The repair cohort grants test work, not unspecified production rewrites. Any requirement implication returns to Solution Designer with a focused evidence-backed finding.
+diff --git a/tickets/in-progress/agy-mcp-tool-call-presentation/investigation-notes.md b/tickets/in-progress/agy-mcp-tool-call-presentation/investigation-notes.md
+index f332c3e48..6eba5f9f9 100644
+--- a/tickets/in-progress/agy-mcp-tool-call-presentation/investigation-notes.md
++++ b/tickets/in-progress/agy-mcp-tool-call-presentation/investigation-notes.md
+@@ -235,3 +235,56 @@ The extra edits are not arbitrary contamination: they trace to the original API/
+ Test-only repairs address flat-Team schemas/handoffs/revisions, history admission fixtures, Team-to-Org migration expectations, idle run-manager mocks, build prerequisites and token-usage database isolation. Two fixes change production behavior: reject a new Team run before writing its package when the history index is unreadable, and allow migration retry to leave valid current unversioned flat Team trees alone.
+ 
+ Canonical requirements/design/implementation/API reports still describe only SR-002/IR-001/API-REV-001. Recovered approval history must be reconciled into a completed expanded solution package; source/migration investigation, design/risk classification and ownership-compliant validation remain necessary before declaring combined release-ready. Original Small/Low applies only to AGY scope, not automatically to added migration behavior. No source edit or test rerun in this lookup. Current 25 inventoried source paths match DR-002 hashes/deletion exactly, recorded in current-source-vs-dr002.json; this proves preservation, not equivalence to a historical validated revision.
++
++
++## Latest-base refresh prerequisite — 2026-10-01
++User interrupted solution recovery to require latest origin/personal first. Fetch succeeded at b0b077b02571098a6bf7993ab46b67a69fdb8f9d; task was 3 ahead / 42 behind. Verified 25 DR-002 inventory entries unchanged and created explicit local WIP preservation checkpoint 9038c218b with those edits and existing investigation/revision updates. Merge now in progress with two test conflicts (flat-Team test rename versus skill removal; Org-history expectations versus skill removal), no source resolutions performed. Details and exact state: latest-base-refresh-request-20261001.md and recovery-evidence/latest-base-refresh-20261001/. Delivery continuation requested to complete integration before expanded solution authoring. No new requirements/design approval or classification claimed by this workspace step.
++
++
++## SR-005 — Canonical combined-solution recovery after latest-base integration
++
++### Approval and workspace gate
++
++Read incoming DR-003 report, delivery revision record, release report and validation-results.json before acting. User's recovered explicit approval to repair the failed tests and include both explained defects on this ticket, plus current instruction to continue/trigger handoff after the combined-scope summary, is now formalized in requirements-doc.md at SR-005. No claim the SR-005 document existed or was approved in September. Latest-base prerequisite fulfilled: a01cadaea contains b0b077b02 (verified ancestor and 6 ahead / 0 behind); no unmerged entries; production/test code clean. No further source edits or tests performed by Solution Designer.
++
++Requirements were recovered/persisted first. Architecture then extended against integrated source and the canonical migration conventions. This is not a fresh user-behavior proposal: it preserves the two explicitly explained defect outcomes and evidence-led test repair, with new product defects routed rather than silently included. Source code and historical tests are evidence, not requirements authority.
++
++### Architecture reads and observations
++
++| Source / command | Observation / design relevance |
++| --- | --- |
++| `git merge-base --is-ancestor origin/personal HEAD`, rev-list, source diff | b0b077b02 included; 33 source/test/docs/package changed paths, not just AGY; exact list/stat in recovery-evidence/solution-recovery-sr005/ |
++| TeamRunService.createTeamRun and createTeamRunFromRootConfig | Common lifecycle owner; current preflight immediately before manager creation preserves root-config path; post-create failure still terminates existing managed run |
++| TeamRunHistoryCatalogService / CollaborationRunHistoryCatalogCore / TeamRunHistoryIndexStore | Catalog owns index, strict initialization/read rejects malformed data without overwrite; ENOENT is valid empty snapshot; per-store write queue and family catalog queue already exist; no new global precondition needed |
++| `docs/design/data_migration_guideline.md` blob 02999a6c80b7df63443c70bc101becd00cc72613, last file commit 380876bc0 | Authoritative sections 1–10 read; no historical lockout, frozen source classifiers, same-ID pending/failed correction, terminal skip, bounded actual recovery, current admission independent |
++| V1 migration entry/promoter family, V2 entry, frozen released-run-package-shapes README/schema | V1 may warning-complete with retained invalid history/index; V2 can skip missing trees and classify current/released V2. Directory existence or successful predecessor is not blanket source validity |
++| Existing Org cutover entry, candidate planner, released-team-run-v2-schema | Flat roots zero-write, missing tree bounded warning, invalid/family collision failure, partial-target/index-only plans, existing context/token/history transitions and source retirement. Do not replace aggregate policy or target conversion |
++| AppDataMigrationRunner.runPending/recoveryAction, current RootRunPackageReadinessIndex | Terminal SUCCEEDED/SUCCEEDED_WITH_WARNINGS skipped; startup-only failed status gives restart-to-retry; current admission scans actual package structure and does not admit based solely on ledger |
++| Current Team tree schema bf0bfe713b1d1644a20ea2f163f7fa9d77bd96ae; shared schema b69359837b92b9b36698f2688c99395462ddd56f | Live tolerant reader and exact writer; current launch shape has no skill mode, optional-on-read collaborators now included with task-delegator/address/run identity invariants. New cutover helper currently imports this mutable source validator: technical design flaw to correct via frozen recognition |
++| Current versus pre-integration source and frozen released schemas | Multiple investigated unversioned cohorts exist; prior skill/settled fields and new collaborators cannot be blindly removed from released input/output. Freeze source predicates/types by pin; current API projections remain current-only |
++| TESTING.md, Vitest config, prisma-env/global-setup, Brief Studio package.json | Active *.test.ts suite, forked serial files, test database reset/setup; run phases must not race on one DB; built-server tests need fresh build; Brief Studio integration needs pack artifact |
++| AgentRunManager, WorkspaceConverter, media-storage-service and historical error inventory | Explicit complete dependency/initialize-release contracts; workspace.metadata; relative /rest/files output. These support fixture/setup repair, not restoring obsolete production defaults |
++
++### Design decisions and verification limits
++
++- Two product spines beyond AGY: pre-side-effect catalog readability and existing failed cutover retry. No new migration ID, schema, index format, startup gate, data deletion or runtime legacy decoder.
++- Frozen migration classifier replaces the provisional live current-schema dependency. Independent architecture review should scrutinize known source cohorts, current collaborators/old optional fields, zero-write semantics and no-loss/availability boundaries.
++- Size Large / risk High because actual multi-subsystem test/source scope and persisted history classification/admission, not document count. Former Small/Low retained only as SR-002 history.
++- Recovered 47-file historical unit/integration inventory is not a new execution result. DR-003 build/210 focused pass +13 E2E pass are current focused evidence; full suites and realistic final journeys still downstream. Some failures may need additional requirements/design recovery; do not call all historical cases stale.
++- Real installed data volume/performance not measured and operational profile not accessed. Existing faithful released fixtures and real built-server tests provide bounded evidence. No arbitrary performance target or speculative journal designed.
++
++### Supplement inventory (cumulative, current at SR-005)
++
++| Path relative to ticket | Owner / purpose / scope | Related IDs | Status / approval applicability |
++| --- | --- | --- | --- |
++| agy-mcp-call-shape-probe.py, agy-mcp-call-shape-probe/ | Solution evidence, AGY raw shapes | REQ-001..007 | Evidence only; original approval unaffected |
++| api-e2e-evidence/ and API reports/ledger | API/E2E historical original validation | AC-001..008 | API-REV-001, not full expanded scope |
++| delivery-evidence/resumption-20261001/ | Delivery preservation patch/snapshot/inventory | All repair paths | Preserve immutable evidence, not pass |
++| recovery-evidence/test-repair-provenance-20261001/ | Solution recovered exact approval/repair commands and logs | REQ-008..011 | Exact user texts establish historical scope; logs historical only |
++| latest-base-integration-result-20261001.md; delivery-evidence/latest-base-20261001/ | Delivery DR-003 integrated/focused proof | AC-001..011 subset | Current at a01cadaea; full-suite evidence absent |
++| test-repair-scope-inventory.md | Solution finite 47-file cohort and current owners | REQ-010/011 | Evidence/scope index; requirements govern all intended behavior |
++| recovery-evidence/solution-recovery-sr005/ | Solution prior snapshots, source pins/diff, inventory | All | Historical snapshots expressly non-authoritative; current canonical docs separate |
++| source-scope-recovery-20261001.md, test-repair-provenance-result-20261001.md, latest-base-refresh-request-20261001.md | Solution recovery chronology | SR-003/004/005 | Prior unknown-ownership/AGY-only-separation recommendation superseded by recovered intent |
++| user-finalize-release-request-20261001.md | Solution exact user testing/release direction | Delivery | Initial confirmation, not refreshed final-state verification |
++
++No Product supplement. Combined independent review not yet performed; original review artifacts N/A only for the original direct route.
+diff --git a/tickets/in-progress/agy-mcp-tool-call-presentation/requirements-doc.md b/tickets/in-progress/agy-mcp-tool-call-presentation/requirements-doc.md
+index baa38b68c..b5667c5b5 100644
+--- a/tickets/in-progress/agy-mcp-tool-call-presentation/requirements-doc.md
++++ b/tickets/in-progress/agy-mcp-tool-call-presentation/requirements-doc.md
+@@ -3,20 +3,23 @@
+ ## Document Status
+ 
+ - Status: `Approved`
+-- Current solution revision ID: `SR-002`
++- Current solution revision ID: `SR-005`
+ - Package identifier: `agy-mcp-tool-call-presentation`
+ - Request / ticket: Show the real MCP tool name and arguments for Antigravity runs instead of `call_mcp_tool`
+ - Requirements owner: Solution Designer
+-- Date: 2026-09-30
+-- Approval state and reference: Approved by the user in conversation on 2026-09-30 ("I agree, for the old history runs, leave them alone. No need to update."), accepting the Solution Designer's stated suggestions for DEC-001..005
+-- Exact approved requirements baseline / solution revision: This document at SR-002 (SR-001 baseline with DEC-001..005 resolved)
+-- Behavior-defining supplements and their approved versions: None
++- Date: 2026-10-01
++- Approval state and reference: `Approved — recovered explicit user intent and current continuation`. Original AGY baseline/DEC-001..005 approval remains the 2026-09-30 statement recorded at SR-002. Added scope is supported by the recovered original conversation: user asked to investigate/fix the 43 failures (line 315), then after the two production defects were explained (992), requested fixes on the current ticket (995, 1015). On 2026-10-01, after Solution Designer explicitly summarized the two fixes, passing E2E and incomplete unit/integration work, user instructed: "We should continue ... please trigger the next handoff so that we need to finish the ticket." User then required latest origin/personal before continuation; DR-003 fulfills that prerequisite.
++- Exact approved requirements baseline: SR-005 is the present canonical recovery of those explicitly approved outcomes, NOT a claim this document or design existed on September 30. REQ-001..007 / AC-001..008 unchanged; added REQ-008..011 / AC-009..014 formalize the recovered repair request without authorizing unspecified new product behavior.
++- Approval evidence: `recovery-evidence/test-repair-provenance-20261001/conversation-excerpts.md` (original lines/timestamps) and the current conversation after `test-repair-provenance-result-20261001.md`. Initial testing/release direction: `user-finalize-release-request-20261001.md`; not a claim of final verification of the refreshed candidate.
++- Behavior-defining supplements: None. `test-repair-scope-inventory.md` is an evidence/scope index under REQ-010/011, not permission to change product behavior.
++- Design phase gate: user intent above is approved; architecture recovery must occur next and be classified independently. No existing source patch, former direct-route pass or historical test total is accepted as combined implementation readiness.
+ 
+ ## Problem And Desired Outcome
+ 
+ - Problem: In Antigravity (AGY) runs every MCP tool call appears in the Activity panel and conversation as the generic `call_mcp_tool`, with the real tool name and arguments buried inside a wrapper (`ServerName`, `ToolName`, `Arguments`). The user cannot see at a glance which tool ran. Other runtimes show the real tool (for example `send_message_to`).
+ - Affected actors or systems: Users observing AGY runs (standalone, Team and Org members); server consumers of tool events.
+ - Desired outcome: An AGY MCP tool call is presented as the tool that was actually called, with that tool's own arguments.
++- Added repair outcome: finish user-requested stale-test/setup repairs on this ticket and retain the two diagnosed history/migration fixes, without weakening current product contracts or losing existing work/data.
+ - Observable definition of success: For the screenshot case, the Activity item is titled `delegate_task` and its Arguments section shows `{description, recipient_address}` only.
+ 
+ ## Relevant Current And Desired Behavior
+@@ -29,6 +32,11 @@
+ | BEH-004 | System | SCN-003 | A failed MCP call shows as a failed `call_mcp_tool` | Failure is shown under the real tool name with the real arguments | Failed/denied classification and error text | Investigation notes BEH-004 |
+ | BEH-005 | System | SCN-001 | Only AGY's native `generate_image` triggers native image path resolution | Unchanged: an MCP tool that happens to be named `generate_image` is never treated as AGY's native image tool | Entire behavior | Investigation notes BEH-005 |
+ | BEH-006 | User | SCN-004 | Stored AGY runs replay the stored tool name | Runs recorded before this change keep showing `call_mcp_tool` (DEC-004) | Stored runs remain readable | Investigation notes BEH-006 |
++| BEH-007 | User / Operational | SCN-005 | A Team creation refused on an unreadable history index previously wrote an orphan package first | Refuse before creating a Team run package; preserve unreadable index bytes | No new global startup or unrelated Agent-work restriction | SR-004/005 evidence, DR-003 |
++| BEH-008 | System / Operational | SCN-006 | Failed cutover retry rejects valid current unversioned flat Team trees as old-format candidates | Keep valid current Team packages untouched while eligible old nested-Team histories convert to Orgs | Unsupported/missing sources retained, narrow admission and terminal-ledger behavior unchanged | Migration guideline, recovered defect/evidence |
++| BEH-009 | Operational | SCN-007 | Broad test failures include stale contracts/setup plus genuine defects; initial reports omitted follow-up repairs | Repair/update supported tests; identify obsolete cases and actual defects honestly; rerun combined suites | No production weakening or manufactured passing results | User repair request and archived logs |
++| BEH-010 | Contract | SCN-005, SCN-006 | Existing migration runner isolates history availability and terminal records; current admission validates packages | Preserve availability of independent new work, valid current identity and retained historical bytes | No global gate, ledger reset or speculative destructive recovery | Canonical migration guideline |
++
+ 
+ ## Stakeholders, Actors, And Outcomes
+ 
+@@ -45,22 +53,29 @@
+ | UC-001 | Presenting an AGY call to an AutoByteus agent tool | SCN-001, SCN-003 |
+ | UC-002 | Presenting an AGY call to a tool on another MCP server | SCN-002, SCN-003 |
+ | UC-003 | Presenting an AGY MCP call whose wrapper is incomplete | SCN-003 |
++| UC-004 | Refuse unrecordable Team creation without leaving a package | SCN-005 |
++| UC-005 | Retry failed historical cutover alongside valid current Team packages | SCN-006 |
++| UC-006 | Repair and verify the observed server test cohort on the combined ticket | SCN-007 |
+ 
+ ### Out Of Scope
+ 
+ - Hiding or merging the native `view_file` schema lookups AGY performs before an MCP call.
+ - Changing how other runtimes (Codex, Claude, Grok, AutoByteus) name or present tools.
+-- Rewriting already-stored runs.
++- Relabelling already-stored AGY calls; the separately recovered historical Team-to-Org migration retry fix is in scope, with no new bulk data rewrite.
+ - Changing how AGY is configured to reach MCP servers, or which tools it is granted.
+ - Frontend layout or styling of Activity items.
+ 
+ ### Non-Goals
+ 
++- Restoring removed skillAccessMode/current nested-Team APIs to satisfy stale tests.
++- Arbitrary new production fixes outside REQ-008/009, automatic corruption repair, speculative multi-writer recovery, resetting migration ledgers, or unrelated frontend work. New product defects must return for explicit scope/design recovery.
++- Achieving green tests by deleting valid assertions, adding skips/expected-failure markers, or silently removing the requested repair scope.
++
+ - Guaranteeing the presentation for future AGY versions that change the undocumented wrapper shape beyond the fallback in REQ-004.
+ 
+ ### Preserved Behavior Boundary
+ 
+-BEH-003, BEH-005, the preserved columns of BEH-001/002/004, and BEH-006.
++BEH-003, BEH-005, the preserved columns of BEH-001/002/004, BEH-006 and BEH-010. Existing current flat-Team, Org, collaborator, skill-removal and graph-local lifecycle contracts remain authoritative for test repair.
+ 
+ ### Review Authority
+ 
+@@ -80,6 +95,11 @@ BEH-003, BEH-005, the preserved columns of BEH-001/002/004, and BEH-006.
+ | REQ-005 | AGY native tool presentation and native image handling are unchanged; an MCP tool is never treated as an AGY native tool because of its name. AutoByteus media tools called through MCP are recognized by the platform under their canonical names, as in other runtimes (DEC-005). | BEH-003, BEH-005 | Must | Preserve existing behavior | Existing unit test |
+ | REQ-006 | The name and arguments of one call are the same in its start event and its terminal event. | BEH-001, BEH-002, BEH-004 | Must | One Activity item per call, no relabelling mid-call | Investigation (both steps carry full parameters) |
+ | REQ-007 | The result of an unwrapped AGY MCP call keeps today's `{provider_state, output}` shape. When the tool's output text is a JSON object or array, `output` is presented as that structured JSON; any other output is presented unchanged. | BEH-001, BEH-002 | Must | Parity with how other runtimes present MCP results | DEC-003 |
++| REQ-008 | When new Team creation is already disallowed because its history index is unreadable, it must fail without writing a new Team run package or overwriting that index. Valid/missing indexes retain normal creation behavior. Unrelated Agent work and application availability are unchanged. | BEH-007, BEH-010 | Must | Fix diagnosed orphan, not introduce a new availability policy | Recovered user repair approval after original report 992 |
++| REQ-009 | On an eligible failed/pending Team-to-Org cutover retry, valid current unversioned flat Team packages must remain byte-preserved non-targets and must not prevent supported historical candidates converting. Preserve existing invalid/missing-source dispositions, identity and reference validation, and terminal success skipping. | BEH-008, BEH-010 | Must | Fix diagnosed stuck retry without rewriting current history | Same approval; canonical migration guideline |
++| REQ-010 | Investigate and finish the known server E2E/unit/integration repair cohort: update stale tests against supported current contracts, repair test prerequisites/isolation, and justify obsolete-case replacements. Every historical failure must have a current evidence-backed disposition. Genuine new product defects or ambiguous intended behavior return for scoped recovery instead of silently broadening production changes. | BEH-009 | Must | User asked whether failures were old tests or genuine defects, and requested repair on this ticket | Original conversation 315, 995, 1015; current continue-to-finish instruction |
++| REQ-011 | Combined validation must use the integrated latest-base source, fresh required builds and isolated test-owned state. Full unit/architecture, integration and deterministic E2E runs must report actual failures/errors/skips; repaired tests must pass and valid assertions must not be weakened merely to obtain green results. No release-readiness claim while required outcomes or material failure dispositions remain unresolved. | BEH-009, BEH-010 | Must | Truthful completion and preserved user data/work | User latest-base prerequisite; TESTING.md |
++
+ 
+ ## Acceptance Criteria
+ 
+@@ -93,6 +113,13 @@ BEH-003, BEH-005, the preserved columns of BEH-001/002/004, and BEH-006.
+ | AC-006 | REQ-004 | SCN-003 | `call_mcp_tool` step with missing or blank `ToolName` or `ServerName` | Presented as `call_mcp_tool` with provider parameters; no exception; run continues | — | Unit test |
+ | AC-007 | REQ-005 | BEH-003, BEH-005 / SCN-001 | Native `view_file`, `run_command`, native `generate_image`; and an MCP tool named `generate_image` | Native items unchanged; native image path resolution runs only for the native tool | — | Existing and extended unit tests |
+ | AC-008 | REQ-007 | BEH-001 | Successful MCP call returning JSON object text; another returning plain text | First: `output` is the structured object; second: `output` is the unchanged text; both keep `provider_state` | — | Unit test |
++| AC-009 | REQ-008 | BEH-007,010 / SCN-005 | Isolated built server with unreadable Team history index; user requests new Team | Request fails; Team package directory set and index bytes unchanged; no Team run admitted | Missing/valid index allows normal creation | Focused service unit plus real server E2E |
++| AC-010 | REQ-009 | BEH-008 / SCN-006 | Failed cutover becomes eligible after supported correction, with current unversioned flat Team(s) and valid old nested-Team source | Current packages unchanged; eligible source converts to Org and is usable through current API | Invalid or missing sources are not accepted as current, retained with truthful existing dispositions | Migration unit fixtures and built-server restart/restore |
++| AC-011 | REQ-008,009 | BEH-010 / SCN-005,006 | Mixed valid/invalid history, all historical roots excluded, or already-terminal migration | App and independent Agent work usable; affected invalid history unavailable; terminal SUCCEEDED/SUCCEEDED_WITH_WARNINGS conversion not rerun | No aggregate-failure global startup gate or ledger reset | Existing/repaired migration/startup tests with byte/attempt checks |
++| AC-012 | REQ-010,011 | BEH-009 / SCN-007 | Reproduce historical inventory on integrated source | Each failed file/case is mapped to stale-test/setup/real-defect/obsolete classification with source evidence; retained repaired cases pass; full unit/architecture, integration and E2E results recorded, including unhandled errors | Any unresolved genuine defect or external limitation remains explicitly non-passing and routed, not hidden | Owned implementation checks and API/E2E ledger |
++| AC-013 | REQ-010 | BEH-009 / SCN-007 | Repair assertions, fixtures, removed API or nested-Team cases | Tests assert supported flat-Team/Org/current launch behavior; released migration input/output fixtures retain historical fields; no new skip/only/it.fails or production guard weakening to mask failures | Product-contract ambiguity returns to Solution Designer | Source/test review and executable evidence |
++| AC-014 | REQ-011 | BEH-009 / SCN-007 | Deterministic E2E and application integration on a clean build | Built server and required Brief Studio package current; test-owned DB/state and process cleanup; suite failures are reproducible independently of ambient user profile | Live-provider skips reported separately, never counted as passes | Build/preflight, isolated target proof and full-suite reruns |
++
+ 
+ ## Relevant Scenarios And Journeys
+ 
+@@ -102,6 +129,10 @@ BEH-003, BEH-005, the preserved columns of BEH-001/002/004, and BEH-006.
+ | SCN-002 | System | AGY model | Agent uses a tool from another MCP server available to AGY | AGY discovers a user/workspace-configured MCP server | Run active | Same as SCN-001 | Item shows server-qualified real tool name and arguments | — | Supported Normal Scenario (AGY reads user/workspace MCP config; scope subject to DEC-001) | Probe; prior ticket investigation | REQ-002, 003 / AC-003 |
+ | SCN-003 | System | MCP server / AGY provider | An MCP call fails, is denied, or arrives with an incomplete wrapper | Same as SCN-001/002 | Run active | Provider reports ERROR, or omits the tool name | Failure shown under the real name; incomplete wrapper falls back to today's presentation | — | Supported Normal Scenario (failure); Supported Explicit Edge Scenario (incomplete wrapper, RSK-001) | Probe error step | REQ-004, 006 / AC-005, 006 |
+ | SCN-004 | User | User | Reopen an AGY run recorded before this change | Select the run in history | Stored run exists | History replays stored events | Old items still read `call_mcp_tool` | — | Supported Normal Scenario | DEC-004 | BEH-006 |
++| SCN-005 | User / Operational | User launching Team; existing index preservation contract | Failed creation leaves no new orphan | Normal Team launch while its catalog index is unreadable | Existing index bytes cannot be safely replaced; other app work available | Launch Team; receive refusal; inspect unchanged package/index; independent Agent work continues | No new Team package or index destruction | Valid/missing index permits launch; not a promise against arbitrary concurrent disk failure | Supported Explicit Edge Scenario | User explicitly approved diagnosed defect repair; existing strict catalog read and repair runbook | REQ-008 / AC-009,011 |
++| SCN-006 | System / Operational | Migration runner on ordinary eligible restart | Complete historical cutover without mistaking current Teams for old sources | Restart-to-retry after correcting failed migration prerequisite | Pending/failed cutover, valid current Team(s), investigated released nested-Team source and retained exclusions | Restart; classify candidates; preserve current Teams; convert supported histories; use admitted Org | Current Teams unchanged and supported converted history usable | Missing/invalid sources retained; terminal successes skip; independent work remains available | Supported Explicit Edge Scenario | Recovered defect report; guideline sections 6–9; same-ID runner retry | REQ-009 / AC-010,011 |
++| SCN-007 | Operational | Engineer/CI under user's explicit repair request | Trustworthy server test outcomes on this combined ticket | Run maintained tests from current integrated worktree | Historical cohort and newly built disposable test environment | Reproduce; compare contract; repair fixture/setup or identified two fixes; rerun; report every result | Repaired supported tests pass; unresolved issues truthful and actionable | Genuine new behavior question routed; approved opt-in provider gates explicit | Supported Normal Scenario (engineering contract) | User 315/995/1015 and current continuation; TESTING.md | REQ-010,011 / AC-012..014 |
++
+ 
+ ## UI, Interaction, And Experience Requirements
+ 
+@@ -116,11 +147,11 @@ BEH-003, BEH-005, the preserved columns of BEH-001/002/004, and BEH-006.
+ 
+ ## Data Continuity And Acceptable Loss
+ 
+-- Persisted or external data affected: `Yes` — new AGY runs store the real tool name and arguments in existing fields.
+-- Data or state that must be preserved: Existing stored runs remain readable and unchanged.
++- Persisted data affected: new AGY event values as before, plus the recovered Team creation and existing cutover retry defects. Current Team packages and unreadable indexes must be preserved; existing supported historical conversion remains migration-owned.
++- Data to preserve: old AGY presentation, valid current Team bytes, unreadable index bytes, retained unsupported historical sources, exact identity/reference/accounting semantics. Only the already-supported old Team-to-Org conversion may transform its selected historical targets.
+ - Loss, reset, rebuild, or regeneration that is acceptable: Old runs keep the `call_mcp_tool` presentation (DEC-004).
+ - Retention, privacy, compliance, volume, downtime, or operational constraints: None identified.
+-- Unknowns requiring downstream investigation: None for requirements.
++- Remaining evidence work: current failure origins and refreshed combined validation. This does not authorize new product behavior; use REQ-010 recovery boundary.
+ 
+ ## External Contracts And Dependencies
+ 
+@@ -133,6 +164,8 @@ BEH-003, BEH-005, the preserved columns of BEH-001/002/004, and BEH-006.
+ | Artifact Path | Purpose | Related Requirement / AC IDs | Status | Approval Applicability / State |
+ | --- | --- | --- | --- | --- |
+ | `agy-mcp-call-shape-probe.py`, `agy-mcp-call-shape-probe/` | Raw provider evidence | REQ-001..004 | Complete | Evidence only |
++| `test-repair-scope-inventory.md` | Finite historical repair cohort, source owners and validation rules | REQ-010,011 | Recovered at SR-005 | Evidence/scope index; requirements above govern behavior |
++| `recovery-evidence/test-repair-provenance-20261001/`, `latest-base-integration-result-20261001.md` | Original user direction, historical logs and current focused integration evidence | REQ-008..011 | Historical/current sources distinguished | Approval evidence only where exact user statements cited |
+ 
+ ## Assumptions
+ 
+@@ -161,13 +194,18 @@ BEH-003, BEH-005, the preserved columns of BEH-001/002/004, and BEH-006.
+ | REQ-005 | UC-001 | BEH-003, BEH-005 | AC-007 | SCN-001 | Existing unit test |
+ | REQ-006 | UC-001, UC-002 | BEH-001, BEH-002, BEH-004 | AC-001, AC-005 | SCN-001, SCN-003 | Probe |
+ | REQ-007 | UC-001, UC-002 | BEH-001, BEH-002 | AC-008 | SCN-001 | Probe |
++| REQ-008 | UC-004 | BEH-007,010 | AC-009,011 | SCN-005 | Recovered user direction; strict index/store behavior; DR-003 |
++| REQ-009 | UC-005 | BEH-008,010 | AC-010,011 | SCN-006 | Migration guideline; released/current source investigation |
++| REQ-010 | UC-006 | BEH-009 | AC-012,013 | SCN-007 | test-repair-scope-inventory.md; original repair request |
++| REQ-011 | UC-006 | BEH-009,010 | AC-012,014 | SCN-007 | Latest-base direction; TESTING.md |
++
+ 
+ ## Architecture Phase Input
+ 
+-- Approved scenario IDs and product-level behavior paths architecture must map: SCN-001..SCN-004 (after approval).
+-- Product and system constraints architecture must preserve: BEH-003, BEH-005, BEH-006; event schema unchanged.
++- Approved scenario IDs: SCN-001..SCN-007 at SR-005. Preserve original AGY design; add narrow Team preflight, migration retry recognition and test-repair design after this approval recovery.
++- Constraints: BEH-003/005/006/010, unchanged AGY event schema, narrow history admission, existing current runtime contracts and migration guideline. Do not extend original Small/Low classification to added persisted-data scope.
+ - Decisions intentionally deferred to architecture design: where the unwrap lives; reuse of the shared agent-tools naming helper; whether server details are redacted from AGY payloads as in Codex.
+-- Technical facts architecture should verify: UNK-001; any code keyed on `call_mcp_tool`.
++- Technical facts to verify: latest integrated source contracts, strict-index preflight ownership, frozen source classifier versus current tolerant reader, failed/terminal migration handling, finite test-repair inventory and isolation prerequisites.
+ - Known feasibility or integration risks: RSK-001, RSK-002.
+ 
+ ## Readiness Check
+@@ -179,7 +217,7 @@ BEH-003, BEH-005, the preserved columns of BEH-001/002/004, and BEH-006.
+ - Scope and non-goals are clear: `Yes`
+ - Requirements and acceptance criteria are testable and traceable: `Yes`
+ - Applicable scenarios are covered with validity and evidence: `Yes`
+-- Prototype and supplemental evidence is integrated consistently: `N/A`
++- Prototype and supplemental evidence is integrated consistently: `Yes` — evidence supplements linked; Product UI specification N/A
+ - Applicable UI/UX approval and final visual-reference basis are recorded: `N/A`
+ - Material assumptions and open decisions are visible: `Yes`
+ - Content ready for user approval: `Yes`
+diff --git a/tickets/in-progress/agy-mcp-tool-call-presentation/solution-handoff.md b/tickets/in-progress/agy-mcp-tool-call-presentation/solution-handoff.md
+index 34dc908c5..b26ecd37a 100644
+--- a/tickets/in-progress/agy-mcp-tool-call-presentation/solution-handoff.md
++++ b/tickets/in-progress/agy-mcp-tool-call-presentation/solution-handoff.md
+@@ -1,69 +1,61 @@
+-# Solution Handoff — Architecture Design Complete
+-
+-- Package identifier: `agy-mcp-tool-call-presentation`
+-- Result classification: `Architecture Design Complete`
+-- Current solution revision: `SR-002`
+-- Classification: `task_size=Small`, `architectural_risk=Low`
+-- Route applied (from `get_handoff_rules`, 2026-09-30): Small/Medium + Low → direct implementation, recipient `/implementation_engineer`. Independent architecture review: `N/A — not applicable` (direct route; this skips independent review, not design).
+-
+-## Original request
+-
+-In Antigravity (AGY) runs, MCP tool calls appear in the Activity panel as `call_mcp_tool` with wrapper arguments `{Arguments, ServerName, ToolName}`. The user wants them unwrapped and mapped to normal platform tool calls so the frontend shows the real tool name, its arguments and its result, as other runtimes do.
+-
+-## Goals
+-
+-- AutoByteus agent tools called by AGY show under their bare canonical name (`delegate_task`, `send_message_to`) with only their own arguments.
+-- Tools on other MCP servers show as `mcp__<server>__<tool>`.
+-- The result keeps `{provider_state, output}`; JSON object/array output text becomes structured JSON in `output`.
+-- An unusable wrapper (missing server or tool name) falls back to today's `call_mcp_tool` presentation.
+-- Native AGY tools and native image handling are unchanged. Old stored runs are not relabelled.
+-
+-## Approval basis
+-
+-Requirements `Approved` by the user in conversation on 2026-09-30, accepting the Solution Designer's suggestions for DEC-001..005 ("I agree, for the old history runs, leave them alone. No need to update."). No behavior-defining supplements. Product Design: `N/A — not applicable`.
+-
+-## Workspace
+-
+-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation`
+-- Branch: `codex/agy-mcp-tool-call-presentation`
+-- Base: `origin/personal` @ `5c6fb95ea1c841938326f75d83f6689680df70e6`
+-- Finalization target: `origin/personal`
+-- Ticket documents are untracked in the worktree (not committed).
+-
+-## Artifacts (absolute paths)
+-
+-- Requirements: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/requirements-doc.md`
+-- Investigation notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/investigation-notes.md`
+-- Design spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/design-spec.md`
+-- Solution revision record: `/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/solution-revision-record.md`
+-- Evidence supplement (not behavior-defining): `.../agy-mcp-call-shape-probe.py` and `.../agy-mcp-call-shape-probe/` (`stdout.jsonl`, `summary.json`, `mcp-server-messages.jsonl`) — raw AGY 1.2.14 stream for nested arguments, JSON output and an MCP error; use as unit-test fixtures.
+-- Architecture review artifacts: `N/A — not applicable`.
+-
+-## Scope for implementation
+-
+-Files, per `design-spec.md` "Target Subsystem / Folder / File Mapping":
+-
+-- Add `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-mcp-tool-call.ts`
+-- Modify `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts`
+-- Add `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-tool-call.test.ts`
+-- Modify `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts`
+-- Modify `autobyteus-server-ts/tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts` (assertions near lines 496, 519, 873)
+-- Modify `autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md`
+-
+-No frontend, processor, history or shared MCP helper changes. If one seems necessary, return a Design Impact.
+-
+-## Constraints to keep in view
+-
+-- Decide native image handling from the provider tool name before projection (AC-007).
+-- Same name and arguments on start and terminal events (REQ-006).
+-- Keep the `{provider_state, output}` result shape; trace sequencing and history replay read it.
+-
+-## Evidence and open risks
+-
+-- Provider wrapper shape verified live on AGY 1.2.14 and against 1.2.10 evidence; it is undocumented (RSK-001), mitigated by the fallback.
+-- The live AGY e2e test needs the local AGY CLI and model quota; it was not run during design.
+-- Scenarios: SCN-001..SCN-004 in the requirements document.
+-
+-## Expected output
+-
+-Implementation per the design with implementation-scoped checks, then the implementation handoff along the team's configured route.
++# Solution handoff — agy-mcp-tool-call-presentation — SR-005
++
++## Result and requested output
++Classification: **Architecture Design Complete**, `task_size=Large`, `architectural_risk=High`. Combined user-requested package recovered and ready for independent architecture review, not release-ready. Please review the current approved requirements/design and route by your skill/rules; no prior reviewer pass is claimed. Do not reimplement the already-committed AGY fix blindly or discard the test repairs.
++
++## Original request and user authority
++Original request: real MCP name/arguments instead of call_mcp_tool in Antigravity CLI rendering. User later asked API/E2E to investigate/fix the failures, update obsolete tests, and explicitly put the repairs on this ticket for release to personal. The engineer also fixed two explained product defects: orphan Team package on unreadable history index and cutover retry rejecting valid current Team trees. Original conversation evidence was recovered, correcting an initial source-ownership blocker.
++
++Current user reported testing, requested finalization/release, then explicitly asked to continue and trigger the next handoff to finish; before proceeding they required latest origin/personal. DR-003 fulfills that integration prerequisite. Requirements SR-005 formalizes the recovered approved outcomes and current continuation, with exact approval references; it does not invent a past SR-005 approval or authorize unspecified product fixes. Original AGY decisions/old-history preservation unchanged. No Product/UI supplement.
++
++## Workspace and preservation
++Worktree: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation
++Branch: codex/agy-mcp-tool-call-presentation
++Initial base: origin/personal@5c6fb95ea; latest integrated/fetched target b0b077b02571098a6bf7993ab46b67a69fdb8f9d.
++Current source HEAD: a01cadaea37366fdd6d91196231d1257e25427d2, 6 ahead / 0 behind, no unresolved merge entries. Preservation checkpoint 9038c218b, merge b59e327be, test alignment a01cadaea. Finalization target origin/personal. Nothing pushed/released/archived/cleaned. Source edits are committed; local solution/delivery/recovery artifacts and generated dist outputs remain uncommitted/untracked and must be preserved. Prior DR-002 binary patch/snapshot and recovered logs retained.
++
++## Completed solution and key review points
++Requirements REQ-001..007 / AC-001..008 preserved; add REQ-008..011 / AC-009..014 for the two repairs and honest finite test-cohort completion. Design maps AGY events, Team preflight, existing cutover retry and test lifecycle separately.
++
++1. Team creation calls catalog-owned strict index preflight BEFORE manager package creation; no new global availability gate or destructive index repair. Existing missing/valid index behavior retained.
++2. Cutover stays same migration ID; current unversioned Teams are zero-write non-targets. Preserve predecessor missing/invalid dispositions, terminal skip, current admission, references and accounting. Replace provisional live tolerant source-validator dependency with frozen migration-private source recognition pinned to investigated pre/post-integration cohorts (including skill-era/task fields and current collaborators).
++3. Known test repairs stay on ticket. Supplement enumerates 47 historical unit/integration failed files plus repaired E2E cohort. Repair fixtures/setup/assertions to independent current contracts; no skip/only/expected-failure masking, weakened guards or legacy API resurrection. New genuine product defects return for requirements/design recovery.
++
++Large/High is due actual multi-subsystem scope and persisted data/admission risk. Original Small/Low direct route/review N/A is historical only. Independent architecture review now needed; current combined code/test review and API/E2E evidence remain downstream.
++
++## Evidence and remaining gaps
++DR-003: server build passed; 210 focused unit/integration tests passed, 5 live skips; 13 focused E2E tests passed after test-only semantic alignment. Initial failed E2E log retained. NO full suite, live/browser/Electron rerun or final refreshed user verification claimed. Historical combined E2E 239 passed/123 skipped; historical unit baseline 78 failures in 29 files (+4 errors), integration 49 failures in 18 files; some focused fixes afterward. These are not current combined acceptance.
++
++Open risks: frozen source recognition needs implementation/review/tests; current broad failure origins not yet fully classified; later base changes may require refresh; exact final release channel/version not newly approved (personal beta workflow is prior context, not stable authorization). Reviewer findings must cite approved requirements/ACs; new behavior returns to Solution Designer.
++
++## Absolute canonical package paths
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/requirements-doc.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/investigation-notes.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/design-spec.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/solution-revision-record.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/test-repair-scope-inventory.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/implementation-handoff.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/implementation-revision-record.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-coverage-investigation.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-execution-coverage-report.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-revision-record.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-test-case-ledger.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/handoff-summary.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/delivery-revision-record.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/release-deployment-report.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/docs-sync-report.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/release-notes.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/user-finalize-release-request-20261001.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/latest-base-integration-result-20261001.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/test-repair-provenance-result-20261001.md
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/agy-mcp-call-shape-probe.py
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/agy-mcp-call-shape-probe
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/delivery-evidence
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001
++- /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/solution-recovery-sr005
++
++Independent review artifacts: `N/A — not applicable` for original SR-002; SR-005 architecture/source/test-code review artifacts **not yet produced**, not waived. All still-relevant supplements in investigation inventory; historical reports retain reviewed basis and are not silently edited into current pass claims.
++
++## Handoff routing
++get_handoff_rules returned the Large-or-High Architecture Design Complete rule. SR-005 satisfies both Large and High with the recovered current approved intent; selected exact recipient `/architecture_reviewer`. Other rules do not match. Send this file attached to that recipient only; no duplicate direct implementation or Delivery Completed receipt-correction handoff. Stop after confirmed delivery.
+diff --git a/tickets/in-progress/agy-mcp-tool-call-presentation/solution-revision-record.md b/tickets/in-progress/agy-mcp-tool-call-presentation/solution-revision-record.md
+index 8eff027a5..938fb4a67 100644
+--- a/tickets/in-progress/agy-mcp-tool-call-presentation/solution-revision-record.md
++++ b/tickets/in-progress/agy-mcp-tool-call-presentation/solution-revision-record.md
+@@ -11,6 +11,8 @@
+ 
+ | SR-004 | Evidence / Recovery | User asks to trace earlier test repairs | DR-002 provenance | Ownership unresolved in SR-003 | Provenance and historical inclusion direction recovered; combined package not reconciled | Added history/migration behaviors not yet mapped in canonical requirements | No automatic AGY-only separation; historical E2E pass recovered, broader repair unfinished |
+ 
++| SR-005 | Mixed recovery | User continue-to-finish, latest-base prerequisite and DR-003 | DR-002/003 scope recovery | Provenance recovered, combined solution incomplete | Requirements Approved (recovered intent); combined Design Ready; Architecture Design Complete | BEH-007..010, SCN-005..007, UC-004..006, REQ-008..011, AC-009..014; original IDs preserved | Large / High; independent-review route pending rule lookup |
++
+ ## Revision Entries
+ 
+ ### SR-001 — Initial requirements baseline: real MCP tool name and arguments for AGY runs
+@@ -86,3 +88,18 @@
+ - Classification: existing Small/Low only covers original AGY change; combined scope not classified. Review artifacts N/A for original direct route only.
+ - Validation: recovered old E2E 239 passing / 123 skipped on AGY branch; old unit/integration failures remain, with several focused repairs. No fresh tests or release-ready claim.
+ - Routing/next action: finish the requested factual check and return findings; canonical solution recovery and owner evidence reconciliation are needed before resuming combined finalization. Do not drop user-requested extras as unrelated.
++
++
++### SR-005 — Recovered combined requirements and reviewed-route architecture
++
++- Trigger: user explicitly asks to continue and trigger next handoff after combined repair summary; subsequently requires latest origin/personal first. DR-003 completes local integration at a01cadaea over b0b077b02 with focused tests passed.
++- Prior status: SR-004 identified original user scope approval but canonical package and broad repair incomplete. SR-003 ownership ambiguity and AGY-only-separation recommendation are superseded, not erased.
++- Current result: Architecture Design Complete for combined scope, pending independent review, NOT implementation/API/delivery completion.
++- Requirements: original REQ-001..007 and AC-001..008 preserved; recovered BEH-007..010, SCN-005..007, UC-004..006, REQ-008..011, AC-009..014 added. No novel product behavior beyond recovered two fixes/test-repair outcomes; new defects return to this role.
++- Approval basis: original SR-002 decision; original 2026-09-30 transcript lines 315 and 992/995/1015 explicitly requests tests/two explained fixes on current ticket; current 2026-10-01 continue/trigger-handoff instruction follows the same explicit scope summary. Exact texts in requirements and conversation-excerpts.md. Formalization now, not a fabricated earlier document approval. Latest-base condition fulfilled before design recovery completed.
++- Design impact: original AGY design retained; Team preflight ownership, same-ID cutover retry, frozen source recognition (replaces mutable runtime classifier dependency), current admission/availability and finite test-repair plan now authoritative. Frozen classification correction is technical, not an added user behavior.
++- Canonical artifacts changed: requirements-doc.md, investigation-notes.md, design-spec.md, this record, solution-handoff.md; added test-repair-scope-inventory.md and solution-recovery-sr005 evidence. No production/test/other specialist artifacts changed by this round.
++- Size/risk: Large/High, due multi-subsystem test/source scope and persisted-history candidate/admission impact; not due artifact volume. Small/Low prior route superseded for combined package.
++- Reviews: prior independent artifacts N/A for SR-002; combined architecture review now required by classification/rules, not yet claimed. Existing IR-001/API-REV-001/DR-003 are basis-limited evidence.
++- Open risks: no full current unit/integration/E2E green result; genuine additional product defects may be uncovered; frozen current cohorts need implementation and direct evidence; final live/Electron/user verification not inferred from initial testing.
++- Applied route: see solution-handoff.md after rule lookup. Expected downstream: independent architecture review, then configured implementation/review/validation/delivery routes. No duplicate direct implementation notification.

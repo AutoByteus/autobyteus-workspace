@@ -1,0 +1,32 @@
+[
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/unit/config/application-database-location.test.ts",
+    "test": "ApplicationDatabaseLocation converts a canonical Windows file URL to Prisma datasource syntax",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts",
+    "test": "calls real scoped AutoByteus MCP send_message_to from an AGY team member",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts",
+    "test": "calls real scoped AutoByteus MCP send_message_to from an AGY org member",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-production-live.test.ts",
+    "test": "loads production-generated main agent and targets selected workspace for generic file and shell tasks",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-production-live.test.ts",
+    "test": "loads an AutoByteus-configured PRELOADED_ONLY skill from the production capsule",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts",
+    "test": "restores the exact AGY conversation, immutable identity and workspace binding",
+    "status": "skipped"
+  }
+]

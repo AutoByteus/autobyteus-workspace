@@ -1,0 +1,36 @@
+ M autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+ M tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-coverage-investigation.md
+ M tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-execution-coverage-report.md
+ M tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-revision-record.md
+ M tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-test-case-ledger.md
+ M tickets/in-progress/agy-mcp-tool-call-presentation/design-spec.md
+ M tickets/in-progress/agy-mcp-tool-call-presentation/investigation-notes.md
+ M tickets/in-progress/agy-mcp-tool-call-presentation/requirements-doc.md
+ M tickets/in-progress/agy-mcp-tool-call-presentation/solution-handoff.md
+ M tickets/in-progress/agy-mcp-tool-call-presentation/solution-revision-record.md
+?? applications/brief-studio/dist/
+?? autobyteus-application-backend-sdk/dist/
+?? autobyteus-application-devkit/dist/
+?? autobyteus-application-frontend-sdk/dist/
+?? autobyteus-application-sdk-contracts/dist/
+?? tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/
+?? tickets/in-progress/agy-mcp-tool-call-presentation/architecture-review-revision-record.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/code-review-evidence/
+?? tickets/in-progress/agy-mcp-tool-call-presentation/code-review-report.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/code-review-revision-record.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/delivery-evidence/
+?? tickets/in-progress/agy-mcp-tool-call-presentation/delivery-revision-record.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/design-review-report.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/docs-sync-report.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/handoff-summary.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/implementation-evidence/
+?? tickets/in-progress/agy-mcp-tool-call-presentation/latest-base-integration-result-20261001.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/latest-base-refresh-request-20261001.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/location-status-20261001.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/
+?? tickets/in-progress/agy-mcp-tool-call-presentation/release-deployment-report.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/release-notes.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/source-scope-recovery-20261001.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/test-repair-provenance-result-20261001.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/test-repair-scope-inventory.md
+?? tickets/in-progress/agy-mcp-tool-call-presentation/user-finalize-release-request-20261001.md

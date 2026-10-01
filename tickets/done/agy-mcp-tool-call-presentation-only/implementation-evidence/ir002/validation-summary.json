@@ -1,0 +1,16 @@
+{
+  "unit-final": {
+    "files": 36,
+    "passed": 371,
+    "failed": 0,
+    "pending": 0,
+    "success": true
+  },
+  "integration-final": {
+    "files": 18,
+    "passed": 85,
+    "failed": 0,
+    "pending": 0,
+    "success": true
+  }
+}

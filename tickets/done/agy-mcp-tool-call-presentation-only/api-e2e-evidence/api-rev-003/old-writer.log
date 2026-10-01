@@ -1,0 +1,49 @@
+{
+  "startedAt": "2026-10-01T13:42:35.166Z",
+  "result": "Pass",
+  "cleanup": [
+    {
+      "writer": "SIGTERM"
+    },
+    {
+      "reader": "SIGTERM"
+    },
+    {
+      "pid": 3189,
+      "stop": "already-exited"
+    },
+    {
+      "pid": 3159,
+      "stop": "already-exited"
+    },
+    {
+      "removed": [
+        "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-server-ts/dist-api-rev003-oldwriter",
+        "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-oldwriter-1t1vkl"
+      ]
+    }
+  ],
+  "writerBasis": {
+    "base": "b0b077b02571098a6bf7993ab46b67a69fdb8f9d",
+    "sourceSha256": "034aad355331a91042d8e5736424221b9b6c80adb8119ca668521a1384cb45dc",
+    "method": "Current compiled server clone with exact base converter transpiled; all other production source is base-identical except unused new MCP helper. Not a clean baseline build."
+  },
+  "runId": "old_writer_1d50bb1c_dd2a_4eb5_aa92_15d6385c7e34_ff14f4e073f1400d8dea66f34c00509e",
+  "oldNames": [
+    "view_file",
+    "call_mcp_tool",
+    "call_mcp_tool",
+    "call_mcp_tool",
+    "call_mcp_tool",
+    "call_mcp_tool",
+    "call_mcp_tool"
+  ],
+  "runFileHashes": {
+    "agy-project/.agents/agents/autobyteus-de1a37b4cb986eaf/agent.md": "6b931c687719dd55097c0e60404a7f0fec11099acdcadf1be8f2c9b867d3eab4",
+    "agy-project/.agents/mcp_config.json": "55a897199de3f30bfd4eb3c0da8ab53d42e34e3ef42f142169507de9686cfc97",
+    "agy-project/manifest.json": "0f3bf6c72f1b4b8fa470873f0f8b800f4137fe5107c462ede87093563e144604",
+    "raw_traces_active.jsonl": "52c55f0741476592c0158b646cbb4ff6f300d8dc9ead96986b847da2a13e941c",
+    "run_metadata.json": "f17a8be188cd7486d0f34f723ba2245df4061a4d78f4b8a91ff25a60ef3e6a14"
+  },
+  "completedAt": "2026-10-01T13:42:41.366Z"
+}

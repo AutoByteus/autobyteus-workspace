@@ -1,0 +1,25 @@
+{
+  "source_head": "a01cadaea37366fdd6d91196231d1257e25427d2",
+  "base": "b0b077b02571098a6bf7993ab46b67a69fdb8f9d",
+  "server_build": {
+    "exit_code": 0
+  },
+  "focused_unit_integration": {
+    "exit_code": 0,
+    "files_passed": 16,
+    "files_skipped": 3,
+    "tests_passed": 210,
+    "tests_skipped": 5
+  },
+  "first_focused_e2e": {
+    "exit_code": 1,
+    "tests_failed": 4,
+    "tests_passed": 9
+  },
+  "final_focused_e2e": {
+    "exit_code": 0,
+    "files_passed": 3,
+    "tests_passed": 13
+  },
+  "full_suites_run": false
+}

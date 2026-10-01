@@ -1,0 +1,34 @@
+ TESTING.md                                         |   7 +
+ .../docs/modules/antigravity_cli_runtime.md        |  16 +
+ .../antigravity/stream/agy-mcp-tool-call.ts        |  37 ++
+ .../stream/agy-stream-event-converter.ts           |  13 +-
+ .../services/team-run-service.ts                   |   3 +
+ .../agent-org-history-candidate-plan.ts            |  11 +
+ .../services/team-run-history-catalog-service.ts   |   5 +
+ .../agent-packages-graphql.e2e.test.ts             |  16 +-
+ .../json-file-persistence-contract.e2e.test.ts     |   9 +-
+ .../agent-team-definitions-graphql.e2e.test.ts     | 543 ++-------------------
+ ...test.ts => team-run-config-graphql.e2e.test.ts} | 133 ++---
+ .../team-run-v1-production-upgrade.e2e.test.ts     | 339 ++++++++-----
+ .../workspace-content-rest.e2e.test.ts             |  14 +-
+ .../e2e/helpers/studio-application-api-services.ts |  16 +-
+ .../memory-sync-multiprocess.e2e.test.ts           | 191 ++------
+ .../nested-team-history-restart.e2e.test.ts        | 113 +----
+ .../recent-run-projection-graphql.e2e.test.ts      |  18 +
+ .../run-projection-toolcalls-graphql.e2e.test.ts   |   4 +
+ .../agy-mcp-tool-call-transport.e2e.test.ts        | 200 ++++++++
+ .../runtime/agy-native-image-app-chat.e2e.test.ts  |   5 +-
+ .../agy-team-inter-agent-roundtrip.e2e.test.ts     |  19 +-
+ .../token-usage-analytics-graphql.e2e.test.ts      |   3 +
+ .../e2e/workspaces/workspaces-graphql.e2e.test.ts  |  10 +
+ .../tests/fixtures/agy-failure-cli.mjs             |  34 ++
+ .../team-run-service.integration.test.ts           |   1 +
+ .../file-explorer.integration.test.ts              |   2 +-
+ .../nested-folder-move-watcher.integration.test.ts |   2 +-
+ .../backends/antigravity/agy-mcp-tool-call.test.ts |  67 +++
+ .../antigravity/agy-stream-event-converter.test.ts | 116 +++++
+ .../agent-team-execution/team-run-service.test.ts  |  19 +
+ ...lat-team-families-v1-app-data-migration.test.ts |  24 +
+ .../tests/unit/file-explorer/file-explorer.test.ts |   2 +-
+ package.json                                       |   2 +-
+ 33 files changed, 1015 insertions(+), 979 deletions(-)

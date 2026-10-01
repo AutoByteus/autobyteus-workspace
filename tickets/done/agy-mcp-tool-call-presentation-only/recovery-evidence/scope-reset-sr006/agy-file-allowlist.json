@@ -1,0 +1,18 @@
+{
+  "production_paths": [
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-mcp-tool-call.ts",
+    "autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-event-converter.ts"
+  ],
+  "related_test_doc_paths": [
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-tool-call.test.ts",
+    "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-event-converter.test.ts",
+    "autobyteus-server-ts/tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts",
+    "autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md",
+    "autobyteus-server-ts/tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts",
+    "autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+    "autobyteus-server-ts/tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts"
+  ],
+  "partial_file_only": {
+    "TESTING.md": "Only the two AGY fake/live command table rows; exclude generic E2E build-note addition."
+  }
+}

@@ -179,7 +179,10 @@ suite("real AutoByteus AGY standalone native image chat", () => {
       "mutation($agentRunId: String!) { terminateAgentRun(agentRunId: $agentRunId) { success } }",
       { agentRunId: runId })).terminateAgentRun.success).toBe(true);
     await expectReopenedHistory();
-    expect(messages.some((m) => m.type === "TOOL_EXECUTION_STARTED" && m.payload["tool_name"] === "call_mcp_tool")).toBe(false);
+    // No MCP call ran: an MCP call starts as mcp__<server>__<tool>, or as call_mcp_tool when its wrapper is incomplete.
+    // An AutoByteus MCP generate_image would add a second generate_image start, which the count above rejects.
+    expect(messages.some((m) => m.type === "TOOL_EXECUTION_STARTED" &&
+      /^(call_mcp_tool$|mcp__)/.test(String(m.payload["tool_name"])))).toBe(false);
     expect(messages.some((m) => m.type === "SEGMENT_CONTENT" && String(m.payload["delta"] ?? "").trim())).toBe(true);
     expect(messages.some((m) => m.type === "TURN_COMPLETED")).toBe(true);
     expect(messages.some((m) => m.type === "ERROR" && m.payload["error_effect"] === "terminal")).toBe(false);
