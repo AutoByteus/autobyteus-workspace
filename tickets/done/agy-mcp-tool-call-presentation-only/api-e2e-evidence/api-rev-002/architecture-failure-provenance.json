@@ -1,0 +1,26 @@
+[
+  {
+    "path": "autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts",
+    "identicalToIntegratedBase": true,
+    "sha256": "6eb08c48a8b20afd4f90cd3a205464ee8b6d04f4d2dfb09b3024db22ba3e5f25",
+    "lastCommit": "a7bd0548d06887a68c061227b969f7cec20afa4c feat(task-delegation): pure-spawn delegation with idle child shutdown (checkpoint)"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts",
+    "identicalToIntegratedBase": true,
+    "sha256": "c2bba3c1e104b5a3282c5156b9bc0de8fb66f9806fe40f42d64bdd7ad521e0d9",
+    "lastCommit": "40f769e0d9108a86d1588ac19e68fe70ac58d1d7 refactor(messaging): remove external messaging from the main product"
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-definition-catalog.ts",
+    "identicalToIntegratedBase": true,
+    "sha256": "2cdc4e54025a397308eea55adce19cb40508fe52fb9caf75ef4552065ab1298d",
+    "lastCommit": "33b0d1eefdd44184aa1512f518f8fbfcb01235e6 feat(collaboration): host one instance per collaborator, added at send (SR-010)"
+  },
+  {
+    "path": "autobyteus-server-ts/src/agent-execution/runtime/general-process-run-supervisor.ts",
+    "identicalToIntegratedBase": true,
+    "sha256": "692fe53516726f02c3e2404854481f45a417b00e5e0696ef184cc1c956dffca3",
+    "lastCommit": "c2f69edde2abee1395c88c69c387df629a11f2aa feat(agent-run-collaboration): standalone Agent runs host collaborators (Agent root)"
+  }
+]

@@ -1,0 +1,35 @@
+commit 9038c218b402e53708f9764ab407bb0c1e72b3f5
+Author: normy <normy@macbookpro.speedport.ip>
+Date:   Thu Oct 1 13:33:11 2026 +0200
+
+    chore(agy): checkpoint user-requested test repairs before base refresh
+    
+    Preserve recovered API/E2E test repairs and two source fixes before merging latest origin/personal. Work in progress: not reviewed or release-ready; historical validation does not establish current readiness.
+
+ TESTING.md                                         |   7 +
+ .../services/team-run-service.ts                   |   3 +
+ .../agent-org-history-candidate-plan.ts            |  11 +
+ .../services/team-run-history-catalog-service.ts   |   5 +
+ .../agent-packages-graphql.e2e.test.ts             |  16 +-
+ .../json-file-persistence-contract.e2e.test.ts     |   9 +-
+ .../agent-team-definitions-graphql.e2e.test.ts     | 543 ++-------------------
+ ...test.ts => team-run-config-graphql.e2e.test.ts} | 135 ++---
+ .../team-run-v1-production-upgrade.e2e.test.ts     | 330 ++++++++-----
+ .../workspace-content-rest.e2e.test.ts             |  14 +-
+ .../e2e/helpers/studio-application-api-services.ts |  16 +-
+ .../memory-sync-multiprocess.e2e.test.ts           | 191 ++------
+ .../nested-team-history-restart.e2e.test.ts        | 113 +----
+ .../recent-run-projection-graphql.e2e.test.ts      |  18 +
+ .../run-projection-toolcalls-graphql.e2e.test.ts   |   4 +
+ .../token-usage-analytics-graphql.e2e.test.ts      |   3 +
+ .../e2e/workspaces/workspaces-graphql.e2e.test.ts  |  10 +
+ .../team-run-service.integration.test.ts           |   1 +
+ .../file-explorer.integration.test.ts              |   2 +-
+ .../nested-folder-move-watcher.integration.test.ts |   2 +-
+ .../agent-team-execution/team-run-service.test.ts  |  19 +
+ ...lat-team-families-v1-app-data-migration.test.ts |  24 +
+ .../tests/unit/file-explorer/file-explorer.test.ts |   2 +-
+ package.json                                       |   2 +-
+ .../investigation-notes.md                         |  66 +++
+ .../solution-revision-record.md                    |  32 ++
+ 26 files changed, 610 insertions(+), 968 deletions(-)

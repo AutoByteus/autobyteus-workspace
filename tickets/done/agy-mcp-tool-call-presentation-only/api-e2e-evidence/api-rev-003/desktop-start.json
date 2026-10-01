@@ -1,0 +1,20 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-61927-503e",
+    "pid": 5794,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:61928",
+    "graphqlUrl": "http://127.0.0.1:61928/graphql",
+    "controlEndpoint": "http://127.0.0.1:61927",
+    "controlPort": 61927,
+    "serverPort": 61928,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61927-503e.log"
+  }
+}

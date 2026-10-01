@@ -1,0 +1,4 @@
+
+> @autobyteus/application-frontend-sdk@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-application-frontend-sdk
+> tsc -p tsconfig.build.json
+

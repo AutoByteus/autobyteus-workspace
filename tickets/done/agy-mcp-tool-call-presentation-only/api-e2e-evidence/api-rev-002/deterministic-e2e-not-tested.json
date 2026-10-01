@@ -1,0 +1,667 @@
+[
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts",
+    "test": "Codex live memory persistence e2e persists raw traces without WorkingContext from a real Codex app-server turn without websocket attachment",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts",
+    "test": "Codex live memory persistence e2e persists an enriched failed-command diagnostic from a real Codex app-server turn",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts",
+    "test": "Codex live memory persistence e2e persists a live steered input under the same canonical Codex turn identity",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus current GraphQL runtime e2e creates a run, restores it, and continues streaming on the same websocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus current GraphQL runtime e2e materializes the native write_file baseline when the persisted definition omits it",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus current GraphQL runtime e2e interrupts a live AutoByteus pending tool approval and accepts a follow-up message on the same websocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus current GraphQL runtime e2e terminates a live AutoByteus pending tool approval, restores it, and accepts a follow-up message on the same websocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus current GraphQL runtime e2e serves run history and projection after terminate, restore, and continue",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus current GraphQL runtime e2e routes tool approval over websocket and streams the normalized tool lifecycle",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Codex current GraphQL runtime e2e creates a run, restores it, and continues streaming on the same websocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Codex current GraphQL runtime e2e serves run history and projection after terminate, restore, and continue",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Codex current GraphQL runtime e2e routes tool approval over websocket and streams the normalized tool lifecycle",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Codex current GraphQL runtime e2e terminates an active Codex approval run, restores it, reconnects, and continues streaming",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Codex current GraphQL runtime e2e auto-executes Codex tool calls over websocket without approval requests",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Codex current GraphQL runtime e2e routes Codex MCP tool approval over websocket for the speak tool",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Codex current GraphQL runtime e2e auto-executes the Codex speak MCP tool without approval requests",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Codex current GraphQL runtime e2e applies configured runtime skills over the current websocket API contract",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Codex current GraphQL runtime e2e uses a whole-directory materialized skill whose linked shared file sits outside the skill folder",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Claude current GraphQL runtime e2e creates a run, restores it, and continues streaming on the same websocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Claude current GraphQL runtime e2e terminates an active tool-approval run, restores it, reconnects, and continues streaming",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Claude current GraphQL runtime e2e serves run history and projection after terminate, restore, and continue",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Claude current GraphQL runtime e2e routes tool approval over websocket and streams the normalized tool lifecycle",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Claude current GraphQL runtime e2e auto-approves workspace and outside-scratch write/delete/shell operations without frontend approval prompts",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts",
+    "test": "Claude current GraphQL runtime e2e applies configured runtime skills over the current websocket API contract",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-background-task-live.e2e.test.ts",
+    "test": "real AGY background tasks keep the AutoByteus turn alive SCN-001: daemon then continued work completes; daemon card closes as background; no late event after result; next turn is clean; terminate stops the daemon",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-background-task-live.e2e.test.ts",
+    "test": "real AGY background tasks keep the AutoByteus turn alive SCN-002: a non-daemon background task running longer than five minutes keeps the silent turn alive until it completes",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-background-task-live.e2e.test.ts",
+    "test": "real AGY background tasks keep the AutoByteus turn alive Stop during a turn with a backgrounded daemon interrupts the turn, stops the daemon and never closes it as a background success",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-background-task-transport.e2e.test.ts",
+    "test": "AGY background (daemon) tool steps through app WebSocket and history closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-background-task-transport.e2e.test.ts",
+    "test": "AGY background (daemon) tool steps through app WebSocket and history keeps Stop during a daemon turn as an interruption, never a background success",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts",
+    "test": "real AGY daemons are shown as background tasks (AC-013) (a) a daemon that exits 0 after its turn ends shows running, then completed about 20 s later without new input",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts",
+    "test": "real AGY daemons are shown as background tasks (AC-013) (b) a daemon that exits 3 shows failed with the exit code in its summary",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts",
+    "test": "real AGY daemons are shown as background tasks (AC-013) (c) a never-exiting daemon shows running and becomes stopped when the run is terminated",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts",
+    "test": "real AGY daemons are shown as background tasks (AC-013) a non-daemon background command keeps the turn open and produces no background-task entry",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts",
+    "test": "real AGY daemons are shown as background tasks (AC-013) a daemon whose exit report exceeds the 64 KiB read bound never shows a false status and ends by the fail-safe",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-failure-transport.e2e.test.ts",
+    "test": "controlled AGY failure through app WebSocket and history redacts native image denial on ACK, tool card, history while retaining private bounded diagnostic",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-failure-transport.e2e.test.ts",
+    "test": "controlled AGY failure through app WebSocket and history redacts terminal provider error without a tool and does not fabricate completion",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts",
+    "test": "AGY MCP tool calls through app WebSocket, history and Files presents each MCP call as the real tool with its own arguments, live and in reopened history",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts",
+    "test": "real AutoByteus AGY standalone native image chat publishes native generate_image ACTIVE/DONE with AGY's image path, an Artifacts entry and an ordinary reply via GraphQL/WebSocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts",
+    "test": "real AutoByteus AGY standalone native image chat starts imported Codex package with bundled workflow skill on a real first turn",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-native-image-codex-skill.e2e.test.ts",
+    "test": "direct capsule invokes native AGY image and reports AGY's saved image path from its step output",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-native-image-codex-skill.e2e.test.ts",
+    "test": "starts bundled Codex skill on a real AGY first turn",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-native-image-codex-skill.e2e.test.ts",
+    "test": "warns/omits absent and semantic-invalid skills but completes a real AGY first turn",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts",
+    "test": "AGY native generate_image step output through the real server (fake AGY transport) publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts",
+    "test": "AGY native generate_image step output through the real server (fake AGY transport) keeps DONE successful with output null when AGY's step output is missing",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts",
+    "test": "AGY native generate_image step output through the real server (fake AGY transport) ignores a reported image outside the conversation brain directory",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts",
+    "test": "AGY native generate_image step output through the real server (fake AGY transport) ignores a symlinked reported image inside the conversation brain directory",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts",
+    "test": "real AGY stop cleanup and Org/Team member recovery LIVE-ORG-B1: Org Terminate succeeds after a root member's AGY crashed; the Org restores and the member resumes its conversation",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts",
+    "test": "real AGY stop cleanup and Org/Team member recovery LIVE-ORG-B3 + LIVE-ORG-A2: a crashed Team member inside an active Org resumes by message; other members untouched; Org Terminate stops a member daemon",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts",
+    "test": "real AGY stop cleanup and Org/Team member recovery LIVE-ORG-R7: user Stop as the cause of a dead member (root agent and Team member): message resumes; Org Terminate succeeds and restore resumes",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts",
+    "test": "real AGY stop cleanup and Org/Team member recovery LIVE-TEAM-D4: standalone Team with a crashed member terminates (daemon of the live member stopped), restores without 'already managed', and the crashed member resumes",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts",
+    "test": "real AGY stop cleanup and Org/Team member recovery LIVE-SHUTDOWN-A2: graceful server shutdown stops daemons of an idle standalone AGY run and of an Org member",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "AGY Team and Org collaboration e2e (live transport) routes a real scoped AGY send_message_to to another Team member over GraphQL/WebSocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "AGY Team and Org collaboration e2e (live transport) launches direct and nested AGY Org members through GraphQL and streams exactly attributed turns",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts",
+    "test": "All active runtime send_message_to communication matrix e2e routes send_message_to across every directed mixed-runtime pair in a top-level AutoByteus+Codex+Claude team",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus team current GraphQL runtime e2e routes send_message_to between real AutoByteus team members and projects reference files",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus team current GraphQL runtime e2e creates a real team, approves a tool call, restores it, and continues on the same websocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus team current GraphQL runtime e2e interrupts a live AutoByteus team pending tool approval and accepts a targeted follow-up message on the same websocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus team current GraphQL runtime e2e terminates a live AutoByteus team pending tool approval, restores it, and accepts a targeted follow-up message on the same websocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts",
+    "test": "AutoByteus team current GraphQL runtime e2e serves every team member projection after terminate, restore, and continue",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-background-task.e2e.test.ts",
+    "test": "Claude runtime background tasks (live E2E) shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (path-claude)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-background-task.e2e.test.ts",
+    "test": "Claude runtime background tasks (live E2E) shows a background Bash command as running, then completed with its summary, alongside the unchanged completion notice and Claude-initiated turn (sdk-bundled-claude)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-background-task.e2e.test.ts",
+    "test": "Claude runtime background tasks (live E2E) shows a failing background command as failed with the CLI's exit-code summary (path-claude)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-background-task.e2e.test.ts",
+    "test": "Claude runtime background tasks (live E2E) shows a failing background command as failed with the CLI's exit-code summary (sdk-bundled-claude)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-background-task.e2e.test.ts",
+    "test": "Claude runtime background tasks (live E2E) lists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (path-claude)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-background-task.e2e.test.ts",
+    "test": "Claude runtime background tasks (live E2E) lists no entry for foreground work: a foreground Bash command emits CLI task frames but stays only a tool call (REQ-008) (sdk-bundled-claude)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-background-task.e2e.test.ts",
+    "test": "Claude runtime background tasks (live E2E) keeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (path-claude)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-background-task.e2e.test.ts",
+    "test": "Claude runtime background tasks (live E2E) keeps the entry running across a turn-level Stop and marks it stopped when the run is terminated (MP-003, AC-011) (sdk-bundled-claude)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-background-task.e2e.test.ts",
+    "test": "Claude runtime background tasks (live E2E) marks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (path-claude)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-background-task.e2e.test.ts",
+    "test": "Claude runtime background tasks (live E2E) marks a running entry stopped when the Claude CLI process dies unexpectedly (AC-011) (sdk-bundled-claude)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) serves consecutive turns and an idle period from one Claude process with context (AC-001, AC-006) [path-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) serves consecutive turns and an idle period from one Claude process with context (AC-001, AC-006) [sdk-bundled-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) delivers a user message sent during a foreground command into the running turn, resolving each input once (AC-003) [path-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) delivers a user message sent during a foreground command into the running turn, resolving each input once (AC-003) [sdk-bundled-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) Stop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [path-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) Stop ends only the turn: same process, a background task keeps running, the next message is answered (AC-005) [sdk-bundled-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) terminating the run closes the Claude process and its background tasks, leaving no orphans (AC-008) [path-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) terminating the run closes the Claude process and its background tasks, leaving no orphans (AC-008) [sdk-bundled-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) ends the turn with a visible error when the CLI is killed mid-turn, then resumes with context (AC-009) [path-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) ends the turn with a visible error when the CLI is killed mid-turn, then resumes with context (AC-009) [sdk-bundled-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [path-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) counts every completed turn's usage exactly once across same-process turns, a crash reopen and a restore (RSK-007) [sdk-bundled-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) a restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [path-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) a restarted server restores the run, resumes the Claude session in a new process and recalls context (AC-007) [sdk-bundled-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) sends an attached image inline so Claude answers without a Read call; a missing image is non-fatal (AC-012, AC-013) [path-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts",
+    "test": "Claude streaming session lifecycle (live E2E) sends an attached image inline so Claude answers without a Read call; a missing image is non-fatal (AC-012, AC-013) [sdk-bundled-claude]",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts",
+    "test": "Claude Agent SDK websocket interrupt/resume live E2E uses the real Claude SDK to preserve context after INTERRUPT_GENERATION interrupts an incomplete turn",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "Claude team inter-agent roundtrip e2e (live transport) routes live inter-agent send_message_to ping->pong->ping roundtrip in claude team runtime",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "Claude team inter-agent roundtrip e2e (live transport) interrupts a pending Claude team turn and accepts a follow-up on the same websocket",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "Claude team inter-agent roundtrip e2e (live transport) creates a nested team definition and routes live Claude inter-agent messaging between leaf members",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "Claude team inter-agent roundtrip e2e (live transport) preserves workspace mapping across create->terminate->restore->continue for claude team runs created with workspaceId",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "Claude team inter-agent roundtrip e2e (live transport) serves every team member projection after terminate, restore, and continue in claude team runtime",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts",
+    "test": "Claude team member background tasks (live E2E) delivers a member's background task only to that member and marks it stopped on team terminate",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts",
+    "test": "Codex single-agent run history title e2e (live runtime) keeps the initial user message as the GraphQL history title after Codex follow-up messages without activity-index rewrites",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts",
+    "test": "Codex standalone send_message_to global direct routing e2e delivers through the real standalone Codex thread MCP to an active exact run id and rejects it after termination",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "Codex team inter-agent roundtrip e2e (live transport) preserves send_message_to ping->pong->ping invariants with ultra reasoning",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "Codex team inter-agent roundtrip e2e (live transport) creates a nested team definition and routes live Codex inter-agent messaging between leaf members",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "Codex team inter-agent roundtrip e2e (live transport) streams recipient answer after send_message_to and surfaces reasoning when available in codex team runtime",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "Codex team inter-agent roundtrip e2e (live transport) preserves workspace mapping across create->send->terminate->continue for codex team runs created with workspaceRootPath",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts",
+    "test": "Codex team inter-agent roundtrip e2e (live transport) serves every team member projection after terminate, restore, and continue in codex team runtime",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts",
+    "test": "Scoped historical attachment recovery through actual startup entrypoints preserves incomplete roots while missing historical references fail only at requested access in both hosts",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts",
+    "test": "Scoped historical attachment recovery through actual startup entrypoints starts both hosts when all historical roots are excluded and executes genuinely new work",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts",
+    "test": "Scoped historical attachment recovery through actual startup entrypoints skips terminal SUCCEEDED without auditing historical references or hiding readable conversations",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts",
+    "test": "Scoped historical attachment recovery through actual startup entrypoints ignores and retains released journal residue without treating it as current startup authority",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts",
+    "test": "Context-file built-process runtime and upgrade delivers agent image/file bytes through HTTP, WS and synchronous provider reads, then survives restart",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts",
+    "test": "Context-file built-process runtime and upgrade delivers team image/file bytes through HTTP, WS and synchronous provider reads, then survives restart",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts",
+    "test": "Context-file built-process runtime and upgrade rejects uncontained and cross-owner final-file symlinks at HTTP access without blocking valid attachments",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts",
+    "test": "Context-file built-process runtime and upgrade uploads, previews and removes Team drafts before launch, then binds remaining bytes to the returned exact execution",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts",
+    "test": "Context-file built-process runtime and upgrade converts a copied retained duplicate-address package before admission and preserves bytes, history and inert released residue across restart",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts",
+    "test": "Context-file built-process runtime and upgrade resumes an eligible interrupted old/current corpus without a journal or overwriting later current writes",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts",
+    "test": "Grok Build live runtime e2e (real grok CLI) runs a standalone Grok agent through tools, approvals, interrupt, stop and exact restore (AC-003/004/006/008/009)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts",
+    "test": "Grok Build live runtime e2e (real grok CLI) delivers a Grok member's canonical get_handoff_rules/send_message_to to a Claude member and restores the mixed team (AC-005)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts",
+    "test": "Grok Build live runtime e2e (real grok CLI) launches a Grok Org, relays from a direct member to a nested team member and restores it (AC-005 org)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts",
+    "test": "Live delegated-child resource lifecycle across AutoByteus, Codex and Claude LIVE-001/LIVE-004: spawns a child per runtime, shuts quiet children down after the grace period, rejects a cross-root wake, and wakes them with their conversation",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts",
+    "test": "Live delegated-child resource lifecycle across AutoByteus, Codex and Claude LIVE-002: never shuts down a child that is waiting for tool approval past the grace period",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts",
+    "test": "Live delegated-child resource lifecycle across AutoByteus, Codex and Claude LIVE-003: in an Agent Org root, shuts a quiet task Team down as a whole, wakes it through its coordinator, and lets a grandchild wake its shut-down delegator",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/mixed-task-delegation.e2e.test.ts",
+    "test": "Live delegated-child resource lifecycle across AutoByteus, Codex and Claude LIVE-005: stopping the root stops every child, and after a reopen a message restores an earlier child with its conversation",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts",
+    "test": "Mixed AutoByteus+Codex GraphQL runtime e2e creates a live mixed-runtime team, proves cross-runtime delivery in both directions, restores, and continues with the persisted runtime/model/workspace configuration",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/nested-mixed-team-runtime-graphql.e2e.test.ts",
+    "test": "Nested mixed team runtime GraphQL e2e (live Codex + Claude + AutoByteus) launches a real nested mixed team, routes parent/subteam/child messages across AutoByteus, Codex, and Claude, preserves recursive metadata, and restores",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts",
+    "test": "Standalone Agent collaborators on real runtimes (SR-010) autobyteus: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts",
+    "test": "Standalone Agent collaborators on real runtimes (SR-010) autobyteus: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts",
+    "test": "Standalone Agent collaborators on real runtimes (SR-010) codex_app_server: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts",
+    "test": "Standalone Agent collaborators on real runtimes (SR-010) codex_app_server: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts",
+    "test": "Standalone Agent collaborators on real runtimes (SR-010) claude_agent_sdk: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts",
+    "test": "Standalone Agent collaborators on real runtimes (SR-010) claude_agent_sdk: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts",
+    "test": "Standalone Agent collaborators on real runtimes (SR-010) antigravity_cli: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts",
+    "test": "Standalone Agent collaborators on real runtimes (SR-010) antigravity_cli: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts",
+    "test": "Standalone Agent collaborators on real runtimes (SR-010) grok_build: first-turn tools, mention adds one Offline instance, send_message_to briefs and starts it, reuse, extra copy, Stop and wake",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/standalone-agent-collaborator-mention.e2e.test.ts",
+    "test": "Standalone Agent collaborators on real runtimes (SR-010) grok_build: a collaborator Team's authored handoff reaches its teammate in the same instance (DI-001)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts",
+    "test": "Teammate message to a busy member (live team E2E) delivers a teammate message into the busy member's running turn (claude worker)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts",
+    "test": "Teammate message to a busy member (live team E2E) delivers a teammate message into the busy member's running turn (codex worker)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts",
+    "test": "real runtime token usage GraphQL e2e persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts",
+    "test": "real runtime token usage GraphQL e2e persists token usage from a real codex-app-server runtime turn and exposes it through GraphQL",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts",
+    "test": "real runtime token usage GraphQL e2e persists token usage from a real claude-agent-sdk runtime turn and exposes it through GraphQL",
+    "status": "skipped"
+  }
+]

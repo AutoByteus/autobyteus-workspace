@@ -1,0 +1,185 @@
+commit b59e327be592eaab83e362dfdb56cf862d796984
+Merge: 9038c218b b0b077b02
+Author:     normy <normy@macbookpro.speedport.ip>
+AuthorDate: Thu Oct 1 13:36:23 2026 +0200
+Commit:     normy <normy@macbookpro.speedport.ip>
+CommitDate: Thu Oct 1 13:36:23 2026 +0200
+
+    merge: refresh AGY repair worktree with latest personal
+
+diff --git a/autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+remerge CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+index 2e5e849df..bf8065f81 100644
+--- a/autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+@@ -234,16 +234,6 @@ describe("TeamRun configuration GraphQL and lifecycle", () => {
+       autoExecuteTools: false,
+       workspaceRootPath: rootWorkspace,
+     };
+-<<<<<<< 9038c218b (chore(agy): checkpoint user-requested test repairs before base refresh):autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+-=======
+-    const researchTeamConfiguration: CompleteLaunchConfiguration = {
+-      runtimeKind: "autobyteus",
+-      llmModelIdentifier: model,
+-      llmConfig: { temperature: 0.2 },
+-      autoExecuteTools: true,
+-      workspaceRootPath: researchWorkspace,
+-    };
+->>>>>>> b0b077b02 (docs(cross-scope-agent-mentions): record completed beta.5 release (DR-005)):autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+     const coordinatorConfiguration = { ...rootTeamConfiguration };
+     const observerConfiguration: CompleteLaunchConfiguration = {
+       runtimeKind: "autobyteus",
+@@ -257,12 +247,7 @@ describe("TeamRun configuration GraphQL and lifecycle", () => {
+       llmModelIdentifier: model,
+       llmConfig: { temperature: 0.35 },
+       autoExecuteTools: false,
+-<<<<<<< 9038c218b (chore(agy): checkpoint user-requested test repairs before base refresh):autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+-      skillAccessMode: "PRELOADED_ONLY",
+       workspaceRootPath: reviewWorkspace,
+-=======
+-      workspaceRootPath: researchWorkspace,
+->>>>>>> b0b077b02 (docs(cross-scope-agent-mentions): record completed beta.5 release (DR-005)):autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+     };
+     const expectedConfigurationTree: ExactConfigurationNode = {
+       address: "/",
+@@ -405,16 +390,6 @@ describe("TeamRun configuration GraphQL and lifecycle", () => {
+             : { runtimeKind: "autobyteus" }),
+           workspaceRootPath: rejectedWorkspace,
+         },
+-<<<<<<< 9038c218b (chore(agy): checkpoint user-requested test repairs before base refresh):autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+-=======
+-        {
+-          teamAddress: "/Research",
+-          llmModelIdentifier: model,
+-          autoExecuteTools: false,
+-          runtimeKind: "autobyteus",
+-          workspaceRootPath: rejectedWorkspace,
+-        },
+->>>>>>> b0b077b02 (docs(cross-scope-agent-mentions): record completed beta.5 release (DR-005)):autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+       ],
+       memberConfigs: [
+         ["/coordinator", fixture.coordinatorId],
+diff --git a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+remerge CONFLICT (content): Merge conflict in autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+index 1ec6c61e4..f384e7f5f 100644
+--- a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+@@ -267,6 +267,19 @@ const NESTED_COORDINATOR_CONFIGURATION = Object.freeze({
+   workspaceRootPath: "/tmp/autobyteus-team-v1-nested-workspace",
+ });
+ 
++// Released source fixtures retain skillAccessMode. Current persisted/API projections omit it.
++const currentLaunchConfiguration = (
++  released: typeof ROOT_COORDINATOR_CONFIGURATION | typeof NESTED_COORDINATOR_CONFIGURATION,
++) => ({
++  runtimeKind: released.runtimeKind,
++  llmModelIdentifier: released.llmModelIdentifier,
++  autoExecuteTools: released.autoExecuteTools,
++  llmConfig: released.llmConfig,
++  workspaceRootPath: released.workspaceRootPath,
++});
++const CURRENT_ROOT_COORDINATOR_CONFIGURATION = currentLaunchConfiguration(ROOT_COORDINATOR_CONFIGURATION);
++const CURRENT_NESTED_COORDINATOR_CONFIGURATION = currentLaunchConfiguration(NESTED_COORDINATOR_CONFIGURATION);
++
+ const predecessorAddress = (
+   rootTeamRunId: string,
+   memberAddress: string,
+@@ -772,25 +785,25 @@ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario
+       orgRunId: scenario.rootTeamRunId,
+       orgDefinitionId: "synthetic-released-root-definition",
+       orgDefinitionName: "Synthetic Released Team",
+-      defaultLaunchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
++      defaultLaunchConfiguration: CURRENT_ROOT_COORDINATOR_CONFIGURATION,
+       members: [
+         expect.objectContaining({
+           address: "/lead",
+           agentDefinitionId: "autobyteus-memory-compactor",
+           agentRunId: `${scenario.rootTeamRunId}-lead-run`,
+-          launchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
++          launchConfiguration: CURRENT_ROOT_COORDINATOR_CONFIGURATION,
+         }),
+         expect.objectContaining({
+           address: "/research",
+           teamDefinitionId: "synthetic-released-child-definition",
+           teamRunId: `${scenario.rootTeamRunId}-explicit-child-team-run`,
+           coordinatorAddress: "/research/reviewer",
+-          defaultLaunchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
++          defaultLaunchConfiguration: CURRENT_NESTED_COORDINATOR_CONFIGURATION,
+           members: [expect.objectContaining({
+             address: "/research/reviewer",
+             agentDefinitionId: "autobyteus-memory-compactor",
+             agentRunId: `${scenario.rootTeamRunId}-reviewer-run`,
+-            launchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
++            launchConfiguration: CURRENT_NESTED_COORDINATOR_CONFIGURATION,
+           })],
+           taskExecutions: [expect.objectContaining({
+             address: "/research/reviewer",
+@@ -929,64 +942,22 @@ const exerciseConvertedHistory = async (serverUrl: string, historicalTeamRunId:
+     executionTree: {
+       rootOrg: {
+         address: "/",
+-<<<<<<< 9038c218b (chore(agy): checkpoint user-requested test repairs before base refresh)
+         orgRunId: historicalTeamRunId,
+-        defaultLaunchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
++        defaultLaunchConfiguration: CURRENT_ROOT_COORDINATOR_CONFIGURATION,
+         members: [
+           expect.objectContaining({
+             address: "/lead",
+             agentDefinitionId: "autobyteus-memory-compactor",
+-            launchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
++            launchConfiguration: CURRENT_ROOT_COORDINATOR_CONFIGURATION,
+           }),
+           expect.objectContaining({
+             address: "/research",
+             coordinatorAddress: "/research/reviewer",
+-            defaultLaunchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
++            defaultLaunchConfiguration: CURRENT_NESTED_COORDINATOR_CONFIGURATION,
+             members: [expect.objectContaining({
+               address: "/research/reviewer",
+               agentDefinitionId: "autobyteus-memory-compactor",
+-              launchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
+-=======
+-        default_launch_configuration: {
+-          runtime_kind: "autobyteus",
+-          llm_model_identifier: "gpt-5.6-luna",
+-          llm_config: { temperature: 0.15 },
+-          auto_execute_tools: false,
+-          workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
+-        },
+-        members: expect.arrayContaining([
+-          expect.objectContaining({
+-            address: "/lead",
+-            agent_definition_id: "autobyteus-memory-compactor",
+-            launch_configuration: {
+-              runtime_kind: "autobyteus",
+-              llm_model_identifier: "gpt-5.6-luna",
+-              llm_config: { temperature: 0.15 },
+-              auto_execute_tools: false,
+-              workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
+-            },
+-          }),
+-          expect.objectContaining({
+-            address: "/research",
+-            coordinator_address: "/research/reviewer",
+-            default_launch_configuration: {
+-              runtime_kind: "autobyteus",
+-              llm_model_identifier: "gpt-5.6-luna",
+-              llm_config: null,
+-              auto_execute_tools: true,
+-              workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
+-            },
+-            members: [expect.objectContaining({
+-              address: "/research/reviewer",
+-              agent_definition_id: "autobyteus-memory-compactor",
+-              launch_configuration: {
+-                runtime_kind: "autobyteus",
+-                llm_model_identifier: "gpt-5.6-luna",
+-                llm_config: null,
+-                auto_execute_tools: true,
+-                workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
+-              },
+->>>>>>> b0b077b02 (docs(cross-scope-agent-mentions): record completed beta.5 release (DR-005))
++              launchConfiguration: CURRENT_NESTED_COORDINATOR_CONFIGURATION,
+             })],
+           }),
+         ],

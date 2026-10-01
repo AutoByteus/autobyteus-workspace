@@ -1,0 +1,567 @@
+diff --git a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+index a11063029..a2953c0d4 100644
+--- a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+@@ -49,6 +49,8 @@ type AttemptLogDetail = {
+ const V1_PROMOTION_MIGRATION_ID = "20260814_team_run_execution_tree_v1";
+ const TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID = "20260823_repair_team_agent_memory_layout";
+ const V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
++// A released Team history that contains a Team member is cut over to the Agent Org family.
++const ORG_FAMILY_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
+ const TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID = "20260819_token_usage_run_records_v1";
+ const HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
+ const REMOVED_CANONICAL_MIGRATION_ID = "20260801_team_canonical_identity";
+@@ -265,6 +267,19 @@ const NESTED_COORDINATOR_CONFIGURATION = Object.freeze({
+   workspaceRootPath: "/tmp/autobyteus-team-v1-nested-workspace",
+ });
+ 
++// Frozen migration source/target bytes retain skillAccessMode; the current API read projection omits it.
++const currentLaunchConfiguration = (
++  released: typeof ROOT_COORDINATOR_CONFIGURATION | typeof NESTED_COORDINATOR_CONFIGURATION,
++) => ({
++  runtimeKind: released.runtimeKind,
++  llmModelIdentifier: released.llmModelIdentifier,
++  autoExecuteTools: released.autoExecuteTools,
++  llmConfig: released.llmConfig,
++  workspaceRootPath: released.workspaceRootPath,
++});
++const CURRENT_ROOT_COORDINATOR_CONFIGURATION = currentLaunchConfiguration(ROOT_COORDINATOR_CONFIGURATION);
++const CURRENT_NESTED_COORDINATOR_CONFIGURATION = currentLaunchConfiguration(NESTED_COORDINATOR_CONFIGURATION);
++
+ const predecessorAddress = (
+   rootTeamRunId: string,
+   memberAddress: string,
+@@ -568,6 +583,12 @@ const promotionStatus = async (serverUrl: string): Promise<MigrationStatus> => {
+   return status;
+ };
+ 
++const orgFamilyStatus = async (serverUrl: string): Promise<MigrationStatus> => {
++  const status = (await migrationStatuses(serverUrl)).find(({ migrationId }) => migrationId === ORG_FAMILY_MIGRATION_ID);
++  if (!status) throw new Error("AGENT_ORG_FAMILY_MIGRATION_STATUS_MISSING");
++  return status;
++};
++
+ const currentTreeStatus = async (serverUrl: string): Promise<MigrationStatus> => {
+   const statuses = await migrationStatuses(serverUrl);
+   const status = statuses.find(({ migrationId }) => migrationId === V2_MIGRATION_ID);
+@@ -715,13 +736,21 @@ const terminateAgentRun = async (serverUrl: string, runId: string): Promise<void
+   expect(terminated.terminateAgentRun.success).toBe(true);
+ };
+ 
+-const restoreTeamRun = async (serverUrl: string, teamRunId: string) => executeGraphql<{
+-  restoreAgentTeamRun: { success: boolean; teamRunId: string | null; message: string };
++const restoreOrgRun = async (serverUrl: string, agentOrgRunId: string) => executeGraphql<{
++  restoreAgentOrgRun: { success: boolean; agentOrgRunId: string | null; message: string };
+ }>(serverUrl, `
+-  mutation RestoreMigrationLifecycleTeam($teamRunId: String!) {
+-    restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId message }
++  mutation RestoreConvertedOrgRun($agentOrgRunId: String!) {
++    restoreAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success agentOrgRunId message }
+   }
+-`, { teamRunId });
++`, { agentOrgRunId });
++
++const terminateOrgRun = async (serverUrl: string, agentOrgRunId: string): Promise<boolean> => (await executeGraphql<{
++  terminateAgentOrgRun: { success: boolean };
++}>(serverUrl, `
++  mutation TerminateConvertedOrgRun($agentOrgRunId: String!) {
++    terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success }
++  }
++`, { agentOrgRunId })).terminateAgentOrgRun.success;
+ 
+ const countTokenRows = (databasePath: string): { legacy: number; current: number } => {
+   const database = new DatabaseSync(databasePath, { readOnly: true });
+@@ -736,22 +765,28 @@ const countTokenRows = (databasePath: string): { legacy: number; current: number
+ };
+ 
+ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario>>): void => {
++  // The released Team package is gone from the Team family and lives, converted, in the Org family.
+   expect(fs.existsSync(scenario.supported.metadataPath)).toBe(false);
+-  const tree = JSON.parse(fs.readFileSync(path.join(scenario.supported.rootDir, "team_run_execution_tree.json"), "utf8"));
++  expect(fs.existsSync(scenario.supported.rootDir)).toBe(false);
++  const orgDir = path.join(path.dirname(path.dirname(scenario.supported.rootDir)), "agent_orgs", scenario.rootTeamRunId);
++  const tree = JSON.parse(fs.readFileSync(path.join(orgDir, "agent_org_run_execution_tree.json"), "utf8"));
+   expect(tree).toMatchObject({
+-    schemaVersion: 2,
++    subjectKind: "agent_org",
++    createdAt: "2026-08-16T12:00:00.000Z",
++    archivedAt: null,
+     applicationBinding: GENERAL_PROCESS_APPLICATION_BINDING,
+     handoffs: [{
+       from: "/lead",
+       to: "/research/reviewer",
+       rules: ["Review the migration evidence."],
+     }],
+-    rootTeam: {
++    rootOrg: {
+       address: "/",
+-      teamRunId: scenario.rootTeamRunId,
+-      coordinatorAddress: "/lead",
++      orgRunId: scenario.rootTeamRunId,
++      orgDefinitionId: "synthetic-released-root-definition",
++      orgDefinitionName: "Synthetic Released Team",
+       defaultLaunchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
+-      members: expect.arrayContaining([
++      members: [
+         expect.objectContaining({
+           address: "/lead",
+           agentDefinitionId: "autobyteus-memory-compactor",
+@@ -760,6 +795,7 @@ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario
+         }),
+         expect.objectContaining({
+           address: "/research",
++          teamDefinitionId: "synthetic-released-child-definition",
+           teamRunId: `${scenario.rootTeamRunId}-explicit-child-team-run`,
+           coordinatorAddress: "/research/reviewer",
+           defaultLaunchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
+@@ -773,64 +809,44 @@ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario
+             address: "/research/reviewer",
+             agentRunId: scenario.supported.taskAgentRunId,
+             startedAt: "2026-08-16T12:03:00.000Z",
+-            settledAt: "2026-08-16T12:05:00.000Z",
+           })],
+         }),
+-      ]),
++      ],
+     },
+   });
+-  const messages = JSON.parse(fs.readFileSync(path.join(scenario.supported.rootDir, "team_communication_messages.json"), "utf8"));
++  const messages = JSON.parse(fs.readFileSync(path.join(orgDir, "agent_org_communication_messages.json"), "utf8"));
+   expect(messages).toMatchObject({
+     schemaVersion: 1,
+-    rootTeamRunId: scenario.rootTeamRunId,
++    subjectKind: "agent_org",
++    orgRunId: scenario.rootTeamRunId,
+     messages: [
+       expect.objectContaining({
+         senderAgentRunId: `${scenario.rootTeamRunId}-lead-run`,
+         receiverAgentRunId: `${scenario.rootTeamRunId}-reviewer-run`,
++        content: "address projection",
++        referenceFiles: ["/synthetic/address-evidence.md"],
+       }),
+       expect.objectContaining({
+         senderAgentRunId: `${scenario.rootTeamRunId}-reviewer-run`,
+         receiverAgentRunId: `${scenario.rootTeamRunId}-lead-run`,
++        content: "run ID projection",
++        referenceFiles: ["/synthetic/run-id-evidence.md"],
+       }),
+     ],
+   });
+-  const tasks = JSON.parse(fs.readFileSync(scenario.supported.taskRecordsPath, "utf8"));
+-  expect(tasks).toEqual({
+-    schemaVersion: 1,
+-    rootTeamRunId: scenario.rootTeamRunId,
+-    records: [{
+-      taskId: scenario.supported.taskId,
+-      delegatorAgentRunId: `${scenario.rootTeamRunId}-lead-run`,
+-      recipientAddress: "/research/reviewer",
+-      taskExecution: { agentRunId: scenario.supported.taskAgentRunId },
+-      description: "Review the preserved migration package.",
+-      referenceFiles: ["/synthetic/migration-task.md"],
+-      status: "accepted",
+-      updates: [
+-        {
+-          submissionId: scenario.supported.submissionId,
+-          message: "The preserved migration package is valid.",
+-          referenceFiles: ["/synthetic/migration-result.md"],
+-          createdAt: "2026-08-16T12:04:00.000Z",
+-        },
+-        {
+-          reviewId: `${scenario.supported.taskId}_review_0001`,
+-          reviewedSubmissionId: scenario.supported.submissionId,
+-          decision: "accept",
+-          comment: "Accepted migration evidence.",
+-          referenceFiles: [],
+-          createdAt: "2026-08-16T12:05:00.000Z",
+-        },
+-      ],
+-      createdAt: "2026-08-16T12:02:00.000Z",
+-    }],
+-  });
+-  expect(fs.readFileSync(scenario.supported.memorySentinelPath)).toEqual(scenario.supported.memorySentinel);
++  expect(fs.readFileSync(path.join(orgDir, `${scenario.rootTeamRunId}-lead-run`, "synthetic-memory.bin")))
++    .toEqual(scenario.supported.memorySentinel);
+ };
+ 
++// Migrations registered after the released cohort record one ledger row each on first startup.
++// The three that depend on the Org family cutover run only after it succeeds.
++const NEW_ROWS_WITH_ORG_CUTOVER = 8;
++const NEW_ROWS_WITH_FAILED_ORG_CUTOVER = 6;
++
+ const assertLedgerTransition = (
+   databasePath: string,
+   beforeRows: Array<Record<string, unknown>>,
++  orgCutover: "SUCCEEDED" | "FAILED" = "SUCCEEDED",
+ ): Array<Record<string, unknown>> => {
+   const database = new DatabaseSync(databasePath, { readOnly: true });
+   try {
+@@ -846,7 +862,8 @@ const assertLedgerTransition = (
+     database.close();
+   }
+   const afterRows = readMigrationLedger(databasePath);
+-  expect(afterRows).toHaveLength(beforeRows.length + 4);
++  expect(afterRows).toHaveLength(beforeRows.length
++    + (orgCutover === "SUCCEEDED" ? NEW_ROWS_WITH_ORG_CUTOVER : NEW_ROWS_WITH_FAILED_ORG_CUTOVER));
+   const transitionedBeforeRows = beforeRows.map((row) => {
+     if (typeof row.summary !== "string") return row;
+     const legacy = JSON.parse(row.summary) as ExecutionCounts;
+@@ -870,6 +887,11 @@ const assertLedgerTransition = (
+       status: "SUCCEEDED",
+       attempts: 1,
+     }),
++    expect.objectContaining({
++      migration_id: ORG_FAMILY_MIGRATION_ID,
++      status: orgCutover,
++      attempts: 1,
++    }),
+   ]));
+   expect(afterRows.filter(({ migration_id }) => migration_id === V1_PROMOTION_MIGRATION_ID)).toHaveLength(1);
+   expect(afterRows.filter(({ migration_id }) => migration_id === TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID)).toHaveLength(1);
+@@ -887,82 +909,69 @@ const exerciseHistoryAndNewWork = async (
+   runtimeRoot: string,
+   historicalTeamRunId: string,
+ ): Promise<void> => {
+-  const resume = await executeGraphql<{
+-    getTeamRunResumeConfig: { teamRunId: string; isActive: boolean; executionTree: Record<string, unknown> };
++  await exerciseConvertedHistory(serverUrl, historicalTeamRunId);
++  const newTeamRunId = await exerciseNewWork(serverUrl, runtimeRoot);
++  expect(await collaborationRoots(serverUrl)).toEqual(expect.arrayContaining([
++    { root_subject_kind: "agent_org", root_run_id: historicalTeamRunId },
++    { root_subject_kind: "agent_team", root_run_id: newTeamRunId },
++  ]));
++};
++
++const collaborationRoots = async (serverUrl: string) => (await executeGraphql<{
++  listCollaborationRootHistory: Array<{ root_subject_kind: string; root_run_id: string }>;
++}>(serverUrl, `
++  query PostMigrationCollaborationRoots {
++    listCollaborationRootHistory {
++      ... on AgentOrgRootHistoryObject { root_subject_kind root_run_id }
++      ... on AgentTeamRootHistoryObject { root_subject_kind root_run_id }
++    }
++  }
++`)).listCollaborationRootHistory;
++
++const exerciseConvertedHistory = async (serverUrl: string, historicalTeamRunId: string): Promise<void> => {
++  const config = await executeGraphql<{
++    getAgentOrgRunConfig: { orgRunId: string; isActive: boolean; executionTree: Record<string, unknown> };
+   }>(serverUrl, `
+-    query TeamRunV1Resume($teamRunId: String!) {
+-      getTeamRunResumeConfig(teamRunId: $teamRunId) { teamRunId isActive executionTree }
++    query ConvertedOrgRunConfig($orgRunId: String!) {
++      getAgentOrgRunConfig(orgRunId: $orgRunId) { orgRunId isActive executionTree }
+     }
+-  `, { teamRunId: historicalTeamRunId });
+-  expect(resume.getTeamRunResumeConfig).toMatchObject({
+-    teamRunId: historicalTeamRunId,
++  `, { orgRunId: historicalTeamRunId });
++  expect(config.getAgentOrgRunConfig).toMatchObject({
++    orgRunId: historicalTeamRunId,
+     isActive: false,
+     executionTree: {
+-      root_team: {
++      rootOrg: {
+         address: "/",
+-        default_launch_configuration: {
+-          runtime_kind: "autobyteus",
+-          llm_model_identifier: "gpt-5.6-luna",
+-          llm_config: { temperature: 0.15 },
+-          auto_execute_tools: false,
+-          workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
+-        },
+-        members: expect.arrayContaining([
++        orgRunId: historicalTeamRunId,
++        defaultLaunchConfiguration: CURRENT_ROOT_COORDINATOR_CONFIGURATION,
++        members: [
+           expect.objectContaining({
+             address: "/lead",
+-            agent_definition_id: "autobyteus-memory-compactor",
+-            launch_configuration: {
+-              runtime_kind: "autobyteus",
+-              llm_model_identifier: "gpt-5.6-luna",
+-              llm_config: { temperature: 0.15 },
+-              auto_execute_tools: false,
+-              workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
+-            },
++            agentDefinitionId: "autobyteus-memory-compactor",
++            launchConfiguration: CURRENT_ROOT_COORDINATOR_CONFIGURATION,
+           }),
+           expect.objectContaining({
+             address: "/research",
+-            coordinator_address: "/research/reviewer",
+-            default_launch_configuration: {
+-              runtime_kind: "autobyteus",
+-              llm_model_identifier: "gpt-5.6-luna",
+-              llm_config: null,
+-              auto_execute_tools: true,
+-              workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
+-            },
++            coordinatorAddress: "/research/reviewer",
++            defaultLaunchConfiguration: CURRENT_NESTED_COORDINATOR_CONFIGURATION,
+             members: [expect.objectContaining({
+               address: "/research/reviewer",
+-              agent_definition_id: "autobyteus-memory-compactor",
+-              launch_configuration: {
+-                runtime_kind: "autobyteus",
+-                llm_model_identifier: "gpt-5.6-luna",
+-                llm_config: null,
+-                auto_execute_tools: true,
+-                workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
+-              },
++              agentDefinitionId: "autobyteus-memory-compactor",
++              launchConfiguration: CURRENT_NESTED_COORDINATOR_CONFIGURATION,
+             })],
+           }),
+-        ]),
++        ],
+       },
+     },
+   });
+ 
+-  const restored = await executeGraphql<{
+-    restoreAgentTeamRun: { success: boolean; teamRunId: string | null; message: string };
+-  }>(serverUrl, `
+-    mutation RestoreTeamRunV1($teamRunId: String!) {
+-      restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId message }
+-    }
+-  `, { teamRunId: historicalTeamRunId });
+-  expect(restored.restoreAgentTeamRun).toMatchObject({ success: true, teamRunId: historicalTeamRunId });
+-  const terminatedRestored = await executeGraphql<{
+-    terminateAgentTeamRun: { success: boolean };
+-  }>(serverUrl, `
+-    mutation TerminateRestoredTeamRunV1($teamRunId: String!) {
+-      terminateAgentTeamRun(teamRunId: $teamRunId) { success }
+-    }
+-  `, { teamRunId: historicalTeamRunId });
+-  expect(terminatedRestored.terminateAgentTeamRun.success).toBe(true);
++  const restored = await restoreOrgRun(serverUrl, historicalTeamRunId);
++  expect(restored.restoreAgentOrgRun).toMatchObject({ success: true, agentOrgRunId: historicalTeamRunId });
++  expect(await terminateOrgRun(serverUrl, historicalTeamRunId)).toBe(true);
++};
+ 
++/** Creates and stops one new Agent run and one new Team run; returns the Team run ID. */
++const exerciseNewWork = async (serverUrl: string, runtimeRoot: string): Promise<string> => {
+   const createdAgent = await executeGraphql<{ createAgentDefinition: { id: string; name: string } }>(serverUrl, `
+     mutation CreatePostMigrationAgent($input: CreateAgentDefinitionInput!) {
+       createAgentDefinition(input: $input) { id name }
+@@ -1028,7 +1037,6 @@ const exerciseHistoryAndNewWork = async (
+       nodes: [{
+         memberName: "worker",
+         ref: createdAgent.createAgentDefinition.id,
+-        refType: "AGENT",
+         refScope: "SHARED",
+       }],
+     },
+@@ -1061,7 +1069,8 @@ const exerciseHistoryAndNewWork = async (
+       }],
+     },
+   });
+-  expect(createdTeamRun.createAgentTeamRun).toMatchObject({ success: true, teamRunId: expect.any(String) });
++  expect(createdTeamRun.createAgentTeamRun, createdTeamRun.createAgentTeamRun.message)
++    .toMatchObject({ success: true, teamRunId: expect.any(String) });
+   const terminatedTeam = await executeGraphql<{ terminateAgentTeamRun: { success: boolean } }>(serverUrl, `
+     mutation TerminatePostMigrationTeam($teamRunId: String!) {
+       terminateAgentTeamRun(teamRunId: $teamRunId) { success }
+@@ -1086,11 +1095,9 @@ const exerciseHistoryAndNewWork = async (
+     workspace.teamDefinitions.flatMap((definition) => definition.runs.map((run) => run.teamRunId)));
+   const agentRunIds = history.listWorkspaceRunHistory.flatMap((workspace) =>
+     workspace.agentDefinitions.flatMap((definition) => definition.runs.map((run) => run.runId)));
+-  expect(teamRunIds).toEqual(expect.arrayContaining([
+-    historicalTeamRunId,
+-    createdTeamRun.createAgentTeamRun.teamRunId,
+-  ]));
++  expect(teamRunIds).toContain(createdTeamRun.createAgentTeamRun.teamRunId);
+   expect(agentRunIds).toContain(createdRun.createAgentRun.runId);
++  return createdTeamRun.createAgentTeamRun.teamRunId!;
+ };
+ 
+ const startScenarioServer = async (target: ReturnType<typeof makeTarget>): Promise<RunningTestServer> => {
+@@ -1115,7 +1122,7 @@ afterEach(async () => {
+   }
+ });
+ 
+-describe("TeamRun released-shape production upgrade to current V2 through actual startup", () => {
++describe("TeamRun released-shape production upgrade to the current run families through actual startup", () => {
+   it("migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch", async () => {
+     const productionBefore = productionProfileMetadata();
+     const target = makeTarget("team-v1-supported-startup");
+@@ -1134,6 +1141,11 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+       attempts: 1,
+       errorMessage: null,
+     });
++    expect(await orgFamilyStatus(first.serverUrl)).toMatchObject({
++      status: "SUCCEEDED",
++      attempts: 1,
++      errorMessage: null,
++    });
+     expect(first.output()).toContain("Server listening on");
+     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
+     assertConvertedPackage(scenario);
+@@ -1142,7 +1154,8 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toEqual([
+       expect.objectContaining({
+         run_id: `${scenario.rootTeamRunId}-lead-run`,
+-        root_team_run_id: scenario.rootTeamRunId,
++        // Usage of a run that now belongs to an Agent Org carries no Team root.
++        root_team_run_id: null,
+         usage_report_count: 1,
+         accounting_input_tokens: 13,
+         accounting_output_tokens: 8,
+@@ -1158,6 +1171,7 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     await expectHealthy(second.serverUrl);
+     expect(await promotionStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
+     expect(await currentTreeStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
++    expect(await orgFamilyStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
+     expect(readMigrationLedger(target.database.databasePath)).toEqual(ledgerAfterFirst);
+     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(1);
+@@ -1165,7 +1179,7 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     expect(productionProfileMetadata()).toEqual(productionBefore);
+   }, 360_000);
+ 
+-  it("isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available", async () => {
++  it("isolates mixed root, token, and history warnings, stays healthy, and converts the supported history once the history index is corrected", async () => {
+     const productionBefore = productionProfileMetadata();
+     const target = makeTarget("team-v1-warning-startup");
+     const scenario = await seedScenario(target, true);
+@@ -1203,10 +1217,29 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     expect(first.output()).not.toContain("startup continues with strict current-package admission");
+     expect(first.output()).toContain("Server listening on");
+     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
+-    assertConvertedPackage(scenario);
++    // The Org family cutover needs a readable Team history index. With the unreadable one it fails
++    // closed: the supported history stays, untouched, in the Team family until the index is corrected.
++    const blockedCutover = await orgFamilyStatus(first.serverUrl);
++    expect(blockedCutover).toMatchObject({
++      status: "FAILED",
++      recoveryAction: "RESTART_TO_RETRY",
++      attempts: 1,
++      errorMessage: expect.stringContaining("require correction and restart"),
++    });
++    expect(expectSummaryMatchesAttemptLog(blockedCutover).details).toEqual([
++      expect.objectContaining({
++        itemId: "FAILED_HISTORY",
++        status: "FAILED",
++        message: expect.stringContaining("Invalid team run history index format"),
++      }),
++    ]);
++    const orgDir = path.join(target.runtimeRoot, "memory", "agent_orgs", scenario.rootTeamRunId);
++    expect(fs.existsSync(orgDir)).toBe(false);
++    expect(fs.existsSync(path.join(scenario.supported.rootDir, "team_run_execution_tree.json"))).toBe(true);
++    expect(fs.readFileSync(scenario.supported.memorySentinelPath)).toEqual(scenario.supported.memorySentinel);
+     expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
+     expect(fs.readFileSync(scenario.warningEvidence!.historyPath)).toEqual(scenario.warningEvidence!.historyBytes);
+-    const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore);
++    assertLedgerTransition(target.database.databasePath, ledgerBefore, "FAILED");
+     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(tokensBefore.length);
+     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toEqual(expect.arrayContaining([
+@@ -1221,21 +1254,67 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+         accounting_total_tokens: 21,
+       }),
+     ]));
+-    await exerciseHistoryAndNewWork(first.serverUrl, target.runtimeRoot, scenario.rootTeamRunId);
++    const blockedRestore = await restoreOrgRun(first.serverUrl, scenario.rootTeamRunId);
++    expect(blockedRestore.restoreAgentOrgRun).toMatchObject({ success: false, agentOrgRunId: null });
++    // New Agent work is unaffected while the cutover waits for correction.
++    await terminateAgentRun(
++      first.serverUrl,
++      await createCurrentAgentRun(first.serverUrl, target.runtimeRoot, "warning-current-agent"),
++    );
+ 
++    // The user removes the unreadable history index and restarts: the cutover retries and converts.
+     await first.stop();
+     ownedServers.delete(first);
++    fs.rmSync(scenario.warningEvidence!.historyPath);
+     const second = await startScenarioServer(target);
+     await expectHealthy(second.serverUrl);
+     expect(await promotionStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS", attempts: 1 });
+     expect(await currentTreeStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
+-    expect(readMigrationLedger(target.database.databasePath)).toEqual(ledgerAfterFirst);
++    // The supported history converts; the tree-less root stays preserved and is reported as a warning.
++    const retriedCutover = await orgFamilyStatus(second.serverUrl);
++    expect(retriedCutover).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS", attempts: 2 });
++    expect(expectSummaryMatchesAttemptLog(retriedCutover).details).toEqual(expect.arrayContaining([
++      expect.objectContaining({
++        itemId: "FAILED_MISSING_TEAM_EXECUTION_TREE",
++        message: expect.stringContaining("team-v1-preserved-warning-root"),
++      }),
++      expect.objectContaining({
++        itemId: "MIGRATED_ORG_RUN",
++        message: expect.stringContaining(`agent_orgs/${scenario.rootTeamRunId}`),
++      }),
++    ]));
++    assertConvertedPackage(scenario);
++    expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
+     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(tokensBefore.length);
+-    expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
++    await exerciseHistoryAndNewWork(second.serverUrl, target.runtimeRoot, scenario.rootTeamRunId);
+     expect(productionProfileMetadata()).toEqual(productionBefore);
+   }, 360_000);
+ 
++  // Regression: a refused Team run used to leave its package behind, and the retried cutover then
++  // rejected that current-format package and stayed failed.
++  it("leaves no package behind for a Team run refused on an unreadable history index, so the corrected cutover converts the supported history", async () => {
++    const target = makeTarget("team-v1-refused-team-run-startup");
++    const scenario = await seedScenario(target, true);
++    const teamFamilyDir = path.join(target.runtimeRoot, "memory", "agent_teams");
++
++    const first = await startScenarioServer(target);
++    await expectHealthy(first.serverUrl);
++    expect(await orgFamilyStatus(first.serverUrl)).toMatchObject({ status: "FAILED", attempts: 1 });
++    const packagesBefore = fs.readdirSync(teamFamilyDir).sort();
++    await expect(exerciseNewWork(first.serverUrl, target.runtimeRoot))
++      .rejects.toThrow("Invalid team run history index format");
++    expect(fs.readdirSync(teamFamilyDir).sort()).toEqual(packagesBefore);
++
++    await first.stop();
++    ownedServers.delete(first);
++    fs.rmSync(scenario.warningEvidence!.historyPath);
++    const second = await startScenarioServer(target);
++    await expectHealthy(second.serverUrl);
++    expect(await orgFamilyStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS", attempts: 2 });
++    assertConvertedPackage(scenario);
++  }, 360_000);
++
+   it("keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry", async () => {
+     const target = makeTarget("token-consolidation-retry-startup");
+     const scenario = await seedScenario(target, false);
+@@ -1260,7 +1339,14 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     expectSummaryMatchesAttemptLog(await tokenConsolidationStatus(first.serverUrl));
+     await expectHistoricalAuditTransitioned(first.serverUrl, target.database.databasePath, scenario);
+     await expectTokenHistoryUnavailable(first.serverUrl);
+-    const blockedRestore = await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId);
++    // The Org family cutover waits for token consolidation, so the history is still a Team run here.
++    const blockedRestore = await executeGraphql<{
++      restoreAgentTeamRun: { success: boolean; teamRunId: string | null; message: string };
++    }>(first.serverUrl, `
++      mutation RestoreBeforeTokenConsolidation($teamRunId: String!) {
++        restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId message }
++      }
++    `, { teamRunId: scenario.rootTeamRunId });
+     expect(blockedRestore.restoreAgentTeamRun).toMatchObject({
+       success: false,
+       teamRunId: null,
+@@ -1308,17 +1394,12 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     expectSummaryMatchesAttemptLog(await tokenConsolidationStatus(second.serverUrl));
+     await expectHistoricalAuditTransitioned(second.serverUrl, target.database.databasePath, scenario);
+     expect(countTokenRows(target.database.databasePath)).toEqual({ legacy: 0, current: 3 });
+-    const restored = await restoreTeamRun(second.serverUrl, scenario.rootTeamRunId);
+-    expect(restored.restoreAgentTeamRun).toMatchObject({
++    const restored = await restoreOrgRun(second.serverUrl, scenario.rootTeamRunId);
++    expect(restored.restoreAgentOrgRun).toMatchObject({
+       success: true,
+-      teamRunId: scenario.rootTeamRunId,
++      agentOrgRunId: scenario.rootTeamRunId,
+     });
+-    const terminated = await executeGraphql<{ terminateAgentTeamRun: { success: boolean } }>(second.serverUrl, `
+-      mutation TerminateMigrationLifecycleTeam($teamRunId: String!) {
+-        terminateAgentTeamRun(teamRunId: $teamRunId) { success }
+-      }
+-    `, { teamRunId: scenario.rootTeamRunId });
+-    expect(terminated.terminateAgentTeamRun.success).toBe(true);
++    expect(await terminateOrgRun(second.serverUrl, scenario.rootTeamRunId)).toBe(true);
+   }, 360_000);
+ 
+   it("rejects a legacy/current run-ID overlap before source cleanup while preserving both stores", async () => {

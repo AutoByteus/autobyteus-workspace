@@ -1,0 +1,23 @@
+{
+  "candidateFull": {
+    "pass": 195,
+    "fail": 43,
+    "skipped": 133
+  },
+  "baselineFull": {
+    "pass": 197,
+    "fail": 41,
+    "skipped": 133
+  },
+  "orderedTokenCandidate": {
+    "pass": 12,
+    "fail": 2
+  },
+  "orderedTokenBaseline": {
+    "pass": 12,
+    "fail": 2
+  },
+  "allCandidateFailureIdentitiesReproducedOnBase": true,
+  "basis": "Exact base converter source and transpiled dist replacement; all other existing production source is base-identical, new helper unused. Failing tests byte-identical to base. Not a clean full base checkout. Test order fixed only for diagnostic reproduction, no assertion or source correction.",
+  "remainingAgyFailures": []
+}

@@ -1,0 +1,284 @@
+[
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-memory/agent-memory-location-service.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected [] to deeply equal [ { address: '/writer', \u2026(4) }, \u2026(2) ]",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected undefined to deeply equal [ ObjectContaining{\u2026} ]",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-provisioning-service.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "TypeError: service.activatePreparedRun is not a function",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-packages/package-root-summary.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected { sharedAgentCount: 1, \u2026(3) } to deeply equal { sharedAgentCount: 1, \u2026(2) }",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected { success: false, \u2026(6) } to match object { outcome: 'VALIDATION_FAILED', \u2026(1) }",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected [ 11, 12, 14 ] to deeply equal [ 11, 12, 13 ]",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected [ 11, 12, 14 ] to deeply equal [ 11, 12, 13 ]",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected 'ROOT_RUN_PACKAGE_CURRENT_VALIDATION_F\u2026' to contain 'schemaVersion' Expected: \"schemaVersion\" Received: \"ROOT_RUN_PACKAGE_CURRENT_VALIDATION_FAILED: rootTeam is missing required field(s): address, defaultLaunchConfiguration.\"",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected '\\nInvalid `this.transaction.tokenUsag\u2026' to be null",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected { status: 'FAILED', \u2026(2) } to match object { status: 'SUCCEEDED', \u2026(2) }",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "TypeError: Cannot read properties of undefined (reading 'initializeFromBundleSnapshot')",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected [Function] to throw error including 'K6 Team graph failed' but got 'AgentRunManager requires all executio\u2026' Expected: \"K6 Team graph failed\" Received: \"AgentRunManager requires all execution-family dependencies.\"",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "Error: AgentRunManager requires all execution-family dependencies.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "Error: AgentRunManager requires all execution-family dependencies.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/config/streaming-content-flush-interval-setting.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected 300 to be 500 // Object.is equality",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "TypeError: __vite_ssr_import_4__.FileExplorer is not a constructor",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected '1.0.10' to be '1.0.9' // Object.is equality Expected: \"1.0.9\" Received: \"1.0.10\"",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/llm-management/gemini-configuration-service.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected { activeMode: 'VERTEX_EXPRESS', \u2026(6) } to deeply equal { activeMode: null, \u2026(6) }",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "Error: AgentRun provider input normalizer is required.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/services/media-storage-service.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected '/rest/files/images/downloaded.png' to be 'http://unittest.server:8000/rest/file\u2026' // Object.is equality Expected: \"http://unittest.server:8000/rest/files/images/downloaded.png\" Received: \"/rest/files/images/downloaded.png\"",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/workspaces/workspace-manager-skill-integration.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected \"vi.fn()\" to be called 1 times, but got 0 times",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/workspaces/workspace-manager.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "Error: The process AgentRunManager is not initialized.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/api/graphql/studio-application-api-services.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "Error: Complete Studio application API services are required.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/run-history/services/published-artifact-projection-service.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "Error: The process AgentRunManager is not initialized.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/run-history/services/team-run-history-catalog-service.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected null to match object { summary: 'first', \u2026(1) }",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected false to be true // Object.is equality",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "TypeError: Cannot read properties of undefined (reading 'workspaceId')",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/api/graphql/types/memory-view-member-resolver.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected null to deeply equal [ ObjectContaining{\u2026} ]",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts",
+    "layer": "Unit/architecture",
+    "historical_failure": "AssertionError: expected { kind: 'rejected', \u2026(2) } to match object { kind: 'publish' }",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/api/team-communication-api.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "Error: The process AgentTeamRunManager is not initialized.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "AssertionError: expected { command_type: 'SEND_MESSAGE', \u2026(7) } to match object { command_type: 'SEND_MESSAGE', \u2026(7) }",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "Error: Run package 'agent:run-create-autobyteus' is unavailable.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "Error: Collaboration member execution identity accepts exactly agentRunId, memberAddress, root.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "TypeError: this.catalog.assertHistoryIndexReadable is not a function",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/api/run-file-changes-api.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "AssertionError: expected [] to deeply equal [ ObjectContaining{\u2026} ]",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "Error: Standalone package root is not a directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/applications/brief-studio/dist/importable-package",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "AssertionError: promise rejected \"Error: ENOENT: no such file or directory,\u2026 { \u2026(4) }\" instead of resolving",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "Error: Expected Brief Studio bundle to be discoverable from the importable package root.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/brief-studio-team-config.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "Error: ENOENT: no such file or directory, open '/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/applications/brief-studio/dist/importable-package/applications/brief-studio/agent-teams/brief-studio-team/team-config.json'",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "Error: ENOENT: no such file or directory, scandir '/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/applications/brief-studio/dist/importable-package'",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "Error: ENOENT: no such file or directory, lstat '/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/applications/brief-studio/dist/importable-package'",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "TypeError: __vite_ssr_import_5__.FileExplorer is not a constructor",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "AssertionError: expected [ 'tool_call', 'tool_result' ] to deeply equal [ 'reasoning', 'tool_call', \u2026(1) ]",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-definition/md-centric-provider.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "Error: The property \"getInstance\" is not defined on the function.",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/services/media-storage-service.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "AssertionError: expected false to be true // Object.is equality",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/api/rest/upload-file.integration.test.ts",
+    "layer": "Integration",
+    "historical_failure": "TypeError: Invalid URL",
+    "source_log": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log"
+  }
+]

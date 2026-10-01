@@ -1,0 +1,42 @@
+[
+  {
+    "original_path": "/private/tmp/e2e-repair/baseline.log",
+    "archived_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/baseline.log",
+    "sha256": "d760b579ecb76c1b1f04f10df368dd5b048df74cac324e794c6a5ca7d038b884"
+  },
+  {
+    "original_path": "/private/tmp/e2e-repair/after.log",
+    "archived_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/after.log",
+    "sha256": "ae49788879e1a7ca2a20ba0bf1c53401a2f0e703472b55b475095273a51b5830"
+  },
+  {
+    "original_path": "/private/tmp/e2e-repair/agy-after.log",
+    "archived_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/agy-after.log",
+    "sha256": "1a5a8a52e5865004c4fd82c3956d9e595cd51f7fb0f8930305088817405c45a5"
+  },
+  {
+    "original_path": "/private/tmp/e2e-repair/unit.log",
+    "archived_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unit.log",
+    "sha256": "42f2be692e387b42ccfb52ea988f4ae0176aa8a0679cb314ea8d69e8c075edb1"
+  },
+  {
+    "original_path": "/private/tmp/e2e-repair/integ.log",
+    "archived_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/integ.log",
+    "sha256": "7bc1787f5bdaf9ffe32196325adc2385d21497a935b61e20a8dec8fa9db7f724"
+  },
+  {
+    "original_path": "/private/tmp/e2e-repair/unitfix.log",
+    "archived_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/unitfix.log",
+    "sha256": "4bcd751b4a05d39c646ab5d499f798e7106ae58f2420e581148a864294f91c3e"
+  },
+  {
+    "original_path": "/private/tmp/e2e-repair/one.log",
+    "archived_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/one.log",
+    "sha256": "c456b05d2ef6066c2ff96f1eee35cfa4f034b5d9fb5359edd4b9a0ffb3bf4818"
+  },
+  {
+    "original_path": "/private/tmp/e2e-repair/repair.patch",
+    "archived_path": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/recovery-evidence/test-repair-provenance-20261001/repair.patch",
+    "sha256": "e6e224b090dd2cd9a732d94828ee30719de3177c84f1003319175dfff2477a2b"
+  }
+]

@@ -1,0 +1,132 @@
+{
+  "captured_at": "2026-10-01T11:19:27.571738+00:00",
+  "head": "82996343c59f7532cd42807521507a593b48e005",
+  "remote_base": "b0b077b02571098a6bf7993ab46b67a69fdb8f9d",
+  "files": [
+    {
+      "path": "TESTING.md",
+      "state": "present",
+      "sha256": "6da1cde700ae1d2cd1054570c1cd3cdf91bb241b5bef8012584c30e77bb08962"
+    },
+    {
+      "path": "autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
+      "state": "present",
+      "sha256": "44d44d8262aa19ea43e8dcff4c273f0e8da7a53a2fdbb21fdd36b6217350d6f6"
+    },
+    {
+      "path": "autobyteus-server-ts/src/app-data-migrations/migrations/agent-org-flat-team-families-v1/agent-org-history-candidate-plan.ts",
+      "state": "present",
+      "sha256": "3033dd3da52b9106b610dbb6e5dda2b9976d3e6dd266e0b11dfb1eec523efd71"
+    },
+    {
+      "path": "autobyteus-server-ts/src/run-history/services/team-run-history-catalog-service.ts",
+      "state": "present",
+      "sha256": "da85bf9a6fea507a59c9f8eba849eeb894a17aad80ddb8f7b6c85c63f60821fa"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts",
+      "state": "present",
+      "sha256": "34c85f4671a7b6715e673918851abf135f509e239eba714a22d5c9d3d9637724"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts",
+      "state": "present",
+      "sha256": "85f7f8bccfc9c362f74b552933e04830a5b141fb4b4434a9ddbc8a6a94f5f582"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts",
+      "state": "present",
+      "sha256": "3690391e389c465c038525e4bda166250fb7d109c9688745cfc6034321306371"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts",
+      "state": "deleted",
+      "sha256": null
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts",
+      "state": "present",
+      "sha256": "09412fc90186372e7ab1c4052c67a79ff144c01c6146a7cc569bfc4a07e3616f"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts",
+      "state": "present",
+      "sha256": "2e2300f720a484e6d0f9c48c2b156c06f5c7ce57613026cbe9cb44d2626be151"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts",
+      "state": "present",
+      "sha256": "418b6d853f816b1c4a0f6952dfc2149083223d35aa073d84bd6640d37707eb36"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts",
+      "state": "present",
+      "sha256": "8e245357242f420c893fab98038fa7761399a0f2ee04eb5061d225502a4569af"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts",
+      "state": "present",
+      "sha256": "baa0750da4f2e73dfcfdadf6b3f436e7803aec56ac0b56c0398cd3ac3528de3e"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts",
+      "state": "present",
+      "sha256": "52ea0f86802fe5380028e5b95fa83abfbda77a304b3307ef741566befc3b90ba"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts",
+      "state": "present",
+      "sha256": "a62a165440cc72fac047753a1d5cccc875194aa9638e49de6ee38d45ea3881a8"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts",
+      "state": "present",
+      "sha256": "466c16e4a92f80baed076833845f758bd83938c9a6148724158affd187cc2ad9"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts",
+      "state": "present",
+      "sha256": "0f431bf42018073a992b0aa4b70cbe0d0b038b56e676eca209620561f3c1c5e4"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts",
+      "state": "present",
+      "sha256": "b5b03627d961e78746f4a3641cd77fcae016ff29bc4aa783d0fab155b9339912"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.ts",
+      "state": "present",
+      "sha256": "e0fe852e20c97bd5d82c2e1d81b7babafaee543a340daed10dd6511b2b3ee1ab"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts",
+      "state": "present",
+      "sha256": "2e9e3ab96931f15f376c97abca38c316089b3f8cf9aad28643edf7958c6a7e41"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-service.test.ts",
+      "state": "present",
+      "sha256": "6cebeac8d2c468bbbc47357a308b8c2af7de3f95f0f73e4d401ef9c45bcefe59"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/app-data-migrations/agent-org-flat-team-families-v1-app-data-migration.test.ts",
+      "state": "present",
+      "sha256": "be26a3943b4691ec6c298e4a5eef780d538105163b9ab022d1750a1b12716e6d"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts",
+      "state": "present",
+      "sha256": "3135db3c12df3b81fb138e0903c9541d4997c233ffc9b29cff0a2c11c6647065"
+    },
+    {
+      "path": "package.json",
+      "state": "present",
+      "sha256": "55eeca4e457810191ae4b3ee4c44772919e30796e634427e329d34c47e8cce0d"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts",
+      "state": "present",
+      "sha256": "04a50f4d9f62f3ba13aead272910cf123de8792da936ca32f294ae84546bca48"
+    }
+  ]
+}

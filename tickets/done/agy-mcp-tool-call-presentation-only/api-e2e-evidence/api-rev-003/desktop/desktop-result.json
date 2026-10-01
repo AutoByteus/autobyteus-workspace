@@ -1,0 +1,236 @@
+{
+  "startedAt": "2026-10-01T13:57:14.365Z",
+  "steps": {
+    "fakeLive": [
+      {
+        "title": "view_file",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "delegate_task",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__echo_args",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__json_result",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__always_fails",
+        "status": "FAILED"
+      },
+      {
+        "title": "call_mcp_tool",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "generate_image",
+        "status": "SUCCESS"
+      }
+    ],
+    "fakeReload": [
+      {
+        "title": "view_file",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "delegate_task",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__echo_args",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__json_result",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__always_fails",
+        "status": "FAILED"
+      },
+      {
+        "title": "call_mcp_tool",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "generate_image",
+        "status": "SUCCESS"
+      }
+    ],
+    "fakeProcessReopen": [
+      {
+        "title": "view_file",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "delegate_task",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__echo_args",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__json_result",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__always_fails",
+        "status": "FAILED"
+      },
+      {
+        "title": "call_mcp_tool",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "generate_image",
+        "status": "SUCCESS"
+      }
+    ],
+    "realNative": [
+      {
+        "title": "run_command",
+        "text": "run_command\n#agy-to\nSUCCESS\nArguments\n{\n  \"CommandLine\": \"printf AGY_DESKTOP_NATIVE_7318\"\n}\nResult\n{\n  \"provider_state\": \"DONE\",\n  \"output\": \"AGY_DESKTOP_NATIVE_7318\"\n}",
+        "status": "SUCCESS",
+        "sections": [
+          "{\n  \"CommandLine\": \"printf AGY_DESKTOP_NATIVE_7318\"\n}",
+          "{\n  \"provider_state\": \"DONE\",\n  \"output\": \"AGY_DESKTOP_NATIVE_7318\"\n}"
+        ]
+      }
+    ],
+    "realReopened": [
+      {
+        "title": "run_command",
+        "text": "run_command\n#agy-to\nSUCCESS\nArguments\n{\n  \"CommandLine\": \"printf AGY_DESKTOP_NATIVE_7318\"\n}\nResult\n{\n  \"provider_state\": \"DONE\",\n  \"output\": \"AGY_DESKTOP_NATIVE_7318\"\n}",
+        "status": "SUCCESS",
+        "sections": [
+          "{\n  \"CommandLine\": \"printf AGY_DESKTOP_NATIVE_7318\"\n}",
+          "{\n  \"provider_state\": \"DONE\",\n  \"output\": \"AGY_DESKTOP_NATIVE_7318\"\n}"
+        ]
+      }
+    ]
+  },
+  "cleanup": [
+    {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-61927-503e",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    }
+  ],
+  "instance": {
+    "instanceId": "iso-61927-503e",
+    "pid": 5794,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:61928",
+    "graphqlUrl": "http://127.0.0.1:61928/graphql",
+    "controlEndpoint": "http://127.0.0.1:61927",
+    "controlPort": 61927,
+    "serverPort": 61928,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61927-503e.log"
+  },
+  "fakeRestart": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "restart",
+    "result": {
+      "instanceId": "iso-61927-503e",
+      "pid": 7490,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:61928",
+      "graphqlUrl": "http://127.0.0.1:61928/graphql",
+      "controlEndpoint": "http://127.0.0.1:61927",
+      "controlPort": 61927,
+      "serverPort": 61928,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61927-503e.log"
+    }
+  },
+  "browserVersion": "148.0.7778.265",
+  "initialUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "initialDOM": "Chat\nAgents\nAgent Teams\nAgent Orgs\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nWhat should we work on?\n\nAll your skills are available. Type / to use a skill, or @ to chat with an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nclaude-fable-5\nAutoByteus\nOff\n\nFiles are saved in the temp workspace · /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod/server-data/temp_workspace",
+  "fakeRunUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=daily_assistant_589b3efe69714d7782d6dbaf69303fd3",
+  "processRestart": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "restart",
+    "result": {
+      "instanceId": "iso-61927-503e",
+      "pid": 9202,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:61928",
+      "graphqlUrl": "http://127.0.0.1:61928/graphql",
+      "controlEndpoint": "http://127.0.0.1:61927",
+      "controlPort": 61927,
+      "serverPort": 61928,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61927-503e.log"
+    }
+  },
+  "realRestart": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "restart",
+    "result": {
+      "instanceId": "iso-61927-503e",
+      "pid": 10929,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:61928",
+      "graphqlUrl": "http://127.0.0.1:61928/graphql",
+      "controlEndpoint": "http://127.0.0.1:61927",
+      "controlPort": 61927,
+      "serverPort": 61928,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61927-503e.log"
+    }
+  },
+  "realRunUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=daily_assistant_c374e11c27ee437796f8f6bd49027d05",
+  "realProcessRestart": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "restart",
+    "result": {
+      "instanceId": "iso-61927-503e",
+      "pid": 13372,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:61928",
+      "graphqlUrl": "http://127.0.0.1:61928/graphql",
+      "controlEndpoint": "http://127.0.0.1:61927",
+      "controlPort": 61927,
+      "serverPort": 61928,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-o3OKod/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61927-503e.log"
+    }
+  },
+  "result": "Pass",
+  "completedAt": "2026-10-01T13:58:10.584Z"
+}

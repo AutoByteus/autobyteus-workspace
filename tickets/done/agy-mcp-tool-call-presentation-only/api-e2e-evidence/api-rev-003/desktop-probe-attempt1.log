@@ -1,0 +1,4 @@
+Fail Error: packaged-reload: incomplete wrapper arguments
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/desktop-probe.mjs:20:69)
+    at check (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/desktop-probe.mjs:76:3)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/desktop-probe.mjs:100:66

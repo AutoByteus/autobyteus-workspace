@@ -1,0 +1,138 @@
+[
+  {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool_name": "view_file",
+    "invocation_id": "agy-tool-turn-a-2",
+    "arguments": {
+      "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/shape-test/echo_args.json"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "view_file",
+    "invocation_id": "agy-tool-turn-a-2",
+    "arguments": {
+      "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/shape-test/echo_args.json"
+    },
+    "result": {
+      "provider_state": "DONE",
+      "output": "1 lines, 281 bytes"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool_name": "view_file",
+    "invocation_id": "agy-tool-turn-a-3",
+    "arguments": {
+      "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/shape-test/json_result.json"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "view_file",
+    "invocation_id": "agy-tool-turn-a-3",
+    "arguments": {
+      "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/shape-test/json_result.json"
+    },
+    "result": {
+      "provider_state": "DONE",
+      "output": "1 lines, 145 bytes"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool_name": "view_file",
+    "invocation_id": "agy-tool-turn-a-4",
+    "arguments": {
+      "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/shape-test/always_fails.json"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "view_file",
+    "invocation_id": "agy-tool-turn-a-4",
+    "arguments": {
+      "AbsolutePath": "/Users/normy/.gemini/antigravity-cli/mcp/shape-test/always_fails.json"
+    },
+    "result": {
+      "provider_state": "DONE",
+      "output": "1 lines, 146 bytes"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool_name": "mcp__shape-test__echo_args",
+    "invocation_id": "agy-tool-turn-a-6",
+    "arguments": {
+      "note": "hello",
+      "options": {
+        "count": 2,
+        "tags": [
+          "a",
+          "b"
+        ]
+      }
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "mcp__shape-test__echo_args",
+    "invocation_id": "agy-tool-turn-a-6",
+    "arguments": {
+      "note": "hello",
+      "options": {
+        "count": 2,
+        "tags": [
+          "a",
+          "b"
+        ]
+      }
+    },
+    "result": {
+      "provider_state": "DONE",
+      "output": "ECHO:{\"note\": \"hello\", \"options\": {\"count\": 2, \"tags\": [\"a\", \"b\"]}}"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool_name": "mcp__shape-test__json_result",
+    "invocation_id": "agy-tool-turn-a-8",
+    "arguments": {}
+  },
+  {
+    "type": "TOOL_EXECUTION_SUCCEEDED",
+    "tool_name": "mcp__shape-test__json_result",
+    "invocation_id": "agy-tool-turn-a-8",
+    "arguments": {},
+    "result": {
+      "provider_state": "DONE",
+      "output": {
+        "marker": "JSON-MARKER-4471",
+        "nested": {
+          "ok": true
+        }
+      }
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_STARTED",
+    "tool_name": "mcp__shape-test__always_fails",
+    "invocation_id": "agy-tool-turn-a-10",
+    "arguments": {
+      "reason": "probe"
+    }
+  },
+  {
+    "type": "TOOL_EXECUTION_FAILED",
+    "tool_name": "mcp__shape-test__always_fails",
+    "invocation_id": "agy-tool-turn-a-10",
+    "arguments": {
+      "reason": "probe"
+    },
+    "result": {
+      "provider_state": "ERROR",
+      "output": "PROBE-FAILURE-9920: deliberate failure"
+    },
+    "error": "PROBE-FAILURE-9920: deliberate failure"
+  }
+]

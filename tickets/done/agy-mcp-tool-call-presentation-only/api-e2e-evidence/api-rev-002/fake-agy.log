@@ -1,0 +1,959 @@
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:92594) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-01T13:00:46.559Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Populating agent definition cache for the first time...
+[2026-10-01T13:00:47.197Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+[2026-10-01T13:00:47.203Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+In-memory cache: Added new agent definition with ID agy-background-16995213-a78f-4bbf-8c21-85b4fd90b526.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Agent Definition created successfully with ID: agy-background-16995213-a78f-4bbf-8c21-85b4fd90b526
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/workspace.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+Created and registered workspace ID: agent_ws_3916c6b6011967ba7874ad8de32f2e8179d23ebd242805644b27d2a5d4cde485
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/workspace.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+Reusing registered workspace ID: agent_ws_3916c6b6011967ba7874ad8de32f2e8179d23ebd242805644b27d2a5d4cde485
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+Published antigravity_cli agent run 'agy_background_16995213_a78f_4bbf_8c21_85b4fd90b_54422140851442e092359ac0f9391950'.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+Agent websocket attached for run agy_background_16995213_a78f_4bbf_8c21_85b4fd90b_54422140851442e092359ac0f9391950
+Created agent session 9ae8ae18-88c3-4ab1-bdb8-0c9d64d6b3c1 for run agy_background_16995213_a78f_4bbf_8c21_85b4fd90b_54422140851442e092359ac0f9391950
+Agent WebSocket connected: session=9ae8ae18-88c3-4ab1-bdb8-0c9d64d6b3c1, run=agy_background_16995213_a78f_4bbf_8c21_85b4fd90b_54422140851442e092359ac0f9391950
+
+stderr | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it
+AGY_BACKGROUND_TASK_MESSAGES_UNREADABLE run=agy_background_16995213_a78f_4bbf_8c21_85b4fd90b_54422140851442e092359ac0f9391950 problem=INVALID_CONVERSATION_ID
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > keeps Stop during a daemon turn as an interruption, never a background success
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/workspace.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > keeps Stop during a daemon turn as an interruption, never a background success
+Reusing registered workspace ID: agent_ws_3916c6b6011967ba7874ad8de32f2e8179d23ebd242805644b27d2a5d4cde485
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > keeps Stop during a daemon turn as an interruption, never a background success
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-background-e2e-AR0VbN/workspace.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > keeps Stop during a daemon turn as an interruption, never a background success
+Reusing registered workspace ID: agent_ws_3916c6b6011967ba7874ad8de32f2e8179d23ebd242805644b27d2a5d4cde485
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > keeps Stop during a daemon turn as an interruption, never a background success
+Published antigravity_cli agent run 'agy_background_16995213_a78f_4bbf_8c21_85b4fd90b_642bb46cb6d145348043a2db69724a57'.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history > keeps Stop during a daemon turn as an interruption, never a background success
+Agent websocket attached for run agy_background_16995213_a78f_4bbf_8c21_85b4fd90b_642bb46cb6d145348043a2db69724a57
+Created agent session 1c92cde3-1178-4550-a959-b026d4a5adbf for run agy_background_16995213_a78f_4bbf_8c21_85b4fd90b_642bb46cb6d145348043a2db69724a57
+Agent WebSocket connected: session=1c92cde3-1178-4550-a959-b026d4a5adbf, run=agy_background_16995213_a78f_4bbf_8c21_85b4fd90b_642bb46cb6d145348043a2db69724a57
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Closed agent session 1c92cde3-1178-4550-a959-b026d4a5adbf
+Agent WebSocket disconnected: 1c92cde3-1178-4550-a959-b026d4a5adbf
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Closed agent session 9ae8ae18-88c3-4ab1-bdb8-0c9d64d6b3c1
+Agent WebSocket disconnected: 9ae8ae18-88c3-4ab1-bdb8-0c9d64d6b3c1
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+In-memory cache: Removed agent definition with ID agy-background-16995213-a78f-4bbf-8c21-85b4fd90b526.
+
+stdout | tests/e2e/runtime/agy-background-task-transport.e2e.test.ts > AGY background (daemon) tool steps through app WebSocket and history
+Agent Definition with ID agy-background-16995213-a78f-4bbf-8c21-85b4fd90b526 deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts (2 tests) 2034ms
+     ✓ closes a never-finished daemon step as a succeeded background task before TURN_COMPLETED and replays it  651ms
+     ✓ keeps Stop during a daemon turn as an interruption, never a background success  616ms
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94529) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-01T13:00:50.262Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Populating agent definition cache for the first time...
+[2026-10-01T13:00:50.764Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+[2026-10-01T13:00:50.770Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+In-memory cache: Added new agent definition with ID agy-failure-479ace92-f81a-433e-9573-f1e807dc22e8.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Agent Definition created successfully with ID: agy-failure-479ace92-f81a-433e-9573-f1e807dc22e8
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts native image denial on ACK, tool card, history while retaining private bounded diagnostic
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts native image denial on ACK, tool card, history while retaining private bounded diagnostic
+Created and registered workspace ID: agent_ws_e75d98bfeaa5cb9ecd427e3b1d39faf22f615ae242f067f540814ac1fa051068
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts native image denial on ACK, tool card, history while retaining private bounded diagnostic
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts native image denial on ACK, tool card, history while retaining private bounded diagnostic
+Reusing registered workspace ID: agent_ws_e75d98bfeaa5cb9ecd427e3b1d39faf22f615ae242f067f540814ac1fa051068
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts native image denial on ACK, tool card, history while retaining private bounded diagnostic
+Published antigravity_cli agent run 'agy_failure_479ace92_f81a_433e_9573_f1e807dc22e8_cf714459b12740d1a2ee36bbd0b5f18d'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts native image denial on ACK, tool card, history while retaining private bounded diagnostic
+Agent websocket attached for run agy_failure_479ace92_f81a_433e_9573_f1e807dc22e8_cf714459b12740d1a2ee36bbd0b5f18d
+Created agent session 1607a7cd-875a-4ea1-a21d-7f41d506384e for run agy_failure_479ace92_f81a_433e_9573_f1e807dc22e8_cf714459b12740d1a2ee36bbd0b5f18d
+Agent WebSocket connected: session=1607a7cd-875a-4ea1-a21d-7f41d506384e, run=agy_failure_479ace92_f81a_433e_9573_f1e807dc22e8_cf714459b12740d1a2ee36bbd0b5f18d
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts terminal provider error without a tool and does not fabricate completion
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts terminal provider error without a tool and does not fabricate completion
+Reusing registered workspace ID: agent_ws_e75d98bfeaa5cb9ecd427e3b1d39faf22f615ae242f067f540814ac1fa051068
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts terminal provider error without a tool and does not fabricate completion
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-failure-e2e-0dzuM0/workspace.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts terminal provider error without a tool and does not fabricate completion
+Reusing registered workspace ID: agent_ws_e75d98bfeaa5cb9ecd427e3b1d39faf22f615ae242f067f540814ac1fa051068
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts terminal provider error without a tool and does not fabricate completion
+Published antigravity_cli agent run 'agy_failure_479ace92_f81a_433e_9573_f1e807dc22e8_9fe564820a504eee9b6079da2acc7bf8'.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history > redacts terminal provider error without a tool and does not fabricate completion
+Agent websocket attached for run agy_failure_479ace92_f81a_433e_9573_f1e807dc22e8_9fe564820a504eee9b6079da2acc7bf8
+Created agent session e443de23-2785-4560-aa7b-e45e459c6442 for run agy_failure_479ace92_f81a_433e_9573_f1e807dc22e8_9fe564820a504eee9b6079da2acc7bf8
+Agent WebSocket connected: session=e443de23-2785-4560-aa7b-e45e459c6442, run=agy_failure_479ace92_f81a_433e_9573_f1e807dc22e8_9fe564820a504eee9b6079da2acc7bf8
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Closed agent session 1607a7cd-875a-4ea1-a21d-7f41d506384e
+Agent WebSocket disconnected: 1607a7cd-875a-4ea1-a21d-7f41d506384e
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Closed agent session e443de23-2785-4560-aa7b-e45e459c6442
+Agent WebSocket disconnected: e443de23-2785-4560-aa7b-e45e459c6442
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+In-memory cache: Removed agent definition with ID agy-failure-479ace92-f81a-433e-9573-f1e807dc22e8.
+
+stdout | tests/e2e/runtime/agy-failure-transport.e2e.test.ts > controlled AGY failure through app WebSocket and history
+Agent Definition with ID agy-failure-479ace92-f81a-433e-9573-f1e807dc22e8 deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (2 tests) 1764ms
+     ✓ redacts native image denial on ACK, tool card, history while retaining private bounded diagnostic  541ms
+     ✓ redacts terminal provider error without a tool and does not fabricate completion  522ms
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94620) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-01T13:00:53.526Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Populating agent definition cache for the first time...
+[2026-10-01T13:00:53.960Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+[2026-10-01T13:00:53.965Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+In-memory cache: Added new agent definition with ID agy-mcp-call-2df5c2a2-6e06-4711-8059-3d7f901b5f79.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Agent Definition created successfully with ID: agy-mcp-call-2df5c2a2-6e06-4711-8059-3d7f901b5f79
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files > presents each MCP call as the real tool with its own arguments, live and in reopened history
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/workspace.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files > presents each MCP call as the real tool with its own arguments, live and in reopened history
+Created and registered workspace ID: agent_ws_41a7e13c74c9da2ac4396bdecf7b8afddae38525d46c3b9253ebe877873453b6
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files > presents each MCP call as the real tool with its own arguments, live and in reopened history
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-call-e2e-Cvd7vo/workspace.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files > presents each MCP call as the real tool with its own arguments, live and in reopened history
+Reusing registered workspace ID: agent_ws_41a7e13c74c9da2ac4396bdecf7b8afddae38525d46c3b9253ebe877873453b6
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files > presents each MCP call as the real tool with its own arguments, live and in reopened history
+Published antigravity_cli agent run 'agy_mcp_call_2df5c2a2_6e06_4711_8059_3d7f901b5f7_f5bd13a736534f5984972ad68cd84099'.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files > presents each MCP call as the real tool with its own arguments, live and in reopened history
+Agent websocket attached for run agy_mcp_call_2df5c2a2_6e06_4711_8059_3d7f901b5f7_f5bd13a736534f5984972ad68cd84099
+Created agent session 2a74f444-b006-4834-ab1b-a5423a69acfa for run agy_mcp_call_2df5c2a2_6e06_4711_8059_3d7f901b5f7_f5bd13a736534f5984972ad68cd84099
+Agent WebSocket connected: session=2a74f444-b006-4834-ab1b-a5423a69acfa, run=agy_mcp_call_2df5c2a2_6e06_4711_8059_3d7f901b5f7_f5bd13a736534f5984972ad68cd84099
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Closed agent session 2a74f444-b006-4834-ab1b-a5423a69acfa
+Agent WebSocket disconnected: 2a74f444-b006-4834-ab1b-a5423a69acfa
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+In-memory cache: Removed agent definition with ID agy-mcp-call-2df5c2a2-6e06-4711-8059-3d7f901b5f79.
+
+stdout | tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts > AGY MCP tool calls through app WebSocket, history and Files
+Agent Definition with ID agy-mcp-call-2df5c2a2-6e06-4711-8059-3d7f901b5f79 deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts (1 test) 1198ms
+     ✓ presents each MCP call as the real tool with its own arguments, live and in reopened history  664ms
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94660) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:29695
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:29695
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/memory
+============================================================
+AppConfig initialization completed successfully
+Initialized server settings service with 22 predefined settings
+CachedAgentDefinitionProvider initialized with a full in-memory cache strategy.
+[2026-10-01T13:00:56.183Z] [INFO] [agent-team-definition.cache] CachedAgentTeamDefinitionProvider initialized with a full in-memory cache strategy.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Tool invocation preprocessor definition 'MediaInputPathNormalizationPreprocessor' registered.
+Registered tool invocation preprocessor 'MediaInputPathNormalizationPreprocessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'open_tab'
+Successfully registered tool definition: 'navigate_to'
+Successfully registered tool definition: 'close_tab'
+Successfully registered tool definition: 'list_tabs'
+Successfully registered tool definition: 'read_page'
+Successfully registered tool definition: 'screenshot'
+Successfully registered tool definition: 'dom_snapshot'
+Successfully registered tool definition: 'run_script'
+Successfully registered tool definition: 'set_device_emulation'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Populating agent definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Populating agent definition cache for the first time...
+[2026-10-01T13:00:56.581Z] [INFO] [agent-team-definition.cache] Populating agent team definition cache for the first time...
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+[2026-10-01T13:00:56.586Z] [INFO] [agent-team-definition.cache] Agent team definition cache populated with 20 items.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Agent definition cache populated with 50 items.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+In-memory cache: Added new agent definition with ID agy-step-output-90f4f5fd-f453-42f3-9b6f-84127478d9dc.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Agent Definition created successfully with ID: agy-step-output-90f4f5fd-f453-42f3-9b6f-84127478d9dc
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Created and registered workspace ID: agent_ws_1a55d3f98a3b4d90abff396face2ed5f39729e448d9e710b59ffe6eee873d1d2
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Reusing registered workspace ID: agent_ws_1a55d3f98a3b4d90abff396face2ed5f39729e448d9e710b59ffe6eee873d1d2
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Published antigravity_cli agent run 'agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_d76b8df4ad62461d9a62bf8ccfe246e0'.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history
+Agent websocket attached for run agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_d76b8df4ad62461d9a62bf8ccfe246e0
+Created agent session 0d212f87-e4d2-4413-befb-8da6331875aa for run agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_d76b8df4ad62461d9a62bf8ccfe246e0
+Agent WebSocket connected: session=0d212f87-e4d2-4413-befb-8da6331875aa, run=agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_d76b8df4ad62461d9a62bf8ccfe246e0
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Reusing registered workspace ID: agent_ws_1a55d3f98a3b4d90abff396face2ed5f39729e448d9e710b59ffe6eee873d1d2
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Reusing registered workspace ID: agent_ws_1a55d3f98a3b4d90abff396face2ed5f39729e448d9e710b59ffe6eee873d1d2
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Published antigravity_cli agent run 'agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_bd61fe7e495845f08459e7aa72f66abf'.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+Agent websocket attached for run agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_bd61fe7e495845f08459e7aa72f66abf
+Created agent session 90198dba-75b6-4677-bdc4-5713eaea3e39 for run agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_bd61fe7e495845f08459e7aa72f66abf
+Agent WebSocket connected: session=90198dba-75b6-4677-bdc4-5713eaea3e39, run=agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_bd61fe7e495845f08459e7aa72f66abf
+
+stderr | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > keeps DONE successful with output null when AGY's step output is missing
+AGY_NATIVE_IMAGE_PATH_UNRESOLVED run=agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_bd61fe7e495845f08459e7aa72f66abf step=1 reason=OUTPUT_MISSING
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Reusing registered workspace ID: agent_ws_1a55d3f98a3b4d90abff396face2ed5f39729e448d9e710b59ffe6eee873d1d2
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Reusing registered workspace ID: agent_ws_1a55d3f98a3b4d90abff396face2ed5f39729e448d9e710b59ffe6eee873d1d2
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Published antigravity_cli agent run 'agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_606308f203b44ffb9086d830d31be97d'.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+Agent websocket attached for run agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_606308f203b44ffb9086d830d31be97d
+Created agent session 570a6d24-6fb3-46ae-a27f-8fc5d794f918 for run agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_606308f203b44ffb9086d830d31be97d
+Agent WebSocket connected: session=570a6d24-6fb3-46ae-a27f-8fc5d794f918, run=agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_606308f203b44ffb9086d830d31be97d
+
+stderr | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a reported image outside the conversation brain directory
+AGY_NATIVE_IMAGE_PATH_UNRESOLVED run=agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_606308f203b44ffb9086d830d31be97d step=1 reason=PATH_OUTSIDE_CONVERSATION
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Reusing registered workspace ID: agent_ws_1a55d3f98a3b4d90abff396face2ed5f39729e448d9e710b59ffe6eee873d1d2
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-step-output-home-QOECnB/app-data-qAttRU/workspace.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Reusing registered workspace ID: agent_ws_1a55d3f98a3b4d90abff396face2ed5f39729e448d9e710b59ffe6eee873d1d2
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Published antigravity_cli agent run 'agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_4440c12ce5484a4587164cf1e9e599fd'.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+Agent websocket attached for run agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_4440c12ce5484a4587164cf1e9e599fd
+Created agent session d4848e6b-38d9-4c3f-aed8-3becd0119223 for run agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_4440c12ce5484a4587164cf1e9e599fd
+Agent WebSocket connected: session=d4848e6b-38d9-4c3f-aed8-3becd0119223, run=agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_4440c12ce5484a4587164cf1e9e599fd
+
+stderr | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport) > ignores a symlinked reported image inside the conversation brain directory
+AGY_NATIVE_IMAGE_PATH_UNRESOLVED run=agy_step_output_90f4f5fd_f453_42f3_9b6f_84127478_4440c12ce5484a4587164cf1e9e599fd step=1 reason=IMAGE_MISSING
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Closed agent session d4848e6b-38d9-4c3f-aed8-3becd0119223
+Agent WebSocket disconnected: d4848e6b-38d9-4c3f-aed8-3becd0119223
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Closed agent session 570a6d24-6fb3-46ae-a27f-8fc5d794f918
+Agent WebSocket disconnected: 570a6d24-6fb3-46ae-a27f-8fc5d794f918
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Closed agent session 90198dba-75b6-4677-bdc4-5713eaea3e39
+Agent WebSocket disconnected: 90198dba-75b6-4677-bdc4-5713eaea3e39
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Closed agent session 0d212f87-e4d2-4413-befb-8da6331875aa
+Agent WebSocket disconnected: 0d212f87-e4d2-4413-befb-8da6331875aa
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+In-memory cache: Removed agent definition with ID agy-step-output-90f4f5fd-f453-42f3-9b6f-84127478d9dc.
+
+stdout | tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts > AGY native generate_image step output through the real server (fake AGY transport)
+Agent Definition with ID agy-step-output-90f4f5fd-f453-42f3-9b6f-84127478d9dc deleted successfully.
+
+ ✓ tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts (4 tests) 2775ms
+     ✓ publishes the AGY-reported image path, output text, one previewable Artifacts entry and replayable history  541ms
+     ✓ keeps DONE successful with output null when AGY's step output is missing  512ms
+     ✓ ignores a reported image outside the conversation brain directory  528ms
+     ✓ ignores a symlinked reported image inside the conversation brain directory  525ms
+
+ Test Files  4 passed (4)
+      Tests  9 passed (9)
+   Start at  15:00:39
+   Duration  19.65s (transform 5.24s, setup 26ms, import 11.13s, tests 7.77s, environment 0ms)
+
+JSON report written to /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/api-rev-002/fake-agy.json

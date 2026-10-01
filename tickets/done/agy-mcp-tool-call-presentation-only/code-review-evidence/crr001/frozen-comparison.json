@@ -1,0 +1,212 @@
+[
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "invalidAddress",
+    "status": "different",
+    "original": "(value: unknown, detail: string): never => { throw new CollaborationContractError( \"COLLABORATION_ADDRESS_INVALID\", `AgentTeam address '${String(value)}' is invalid: ${detail}`, ); }",
+    "frozen": "(value: unknown, detail: string): never => { throw new Error( `AgentTeam address '${String(value)}' is invalid: ${detail}`, ); }"
+  },
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "assertValidAgentTeamMemberName",
+    "status": "different",
+    "original": "( value: string, fieldName = \"memberName\", ): string => { if ( typeof value !== \"string\" || value.length === 0 || value !== value.trim() || value === \".\" || value === \"..\" || value.includes(\"/\") || value.includes(\"\\\\\") ) { throw new CollaborationContractError( \"COLLABORATION_MEMBER_NAME_INVALID\", `${fieldName} '${String(value)}' must be a non-empty trimmed path-safe member name.`, ); } return value; }",
+    "frozen": "( value: string, fieldName = \"memberName\", ): string => { if ( typeof value !== \"string\" || value.length === 0 || value !== value.trim() || value === \".\" || value === \"..\" || value.includes(\"/\") || value.includes(\"\\\\\") ) { throw new Error( `${fieldName} '${String(value)}' must be a non-empty trimmed path-safe member name.`, ); } return value; }"
+  },
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "parseRootedSegments",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "createAgentTeamAddress",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "assertAgentTeamAddress",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "getAgentTeamAddressSegments",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "getParentAgentTeamAddress",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "cloneCollaborationHandoff",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "cloneCollaborationHandoffs",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "invalidHandoff",
+    "status": "different",
+    "original": "(message: string): never => { throw new CollaborationContractError(\"COLLABORATION_HANDOFF_RULE_INVALID\", message); }",
+    "frozen": "(message: string): never => { throw new Error(message); }"
+  },
+  {
+    "file": "addresses-and-handoffs.ts",
+    "name": "normalizeCollaborationHandoffs",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "collaborators.ts",
+    "name": "rootLevelAddress",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "collaborators.ts",
+    "name": "parseCollaboratorTeamMember",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "collaborators.ts",
+    "name": "parseCollaboratorEntry",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "collaborators.ts",
+    "name": "parseCollaborators",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "collaborators.ts",
+    "name": "collectTaskExecutionRunIds",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "collaborators.ts",
+    "name": "validateCollaboratorInvariants",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "collaborators.ts",
+    "name": "collaboratorTaskOwners",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "record-primitives.ts",
+    "name": "objectRecord",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "record-primitives.ts",
+    "name": "requireKeys",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "record-primitives.ts",
+    "name": "requiredString",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "record-primitives.ts",
+    "name": "nullableString",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "record-primitives.ts",
+    "name": "isoTimestamp",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "record-primitives.ts",
+    "name": "canonicalNonRootAddress",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "record-primitives.ts",
+    "name": "requiredArray",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "record-primitives.ts",
+    "name": "LAUNCH_CONFIGURATION_KEYS",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "record-primitives.ts",
+    "name": "parseLaunchConfiguration",
+    "status": "different",
+    "original": "(value: unknown, label: string): AgentLaunchConfiguration => { const launch = objectRecord(value, label); requireKeys(launch, LAUNCH_CONFIGURATION_KEYS, label); if (!Object.values(RuntimeKind).includes(launch.runtimeKind as RuntimeKind)) { throw new Error(`${label}.runtimeKind is unsupported.`); } requiredString(launch.llmModelIdentifier, `${label}.llmModelIdentifier`); if ( launch.llmConfig !== null && (!launch.llmConfig || typeof launch.llmConfig !== \"object\" || Array.isArray(launch.llmConfig)) ) throw new Error(`${label}.llmConfig must be an object or null.`); if (typeof launch.autoExecuteTools !== \"boolean\") throw new Error(`${label}.autoExecuteTools must be boolean.`); if (launch.workspaceRootPath !== null) requiredString(launch.workspaceRootPath, `${label}.workspaceRootPath`); return { runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig === null ? null : structuredClone(launch.llmConfig), autoExecuteTools: launch.autoExecuteTools, workspaceRootPath: launch.workspaceRootPath, } as AgentLaunchConfiguration; }",
+    "frozen": "(value: unknown, label: string): AgentLaunchConfiguration => { const launch = objectRecord(value, label); requireKeys(launch, LAUNCH_CONFIGURATION_KEYS, label); if (![\"autobyteus\", \"claude_agent_sdk\", \"codex_app_server\", \"antigravity_cli\", \"grok_build\"].includes(launch.runtimeKind as string)) { throw new Error(`${label}.runtimeKind is unsupported.`); } requiredString(launch.llmModelIdentifier, `${label}.llmModelIdentifier`); if ( launch.llmConfig !== null && (!launch.llmConfig || typeof launch.llmConfig !== \"object\" || Array.isArray(launch.llmConfig)) ) throw new Error(`${label}.llmConfig must be an object or null.`); if (typeof launch.autoExecuteTools !== \"boolean\") throw new Error(`${label}.autoExecuteTools must be boolean.`); if (launch.workspaceRootPath !== null) requiredString(launch.workspaceRootPath, `${label}.workspaceRootPath`); return { runtimeKind: launch.runtimeKind, llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig === null ? null : structuredClone(launch.llmConfig), autoExecuteTools: launch.autoExecuteTools, workspaceRootPath: launch.workspaceRootPath, } as AgentLaunchConfiguration; }"
+  },
+  {
+    "file": "record-primitives.ts",
+    "name": "parseConfiguredAgent",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "schema.ts",
+    "name": "parseRootTeam",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "schema.ts",
+    "name": "validateInvariants",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "schema.ts",
+    "name": "validateTeamRunExecutionTreePayload",
+    "status": "different",
+    "original": "( value: unknown, expectedRootTeamRunId?: string, ): TeamRunExecutionTreeFile => { const payload = objectRecord(value, \"TeamRun execution tree\"); requireKeys(payload, [\"createdAt\", \"archivedAt\", \"applicationBinding\", \"handoffs\", \"rootTeam\"], \"TeamRun execution tree\"); const tree: TeamRunExecutionTreeFile = { createdAt: isoTimestamp(payload.createdAt, \"createdAt\"), archivedAt: payload.archivedAt === null ? null : isoTimestamp(payload.archivedAt, \"archivedAt\"), applicationBinding: parseApplicationBinding(payload.applicationBinding), handoffs: normalizeCollaborationHandoffs(payload.handoffs), rootTeam: parseRootTeam(payload.rootTeam), }; if (expectedRootTeamRunId && tree.rootTeam.teamRunId !== expectedRootTeamRunId) { throw new Error(`Execution tree root '${tree.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`); } validateInvariants(tree); return deepFreeze(tree); }",
+    "frozen": "( value: unknown, expectedRootTeamRunId?: string, ): TeamRunExecutionTreeFile => { const payload = objectRecord(value, \"TeamRun execution tree\"); requireKeys(payload, [\"createdAt\", \"archivedAt\", \"applicationBinding\", \"handoffs\", \"rootTeam\"], \"TeamRun execution tree\"); const tree: TeamRunExecutionTreeFile = { createdAt: isoTimestamp(payload.createdAt, \"createdAt\"), archivedAt: payload.archivedAt === null ? null : isoTimestamp(payload.archivedAt, \"archivedAt\"), applicationBinding: parseApplicationBinding(payload.applicationBinding), handoffs: normalizeCollaborationHandoffs(payload.handoffs), rootTeam: parseRootTeam(payload.rootTeam), }; if (expectedRootTeamRunId && tree.rootTeam.teamRunId !== expectedRootTeamRunId) { throw new Error(`Execution tree root '${tree.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`); } validateInvariants(tree); return tree; }"
+  },
+  {
+    "file": "schema.ts",
+    "name": "isReleasedUnversionedFlatTeamTree",
+    "status": "local addition"
+  },
+  {
+    "file": "task-records.ts",
+    "name": "parseTaskTeamMember",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "task-records.ts",
+    "name": "parseDelegator",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "task-records.ts",
+    "name": "parseTaskExecution",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "task-records.ts",
+    "name": "parseTaskExecutions",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "task-records.ts",
+    "name": "validateTaskExecutionDelegators",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "task-records.ts",
+    "name": "parseApplicationBinding",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "types.ts",
+    "name": "listCollaboratorAgentRunIds",
+    "status": "exact initializer match (whitespace normalized)"
+  },
+  {
+    "file": "types.ts",
+    "name": "isCollaboratorTeamEntry",
+    "status": "exact initializer match (whitespace normalized)"
+  }
+]

@@ -1,0 +1,17 @@
+[
+  {
+    "path": "autobyteus-server-ts/src/agent-collaboration/collaborators/collaborator-definition-catalog.ts",
+    "sha256": "2cdc4e54025a397308eea55adce19cb40508fe52fb9caf75ef4552065ab1298d",
+    "identicalToIntegratedBase": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/architecture/agent-provider-composition-boundaries.test.ts",
+    "sha256": "6eb08c48a8b20afd4f90cd3a205464ee8b6d04f4d2dfb09b3024db22ba3e5f25",
+    "identicalToIntegratedBase": true
+  },
+  {
+    "path": "autobyteus-server-ts/tests/architecture/application-framework-boundaries.test.ts",
+    "sha256": "c2bba3c1e104b5a3282c5156b9bc0de8fb66f9806fe40f42d64bdd7ad521e0d9",
+    "identicalToIntegratedBase": true
+  }
+]
