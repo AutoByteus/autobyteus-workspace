@@ -95,7 +95,7 @@ describe("ClaudeSessionBootstrapper", () => {
       rootPath: "/tmp/claude-skill",
     });
     const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
-      { kind: "resolved", skill, source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } },
+      { kind: "resolved", skill },
       { kind: "unresolved", name: "missing-skill" },
     ]);
 
@@ -118,7 +118,7 @@ describe("ClaudeSessionBootstrapper", () => {
   it("prefers user-owned workspace entries for an ALL_INSTALLED definition (D-15 Rule 1)", async () => {
     const skill = new Skill({ name: "installed-skill", description: "d", content: "# c", rootPath: "/skills/installed-skill" });
     const { bootstrapper, workspaceSkillMaterializer } = createBootstrapper([
-      { kind: "resolved", skill, source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } },
+      { kind: "resolved", skill },
     ], "ALL_INSTALLED");
 
     await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }));

@@ -73,8 +73,7 @@ skill folders and folders without a parsable `SKILL.md` are not catalog copies;
 a folder is catalogued under the name its `SKILL.md` declares.
 
 Each record (`src/skills/domain/installed-skill-record.ts`) carries the parsed
-`Skill`, its `origin` (`global`, `agent_private` or `team_shared`), the
-trusted and configured roots of its layout, its `tier` and its `sourcePath`.
+`Skill`, its `tier` and its `sourcePath`.
 
 ### Ignored copies (REQ-024)
 
@@ -144,19 +143,14 @@ duplicates.
 
 `SkillService.resolveConfiguredSkillBindingsForAgent(agentDefinition)` keeps
 one ordered result for every safe configured name: a `resolved` binding carries
-the catalog `Skill` and its source roots, while an `unresolved` binding
+the catalog `Skill`, while an `unresolved` binding
 preserves the validated logical name for runtime workspace reconciliation.
 Consumers that need only available skills use the resolved-only
 `resolveConfiguredSkillsForAgent(agentDefinition)` projection. Unsafe configured
 names (absolute paths, path separators, empty names, `..` traversal) are skipped
 with a warning. Missing configured skills remain non-blocking.
 
-The detailed (AGY) variant builds each binding from the catalog record through
-`ConfiguredAgentSkillResolver.resolveInstalledRecordDetailed(record)`: the
-record path applies the provenance, source-safety, manifest and fingerprint
-checks, and a bundled folder whose name does not match its manifest `name` is
-reported as `name_mismatch`. A name the catalog does not have is
-`certified_absent`.
+Every runtime, AGY included, uses these bindings.
 
 **Boundary: application-owned agents.** Agents with
 `ownershipScope: 'application_owned'` are sandboxed bundles, not installed
@@ -167,7 +161,7 @@ whose manifest name must match), then from the catalog.
 ### `ALL_INSTALLED` scope
 
 When an agent definition has `skillScope: ALL_INSTALLED`,
-`resolveConfiguredSkillBindingsForAgent(Detailed)` does not read `skillNames`.
+`resolveConfiguredSkillBindingsForAgent` does not read `skillNames`.
 It builds bindings from the enabled catalog records at run start, so a skill
 bundled inside another agent package folder binds to that folder.
 
@@ -272,8 +266,8 @@ The materializers never read `skillScope` themselves.
   place, omits its own copy and logs `skipped-workspace-owned`; the runtime
   discovers the workspace skill natively. `fail` (configured) keeps the path
   collision error. AGY applies the same rule to
-  `<workspace>/.agents/skills/<name>` (`AGY_SKILL_NAME_COLLISION` for `fail`
-  only).
+  `<workspace>/.agents/skills/<name>`; for `fail` it raises an
+  `AgentCreationError` naming the skill (see `antigravity_cli_runtime.md`).
 
 ### Historical context
 

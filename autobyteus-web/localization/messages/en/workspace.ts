@@ -5,6 +5,7 @@ const messages = {
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",
   "workspace.teamCopy.loading": "Reading saved Team configuration…",
   "workspace.teamCopy.failed": "Could not copy this Team configuration: {error} Use New (+) to retry.",
+  "workspace.runModelConfig.agyAutoApproveLocked": "Antigravity always runs with auto-approve, so it can't be turned off.",
   "workspace.runModelConfig.modelRequired": "Select a model before launch.",
   "workspace.agentOrg.runConfig.modelRequired": "Select a model for {address} before launch.",
   "workspace.agentOrg.runConfig.retryInitialization": "Retry loading configuration",
@@ -146,12 +147,8 @@ const messages = {
     "Configuration",
   "workspace.components.workspace.config.AgentRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex: automatically allows tool calls and access/permission requests for this run.",
-  "workspace.components.workspace.config.AgentRunConfigForm.agy_auto_approve_tools_help":
-    "High-trust mode for Antigravity CLI: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.",
   "workspace.components.workspace.config.TeamRunConfigForm.auto_approve_tools_help":
     "High-trust mode for Codex team members: automatically allows tool calls and access/permission requests for this run.",
-  "workspace.components.workspace.config.TeamRunConfigForm.agy_auto_approve_tools_help":
-    "High-trust mode for Antigravity CLI members: runs tools without interactive prompts. When off, denied actions cannot be approved in chat.",
   "workspace.components.workspace.config.TeamRunConfigForm.team_members_override":
     "Team Members Override",
   "workspace.components.workspace.config.TeamRunConfigForm.member_overrides_count":

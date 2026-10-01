@@ -30,6 +30,8 @@ const chatMessages = {
   'chat.approval.askFirstTooltip': '工具运行前会先询问。点击改为无需询问即可运行。',
   'chat.approval.autoApproveAria': '已开启自动批准工具。工具无需询问即可运行。关闭后改为先询问。',
   'chat.approval.askFirstAria': '已开启先询问。工具运行前会先询问。开启自动批准。',
+  'chat.approval.agyLockedTooltip': 'Antigravity 始终自动批准工具。',
+  'chat.approval.agyLockedAria': 'Antigravity 始终开启自动批准工具。',
   'chat.workspace.triggerAria': '工作区：{{name}}。更改工作区',
   'chat.workspace.menuAria': '工作区',
   'chat.workspace.temp': '临时工作区',

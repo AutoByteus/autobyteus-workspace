@@ -32,7 +32,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const workspacePath = await this.workspaces.resolveWorkingDirectory(config.workspaceId);
     const definition = await this.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`AGY_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
-    const bindings = this.skills.resolveConfiguredSkillBindingsForAgentDetailed(definition);
+    const bindings = this.skills.resolveConfiguredSkillBindingsForAgent(definition);
     const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext });
     const descriptor = this.activateMcp(runId, config, workspacePath, definition);
     const capsule = await createAgyRunCapsule({ runId, memoryDir, workspacePath, identity,
@@ -68,13 +68,14 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     try {
       const init = await process.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
         workspacePath: capsule.manifest.workspacePath, model: config.llmModelIdentifier,
-        autoExecuteTools: config.autoExecuteTools, conversationId: expectedId });
+        conversationId: expectedId });
       if (expectedId && init.conversation_id !== expectedId) throw new Error("AGY_CONVERSATION_ID_CONFLICT: exact restore returned a different conversation.");
       if (init.init.agent !== capsule.manifest.agentName) throw new Error("AGY_AGENT_NOT_LOADED: CLI did not select the generated main agent.");
       if (init.init.model !== config.llmModelIdentifier) throw new Error("AGY_MODEL_MISMATCH: CLI selected another model.");
       const cwd = await fs.realpath(String(init.init.cwd));
       if (cwd !== await fs.realpath(capsule.path)) throw new Error("AGY_PROJECT_MISMATCH: CLI did not use the run capsule.");
-      if (config.autoExecuteTools && init.init.permission_mode !== "always-proceed") throw new Error("AGY_PERMISSION_MODE_MISMATCH");
+      // AGY always runs with auto-approve (skip-permissions), whatever the stored or submitted setting.
+      if (init.init.permission_mode !== "always-proceed") throw new Error("AGY_PERMISSION_MODE_MISMATCH");
       return new AgyAgentRunBackend(new AgentRunContext({ runId, config,
         runtimeContext: new AgyAgentRunContext(init.conversation_id) }), process);
     } catch (error) { process.stop(); throw error; }

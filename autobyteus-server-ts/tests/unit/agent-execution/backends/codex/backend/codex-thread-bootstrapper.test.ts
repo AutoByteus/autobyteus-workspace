@@ -28,8 +28,7 @@ import { testMemberExecutionContext } from "../../../../../fixtures/current-team
 import type { ApplicationExecutionContext } from "@autobyteus/application-sdk-contracts";
 
 const WORKING_DIRECTORY = "/tmp/codex-workspace";
-const resolvedBinding = (skill: Skill): ConfiguredAgentSkillBinding => ({ kind: "resolved", skill,
-  source: { origin: "global", sourceRoot: skill.rootPath, trustedRoot: skill.rootPath } });
+const resolvedBinding = (skill: Skill): ConfiguredAgentSkillBinding => ({ kind: "resolved", skill });
 
 const createRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;

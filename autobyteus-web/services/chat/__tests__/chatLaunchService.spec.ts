@@ -165,6 +165,19 @@ describe('chatLaunchService', () => {
     expect(readChatLastModel()).toEqual({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5-codex' })
   })
 
+  it('launches an Antigravity chat and team chat with auto-approve on even when the draft stores it off', async () => {
+    const agentDraft = buildDraft()
+    agentDraft.context.config.runtimeKind = 'antigravity_cli'
+    await launchAgentChat(agentDraft, { navigate: vi.fn(async () => undefined) })
+    expect(agentDraft.context.config.autoExecuteTools).toBe(true)
+
+    mocks.teams = [{ id: 'team-1', name: 'Product Review Team', coordinatorMemberName: 'lead', nodes: [], defaultLaunchConfig: null }]
+    const teamDraft = buildDraft({ target: { kind: 'team', teamDefinitionId: 'team-1' } })
+    teamDraft.context.config.runtimeKind = 'antigravity_cli'
+    await launchTeamChat(teamDraft, { navigate: vi.fn(async () => undefined) })
+    expect(mocks.createDraft.mock.calls[0]![0]).toMatchObject({ rootConfig: { runtimeKind: 'antigravity_cli', autoExecuteTools: true } })
+  })
+
   it('lands a failed first send on the still-registered temp chat and does not record the model', async () => {
     mocks.sendBehavior = 'fail'
     const navigate = vi.fn(async () => undefined)

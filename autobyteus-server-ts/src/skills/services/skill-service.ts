@@ -35,7 +35,6 @@ import { SkillNameConflictError } from "../domain/skill-name-conflict-error.js";
 import {
   collectResolvedConfiguredSkills,
   type ConfiguredAgentSkillBinding,
-  type DetailedConfiguredSkillResolution,
 } from "../domain/configured-agent-skill-binding.js";
 
 const logger = {
@@ -256,22 +255,6 @@ export class SkillService {
         resolver.bindInstalledRecord(record));
     }
     return resolver.resolveForAgent(agentDefinition, catalogLookup(records));
-  }
-
-  /** Effective, cause-certified skill resolutions (AGY) after applying the skill scope. */
-  resolveConfiguredSkillBindingsForAgentDetailed(
-    agentDefinition: AgentDefinition | null | undefined,
-  ): DetailedConfiguredSkillResolution[] {
-    if (!agentDefinition) {
-      return [];
-    }
-    const resolver = this.createConfiguredSkillResolver();
-    const records = this.listInstalledSkillRecords();
-    if (this.resolveSkillScope(agentDefinition) === "ALL_INSTALLED") {
-      return records.filter((record) => !record.skill.isDisabled).map((record) =>
-        resolver.resolveInstalledRecordDetailed(record));
-    }
-    return resolver.resolveForAgentDetailed(agentDefinition, catalogLookup(records));
   }
 
   /** Whether a definition runs with any skills once its skill scope is applied. */

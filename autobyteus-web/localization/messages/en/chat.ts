@@ -31,6 +31,8 @@ const chatMessages = {
   'chat.approval.askFirstTooltip': 'Tools ask before running. Click to let tools run without asking.',
   'chat.approval.autoApproveAria': 'Auto-approve tools is on. Tools run without asking. Turn off to ask first.',
   'chat.approval.askFirstAria': 'Ask first is on. Tools ask before running. Turn on auto-approve.',
+  'chat.approval.agyLockedTooltip': 'Antigravity always runs with auto-approve.',
+  'chat.approval.agyLockedAria': 'Auto-approve tools is always on for Antigravity.',
   'chat.workspace.triggerAria': 'Workspace: {{name}}. Change workspace',
   'chat.workspace.menuAria': 'Workspaces',
   'chat.workspace.temp': 'Temp workspace',

@@ -1,5 +1,4 @@
 import fs from "node:fs/promises";
-import { fingerprintConfiguredSkillSource } from "../../../../../src/skills/services/configured-skill-source-fingerprint.js";
 import os from "node:os";
 import path from "node:path";
 import { expect, it } from "vitest";
@@ -22,7 +21,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads production-generated main agent a
   const process = new AgyStreamProcess();
   const observed: AgyStreamMessage[] = [];
   const init = await process.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
-    workspacePath: capsule.manifest.workspacePath, model: "gemini-3.8-flash-low", autoExecuteTools: true, conversationId: null });
+    workspacePath: capsule.manifest.workspacePath, model: "gemini-3.8-flash-low", conversationId: null });
   process.subscribe((message) => observed.push(message));
   const ask = async (content: string): Promise<AgyStreamMessage> => {
     const start = observed.length;
@@ -53,23 +52,23 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads production-generated main agent a
   expect(report.capsuleShell).toBeNull();
 }, 240_000);
 
-it.skipIf(process.env.AGY_LIVE !== "1")("loads an AutoByteus-configured PRELOADED_ONLY skill from the production capsule", async () => {
+it.skipIf(process.env.AGY_LIVE !== "1")("loads an AutoByteus-configured skill linked into the production capsule", async () => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-skill-live-"));
   const workspacePath = path.join(base, "workspace");
   const source = path.join(base, "configured-source");
   await fs.mkdir(workspacePath); await fs.mkdir(source);
-  await fs.writeFile(path.join(source, "SKILL.md"), "# Codebook\nWhen asked for the codebook marker, answer SKILL-MARKER-6381.\n");
-  const binding = { kind: "resolved" as const, skill: new Skill({ name: "codebook", description: "A configured marker codebook.", content: "", rootPath: source }),
-    source: { origin: "global" as const, sourceRoot: await fs.realpath(source), trustedRoot: await fs.realpath(source) } };
+  await fs.writeFile(path.join(source, "SKILL.md"), "# Codebook\nWhen asked for the codebook marker, read marker.md in this skill folder and answer with its content.\n");
+  await fs.writeFile(path.join(source, "marker.md"), "SKILL-MARKER-6381\n");
+  const binding = { kind: "resolved" as const, skill: new Skill({ name: "codebook", description: "A configured marker codebook.", content: "", rootPath: source }) };
   const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "skill-live", memoryDir: path.join(base, "memory"),
     workspacePath, identity: "You are an AutoByteus agent. Consult the codebook skill when asked about its marker.",
-    configuredSkillBindings: [{ ...binding, sourceTreeSha256: fingerprintConfiguredSkillSource(source, source) }], mcpDescriptor: null });
+    configuredSkillBindings: [binding], workspaceCollisionPolicy: "fail", mcpDescriptor: null });
   const process = new AgyStreamProcess();
   const observed: AgyStreamMessage[] = [];
   const closeErrors: string[] = [];
   try {
     await process.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
-      workspacePath: capsule.manifest.workspacePath, model: "gemini-3.8-flash-low", autoExecuteTools: true, conversationId: null });
+      workspacePath: capsule.manifest.workspacePath, model: "gemini-3.8-flash-low", conversationId: null });
     process.subscribe((message) => observed.push(message));
     process.onClose((error) => closeErrors.push(String(error)));
     await process.sendUserMessage("Use your codebook skill and tell me its exact marker. Do not guess.");
@@ -81,8 +80,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("loads an AutoByteus-configured PRELOADE
       JSON.stringify({ base, observed, closeErrors }, null, 2));
     expect(result).toBeDefined();
     expect(JSON.stringify(result)).toContain("SKILL-MARKER-6381");
-    expect(await fs.readFile(path.join(capsule.path, ".agents", "skills", "codebook", "SKILL.md"), "utf8"))
-      .toContain("SKILL-MARKER-6381");
+    expect(await fs.readlink(path.join(capsule.path, ".agents", "skills", "codebook"))).toBe(await fs.realpath(source));
     expect(await readIfExists(path.join(workspacePath, ".agents", "skills", "codebook", "SKILL.md"))).toBeNull();
   } finally { process.stop(); }
 }, 240_000);

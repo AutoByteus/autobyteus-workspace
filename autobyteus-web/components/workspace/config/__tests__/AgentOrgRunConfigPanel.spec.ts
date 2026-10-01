@@ -164,7 +164,7 @@ describe('AgentOrgRunConfigPanel mounted-Team hierarchy', () => {
     expect(wrapper.get('[data-test="org-placement-/requirements_engineer"]').text()).toContain('Overridden')
   })
 
-  it('keeps Org Team AGY default on through one runtime-selection event batch, then accepts explicit off', async () => {
+  it('keeps Org Team AGY default on through one runtime-selection event batch, then locks it on', async () => {
     const wrapper = await mountPanel()
     await wrapper.get('[data-test="org-member-overrides-toggle"]').trigger('click')
     let software = wrapper.findAllComponents(TeamScopeConfigEditor)[1]!
@@ -180,10 +180,12 @@ describe('AgentOrgRunConfigPanel mounted-Team hierarchy', () => {
     expect(software.props('scope').effectiveConfig.autoExecuteTools).toBe(true)
 
     await software.get('button[aria-expanded]').trigger('click')
-    await software.get('[role="switch"]').trigger('click')
+    const toggle = software.get('[role="switch"]')
+    expect(toggle.attributes('aria-checked')).toBe('true')
+    expect(toggle.attributes('disabled')).toBeDefined()
+    await toggle.trigger('click')
     await nextTick()
-    expect(store.intent.teamOverrides['/software']?.autoExecuteTools).toBeUndefined()
-    expect(wrapper.findAllComponents(TeamScopeConfigEditor)[1]!.props('scope').effectiveConfig.autoExecuteTools).toBe(false)
+    expect(store.intent.teamOverrides['/software']?.autoExecuteTools).toBe(true)
   })
 
   it('maps exact sparse Team and Agent patches to the unchanged AgentOrg launch command', async () => {
@@ -227,6 +229,38 @@ describe('AgentOrgRunConfigPanel mounted-Team hierarchy', () => {
     expect(replace).toHaveBeenCalledWith(expect.objectContaining({
       query: expect.objectContaining({ orgRunId: 'org-run-1', rootSubjectKind: 'agent_org' }),
     }))
+  })
+
+  it('shows the Org root AGY auto-approve on and locked and launches with it on even when stored off', async () => {
+    const wrapper = await mountPanel()
+    const configStore = useAgentOrgRunConfigStore()
+    configStore.setWorkspaceSelection({ mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/workspace/root' })
+    configStore.runtimeKind = 'antigravity_cli'
+    configStore.autoExecuteTools = false
+    await nextTick()
+
+    const toggle = wrapper.get('[data-test="org-auto-approve-row"] [role="switch"]')
+    expect(toggle.attributes('aria-checked')).toBe('true')
+    expect(toggle.attributes('disabled')).toBeDefined()
+    expect(wrapper.get('[data-test="org-auto-approve-help"]').text()).not.toBe('')
+    await toggle.trigger('click')
+    expect(configStore.autoExecuteTools).toBe(false)
+
+    vi.spyOn(useWorkspaceStore(), 'createWorkspace').mockResolvedValue('workspace-root')
+    const runStore = useAgentOrgRunStore()
+    vi.spyOn(runStore, 'launch').mockResolvedValue('org-run-1')
+    vi.spyOn(useRunHistoryStore(), 'refreshTreeQuietly').mockResolvedValue(undefined)
+    await wrapper.get('[data-test="run-agent-org"]').trigger('click')
+    await flushPromises()
+    expect(runStore.launch).toHaveBeenCalledWith(expect.objectContaining({
+      rootConfiguration: expect.objectContaining({ runtimeKind: 'antigravity_cli', autoExecuteTools: true }),
+    }))
+
+    configStore.runtimeKind = 'codex_app_server'
+    await nextTick()
+    const editable = wrapper.get('[data-test="org-auto-approve-row"] [role="switch"]')
+    expect(editable.attributes('aria-checked')).toBe('false')
+    expect(editable.attributes('disabled')).toBeUndefined()
   })
 
   it('selects the catalog Temp Workspace once for a fresh Org root and projects inheritance', async () => {

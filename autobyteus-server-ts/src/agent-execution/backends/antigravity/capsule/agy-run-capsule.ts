@@ -1,14 +1,15 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { createHash } from "node:crypto";
-import type { DetailedConfiguredSkillResolution } from "../../../../skills/domain/configured-agent-skill-binding.js";
+import type { ConfiguredAgentSkillBinding } from "../../../../skills/domain/configured-agent-skill-binding.js";
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import { materializeAgyMcpConfig } from "./agy-mcp-config-materializer.js";
-import { materializeAgyConfiguredSkills, type AgySkillSnapshot } from "./agy-configured-skill-materializer.js";
+import { linkAgyConfiguredSkills, type AgySkillLink } from "./agy-configured-skill-linker.js";
 import type { WorkspaceCollisionPolicy } from "../../shared/workspace-skill-collision-policy.js";
 import { AGY_NATIVE_TOOL_NAMES } from "./agy-native-tool-policy.js";
 
 const sha256 = (value: string): string => createHash("sha256").update(value).digest("hex");
+const logIdentity = (value: string): string => /^[a-zA-Z0-9._-]{1,80}$/.test(value) ? value : "[redacted]";
 
 export type AgyCapsuleManifest = {
   version: 1;
@@ -16,7 +17,7 @@ export type AgyCapsuleManifest = {
   agentName: string;
   workspacePath: string;
   agentMarkdownHash: string;
-  skills: AgySkillSnapshot[];
+  skills: AgySkillLink[];
 };
 
 export type AgyRunCapsule = { path: string; manifest: AgyCapsuleManifest };
@@ -30,7 +31,7 @@ export const createAgyRunCapsule = async (input: {
   workspacePath: string;
   identity: string;
   agentDefinitionId: string;
-  configuredSkillBindings: readonly DetailedConfiguredSkillResolution[];
+  configuredSkillBindings: readonly ConfiguredAgentSkillBinding[];
   workspaceCollisionPolicy: WorkspaceCollisionPolicy;
   mcpDescriptor: AgentToolMcpDescriptor | null;
 }): Promise<AgyRunCapsule> => {
@@ -49,7 +50,7 @@ export const createAgyRunCapsule = async (input: {
     ].join("\n");
     await fs.mkdir(path.dirname(agentPath(root, agentName)), { recursive: true, mode: 0o700 });
     await fs.writeFile(agentPath(root, agentName), markdown, { mode: 0o600, flag: "wx" });
-    const skills = await materializeAgyConfiguredSkills({
+    const skills = await linkAgyConfiguredSkills({
       capsulePath: root, workspacePath, bindings: input.configuredSkillBindings,
       runId: input.runId, agentDefinitionId: input.agentDefinitionId,
       workspaceCollisionPolicy: input.workspaceCollisionPolicy,
@@ -65,6 +66,20 @@ export const createAgyRunCapsule = async (input: {
     await fs.rm(root, { recursive: true, force: true });
     throw error;
   }
+};
+
+const isMissing = (error: unknown): boolean =>
+  ["ENOENT", "ENOTDIR"].includes((error as NodeJS.ErrnoException).code ?? "");
+
+/** Follows a skill link (or reads an older copied skill folder) to its `SKILL.md`. */
+const skillManifestExists = async (skillEntry: string): Promise<boolean> => {
+  try { return (await fs.stat(path.join(skillEntry, "SKILL.md"))).isFile(); }
+  catch (error) { if (isMissing(error)) return false; throw error; }
+};
+
+const removeDanglingSkillLink = async (skillEntry: string): Promise<void> => {
+  try { if ((await fs.lstat(skillEntry)).isSymbolicLink()) await fs.unlink(skillEntry); }
+  catch (error) { if (!isMissing(error)) throw error; }
 };
 
 export const restoreAgyRunCapsule = async (input: {
@@ -85,8 +100,11 @@ export const restoreAgyRunCapsule = async (input: {
   for (const skill of manifest.skills) {
     if (path.join(".agents", "skills", skill.name) !== skill.relativePath)
       throw new Error("AGY_CAPSULE_INVALID: skill path mismatch.");
-    if (!(await fs.stat(path.join(root, skill.relativePath, "SKILL.md"))).isFile())
-      throw new Error("AGY_CAPSULE_INVALID: configured skill missing.");
+    if (!(await skillManifestExists(path.join(root, skill.relativePath)))) {
+      // The skill's source was removed or moved since run start: resume without it.
+      await removeDanglingSkillLink(path.join(root, skill.relativePath));
+      console.warn(`AGY configured skill skipped on restore: run=${logIdentity(input.runId)}, skill=${logIdentity(skill.name)}, disposition=skipped-missing-source`);
+    }
   }
   await materializeAgyMcpConfig({ capsulePath: root, workspacePath, descriptor: input.mcpDescriptor });
   return { path: root, manifest };

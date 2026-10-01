@@ -1,5 +1,4 @@
 import type { Skill } from "./models.js";
-import type { ConfiguredSkillSource } from "./configured-agent-skill-binding.js";
 
 /**
  * Catalog precedence tier of a skill source (D-19). A lower tier wins for a name:
@@ -11,23 +10,14 @@ import type { ConfiguredSkillSource } from "./configured-agent-skill-binding.js"
 export type SkillCatalogTier = 1 | 2 | 3 | 4;
 
 /**
- * One installed skill as discovered by the SkillService catalog, with the real
- * roots its layout implies. Every run and every name-based operation uses this record;
- * the skill is never re-resolved by name elsewhere.
- *
- * - `global`: trusted root = the skill directory; configured root = the skills root it was found under.
- * - `agent_private` (`<root>/agents/<a>/skills/<n>`): trusted/configured root = `<root>/agents/<a>`.
- * - `agent_private` (`<root>/agent-teams/<t>/agents/<a>/skills/<n>`): trusted/configured root = `<root>/agent-teams/<t>`.
- * - `team_shared` (`<root>/agent-teams/<t>/skills/<n>`): trusted/configured root = `<root>/agent-teams/<t>`.
+ * One installed skill as discovered by the SkillService catalog. Every run and every
+ * name-based operation uses this record; the skill is never re-resolved by name elsewhere.
  *
  * `sourcePath` is the catalog source (skills folder, definition root or added folder) and
  * `tier` its precedence tier.
  */
 export type InstalledSkillRecord = {
   skill: Skill;
-  origin: ConfiguredSkillSource["origin"];
-  trustedRoot: string;
-  configuredRoot: string;
   tier: SkillCatalogTier;
   sourcePath: string;
 };

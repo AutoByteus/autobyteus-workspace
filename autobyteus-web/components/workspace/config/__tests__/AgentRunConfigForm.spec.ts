@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
+import { nextTick, reactive } from 'vue'
 import AgentRunConfigForm from '../AgentRunConfigForm.vue'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
@@ -509,6 +510,35 @@ describe('AgentRunConfigForm', () => {
     expect((wrapper.get('select#agent-run-reasoning_effort').element as HTMLSelectElement).value).toBe('none')
     expect((wrapper.get('select#agent-run-reasoning_summary').element as HTMLSelectElement).value).toBe('none')
     expect(localConfig.llmConfig).toBeNull()
+  })
+
+  it('shows Antigravity auto-approve on and locked with an explanation, and editable again for another runtime', async () => {
+    runtimeAvailabilityStore.availabilities.push({ runtimeKind: 'antigravity_cli', enabled: true, reason: null })
+    const localConfig = reactive({ ...mockConfig, runtimeKind: 'antigravity_cli', autoExecuteTools: false })
+    const wrapper = mount(AgentRunConfigForm, {
+      props: {
+        config: localConfig,
+        agentDefinition: mockAgentDef as any,
+        workspaceLoadingState: { isLoading: false, error: null, loadedPath: null },
+        workspaceSelection: { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '' },
+      },
+    })
+
+    const toggle = wrapper.get('button#auto-execute')
+    expect(toggle.attributes('aria-checked')).toBe('true')
+    expect((toggle.element as HTMLButtonElement).disabled).toBe(true)
+    // The test catalog humanizes the key's last segment.
+    expect(wrapper.get('[data-test="agent-auto-approve-help"]').text()).toBe('Agy auto approve locked')
+    await toggle.trigger('click')
+    expect(localConfig.autoExecuteTools).toBe(false)
+
+    await wrapper.find('select#agent-run-runtime-kind').setValue('codex_app_server')
+    await nextTick()
+    expect(localConfig.runtimeKind).toBe('codex_app_server')
+    const editable = wrapper.get('button#auto-execute')
+    expect((editable.element as HTMLButtonElement).disabled).toBe(false)
+    expect(editable.attributes('aria-checked')).toBe('false')
+    expect(wrapper.get('[data-test="agent-auto-approve-help"]').text()).toBe('Auto approve tools help')
   })
 
   it('updates config when the runtime and model selection change', async () => {

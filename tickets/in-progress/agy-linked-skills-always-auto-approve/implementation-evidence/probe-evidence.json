@@ -1,0 +1,110 @@
+{
+  "startedAt": "2026-10-01T20:22:28.738Z",
+  "cases": {
+    "L01": {
+      "title": "Chat: AGY auto-approve on and locked with explanation; other runtime editable (AC-007)",
+      "result": "Pass",
+      "ms": 9401,
+      "details": {
+        "agyModel": "gemini-3.8-flash-low",
+        "locked": {
+          "locked": "true",
+          "pressed": "true",
+          "ariaDisabled": "true",
+          "title": "Antigravity always runs with auto-approve.",
+          "ariaLabel": "Auto-approve tools is always on for Antigravity.",
+          "text": "Auto-approve",
+          "lockIcon": true
+        },
+        "runtimes": [
+          "autobyteus",
+          "codex_app_server",
+          "claude_agent_sdk",
+          "antigravity_cli",
+          "grok_build"
+        ],
+        "other": "codex_app_server",
+        "editable": {
+          "locked": null,
+          "pressed": "false",
+          "ariaDisabled": null,
+          "title": "Tools ask before running. Click to let tools run without asking.",
+          "ariaLabel": "Ask first is on. Tools ask before running. Turn on auto-approve.",
+          "text": "Ask first",
+          "lockIcon": false
+        }
+      }
+    },
+    "L02": {
+      "title": "Chat (ALL_INSTALLED) on AGY reads a linked skill with a .venv outside link and a large file (AC-001/002/006)",
+      "result": "Pass",
+      "ms": 13609,
+      "details": {
+        "runId": "daily_assistant_021e6adaeca847889de4eeb44e006c6b",
+        "metadataConfig": {
+          "runtimeKind": "antigravity_cli",
+          "autoExecuteTools": true
+        },
+        "capsuleLink": {
+          "path": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-probe-pcuxN5/server-data/memory/agents/daily_assistant_021e6adaeca847889de4eeb44e006c6b/agy-project/.agents/skills/env-skill",
+          "target": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-probe-pcuxN5/server-data/skills/env-skill"
+        }
+      }
+    },
+    "L04": {
+      "title": "Run settings of the AGY chat run: auto-approve switch on, locked, with explanation (AC-007)",
+      "result": "Pass",
+      "ms": 958,
+      "details": {
+        "runId": "daily_assistant_021e6adaeca847889de4eeb44e006c6b",
+        "rendered": {
+          "checked": "true",
+          "disabled": true,
+          "background": "rgb(37, 99, 235)"
+        },
+        "help": "Antigravity always runs with auto-approve, so it can't be turned off."
+      }
+    },
+    "L03": {
+      "title": "Named-skill agent with a workspace collision fails with the skill and reason (AC-005, AR-001)",
+      "result": "Pass",
+      "ms": 6398,
+      "details": {
+        "expected": "Antigravity could not use skill 'env-skill': the selected workspace already has a skill with this name.",
+        "logged": [
+          "SEND_MESSAGE command not accepted for agent run probe_named_skill_c2539c1af1f64b58aebb8dcadbb6f5a5: [ACTIVATION_FAILED] Antigravity could not use skill 'env-skill': the selected workspace already has a skill with this name.",
+          "SEND_MESSAGE command not accepted for agent run probe_named_skill_c2539c1af1f64b58aebb8dcadbb6f5a5: [ACTIVATION_FAILED] Antigravity could not use skill 'env-skill': the selected workspace already has a skill with this name."
+        ]
+      }
+    }
+  },
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 89096
+    },
+    {
+      "label": "frontend",
+      "pid": 89122
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 89122,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 89096,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-probe-pcuxN5"
+    }
+  ],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-linked-skills-probe-pcuxN5",
+  "backendUrl": "http://127.0.0.1:62182",
+  "frontUrl": "http://127.0.0.1:62183",
+  "browserErrors": [],
+  "skillSourceIntact": true,
+  "completedAt": "2026-10-01T20:23:25.052Z"
+}

@@ -10,6 +10,7 @@ import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useChatDraftStore, type ChatDraft, type ChatDraftWorkspace } from '~/stores/chatDraftStore'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { useWorkspaceStore } from '~/stores/workspace'
+import { effectiveAutoExecuteTools } from '~/utils/agentRunRuntimeDraftPolicy'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
 import {
   ensureRunHistoryWorkspaceByRootPath,
@@ -112,7 +113,7 @@ export const launchAgentChat = async (
     const { workspaceId, workspaceMetadata } = await resolveChatWorkspace(draft.workspace)
     context.config.workspaceId = workspaceId
     context.config.workspaceMetadata = workspaceMetadata
-    context.config.autoExecuteTools = draft.autoExecuteTools
+    context.config.autoExecuteTools = effectiveAutoExecuteTools(context.config.runtimeKind, draft.autoExecuteTools)
     context.config.isLocked = false
     selectionStore.beginSelectionIntent()
     agentContextsStore.registerDraftRun(context)
@@ -173,7 +174,7 @@ export const launchTeamChat = async (
       llmConfig: context.config.llmConfig ?? null,
       workspaceId,
       workspaceMetadata,
-      autoExecuteTools: draft.autoExecuteTools,
+      autoExecuteTools: effectiveAutoExecuteTools(context.config.runtimeKind, draft.autoExecuteTools),
     })
     // Team launch readiness checks the chosen runtime's catalog on the team config owner.
     const catalogs = useLLMProviderConfigStore()

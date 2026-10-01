@@ -54,15 +54,15 @@ describe("SkillService catalog: Agent Org layouts (D-19)", () => {
     };
   };
 
-  it("lists org-owned agent, team-shared and team-local agent skills with their org paths and layout roots", () => {
+  it("lists org-owned agent, team-shared and team-local agent skills with their org paths", () => {
     const pkg = path.join(base, "pkg");
     packageRoots = [pkg];
     const org = writeOrgPackage(pkg, "p");
 
     const byName = Object.fromEntries(service.listInstalledSkillRecords().map((record) => [record.skill.name, record]));
-    expect(byName["p-agent-skill"]).toMatchObject({ skill: { rootPath: org.agentSkill }, origin: "agent_private", trustedRoot: org.agentDir, tier: 2, sourcePath: pkg });
-    expect(byName["p-team-shared"]).toMatchObject({ skill: { rootPath: org.teamShared }, origin: "team_shared", trustedRoot: org.teamDir });
-    expect(byName["p-team-local"]).toMatchObject({ skill: { rootPath: org.teamLocal }, origin: "agent_private", trustedRoot: org.teamDir });
+    expect(byName["p-agent-skill"]).toMatchObject({ skill: { rootPath: org.agentSkill }, tier: 2, sourcePath: pkg });
+    expect(byName["p-team-shared"]).toMatchObject({ skill: { rootPath: org.teamShared } });
+    expect(byName["p-team-local"]).toMatchObject({ skill: { rootPath: org.teamLocal } });
   });
 
   it("uses the configured app-data Orgs folder, and `<packageRoot>/agent-orgs` for packages", () => {
@@ -117,7 +117,7 @@ describe("SkillService catalog: Agent Org layouts (D-19)", () => {
     expect(service.getSkill("org-level")).toBeNull();
   });
 
-  it("org-owned agents run with their own skills: CONFIGURED bindings and AGY detailed provenance pass for every org layout", () => {
+  it("org-owned agents run with their own skills: CONFIGURED and ALL_INSTALLED bindings resolve every org layout", () => {
     const pkg = path.join(base, "pkg");
     packageRoots = [pkg];
     const org = writeOrgPackage(pkg, "p");
@@ -129,15 +129,8 @@ describe("SkillService catalog: Agent Org layouts (D-19)", () => {
 
     expect(service.resolveConfiguredSkillsForAgent(orgAgent).map((skill) => skill.rootPath)).toEqual([org.agentSkill]);
     expect(service.resolveConfiguredSkillsForAgent(orgTeamMember).map((skill) => skill.rootPath)).toEqual([org.teamShared, org.teamLocal]);
-    const detailed = [...service.resolveConfiguredSkillBindingsForAgentDetailed(orgAgent),
-      ...service.resolveConfiguredSkillBindingsForAgentDetailed(orgTeamMember)];
-    expect(detailed.map((binding) => binding.kind === "resolved" ? [binding.source.origin, binding.source.trustedRoot] : binding)).toEqual([
-      ["agent_private", org.agentDir],
-      ["team_shared", org.teamDir],
-      ["agent_private", org.teamDir],
-    ]);
     const allInstalled = new AgentDefinition({ name: "Daily Assistant", description: "", instructions: "", skillNames: [], skillScope: "ALL_INSTALLED" });
-    expect(service.resolveConfiguredSkillBindingsForAgentDetailed(allInstalled).filter((binding) => binding.kind !== "resolved")).toEqual([]);
+    expect(service.resolveConfiguredSkillBindingsForAgent(allInstalled).filter((binding) => binding.kind !== "resolved")).toEqual([]);
   });
 
   it("rejects a package whose Agent Org skills duplicate an installed name, and accepts unique ones", () => {

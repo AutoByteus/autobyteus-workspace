@@ -103,13 +103,10 @@ links before omitting an unavailable optional skill. AGY also consumes these
 bindings for its run-owned capsule. No runtime should call the global skill
 catalog lookup by name. This preserves package-private and owning-team-shared
 skill context while still allowing configured skill-directory fallback for
-explicitly named skills. The resolved binding records the winning
-agent-private, team-shared, or global source and its canonical trust root.
-AGY uses that provenance for its checked snapshot; it does not infer a team
-root from an unrelated global fallback. See the
-[AGY runtime guide](./antigravity_cli_runtime.md#run-owned-project-and-workspace)
-for its checked in-bound file-link policy. Codex/Claude retain their own
-materialization semantics.
+explicitly named skills. AGY links each resolved skill folder into its
+private capsule instead of the selected workspace; see the
+[AGY runtime guide](./antigravity_cli_runtime.md#run-owned-project-and-workspace).
+Codex/Claude retain their own materialization semantics.
 
 Launch flows no longer expose a user-facing skill-access choice. A standalone
 agent run receives the skills configured on its selected agent definition, and a

@@ -117,13 +117,16 @@
       <input
         :id="`override-auto-${inputIdSuffix}`"
         type="checkbox"
-        :checked="node.effectiveConfig.autoExecuteTools"
-        :indeterminate="Boolean(editableNode && editableNode.override?.autoExecuteTools === undefined)"
-        :disabled="isFixedFieldDisabled"
+        :checked="autoExecuteChecked"
+        :indeterminate="!autoApproveLocked && Boolean(editableNode && editableNode.override?.autoExecuteTools === undefined)"
+        :disabled="isFixedFieldDisabled || autoApproveLocked"
         class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 disabled:opacity-50"
         @change="handleAutoExecuteChange"
       />
       <label :for="`override-auto-${inputIdSuffix}`" class="ml-2 select-none text-xs text-gray-600">{{ autoExecuteStateLabel }}</label>
+      <p v-if="autoApproveLocked" class="mt-1 text-xs text-gray-500" data-test="member-auto-approve-locked">
+        {{ t('workspace.runModelConfig.agyAutoApproveLocked') }}
+      </p>
     </div>
 
     <ModelConfigSection
@@ -159,6 +162,7 @@ import ModelConfigSection from './ModelConfigSection.vue'
 import WorkspaceSelector from './WorkspaceSelector.vue'
 import FixedWorkspacePath from './FixedWorkspacePath.vue'
 import { useLocalization } from '~/composables/useLocalization'
+import { effectiveAutoExecuteTools, isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
 import { loadRuntimeProviderGroupsForSelection, useRuntimeScopedModelSelection } from '~/composables/useRuntimeScopedModelSelection'
 import {
   buildUnavailableInheritedModelMessage,
@@ -342,7 +346,11 @@ watch(
   },
   { flush: 'post' },
 )
+const memberRuntimeKind = computed(() => editableNode.value ? effectiveRuntimeKind.value : props.node.effectiveConfig.runtimeKind)
+const autoApproveLocked = computed(() => isAutoApproveLockedForRuntime(memberRuntimeKind.value))
+const autoExecuteChecked = computed(() => effectiveAutoExecuteTools(memberRuntimeKind.value, props.node.effectiveConfig.autoExecuteTools))
 const autoExecuteStateLabel = computed(() => {
+  if (autoApproveLocked.value) return t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_on')
   if (existingNode.value) {
     return props.node.effectiveConfig.autoExecuteTools
       ? t('workspace.components.workspace.config.MemberOverrideItem.auto_execute_on')
@@ -483,7 +491,7 @@ const handleModelChange = (value: string) => {
 }
 const handleAutoExecuteChange = () => {
   const editable = editableNode.value
-  if (!editable || isInteractionDisabled.value) return
+  if (!editable || isInteractionDisabled.value || autoApproveLocked.value) return
   const current = editable.override?.autoExecuteTools
   emitEditableOverride(buildOverride({
     runtimeKind: editable.override?.runtimeKind,
