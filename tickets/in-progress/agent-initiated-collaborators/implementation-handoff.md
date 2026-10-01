@@ -26,7 +26,7 @@
 - Related API/E2E revision IDs: `API-REV-001` (Fail: F-01, F-02)
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `CR-001` (F-01, via SR-006), `CR-002` (F-02, Local Fix)
-- Branch `codex/agent-initiated-collaborators`, base `origin/personal` @ `84224a58d`; IR-001 commit `549510977`; IR-002 commit: see the revision record.
+- Branch `codex/agent-initiated-collaborators`, base `origin/personal` @ `84224a58d`; IR-001 commit `549510977`; IR-002 commit `9b594693b`.
 
 IR-002 delta (CR-001 per SR-006 § Member Collaboration Scope; CR-002):
 - **One owner for member scope:** `agent-collaboration/execution/domain/member-instance-scope.ts#resolveMemberCollaborationScope`

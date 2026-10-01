@@ -56,6 +56,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   `/Users/normy/autobyteus_org/autobyteus-worktrees/agent-initiated-collaborators/tickets/in-progress/agent-initiated-collaborators/design-review-report.md`.
 - Triggering finding IDs: CR-001 (F-01), CR-002 (F-02).
 - Classification: `Design Impact` resolved by SR-006 (CR-001) + `Local Fix` (CR-002).
+- Commit: `9b594693b`.
 - Prior authoritative result: IR-001 passed CRR-001; API-REV-001 failed F-01 (catalog Team copy members had no own
   handoffs/instruction in all three roots; a catalog Agent copy in a Team root inherited the root-Team instruction) and
   F-02 (Team-root catalog copy rows showed raw segments).
