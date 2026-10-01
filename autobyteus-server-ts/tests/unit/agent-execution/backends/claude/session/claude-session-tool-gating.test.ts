@@ -445,7 +445,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         systemPrompt: expect.stringContaining(
-          "Use `delegate_task` to start a fresh instance of a mounted Agent or AgentTeam",
+          "Use `delegate_task` to spawn a new copy of an Agent or AgentTeam for new work.",
         ),
         allowedTools: [
           "delegate_task",

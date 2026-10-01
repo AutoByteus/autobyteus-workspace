@@ -4,7 +4,7 @@ import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
-import { createCollaboratorMentionAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { createCollaboratorAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { ActiveCollaborationRootDirectory } from "../../../src/agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { RootedAgentMemoryLocator } from "../../../src/agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
@@ -116,7 +116,7 @@ const buildManager = async () => {
       teamDefinitions: { getDefinitionById: (id) => catalog.getTeamDefinition(id) },
       memoryLocator: new RootedAgentMemoryLocator({ memoryDir }),
       activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
-      collaboratorAdmission: createCollaboratorMentionAdmission(catalog, runnable),
+      collaboratorAdmission: createCollaboratorAdmission(catalog, runnable),
     },
   });
   const hostIdentity = createCollaborationMemberExecutionIdentity({
@@ -147,15 +147,15 @@ describe("Agent root of a standalone run", () => {
     const dir = new AgentMemoryLayout(f.memoryDir).getAgentRunCollaborationDirPath(HOST);
     expect(await f.store.readTree(dir, HOST)).toBeNull();
 
-    // Before any mention nothing can be reached or delegated to.
-    expect(await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review" }))
-      .toEqual({ target_agent_run_id: null, message: "No agents or teams are available to delegate to in this run; the user can bring one in with @." });
-    const policy = createCollaboratorMentionAdmission(definitions().catalog, runnable).policy;
+    // An address that is neither in the run nor in the catalog starts nothing.
+    expect(await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/nobody", description: "Review" }))
+      .toEqual({ target_agent_run_id: null, message: "'/nobody' is not a mounted Agent or Agent Team, a collaborator or an available agent of this run." });
+    const policy = createCollaboratorAdmission(definitions().catalog, runnable).policy;
     expect((await policy.listCandidates(root.collaboratorPort())).candidates.map((c) => c.definitionId))
       .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
 
     const admitted = await root.admitCollaboratorMentions({
-      focusedAgentRunId: HOST, content: "Get a review",
+      focusedAgentRunId: HOST,
       mentions: [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" }],
     });
     expect(admitted).toMatchObject({ admitted: true, collaborators: [
@@ -228,7 +228,7 @@ describe("Agent root of a standalone run", () => {
   it("stops every collaborator only on an explicit Stop, serves the stored view without restoring, and restores it on command", async () => {
     const f = await buildManager();
     const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
-    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, content: "x", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
+    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
     await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Review" });
     await flushMicrotasks();
     const child = f.handles.get("code-reviewer-run-1")!;
@@ -264,7 +264,7 @@ describe("Agent root of a standalone run", () => {
   it("history delete after a host crash ends the lingering root and its children first, then deletes (CR-001/CR-002)", async () => {
     const f = await buildManager();
     const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
-    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, content: "x", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
+    await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
     await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Review" });
     await flushMicrotasks();
     const child = f.handles.get("code-reviewer-run-1")!;
@@ -326,5 +326,89 @@ describe("Agent root of a standalone run", () => {
       rootDependencies: {} as never,
     });
     await expect(helper.resolveCommandReadyRoot(HOST)).rejects.toMatchObject({ code: "AGENT_ROOT_UNAVAILABLE" });
+  });
+});
+
+describe("agent-initiated collaborators of a standalone run", () => {
+  const childIdentity = (memberAddress: string, agentRunId: string) =>
+    createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(HOST), memberAddress, agentRunId });
+  const memberRun = (task: { members: readonly ({ address: string } & ({ agentRunId: string } | { teamRunId: string }))[] }, address: string) => {
+    const member = task.members.find((candidate) => candidate.address === address);
+    if (!member || !("agentRunId" in member)) throw new Error(`no ${address}`);
+    return member.agentRunId;
+  };
+
+  it("lists without creating the package; the host's own definition is not listed (AR-005)", async () => {
+    const f = await buildManager();
+    const context = (await f.manager.buildHostMemberExecutionContext(metadata(f.memoryDir)))!;
+    await f.manager.ensureRoot(metadata(f.memoryDir));
+    await expect(context.collaboration.listAvailableAgents!()).resolves.toEqual([
+      { name: "Code Reviewer", kind: "agent", address: "/code_reviewer", description: "Reviews" },
+      { name: "Lead", kind: "agent", address: "/lead", description: "Leads" },
+      { name: "Designer", kind: "agent", address: "/designer", description: "Designs" },
+      { name: "Product Team", kind: "agent_team", address: "/product_team", description: "Product" },
+    ]);
+    const dir = new AgentMemoryLayout(f.memoryDir).getAgentRunCollaborationDirPath(HOST);
+    expect(await f.store.readTree(dir, HOST)).toBeNull();
+    expect(f.catalogFlag).not.toHaveBeenCalled();
+  });
+
+  it("the first send_message_to brings a listed agent in and creates the package; concurrent firsts make one (AC-004, AC-008)", async () => {
+    const f = await buildManager();
+    const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
+    const results = await Promise.all([
+      root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "one" }),
+      root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "two" }),
+    ]);
+    expect(results).toEqual([expect.objectContaining({ accepted: true }), expect.objectContaining({ accepted: true })]);
+    const dir = new AgentMemoryLayout(f.memoryDir).getAgentRunCollaborationDirPath(HOST);
+    expect((await f.store.readTree(dir, HOST))!.collaborators).toEqual([
+      expect.objectContaining({ kind: "agent", address: "/code_reviewer", addedViaAgentRunId: HOST }),
+    ]);
+    expect(f.catalogFlag).toHaveBeenCalledOnce();
+    expect(f.handles.get("code-reviewer-run-1")!.handle.reserveInput).toHaveBeenCalledTimes(2);
+    // `@` after the agent's bring-in reuses the instance (AC-010).
+    await expect(root.admitCollaboratorMentions({ focusedAgentRunId: HOST, mentions: [{ kind: "agent", definitionId: "code-reviewer" }] }))
+      .resolves.toEqual({ admitted: true, collaborators: [{ name: "Code Reviewer", kind: "agent", address: "/code_reviewer" }] });
+    expect(root.getExecutionTreeSnapshot().collaborators).toHaveLength(1);
+  });
+
+  it("catalog copies record a source, stay one unit each, delegate onward and restore after Stop (AC-005/006/007)", async () => {
+    const f = await buildManager();
+    const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
+    for (let index = 0; index < 3; index += 1) {
+      await expect(root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/product_team", description: `Page ${index}` }))
+        .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    }
+    await flushMicrotasks();
+    const copies = root.getExecutionTreeSnapshot().taskExecutions as unknown as Parameters<typeof memberRun>[0][] & { source?: unknown }[];
+    expect(copies).toHaveLength(3);
+    expect(copies.every((copy) => (copy as { source?: { kind: string } }).source?.kind === "agent_team")).toBe(true);
+    expect(root.getExecutionTreeSnapshot().collaborators).toEqual([]);
+    expect(f.catalogFlag).toHaveBeenCalledOnce();
+
+    const [one, two] = copies;
+    const leadOne = childIdentity("/product_team/lead", memberRun(one!, "/product_team/lead"));
+    await expect(root.deliverLogicalMessage(leadOne, { recipientAddress: "/product_team/designer" as never, content: "UI" }))
+      .resolves.toMatchObject({ accepted: true });
+    expect(f.handles.get(memberRun(one!, "/product_team/designer"))!.handle.reserveInput).toHaveBeenCalledOnce();
+    expect(f.handles.get(memberRun(two!, "/product_team/designer"))?.handle.reserveInput ?? { mock: { calls: [] } })
+      .toEqual(expect.objectContaining({ mock: expect.objectContaining({ calls: [] }) }));
+    await expect(root.deliverLogicalMessage(leadOne, { recipientAddress: "/product_team/nobody" as never, content: "?" }))
+      .rejects.toMatchObject({ code: "COLLABORATION_TARGET_NOT_FOUND" });
+    // A copy member delegates to the catalog: the copy is hosted by its Team and records its source.
+    await expect(root.delegateTask({ identity: leadOne }, { recipient_address: "/code_reviewer", description: "Review" }))
+      .resolves.toMatchObject({ target_agent_run_id: expect.any(String) });
+    await flushMicrotasks();
+    const hostCopy = root.getExecutionTreeSnapshot().taskExecutions[0] as { taskExecutions: readonly { address: string; source?: unknown }[] };
+    expect(hostCopy.taskExecutions).toEqual([expect.objectContaining({ address: "/code_reviewer", source: expect.objectContaining({ agentDefinitionId: "code-reviewer" }) })]);
+
+    // Stop and reopen: a copy restores from its recorded source.
+    expect(await f.manager.terminateRoot(HOST)).toBe(true);
+    const reopened = await f.manager.resolveCommandReadyRoot(HOST);
+    const designerRun = memberRun(two!, "/product_team/designer");
+    await expect(reopened.executeAgentCommand(designerRun, { kind: "post_message", message: { content: "Status?" } as never }))
+      .resolves.toMatchObject({ accepted: true });
+    expect(f.handles.get(designerRun)!.input.activationMode).toBe("restore");
   });
 });

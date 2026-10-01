@@ -8,6 +8,8 @@ import type { TeamRunContext } from "../domain/team-run-context.js";
 import { toTeamAgentEvent } from "./team-agent-event-adapter.js";
 import { CollaborationAgentPresentationEventAdapter } from "../../agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
 import { MemberExecutionContextBuilder, type MemberScope } from "./member-team-context-builder.js";
+
+type MemberExecutionContextBuildInput = Parameters<MemberExecutionContextBuilder["build"]>[0];
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
 
 /** Standalone-Team subject adapter for root-neutral local Agent callbacks. */
@@ -17,6 +19,8 @@ export const createTeamFlatExecutionCallbacks = (input: {
   taskCommands: MemberTaskCommandCapability;
   publish(event: TeamRunEvent): void;
   deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
+  /** The root's `list_available_agents`; absent in application-owned runs. */
+  listAvailableAgents?: MemberExecutionContextBuildInput["listAvailableAgents"];
   commitPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void>;
   /** The scope of a collaborator Agent or collaborator Team member (read from the live tree). */
   resolveMemberScope?(address: string): MemberScope | null;
@@ -25,6 +29,7 @@ export const createTeamFlatExecutionCallbacks = (input: {
     teamContext: input.teamContext,
     agentNode: sourceNode,
     deliverInterAgentMessage: input.deliverInterAgentMessage,
+    listAvailableAgents: input.listAvailableAgents ?? null,
     taskCommands: input.taskCommands,
     scope: input.resolveMemberScope?.(identity.memberAddress) ?? null,
   }).then((context) => {

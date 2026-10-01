@@ -15,8 +15,9 @@ export class AgentRunCollaborationPersistenceFailStoppedError extends Error {
 
 /**
  * Serializes the Agent-root package writes. The package is created lazily: the first tree
- * commit (the first admitted collaborator) writes the messages file, then the tree, and then
- * records the catalog flag. A run that never has a collaborator never gets a package.
+ * commit (the first collaborator, or the first catalog copy started by `delegate_task`) writes
+ * the messages file, then the tree, and then records the catalog flag. A run that never brings
+ * anyone in never gets a package; listing writes nothing.
  */
 export class AgentRunCollaborationPersistenceCoordinator {
   private tail: Promise<void> = Promise.resolve();
@@ -61,11 +62,7 @@ export class AgentRunCollaborationPersistenceCoordinator {
       if (result.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(result);
       this.created = true;
       this.finalize("execution_tree", prepared.commitAfterDurability);
-      if (createsPackage) {
-        await this.options.onPackageCreated().catch((error: unknown) => {
-          console.error(`Agent root '${this.options.hostRunId}' catalog flag was not recorded:`, error);
-        });
-      }
+      if (createsPackage) await this.recordPackageCreated();
     });
   }
 
@@ -83,16 +80,24 @@ export class AgentRunCollaborationPersistenceCoordinator {
         await input.abortBeforeDurability();
         throw error;
       }
-      const result = await this.options.store.writeTree(this.options.collaborationDir, prepared.nextTree);
-      if (result.outcome === "not_renamed") {
-        await input.abortBeforeDurability();
-        return { committed: false, message: result.cause.message };
+      // A catalog copy can be the run's first write (REQ-008): it creates the package.
+      const createsPackage = !this.created;
+      for (const write of createsPackage ? ["messages", "tree"] as const : ["tree"] as const) {
+        const result = write === "messages"
+          ? await this.options.store.writeMessages(this.options.collaborationDir, this.options.getMessages())
+          : await this.options.store.writeTree(this.options.collaborationDir, prepared.nextTree);
+        if (result.outcome === "not_renamed") {
+          await input.abortBeforeDurability();
+          return { committed: false, message: result.cause.message };
+        }
+        if (result.outcome === "renamed_finalization_indeterminate") {
+          await input.abortBeforeDurability();
+          this.latchAndThrow(result);
+        }
       }
-      if (result.outcome === "renamed_finalization_indeterminate") {
-        await input.abortBeforeDurability();
-        this.latchAndThrow(result);
-      }
+      this.created = true;
       this.finalize("execution_tree", input.commitAfterDurability);
+      if (createsPackage) await this.recordPackageCreated();
       return { committed: true };
     });
   }
@@ -115,6 +120,12 @@ export class AgentRunCollaborationPersistenceCoordinator {
   }
 
   readConsistent<T>(reader: () => T): Promise<T> { return this.withLock(async () => reader()); }
+
+  private async recordPackageCreated(): Promise<void> {
+    await this.options.onPackageCreated().catch((error: unknown) => {
+      console.error(`Agent root '${this.options.hostRunId}' catalog flag was not recorded:`, error);
+    });
+  }
   drain(): Promise<void> { return this.tail; }
   enterRootFailStop(): void { this.failStopped = true; }
 

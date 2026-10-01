@@ -1,16 +1,18 @@
 import type {
   AgentLaunchConfigurationDto,
   CollaboratorEntryDto as TeamCollaboratorEntryDto,
+  TaskExecutionDto as TeamTaskExecutionDto,
   TeamRunExecutionTreeDto,
 } from '@autobyteus/team-stream-contracts'
-import type { CollaboratorEntryDto } from '@autobyteus/collaboration-stream-contracts'
+import type { CollaborationTaskExecutionDto, CollaboratorEntryDto } from '@autobyteus/collaboration-stream-contracts'
 import { collectConfiguredAgents } from '~/services/teamExecution/teamExecutionTreeSelectors'
 
 /**
  * Where the definition and launch settings of an execution come from. A configured member is
  * its own source; a task execution at a collaborator address takes its source from the
- * collaborator entry (the collaborator Agent itself, or a member of the collaborator Team).
- * Configured placements always win: collaborator addresses never collide with them.
+ * collaborator entry (the collaborator Agent itself, or a member of the collaborator Team); a
+ * task copy started from the catalog carries its own `source` (REQ-011), which its members share.
+ * Configured placements always win: collaborator and catalog addresses never collide with them.
  */
 
 const firstSegment = (address: string): string => address.split('/').filter(Boolean)[0] ?? ''
@@ -45,10 +47,33 @@ export const teamCollaboratorAgentSourceAt = (
     : null
 }
 
-/** The Agent source at an address of a Team root: configured first, then collaborator. */
+/** The Agent source at an address inside a Team root's catalog copies (a copied Agent or a copy's member). */
+export const teamCatalogAgentSourceAt = (tasks: readonly TeamTaskExecutionDto[], address: string): TeamAgentSource | null => {
+  for (const task of tasks) {
+    if (task.kind === 'task_agent') {
+      if (task.source && task.address === address) {
+        return Object.freeze({ address, agent_definition_id: task.source.agent_definition_id, launch_configuration: task.source.launch_configuration })
+      }
+      continue
+    }
+    const member = task.source?.members.find((candidate) => candidate.address === address)
+    if (task.source && member) {
+      return Object.freeze({ address, agent_definition_id: member.agent_definition_id, launch_configuration: task.source.default_launch_configuration })
+    }
+    const nested = teamCatalogAgentSourceAt(task.task_executions, address)
+    if (nested) return nested
+  }
+  return null
+}
+
+/** The Agent source at an address of a Team root: configured first, then collaborator, then a catalog copy. */
 export const teamAgentSourceAt = (tree: TeamRunExecutionTreeDto, address: string): TeamAgentSource | null =>
   collectConfiguredAgents(tree).find((agent) => agent.address === address)
     ?? teamCollaboratorAgentSourceAt(tree.root_team.collaborators ?? [], address)
+    ?? teamCatalogAgentSourceAt([
+      ...tree.root_team.task_executions,
+      ...(tree.root_team.collaborators ?? []).flatMap((entry) => entry.kind === 'agent_team' ? entry.task_executions : []),
+    ], address)
 
 export const teamCollaboratorTeamAt = (
   collaborators: readonly TeamCollaboratorEntryDto[],
@@ -98,6 +123,63 @@ export const collaboratorTeamSourceAt = (
   return entry?.kind === 'agent_team' && entry.address === address
     ? Object.freeze({ address, coordinatorAddress: entry.coordinatorAddress })
     : null
+}
+
+const catalogSourceAt = (
+  tasks: readonly CollaborationTaskExecutionDto[],
+  address: string,
+): CollaborationAgentSource | CollaborationTeamSource | null => {
+  for (const task of tasks) {
+    if ('agentRunId' in task) {
+      if (task.source && task.address === address) {
+        return Object.freeze({ address, agentDefinitionId: task.source.agentDefinitionId, launchConfiguration: task.source.launchConfiguration })
+      }
+      continue
+    }
+    if (task.source) {
+      if (task.address === address) return Object.freeze({ address, coordinatorAddress: task.source.coordinatorAddress })
+      const member = task.source.members.find((candidate) => candidate.address === address)
+      if (member) {
+        return Object.freeze({ address, agentDefinitionId: member.agentDefinitionId, launchConfiguration: task.source.defaultLaunchConfiguration })
+      }
+    }
+    const nested = catalogSourceAt([
+      ...task.taskExecutions,
+      ...task.members.flatMap((member) => 'teamRunId' in member ? member.taskExecutions : []),
+    ], address)
+    if (nested) return nested
+  }
+  return null
+}
+
+/** Every task-execution list of an Org or Agent root: the root's, mounted Teams' and collaborator Teams'. */
+export const collaborationTaskExecutionLists = (input: Readonly<{
+  taskExecutions: readonly CollaborationTaskExecutionDto[]
+  members?: readonly object[]
+  collaborators?: readonly CollaboratorEntryDto[]
+}>): CollaborationTaskExecutionDto[] => [
+  ...input.taskExecutions,
+  ...(input.members ?? []).flatMap((member) =>
+    'taskExecutions' in member ? (member as { taskExecutions: readonly CollaborationTaskExecutionDto[] }).taskExecutions : []),
+  ...(input.collaborators ?? []).flatMap((entry) => entry.kind === 'agent_team' ? entry.taskExecutions : []),
+]
+
+/** The Agent source at an address inside an Org or Agent root's catalog copies. */
+export const catalogAgentSourceAt = (
+  tasks: readonly CollaborationTaskExecutionDto[],
+  address: string,
+): CollaborationAgentSource | null => {
+  const source = catalogSourceAt(tasks, address)
+  return source && 'agentDefinitionId' in source ? source : null
+}
+
+/** The Team source of a catalog Team copy at an address of an Org or Agent root. */
+export const catalogTeamSourceAt = (
+  tasks: readonly CollaborationTaskExecutionDto[],
+  address: string,
+): CollaborationTeamSource | null => {
+  const source = catalogSourceAt(tasks, address)
+  return source && 'coordinatorAddress' in source ? source : null
 }
 
 /** A collaborator's hosted executions in the delegated-child node shape (Org and Agent roots). */

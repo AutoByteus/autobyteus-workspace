@@ -6,7 +6,9 @@ import {
 import {
   createCollaborationMemberExecutionIdentity,
   requireRootExecutionIdentityKind,
+  type CollaborationMemberExecutionIdentity,
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
 import {
   buildDeliveryEndpointForParticipant,
@@ -47,6 +49,8 @@ export class MemberExecutionContextBuilder {
     teamContext: TeamRunContext<unknown>;
     agentNode: TeamRunAgentNode;
     deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
+    /** The root's `list_available_agents` for this member; absent in application-owned runs. */
+    listAvailableAgents?: ((identity: CollaborationMemberExecutionIdentity) => Promise<readonly AvailableCollaborator[]>) | null;
     taskCommands: MemberTaskCommandCapability;
     /** Overrides the TeamRun's handoffs and definition for an Agent outside them (a collaborator). */
     scope?: MemberScope | null;
@@ -73,6 +77,7 @@ export class MemberExecutionContextBuilder {
         messageType: message.messageType,
         referenceFiles: message.referenceFiles ? [...message.referenceFiles] : null,
       }),
+      listAvailableAgents: input.listAvailableAgents ? () => input.listAvailableAgents!(identity) : null,
     });
     const teamDefinitionId = input.scope ? input.scope.teamDefinitionId : input.teamContext.teamNode.teamDefinitionId;
     const summary = teamDefinitionId ? await this.resolveSummary(teamDefinitionId) : { instruction: null };

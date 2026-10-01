@@ -71,6 +71,9 @@ export class AgentOrgExecutionScopeBuilder {
             if (!run) return Promise.resolve({ accepted: false, code: "AGENT_ORG_ROOT_NOT_BOUND", message: "AgentOrg construction is incomplete." });
             return run.deliverLogicalMessage(identity, message);
           },
+          listAvailableAgents: () => run
+            ? run.listAvailableAgents(identity)
+            : Promise.reject(new Error("AgentOrg construction is incomplete.")),
         }),
         tasks: taskCommands,
       });

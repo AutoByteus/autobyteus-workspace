@@ -2,15 +2,19 @@ import { describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../../src/agent-team-definition/domain/agent-team-definition.js";
 import { DAILY_ASSISTANT_AGENT_DEFINITION_ID, MEMORY_COMPACTOR_AGENT_DEFINITION_ID } from "../../../../src/built-in-agents/built-in-agent-registry.js";
-import { allocateCollaboratorAddress, collaboratorSegmentForName } from "../../../../src/agent-collaboration/collaborators/collaborator-address-allocator.js";
-import { createCollaboratorMentionAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { collaboratorSegmentForName } from "../../../../src/agent-collaboration/collaborators/catalog-address-map.js";
+import { createCollaboratorAdmission } from "../../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import type { CollaboratorDefinitionCatalog } from "../../../../src/agent-collaboration/collaborators/collaborator-candidate-policy.js";
-import type { CollaboratorRootPort } from "../../../../src/agent-collaboration/collaborators/collaborator-root-port.js";
+import { buildInRunPlacements, type CollaboratorRootPort } from "../../../../src/agent-collaboration/collaborators/collaborator-root-port.js";
+import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
 import { resolveCollaboratorCopySource } from "../../../../src/agent-collaboration/collaborators/collaborator-source-projector.js";
 import type { CollaboratorIdentityPorts } from "../../../../src/agent-collaboration/collaborators/collaborator-identity-allocator.js";
 import type { RunModelSelectionValidator } from "../../../../src/llm-management/services/run-model-selection-service.js";
 import type { CollaboratorEntry } from "../../../../src/run-history/domain/run-execution-tree-shared-records.js";
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
+import { createHash } from "node:crypto";
+
+const hash6 = (id: string): string => createHash("sha256").update(id).digest("hex").slice(0, 6);
 
 const agent = (id: string, name: string, ownershipScope: AgentDefinition["ownershipScope"] = "shared") => new AgentDefinition({
   id, name, description: `${name} description`, instructions: "x", ownershipScope,
@@ -54,7 +58,11 @@ const port = (input: {
   rootKind: "agent_team",
   isApplicationBound: input.applicationBound ?? false,
   rootLaunchConfiguration: () => launch,
-  configuredDefinitionIds: () => ({ agentDefinitionIds: new Set(input.configuredAgents ?? []), teamDefinitionIds: new Set(["se-team"]) }),
+  rootDefinition: () => ({ kind: "agent_team", definitionId: "se-team" }),
+  inRunPlacementsByDefinition: () => buildInRunPlacements({
+    configured: (input.configuredAgents ?? []).map((id) => ({ ref: { kind: "agent" as const, definitionId: id }, address: `/${id}` as never })),
+    collaborators: input.collaborators ?? [],
+  }),
   collaborators: () => input.collaborators ?? [],
   addressesInUse: () => new Set([...(input.addresses ?? ["/coordinator"]), ...(input.collaborators ?? []).map((entry) => entry.address)]),
 });
@@ -86,7 +94,7 @@ const harness = (options: { invalid?: boolean; addFails?: boolean } = {}) => {
     if (options.addFails) throw new Error("disk full");
     added.push(...entries);
   };
-  return { steps, added, admission: createCollaboratorMentionAdmission(catalog, validator), identities, addEntries };
+  return { steps, added, admission: createCollaboratorAdmission(catalog, validator), identities, addEntries };
 };
 
 describe("collaborator policy and admission", () => {
@@ -102,17 +110,24 @@ describe("collaborator policy and admission", () => {
       .toEqual({ availability: "UNAVAILABLE_APPLICATION_ROOT", candidates: [] });
   });
 
-  it("validates, allocates, commits and then composes the note, in that order (DS-001)", async () => {
+  it("validates, allocates and commits, in that order; the `@` caller composes the note (R-1)", async () => {
     const run = harness();
-    const result = await run.admission.admit(port(), {
-      focusedAgentRunId: "focused", content: "please review",
-      mentions: [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent_team", definitionId: "product" }],
+    const result = await run.admission.ensure(port(), {
+      senderRunId: "focused",
+      definitions: [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent_team", definitionId: "product" }],
       identities: run.identities, addEntries: run.addEntries,
     });
     expect(run.steps).toEqual(["validate:3", "allocate:reviewer", "allocate-team:product", "add:2"]);
-    expect(result).toMatchObject({ admitted: true });
-    expect(result.admitted && result.content).toContain("[Mentioned collaborators]");
-    expect(result.admitted && result.content).toContain("send_message_to");
+    expect(result).toEqual({
+      admitted: true,
+      collaborators: [
+        { name: "Code Reviewer", kind: "agent", address: "/code_reviewer" },
+        { name: "Product Team", kind: "agent_team", address: "/product_team" },
+      ],
+    });
+    const note = composeCollaboratorMentionNote("please review", result.admitted ? result.collaborators : []);
+    expect(note).toContain("[Mentioned collaborators]");
+    expect(note).toContain("send_message_to");
     expect(run.added).toEqual([
       expect.objectContaining({ kind: "agent", address: "/code_reviewer", agentRunId: "reviewer-run-1", platformAgentRunId: null }),
       expect.objectContaining({
@@ -127,8 +142,8 @@ describe("collaborator policy and admission", () => {
 
   it("rejects the whole send when a placement cannot run, before allocating or writing", async () => {
     const run = harness({ invalid: true });
-    const result = await run.admission.admit(port(), {
-      focusedAgentRunId: "focused", content: "x", mentions: [{ kind: "agent_team", definitionId: "product" }],
+    const result = await run.admission.ensure(port(), {
+      senderRunId: "focused", definitions: [{ kind: "agent_team", definitionId: "product" }],
       identities: run.identities, addEntries: run.addEntries,
     });
     expect(result).toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Product Team" });
@@ -138,8 +153,8 @@ describe("collaborator policy and admission", () => {
 
   it("returns COLLABORATOR_ADD_FAILED when the root cannot commit the entries", async () => {
     const run = harness({ addFails: true });
-    const result = await run.admission.admit(port(), {
-      focusedAgentRunId: "focused", content: "x", mentions: [{ kind: "agent", definitionId: "reviewer" }],
+    const result = await run.admission.ensure(port(), {
+      senderRunId: "focused", definitions: [{ kind: "agent", definitionId: "reviewer" }],
       identities: run.identities, addEntries: run.addEntries,
     });
     expect(result).toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer", message: "disk full" });
@@ -147,13 +162,13 @@ describe("collaborator policy and admission", () => {
 
   it("reuses the entry of an already-added definition: no validation, allocation or write", async () => {
     const first = harness();
-    await first.admission.admit(port(), {
-      focusedAgentRunId: "a", content: "x", mentions: [{ kind: "agent", definitionId: "reviewer" }],
+    await first.admission.ensure(port(), {
+      senderRunId: "a", definitions: [{ kind: "agent", definitionId: "reviewer" }],
       identities: first.identities, addEntries: first.addEntries,
     });
     const again = harness();
-    const result = await again.admission.admit(port({ collaborators: first.added }), {
-      focusedAgentRunId: "b", content: "again", mentions: [{ kind: "agent", definitionId: "reviewer" }],
+    const result = await again.admission.ensure(port({ collaborators: first.added }), {
+      senderRunId: "b", definitions: [{ kind: "agent", definitionId: "reviewer" }],
       identities: again.identities, addEntries: again.addEntries,
     });
     expect(again.steps).toEqual([]);
@@ -162,15 +177,15 @@ describe("collaborator policy and admission", () => {
 
   it("counts every entry and its Team members as in the run; a failed add is still offered", async () => {
     const run = harness();
-    await run.admission.admit(port(), {
-      focusedAgentRunId: "f", content: "x", mentions: [{ kind: "agent_team", definitionId: "product" }],
+    await run.admission.ensure(port(), {
+      senderRunId: "f", definitions: [{ kind: "agent_team", definitionId: "product" }],
       identities: run.identities, addEntries: run.addEntries,
     });
     const after = await admission.policy.listCandidates(port({ collaborators: run.added }));
     expect(after.candidates.map((candidate) => candidate.definitionId)).toEqual(["reviewer"]);
     const failed = harness({ invalid: true });
-    await failed.admission.admit(port(), {
-      focusedAgentRunId: "f", content: "x", mentions: [{ kind: "agent_team", definitionId: "product" }],
+    await failed.admission.ensure(port(), {
+      senderRunId: "f", definitions: [{ kind: "agent_team", definitionId: "product" }],
       identities: failed.identities, addEntries: failed.addEntries,
     });
     const stillOffered = await admission.policy.listCandidates(port());
@@ -179,12 +194,13 @@ describe("collaborator policy and admission", () => {
 
   it("plans entries with the root settings, rebased Team layout and handoffs", async () => {
     const plan = await admission.plan(port({ addresses: ["/code_reviewer"] }), {
-      focusedAgentRunId: "focused",
-      mentions: [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent_team", definitionId: "product" }],
+      senderRunId: "focused",
+      definitions: [{ kind: "agent", definitionId: "reviewer" }, { kind: "agent_team", definitionId: "product" }],
       now: "2026-09-30T00:00:00.000Z",
     });
+    // `/code_reviewer` is in use, so the catalog address map suffixes the definition ID's hash.
     expect(plan.newPlans).toEqual([
-      { kind: "agent", name: "Code Reviewer", address: "/code_reviewer_2", agentDefinitionId: "reviewer", launchConfiguration: launch, addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "focused" },
+      { kind: "agent", name: "Code Reviewer", address: `/code_reviewer_${hash6("reviewer")}`, agentDefinitionId: "reviewer", launchConfiguration: launch, addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "focused" },
       {
         kind: "agent_team", name: "Product Team", address: "/product_team", teamDefinitionId: "product", coordinatorAddress: "/product_team/lead",
         members: [{ address: "/product_team/lead", agentDefinitionId: "lead" }, { address: "/product_team/designer", agentDefinitionId: "designer" }],
@@ -196,8 +212,8 @@ describe("collaborator policy and admission", () => {
 
   it("projects an extra copy from an entry with the entry's settings and pending identities (REQ-013)", async () => {
     const run = harness();
-    await run.admission.admit(port(), {
-      focusedAgentRunId: "f", content: "x", mentions: [{ kind: "agent_team", definitionId: "product" }],
+    await run.admission.ensure(port(), {
+      senderRunId: "f", definitions: [{ kind: "agent_team", definitionId: "product" }],
       identities: run.identities, addEntries: run.addEntries,
     });
     expect(resolveCollaboratorCopySource(run.added, "/product_team")).toMatchObject({
@@ -217,8 +233,8 @@ describe("collaborator policy and admission", () => {
   it("rejects the whole send when any mention is ineligible or already configured", async () => {
     const admit = (mentions: { kind: "agent" | "agent_team"; definitionId: string }[], input = {}) => {
       const run = harness();
-      return run.admission.admit(port(input), {
-        focusedAgentRunId: "f", content: "x", mentions, identities: run.identities, addEntries: run.addEntries,
+      return run.admission.ensure(port(input), {
+        senderRunId: "f", definitions: mentions, identities: run.identities, addEntries: run.addEntries,
       });
     };
     const failed = { admitted: false, code: "COLLABORATOR_ADD_FAILED" };
@@ -230,10 +246,42 @@ describe("collaborator policy and admission", () => {
     await expect(admit([{ kind: "agent", definitionId: "reviewer" }], { applicationBound: true })).resolves.toMatchObject(failed);
   });
 
-  it("derives address segments from names with deterministic suffixes", () => {
+  it("derives address segments from names", () => {
     expect(collaboratorSegmentForName("Product Team")).toBe("product_team");
     expect(collaboratorSegmentForName("  Café—Reviewer v2 ")).toBe("cafe_reviewer_v2");
     expect(collaboratorSegmentForName("产品")).toBe("collaborator");
-    expect(allocateCollaboratorAddress("Product Team", ["/Product_Team", "/product_team_2", "/x/product_team_3"])).toBe("/product_team_3");
+  });
+
+  it("lists every eligible definition once at its in-run or catalog address, with the `@` exclusions (Q-2, AR-002)", async () => {
+    const run = harness();
+    await run.admission.ensure(port(), {
+      senderRunId: "f", definitions: [{ kind: "agent_team", definitionId: "product" }],
+      identities: run.identities, addEntries: run.addEntries,
+    });
+    const listed = await admission.policy.listEligible(port({ configuredAgents: ["reviewer"], collaborators: run.added }));
+    expect(listed).toEqual([
+      { name: "Code Reviewer", kind: "agent", address: "/reviewer", description: "Code Reviewer description" },
+      { name: "Lead", kind: "agent", address: "/product_team/lead", description: "Lead description" },
+      { name: "Designer", kind: "agent", address: "/product_team/designer", description: "Designer description" },
+      { name: "Product Team", kind: "agent_team", address: "/product_team", description: "Product Team description" },
+    ]);
+    expect(listed.some((entry) => "inRun" in entry)).toBe(false);
+    expect(await admission.policy.listEligible(port({ applicationBound: true }))).toEqual([]);
+  });
+
+  it("a catalog task source snapshots the definition and root settings without identities or an entry (Q-1)", async () => {
+    const run = harness();
+    const source = await run.admission.catalogTaskSource(port(), { address: "/product_team", senderRunId: "pm" });
+    expect(source).toEqual({ name: "Product Team", source: {
+      kind: "agent_team", teamDefinitionId: "product", coordinatorAddress: "/product_team/lead",
+      members: [{ address: "/product_team/lead", agentDefinitionId: "lead" }, { address: "/product_team/designer", agentDefinitionId: "designer" }],
+      handoffs: [{ from: "/product_team/lead", to: "/product_team/designer", rules: ["When UI work is needed."] }],
+      defaultLaunchConfiguration: launch,
+    } });
+    expect(run.steps).toEqual(["validate:2"]);
+    expect(run.added).toEqual([]);
+    expect(await run.admission.catalogTaskSource(port(), { address: "/nobody", senderRunId: "pm" })).toBeNull();
+    await expect(harness({ invalid: true }).admission.catalogTaskSource(port(), { address: "/code_reviewer", senderRunId: "pm" }))
+      .rejects.toMatchObject({ code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer" });
   });
 });

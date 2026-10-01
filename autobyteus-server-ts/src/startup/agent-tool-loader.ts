@@ -8,6 +8,7 @@ export type RequiredAgentToolUnitKey =
   | "browser"
   | "task_delegation"
   | "agent_communication"
+  | "agent_discovery"
   | "published_artifact"
   | "media"
   | "search";
@@ -58,6 +59,12 @@ const serverOwnedSpecs: LoaderSpec[] = [
     displayName: "Agent Communication Tools",
     modulePath: "../agent-tools/agent-communication/register-agent-communication-tools.js",
     exportName: "registerAgentCommunicationTools",
+  },
+  {
+    key: "agent_discovery",
+    displayName: "Agent Discovery Tools",
+    modulePath: "../agent-tools/agent-discovery/list-available-agents-tool.js",
+    exportName: "registerAgentDiscoveryTools",
   },
   {
     key: "published_artifact",

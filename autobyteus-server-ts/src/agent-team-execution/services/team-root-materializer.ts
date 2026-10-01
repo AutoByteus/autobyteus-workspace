@@ -1,5 +1,5 @@
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
-import type { CollaboratorMentionAdmission } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
 import type { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
@@ -31,7 +31,7 @@ export type TeamRootMaterializationInput = Readonly<{
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationV1Store;
   /** The process admission coordinator unless given. */
-  collaboratorAdmission?: CollaboratorMentionAdmission;
+  collaboratorAdmission?: CollaboratorAdmission;
   onTerminated: (root: RootTeamRun) => void;
 }>;
 
@@ -78,6 +78,9 @@ export const materializeTeamRoot = async (
     deliverInterAgentMessage: (intent) => root
       ? root.deliverInterAgentMessage(intent)
       : Promise.resolve({ accepted: false, code: "TEAM_ROOT_NOT_BOUND", message: "RootTeamRun construction is incomplete." }),
+    listAvailableAgents: (identity) => root
+      ? root.listAvailableAgents(identity)
+      : Promise.reject(new Error("RootTeamRun construction is incomplete.")),
     commitPlatformBindingChange: (change) => root
       ? root.commitAgentPlatformBindingChange(change)
       : Promise.reject(new Error("RootTeamRun construction is incomplete.")),

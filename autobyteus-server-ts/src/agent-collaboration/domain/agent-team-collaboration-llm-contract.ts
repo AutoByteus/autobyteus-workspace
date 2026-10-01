@@ -9,37 +9,40 @@ const RULE_BASED_HANDOFF_LLM_INSTRUCTION = [
 ].join(" ");
 
 export const SEND_MESSAGE_TO_LLM_DESCRIPTION = lines(
-  "Send one self-contained ordinary message to an existing Agent or AgentTeam.",
-  "Use exactly one selector: recipient_address for one canonical absolute",
-  "non-root logical Agent-or-AgentTeam address in the same rooted AgentTeam, or",
-  "target_agent_run_id for one exact AgentRun. An Agent address resolves to its",
-  "mounted Agent execution; an AgentTeam address resolves to its mounted",
-  "configured coordinator. A shut-down delegated agent in the same root is",
-  "restored with its conversation and receives the message. This call creates",
-  "no new execution. On success, it returns the exact AgentRun that accepted the",
+  "Send one self-contained ordinary message to the one Agent or AgentTeam instance",
+  "at an address, or to one exact AgentRun. Use exactly one selector:",
+  "recipient_address for one canonical absolute non-root Agent-or-AgentTeam",
+  "address, or target_agent_run_id for one exact AgentRun. An Agent address",
+  "reaches that Agent's instance; an AgentTeam address reaches that Team",
+  "instance's coordinator; inside your own team instance, a teammate's address",
+  "reaches the member of that same instance. An available agent or team that is",
+  "not yet in the run is brought in on first use, and later messages reach that",
+  "same instance. A run ID reaches an existing AgentRun only, including a",
+  "shut-down delegated agent (restored with its conversation), and never brings",
+  "anything in. On success, it returns the exact AgentRun that accepted the",
   "message as flat target_agent_run_id; on rejection, target_agent_run_id is null.",
 );
 
 export const SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION =
-  "Canonical absolute non-root logical Agent-or-AgentTeam address beginning with '/'. Messaging an Agent reaches its existing mounted execution; messaging an AgentTeam reaches its existing mounted configured coordinator. This selector creates no new execution. Provide either recipient_address or target_agent_run_id, never both.";
+  "Canonical absolute non-root Agent-or-AgentTeam address beginning with '/'. It reaches the one instance at that address: an Agent's instance, or an AgentTeam instance's coordinator; inside your own team instance, a teammate's address reaches the member of that same instance. An available agent or team that is not yet in the run is brought in on first use. Provide either recipient_address or target_agent_run_id, never both.";
 
 export const SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION =
-  "Exact AgentRun.runId to receive an ordinary message: any AgentRun in the same root, including a shut-down delegated agent (restored with its conversation before delivery), or a currently active AgentRun elsewhere. Unknown run IDs are rejected. Provide either target_agent_run_id or recipient_address, never both.";
+  "Exact AgentRun.runId to receive an ordinary message: any AgentRun in the same root, including a shut-down delegated agent (restored with its conversation before delivery), or a currently active AgentRun elsewhere. Unknown run IDs are rejected; a run ID never brings anything in. Provide either target_agent_run_id or recipient_address, never both.";
 
 export const DELEGATE_TASK_LLM_DESCRIPTION = lines(
-  "Start one fresh instance of a mounted Agent or AgentTeam in the same rooted",
-  "AgentTeam and give it this work as its first message. recipient_address",
-  "identifies the Agent or AgentTeam definition to instantiate. An Agent target",
-  "starts one fresh delegated Agent; an AgentTeam target starts one fresh",
-  "delegated Team whose configured coordinator receives the work. The first",
-  "message includes your address and AgentRun ID so the new instance can reply.",
-  "On success it returns the new instance's target_agent_run_id; if nothing was",
-  "started, target_agent_run_id is null and message explains why. Afterwards,",
-  "communicate with the instance only through send_message_to.",
+  "Spawn one new copy of an Agent or AgentTeam and give it this work as its",
+  "first message. recipient_address identifies what to copy: a mounted Agent or",
+  "AgentTeam, a collaborator, or an available agent or team that is not yet in",
+  "the run. Every call spawns another copy, so copies can work in parallel; an",
+  "AgentTeam copy's coordinator receives the work. The first message includes",
+  "your address and AgentRun ID so the copy can reply. On success it returns the",
+  "copy's target_agent_run_id; if nothing was started,",
+  "target_agent_run_id is null and message explains why. Follow up on the copy",
+  "only by its run ID through send_message_to.",
 );
 
 export const DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION =
-  "Exact canonical absolute non-root address beginning with '/' for the mounted Agent or AgentTeam definition from which a fresh instance will be started. Agent targets start a fresh delegated Agent. AgentTeam targets start a fresh delegated Team whose configured coordinator receives the work.";
+  "Exact canonical absolute non-root address beginning with '/' of the Agent or AgentTeam to copy: a mounted one, a collaborator, or an available agent or team. Every call spawns a new copy; an AgentTeam copy's coordinator receives the work.";
 
 export const DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION =
   "Complete ready-to-run work description: objective, context, scope, constraints, done conditions, expected output, and reference guidance. delegate_task itself delivers this as the new instance's first message; do not resend it with send_message_to.";
@@ -51,22 +54,27 @@ export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "## AgentTeam Collaboration",
   "",
   "Choose the collaboration mode based on your primary intent.",
-  "`send_message_to` communicates with an existing execution.",
-  "`delegate_task` starts a fresh instance of an Agent or AgentTeam with new work.",
+  "`send_message_to` reaches the one instance at an address, brought in on first use.",
+  "`delegate_task` always spawns a new copy of an Agent or AgentTeam for new work.",
   "Never use both to deliver the same work.",
   "",
   "### Ordinary Communication",
   "",
-  "Use `send_message_to` to communicate with an existing Agent or AgentTeam",
-  "instance.",
+  "Use `send_message_to` to communicate with the one Agent or AgentTeam instance",
+  "at an address.",
   "",
   "- When `recipient_address` identifies an Agent, the message is delivered to",
-  "  that mounted Agent's existing execution.",
+  "  that Agent's instance.",
   "- When `recipient_address` identifies an AgentTeam, the message is delivered",
-  "  to that mounted Team's existing configured coordinator.",
+  "  to that Team instance's coordinator.",
+  "- Inside your own team instance, a teammate's address reaches the member of",
+  "  that same instance.",
+  "- An available agent or team that is not yet in the run is brought in on",
+  "  first use; later messages to its address reach the same instance.",
   "- When an exact AgentRun ID is known, `target_agent_run_id` may instead",
   "  select that specific execution: any AgentRun in the same root, including a",
-  "  shut-down delegated agent, or a currently active AgentRun elsewhere.",
+  "  shut-down delegated agent, or a currently active AgentRun elsewhere. A run ID",
+  "  never brings anything in.",
   "",
   "A successful call returns the exact AgentRun that accepted the message as",
   "`target_agent_run_id`. For an AgentTeam recipient, this is its coordinator",
@@ -74,21 +82,22 @@ export const AGENT_TEAM_COLLABORATION_LLM_INSTRUCTION = lines(
   "",
   "### Delegated Agents",
   "",
-  "Use `delegate_task` to start a fresh instance of a mounted Agent or AgentTeam",
-  "for new work. The `recipient_address` identifies the definition to",
-  "instantiate; it is not an alias for the new instance.",
+  "Use `delegate_task` to spawn a new copy of an Agent or AgentTeam for new work.",
+  "The `recipient_address` identifies what to copy (a mounted Agent or AgentTeam,",
+  "a collaborator, or an available agent or team); it is not an alias for the new",
+  "copy. Every call spawns another copy, so copies can work in parallel.",
   "",
-  "- The work description and reference files become the new instance's first",
-  "  message, together with your address and AgentRun ID.",
-  "- On success, `target_agent_run_id` is the new instance (for an AgentTeam, its",
+  "- The work description and reference files become the copy's first message,",
+  "  together with your address and AgentRun ID.",
+  "- On success, `target_agent_run_id` is the new copy (for an AgentTeam, its",
   "  coordinator). If `target_agent_run_id` is null, nothing was started and",
   "  `message` explains why; correct the problem and delegate again, or report",
   "  the failure.",
   "",
-  "After delegation, communicate with the instance only through `send_message_to`",
-  "with its `target_agent_run_id`, in both directions. A delegated agent that",
-  "stays quiet is shut down after a while; a message to its run ID restores it",
-  "with its conversation, so follow-ups remain possible at any time.",
+  "Follow up on a copy only through `send_message_to` with its",
+  "`target_agent_run_id`, in both directions. A copy that stays quiet is shut",
+  "down after a while; a message to its run ID restores it with its",
+  "conversation, so follow-ups remain possible at any time.",
   "",
   "### Rule-Based Handoffs",
   "",

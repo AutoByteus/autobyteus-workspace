@@ -9,7 +9,8 @@ import { AgentInputUserMessage, ContextFile, ContextFileType } from "autobyteus-
 import type { AgentOrgRunService } from "../../agent-org-execution/services/agent-org-run-service.js";
 import { projectAgentOrgExecutionEvent, projectAgentOrgExecutionView } from "./agent-org-execution-view-projector.js";
 import type { WebSocketConnection } from "./agent-team-stream-handler.js";
-import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
+import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 
 const serialize = (message: CollaborationStreamServerMessage): string =>
   JSON.stringify(CollaborationStreamServerMessageSchema.parse(message));
@@ -126,7 +127,6 @@ export class AgentOrgStreamHandler {
       if (message.type === "SEND_MESSAGE" && message.payload.mentions?.length) {
         const admission = await run.admitCollaboratorMentions({
           focusedAgentRunId: message.payload.target_agent_run_id,
-          content,
           mentions: toCollaboratorMentions(message.payload.mentions),
         });
         if (!admission.admitted) {
@@ -137,7 +137,7 @@ export class AgentOrgStreamHandler {
           )));
           return;
         }
-        content = admission.content;
+        content = composeCollaboratorMentionNote(content, admission.collaborators);
       }
       const command = message.type === "SEND_MESSAGE"
         ? (() => {

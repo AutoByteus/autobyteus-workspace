@@ -20,7 +20,8 @@ import {
 } from "../../services/agent-streaming/agent-stream-broadcaster.js";
 import { ServerMessage, ServerMessageType } from "../../services/agent-streaming/models.js";
 import { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
-import type { RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import { composeCollaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
+import type { RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type {
   SendMessageCommandAckPayload,
   AgentRunCommandCoordinatorInput,
@@ -89,7 +90,10 @@ export class AgentRunCommandCoordinator {
           });
           return this.recordResult(this.latestRecord(record), "rejected", false, false);
         }
-        message = new AgentInputUserMessage(admission.content, message.senderType, message.contextFiles, message.metadata);
+        message = new AgentInputUserMessage(
+          composeCollaboratorMentionNote(message.content, admission.collaborators),
+          message.senderType, message.contextFiles, message.metadata,
+        );
       }
 
       const result = await activeRun.postUserMessage(
@@ -127,7 +131,7 @@ export class AgentRunCommandCoordinator {
     if (!root) {
       return Promise.resolve({ admitted: false, code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "This run cannot bring in collaborators." });
     }
-    return root.admitCollaboratorMentions({ focusedAgentRunId: runId, content: input.message.content, mentions: input.mentions ?? [] });
+    return root.admitCollaboratorMentions({ focusedAgentRunId: runId, mentions: input.mentions ?? [] });
   }
 
   private applyInputLifecycle(

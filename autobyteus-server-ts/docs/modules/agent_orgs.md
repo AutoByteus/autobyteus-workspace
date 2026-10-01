@@ -139,9 +139,17 @@ rejects invalid/self-resolving endpoints and duplicate effective pairs.
 
 Runtime collaboration tools operate only inside the active root scope.
 `get_handoff_rules` exposes the current Agent's eligible rules,
-`send_message_to` targets an already existing execution, and
-`delegate_task` spawns a fresh delegated child (a task Agent or task Team) and
-returns its run ID. Logical addresses never discover unrelated roots.
+`send_message_to` reaches the one instance at an address (an available catalog
+Agent or Team is brought in on its first message), and `delegate_task` always
+spawns a new copy (a task Agent or task Team) and returns its run ID. Logical
+addresses never discover unrelated roots.
+
+**Team copies are one unit (REQ-007, behavior change).** A message from inside a
+Team instance to an address inside that Team resolves within that same instance.
+A delegated copy of a mounted Team therefore reaches its own members, no longer
+the mounted Team's. Configured Org handoffs between configured placements are
+unchanged (the sender's instance is the mounted Team itself). Reaching another
+instance of the same Team is possible only by run ID.
 
 ## Launch Configuration And Admission
 
@@ -258,6 +266,14 @@ queue.
   `taskExecutions`. `delegate_task` to a collaborator address starts an extra
   copy (`AgentOrgTaskSourceResolver` projects it from the entry). The Org, its
   members and its mounted Teams are never offered with `@`.
+- Agent-initiated collaborators and catalog copies: `AgentOrgRecipientResolver`
+  resolves `send_message_to(address)` with the shared `MessageRecipientResolution`
+  (sender instance, run-wide, then a catalog bring-in through
+  `AgentOrgRunCollaborators.ensure` under the held operation gate) and
+  `delegate_task(address)` with a catalog placement after configured and
+  collaborator placements. A catalog copy records its `source`, which
+  `AgentOrgTaskSourceResolver` reads first on activation and restore.
+  `AgentOrgRun.listAvailableAgents(sender)` serves `list_available_agents`.
 - Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
   through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
   same-root wake-on-message in `restore` mode, one liveness predicate

@@ -41,11 +41,14 @@ describe("task delegation runtime descriptions", () => {
   it("describes delegate_task as a spawn followed by send_message_to (AC-016)", () => {
     const delegateEntry = getTaskDelegationToolManifestEntry(DELEGATE_TASK_TOOL_NAME);
     expect(delegateEntry.description).toBe(DELEGATE_TASK_LLM_DESCRIPTION);
-    expect(delegateEntry.description).toMatch(/Start one fresh instance of a mounted Agent or/);
+    // REQ-009: delegate_task always spawns a new copy; follow up by run ID.
+    expect(delegateEntry.description).toMatch(/Spawn one new copy of an Agent or AgentTeam/);
+    expect(delegateEntry.description).toContain("Every call spawns another copy");
+    expect(delegateEntry.description).toContain("available agent or team");
     expect(delegateEntry.description).toContain("recipient_address");
     expect(delegateEntry.description).toContain("first message");
     expect(delegateEntry.description).toContain("target_agent_run_id is null");
-    expect(delegateEntry.description).toContain("only through send_message_to");
+    expect(delegateEntry.description).toContain("only by its run ID through send_message_to");
     expect(delegateEntry.description).not.toMatch(/task_id|status|submit|review|task lifecycle/i);
     expect(delegateEntry.description).not.toContain("./");
     expect(delegateEntry.description).not.toContain("direct child");

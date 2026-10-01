@@ -17,7 +17,7 @@ import {
 import { RootEventPublisher } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import type { RootedAgentMemoryLocator } from "../../agent-collaboration/execution/services/rooted-agent-memory-locator.js";
 import { RootTaskPersistenceFinalizationIndeterminateError, TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
-import type { CollaboratorMentionAdmission } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import type { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
@@ -44,7 +44,7 @@ export type AgentRunCollaborationRootBuilderDependencies = Readonly<{
   memoryLocator?: RootedAgentMemoryLocator;
   activityInspector?: AgentConversationActivityInspector;
   workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
-  collaboratorAdmission?: CollaboratorMentionAdmission;
+  collaboratorAdmission?: CollaboratorAdmission;
 }>;
 
 /** Builds one complete Agent root (registries, callbacks, persistence) around a loaded package. */
@@ -163,6 +163,7 @@ export class AgentRunCollaborationRootBuilder {
       collaboration: new MemberCollaborationContext({
         outgoingHandoffs: team ? team.handoffs.filter((handoff) => handoff.from === input.identity.memberAddress) : [],
         deliverLogicalMessage: (message) => input.requireRun().deliverLogicalMessage(input.identity, message),
+        listAvailableAgents: () => input.requireRun().listAvailableAgents(input.identity),
       }),
       tasks: Object.freeze({
         root: input.identity.root,

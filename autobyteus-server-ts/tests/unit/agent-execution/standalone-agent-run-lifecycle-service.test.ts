@@ -616,8 +616,8 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const activeRun = commandReadyRun();
     const current = harness({ metadataStates: [{ kind: "present", metadata: metadata({ startedAt: "2026-08-17T20:01:00.000Z" }) }] });
     current.agentRunManager.getActiveRun.mockReturnValue(activeRun);
-    const admit = vi.fn(async (input: { content: string }) => ({
-      admitted: true as const, content: `${input.content}\n\n[Mentioned collaborators]\n- Product Team (Agent Team) at /product_team\nnote`, collaborators: [],
+    const admit = vi.fn(async () => ({
+      admitted: true as const, collaborators: [{ name: "Product Team", kind: "agent_team" as const, address: "/product_team" }],
     }));
     const coordinator = exactCommandCoordinator(current, { getActive: () => ({ admitCollaboratorMentions: admit }) as never });
     await expect(coordinator.postUserMessage({
@@ -625,7 +625,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       message: new AgentInputUserMessage("Ask @Product Team"),
       mentions: [{ kind: "agent_team", definitionId: "product-team" }],
     })).resolves.toMatchObject({ ack: { accepted: true } });
-    expect(admit).toHaveBeenCalledWith({ focusedAgentRunId: RUN_ID, content: "Ask @Product Team", mentions: [{ kind: "agent_team", definitionId: "product-team" }] });
+    expect(admit).toHaveBeenCalledWith({ focusedAgentRunId: RUN_ID, mentions: [{ kind: "agent_team", definitionId: "product-team" }] });
     expect(activeRun.postUserMessage.mock.calls[0]![0].content).toContain("[Mentioned collaborators]");
 
     const rejecting = exactCommandCoordinator(current, { getActive: () => ({

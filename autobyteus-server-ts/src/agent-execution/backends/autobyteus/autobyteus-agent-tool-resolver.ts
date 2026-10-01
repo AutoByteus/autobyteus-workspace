@@ -18,6 +18,8 @@ import {
   isTaskDelegationToolName,
 } from "../../../agent-tools/task-delegation/task-delegation-tool-contract.js";
 import { registerTaskDelegationTools } from "../../../agent-tools/task-delegation/register-task-delegation-tools.js";
+import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../../agent-tools/agent-discovery/list-available-agents-contract.js";
+import { createBoundListAvailableAgentsTool } from "../../../agent-tools/agent-discovery/list-available-agents-tool.js";
 
 type ToolResolutionLogger = {
   warn: (...args: unknown[]) => void;
@@ -78,6 +80,18 @@ export const resolveAutoByteusAgentTools = (input: {
           `Failed to create tool instance for '${name}' from agent definition '${agentDefinition.name}': ${String(error)}`,
         );
       }
+      continue;
+    }
+
+    if (name.trim() === LIST_AVAILABLE_AGENTS_TOOL_NAME) {
+      if (!memberExecutionContext?.collaboration.listAvailableAgents) {
+        logger.warn(
+          `Tool '${name}' defined in agent definition '${agentDefinition.name}' requires a run that can bring in collaborators. Skipping.`,
+        );
+        continue;
+      }
+      tools.push(createBoundListAvailableAgentsTool(memberExecutionContext));
+      actualToolNames.push(name);
       continue;
     }
 

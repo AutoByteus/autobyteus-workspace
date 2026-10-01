@@ -7,6 +7,7 @@ import {
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../services/published-artifacts/published-artifact-tool-contract.js";
 import { SEND_MESSAGE_TO_TOOL_NAME } from "../../agent-communication/services/send-message-to-tool-contract.js";
 import { GET_HANDOFF_RULES_TOOL_NAME } from "../../agent-communication/services/get-handoff-rules-tool-contract.js";
+import { LIST_AVAILABLE_AGENTS_TOOL_NAME } from "../../agent-tools/agent-discovery/list-available-agents-contract.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 
 /**
@@ -33,6 +34,8 @@ export type RuntimeAgentToolExposure = {
   sendMessageToEnabled: boolean;
   getHandoffRulesEnabled: boolean;
   publishArtifactsEnabled: boolean;
+  /** Opt-in only: selected by the agent definition (REQ-001), never added automatically. */
+  listAvailableAgentsEnabled: boolean;
 };
 
 export const resolveRuntimeAgentToolExposure = (agentDefinition: {
@@ -67,6 +70,7 @@ export const buildRuntimeAgentToolExposure = (
     sendMessageToEnabled: requestedToolNameSet.has(SEND_MESSAGE_TO_TOOL_NAME),
     getHandoffRulesEnabled: requestedToolNameSet.has(GET_HANDOFF_RULES_TOOL_NAME),
     publishArtifactsEnabled: requestedToolNameSet.has(PUBLISH_ARTIFACTS_TOOL_NAME),
+    listAvailableAgentsEnabled: requestedToolNameSet.has(LIST_AVAILABLE_AGENTS_TOOL_NAME),
   };
 };
 

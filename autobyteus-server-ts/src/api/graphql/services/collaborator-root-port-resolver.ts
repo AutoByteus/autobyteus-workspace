@@ -6,7 +6,7 @@ import { AgentOrgRunManager } from "../../../agent-org-execution/services/agent-
 import { isCollaborationEligibleStandaloneRun } from "../../../agent-execution/services/standalone-agent-run-collaboration-binding.js";
 import { agentRunCollaboratorPortFor } from "../../../agent-run-collaboration/services/agent-run-collaboration-collaborators.js";
 import { AgentRunCollaborationRootManager } from "../../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
-import { collaboratorSegmentForName } from "../../../agent-collaboration/collaborators/collaborator-address-allocator.js";
+import { collaboratorSegmentForName } from "../../../agent-collaboration/collaborators/catalog-address-map.js";
 import { createAgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import { emptyAgentRunCollaborationTree } from "../../../agent-run-collaboration/domain/agent-run-collaboration-tree.js";
 import { teamCollaboratorPortFor } from "../../../agent-team-execution/services/team-run-collaborators.js";
@@ -68,8 +68,8 @@ const emptyPort = (agentDefinitionId: string): CollaboratorRootPort => Object.fr
   rootKind: "agent",
   isApplicationBound: false,
   rootLaunchConfiguration: () => { throw new Error("This run cannot host collaborators."); },
-  configuredDefinitionIds: () => Object.freeze({ agentDefinitionIds: new Set([agentDefinitionId]), teamDefinitionIds: new Set<string>() }),
+  rootDefinition: () => Object.freeze({ kind: "agent", definitionId: agentDefinitionId }),
+  inRunPlacementsByDefinition: () => new Map(),
   collaborators: () => [],
-  hasTaskExecutionAt: () => false,
   addressesInUse: () => new Set<string>(),
 });

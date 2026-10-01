@@ -270,7 +270,8 @@ export const projectNavigationRows = (inputTree: {
     parentKey: string,
   ): void => {
     const key = teamRowKey(team.team_run_id);
-    const coordinatorAddress = configuredTeamAtAddress(input.tree, team.address)?.coordinator_address
+    const coordinatorAddress = team.source?.coordinator_address
+      ?? configuredTeamAtAddress(input.tree, team.address)?.coordinator_address
       ?? collaboratorTeamAt(input.tree, team.address)?.coordinator_address
       ?? team.address;
     const label = nameOf(team.address);

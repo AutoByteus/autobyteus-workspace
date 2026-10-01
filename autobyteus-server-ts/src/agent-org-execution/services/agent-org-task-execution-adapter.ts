@@ -4,6 +4,8 @@ import type {
   TaskExecutionActivationCommitResult,
   TaskExecutionActivationPreparation,
 } from "../../agent-collaboration/execution/task/root-task-execution-adapter.js";
+import type { DelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
+import type { TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import {
   TaskDelegationError,
   TaskExecutionTeardownIndeterminateError,
@@ -26,7 +28,6 @@ import {
 import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
 import type { TaskExecutionIdentityCapabilities } from "../../agent-team-execution/task-delegation/task-execution-identity-capabilities.js";
 import type { PreparedTaskExecution } from "../../agent-team-execution/domain/prepared-task-execution.js";
-import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { FlatTeamExecutionCallbacks } from "../../agent-team-execution/local/flat-team-execution-callbacks.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgExecutionIndex, AgentOrgIndexedTaskExecution } from "./agent-org-execution-index.js";
@@ -36,9 +37,7 @@ import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persiste
 import { addAgentOrgTaskExecution, adoptAgentOrgPlatformBinding } from "./agent-org-run-execution-tree-mutator.js";
 import { AgentOrgTaskSourceResolver } from "./agent-org-task-source-resolver.js";
 
-export type ResolvedAgentOrgRecipient =
-  | Readonly<{ kind: "agent"; address: AgentTeamAddress }>
-  | Readonly<{ kind: "agent_team"; address: AgentTeamAddress; coordinatorAddress: AgentTeamAddress }>;
+export type ResolvedAgentOrgRecipient = DelegationPlacement;
 
 const referenceOf = (execution: AgentOrgIndexedTaskExecution): TaskExecutionReference =>
   execution.kind === "agent" ? Object.freeze({ agentRunId: execution.agentRunId }) : Object.freeze({ teamRunId: execution.teamRunId });
@@ -87,14 +86,14 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     const host = this.options.getIndex().requireAgent(input.identity.agentRunId).host;
     let prepared: PreparedTaskExecution;
     if (input.placement.kind === "agent") {
-      const source = this.sources.require(input.placement.address, "agent").node;
+      const source = this.sources.require(input.placement.address, "agent", input.placement.source).node;
       const agentRunId = await this.options.taskExecutionIdentity.agentRuns.allocateForAgentDefinition(source.agentDefinitionId);
       const command = { address: input.placement.address, agentRunId, sourceNode: source, message: input.workPacket };
       prepared = host.hostKind === "root"
         ? await this.options.rootAgents.prepareTask(command)
         : await this.options.teams.require(host.hostRunId).prepareTaskAgent(command);
     } else {
-      const source = this.sources.require(input.placement.address, "agent_team");
+      const source = this.sources.require(input.placement.address, "agent_team", input.placement.source);
       const materialized = await this.options.taskExecutionIdentity.taskTeams.create({ source: source.node });
       const command = {
         address: input.placement.address,
@@ -126,6 +125,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
         reservation,
         delegatorAgentRunId: input.identity.agentRunId,
         startedAt: input.startedAt,
+        source: input.placement.source ?? null,
       }),
       abort: async () => { reservation?.cancel(); await prepared.abort(); },
     });
@@ -171,7 +171,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     for (const indexed of [...chain].reverse()) {
       if (this.isLive(referenceOf(indexed))) continue;
       if (indexed.kind === "agent") {
-        const source = this.sources.require(indexed.address, "agent").node;
+        const source = this.sources.require(indexed.address, "agent", indexed.source.source).node;
         const sourceNode = Object.freeze({
           ...source,
           agentRunId: indexed.agentRunId,
@@ -189,7 +189,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
         }
         continue;
       }
-      const source = this.sources.require(indexed.address, "agent_team");
+      const source = this.sources.require(indexed.address, "agent_team", indexed.source.source);
       const teamNode = restoreTaskTeamNode({ source: source.node, execution: indexed.source });
       const handoffs = source.handoffs;
       if (indexed.host.hostKind === "root") {
@@ -241,7 +241,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
 
   private ingressAgentRunId(indexed: AgentOrgIndexedTaskExecution): string {
     if (indexed.kind === "agent") return indexed.agentRunId;
-    const coordinatorAddress = this.sources.require(indexed.address, "agent_team",
+    const coordinatorAddress = this.sources.require(indexed.address, "agent_team", indexed.source.source,
       (message) => new TaskDelegationError("TASK_EXECUTION_CONTEXT_UNAVAILABLE", message)).node.coordinatorAddress;
     const coordinator = indexed.source.members.find((member) =>
       "agentRunId" in member && member.address === coordinatorAddress);
@@ -260,6 +260,7 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
     reservation: ReturnType<RootTeamExecutionDirectory["reserveTaskSubtree"]> | null;
     delegatorAgentRunId: string;
     startedAt: string;
+    source: TaskExecutionSource | null;
   }): Promise<TaskExecutionActivationCommitResult> {
     const execution = input.prepared.binding.kind === "agent"
       ? projectTaskAgentExecution({
@@ -267,11 +268,13 @@ export class AgentOrgTaskExecutionAdapter implements RootTaskExecutionAdapter<Re
           agentRunId: input.prepared.binding.agentRunId,
           delegatorAgentRunId: input.delegatorAgentRunId,
           startedAt: input.startedAt,
+          source: input.source?.kind === "agent" ? input.source : null,
         })
       : projectTaskTeamExecution({
           node: requirePreparedTeamNode(input.prepared),
           delegatorAgentRunId: input.delegatorAgentRunId,
           startedAt: input.startedAt,
+          source: input.source?.kind === "agent_team" ? input.source : null,
         });
     let nextTreeAtCommit: AgentOrgRunExecutionTreeSnapshot | null = null;
     return this.options.persistence.commitTaskActivation({

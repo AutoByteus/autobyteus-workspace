@@ -415,6 +415,17 @@ publishes; `materializeTeamRoot` re-hosts collaborators with the root in
 a collaborator Agent carry no enclosing instruction or handoffs; members of a
 collaborator Team (and copies of it) get that Team's handoffs and instruction.
 
+Agent-initiated collaborators (REQ-004/005/007) use the same hosting. The root's
+message and delegation addressing lives in `services/team-run-message-delivery.ts`
+(`TeamRunMessageDelivery`), called inside the materialization gate:
+`send_message_to(address)` resolves with the shared `MessageRecipientResolution`
+(the sender's own Team instance first, then run-wide, then a catalog bring-in via
+`TeamRunCollaborators.ensure` under the held gate), and `delegate_task(address)`
+adds a catalog placement with a source snapshot after configured and
+collaborator placements. Catalog copies are hosted by the root (the host rule is
+unchanged), record `source` on their task execution, and restore from it.
+`listAvailableAgents(sender)` is read-only and takes no gate.
+
 A successful Agent target creates one task Agent at the logical member's
 address. A successful AgentTeam target creates one task-scoped TeamRun and sends
 the work packet through that Team's exact configured coordinator ingress. The
@@ -530,7 +541,9 @@ or delegation roster. Runtime exposure automatically includes `get_handoff_rules
 copy across AutoByteus, Codex, and Claude.
 
 `send_message_to.recipient_address` resolves through the root logical placement
-service. An Agent target delivers to that real Agent. An AgentTeam target
+service, the sender's own Team instance first: a teammate address inside a
+collaborator Team or a delegated Team copy reaches that same instance's member,
+never another copy (REQ-007). An Agent target delivers to that real Agent. An AgentTeam target
 delivers through its exact direct coordinator ingress. Child managers forward a
 root-bound delivery intent without rewriting the sender/receiver into flat or
 representative identities. Team Communication persists the actual sender and
@@ -542,7 +555,10 @@ Team Communication or member-input record.
 
 Successful logical messaging returns that existing Agent or AgentTeam
 coordinator run as flat `target_agent_run_id`; rejection returns null identity.
-This message creates no new execution. A successful `delegate_task` already
+A run ID never creates an execution; a first message to an available catalog
+address brings that one instance in (see
+[Agent Communication](./agent_communication.md#address-resolution-order-messagerecipientresolution)).
+A successful `delegate_task` already
 starts the child and delivers the complete assignment to its fresh ingress.
 Callers must not resend the assignment through logical-address messaging; all
 later exchange with the child, in both directions, uses its run ID.

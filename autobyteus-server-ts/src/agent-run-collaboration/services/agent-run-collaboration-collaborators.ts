@@ -1,10 +1,13 @@
-import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
+import { buildInRunPlacements, type CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type {
+  CatalogTaskSource,
+  CollaboratorAdmission,
+  CollaboratorAdmissionResult,
   CollaboratorMention,
-  CollaboratorMentionAdmission,
-  CollaboratorMentionAdmissionResult,
-} from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
-import { getCollaboratorMentionAdmission } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+} from "../../agent-collaboration/collaborators/collaborator-admission.js";
+import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
+import { getCollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { CollaboratorAdmissionQueue } from "../../agent-collaboration/collaborators/collaborator-admission-queue.js";
 import type { CollaboratorIdentityPorts } from "../../agent-collaboration/collaborators/collaborator-identity-allocator.js";
 import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
@@ -14,7 +17,7 @@ import type { AgentRunCollaborationRootEvent } from "../domain/agent-run-collabo
 import type { AgentRunCollaborationPersistenceCoordinator } from "./agent-run-collaboration-persistence-coordinator.js";
 import { addAgentRunCollaborators } from "./agent-run-collaboration-tree-mutator.js";
 
-/** Collaborator facts of one Agent-root tree: the host Agent's own definition is in the run. */
+/** Collaborator facts of one Agent-root tree: the host Agent's own definition is the root's own. */
 export const agentRunCollaboratorPortFor = (
   tree: AgentRunCollaborationTreeSnapshot,
   rootLaunchConfiguration: AgentLaunchConfiguration,
@@ -22,23 +25,23 @@ export const agentRunCollaboratorPortFor = (
   rootKind: "agent",
   isApplicationBound: false,
   rootLaunchConfiguration: () => rootLaunchConfiguration,
-  configuredDefinitionIds: () => Object.freeze({
-    agentDefinitionIds: new Set([tree.host.agentDefinitionId]),
-    teamDefinitionIds: new Set<string>(),
-  }),
+  rootDefinition: () => Object.freeze({ kind: "agent", definitionId: tree.host.agentDefinitionId }),
+  inRunPlacementsByDefinition: () => buildInRunPlacements({ configured: [], collaborators: tree.collaborators }),
   collaborators: () => tree.collaborators,
   addressesInUse: () => new Set([tree.host.address, ...tree.collaborators.map((entry) => entry.address)]),
 });
 
 /**
- * Agent-root collaborator admission (DS-001). The root runs `admit` inside its operation gate;
- * this owner prepares the hosted handles, commits the new entries in one tree write (the first
- * commit creates the run's collaboration package), then publishes the handles (Offline) and
- * `collaborator_added`.
+ * Agent-root collaborators. The root runs `ensure` inside its operation gate (for `@` and for a
+ * first message to a catalog address); this owner prepares the hosted handles, commits the new
+ * entries in one tree write (the first commit creates the run's collaboration package), then
+ * publishes the handles (Offline) and `collaborator_added`. Its catalog questions never write.
  */
 export class AgentRunCollaborationCollaborators {
+  private readonly queue = new CollaboratorAdmissionQueue();
+
   constructor(private readonly options: Readonly<{
-    admission?: CollaboratorMentionAdmission;
+    admission?: CollaboratorAdmission;
     /** The host run's own settings; collaborators snapshot them (REQ-004). */
     rootLaunchConfiguration: AgentLaunchConfiguration;
     identities: CollaboratorIdentityPorts;
@@ -50,12 +53,32 @@ export class AgentRunCollaborationCollaborators {
     publish(event: AgentRunCollaborationRootEvent): void;
   }>) {}
 
-  admit(input: Readonly<{
-    focusedAgentRunId: string;
-    content: string;
-    mentions: readonly CollaboratorMention[];
-  }>): Promise<CollaboratorMentionAdmissionResult> {
-    return (this.options.admission ?? getCollaboratorMentionAdmission()).admit(this.port(), {
+  /** `@`: ensures the mentioned definitions. Call only inside the root gate. */
+  ensure(input: Readonly<{ senderRunId: string; definitions: readonly CollaboratorMention[] }>): Promise<CollaboratorAdmissionResult> {
+    return this.queue.run(() => this.ensureNow(input));
+  }
+
+  /**
+   * A first message to a catalog address (DS-002): brings its definition in unless the
+   * address joined the run meanwhile; null when it is no catalog address. Call only inside
+   * the root gate.
+   */
+  bringInAt(input: Readonly<{ address: string; senderRunId: string }>): Promise<CollaboratorAdmissionResult | null> {
+    return this.queue.run(async () => {
+      const definition = await this.admission.catalogDefinitionAt(this.port(), input.address);
+      return definition ? this.ensureNow({ senderRunId: input.senderRunId, definitions: [definition] }) : null;
+    });
+  }
+
+  listAvailable(): Promise<readonly AvailableCollaborator[]> { return this.admission.policy.listEligible(this.port()); }
+  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string }>): Promise<CatalogTaskSource | null> {
+    return this.admission.catalogTaskSource(this.port(), input);
+  }
+
+  private get admission(): CollaboratorAdmission { return this.options.admission ?? getCollaboratorAdmission(); }
+
+  private ensureNow(input: Readonly<{ senderRunId: string; definitions: readonly CollaboratorMention[] }>): Promise<CollaboratorAdmissionResult> {
+    return this.admission.ensure(this.port(), {
       ...input,
       identities: this.options.identities,
       addEntries: (entries) => this.add(entries),

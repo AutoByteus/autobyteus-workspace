@@ -29,7 +29,8 @@ import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execu
 import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import { createFrozenRootTerminationScope, type FrozenRootTerminationScope } from "../../agent-collaboration/execution/backends/frozen-root-termination-scope.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
-import type { CollaboratorMentionAdmission, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import type { CollaboratorAdmission, CollaboratorMention, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-admission.js";
+import type { AvailableCollaborator } from "../../agent-collaboration/collaborators/collaborator-candidate-policy.js";
 import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
 import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
@@ -83,7 +84,7 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
   private readonly communication: RootCommunicationEngine;
   private readonly presentation: CollaborationAgentPresentationEventAdapter;
   private readonly operationGate: RootOperationGate;
-  private readonly recipients = new AgentRunCollaborationRecipientResolver();
+  private readonly recipients: AgentRunCollaborationRecipientResolver;
   private readonly collaborators: AgentRunCollaborationCollaborators;
   private termination: Promise<AgentOperationResult> | null = null;
   private failStopped = false;
@@ -104,7 +105,7 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
     memoryLocator?: RootedAgentMemoryLocator;
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
-    collaboratorAdmission?: CollaboratorMentionAdmission;
+    collaboratorAdmission?: CollaboratorAdmission;
     /** Prepares hosted handles for new collaborator entries (published after the tree write). */
     prepareCollaboratorHandles(entries: readonly CollaboratorEntry[]): Promise<PreparedCollaboratorHandles>;
     onTerminated?(): void;
@@ -132,6 +133,7 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
       replaceTree: (tree) => this.replaceTree(tree),
       publish: (event) => options.publisher.publish(event),
     });
+    this.recipients = new AgentRunCollaborationRecipientResolver({ getIndex: () => this.index, collaborators: this.collaborators });
     this.taskExecutions = new RootTaskExecutionLifecycle(new AgentRunCollaborationTaskExecutionAdapter({
       root: options.root,
       taskExecutionIdentity: options.taskExecutionIdentity,
@@ -198,14 +200,20 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
   /** Same-root membership for run-ID routing: the host and every child (shut-down children too). */
   hasAgentExecution(agentRunId: string): boolean { return this.index.getAgent(agentRunId.trim()) !== null; }
 
-  /** Admits mentions for the focused agent in one gate; the caller posts the returned content. */
-  admitCollaboratorMentions(input: Parameters<AgentRunCollaborationCollaborators["admit"]>[0]): Promise<RootCollaboratorAdmissionResult> {
+  /** `@`: ensures the mentioned collaborators for the focused agent in one gate; the caller composes the note. */
+  admitCollaboratorMentions(input: Readonly<{ focusedAgentRunId: string; mentions: readonly CollaboratorMention[] }>): Promise<RootCollaboratorAdmissionResult> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
       return this.index.getAgent(input.focusedAgentRunId)
-        ? this.collaborators.admit(input)
+        ? this.collaborators.ensure({ senderRunId: input.focusedAgentRunId, definitions: input.mentions })
         : { admitted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${input.focusedAgentRunId}' is not in Agent root '${this.hostRunId}'.` };
     });
+  }
+
+  /** `list_available_agents` (DS-001): read-only, so it takes no gate and never creates the package (AR-005). */
+  listAvailableAgents(sender: CollaborationMemberExecutionIdentity): Promise<readonly AvailableCollaborator[]> {
+    this.authorizeIdentity(sender);
+    return this.collaborators.listAvailable();
   }
 
   collaboratorPort(): CollaboratorRootPort { return this.collaborators.port(); }
@@ -214,18 +222,19 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
     return this.operationGate.run(async () => {
       this.authorizeIdentity(context.identity);
       return delegateToResolvedTarget(
-        () => this.recipients.resolveDelegationPlacement(this.index, input.recipient_address),
+        () => this.recipients.resolveDelegationPlacement(context.identity, input.recipient_address),
         (placement) => this.taskExecutions.delegate(context, input, placement),
       );
     });
   }
 
-  /** `send_message_to` by address: the host or a collaborator (the first message starts a collaborator). */
+  /** `send_message_to(address)`; a first message to a catalog address brings it in under this gate. */
   deliverLogicalMessage(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => {
       this.authorizeIdentity(sender);
-      const { receiver } = this.recipients.resolveMessageRecipient(this.index, input.recipientAddress);
-      return this.deliverTo(receiver.agentRunId, {
+      const resolution = await this.recipients.resolveMessageRecipient(sender, input.recipientAddress);
+      if (!resolution.resolved) return { accepted: false, code: resolution.code, message: resolution.message };
+      return this.deliverTo(resolution.placement.receiver.agentRunId, {
         senderIdentity: sender,
         senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
         content: input.content,

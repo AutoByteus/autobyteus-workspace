@@ -55,8 +55,8 @@ member context from its Agent root (see
 `send_message_to` and `delegate_task` from its first turn. A task Agent directly
 under an Agent root is not Team-scoped and has no `get_handoff_rules`. Server
 helper runs and application-owned runs have no member context and keep their
-explicitly configured set. Browser, media, publishing, and configured
-MCP-origin tools remain explicitly selected and availability-gated.
+explicitly configured set. Browser, media, publishing, `list_available_agents`
+and configured MCP-origin tools remain explicitly selected and availability-gated.
 
 The native AutoByteus backend owns an additional runtime-derived baseline. For
 ordinary native standalone or team runs, it prepends exactly `run_bash`,
@@ -140,6 +140,34 @@ return `target_agent_run_id:null`. The removed generic `result` field is not a
 compatibility surface. AutoByteus JSON and MCP text/structured results preserve
 the same strict shape.
 
+## Server-Owned Agent Discovery Tool
+
+`list_available_agents` (`src/agent-tools/agent-discovery/`) is an **opt-in**
+tool (REQ-001): it is registered in the tool registry (category Agent
+Communication) so it appears in the tool picker, and an agent gets it only when
+its definition's `toolNames` select it. It is never added automatically.
+`RuntimeAgentToolExposure.listAvailableAgentsEnabled` records the selection.
+
+- The tool takes no arguments and returns
+  `{ agents: [{ name, kind: "agent" | "agent_team", address, description }] }`,
+  the same JSON on every runtime.
+- It is bound to the sender's `MemberExecutionContext`:
+  `MemberCollaborationContext.listAvailableAgents` calls the sender's root
+  (`listAvailableAgents(sender)` on the Team, Org and Agent roots), which answers
+  from `CollaboratorCandidatePolicy.listEligible` and `CatalogAddressMap`. The
+  handler adds no logic and nothing is written (see
+  [Agent Communication](./agent_communication.md#collaborators)).
+- AutoByteus binds a local tool instance to the member context
+  (`createBoundListAvailableAgentsTool`); Codex, Claude, AGY and the other MCP
+  runtimes receive it through the Agent Tools MCP adapter
+  (`list-available-agents-mcp-adapter-provider.ts`), available only to a sender
+  whose context can list. Runs without a catalog (application-owned and server
+  helper runs) have no lister, so the tool is skipped there.
+
+The tool controls discovery only. Any agent may bring in or delegate to an
+available address with `send_message_to` or `delegate_task` whether or not it
+has the tool (REQ-006).
+
 ## Server-Hosted Agent Tools MCP Server
 
 `src/agent-tools/mcp` provides the AutoByteus Agent Tools MCP Server, a
@@ -169,8 +197,8 @@ fresh current context. A process restart rematerializes the descriptor against
 the new listener. `tools/list` returns only tools enabled for that run-session,
 and `tools/call` rejects unknown or unconfigured tools before executor dispatch.
 The default adapter catalog supports
-`send_message_to`, `get_handoff_rules`, browser, media, task-delegation, and `publish_artifacts`
-tool families by delegating to their existing family manifests/services instead
+`send_message_to`, `get_handoff_rules`, browser, media, task-delegation, `publish_artifacts`
+and `list_available_agents` tool families by delegating to their existing family manifests/services instead
 of runtime-specific handlers. Configured MCP-origin tools delegate through the
 registry-created tool and existing MCP proxy path, preserving registered names
 such as prefixed `db_query` at the provider boundary while the proxy owns the

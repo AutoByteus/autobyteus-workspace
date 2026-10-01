@@ -7,12 +7,12 @@ import type { DelegateTaskResult } from "./task-delegation-command.js";
  * failing the tool call; every other resolution error still throws.
  */
 export const delegateToResolvedTarget = async <TPlacement>(
-  resolve: () => TPlacement,
+  resolve: () => TPlacement | Promise<TPlacement>,
   delegate: (placement: TPlacement) => Promise<DelegateTaskResult>,
 ): Promise<DelegateTaskResult> => {
   let placement: TPlacement;
   try {
-    placement = resolve();
+    placement = await resolve();
   } catch (error) {
     if (error instanceof CollaborationContractError && error.code === "COLLABORATION_TARGET_NOT_FOUND") {
       return { target_agent_run_id: null, message: error.message };

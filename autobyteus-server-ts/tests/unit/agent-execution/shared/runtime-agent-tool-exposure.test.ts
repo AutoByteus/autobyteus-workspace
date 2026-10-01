@@ -104,6 +104,7 @@ describe("runtime-agent-tool-exposure", () => {
       sendMessageToEnabled: false,
       getHandoffRulesEnabled: false,
       publishArtifactsEnabled: false,
+      listAvailableAgentsEnabled: false,
     });
   });
 

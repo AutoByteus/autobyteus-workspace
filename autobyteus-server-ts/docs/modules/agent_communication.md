@@ -247,12 +247,43 @@ context.
 
 ## Communication Versus Task Execution
 
-`send_message_to` communicates with an existing execution. It creates no Agent
-or AgentTeam. `delegate_task` instead spawns one fresh delegated task Agent or
-task AgentTeam and delivers the complete work packet during that same call. The original
-logical `recipient_address` continues to identify the mounted definition; it is
-not an alias for the spawned task execution, and callers must not repeat one
-assignment through both operations.
+`send_message_to(recipient_address)` reaches **the one instance at that
+address**: a configured member, a collaborator or its member, or a teammate
+inside the sender's own team instance. An available catalog Agent or Agent Team
+that is not yet in the run is brought in on its first message with the same
+admission as `@` (see [Collaborators](#collaborators)); later messages reach that
+same instance. `send_message_to(target_agent_run_id)` reaches existing
+executions only and never brings anything in. `delegate_task` instead always
+spawns one new task copy (an Agent or AgentTeam) and delivers the complete work
+packet during that same call. The `recipient_address` identifies what to copy; it
+is not an alias for the spawned copy, and callers must not repeat one assignment
+through both operations. The shared prompt and both tool descriptions state this
+identically on every runtime (REQ-009).
+
+### Address resolution order (`MessageRecipientResolution`)
+
+Every root (Team, Org, Agent) resolves `send_message_to(address)` with the shared
+`agent-collaboration/collaborators/message-recipient-resolution.ts`, inside its
+operation gate:
+
+1. **The sender's own team instances**, deepest first (the structural root `/`
+   is not one): the instance's own address reaches its coordinator; an address
+   under the instance's prefix reaches that instance's member. There is **no
+   fall-through** inside the prefix (AR-003): a miss is
+   `COLLABORATION_TARGET_NOT_FOUND`, never run-wide or catalog, so two parallel
+   copies of a team never cross. This is how a collaborator Team, a delegated
+   Team copy and a mounted Org Team each work as one unit (REQ-007).
+2. **Run-wide**: a configured placement, a collaborator, or a collaborator-Team
+   member.
+3. **Catalog**: an address that `CatalogAddressMap` maps to an eligible
+   definition not in the run is brought in with
+   `CollaboratorAdmission.ensure` under the gate the root already holds (no
+   re-entry), then resolved again and delivered; the first message starts it.
+   A failed add returns `COLLABORATOR_ADD_FAILED` with the reason in `message`
+   and adds nothing. Two concurrent first messages serialize on the gate; the
+   second finds the instance.
+
+Any other address is the normal `COLLABORATION_TARGET_NOT_FOUND`.
 
 After delegation, parent and child communicate only through `send_message_to`
 with exact run IDs, in both directions. There is no task submission, review, or
@@ -264,19 +295,29 @@ active. See
 
 ## Collaborators
 
-A collaborator is a shared Agent or Agent Team definition that the user brought
-into a live run with `@` (Team runs, Org runs, and standalone Agent runs). The
-run hosts **one instance per collaborator**, recorded as a root-level entry in
-the run's execution tree (`collaborators`), at its own root-level address
-(`/code_reviewer`, `/product_team`, allocated from the definition name with
-`_2`, `_3`, … on collisions). An entry snapshots the run's root launch settings,
+A collaborator is a shared Agent or Agent Team definition brought into a live run
+by the user's `@` or by an agent's first `send_message_to` to its catalog address
+(Team runs, Org runs, and standalone Agent runs). Both triggers produce and reuse
+the same single instance (REQ-010). The run hosts **one instance per
+collaborator**, recorded as a root-level entry in the run's execution tree
+(`collaborators`), at its root-level catalog address. An entry snapshots the run's root launch settings,
 and for a Team, its member layout and Team-local handoffs. Its runs are recorded
 in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
 `agentRunId` per member and the Team's own `taskExecutions` for a Team.
 
-- **Admission (DS-001).** A user message with `mentions` (`{kind,
-  definition_id}[]`, at most 8) is admitted by the root, inside its operation
-  gate, before it is posted:
+- **Catalog addresses (REQ-003).** `CatalogAddressMap`
+  (`catalog-address-map.ts`) is the only allocator. It is a pure function of the
+  eligible catalog and the run's addresses in use: a definition already in the
+  run keeps its in-run address; any other definition gets its name's segment
+  (`/product_team`) when that segment is unique among the eligible catalog and
+  not used by the run, otherwise `<segment>_<6 hex of sha256(definitionId)>` for
+  every colliding definition. Listing twice with an unchanged catalog gives the
+  same addresses; an address that maps to nothing is the normal not found.
+  Stored collaborator addresses never change.
+- **Admission (DS-001).** `CollaboratorAdmission.ensure`
+  (`collaborator-admission.ts`) is shared by `@` and by agent-initiated bring-in.
+  A user message with `mentions` (`{kind, definition_id}[]`, at most 8) is
+  admitted by the root, inside its operation gate, before it is posted:
   1. every mention is re-validated by the shared candidate policy (shared, not
      an Org, not a built-in, not already in the run); a definition that already
      has an entry reuses it;
@@ -287,8 +328,10 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   4. the root prepares the hosted executions, commits all new entries in one
      tree write, publishes the executions (Offline) and emits
      `collaborator_added`;
-  5. a `[Mentioned collaborators]` note with each name, kind and address is
-     appended to the message, which is then posted.
+  5. the `@` caller (Team, Org and Agent-root stream handlers and
+     `AgentRunCommandCoordinator`) appends a `[Mentioned collaborators]` note with
+     each name, kind and address, and posts the message. Agent-initiated
+     bring-in runs steps 1–4 only; `addedViaAgentRunId` is the sender.
 
   Admission is all-or-nothing. Any failure returns `COLLABORATOR_ADD_FAILED`
   with the collaborator's name and the reason: nothing is written or posted and
@@ -308,6 +351,23 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   the entry by the root's task source resolver. It is hosted by the delegator's
   host (the root for a root-level Agent, the collaborator TeamRun for its
   members).
+- **Catalog copies (REQ-005, Q-1).** `delegate_task` to a catalog address that is
+  not in the run starts a task copy only (no collaborator entry). Placement
+  order: a teammate inside the sender's own catalog Team copy (from that copy's
+  snapshot), configured, collaborator, then catalog. A catalog placement carries
+  a source snapshot built by `CollaboratorEntryBuilder` with the root launch
+  settings and checked by the runnability validator; the task record persists it
+  as the optional `source` (`TaskExecutionSource`). Activation and restore use the
+  record's `source` first. Each call is a new copy, so parallel copies are
+  allowed. The task DTOs (`task_execution_started` and the views) carry `source`.
+- **Discovery (REQ-001/002).** The opt-in tool `list_available_agents` (see
+  [Agent Tools](./agent_tools.md)) asks the sender's root
+  (`listAvailableAgents`), which returns `{name, kind, address, description}` for
+  every eligible definition once, with the `@` eligibility (Q-2): an in-run
+  definition at its in-run address (configured placement or Org mounted Team,
+  then collaborator entry, then collaborator-Team member; ties go to the
+  smallest address), any other at its catalog address. Listing never writes, so
+  a standalone run that only lists gets no `collaboration/` package.
 - **In the run.** Every entry, and every member Agent of a collaborator Team,
   counts as in the run, so it is not offered again. A failed add writes no
   entry, so the definition stays offerable.
@@ -317,7 +377,8 @@ in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
   shared Agent Teams, in catalog order, minus what is in the run.
 
 The shared policy, admission, runnability validator, identity allocator, entry
-builder, address allocator and source projection live in
+builder, catalog address map, message-recipient resolution, catalog delegation
+and source projection live in
 `src/agent-collaboration/collaborators/`; each root implements
 `CollaboratorRootPort` and hosts its collaborators in its existing backends (see
 [Agent Team Execution](./agent_team_execution.md), [Agent Orgs](./agent_orgs.md)
@@ -325,6 +386,8 @@ and [Agent Run Collaboration](./agent_run_collaboration.md)).
 
 Known limits:
 
+- Renaming, unsharing or deleting a listed definition mid-run and reusing its
+  name is unsupported (design principle 6); stored addresses never move.
 - An address reaches a collaborator only inside its own run. Its run ID follows
   the existing [`target_agent_run_id` rules](#target_agent_run_id-global-direct-route):
   a sender in another root reaches it only through the global live-only path

@@ -59,13 +59,24 @@ extra copy is hosted by the delegator's host: the root for a root-level Agent, t
 TeamRun for its members (recorded in the entry's `taskExecutions`). A collaborator Agent directly
 under the root is not Team-scoped; members of a collaborator Team are.
 
+Agents bring collaborators in and delegate to the catalog themselves (REQ-004/005/008).
+`AgentRunCollaborationRecipientResolver` resolves `send_message_to(address)` with the shared
+`MessageRecipientResolution`, inside the operation gate: the sender's own Team instance first
+(REQ-007), then the host or a collaborator, then a catalog bring-in through
+`AgentRunCollaborationCollaborators.ensure` (same admission as `@`; the first bring-in creates the
+package). `delegate_task(address)` falls back to a catalog copy with a recorded `source`, which
+`AgentRunCollaborationTaskSourceResolver` reads first; the tree accepts a root-level task copy at an
+address that is not a collaborator only when it carries a `source`. The host stays reachable by its
+address. `listAvailableAgents(sender)` serves `list_available_agents` and never writes, so a run that
+only lists has no `collaboration/` package and no `hasCollaboration` flag (AR-005).
+
 ## Package
 
 ```text
 memory/agents/<hostRunId>/
   run_metadata.json
   collaboration/
-    collaboration_tree.json        # subjectKind "agent", host, collaborators (with run IDs), taskExecutions (extra copies)
+    collaboration_tree.json        # subjectKind "agent", host, collaborators (with run IDs), taskExecutions (extra and catalog copies)
     communication_messages.json    # schemaVersion 1, hostRunId, messages
     <childRunId>/...               # a collaborator Agent's (or copy's) memory
     <teamRunId>/<agentRunId>/...   # members of a collaborator Team (or of a copy)
@@ -109,6 +120,7 @@ service resolves a child through the third root family `agents`.
 - `src/agent-run-collaboration/services/agent-run-collaboration-root-manager.ts`
 - `src/agent-run-collaboration/services/agent-run-collaboration-root-builder.ts`
 - `src/agent-run-collaboration/prompt/standalone-collaboration-instruction.ts`
+- `src/agent-run-collaboration/services/agent-run-collaboration-recipient-resolver.ts`
 - `src/agent-execution/services/standalone-agent-run-collaboration-binding.ts`
 - `src/services/agent-streaming/agent-collaboration-stream-handler.ts`
 - `src/api/graphql/types/agent-run-collaboration.ts`

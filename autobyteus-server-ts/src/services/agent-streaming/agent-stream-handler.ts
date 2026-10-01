@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { collaboratorMentionsDtoSchema } from "@autobyteus/agent-presentation-contracts";
-import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import { toCollaboratorMentions } from "../../agent-collaboration/collaborators/collaborator-admission.js";
 import {
   AgentInputUserMessage,
   ContextFile,

@@ -12,6 +12,28 @@ export declare const agentOrgLaunchConfigurationDtoSchema: z.ZodObject<{
     autoExecuteTools: z.ZodBoolean;
     workspaceRootPath: z.ZodNullable<z.ZodString>;
 }, z.core.$strict>;
+type LaunchConfigurationDto = Readonly<z.infer<typeof agentOrgLaunchConfigurationDtoSchema>>;
+/** The definition snapshot of a task copy started from the catalog (absent for every other copy). */
+export type TaskAgentExecutionSourceDto = Readonly<{
+    kind: "agent";
+    agentDefinitionId: string;
+    launchConfiguration: LaunchConfigurationDto;
+}>;
+export type TaskTeamExecutionSourceDto = Readonly<{
+    kind: "agent_team";
+    teamDefinitionId: string;
+    coordinatorAddress: string;
+    members: readonly Readonly<{
+        address: string;
+        agentDefinitionId: string;
+    }>[];
+    handoffs: readonly Readonly<{
+        from: string;
+        to: string;
+        rules: readonly string[];
+    }>[];
+    defaultLaunchConfiguration: LaunchConfigurationDto;
+}>;
 type TaskAgentExecutionDto = Readonly<{
     address: string;
     agentRunId: string;
@@ -19,6 +41,7 @@ type TaskAgentExecutionDto = Readonly<{
     /** Absent for children recorded before the delegator was stored. */
     delegatorAgentRunId?: string;
     startedAt: string;
+    source?: TaskAgentExecutionSourceDto;
 }>;
 type TaskTeamAgentExecutionDto = Readonly<{
     address: string;
@@ -40,10 +63,12 @@ type TaskTeamExecutionDto = Readonly<{
     /** Absent for children recorded before the delegator was stored. */
     delegatorAgentRunId?: string;
     startedAt: string;
+    source?: TaskTeamExecutionSourceDto;
 }>;
 type TaskExecutionDto = TaskAgentExecutionDto | TaskTeamExecutionDto;
 /** Shared by every collaboration root view (Org and Agent roots). */
 export declare const taskExecutionDtoSchema: z.ZodType<TaskExecutionDto, unknown, z.core.$ZodTypeInternals<TaskExecutionDto, unknown>>;
+export type CollaborationTaskExecutionDto = TaskExecutionDto;
 /**
  * One collaborator of a run: one instance of a shared Agent or Agent Team definition added
  * with `@`. Its run IDs are recorded in the entry; it starts on its first message.
