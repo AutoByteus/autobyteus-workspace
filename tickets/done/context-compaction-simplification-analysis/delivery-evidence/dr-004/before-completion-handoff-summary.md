@@ -1,46 +1,44 @@
-# Delivery Handoff Summary — DR-004
+# Current Delivery state — DR-004
 
-2026-10-01 / **Delivery Completed** — authoritative terminal package for
-`context-compaction-simplification-analysis`. Large / High; independent architecture,
-source and successful API/E2E test-code review route. Product Design N/A.
+User explicitly accepted finalization and requested a new beta; see
+[user-beta-finalization-approval.md](user-beta-finalization-approval.md).
+Post-signal base refresh is unchanged84224a58d; accepted candidate a73f04816 plus
+DR003 docs remains current. No extra runtime rerun is needed because source/base
+is unchanged. Ticket moved to `tickets/done/context-compaction-simplification-analysis`
+before final commit. Repository finalization and beta publication are now **in
+progress**, not yet Delivery Completed. Docs sync remains Pass; no new semantic
+change. Full historical evidence is retained;121 checkout-hostile long paths are
+losslessly archived per `evidence-relocation.json` without editing original bytes.
+Current completion authority: [release-deployment-report.md](release-deployment-report.md).
 
-## Final state and explicit acceptance
+---
+## Historical DR003 verification package (stage-time hold below superseded)
 
-- The user said “now finalize and release a new beta” after the DR003 candidate
-  was built/opened and verification requested. This is current-candidate acceptance
-  and finalization/release direction; no specific manual test result is invented.
-  [Approval record](user-beta-finalization-approval.md). Known limits below are not waived.
-- Post-acceptance fetch kept origin/personal at
-  `84224a58d8975d0b016af340e6b48e51d715af78`. Accepted integrated candidate
-  `a73f0481655f4cce288c0a7a2aae20bdd5285535` did not change at runtime/source/test
-  level before release. Only five Delivery docs and beta version metadata changed
-  outside ticket artifacts; no redundant rerun/renewed acceptance required.
-- Ticket archived to done before final commit. Ticket final push
-  `19e88318034673792078d408a11fadb91015fe9d`, including initial archive commit
-  `e098c44fd8e34b35ed5951f1a6f224749d324190`; personal merge/push
-  `0e6723898913faa9b4c75c5debe44cc6e57929da`.
-- Published **v1.4.92-beta.7**, release commit
-  `8b7b3951a9235a0936a23f417359ca8c1c159928`; normal personal/tag pushes confirmed.
-  [GitHub prerelease](https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.7).
-  Desktop, Android, iOS upload and Docker workflows all passed first attempt at
-  that exact SHA. Seventeen uploaded nonempty assets and four updater manifests
-  checked. Docker version and floating beta digest match on linux/amd64 + linux/arm64.
-- No production deployment/data operation required or performed. iOS upload is
-  not App Store approval. CI publication/metadata verification is not a local
-  re-execution of every downloaded installer or a broad typecheck pass.
-- Own test instance `iso-54638-2e45` gracefully stopped, ports released; its data
-  intentionally kept. Ticket and release worktrees removed, both local branches
-  deleted after ancestry/preservation checks; prune completed. Remote ticket branch,
-  earlier safety backups/stash, installed user app/data and unrelated WIP retained.
-- Current durable root: `/Users/normy/autobyteus_org/autobyteus-workspace-superrepo`.
-  [Artifact navigation](artifact-location-guide.md) maps historical absolute paths
-  and121 losslessly archived long paths. Current direct canonicals outrank snapshots.
-- Final completion-record commit follows the release commit on personal; it does
-  not retag/rebuild the published release. Exact pushed tip and successful terminal
-  transport receipt accompany the terminal message after record persistence.
+# Delivery Handoff Summary — DR-003
+
+2026-10-01 / Delivery Engineer. **Candidate built and open; Blocked — explicit user verification pending.** Not Delivery Completed, final merge approval or release approval.
+Large / High; independent architecture/source/test-code reviewed route retained. Product Design: N/A — not applicable.
+
+## Current candidate
+
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis`; branch `codex/context-compaction-simplification-analysis`.
+- Refreshed base: `origin/personal` `84224a58d8975d0b016af340e6b48e51d715af78`; fetch exit0 before Delivery edits. Seven additional commits beyond the reviewed pending merge's d057801c include AGY tool presentation, beta.6 version and completed-ticket records.
+- Protected all 11,213 reviewer entry pins: only the two expected reviewer-owned canonical changes; no unexpected change/missing file. Backed up all 6,140 pending files outside the worktree. Explicitly staged 95 reviewed additional paths; never all-files staging.
+- Completed previously resolved base-into-ticket merge locally at `724493221d7bac0575c853850a4a82ae00de9529`. Then merged latest base cleanly at `a73f0481655f4cce288c0a7a2aae20bdd5285535`. Zero unmerged entries. These are allowed pre-verification integration/safety commits, **not repository finalization**; no push.
+- Latest-base delta did not change native compaction production owners. Fresh checks below cover the integrated state. Delivery docs changes are documentation-only and remain pending. Current as of recorded refresh, not a promise about future remote movement.
+- DR001 historical initial hold and DR002 conflict block remain in [delivery history](delivery-revision-record.md); previous canonical reports preserved in `delivery-evidence/dr-003/before-*.md`.
+
+## User testing instance
+
+- Instance: **`iso-54638-2e45`**, PID `17368`, intentionally left running.
+- App: `/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app`.
+- Build label: **1.4.92-beta.6**, inherited from the integrated base; includes local reviewed compaction work. Unsigned local arm64 build, **not the official published beta.6 artifact**.
+- Backend: `http://127.0.0.1:54639`; control: `http://127.0.0.1:54638`.
+- Own data root: `/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-5ucjCa`; `keepDataRoot: true` preserves this testing data after stop. No production data copied or credential import/model request initiated by Delivery.
+- Launch/log/database details: [isolated-start.json](delivery-evidence/dr-003/isolated-start.json). DMG/ZIP paths, sizes and hashes: [build-artifacts.json](delivery-evidence/dr-003/build-artifacts.json).
+- Lifecycle later: `pnpm --dir /Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis isolated-app stop iso-54638-2e45 --keep`; restart via the same command family/ID. Never stop another instance. Do not directly reopen the bundle without the isolated launcher if isolation is required.
 
 ## Cumulative authority chain
-
 
 | Artifact | Authority |
 | --- | --- |
@@ -51,21 +49,28 @@ source and successful API/E2E test-code review route. Product Design N/A.
 | [api-e2e-coverage-investigation.md](api-e2e-coverage-investigation.md), [api-e2e-test-case-ledger.md](api-e2e-test-case-ledger.md) | Cumulative executable coverage map |
 | [api-e2e-execution-coverage-report.md](api-e2e-execution-coverage-report.md), [api-e2e-revision-record.md](api-e2e-revision-record.md) | API-REV012 Pass95.0, API-owned confidence not a Delivery score |
 | [api-e2e-test-review-report.md](api-e2e-test-review-report.md) | CRR020 independent proportional Pass; all15 API durable paths; TR001 closed |
-| [docs-sync-report.md](docs-sync-report.md), [release-deployment-report.md](release-deployment-report.md), [release-notes.md](release-notes.md) | Current Delivery/docs/finalization authorities; published beta scope notes |
+| [docs-sync-report.md](docs-sync-report.md), [release-deployment-report.md](release-deployment-report.md), [release-notes.md](release-notes.md) | Current Delivery/docs/finalization authorities; draft unreleased notes |
 
 Current direct canonicals override archived stage snapshots. Bounded350-reference handoff and5860 navigation index remain in `code-review-evidence/crr-020/`; inclusion is not a reread-all claim. Both immutable archives were independently hash checked: API010 `39306b3acfc958cf811c7ef17a52d24b61a72f11373d1be1be94f6cd54510ab5`, API012590-file resume `ab4470828d451312b874dd5c88edc5d3e685bc323d5e54dc479643f890f5e96c`.
 
-## Integrated behavior delivered
+## What to verify
 
-Tool-free direct three-attempt/six-heading compaction, held/queued FIFO without
-consumed-work replay, versionless current snapshots and frozen historical
-preservation, confirmed Stopped activity, native Agent-root and hosted-Team
-ownership. Future native writes preserve optional accepted-input identity for
-scoped tagged-primary joins; no guessed old keys or migration/backfill. Original
-web/core guard unchanged; native input-history harness remains outside web.
+Direct tool-free three-attempt/six-heading summarization, held/queued input order,
+versionless current snapshots and frozen historical preservation, confirmed
+Stopped activity, and current standalone Agent-root/hosted-Team support.
+New native writes preserve accepted-input keys; exact tagged primary identity
+joins saved/live presentation without guessing old keys. No migration/backfill.
+The original web/core dependency guard is unchanged; the native-history harness
+belongs outside web at `test-support/native-input-history`.
 
-## Final integrated validation and retained evidence
+Please test the experience relevant to you and explicitly confirm the result or
+report issues. Useful checks: model/default settings; useful summary and continued
+work; controlled held-input/attachment recovery; normal whole-host Stop; fresh
+renderer reconnect with no duplicate A/B or unsolicited summary. These are not
+claims that you already ran them or a request for a new provider campaign. Add
+provider access yourself in this isolated instance if needed.
 
+## Fresh integrated verification
 
 | Fresh Delivery check | Result / scope |
 | --- | --- |
@@ -107,18 +112,12 @@ reuse +3 API009 additions), with no new reviewer execution or rescore.
 - ARCH005 covers SR035 only; ARCH006 covers SR038. Lost original IR009 logs remain disclosed; CRR014 replacements are not reconstructions. API009 Fail77.9 / API010 Fail75.0 / API011 Blocked81.4 remain historical, not active blockers or rewritten passes. CRR013 remains pre-integration-only within its original scope.
 - No new provider budget/campaign is authorized. A user verification result does not silently waive any of these limits.
 
-## Completion authorities and receipt
+## Finalization hold
 
-- [Docs sync](docs-sync-report.md): Pass; DR003 five-doc semantic sync plus DR001
-  baseline. DR004 adds no runtime knowledge requiring another long-lived edit.
-- [Release/deployment report](release-deployment-report.md): exact branch, tag,
-  workflow, publication, rollback and cleanup gates; all applicable gates complete.
-- [Delivery history](delivery-revision-record.md): DR001 baseline and DR002/003
-  holds preserved, DR004 completion appended.
-- [Cumulative package](delivery-evidence/dr-004/terminal-package.json): current
-  absolute authority paths and archive navigation; preservation checks are static,
-  not a claim to have reread every historical reference.
-- Terminal dispatch is permitted only after this completion record is committed
-  and pushed. Fresh rule selection controls the single recipient. A successful
-  send_message_to tool receipt, not this prepared text, establishes transmission.
-  Solution Designer must verify the receipt before its Terminal/parent return.
+No explicit user verification has been received. Ticket stays in progress. No final
+ticket commit/push, target merge/push, release/tag/deploy or worktree removal.
+After verification: refresh target again, protect Delivery edits, reintegrate/check
+if advanced, obtain renewed verification if user-facing state changes, then move
+ticket to done and follow documented finalization order. Release/deploy is not
+requested. Keep app and backups for this testing hold. No successful terminal
+message is eligible. Fresh rule selection is recorded in DR003 evidence.

@@ -11,7 +11,7 @@ A completed round below does not imply all delivery gates are complete.
 | DR-001 | CRR013 Pass after API008/TR001 closure | N/A | Blocked — initial integrated docs package ready; explicit user verification pending | docs-sync-report, handoff-summary, release-deployment-report, draft release-notes; fourteen long-lived docs |
 | DR-002 | User requests current remote base + Electron for testing | DR001 verification hold | Blocked — 23 integration conflicts; build not run | handoff-summary, docs-sync-report, release-deployment-report, draft release-notes |
 | DR-003 | CRR020 / API012 return; user still requests current Electron | DR002 source-integration block | Blocked — refreshed integrated candidate built/open; explicit user verification pending | docs-sync-report, handoff-summary, release-deployment-report, draft release-notes; five long-lived docs |
-| DR-004 | User accepts candidate and requests new beta | DR003 verification hold | Delivery Completed — beta7 published; safe cleanup complete | archived ticket, delivery reports and beta release |
+| DR-004 | User accepts candidate and requests new beta | DR003 verification hold | In progress — finalization/release/cleanup pending | archived ticket, delivery reports and beta release |
 
 ## DR-001 — Initial integrated delivery preparation
 
@@ -95,15 +95,11 @@ Append DR-002 for a later completed delivery round; preserve this initial hold.
 - Terminal return: not eligible. Fresh rules selection recorded in `delivery-evidence/dr-003/`; no duplicate successful outcome notice. No prior result inferred from absence; DR001/DR002 preserved.
 - Next action: user tests and explicitly reports verification result; Delivery then owns applicable later gates. Authority files: `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `release-notes.md`.
 
-## DR-004 — User-approved finalization and new beta completed
+## DR-004 — User-approved finalization and new beta
 
-- Trigger/approval: user “now finalize and release a new beta” after DR003 candidate prompt; exact record user-beta-finalization-approval.md. No invented manual test results or risk waiver.
-- Prior authoritative result DR003 Blocked/user-verification hold; current **Delivery Completed**. Large / High independently reviewed route unchanged. Approved SR033 / Ready SR038 / ARCH006 / IR012 / CRR019 / API012 / CRR020; Product Design N/A.
-- Post-acceptance remote refresh unchanged84224a58d; accepted candidate a73f04816 runtime/source/tests unchanged. DR003 native2, AGY65, web37, Electron build/start, writer3/3 and health/shell evidence retained; no redundant rerun or renewed acceptance needed.
-- Docs authority docs-sync-report.md Pass; five DR003 durable updates plus DR001 baseline. DR004 no new runtime docs impact. Handoff authority handoff-summary.md; finalization/release authority release-deployment-report.md. Prior holds/failed probes/owner verdicts retained.
-- Ticket moved to done before final commit. Ticket19e883180 (initial archive e098c44fd) pushed; personal merge0e6723898 pushed; documented beta helper generated release8b7b3951a and v1.4.92-beta.7; personal and tag pushes succeeded without duplicate dispatch.
-- Desktop36915859789 / Android36915859617 / iOS36915859697 / Docker36915859653 all first-attempt Success at exact release SHA. GitHub prerelease17 assets/four updater references checked. Docker version and beta same two-platform digest. iOS upload is not store approval; production rollout/migration Not required.
-- Own isolated app stopped gracefully with data kept. Owned ticket/release worktrees and two local branches removed after ancestry/preservation checks, prune succeeded. Remote ticket branch, backups/stash and unrelated user WIP retained. Full5590-file backup;64 SDK and9 data files preserved;121 long evidence members losslessly archived; original API archives/guard/API15 match.
-- Supplemental local Docker inspect timeout remains non-Pass; public registry verification succeeded separately. Secret-pattern/hygiene checks are bounded; existing dependency-security notice is not waived.
-- Terminal return: **Eligible; dispatch after completion-record push**, single fresh-rule recipient. Successful tool transport receipt establishes Sent and exact target AgentRun; this prepared record does not invent that outcome or its own commit hash. Solution Designer must verify the complete package before Terminal/parent return.
-- Rationale: close the explicit verification hold only after authorized finalization, all applicable publication and safe-cleanup gates completed. No remaining Delivery blocker; all previously unwaived limits/rollback boundaries remain in handoff, not rewritten as Pass.
+- Trigger/approval: user “now finalize and release a new beta” after DR003 candidate prompt; exact record `user-beta-finalization-approval.md`. No invented test results.
+- Prior result DR003 Blocked user-verification hold; current in-progress finalization.
+- Post-acceptance refresh unchanged84224a58d; accepted candidate a73f04816 unchanged. No runtime rerun/renewed verification required; DR003 evidence retained.
+- Ticket moved to done before final commit; full safety backup and lossless121-long-path archive preserve cumulative evidence while respecting unchanged checkout hygiene.
+- Current docs/handoff/release authorities updated; Large/High reviewed route unchanged. All unwaived limits remain in handoff; no requirement change or new provider campaign.
+- Finalization/release/publication/cleanup receipts pending under delivery-evidence/dr-004; terminal return not yet eligible. Complete this round only after applicable gates pass.

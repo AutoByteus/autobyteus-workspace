@@ -1,0 +1,52 @@
+{
+  "time": "2026-10-01T20:19:19.931866+00:00",
+  "ticketWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+  "releaseWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-beta-release",
+  "ticketTrackedAndIndexClean": true,
+  "releaseClean": true,
+  "sdkUntrackedPaths": 64,
+  "sdkCurrentAndArchiveMatch": true,
+  "preservedDataFiles": [
+    {
+      "path": "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db",
+      "sha256": "e9b03bbf86901e0d062fdb4926c5e93214905706b1f3648acc92e4b67ee11c69"
+    },
+    {
+      "path": "autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db-journal",
+      "sha256": "7848f7179af6b79c75466dd98c3bc2bdd9448da5361a83a357b1abc8df511a79"
+    },
+    {
+      "path": "autobyteus-server-ts/autobyteus-web/resources/server/node_modules/.bin/anthropic-ai-sdk",
+      "sha256": "d94a813fa5adc8a14dba5a237e2be99807ab220e67f4443d7a724c8ed24ae692"
+    },
+    {
+      "path": "autobyteus-server-ts/autobyteus-web/resources/server/node_modules/.bin/prisma",
+      "sha256": "b547990ed63dccf7067382cf01073c787db6ca9c03fb8274273f95efff452473"
+    },
+    {
+      "path": "autobyteus-server-ts/autobyteus-web/resources/server/node_modules/.bin/tsc",
+      "sha256": "9d58b7420d7d4159eca6e763053b8ef1d8a03a63d4f64a0cb626fdc80c4bb1de"
+    },
+    {
+      "path": "autobyteus-server-ts/autobyteus-web/resources/server/node_modules/.bin/tsserver",
+      "sha256": "cb7073b233de73848bc539c9d5c5372c855ff93152db3cd27c76f4211dc025ce"
+    },
+    {
+      "path": "autobyteus-server-ts/autobyteus-web/resources/server/node_modules/.bin/uuid",
+      "sha256": "aa5861964cc6c5d8dd2d16b99fe1369d128c64ba219cde2e35e78806ee63491e"
+    },
+    {
+      "path": "autobyteus-server-ts/autobyteus-web/resources/server/node_modules/.bin/vitest",
+      "sha256": "190ddc11bb3b074c52ee6f6ba887ef7adc40953ff2ff6627e50422cf74a0faeb"
+    },
+    {
+      "path": "autobyteus-web/.nuxtrc",
+      "sha256": "202ec14536c3e409f45ca34d9ec9a145692ebca9e3383b4b0498693e723201e8"
+    }
+  ],
+  "headsAreAncestorsOfOriginPersonal": true,
+  "originPersonal": "8b7b3951a9235a0936a23f417359ca8c1c159928",
+  "safeDirectory": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-delivery-safety/dr-004-20261001T193431Z",
+  "matchingAppProcesses": [],
+  "scope": "Cleanup preflight only; no removal yet. Existing backups/stash and kept user-testing app data are not cleanup targets."
+}

@@ -1,12 +1,9 @@
-# Release notes — v1.4.92-beta.7
+# Beta release notes — context-compaction-simplification-analysis
 
-Published GitHub prerelease on2026-10-01:
-https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.7
-
-User-approved beta; all four configured publication workflows succeeded. These
-archived notes support scope; documented beta publication uses generated GitHub
-notes, not a curated upload. See release-deployment-report.md for exact commits,
-assets, Docker digest, verification scope, cleanup and rollback boundaries.
+Approved for the next beta by the user's current-candidate finalization/release
+request. Publication/version are recorded in `release-deployment-report.md` once
+confirmed. These archived notes support scope; the documented beta workflow uses
+generated GitHub notes rather than a curated-note upload.
 
 ## Changes
 

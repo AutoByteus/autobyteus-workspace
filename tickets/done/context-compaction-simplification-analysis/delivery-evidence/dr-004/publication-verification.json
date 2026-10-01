@@ -1,0 +1,54 @@
+{
+  "time": "2026-10-01T20:04:09.709322+00:00",
+  "tag": "v1.4.92-beta.7",
+  "releaseUrl": "https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.7",
+  "draft": false,
+  "prerelease": true,
+  "publishedAt": "2026-10-01T19:44:07Z",
+  "nonemptyUploadedAssets": 17,
+  "updaters": [
+    {
+      "file": "latest-linux-arm64.yml",
+      "version": "1.4.92-beta.7",
+      "referencedAssets": [
+        "AutoByteus_personal_linux-arm64-1.4.92-beta.7.AppImage",
+        "AutoByteus_personal_linux-arm64-1.4.92-beta.7.AppImage"
+      ],
+      "allPresent": true
+    },
+    {
+      "file": "latest-linux.yml",
+      "version": "1.4.92-beta.7",
+      "referencedAssets": [
+        "AutoByteus_personal_linux-x64-1.4.92-beta.7.AppImage",
+        "AutoByteus_personal_linux-x64-1.4.92-beta.7.AppImage"
+      ],
+      "allPresent": true
+    },
+    {
+      "file": "latest-mac.yml",
+      "version": "1.4.92-beta.7",
+      "referencedAssets": [
+        "AutoByteus_personal_macos-arm64-1.4.92-beta.7.zip",
+        "AutoByteus_personal_macos-arm64-1.4.92-beta.7.dmg",
+        "AutoByteus_personal_macos-x64-1.4.92-beta.7.zip",
+        "AutoByteus_personal_macos-x64-1.4.92-beta.7.dmg",
+        "AutoByteus_personal_macos-arm64-1.4.92-beta.7.zip"
+      ],
+      "allPresent": true
+    },
+    {
+      "file": "latest.yml",
+      "version": "1.4.92-beta.7",
+      "referencedAssets": [
+        "AutoByteus_personal_windows-1.4.92-beta.7.exe",
+        "AutoByteus_personal_windows-1.4.92-beta.7.exe"
+      ],
+      "allPresent": true
+    }
+  ],
+  "scope": "Metadata/reference presence verification; installers not locally downloaded/re-executed. All four exact-release workflows succeeded first attempt. iOS upload is not App Store review approval. Docker versioned and floating beta manifests are verified for linux/amd64 and linux/arm64; no container execution.",
+  "completedAtCheck": "2026-10-01T20:23:16.244888+00:00",
+  "workflowEvidence": "workflow-final.json",
+  "dockerEvidence": "docker-publication-final.json"
+}

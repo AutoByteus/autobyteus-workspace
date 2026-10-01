@@ -1,0 +1,20 @@
+{
+  "ticketCommit": "19e88318034673792078d408a11fadb91015fe9d",
+  "initialTicketCommit": "e098c44fd8e34b35ed5951f1a6f224749d324190",
+  "ticketPush": "success",
+  "target": "personal",
+  "base": "84224a58d8975d0b016af340e6b48e51d715af78",
+  "mergeCommit": "0e6723898913faa9b4c75c5debe44cc6e57929da",
+  "mergePush": "success",
+  "releaseBranch": "finalize/context-compaction-beta",
+  "releaseWorktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-beta-release",
+  "releaseCommit": "8b7b3951a9235a0936a23f417359ca8c1c159928",
+  "tag": "v1.4.92-beta.7",
+  "version": "1.4.92-beta.7",
+  "branchAndTagPush": "success",
+  "workflowDispatch": "none; single tag-push run per configured workflow",
+  "publication": "Completed",
+  "cleanup": "Completed",
+  "completionRecord": "Follows release commit on personal; exact pushed tip in terminal receipt",
+  "updatedAt": "2026-10-01T20:27:13.607017+00:00"
+}

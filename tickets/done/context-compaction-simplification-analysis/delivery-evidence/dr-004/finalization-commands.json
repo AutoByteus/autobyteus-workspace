@@ -1,0 +1,533 @@
+[
+  {
+    "label": "final-hygiene",
+    "command": [
+      "python3",
+      "scripts/check_repository_artifact_hygiene.py"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:35.719692+00:00",
+    "finished": "2026-10-01T19:38:35.863791+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-approval-and-refresh.json",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/approval-and-refresh.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:35.864144+00:00",
+    "finished": "2026-10-01T19:38:35.890460+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-before-delivery-revision-record.md",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/before-delivery-revision-record.md"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:35.890742+00:00",
+    "finished": "2026-10-01T19:38:35.912573+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-before-docs-sync-report.md",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/before-docs-sync-report.md"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:35.912885+00:00",
+    "finished": "2026-10-01T19:38:35.935622+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-before-handoff-summary.md",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/before-handoff-summary.md"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:35.935897+00:00",
+    "finished": "2026-10-01T19:38:35.959780+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-before-release-deployment-report.md",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/before-release-deployment-report.md"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:35.960266+00:00",
+    "finished": "2026-10-01T19:38:35.982936+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-before-release-notes.md",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/before-release-notes.md"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:35.983230+00:00",
+    "finished": "2026-10-01T19:38:36.005029+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-delivery-docs-check.exit",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/delivery-docs-check.exit"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.005340+00:00",
+    "finished": "2026-10-01T19:38:36.027770+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-delivery-docs-check.log",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/delivery-docs-check.log"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.028136+00:00",
+    "finished": "2026-10-01T19:38:36.050426+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-explicit-staging.json",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/explicit-staging.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.050762+00:00",
+    "finished": "2026-10-01T19:38:36.072861+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-explicit-staging.paths",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/explicit-staging.paths"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.073285+00:00",
+    "finished": "2026-10-01T19:38:36.094785+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-publication-hygiene-scan.json",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/publication-hygiene-scan.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.095207+00:00",
+    "finished": "2026-10-01T19:38:36.116046+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-repository-hygiene.exit",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/repository-hygiene.exit"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.116430+00:00",
+    "finished": "2026-10-01T19:38:36.138418+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-repository-hygiene.log",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/repository-hygiene.log"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.138891+00:00",
+    "finished": "2026-10-01T19:38:36.161059+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-safety.json",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/safety.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.161503+00:00",
+    "finished": "2026-10-01T19:38:36.183494+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-staging-reconciliation.json",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/staging-reconciliation.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.183907+00:00",
+    "finished": "2026-10-01T19:38:36.226190+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-staging.log",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/staging.log"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.228511+00:00",
+    "finished": "2026-10-01T19:38:36.249516+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-ticket-final-commit.exit",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/ticket-final-commit.exit"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.250150+00:00",
+    "finished": "2026-10-01T19:38:36.291823+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-ticket-final-commit.log",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/ticket-final-commit.log"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.292341+00:00",
+    "finished": "2026-10-01T19:38:36.347157+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-ticket-finalization.json",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/ticket-finalization.json"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.349432+00:00",
+    "finished": "2026-10-01T19:38:36.394088+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-ticket-push.exit",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/ticket-push.exit"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.396558+00:00",
+    "finished": "2026-10-01T19:38:36.440652+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "receipt-stage-ticket-push.log",
+    "command": [
+      "git",
+      "add",
+      "--",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis/tickets/done/context-compaction-simplification-analysis/delivery-evidence/dr-004/ticket-push.log"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.441448+00:00",
+    "finished": "2026-10-01T19:38:36.515626+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "evidence-followup-commit",
+    "command": [
+      "git",
+      "commit",
+      "-m",
+      "chore(delivery): retain historical source evidence and finalization receipts"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.516514+00:00",
+    "finished": "2026-10-01T19:38:36.781013+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "ticket-head",
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.781591+00:00",
+    "finished": "2026-10-01T19:38:36.802415+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "ticket-followup-push",
+    "command": [
+      "git",
+      "push",
+      "origin",
+      "codex/context-compaction-simplification-analysis"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis",
+    "started": "2026-10-01T19:38:36.802835+00:00",
+    "finished": "2026-10-01T19:38:39.875638+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "target-fetch",
+    "command": [
+      "git",
+      "fetch",
+      "origin",
+      "refs/heads/personal:refs/remotes/origin/personal"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:38:39.876118+00:00",
+    "finished": "2026-10-01T19:38:41.501103+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "target-base",
+    "command": [
+      "git",
+      "rev-parse",
+      "origin/personal"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:38:41.501543+00:00",
+    "finished": "2026-10-01T19:38:41.517392+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "target-branch",
+    "command": [
+      "git",
+      "branch",
+      "--show-current"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:38:41.517763+00:00",
+    "finished": "2026-10-01T19:38:41.532112+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "target-tracked-clean",
+    "command": [
+      "git",
+      "diff",
+      "--quiet"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:38:41.532590+00:00",
+    "finished": "2026-10-01T19:38:41.691610+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "target-index-clean",
+    "command": [
+      "git",
+      "diff",
+      "--cached",
+      "--quiet"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:38:41.692079+00:00",
+    "finished": "2026-10-01T19:38:41.729167+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "target-update",
+    "command": [
+      "git",
+      "merge",
+      "--ff-only",
+      "origin/personal"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:38:41.905947+00:00",
+    "finished": "2026-10-01T19:38:41.927066+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "target-ticket-merge",
+    "command": [
+      "git",
+      "merge",
+      "--no-ff",
+      "codex/context-compaction-simplification-analysis",
+      "-m",
+      "Merge verified context compaction simplification and recovery"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:38:41.927562+00:00",
+    "finished": "2026-10-01T19:38:44.797136+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "target-merge-head",
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:38:44.797642+00:00",
+    "finished": "2026-10-01T19:38:44.813861+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "target-merge-push",
+    "command": [
+      "git",
+      "push",
+      "origin",
+      "personal"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:38:44.814293+00:00",
+    "finished": "2026-10-01T19:38:47.735774+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "release-worktree",
+    "command": [
+      "git",
+      "worktree",
+      "add",
+      "-b",
+      "finalize/context-compaction-beta",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-beta-release",
+      "personal"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:38:47.736334+00:00",
+    "finished": "2026-10-01T19:38:56.745184+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "beta-helper",
+    "command": [
+      "bash",
+      "scripts/desktop-release.sh",
+      "beta",
+      "--branch",
+      "finalize/context-compaction-beta",
+      "--no-push"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-beta-release",
+    "started": "2026-10-01T19:38:56.745655+00:00",
+    "finished": "2026-10-01T19:39:02.092109+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "release-head",
+    "command": [
+      "git",
+      "rev-parse",
+      "HEAD"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-beta-release",
+    "started": "2026-10-01T19:39:02.092788+00:00",
+    "finished": "2026-10-01T19:39:02.108635+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "tag-head",
+    "command": [
+      "git",
+      "rev-parse",
+      "v1.4.92-beta.7^{}"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-beta-release",
+    "started": "2026-10-01T19:39:02.109118+00:00",
+    "finished": "2026-10-01T19:39:02.126601+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "personal-release-fastforward",
+    "command": [
+      "git",
+      "merge",
+      "--ff-only",
+      "finalize/context-compaction-beta"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:39:02.127209+00:00",
+    "finished": "2026-10-01T19:39:03.844658+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "personal-release-push",
+    "command": [
+      "git",
+      "push",
+      "origin",
+      "personal"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:39:03.845172+00:00",
+    "finished": "2026-10-01T19:39:06.925531+00:00",
+    "exitCode": 0
+  },
+  {
+    "label": "release-tag-push",
+    "command": [
+      "git",
+      "push",
+      "origin",
+      "v1.4.92-beta.7"
+    ],
+    "cwd": "/Users/normy/autobyteus_org/autobyteus-workspace-superrepo",
+    "started": "2026-10-01T19:39:06.926090+00:00",
+    "finished": "2026-10-01T19:39:09.260811+00:00",
+    "exitCode": 0
+  }
+]

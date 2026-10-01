@@ -1,7 +1,22 @@
-# Docs Sync Report — DR-004
+# Current Delivery state — DR-004
 
+User explicitly accepted finalization and requested a new beta; see
+[user-beta-finalization-approval.md](user-beta-finalization-approval.md).
+Post-signal base refresh is unchanged84224a58d; accepted candidate a73f04816 plus
+DR003 docs remains current. No extra runtime rerun is needed because source/base
+is unchanged. Ticket moved to `tickets/done/context-compaction-simplification-analysis`
+before final commit. Repository finalization and beta publication are now **in
+progress**, not yet Delivery Completed. Docs sync remains Pass; no new semantic
+change. Full historical evidence is retained;121 checkout-hostile long paths are
+losslessly archived per `evidence-relocation.json` without editing original bytes.
+Current completion authority: [release-deployment-report.md](release-deployment-report.md).
 
-2026-10-01. **Docs sync Pass / Updated; Delivery Completed (DR004).** Large / High reviewed route unchanged.
+---
+## Historical DR003 verification package (stage-time hold below superseded)
+
+# Docs Sync Report — DR-003
+
+2026-10-01. **Docs sync Pass / Updated; overall Delivery Blocked on explicit user verification.** Large / High reviewed route unchanged.
 
 ## Integrated scope
 
@@ -51,22 +66,12 @@ all-loaded-child reconciliation; web-owned native harness → workspace-owned
 harness with unchanged guard. DR001 removals of child/category/lineage authority
 remain documented, not reintroduced.
 
-## DR004 no-additional-impact decision
+## Verification and continuation
 
-Post-acceptance target refresh was unchanged84224a58d. Final release8b7b3951a differs
-from accepted integrated a73f04816 only in the five synced docs, beta package
-version and ticket artifacts. No production/test behavior delta; the long-lived
-DR003 updates remain truthful without another semantic rewrite. Finalization,
-publication and cleanup facts belong in the Delivery reports, not runtime docs.
-Beforeimages, patch, links/anchors and whitespace checks remain in DR003 evidence.
-DR004 archive/path relocation preserves historical bytes; no upstream verdict was
-rewritten. API15, original guard and immutable archives match final preservation
-checks. Static audits are not new runtime/model or full-typecheck evidence.
-
-## Delivery continuation
-
-Pass. Explicit acceptance, repository finalization, beta publication/verification
-and safe task cleanup completed. [Release report](release-deployment-report.md)
-and [handoff](handoff-summary.md) are current; no docs ambiguity requires reroute.
-All unwaived limitations remain in the handoff. Terminal dispatch follows the
-completion-record push and fresh rule selection; transmission needs tool receipt.
+Beforeimages, exact patch, path list and new-link/anchor checks are under
+`delivery-evidence/dr-003/`; `docs-verification.json` reports zero broken new links
+and diff-check exit0. This static result is not full runtime/model/typecheck proof.
+Canonical upstream reports/logs were not rewritten. All unwaived limits remain
+in the handoff. No docs ambiguity or new source finding requires reroute. Next:
+explicit user verification of the running isolated candidate, then applicable
+finalization gates; no Delivery Completed yet.

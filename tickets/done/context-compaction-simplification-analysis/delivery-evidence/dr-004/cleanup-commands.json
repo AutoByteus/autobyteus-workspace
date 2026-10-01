@@ -1,0 +1,43 @@
+[
+  {
+    "argv": [
+      "git",
+      "worktree",
+      "remove",
+      "--force",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-simplification-analysis"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "argv": [
+      "git",
+      "worktree",
+      "remove",
+      "/Users/normy/autobyteus_org/autobyteus-worktrees/context-compaction-beta-release"
+    ],
+    "exit": 0,
+    "output": ""
+  },
+  {
+    "argv": [
+      "git",
+      "branch",
+      "-d",
+      "codex/context-compaction-simplification-analysis",
+      "finalize/context-compaction-beta"
+    ],
+    "exit": 0,
+    "output": "Deleted branch codex/context-compaction-simplification-analysis (was 19e883180).\nDeleted branch finalize/context-compaction-beta (was 8b7b3951a).\n"
+  },
+  {
+    "argv": [
+      "git",
+      "worktree",
+      "prune"
+    ],
+    "exit": 0,
+    "output": ""
+  }
+]
