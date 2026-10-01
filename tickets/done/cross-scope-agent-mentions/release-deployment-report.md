@@ -16,10 +16,10 @@
 - Handoff summary artifact: `tickets/done/cross-scope-agent-mentions/handoff-summary.md`
 - Handoff summary status: `Updated`
 - Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-004`
+- Current delivery revision ID: `DR-005`
 - Notes:
   - User verified on 2026-10-01; repository finalization is completed.
-  - The release is **partially published**. The macOS builds failed at Apple notarization (account agreement), so the desktop release is blocked; see Release / Publication / Deployment.
+  - The release is **fully published** (DR-005). The macOS notarization blocker from DR-004 (Apple agreement) was resolved by the user, and the failed jobs were rerun.
 
 ## Initial Delivery Integration Refresh
 
@@ -94,14 +94,14 @@
 - Applicable: `Yes` (new beta requested by the user)
 - Method: `Git Tag Method`. Pushing the tag starts the desktop, Android, iOS and server Docker release workflows.
 - Method reference / command: root `README.md` › Release workflow; `git push origin v1.4.92-beta.5`
-- Release/publication/deployment result: **`Blocked`** (partial). Workflow results at `d057801c8`:
+- Release/publication/deployment result: **`Completed`** (DR-005). Workflow results at `d057801c8`:
 
   | Workflow | Run | Result |
   | --- | --- | --- |
   | Android APK Release | 36845911744 | success: APK attached to the pre-release |
   | iOS App Store Connect Release | 36845911739 | success |
   | Server Docker Release | 36845911822 | success |
-  | Desktop Release | 36845911969 | **failure**: details below |
+  | Desktop Release | 36845911969 | attempt 1 **failure** (details below); attempt 2 (rerun of the failed jobs) **success** |
 
   Desktop Release jobs:
   - Resolve Release Metadata: success.
@@ -111,12 +111,23 @@
 - GitHub release: https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.4.92-beta.5 (pre-release, published 2026-10-01T10:00:04Z by the Android workflow).
   - Its only assets are `AutoByteus_personal_android-1.4.92-beta.5-release.apk` and its `.sha256`.
   - It has no desktop installers and no updater `latest*.yml`, so desktop installs are **not** offered beta.5. They stay on beta.4; nothing is half-installed.
-- Cause classification: environment/account (Apple Developer Program agreement), not code. `v1.4.92-beta.4` passed the same workflow on 2026-09-30 (run 36698456716). This is a deployment-local blocker that only the account holder can resolve.
+- Attempt 2 (DR-005):
+  - The user accepted the updated Apple Developer Program License Agreement on developer.apple.com. The account banner had said it must be accepted by 2 October 2026 to keep access to certificates, App Store Connect and the App Store Connect API.
+  - Delivery ran `gh run rerun 36845911969 --failed`.
+  - Both macOS builds succeeded. Notarization succeeded on the first try (x64 at 10:49:53Z, ARM64 at 10:50:57Z, no retries).
+  - Publish GitHub Release succeeded (10:57–10:58Z). The Linux and Windows builds from attempt 1 were reused.
+- Final GitHub release assets for `v1.4.92-beta.5`:
+  - macOS ARM64 and x64: dmg and zip, each with its blockmap;
+  - Linux x64 and ARM64 AppImage;
+  - Windows exe;
+  - Android APK and its `.sha256`;
+  - updater files `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`.
+- Cause classification (attempt 1): environment/account (Apple Developer Program agreement), not code. `v1.4.92-beta.4` passed the same workflow on 2026-09-30 (run 36698456716). This is a deployment-local blocker that only the account holder can resolve.
 - Recovery:
   1. The Apple Developer account holder signs or renews the pending agreement (developer.apple.com › Account, or App Store Connect › Business / Agreements).
   2. Then run `gh run rerun 36845911969 --failed`. This reruns both macOS builds and the dependent Publish job on the same tag. No new commit or tag is needed.
 - Release notes handoff result: `Not required` (beta tags use GitHub generated notes; the archived `release-notes.md` is supporting context)
-- Blocker: Apple notarization agreement (user action required)
+- Blocker: None (resolved in DR-005)
 
 ## Post-Finalization Cleanup
 
@@ -125,7 +136,7 @@
 - Worktree prune result: `Completed`
 - Local ticket branch cleanup result: `Completed`. `git branch -d codex/cross-scope-agent-mentions`; its tip `e666d726f` is contained in `origin/personal`.
 - Remote branch cleanup result: `Not required`. `origin/codex/cross-scope-agent-mentions` is kept at `e666d726f`.
-- Finalization worktree and branch: removed right after this record is pushed to `personal`. The workflow rerun needs no local checkout.
+- Finalization worktree and branch: `Completed` (removed after the DR-004 push). The DR-005 record worktree is removed after its push.
 - Blocker: None
 
 ## Escalation / Reroute
@@ -141,7 +152,7 @@
 
 ## Deployment Steps
 
-No hosted deployment applies. Once the desktop release is published:
+No hosted deployment applies. Now that the desktop release is published:
 - desktop installs with "Receive beta updates" on are offered 1.4.92-beta.5 through the updater;
 - Docker launcher users on the beta track run `autobyteus-docker upgrade --all`. The Docker image is already published.
 
@@ -167,22 +178,32 @@ No hosted deployment applies. Once the desktop release is published:
 | Evidence hygiene before commit | `grep` of the ticket folder for API-key and token patterns and for `~/.autobyteus` paths | none found (only worktree-dev `.autobyteus/` paths) |
 | Commit scope | `git diff --cached --name-only` | ticket folder + 7 test files + 9 docs; SDK `dist/` excluded |
 | Remote refs | `git ls-remote origin refs/heads/personal refs/tags/v1.4.92-beta.5` | `personal` = `d057801c8`; tag peels to `d057801c8` |
-| Release workflows | `gh run list --commit d057801c8…` | Android, iOS, Docker success; Desktop failure (notarization 403) |
+| Release workflows | `gh run list --commit d057801c8…` | Android, iOS, Docker success. Desktop: attempt 1 failed (notarization 403); attempt 2 succeeded after the agreement was accepted |
+| Release assets | `gh release view v1.4.92-beta.5` | all desktop installers, blockmaps and updater `latest*.yml`, plus the Android APK |
 
 ## Rollback Criteria
 
 - Code: revert the ticket range `8caa610ff..e666d726f` on `personal` (every commit in it belongs to this ticket; `personal` fast-forwarded). Data needs no transformation, but note:
   - runs with collaborators written by the new version are rejected by older builds;
   - prefer a forward fix over a downgrade.
-- Release: no desktop artifact or updater manifest was published, so desktop users need no rollback. The Docker image and the Android APK for beta.5 are published.
+- Release: beta.5 is a pre-release offered only to installs with beta updates on. To withdraw it, delete the GitHub pre-release or its `latest*.yml` assets. Already-updated installs need a forward fix (beta.6).
 
 ## Final Status
 
 - Explicit user testing/verification complete: `Yes`
 - Repository finalization complete: `Yes` (`personal` at `d057801c8` for this ticket)
-- Applicable release/deployment/rollout complete or not required: **`No`**. Desktop Release is blocked by Apple notarization (account agreement); Android, iOS and Docker are done.
+- Applicable release/deployment/rollout complete or not required: `Yes`. `v1.4.92-beta.5` is fully published, and all 4 workflows succeeded.
 - Applicable safe cleanup complete or not required: `Yes`. The ticket worktree and local branch are removed; the finalization worktree is removed after this push.
-- Unresolved blocker: the Apple Developer agreement must be signed or renewed, then run `gh run rerun 36845911969 --failed`.
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to `/solution_designer`: `No`. It will be sent once the desktop release completes.
-- Terminal message/reference: N/A
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to `/solution_designer`: sent immediately after this record was pushed. See DR-005.
+- Terminal message/reference: DR-005
+
+### Follow-ups recorded (not blockers)
+
+- Release workflow: `.github/workflows/release-desktop.yml` retries every "Failed to notarize" error as transient, including a permanent 403 agreement error. Each retry rebuilds the app, adding about 10–15 minutes per macOS job. Consider excluding `HTTP status code: 403` / "agreement" from the retry pattern (separate small ticket).
+- R-4: rerun the gated Grok live E2E when the provider quota resets.
+- C-11 (no Agent-root self-delegation guard) and C-15 (inert `hasTaskExecutionAt` in `collaborator-root-port-resolver.ts`): minor code notes.
+- The Event Monitor "earlier events" page still shows agent deliveries user-style.
+- Size watch: `memory-manager.ts` (500) and `root-team-run.ts` (495) are near the 500-line limit.
+- Web docs debt: `autobyteus-web/docs/settings.md` duplicates `agent_execution_architecture.md`.
