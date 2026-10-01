@@ -5,6 +5,7 @@ import type { UserMessageReceivedEvent } from '../events/agent-events.js';
 import { buildLLMUserMessage } from '../message/multimodal-message-builder.js';
 import { partitionRawTraceAttachments } from '../../memory/models/raw-trace-attachments.js';
 import { SenderType } from '../sender-type.js';
+import { resolveInterAgentSenderId } from '../message/inter-agent-sender.js';
 
 export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcessor {
   static getOrder(): number {
@@ -41,7 +42,10 @@ export class MemoryIngestInputProcessor extends BaseAgentUserInputMessageProcess
     const original = triggeringEvent.agentInputUserMessage;
     const fileAttachments = original.recordingFileAttachments
       ?? partitionRawTraceAttachments(original.contextFiles ?? []).fileAttachments;
-    memoryManager.ingestUserMessage(llmUserMessage, turnId, 'LLMUserMessageReadyEvent', fileAttachments);
+    memoryManager.ingestUserMessage(
+      llmUserMessage, turnId, 'LLMUserMessageReadyEvent', fileAttachments,
+      resolveInterAgentSenderId(original.metadata),
+    );
     console.debug(`MemoryIngestInputProcessor stored processed user input with turnId ${turnId}`);
     return message;
   }

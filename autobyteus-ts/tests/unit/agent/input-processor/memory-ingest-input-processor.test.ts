@@ -55,8 +55,25 @@ describe('MemoryIngestInputProcessor', () => {
       expect.objectContaining({ content: 'Hello' }),
       'turn_0001',
       'LLMUserMessageReadyEvent',
-      []
+      [],
+      null
     );
+  });
+
+  it('records the sender of an agent-to-agent delivery on the user trace (RD-004)', async () => {
+    const context = makeContext();
+    const processor = new MemoryIngestInputProcessor();
+    const memoryManager = { ingestUserMessage: vi.fn() };
+    context.state.memoryManager = memoryManager as any;
+    context.state.activeTurn = { turnId: 'turn_0002' } as any;
+    const delivery = new AgentInputUserMessage('You received a message', SenderType.AGENT, null, {
+      input_origin: 'inter_agent_delivery', sender_agent_id: 'run-researcher',
+    });
+    await processor.process(delivery, context, { agentInputUserMessage: delivery } as any);
+    // A user message that only carries a sender id is not an inter-agent delivery.
+    const user = new AgentInputUserMessage('Hi', SenderType.USER, null, { input_origin: 'user_message', sender_agent_id: 'x' });
+    await processor.process(user, context, { agentInputUserMessage: user } as any);
+    expect(memoryManager.ingestUserMessage.mock.calls.map((call) => call[4])).toEqual(['run-researcher', null]);
   });
 
   it('keeps TOOL-originated input in the processor lifecycle without a memory write', async () => {
