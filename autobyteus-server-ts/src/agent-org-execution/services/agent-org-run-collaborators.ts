@@ -4,19 +4,17 @@ import type {
   CollaboratorMentionAdmission,
   CollaboratorMentionAdmissionResult,
 } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import type { CollaboratorIdentityPorts } from "../../agent-collaboration/collaborators/collaborator-identity-allocator.js";
 import { getCollaboratorMentionAdmission } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
 import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import type { AgentOrgRunEvent } from "../domain/agent-org-run-event.js";
-import type { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 import type { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 import { addAgentOrgCollaborators } from "./agent-org-run-execution-tree-mutator.js";
 
 /** Collaborator facts of one Org tree: the Org, its direct Agents, mounted Teams and their Agents are in the run. */
-export const agentOrgCollaboratorPortFor = (
-  tree: AgentOrgRunExecutionTreeSnapshot,
-  index: AgentOrgExecutionIndex,
-): CollaboratorRootPort => {
+export const agentOrgCollaboratorPortFor = (tree: AgentOrgRunExecutionTreeSnapshot): CollaboratorRootPort => {
   const agentDefinitionIds = new Set<string>();
   const teamDefinitionIds = new Set<string>([tree.rootOrg.orgDefinitionId]);
   const addresses = new Set<string>(tree.rootOrg.collaborators.map((entry) => entry.address));
@@ -35,22 +33,23 @@ export const agentOrgCollaboratorPortFor = (
     rootLaunchConfiguration: () => tree.rootOrg.defaultLaunchConfiguration,
     configuredDefinitionIds: () => Object.freeze({ agentDefinitionIds, teamDefinitionIds }),
     collaborators: () => tree.rootOrg.collaborators,
-    hasTaskExecutionAt: (address: string) => index.hasTaskExecutionAt(address),
     addressesInUse: () => addresses,
   });
 };
 
 /**
- * Org-root collaborator facts and commits. The Org runs `admit` inside its operation gate;
- * this owner commits new entries in one tree write and publishes them.
+ * Org-root collaborator admission (DS-001). The Org runs `admit` inside its operation gate;
+ * this owner prepares the hosted handles, commits the new entries in one tree write, then
+ * publishes the handles (Offline) and `collaborator_added`.
  */
 export class AgentOrgRunCollaborators {
   constructor(private readonly options: Readonly<{
     admission?: CollaboratorMentionAdmission;
+    identities: CollaboratorIdentityPorts;
     persistence: Pick<AgentOrgRunPersistenceCoordinator, "commitTreeMutation">;
     getTree(): AgentOrgRunExecutionTreeSnapshot;
-    getIndex(): AgentOrgExecutionIndex;
     assertAdmitting(): void;
+    prepareHandles(entries: readonly CollaboratorEntry[]): Promise<PreparedCollaboratorHandles>;
     replaceTree(tree: AgentOrgRunExecutionTreeSnapshot): void;
     publish(event: AgentOrgRunEvent): void;
   }>) {}
@@ -62,28 +61,36 @@ export class AgentOrgRunCollaborators {
   }>): Promise<CollaboratorMentionAdmissionResult> {
     return (this.options.admission ?? getCollaboratorMentionAdmission()).admit(this.port(), {
       ...input,
-      commitEntries: (entries) => this.commit(entries),
+      identities: this.options.identities,
+      addEntries: (entries) => this.add(entries),
     });
   }
 
   port(): CollaboratorRootPort {
-    return agentOrgCollaboratorPortFor(this.options.getTree(), this.options.getIndex());
+    return agentOrgCollaboratorPortFor(this.options.getTree());
   }
 
-  private commit(entries: readonly CollaboratorEntry[]): Promise<void> {
-    return this.options.persistence.commitTreeMutation({
-      prepareAgainstCurrent: () => {
-        this.options.assertAdmitting();
-        const tree = addAgentOrgCollaborators({ tree: this.options.getTree(), collaborators: entries });
-        return {
-          nextTree: tree,
-          cancelBeforeDurability: () => undefined,
-          commitAfterDurability: () => {
-            this.options.replaceTree(tree);
-            for (const collaborator of entries) this.options.publish({ kind: "collaborator_added", collaborator });
-          },
-        };
-      },
-    });
+  private async add(entries: readonly CollaboratorEntry[]): Promise<void> {
+    const handles = await this.options.prepareHandles(entries);
+    try {
+      await this.options.persistence.commitTreeMutation({
+        prepareAgainstCurrent: () => {
+          this.options.assertAdmitting();
+          const tree = addAgentOrgCollaborators({ tree: this.options.getTree(), collaborators: entries });
+          return {
+            nextTree: tree,
+            cancelBeforeDurability: () => undefined,
+            commitAfterDurability: () => {
+              handles.commitAfterDurability();
+              this.options.replaceTree(tree);
+              for (const collaborator of entries) this.options.publish({ kind: "collaborator_added", collaborator });
+            },
+          };
+        },
+      });
+    } catch (error) {
+      await handles.abort();
+      throw error;
+    }
   }
 }

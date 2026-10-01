@@ -1,9 +1,6 @@
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import { FlatTeamDefinitionResolver } from "../../agent-team-definition/services/flat-team-definition-resolver.js";
-import type {
-  CollaboratorAgentEntry,
-  CollaboratorTeamEntry,
-} from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { CollaborationHandoff } from "../domain/collaboration-handoff.js";
 import { CollaborationHandoffCompiler } from "../definition/collaboration-handoff-compiler.js";
 import {
   createAgentTeamAddress,
@@ -11,6 +8,30 @@ import {
   type AgentTeamAddress,
 } from "../domain/agent-team-address.js";
 import type { AdmissibleCollaboratorDefinition, CollaboratorDefinitionCatalog } from "./collaborator-candidate-policy.js";
+
+/** A collaborator before its run IDs are allocated: what admission validates and commits. */
+export type CollaboratorEntryPlan =
+  | Readonly<{
+      kind: "agent";
+      name: string;
+      address: AgentTeamAddress;
+      agentDefinitionId: string;
+      launchConfiguration: AgentLaunchConfiguration;
+      addedAt: string;
+      addedViaAgentRunId: string;
+    }>
+  | Readonly<{
+      kind: "agent_team";
+      name: string;
+      address: AgentTeamAddress;
+      teamDefinitionId: string;
+      coordinatorAddress: AgentTeamAddress;
+      members: readonly Readonly<{ address: AgentTeamAddress; agentDefinitionId: string }>[];
+      handoffs: readonly CollaborationHandoff[];
+      defaultLaunchConfiguration: AgentLaunchConfiguration;
+      addedAt: string;
+      addedViaAgentRunId: string;
+    }>;
 
 export type CollaboratorEntryInput = Readonly<{
   address: AgentTeamAddress;
@@ -28,9 +49,10 @@ const cloneLaunch = (value: AgentLaunchConfiguration): AgentLaunchConfiguration 
 });
 
 /**
- * Snapshots a definition into a collaborator entry with the run's root settings. A Team entry
+ * Snapshots a definition into a collaborator plan with the run's root settings. A Team plan
  * keeps its layout (mounted at the collaborator address) and its rebased Team-local handoffs,
- * so reopening the run never depends on later definition edits.
+ * so reopening the run never depends on later definition edits. Resolving the Team layout
+ * fails when a member definition is missing.
  */
 export class CollaboratorEntryBuilder {
   constructor(
@@ -42,10 +64,11 @@ export class CollaboratorEntryBuilder {
   async build(
     definition: AdmissibleCollaboratorDefinition,
     input: CollaboratorEntryInput,
-  ): Promise<CollaboratorAgentEntry | CollaboratorTeamEntry> {
+  ): Promise<CollaboratorEntryPlan> {
     if (definition.kind === "agent") {
       return Object.freeze({
         kind: "agent",
+        name: definition.definition.name,
         address: input.address,
         agentDefinitionId: definition.definition.id,
         launchConfiguration: cloneLaunch(input.rootLaunchConfiguration),
@@ -61,6 +84,7 @@ export class CollaboratorEntryBuilder {
     });
     return Object.freeze({
       kind: "agent_team",
+      name: definition.definition.name,
       address: input.address,
       teamDefinitionId: definition.definition.id,
       coordinatorAddress: createAgentTeamAddress(resolved.coordinator.absolutePath),

@@ -11,8 +11,10 @@ import {
   type TeamStreamServerMessage,
 } from "@autobyteus/team-stream-contracts";
 import type { RootTeamRun, RootTeamRunPackageSnapshot } from "../../agent-team-execution/domain/root-team-run.js";
+import { isCollaboratorTeamEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type {
   CollaboratorEntry,
+  CollaboratorTeamEntry,
   ConfiguredExecutionNode,
   RootConfiguredTeamExecutionNode,
   TaskExecution,
@@ -141,15 +143,20 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
 export const projectCollaboratorEntry = (entry: CollaboratorEntry): CollaboratorEntryDto => entry.kind === "agent"
   ? {
       kind: "agent", address: entry.address, agent_definition_id: entry.agentDefinitionId,
+      agent_run_id: entry.agentRunId, platform_agent_run_id: entry.platformAgentRunId,
       launch_configuration: projectLaunchConfiguration(entry.launchConfiguration),
       added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
     }
   : {
       kind: "agent_team", address: entry.address, team_definition_id: entry.teamDefinitionId,
-      coordinator_address: entry.coordinatorAddress,
-      members: entry.members.map((member) => ({ address: member.address, agent_definition_id: member.agentDefinitionId })),
+      team_run_id: entry.teamRunId, coordinator_address: entry.coordinatorAddress,
+      members: entry.members.map((member) => ({
+        address: member.address, agent_definition_id: member.agentDefinitionId,
+        agent_run_id: member.agentRunId, platform_agent_run_id: member.platformAgentRunId,
+      })),
       handoffs: entry.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
       default_launch_configuration: projectLaunchConfiguration(entry.defaultLaunchConfiguration),
+      task_executions: entry.taskExecutions.map(projectTaskExecution),
       added_at: entry.addedAt, added_via_agent_run_id: entry.addedViaAgentRunId,
     };
 
@@ -205,14 +212,14 @@ const findTaskExecution = (
   reference: TaskExecutionReference,
 ): { parentTeamRunId: string; execution: TaskExecution } | null => {
   const visit = (
-    team: RootConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution,
+    team: RootConfiguredTeamExecutionNode | TaskTeamExecution | TaskTeamNestedTeamExecution | CollaboratorTeamEntry,
   ): { parentTeamRunId: string; execution: TaskExecution } | null => {
     const own = team.taskExecutions.find((execution) =>
       "agentRunId" in reference
         ? "agentRunId" in execution && execution.agentRunId === reference.agentRunId
         : "teamRunId" in execution && execution.teamRunId === reference.teamRunId);
     if (own) return { parentTeamRunId: team.teamRunId, execution: own };
-    if (!("teamDefinitionName" in team)) for (const member of team.members) {
+    if (!("teamDefinitionName" in team) && !("kind" in team)) for (const member of team.members) {
       if (!("teamRunId" in member)) continue;
       const nested = visit(member);
       if (nested) return nested;
@@ -225,5 +232,10 @@ const findTaskExecution = (
     }
     return null;
   };
-  return visit(tree.rootTeam);
+  // A collaborator Team hosts its members' delegations.
+  for (const team of [tree.rootTeam, ...tree.rootTeam.collaborators.filter(isCollaboratorTeamEntry)]) {
+    const found = visit(team);
+    if (found) return found;
+  }
+  return null;
 };

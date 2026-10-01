@@ -41,16 +41,21 @@ type LocatedAgentExecution = Readonly<{
   memoryDir: string;
 }>;
 
+// Collaborators are hosted like configured members (one instance, started on first message).
 const MEMBER_EXECUTION_KIND: Record<LocatedExecutionKind, CollaborationMemberExecutionKind> = {
   configured: "CONFIGURED",
   task: "TASK_AGENT",
   task_team_member: "TASK_TEAM_MEMBER",
+  collaborator: "CONFIGURED",
+  collaborator_team_member: "CONFIGURED",
 };
 
 const GROUP_KIND: Record<LocatedExecutionKind, CollaborationMemoryGroupKind> = {
   configured: "CONFIGURED_TEAM",
   task: "TASK_TEAM",
   task_team_member: "TASK_TEAM",
+  collaborator: "CONFIGURED_TEAM",
+  collaborator_team_member: "CONFIGURED_TEAM",
 };
 
 /** Projects one located execution; `toDisplayName` is the family's label rule (team basename, org address path). */

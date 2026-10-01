@@ -68,35 +68,44 @@ export type TaskTeamExecution = Readonly<{
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;
 
 /**
- * A collaborator of a run: a root-level record that makes one shared Agent definition
- * delegable in that run, with a snapshot of the run's root launch settings. It has no run
- * of its own; its runs are the task executions at its address.
+ * A collaborator of a run: one instance of a shared Agent definition added with `@`, with a
+ * snapshot of the run's root launch settings and its single execution identity. It is hosted
+ * by the root and starts on its first message; it is not a task execution.
  * `addedViaAgentRunId` is the focused agent whose user message carried the mention.
  */
 export type CollaboratorAgentEntry = Readonly<{
   kind: "agent";
   address: AgentTeamAddress;
   agentDefinitionId: string;
+  agentRunId: string;
+  platformAgentRunId: string | null;
   launchConfiguration: AgentLaunchConfiguration;
   addedAt: IsoTimestamp;
   addedViaAgentRunId: string;
 }>;
 
-/** Layout only: the Team's members share its `defaultLaunchConfiguration`. */
+/** A collaborator Team member: its layout and identity; it uses the Team's `defaultLaunchConfiguration`. */
 export type CollaboratorTeamMember = Readonly<{
   address: AgentTeamAddress;
   agentDefinitionId: string;
+  agentRunId: string;
+  platformAgentRunId: string | null;
 }>;
 
-/** A collaborator Agent Team: its layout and rebased Team-local handoffs, snapshotted when added. */
+/**
+ * A collaborator Agent Team: one TeamRun with one run per member, its layout and rebased
+ * Team-local handoffs, snapshotted when added. Its own delegations live in `taskExecutions`.
+ */
 export type CollaboratorTeamEntry = Readonly<{
   kind: "agent_team";
   address: AgentTeamAddress;
   teamDefinitionId: string;
+  teamRunId: string;
   coordinatorAddress: AgentTeamAddress;
   members: readonly CollaboratorTeamMember[];
   handoffs: readonly CollaborationHandoff[];
   defaultLaunchConfiguration: AgentLaunchConfiguration;
+  taskExecutions: readonly TaskExecution[];
   addedAt: IsoTimestamp;
   addedViaAgentRunId: string;
 }>;
@@ -129,3 +138,12 @@ export const isTaskTeamAgentExecution = (
 export const isTaskTeamNestedTeamExecution = (
   value: TaskTeamMemberExecution,
 ): value is TaskTeamNestedTeamExecution => "teamRunId" in value;
+
+/** Every AgentRun ID a collaborator list holds: Agents, Team members and their delegated children. */
+export const listCollaboratorAgentRunIds = (collaborators: readonly CollaboratorEntry[]): string[] =>
+  collaborators.flatMap((entry) => entry.kind === "agent"
+    ? [entry.agentRunId]
+    : entry.members.map((member) => member.agentRunId));
+
+export const isCollaboratorTeamEntry = (entry: CollaboratorEntry): entry is CollaboratorTeamEntry =>
+  entry.kind === "agent_team";

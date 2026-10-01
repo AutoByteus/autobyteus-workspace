@@ -1,12 +1,8 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
-import {
-  projectCollaboratorAgentSource,
-  projectCollaboratorTeamSource,
-} from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+import { resolveCollaboratorCopySource } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type { TeamRunAgentNode, TeamRunAgentTeamNode } from "../../agent-team-execution/domain/team-run-config.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
-import { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
 import { findAgentOrgConfiguredSourceNode } from "./agent-org-runtime-config-projector.js";
 
 export type AgentOrgTaskSource =
@@ -15,7 +11,7 @@ export type AgentOrgTaskSource =
 
 /**
  * The runtime source of an Org task execution, on activation and on restore: the configured
- * placement first, then the run's collaborator entry. The adapter's only source reader.
+ * placement first, then an extra copy projected from the run's collaborator entry. The adapter's only source reader.
  */
 export class AgentOrgTaskSourceResolver {
   constructor(private readonly getTree: () => AgentOrgRunExecutionTreeSnapshot) {}
@@ -28,11 +24,8 @@ export class AgentOrgTaskSourceResolver {
         ? Object.freeze({ kind: "agent", node: configured })
         : Object.freeze({ kind: "agent_team", node: configured, handoffs: tree.handoffs });
     }
-    const collaborator = new AgentOrgExecutionIndex(tree).getCollaborator(address);
-    if (!collaborator) return null;
-    return collaborator.kind === "agent"
-      ? Object.freeze({ kind: "agent", node: projectCollaboratorAgentSource(collaborator) })
-      : Object.freeze({ kind: "agent_team", node: projectCollaboratorTeamSource(collaborator), handoffs: collaborator.handoffs });
+    // An extra copy of a collaborator (or of a collaborator Team member) with pending identities.
+    return resolveCollaboratorCopySource(tree.rootOrg.collaborators, address);
   }
 
   require<TKind extends AgentOrgTaskSource["kind"]>(

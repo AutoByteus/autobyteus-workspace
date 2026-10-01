@@ -13,6 +13,7 @@ export type {
   CollaboratorAgentEntry,
   CollaboratorEntry,
   CollaboratorTeamEntry,
+  CollaboratorTeamMember,
   ConfiguredAgentExecutionNode,
   IsoTimestamp,
   TaskAgentExecution,

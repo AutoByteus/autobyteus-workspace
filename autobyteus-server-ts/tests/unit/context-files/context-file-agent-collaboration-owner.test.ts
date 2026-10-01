@@ -40,7 +40,8 @@ const fixture = async () => {
     subjectKind: "agent", createdAt: "2026-09-30T00:00:00.000Z",
     host: { address: "/assistant", agentRunId: "host", agentDefinitionId: "def" },
     collaborators: [{
-      kind: "agent", address: "/code_reviewer", agentDefinitionId: "reviewer", launchConfiguration: testOrgLaunchConfiguration(),
+      kind: "agent", address: "/code_reviewer", agentDefinitionId: "reviewer", agentRunId: "reviewer-run", platformAgentRunId: null,
+      launchConfiguration: testOrgLaunchConfiguration(),
       addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "host",
     }],
     taskExecutions: [{ address: "/code_reviewer", agentRunId: "child", platformAgentRunId: null, delegatorAgentRunId: "host", startedAt: "2026-09-30T00:00:01.000Z" }],

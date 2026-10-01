@@ -239,14 +239,25 @@ queue.
 - Task Agents and task Teams are delegated children recorded in the execution
   tree (with `delegatorAgentRunId` for children created since the resource
   lifecycle); they do not alter configured topology. There are no task records.
-- A member can also delegate to a collaborator: a shared Agent or Agent Team the
-  user brought into the Org run with `@` (see
-  [Agent Communication](./agent_communication.md#collaborators)). It is recorded
-  as a `rootOrg.collaborators` entry at its own root-level address, and its runs
-  are root-hosted task executions at that address (`AgentOrgTaskSourceResolver`
-  resolves configured placements first, then collaborators). The Org, its
-  members and its mounted Teams are never offered with `@`. The `collaborator_added`
-  root event precedes the first task execution at a new collaborator address.
+- Collaborators: a shared Agent or Agent Team the user brought into the Org run
+  with `@` (see [Agent Communication](./agent_communication.md#collaborators)).
+  Each is one hosted instance recorded as a `rootOrg.collaborators` entry with
+  its run IDs, at its own root-level address. The Org hosts it like a configured
+  member (AR-006): a collaborator Agent through
+  `RootAgentExecutionRegistry.prepareConfigured`, a collaborator Team as one
+  mounted-style TeamRun through `RootTeamExecutionDirectory.prepareConfigured`
+  (members prepared lazily). Admission prepares the handles, commits the entries,
+  then publishes them (Offline) and emits `collaborator_added`; restore re-hosts
+  them in `restore` mode; termination includes them. `send_message_to` resolves
+  configured placements, then collaborators (a Team goes to its coordinator) and
+  collaborator Team members; the first message starts the instance. Member
+  contexts read the live tree: a collaborator Agent gets no Org instruction, a
+  collaborator Team member gets its Team's handoffs and instruction. The Org's
+  index records `collaborator` and `collaborator_team_member` executions; a
+  collaborator Team hosts its members' delegations in its entry's
+  `taskExecutions`. `delegate_task` to a collaborator address starts an extra
+  copy (`AgentOrgTaskSourceResolver` projects it from the entry). The Org, its
+  members and its mounted Teams are never offered with `@`.
 - Org roots use the same root-neutral `RootTaskExecutionLifecycle` as Team roots
   through `AgentOrgTaskExecutionAdapter`: idle shutdown after the grace period,
   same-root wake-on-message in `restore` mode, one liveness predicate

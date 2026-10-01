@@ -20,7 +20,7 @@ import {
 } from "../../services/agent-streaming/agent-stream-broadcaster.js";
 import { ServerMessage, ServerMessageType } from "../../services/agent-streaming/models.js";
 import { AgentRunCollaborationRootManager } from "../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
-import type { CollaboratorMentionAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import type { RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
 import type {
   SendMessageCommandAckPayload,
   AgentRunCommandCoordinatorInput,
@@ -72,18 +72,20 @@ export class AgentRunCommandCoordinator {
       if (input.mentions?.length) {
         // The host is ready (its activation ensured the Agent root); admission runs in the root's
         // gate after the lane was released, and the post stays here for dedupe and the overlay.
-        let admission: CollaboratorMentionAdmissionResult;
+        let admission: RootCollaboratorAdmissionResult;
         try {
           admission = await this.admitMentions(record.runId, input);
         } catch (error) {
           return this.failCommand(this.latestRecord(record), "COLLABORATOR_ADMISSION_FAILED", toMessage(error), { publishErrorStatus: false });
         }
         if (!admission.admitted) {
+          // Nothing was added or posted; the client keeps the draft and shows the notice.
           this.registry.markRejected({
             runId: record.runId,
             messageId: record.messageId,
-            code: admission.code === "COLLABORATOR_MENTION_INVALID" ? "COLLABORATOR_MENTION_INVALID" : "COLLABORATOR_MENTION_UNAVAILABLE",
+            code: admission.code === "COLLABORATOR_ADD_FAILED" ? "COLLABORATOR_ADD_FAILED" : "COLLABORATOR_MENTION_UNAVAILABLE",
             message: admission.message,
+            ...("collaboratorName" in admission ? { collaboratorName: admission.collaboratorName } : {}),
           });
           return this.recordResult(this.latestRecord(record), "rejected", false, false);
         }
@@ -120,7 +122,7 @@ export class AgentRunCommandCoordinator {
     }
   }
 
-  private admitMentions(runId: string, input: AgentRunCommandCoordinatorInput): Promise<CollaboratorMentionAdmissionResult> {
+  private admitMentions(runId: string, input: AgentRunCommandCoordinatorInput): Promise<RootCollaboratorAdmissionResult> {
     const root = (this.deps.collaborationRoots ?? AgentRunCollaborationRootManager.getInstance()).getActive(runId);
     if (!root) {
       return Promise.resolve({ admitted: false, code: "COLLABORATOR_MENTION_UNAVAILABLE", message: "This run cannot bring in collaborators." });
@@ -223,6 +225,7 @@ export class AgentRunCommandCoordinator {
         duplicate,
         ...(record.code ? { code: record.code } : {}),
         ...(record.message ? { message: record.message } : {}),
+        ...(record.collaboratorName ? { collaborator_name: record.collaboratorName } : {}),
         status: statusPayloadOverride ?? projection!.statusPayload,
       },
       turnId: record.turnId,

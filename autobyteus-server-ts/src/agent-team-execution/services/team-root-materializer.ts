@@ -1,4 +1,5 @@
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { CollaboratorMentionAdmission } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
 import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-v1-types.js";
 import type { TeamCommunicationV1Store } from "../../services/team-communication/team-communication-v1-store.js";
@@ -12,7 +13,7 @@ import type { TeamRunEvent } from "../domain/team-run-event.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { TaskDelegationError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TaskExecutionIdentityCapabilities } from "../task-delegation/task-execution-identity-capabilities.js";
-import type { MemberExecutionContextBuilder } from "./member-team-context-builder.js";
+import { collaboratorMemberScope, type MemberExecutionContextBuilder } from "./member-team-context-builder.js";
 import { createTeamFlatExecutionCallbacks } from "./team-flat-execution-callbacks.js";
 import { TeamRunEventPublisher } from "./team-run-event-publisher.js";
 import { TeamRunPersistenceCoordinator } from "./team-run-persistence-coordinator.js";
@@ -29,6 +30,8 @@ export type TeamRootMaterializationInput = Readonly<{
   taskExecutionIdentity: TaskExecutionIdentityCapabilities;
   executionTreeStore: TeamRunExecutionTreeStore;
   communicationStore: TeamCommunicationV1Store;
+  /** The process admission coordinator unless given. */
+  collaboratorAdmission?: CollaboratorMentionAdmission;
   onTerminated: (root: RootTeamRun) => void;
 }>;
 
@@ -78,6 +81,9 @@ export const materializeTeamRoot = async (
     commitPlatformBindingChange: (change) => root
       ? root.commitAgentPlatformBindingChange(change)
       : Promise.reject(new Error("RootTeamRun construction is incomplete.")),
+    resolveMemberScope: (address) => root
+      ? collaboratorMemberScope(root.getExecutionTreeSnapshot().rootTeam.collaborators, address)
+      : null,
   });
   const prepared = await input.factory.materialize({
     physicalScope,
@@ -103,15 +109,19 @@ export const materializeTeamRoot = async (
     });
     root = new RootTeamRun({
       rootRun: prepared.teamRun,
+      collaboratorHost: prepared.collaboratorHost,
       config: input.config,
       tree,
       messages: input.messages,
       persistence,
       publisher,
       taskExecutionIdentity: input.taskExecutionIdentity,
+      collaboratorAdmission: input.collaboratorAdmission,
       onTerminated: () => { if (root) input.onTerminated(root); },
     });
     prepared.commitAfterDurability();
+    // Collaborators are restored with the root, without preparing a runtime.
+    await root.restoreCollaborators(input.mode);
     return root;
   } catch (error) {
     if (!root) await prepared.abort().catch(() => undefined);

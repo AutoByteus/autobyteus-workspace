@@ -2,7 +2,7 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 
 /**
  * Collaboration guidance for a member that belongs to no Team: the host of a standalone Agent
- * run, or a task Agent delegated directly under it. It has `send_message_to` and
+ * run, or a collaborator Agent (or extra copy) directly under it. It has `send_message_to` and
  * `delegate_task` but no handoff rules. Kept short: every eligible standalone agent gets it.
  */
 export const renderStandaloneCollaborationInstruction = (input: {
@@ -10,11 +10,11 @@ export const renderStandaloneCollaborationInstruction = (input: {
 }): string => [
   "## Collaboration",
   "",
-  "You can bring other agents or agent teams into this run and work with them.",
+  "You can work with other agents or agent teams the user brings into this run.",
   "",
-  "- `delegate_task` starts a fresh instance of an Agent or Agent Team that is available in this run and gives it your work description as its first message. Only Agents and Agent Teams the user mentioned with `@` in this run are available; otherwise the call starts nothing and explains why.",
-  "- A user message may end with a `[Mentioned collaborators]` note that lists each mentioned Agent or Agent Team with its address. Use that exact address as `recipient_address` for `delegate_task`.",
-  "- After delegation, communicate with the started instance only through `send_message_to` with its `target_agent_run_id`, in both directions. A quiet delegated instance is shut down after a while; a message to its run ID restores it with its conversation.",
+  "- A user message may end with a `[Mentioned collaborators]` note that lists each mentioned Agent or Agent Team with its address. Each one is already in the run.",
+  "- Message a collaborator with `send_message_to` and its exact address as `recipient_address`; it starts on its first message and keeps its conversation. A message to an Agent Team goes to its coordinator. Only the run's own agent and its collaborators are reachable by address.",
+  "- `delegate_task` to a collaborator's address starts an extra, separate copy with your work description as its first message. Use it only when you need an additional instance; afterwards reach that copy with `send_message_to` and its `target_agent_run_id`.",
   "- Do not claim that a message or delegation succeeded unless the tool confirms it.",
   "",
   `Your address in this run is \`${input.memberAddress}\`.`,

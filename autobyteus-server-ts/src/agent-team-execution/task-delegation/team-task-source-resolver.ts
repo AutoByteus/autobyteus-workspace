@@ -1,9 +1,6 @@
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
-import {
-  projectCollaboratorAgentSource,
-  projectCollaboratorTeamSource,
-} from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+import { resolveCollaboratorCopySource } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type { TeamRunAgentNode, TeamRunAgentTeamNode, TeamRunConfig } from "../domain/team-run-config.js";
 import type { TeamExecutionIndex } from "../services/team-execution-index.js";
 import { findTaskConfigNode } from "./task-delegation-execution-resolution.js";
@@ -14,7 +11,7 @@ export type TeamTaskSource =
 
 /**
  * The runtime source of a task execution at an address, on activation and on restore: the
- * configured node first, then the run's collaborator entry. The only reader of configured
+ * configured node first, then an extra copy projected from the run's collaborator entry. The only reader of configured
  * task sources in the Team root.
  */
 export class TeamTaskSourceResolver {
@@ -30,11 +27,8 @@ export class TeamTaskSourceResolver {
         ? Object.freeze({ kind: "agent", node: configured })
         : Object.freeze({ kind: "agent_team", node: configured, handoffs: this.options.config.handoffs });
     }
-    const collaborator = this.options.getIndex().getCollaborator(address);
-    if (!collaborator) return null;
-    return collaborator.kind === "agent"
-      ? Object.freeze({ kind: "agent", node: projectCollaboratorAgentSource(collaborator) })
-      : Object.freeze({ kind: "agent_team", node: projectCollaboratorTeamSource(collaborator), handoffs: collaborator.handoffs });
+    // An extra copy of a collaborator (or of a collaborator Team member) with pending identities.
+    return resolveCollaboratorCopySource(this.options.getIndex().tree.rootTeam.collaborators, address);
   }
 
   requireAgent(address: AgentTeamAddress | string): TeamRunAgentNode {

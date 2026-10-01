@@ -1,4 +1,6 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { resolveInterAgentSenderAddresses } from "../../run-history/projection/run-projection-types.js";
+import { AgentRunCollaborationExecutionIndex } from "./agent-run-collaboration-execution-index.js";
 import { collaboratorExecutionSource } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { EventMonitorActiveTracePage } from "../../run-history/projection/event-monitor-active-trace-page-types.js";
@@ -49,7 +51,8 @@ export class AgentRunCollaborationMemberViewProjectionService {
     return {
       agentRunId: projection.runId,
       memberAddress: location.memberAddress,
-      conversation: projection.conversation,
+      conversation: resolveInterAgentSenderAddresses(projection.conversation, (runId) =>
+        new AgentRunCollaborationExecutionIndex(location.tree).getAgent(runId)?.address ?? null),
       activities: projection.activities,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,

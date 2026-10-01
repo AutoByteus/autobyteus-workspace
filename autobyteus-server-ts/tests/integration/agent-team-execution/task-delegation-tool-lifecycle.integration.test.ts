@@ -49,12 +49,6 @@ import {
   testAgentNode,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
-import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
-import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
-import type { CollaboratorMentionAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-mention-admission.js";
-import { createCollaboratorMentionAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
-import { collaboratorMentionNote } from "@autobyteus/agent-presentation-contracts";
-import { buildDeliveryEndpointForParticipant } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 
 const rootTeamRunId = "task-delegation-integration-run";
 const tempDirs: string[] = [];
@@ -238,7 +232,7 @@ const manualTimers = () => {
   return { timers, pendingCount: () => pending.size, fireAll: () => { const due = [...pending.values()]; pending.clear(); due.forEach((fire) => fire()); } };
 };
 
-const createHarness = async (options: { collaboratorAdmission?: CollaboratorMentionAdmission } = {}) => {
+const createHarness = async () => {
   const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "task-delegation-current-integration-"));
   tempDirs.push(memoryDir);
   AgentRunIdentityAllocator.getInstance({
@@ -277,6 +271,12 @@ const createHarness = async (options: { collaboratorAdmission?: CollaboratorMent
       allocateForAgentDefinition: async (agentDefinitionId) => `task-${agentDefinitionId}-${++allocatedTaskAgentOrdinal}`,
     }),
     rootRun: new TeamRun(backend.context, backend),
+    // Collaborators are covered by the Team-root collaborator unit test over the real flat manager.
+    collaboratorHost: {
+      prepareCollaboratorAgent: () => { throw new Error("No collaborators in this scenario."); },
+      prepareCollaboratorTeam: () => { throw new Error("No collaborators in this scenario."); },
+      requireCollaboratorTeam: () => { throw new Error("No collaborators in this scenario."); },
+    },
     config: currentConfig,
     tree,
     messages,
@@ -284,7 +284,6 @@ const createHarness = async (options: { collaboratorAdmission?: CollaboratorMent
     publisher,
     activityInspector: { inspect } as never,
     taskExecutionIdleShutdown: { gracePeriodMs: () => 600_000, timers: clock.timers },
-    collaboratorAdmission: options.collaboratorAdmission,
   });
   const commands: MemberTaskCommandCapability = Object.freeze({
     root: createTeamRootExecutionIdentity(rootTeamRunId),
@@ -485,112 +484,5 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       recipient_address: "/worker", description: "Read the absolute reference", reference_files: [referencePath],
     });
     expect(harness.backend.preparedAgents[0]!.message.content).toContain(referencePath);
-  });
-});
-
-const collaboratorCatalog = () => {
-  const agents = [
-    new AgentDefinition({ id: "code-reviewer", name: "Code Reviewer", description: "Reviews code", instructions: "x" }),
-    new AgentDefinition({ id: "lead", name: "Lead", description: "Leads", instructions: "x" }),
-    new AgentDefinition({ id: "designer", name: "Designer", description: "Designs", instructions: "x" }),
-    new AgentDefinition({ id: "agent-worker", name: "Worker", description: "Configured worker", instructions: "x" }),
-  ];
-  const teams = [new AgentTeamDefinition({
-    id: "product-team", name: "Product Team", description: "Product", instructions: "x",
-    nodes: [new TeamMember({ memberName: "lead", ref: "lead", refScope: "shared" }), new TeamMember({ memberName: "designer", ref: "designer", refScope: "shared" })],
-    coordinatorMemberName: "lead",
-    handoffs: [{ from: "/lead", to: "/designer", rules: ["When UI work is needed."] }],
-  })];
-  return createCollaboratorMentionAdmission({
-    listAgentDefinitions: async () => agents,
-    listTeamDefinitions: async () => teams,
-    getAgentDefinition: async (id) => agents.find((agent) => agent.id === id) ?? null,
-    getTeamDefinition: async (id) => teams.find((team) => team.id === id) ?? null,
-  });
-};
-
-describe("collaborators brought into a Team root with @", () => {
-  const admit = (harness: Awaited<ReturnType<typeof createHarness>>, mentions: { kind: "agent" | "agent_team"; definitionId: string }[]) =>
-    harness.root.admitCollaboratorMentions({ focusedAgentRunId: "run-coordinator", content: "Please bring them in", mentions });
-
-  it("admits mentions atomically, persists the entries, publishes them and composes the note", async () => {
-    const harness = await createHarness({ collaboratorAdmission: collaboratorCatalog() });
-    const events: TeamRunEvent[] = [];
-    harness.root.subscribeToEvents(({ event }) => events.push(event));
-    const result = await admit(harness, [{ kind: "agent_team", definitionId: "product-team" }, { kind: "agent", definitionId: "code-reviewer" }]);
-    expect(result).toMatchObject({ admitted: true });
-    if (!result.admitted) throw new Error("not admitted");
-    expect(collaboratorMentionNote.parse(result.content)).toEqual({
-      text: "Please bring them in",
-      collaborators: [
-        { name: "Product Team", kind: "agent_team", address: "/product_team" },
-        { name: "Code Reviewer", kind: "agent", address: "/code_reviewer" },
-      ],
-    });
-    const stored = await harness.treeStore.read(harness.rootDir, rootTeamRunId);
-    expect(stored!.rootTeam.collaborators.map((entry) => entry.address)).toEqual(["/product_team", "/code_reviewer"]);
-    expect(events.filter((event) => event.eventSourceType === TeamRunEventSourceType.COLLABORATOR)).toHaveLength(2);
-
-    const again = await admit(harness, [{ kind: "agent_team", definitionId: "product-team" }]);
-    expect(again).toMatchObject({ admitted: true });
-    expect(harness.root.getExecutionTreeSnapshot().rootTeam.collaborators).toHaveLength(2);
-
-    await expect(admit(harness, [{ kind: "agent", definitionId: "code-reviewer" }, { kind: "agent", definitionId: "agent-worker" }]))
-      .resolves.toMatchObject({ admitted: false, code: "COLLABORATOR_MENTION_UNAVAILABLE" });
-  });
-
-  it("delegates to collaborator Agents and Teams with the root settings, and restores from the entry", async () => {
-    const harness = await createHarness({ collaboratorAdmission: collaboratorCatalog() });
-    await admit(harness, [{ kind: "agent_team", definitionId: "product-team" }, { kind: "agent", definitionId: "code-reviewer" }]);
-    const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
-    const team = await delegate(harness.service, coordinator, { recipient_address: "/product_team", description: "Design the UI.", reference_files: [] });
-    expect(team).toMatchObject({ target_agent_run_id: expect.any(String) });
-    const [preparedTeam] = harness.backend.preparedTeams;
-    expect(preparedTeam!.teamNode.children.map((child) => child.address)).toEqual(["/product_team/lead", "/product_team/designer"]);
-    expect(preparedTeam!.handoffs).toEqual([{ from: "/product_team/lead", to: "/product_team/designer", rules: ["When UI work is needed."] }]);
-    const rootSettings = harness.root.getExecutionTreeSnapshot().rootTeam.defaultLaunchConfiguration;
-    expect(preparedTeam!.teamNode.defaultLaunchConfiguration).toEqual(rootSettings);
-
-    const { target_agent_run_id: reviewer } = await delegate(harness.service, coordinator, {
-      recipient_address: "/code_reviewer", description: "Review it.", reference_files: [],
-    }) as { target_agent_run_id: string };
-    const preparedAgent = harness.backend.preparedAgents.find((agent) => agent.agentRunId === reviewer)!;
-    expect(preparedAgent.sourceNode).toMatchObject({ address: "/code_reviewer", agentDefinitionId: "code-reviewer", runtimeKind: rootSettings.runtimeKind });
-    await harness.drain();
-    harness.emitStatus("/code_reviewer", reviewer, "idle");
-    harness.clock.fireAll();
-    await harness.drain();
-    expect(harness.backend.shutDownAgents).toEqual([reviewer]);
-    const delivered = await harness.root.deliverExactAgentMessage({
-      sender: { kind: "agent", identity: coordinator.identity, displayName: "coordinator" } as never,
-      targetAgentRunId: reviewer, content: "One more thing.",
-    });
-    expect(delivered).toMatchObject({ accepted: true });
-    expect(harness.backend.restoredAgents).toEqual([expect.objectContaining({
-      address: "/code_reviewer", agentRunId: reviewer, sourceNode: expect.objectContaining({ agentDefinitionId: "code-reviewer" }),
-    })]);
-  });
-
-  it("never lets send_message_to start a collaborator and hints at delegate_task", async () => {
-    const harness = await createHarness({ collaboratorAdmission: collaboratorCatalog() });
-    await admit(harness, [{ kind: "agent_team", definitionId: "product-team" }]);
-    const coordinator = context(harness.commands, "/coordinator", "run-coordinator");
-    await expect(harness.root.deliverInterAgentMessage({
-      rootTeamRunId,
-      sender: buildDeliveryEndpointForParticipant({ kind: "agent", identity: coordinator.identity, displayName: "coordinator" }),
-      recipientAddress: "/product_team",
-      content: "Hello?",
-    })).rejects.toThrow(/delegate_task/);
-    expect(harness.root.getExecutionTreeSnapshot().rootTeam.taskExecutions).toEqual([]);
-    expect(harness.backend.preparedTeams).toEqual([]);
-  });
-
-  it("does not authorize a definition in a run where it was not mentioned", async () => {
-    const harness = await createHarness({ collaboratorAdmission: collaboratorCatalog() });
-    const result = await delegate(harness.service, context(harness.commands, "/coordinator", "run-coordinator"), {
-      recipient_address: "/code_reviewer", description: "Review it.", reference_files: [],
-    });
-    expect(result).toEqual({ target_agent_run_id: null, message: expect.stringContaining("@") });
-    expect(harness.backend.preparedAgents).toEqual([]);
   });
 });

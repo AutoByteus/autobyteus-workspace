@@ -18,8 +18,13 @@ interface HistoricalReplayMessageEventBase {
 }
 
 export type HistoricalReplayMessageEvent = HistoricalReplayMessageEventBase & (
-  | { role: "user"; fileAttachments?: readonly ContextFileReference[] }
-  | { role: string | null; fileAttachments?: never }
+  | {
+      role: "user";
+      fileAttachments?: readonly ContextFileReference[];
+      /** The sender AgentRun of an agent-to-agent delivery (RD-004); absent for user input. */
+      senderId?: string | null;
+    }
+  | { role: string | null; fileAttachments?: never; senderId?: never }
 );
 
 export interface HistoricalReplayReasoningEvent {

@@ -7,6 +7,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { AgentTeamDefinition, TeamMember } from "../../../src/agent-team-definition/domain/agent-team-definition.js";
 import { createCollaboratorMentionAdmission } from "../../../src/agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { prepareCollaboratorHandles } from "../../../src/agent-collaboration/execution/backends/collaborator-handle-preparation.js";
+import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import { AgentOrgStreamHandler } from "../../../src/services/agent-streaming/agent-org-stream-handler.js";
 import { projectAgentOrgConfiguredAgentNode, projectAgentOrgConfiguredTeamNode } from "../../../src/agent-org-execution/services/agent-org-runtime-config-projector.js";
 import type { TeamRunAgentTeamNode } from "../../../src/agent-team-execution/domain/team-run-config.js";
@@ -28,7 +30,14 @@ import { flushMicrotasks, observeConfiguredHandles } from "./helpers/task-public
 const directories: string[] = [];
 afterEach(async () => { vi.restoreAllMocks(); await Promise.all(directories.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true }))); });
 
-const admission = () => {
+const validator = (runnable = true) => ({
+  validate: vi.fn(),
+  validateMany: vi.fn(async (inputs: readonly unknown[]) => inputs.map(() => runnable
+    ? { kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } }
+    : { kind: "model_unavailable" as const })),
+}) as unknown as RunModelSelectionValidator;
+
+const admission = (runnable = true) => {
   const agents = [
     new AgentDefinition({ id: "definition-director", name: "Director", description: "d", instructions: "x" }),
     new AgentDefinition({ id: "code-reviewer", name: "Code Reviewer", description: "Reviews", instructions: "x" }),
@@ -44,10 +53,10 @@ const admission = () => {
     listTeamDefinitions: async () => teams,
     getAgentDefinition: async (id) => agents.find((agent) => agent.id === id) ?? null,
     getTeamDefinition: async (id) => teams.find((team) => team.id === id) ?? null,
-  });
+  }, validator(runnable));
 };
 
-const buildOrg = async () => {
+const buildOrg = async (options: { runnable?: boolean } = {}) => {
   vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
   const handles = observeConfiguredHandles();
   const root = createAgentOrgRootExecutionIdentity("org-collaborators");
@@ -89,10 +98,11 @@ const buildOrg = async () => {
       } },
     } as never,
     activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
-    collaboratorAdmission: admission(),
+    collaboratorAdmission: admission(options.runnable ?? true),
+    prepareCollaboratorHandles: (entries) => prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode: "fresh" }),
   });
   run.activate();
-  return { handles, root, orgMemoryDir, executionTreeStore, owner: run };
+  return { handles, root, orgMemoryDir, executionTreeStore, owner: run, rootAgents, teams, publisher };
 };
 
 describe("collaborators brought into an AgentOrg run with @", () => {
@@ -120,10 +130,55 @@ describe("collaborators brought into an AgentOrg run with @", () => {
       content: "Ask the director", context_file_paths: [], image_urls: [], message_id: "m2", dedupe_key: "d2",
       mentions: [{ kind: "agent", definition_id: "definition-director" }],
     } }));
-    expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: { state: "rejected", code: "COLLABORATOR_MENTION_UNAVAILABLE" } });
+    expect(wire.at(-1)).toMatchObject({ type: "AGENT_COMMAND_ACK", payload: {
+      state: "rejected", code: "COLLABORATOR_ADD_FAILED", collaborator_name: "Director", message: "Director is already in this run.",
+    } });
   });
 
-  it("keeps the Org host rule: a mounted-Team member's collaborator run stays under that Team", async () => {
+  it("hosts each collaborator once at admission, Offline, and reaches it by address (DI-001)", async () => {
+    const f = await buildOrg();
+    await f.owner.admitCollaboratorMentions({ focusedAgentRunId: "director", content: "x", mentions: [
+      { kind: "agent", definitionId: "code-reviewer" }, { kind: "agent_team", definitionId: "product-team" },
+    ] });
+    const [reviewer, product] = f.owner.getExecutionTreeSnapshot().rootOrg.collaborators;
+    if (reviewer?.kind !== "agent" || product?.kind !== "agent_team") throw new Error("collaborators were not added");
+    // Hosted handles exist before any message; nothing has started.
+    expect(f.rootAgents.get(reviewer.agentRunId)).not.toBeNull();
+    expect(f.teams.get(product.teamRunId)?.isActive()).toBe(true);
+    const offline = f.owner.getAgentStatusSnapshots().filter((snapshot) =>
+      [reviewer.agentRunId, product.members[0]!.agentRunId].includes(snapshot.execution.agentRunId));
+    expect(offline.map((snapshot) => snapshot.details.status)).toEqual(["offline", "offline"]);
+    // Message resolution: one execution per address.
+    expect(f.owner.resolveMessageRecipient("/code_reviewer").receiver.agentRunId).toBe(reviewer.agentRunId);
+    expect(f.owner.resolveMessageRecipient("/product_team")).toMatchObject({ kind: "agent_team", receiver: { address: "/product_team/designer" } });
+    expect(f.owner.resolveMessageRecipient("/product_team/designer").receiver.agentRunId).toBe(product.members[0]!.agentRunId);
+    // send_message_to by address starts the collaborator Agent and delivers.
+    const director = f.handles.get("director")!.input.identity;
+    await expect(f.owner.deliverLogicalMessage(director, { recipientAddress: "/code_reviewer", content: "Please review" }))
+      .resolves.toMatchObject({ accepted: true });
+    expect(f.handles.get(reviewer.agentRunId)!.handle.reserveInput).toHaveBeenCalledTimes(1);
+    // ...and a collaborator Team member, through its hosted TeamRun.
+    await expect(f.owner.deliverLogicalMessage(director, { recipientAddress: "/product_team", content: "Design it" }))
+      .resolves.toMatchObject({ accepted: true });
+    expect(f.handles.get(product.members[0]!.agentRunId)!.handle.reserveInput).toHaveBeenCalledTimes(1);
+    // Re-mention reuses the same instance.
+    await f.owner.admitCollaboratorMentions({ focusedAgentRunId: "director", content: "again", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
+    expect(f.owner.getExecutionTreeSnapshot().rootOrg.collaborators).toHaveLength(2);
+  });
+
+  it("rejects an unrunnable mention without writing, hosting or posting anything", async () => {
+    const f = await buildOrg({ runnable: false });
+    const events: unknown[] = [];
+    f.publisher.subscribe(({ event }) => events.push(event));
+    const result = await f.owner.admitCollaboratorMentions({ focusedAgentRunId: "director", content: "x", mentions: [{ kind: "agent_team", definitionId: "product-team" }] });
+    expect(result).toMatchObject({ admitted: false, code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Product Team" });
+    expect(f.owner.getExecutionTreeSnapshot().rootOrg.collaborators).toEqual([]);
+    expect((await f.executionTreeStore.read(f.orgMemoryDir, f.root.rootRunId))!.rootOrg.collaborators).toEqual([]);
+    expect(f.teams.list().map((run) => run.teamRunId)).toEqual(["configured-team"]);
+    expect(events).toEqual([]);
+  });
+
+  it("keeps the Org host rule for extra copies: a mounted-Team member's copy stays under that Team (REQ-013)", async () => {
     const f = await buildOrg();
     await f.owner.admitCollaboratorMentions({ focusedAgentRunId: "configured-lead", content: "x", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
     const lead = { identity: createCollaborationMemberExecutionIdentity({ root: f.root, memberAddress: "/target/lead", agentRunId: "configured-lead" }) };
@@ -143,8 +198,11 @@ describe("collaborators brought into an AgentOrg run with @", () => {
     const policy = admission().policy;
     const listed = await policy.listCandidates(f.owner.collaboratorPort());
     expect(listed.candidates.map((candidate) => candidate.definitionId)).toEqual(["code-reviewer", "designer", "product-team"]);
+    await f.owner.admitCollaboratorMentions({ focusedAgentRunId: "director", content: "x", mentions: [{ kind: "agent_team", definitionId: "product-team" }] });
+    // The Team and its member Agents are now in the run.
+    expect((await policy.listCandidates(f.owner.collaboratorPort())).candidates.map((candidate) => candidate.definitionId)).toEqual(["code-reviewer"]);
     const director = { identity: f.handles.get("director")!.input.identity };
-    await expect(f.owner.delegateTask(director, { recipient_address: "/product_team", description: "x" }))
+    await expect(f.owner.delegateTask(director, { recipient_address: "/marketing_team", description: "x" }))
       .resolves.toEqual({ target_agent_run_id: null, message: expect.stringContaining("@") });
   });
 });

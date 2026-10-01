@@ -74,7 +74,8 @@ describe("TaskAgentExecutionRegistry single liveness predicate (AR-005)", () => 
     await expect(registry.executeCommand("task-run", { kind: "approve_tool", invocationId: "inv", approved: true, reason: null }))
       .resolves.toMatchObject({ accepted: false, code: "RUN_NOT_ACTIVE" });
     await expect(registry.executeCommand("task-run", { kind: "interrupt" })).resolves.toMatchObject({ accepted: false, code: "RUN_NOT_ACTIVE" });
-    expect(execution.handle.interrupt).toBeUndefined();
+    expect(execution.handle.interrupt).not.toHaveBeenCalled();
+    expect(execution.handle.approveToolInvocation).not.toHaveBeenCalled();
 
     // Wake: restore re-activates the retained handle in place before any input is reserved.
     await registry.restore({ address: "/worker", agentRunId: "task-run", platformAgentRunId: null, sourceNode: worker });

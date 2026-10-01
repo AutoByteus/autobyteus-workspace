@@ -1,15 +1,13 @@
 import type {
   CollaboratorEntry,
-  ConfiguredAgentExecutionNode,
   RootConfiguredTeamExecutionNode,
-  TaskAgentExecution,
   TaskExecution,
-  TaskTeamAgentExecution,
   TaskTeamExecution,
   TaskTeamMemberExecution,
   TaskTeamNestedTeamExecution,
   TeamRunExecutionTreeSnapshot,
 } from "../domain/team-run-execution-tree.js";
+import { mapCollaboratorEntries } from "../../run-history/domain/collaborator-entry-tree-mapping.js";
 import { validateTeamRunExecutionTreePayload } from "../../run-history/store/team-run-execution-tree-schema.js";
 import type { TeamAgentPlatformBinding } from "../domain/team-agent-platform-binding.js";
 import { TeamAgentPlatformBindingError } from "../domain/team-agent-platform-binding.js";
@@ -50,14 +48,28 @@ const mapTeam = (
   return { ...team, members, taskExecutions } as TeamWithTasks;
 };
 
+/**
+ * Applies `change` to the owner TeamRun: the root, a task Team, or a collaborator Team (which
+ * hosts its members' delegations like any Team).
+ */
 const replaceRoot = (
   tree: TeamRunExecutionTreeSnapshot,
   targetTeamRunId: string,
-  change: (team: TeamWithTasks) => TeamWithTasks,
-): TeamRunExecutionTreeSnapshot => validateTeamRunExecutionTreePayload({
-  ...tree,
-  rootTeam: mapTeam(tree.rootTeam, targetTeamRunId, change),
-}, tree.rootTeam.teamRunId);
+  change: <T extends { taskExecutions: readonly TaskExecution[] }>(team: T) => T,
+): TeamRunExecutionTreeSnapshot => {
+  const rootTeam = mapTeam(tree.rootTeam, targetTeamRunId, change) as RootConfiguredTeamExecutionNode;
+  return validateTeamRunExecutionTreePayload({
+    ...tree,
+    rootTeam: {
+      ...rootTeam,
+      collaborators: tree.rootTeam.collaborators.map((entry) => {
+        if (entry.kind === "agent") return entry;
+        if (entry.teamRunId === targetTeamRunId) return change(entry);
+        return { ...entry, taskExecutions: entry.taskExecutions.map((task) => mapTask(task, targetTeamRunId, change)) };
+      }),
+    },
+  }, tree.rootTeam.teamRunId);
+};
 
 export const addTaskExecutionToTree = (input: {
   tree: TeamRunExecutionTreeSnapshot;
@@ -66,14 +78,14 @@ export const addTaskExecutionToTree = (input: {
 }): TeamRunExecutionTreeSnapshot => replaceRoot(
   input.tree,
   input.ownerTeamRunId,
-  (team) => {
+  <T extends { taskExecutions: readonly TaskExecution[] }>(team: T): T => {
     if (team.taskExecutions.some((task) =>
       "agentRunId" in task
         ? "agentRunId" in input.execution && task.agentRunId === input.execution.agentRunId
         : "teamRunId" in input.execution && task.teamRunId === input.execution.teamRunId)) {
       throw new Error("Task execution is already present in the owner TeamRun.");
     }
-    return { ...team, taskExecutions: [...team.taskExecutions, input.execution] } as TeamWithTasks;
+    return { ...team, taskExecutions: [...team.taskExecutions, input.execution] };
   },
 );
 
@@ -86,7 +98,7 @@ export const addCollaboratorsToTree = (input: {
   rootTeam: { ...input.tree.rootTeam, collaborators: [...input.tree.rootTeam.collaborators, ...input.collaborators] },
 }, input.tree.rootTeam.teamRunId);
 
-type AgentExecutionNode = ConfiguredAgentExecutionNode | TaskAgentExecution | TaskTeamAgentExecution;
+type AgentExecutionNode = Readonly<{ agentRunId: string; address: string; platformAgentRunId: string | null }>;
 
 export type TeamAgentPlatformBindingMutation = Readonly<{
   outcome: "adopted" | "unchanged";
@@ -146,6 +158,7 @@ export const adoptAgentPlatformBindingInTree = (input: {
       ...input.tree.rootTeam,
       members: input.tree.rootTeam.members.map(mapAgent),
       taskExecutions: input.tree.rootTeam.taskExecutions.map(mapTask),
+      collaborators: mapCollaboratorEntries(input.tree.rootTeam.collaborators, { agent: mapAgent, task: mapTask }),
     },
   };
   if (matches !== 1) {
@@ -204,6 +217,7 @@ export const replaceAgentPlatformBindingWithoutConversationInTree = (input: {
       ...input.tree.rootTeam,
       members: input.tree.rootTeam.members.map(mapAgent),
       taskExecutions: input.tree.rootTeam.taskExecutions.map(mapTask),
+      collaborators: mapCollaboratorEntries(input.tree.rootTeam.collaborators, { agent: mapAgent, task: mapTask }),
     },
   };
   if (matches !== 1) {

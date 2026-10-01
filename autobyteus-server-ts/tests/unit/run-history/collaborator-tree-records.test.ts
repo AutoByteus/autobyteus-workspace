@@ -10,18 +10,20 @@ import {
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
 
 const launch = testOrgLaunchConfiguration();
-const agentEntry = (address = "/code_reviewer") => ({
-  kind: "agent", address, agentDefinitionId: "reviewer-def", launchConfiguration: launch,
-  addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "run-coordinator",
+const agentEntry = (address = "/code_reviewer", agentRunId = `${address.slice(1)}-run`) => ({
+  kind: "agent", address, agentDefinitionId: "reviewer-def", agentRunId, platformAgentRunId: null,
+  launchConfiguration: launch, addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "run-coordinator",
 });
-const teamEntry = (address = "/product_team") => ({
-  kind: "agent_team", address, teamDefinitionId: "product-team-def", coordinatorAddress: `${address}/lead`,
+const teamEntry = (address = "/product_team", taskExecutions: unknown[] = []) => ({
+  kind: "agent_team", address, teamDefinitionId: "product-team-def", teamRunId: `${address.slice(1)}-team-run`,
+  coordinatorAddress: `${address}/lead`,
   members: [
-    { address: `${address}/lead`, agentDefinitionId: "lead-def" },
-    { address: `${address}/designer`, agentDefinitionId: "designer-def" },
+    { address: `${address}/lead`, agentDefinitionId: "lead-def", agentRunId: `${address.slice(1)}-lead-run`, platformAgentRunId: null },
+    { address: `${address}/designer`, agentDefinitionId: "designer-def", agentRunId: `${address.slice(1)}-designer-run`, platformAgentRunId: null },
   ],
   handoffs: [{ from: `${address}/lead`, to: `${address}/designer`, rules: ["When UI work is needed."] }],
   defaultLaunchConfiguration: launch,
+  taskExecutions,
   addedAt: "2026-09-30T00:00:00.000Z", addedViaAgentRunId: "run-coordinator",
 });
 const keys = (value: unknown) => Object.keys(value as object).sort();
@@ -45,14 +47,43 @@ describe("collaborators in Team and Org execution trees", () => {
     expect(JSON.parse(JSON.stringify(read)).rootTeam.collaborators).toEqual([]);
   });
 
-  it("keeps Agent and Team entries exactly, with no run identity", () => {
+  it("keeps Agent and Team entries exactly, with their run identities", () => {
     const read = validateTeamRunExecutionTreePayload(withTeamRoot({
       collaborators: [agentEntry(), { ...teamEntry(), stray: true }],
     }));
     expect(read.rootTeam.collaborators.map(keys)).toEqual([
-      ["addedAt", "addedViaAgentRunId", "address", "agentDefinitionId", "kind", "launchConfiguration"],
-      ["addedAt", "addedViaAgentRunId", "address", "coordinatorAddress", "defaultLaunchConfiguration", "handoffs", "kind", "members", "teamDefinitionId"],
+      ["addedAt", "addedViaAgentRunId", "address", "agentDefinitionId", "agentRunId", "kind", "launchConfiguration", "platformAgentRunId"],
+      ["addedAt", "addedViaAgentRunId", "address", "coordinatorAddress", "defaultLaunchConfiguration", "handoffs", "kind", "members", "taskExecutions", "teamDefinitionId", "teamRunId"],
     ]);
+    const team = read.rootTeam.collaborators[1]!;
+    expect(team.kind === "agent_team" && team.members.map(keys)).toEqual([
+      ["address", "agentDefinitionId", "agentRunId", "platformAgentRunId"],
+      ["address", "agentDefinitionId", "agentRunId", "platformAgentRunId"],
+    ]);
+    expect(() => validateTeamRunExecutionTreePayload(withTeamRoot({
+      collaborators: [{ ...agentEntry(), agentRunId: undefined }],
+    }))).toThrow("rootTeam.collaborators[0].agentRunId");
+  });
+
+  it("rejects run IDs that repeat across collaborators or collide with the tree", () => {
+    expect(() => validateTeamRunExecutionTreePayload(withTeamRoot({
+      collaborators: [agentEntry("/a", "same-run"), agentEntry("/b", "same-run")],
+    }))).toThrow("Duplicate run ID 'same-run'");
+    const tree = teamTree();
+    expect(() => validateTeamRunExecutionTreePayload(withTeamRoot({
+      collaborators: [agentEntry("/a", tree.rootTeam.members[0]!.agentRunId)],
+    }))).toThrow("Duplicate run ID");
+  });
+
+  it("accepts a collaborator Team's own delegations inside its entry", () => {
+    const read = validateTeamRunExecutionTreePayload(withTeamRoot({
+      collaborators: [teamEntry("/product_team", [{
+        address: "/product_team/designer", agentRunId: "designer-copy-run", platformAgentRunId: null,
+        delegatorAgentRunId: "product_team-lead-run", startedAt: "2026-09-30T00:00:01.000Z",
+      }])],
+    }));
+    const team = read.rootTeam.collaborators[0]!;
+    expect(team.kind === "agent_team" && team.taskExecutions).toHaveLength(1);
   });
 
   it("rejects collisions, non-root addresses, bad layouts and mismatched task executions", () => {
@@ -85,7 +116,7 @@ describe("collaborators in Team and Org execution trees", () => {
     }))).toThrow("does not match collaborator");
   });
 
-  it("accepts a matching collaborator run at the root of the tree", () => {
+  it("accepts a matching extra copy at the root of the tree", () => {
     const read = validateTeamRunExecutionTreePayload(withTeamRoot({
       collaborators: [teamEntry()],
       taskExecutions: [{

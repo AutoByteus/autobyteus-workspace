@@ -55,16 +55,14 @@ export class CollaboratorCandidatePolicy {
   constructor(private readonly catalog: CollaboratorDefinitionCatalog) {}
 
   /**
-   * In the run: the root's own and configured definitions, plus every collaborator with at
-   * least one task execution and the member Agents of such collaborator Teams. A collaborator
-   * with no task execution (a failed or unattempted add) is not in the run.
+   * In the run: the root's own and configured definitions, every collaborator entry (an entry
+   * exists only after a successful add) and the member Agents of collaborator Teams.
    */
   inRunDefinitionIds(port: CollaboratorRootPort): InRunDefinitionIds {
     const configured = port.configuredDefinitionIds();
     const agents = new Set(configured.agentDefinitionIds);
     const teams = new Set(configured.teamDefinitionIds);
     for (const entry of port.collaborators()) {
-      if (!port.hasTaskExecutionAt(entry.address)) continue;
       if (entry.kind === "agent") {
         agents.add(entry.agentDefinitionId);
         continue;
@@ -139,6 +137,6 @@ export class CollaboratorCandidatePolicy {
   }
 
   private alreadyInRun(name: string): CollaboratorMentionError {
-    return new CollaboratorMentionError("COLLABORATOR_MENTION_UNAVAILABLE", `${name} is already in this run.`);
+    return new CollaboratorMentionError("COLLABORATOR_MENTION_UNAVAILABLE", `${name} is already in this run.`, name);
   }
 }

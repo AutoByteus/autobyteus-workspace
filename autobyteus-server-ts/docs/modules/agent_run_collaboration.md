@@ -4,9 +4,10 @@
 
 `src/agent-run-collaboration/` owns the collaboration root of a standalone Agent run (root kind
 `agent`). A user in a standalone run can type `@` and bring a shared Agent or Agent Team into
-the run; the run's agent (the host) delegates to it with `delegate_task`, and the collaborator
-runs as a task child under the run. This module holds those children, their collaborator
-entries and their messages. The host itself stays a normal standalone AgentRun, owned by the
+the run. The root hosts one instance per collaborator (added when the user sends, Offline until
+its first message); the run's agent (the host) messages it with `send_message_to` by address, and
+`delegate_task` to its address starts an extra copy. This module holds the collaborators, their
+copies and their messages. The host itself stays a normal standalone AgentRun, owned by the
 standalone lifecycle and streamed on `/ws/agent/:runId`.
 
 Collaborators, admission and the candidate policy are shared by all roots; see
@@ -45,16 +46,29 @@ standalone collaboration section in its prompt; it has no `get_handoff_rules`.
   registered root. Callers take the root gate only afterwards, so the lane and the gate are never
   nested.
 
+## Hosting
+
+The root hosts collaborators in its existing backends (AR-006): a collaborator Agent through
+`RootAgentExecutionRegistry.prepareConfigured`, a collaborator Team as one TeamRun through
+`RootTeamExecutionDirectory.prepareConfigured` (members prepared lazily). Admission prepares the
+handles, commits the entries (the first commit creates the package), then publishes them and
+emits `collaborator_added`. `AgentRunCollaborationRootBuilder.build` re-hosts stored collaborators
+in `restore` mode, and termination stops them with every other child. Messages resolve the host,
+a collaborator Agent, a collaborator Team (its coordinator) or a collaborator Team member. An
+extra copy is hosted by the delegator's host: the root for a root-level Agent, the collaborator
+TeamRun for its members (recorded in the entry's `taskExecutions`). A collaborator Agent directly
+under the root is not Team-scoped; members of a collaborator Team are.
+
 ## Package
 
 ```text
 memory/agents/<hostRunId>/
   run_metadata.json
   collaboration/
-    collaboration_tree.json        # subjectKind "agent", host, collaborators, taskExecutions
+    collaboration_tree.json        # subjectKind "agent", host, collaborators (with run IDs), taskExecutions (extra copies)
     communication_messages.json    # schemaVersion 1, hostRunId, messages
-    <childRunId>/...               # a task Agent's memory
-    <taskTeamRunId>/<agentRunId>/... # members of a task Team
+    <childRunId>/...               # a collaborator Agent's (or copy's) memory
+    <teamRunId>/<agentRunId>/...   # members of a collaborator Team (or of a copy)
 ```
 
 Trees are read tolerantly and written exactly, like the Team and Org trees. The location
@@ -64,8 +78,9 @@ service resolves a child through the third root family `agents`.
 
 - **Admission.** A host SEND_MESSAGE with `mentions` on `/ws/agent/:runId` is admitted by the
   command coordinator after the host is active; a child's SEND_MESSAGE with `mentions` on the
-  collaboration stream is admitted by the root. Rejections come back as
-  `COLLABORATOR_MENTION_*` / `COLLABORATOR_ADMISSION_FAILED`.
+  collaboration stream is admitted by the root. A collaborator that cannot be added rejects the
+  send with `COLLABORATOR_ADD_FAILED` and `collaborator_name` (nothing is posted); a run that
+  cannot host collaborators answers `COLLABORATOR_MENTION_UNAVAILABLE`.
 - **Collaboration stream** `/ws/agent-collaboration/:hostRunId`: `connect` calls
   `resolveCommandReadyRoot` (restoring a stopped host), then sends the Agent-root snapshot
   (`root_subject_kind: "agent"`, `root_agent`), events (`agent_presentation`,

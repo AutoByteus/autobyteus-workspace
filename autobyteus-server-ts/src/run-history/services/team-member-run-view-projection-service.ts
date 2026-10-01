@@ -1,4 +1,5 @@
 import { appConfigProvider } from "../../config/app-config-provider.js";
+import { resolveInterAgentSenderAddresses } from "../projection/run-projection-types.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import type { EventMonitorActiveTracePage } from "../projection/event-monitor-active-trace-page-types.js";
 import { AgentRunViewProjectionService, type RunProjection } from "./agent-run-view-projection-service.js";
@@ -43,7 +44,8 @@ export class TeamMemberRunViewProjectionService {
     });
     return {
       agentRunId: projection.runId,
-      conversation: projection.conversation,
+      conversation: resolveInterAgentSenderAddresses(projection.conversation, (runId) =>
+        new TeamExecutionIndex(location.tree).getAgent(runId)?.address ?? null),
       activities: projection.activities,
       summary: projection.summary,
       lastActivityAt: projection.lastActivityAt,

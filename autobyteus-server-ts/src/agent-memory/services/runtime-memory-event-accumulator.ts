@@ -1,4 +1,5 @@
 import type { AgentRunUserMessageForwardedPayload } from "../../agent-execution/domain/agent-run-command-observer.js";
+import { resolveInterAgentSenderId } from "autobyteus-ts/agent/message/inter-agent-sender.js";
 import type { AgentRunEvent } from "../../agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.js";
 import type { ExternalRuntimeMemoryWriter } from "../store/external-runtime-memory-writer.js";
@@ -60,6 +61,7 @@ export class RuntimeMemoryEventAccumulator {
       ts: payload.forwardedAt.getTime() / 1000,
       media,
       fileAttachments,
+      senderId: resolveInterAgentSenderId(payload.message.metadata),
     });
   }
 

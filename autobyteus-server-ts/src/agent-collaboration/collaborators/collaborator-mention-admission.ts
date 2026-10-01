@@ -1,4 +1,5 @@
 import {
+  COLLABORATOR_ADD_FAILED,
   composeCollaboratorMentionNote,
   type CollaboratorMentionDto,
   type MentionedCollaborator,
@@ -9,14 +10,24 @@ import type {
   CollaboratorCandidatePolicy,
   CollaboratorMention,
 } from "./collaborator-candidate-policy.js";
-import type { CollaboratorEntryBuilder } from "./collaborator-entry-builder.js";
+import type { CollaboratorEntryBuilder, CollaboratorEntryPlan } from "./collaborator-entry-builder.js";
 import type { CollaboratorRootPort } from "./collaborator-root-port.js";
-import { CollaboratorMentionError } from "./collaborator-errors.js";
+import { CollaboratorAddError, CollaboratorMentionError } from "./collaborator-errors.js";
+import type { CollaboratorRunnabilityValidator } from "./collaborator-runnability-validator.js";
+import { CollaboratorIdentityAllocator, type CollaboratorIdentityPorts } from "./collaborator-identity-allocator.js";
 
-/** What a root returns to the transport: the content to post, or why nothing was admitted. */
+/**
+ * What a root returns to the transport: the content to post, or the collaborator that could
+ * not be added and why (nothing was added and the message must not be posted).
+ */
 export type CollaboratorMentionAdmissionResult =
   | Readonly<{ admitted: true; content: string; collaborators: readonly MentionedCollaborator[] }>
-  | Readonly<{ admitted: false; code: string; message: string }>;
+  | Readonly<{ admitted: false; code: typeof COLLABORATOR_ADD_FAILED; collaboratorName: string; message: string }>;
+
+/** A root's answer to a send with mentions: the admission result, or a send the root cannot admit at all. */
+export type RootCollaboratorAdmissionResult =
+  | CollaboratorMentionAdmissionResult
+  | Readonly<{ admitted: false; code: "RUN_NOT_FOUND" | "COLLABORATOR_MENTION_UNAVAILABLE"; message: string }>;
 
 export const toCollaboratorMentions = (
   mentions: readonly CollaboratorMentionDto[] | null | undefined,
@@ -26,46 +37,65 @@ export const toCollaboratorMentions = (
 export type { CollaboratorMention };
 
 export type CollaboratorAdmissionPlan = Readonly<{
-  /** Entries the root must commit in one tree write before anything is delivered. */
-  newEntries: readonly CollaboratorEntry[];
+  /** Collaborators to add: validated and allocated before the root commits them. */
+  newPlans: readonly CollaboratorEntryPlan[];
   /** Every mention, in order, as the note lists it. */
   resolved: readonly MentionedCollaborator[];
 }>;
 
 /**
- * Stateless admission coordinator. It validates every mention through the policy, reuses the
- * existing entry per definition or builds a new one, and returns the plan. All or nothing:
- * any rejected mention rejects the whole plan. It never writes and never delivers.
+ * Stateless admission coordinator (DS-001). Inside the root's operation gate it plans every
+ * mention (reusing the entry of a definition that is already a collaborator), checks that each
+ * new collaborator can run with the root settings, allocates its run IDs, lets the root commit
+ * and publish the new entries, and composes the mention note. All or nothing: any failure
+ * returns `COLLABORATOR_ADD_FAILED` and nothing is added or posted.
  */
 export class CollaboratorMentionAdmission {
   constructor(private readonly dependencies: Readonly<{
     policy: CollaboratorCandidatePolicy;
     entries: CollaboratorEntryBuilder;
+    runnability: CollaboratorRunnabilityValidator;
   }>) {}
 
   get policy(): CollaboratorCandidatePolicy { return this.dependencies.policy; }
 
-  /**
-   * The admission sequence every root runs inside its operation gate: plan (all or nothing),
-   * let the root commit new entries in one tree write, then compose the note. Nothing posts here.
-   */
   async admit(port: CollaboratorRootPort, input: Readonly<{
     focusedAgentRunId: string;
     content: string;
     mentions: readonly CollaboratorMention[];
-    commitEntries(entries: readonly CollaboratorEntry[]): Promise<void>;
+    identities: CollaboratorIdentityPorts;
+    /**
+     * The root commits the new entries in one tree write and publishes their hosted
+     * executions (Offline) and `collaborator_added`. A failure before the durable commit
+     * leaves the run unchanged.
+     */
+    addEntries(entries: readonly CollaboratorEntry[]): Promise<void>;
   }>): Promise<CollaboratorMentionAdmissionResult> {
     if (input.mentions.length === 0) {
       return Object.freeze({ admitted: true, content: input.content, collaborators: Object.freeze([]) });
     }
-    let plan: CollaboratorAdmissionPlan;
+    let plan: CollaboratorAdmissionPlan | null = null;
     try {
       plan = await this.plan(port, { focusedAgentRunId: input.focusedAgentRunId, mentions: input.mentions, now: new Date().toISOString() });
+      await this.dependencies.runnability.validate(plan.newPlans);
+      const allocator = new CollaboratorIdentityAllocator(input.identities);
+      const entries: CollaboratorEntry[] = [];
+      for (const newPlan of plan.newPlans) {
+        try { entries.push(await allocator.allocate(newPlan)); }
+        catch (error) { throw new CollaboratorAddError(newPlan.name, `Its run could not be prepared: ${messageOf(error)}`); }
+      }
+      if (entries.length) {
+        try { await input.addEntries(entries); }
+        catch (error) { throw new CollaboratorAddError(plan.newPlans[0]!.name, messageOf(error)); }
+      }
     } catch (error) {
-      if (error instanceof CollaboratorMentionError) return Object.freeze({ admitted: false, code: error.code, message: error.message });
+      if (error instanceof CollaboratorAddError) {
+        return Object.freeze({
+          admitted: false, code: COLLABORATOR_ADD_FAILED, collaboratorName: error.collaboratorName, message: error.reason,
+        });
+      }
       throw error;
     }
-    if (plan.newEntries.length) await input.commitEntries(plan.newEntries);
     return Object.freeze({
       admitted: true,
       content: composeCollaboratorMentionNote(input.content, plan.resolved),
@@ -73,6 +103,7 @@ export class CollaboratorMentionAdmission {
     });
   }
 
+  /** Plans every mention; never writes or allocates. Throws `CollaboratorAddError`. */
   async plan(port: CollaboratorRootPort, input: Readonly<{
     focusedAgentRunId: string;
     mentions: readonly CollaboratorMention[];
@@ -80,28 +111,37 @@ export class CollaboratorMentionAdmission {
   }>): Promise<CollaboratorAdmissionPlan> {
     const admissible = [];
     for (const mention of input.mentions) {
-      admissible.push(await this.dependencies.policy.requireAdmissible(port, mention));
+      try { admissible.push(await this.dependencies.policy.requireAdmissible(port, mention)); }
+      catch (error) {
+        if (error instanceof CollaboratorMentionError) throw new CollaboratorAddError(error.collaboratorName ?? mention.definitionId, error.message);
+        throw error;
+      }
     }
     const addressesInUse = new Set(port.addressesInUse());
-    const newEntries: CollaboratorEntry[] = [];
+    const newPlans: CollaboratorEntryPlan[] = [];
     const resolved: MentionedCollaborator[] = [];
     for (const definition of admissible) {
-      const reused = [...port.collaborators(), ...newEntries].find((entry) => entry.kind === definition.kind
-        && (entry.kind === "agent" ? entry.agentDefinitionId : entry.teamDefinitionId) === definition.definition.id);
-      let entry = reused;
-      if (!entry) {
-        const address = allocateCollaboratorAddress(definition.definition.name, addressesInUse);
+      const sameDefinition = (entry: CollaboratorEntry | CollaboratorEntryPlan) => entry.kind === definition.kind
+        && (entry.kind === "agent" ? entry.agentDefinitionId : entry.teamDefinitionId) === definition.definition.id;
+      let address = (port.collaborators().find(sameDefinition) ?? newPlans.find(sameDefinition))?.address;
+      if (!address) {
+        address = allocateCollaboratorAddress(definition.definition.name, addressesInUse);
         addressesInUse.add(address);
-        entry = await this.dependencies.entries.build(definition, {
-          address,
-          rootLaunchConfiguration: port.rootLaunchConfiguration(),
-          addedAt: input.now,
-          addedViaAgentRunId: input.focusedAgentRunId,
-        });
-        newEntries.push(entry);
+        try {
+          newPlans.push(await this.dependencies.entries.build(definition, {
+            address,
+            rootLaunchConfiguration: port.rootLaunchConfiguration(),
+            addedAt: input.now,
+            addedViaAgentRunId: input.focusedAgentRunId,
+          }));
+        } catch (error) {
+          throw new CollaboratorAddError(definition.definition.name, `Its definition could not be resolved: ${messageOf(error)}`);
+        }
       }
-      resolved.push(Object.freeze({ name: definition.definition.name, kind: definition.kind, address: entry.address }));
+      resolved.push(Object.freeze({ name: definition.definition.name, kind: definition.kind, address }));
     }
-    return Object.freeze({ newEntries: Object.freeze(newEntries), resolved: Object.freeze(resolved) });
+    return Object.freeze({ newPlans: Object.freeze(newPlans), resolved: Object.freeze(resolved) });
   }
 }
+
+const messageOf = (error: unknown): string => error instanceof Error ? error.message : String(error);

@@ -14,7 +14,6 @@ import { restoreTaskTeamNode } from "../../agent-collaboration/execution/task/ta
 import {
   createCollaborationMemberExecutionIdentity,
   createRootExecutionPhysicalScope,
-  createTaskExecutionHostIdentity,
   type CollaborationMemberExecutionIdentity,
   type RootExecutionIdentity,
   type TaskExecutionHostIdentity,
@@ -72,21 +71,18 @@ export type AgentRunCollaborationTaskExecutionAdapterOptions = Readonly<{
 
 /**
  * Agent-root host / tree / registry / persistence adapter for RootTaskExecutionLifecycle.
- * Every collaborator run is hosted by the root, whoever delegates it.
+ * A task execution is an extra copy of a collaborator, hosted by the delegator's host: the
+ * root for a root-level Agent, else the delegator's Team (a collaborator Team or a task Team).
  */
 export class AgentRunCollaborationTaskExecutionAdapter implements RootTaskExecutionAdapter<AgentRunCollaborationPlacement> {
   private readonly readiness: Pick<TokenUsageMigrationReadiness, "assertCurrentSchemaReady">;
   private readonly memoryLocator: RootedAgentMemoryLocator;
   private readonly sources: AgentRunCollaborationTaskSourceResolver;
-  private readonly host: TaskExecutionHostIdentity;
 
   constructor(private readonly options: AgentRunCollaborationTaskExecutionAdapterOptions) {
     this.readiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
     this.memoryLocator = options.memoryLocator ?? new RootedAgentMemoryLocator();
     this.sources = new AgentRunCollaborationTaskSourceResolver(() => options.getIndex());
-    this.host = createTaskExecutionHostIdentity({
-      root: options.root, hostKind: "root", hostRunId: options.root.rootRunId, hostAddress: "/",
-    });
   }
 
   isOpen(): boolean { return this.options.isOpen(); }
@@ -94,31 +90,38 @@ export class AgentRunCollaborationTaskExecutionAdapter implements RootTaskExecut
   assertCurrentSchemaReady(): void { this.readiness.assertCurrentSchemaReady(); }
 
   async prepareActivation(input: TaskExecutionActivationPreparation<AgentRunCollaborationPlacement>): Promise<PreparedTaskExecutionActivation> {
+    const host = this.options.getIndex().requireAgent(input.identity.agentRunId).host;
     let prepared: PreparedTaskExecution;
     if (input.placement.kind === "agent") {
       const source = this.sources.require(input.placement.address, "agent").node;
       const agentRunId = await this.options.taskExecutionIdentity.agentRuns.allocateForAgentDefinition(source.agentDefinitionId);
-      prepared = await this.options.rootAgents.prepareTask({ address: input.placement.address, agentRunId, sourceNode: source, message: input.workPacket });
+      const command = { address: input.placement.address, agentRunId, sourceNode: source, message: input.workPacket };
+      prepared = host.hostKind === "root"
+        ? await this.options.rootAgents.prepareTask(command)
+        : await this.options.teams.require(host.hostRunId).prepareTaskAgent(command);
     } else {
       const source = this.sources.require(input.placement.address, "agent_team");
       const materialized = await this.options.taskExecutionIdentity.taskTeams.create({ source: source.node });
-      prepared = await this.options.teams.prepareRootTaskTeam({
-        task: {
-          address: input.placement.address,
-          teamRunId: materialized.teamNode.teamRunId,
-          handoffs: source.handoffs,
-          teamNode: materialized.teamNode,
-          message: input.workPacket,
-        },
-        physicalScope: createRootExecutionPhysicalScope({ root: this.options.root, ancestorTeamRunIds: [materialized.teamNode.teamRunId] }),
-        callbacks: this.options.callbacks,
-      });
+      const command = {
+        address: input.placement.address,
+        teamRunId: materialized.teamNode.teamRunId,
+        handoffs: source.handoffs,
+        teamNode: materialized.teamNode,
+        message: input.workPacket,
+      };
+      prepared = host.hostKind === "root"
+        ? await this.options.teams.prepareRootTaskTeam({
+            task: command,
+            physicalScope: createRootExecutionPhysicalScope({ root: this.options.root, ancestorTeamRunIds: [materialized.teamNode.teamRunId] }),
+            callbacks: this.options.callbacks,
+          })
+        : await this.options.teams.require(host.hostRunId).prepareTaskTeam(command);
     }
     const reservation = prepared.binding.kind === "team" ? this.options.teams.reserveTaskSubtree(prepared.preparedTeamRuns) : null;
     prepared.sealForCommit();
     return Object.freeze({
       targetAgentRunId: prepared.binding.kind === "agent" ? prepared.binding.agentRunId : prepared.binding.coordinatorAgentRunId,
-      commit: () => this.commitActivation({ prepared, reservation, delegatorAgentRunId: input.identity.agentRunId, startedAt: input.startedAt }),
+      commit: () => this.commitActivation({ host, prepared, reservation, delegatorAgentRunId: input.identity.agentRunId, startedAt: input.startedAt }),
       abort: async () => { reservation?.cancel(); await prepared.abort(); },
     });
   }
@@ -161,18 +164,28 @@ export class AgentRunCollaborationTaskExecutionAdapter implements RootTaskExecut
       if (this.isLive(referenceOf(indexed))) continue;
       if (indexed.kind === "agent") {
         const source = this.sources.require(indexed.address, "agent").node;
-        await this.options.rootAgents.restoreTask(Object.freeze({
-          ...source, agentRunId: indexed.agentRunId, platformAgentRunId: indexed.source.platformAgentRunId,
-        }));
+        const sourceNode = Object.freeze({ ...source, agentRunId: indexed.agentRunId, platformAgentRunId: indexed.source.platformAgentRunId });
+        if (indexed.host.hostKind === "root") await this.options.rootAgents.restoreTask(sourceNode);
+        else {
+          await this.options.teams.require(indexed.host.hostRunId).restoreTaskAgent({
+            address: indexed.address, agentRunId: indexed.agentRunId, platformAgentRunId: indexed.source.platformAgentRunId, sourceNode,
+          });
+        }
         continue;
       }
       const source = this.sources.require(indexed.address, "agent_team");
-      await this.options.teams.restoreRootTaskTeam({
-        teamNode: restoreTaskTeamNode({ source: source.node, execution: indexed.source }),
-        handoffs: source.handoffs,
-        physicalScope: createRootExecutionPhysicalScope({ root: this.options.root, ancestorTeamRunIds: [indexed.teamRunId] }),
-        callbacks: this.options.callbacks,
-      });
+      const teamNode = restoreTaskTeamNode({ source: source.node, execution: indexed.source });
+      if (indexed.host.hostKind === "root") {
+        await this.options.teams.restoreRootTaskTeam({
+          teamNode,
+          handoffs: source.handoffs,
+          physicalScope: createRootExecutionPhysicalScope({ root: this.options.root, ancestorTeamRunIds: [indexed.teamRunId] }),
+          callbacks: this.options.callbacks,
+        });
+      } else {
+        const run = await this.options.teams.require(indexed.host.hostRunId).restoreTaskTeam({ handoffs: source.handoffs, teamNode });
+        this.options.teams.registerRestoredTaskTeam(run);
+      }
     }
   }
 
@@ -185,9 +198,13 @@ export class AgentRunCollaborationTaskExecutionAdapter implements RootTaskExecut
       index.listTaskExecutionChainForAgent(agent.agentRunId).some((execution) => runIdOf(execution) === key));
     let shutDown: boolean;
     try {
-      shutDown = indexed.kind === "agent"
-        ? await this.options.rootAgents.tryShutDownTaskIfQuiet(indexed.agentRunId)
-        : await this.options.teams.tryShutDownRootTaskTeamIfQuiet(indexed.teamRunId);
+      if (indexed.host.hostKind === "team") {
+        shutDown = await this.options.teams.require(indexed.host.hostRunId).tryShutDownDirectTaskExecutionIfQuiet(reference);
+      } else {
+        shutDown = indexed.kind === "agent"
+          ? await this.options.rootAgents.tryShutDownTaskIfQuiet(indexed.agentRunId)
+          : await this.options.teams.tryShutDownRootTaskTeamIfQuiet(indexed.teamRunId);
+      }
     } catch (error) {
       if (error instanceof TaskExecutionTeardownIndeterminateError) this.options.enterLifecycleFailStop();
       throw error;
@@ -217,6 +234,7 @@ export class AgentRunCollaborationTaskExecutionAdapter implements RootTaskExecut
   }
 
   private commitActivation(input: {
+    host: TaskExecutionHostIdentity;
     prepared: PreparedTaskExecution;
     reservation: ReturnType<RootTeamExecutionDirectory["reserveTaskSubtree"]> | null;
     delegatorAgentRunId: string;
@@ -235,7 +253,7 @@ export class AgentRunCollaborationTaskExecutionAdapter implements RootTaskExecut
     let nextTreeAtCommit: AgentRunCollaborationTreeSnapshot | null = null;
     return this.options.persistence.commitTaskActivation({
       prepareAgainstCurrent: () => {
-        let nextTree = addAgentRunTaskExecution({ tree: this.options.getTree(), execution });
+        let nextTree = addAgentRunTaskExecution({ tree: this.options.getTree(), host: input.host, execution });
         for (const staged of input.prepared.stagedPlatformBindings) {
           nextTree = adoptAgentRunPlatformBinding({ tree: nextTree, binding: staged }).tree;
         }
@@ -248,7 +266,7 @@ export class AgentRunCollaborationTaskExecutionAdapter implements RootTaskExecut
         const committed = input.prepared.commitAfterDurability();
         input.reservation?.commit();
         this.options.replaceTree(nextTreeAtCommit);
-        this.options.publishTaskExecutionStarted(this.host, binding.kind === "agent"
+        this.options.publishTaskExecutionStarted(input.host, binding.kind === "agent"
           ? Object.freeze({ agentRunId: binding.agentRunId })
           : Object.freeze({ teamRunId: binding.teamRunId }));
         committed.releaseWork();

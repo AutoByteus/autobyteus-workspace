@@ -180,7 +180,8 @@ export const buildHistoricalReplayEvents = (
         ...resolveTraceReplayIdentity(trace, nextLegacyOccurrence),
         kind: "message",
         ...(trace.traceType === "user" ? { role: "user" as const,
-          ...(trace.fileAttachments?.length ? { fileAttachments: trace.fileAttachments } : {})
+          ...(trace.fileAttachments?.length ? { fileAttachments: trace.fileAttachments } : {}),
+          ...(trace.senderId ? { senderId: trace.senderId } : {}),
         } : { role: "assistant" as const }),
         content: trace.content ?? null,
         media: trace.media ?? null,

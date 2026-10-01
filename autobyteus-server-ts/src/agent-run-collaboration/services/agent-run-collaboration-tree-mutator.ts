@@ -2,13 +2,15 @@ import type {
   CollaborationAgentNoConversationBindingReplacement,
   CollaborationAgentPlatformBinding,
 } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
+import type { TaskExecutionHostIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type {
   CollaboratorEntry,
-  TaskAgentExecution,
   TaskExecution,
-  TaskTeamAgentExecution,
+  TaskTeamExecution,
   TaskTeamMemberExecution,
+  TaskTeamNestedTeamExecution,
 } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import { mapCollaboratorEntries } from "../../run-history/domain/collaborator-entry-tree-mapping.js";
 import { validateAgentRunCollaborationTreePayload } from "../../run-history/store/agent-run-collaboration-tree-schema.js";
 import type { AgentRunCollaborationTreeSnapshot } from "../domain/agent-run-collaboration-tree.js";
 
@@ -23,19 +25,50 @@ export const addAgentRunCollaborators = (input: {
   collaborators: [...input.tree.collaborators, ...input.collaborators],
 });
 
-/** Every Agent-root task execution is hosted by the root. */
+/**
+ * Appends a task execution to its host: the root, a task Team, or a collaborator Team (which
+ * hosts its members' delegations).
+ */
 export const addAgentRunTaskExecution = (input: {
   tree: AgentRunCollaborationTreeSnapshot;
+  host: TaskExecutionHostIdentity;
   execution: TaskExecution;
 }): AgentRunCollaborationTreeSnapshot => {
   const runId = "agentRunId" in input.execution ? input.execution.agentRunId : input.execution.teamRunId;
-  if (input.tree.taskExecutions.some((task) => ("agentRunId" in task ? task.agentRunId : task.teamRunId) === runId)) {
-    throw new Error(`Task execution '${runId}' is already present in the Agent root.`);
-  }
-  return revalidate({ ...input.tree, taskExecutions: [...input.tree.taskExecutions, input.execution] });
+  const append = <T extends { taskExecutions: readonly TaskExecution[] }>(owner: T): T => {
+    if (owner.taskExecutions.some((task) => ("agentRunId" in task ? task.agentRunId : task.teamRunId) === runId)) {
+      throw new Error(`Task execution '${runId}' is already present in its host.`);
+    }
+    return { ...owner, taskExecutions: [...owner.taskExecutions, input.execution] };
+  };
+  if (input.host.hostKind === "root") return revalidate(append(input.tree));
+  let found = false;
+  const team = <T extends TaskTeamExecution | TaskTeamNestedTeamExecution>(value: T): T => {
+    if (value.teamRunId === input.host.hostRunId) {
+      found = true;
+      return append(value);
+    }
+    return {
+      ...value,
+      members: value.members.map((member) => "agentRunId" in member ? member : team(member)),
+      taskExecutions: value.taskExecutions.map(task),
+    };
+  };
+  const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? value : team(value);
+  const taskExecutions = input.tree.taskExecutions.map(task);
+  const collaborators = input.tree.collaborators.map((entry) => {
+    if (entry.kind === "agent") return entry;
+    if (entry.teamRunId === input.host.hostRunId) {
+      found = true;
+      return append(entry);
+    }
+    return { ...entry, taskExecutions: entry.taskExecutions.map(task) };
+  });
+  if (!found) throw new Error(`Task host TeamRun '${input.host.hostRunId}' was not found in the Agent root.`);
+  return revalidate({ ...input.tree, taskExecutions, collaborators });
 };
 
-type AgentNode = TaskAgentExecution | TaskTeamAgentExecution;
+type AgentNode = Readonly<{ agentRunId: string; address: string; platformAgentRunId: string | null }>;
 
 const mapAgents = (
   tree: AgentRunCollaborationTreeSnapshot,
@@ -47,7 +80,11 @@ const mapAgents = (
   const task = (value: TaskExecution): TaskExecution => "agentRunId" in value ? agent(value) : {
     ...value, members: value.members.map(member), taskExecutions: value.taskExecutions.map(task),
   };
-  return { ...tree, taskExecutions: tree.taskExecutions.map(task) };
+  return {
+    ...tree,
+    taskExecutions: tree.taskExecutions.map(task),
+    collaborators: mapCollaboratorEntries(tree.collaborators, { agent, task }),
+  };
 };
 
 const assertRoot = (tree: AgentRunCollaborationTreeSnapshot, root: CollaborationAgentPlatformBinding["execution"]["root"]): void => {

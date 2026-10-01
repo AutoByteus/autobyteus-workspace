@@ -655,6 +655,15 @@ team member metadata -> member memoryDir -> active raw traces -> historical repl
   confusing runtime-native ids with local storage ids. Provider-boundary marker traces are provenance and
   are ignored as conversation/activity content by the historical replay
   transformer.
+- Agent-to-agent deliveries (RD-004): a `user` raw trace with `senderId` (the
+  sender AgentRun of an `inter_agent_delivery` input, recorded by native
+  AutoByteus memory and by the external-runtime recorder) replays as an
+  `inter_agent_message` conversation item `{kind, role: "user",
+  senderAgentRunId, senderAddress, content, media, ts, fileAttachments?}`. The
+  Team-member, Org-member and Agent-root member projections fill
+  `senderAddress` from their root's execution index; the standalone projection
+  leaves it null. A `user` trace without `senderId` (a user message, or an older
+  inter-agent message recorded before this field) stays a user message.
 - A strict run-scoped `system_instruction` row becomes only a
   `system_instruction` Activity entry using its raw trace ID, exact content, and
   timestamp. It has no turn group and is excluded before every Event Monitor

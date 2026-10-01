@@ -14,6 +14,26 @@ import {
 } from "../domain/inter-agent-message-delivery.js";
 import type { TeamRunAgentNode } from "../domain/team-run-config.js";
 import type { TeamRunContext } from "../domain/team-run-context.js";
+import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
+import { getParentAgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
+
+/** The enclosing scope of an Agent that is not a member of the TeamRun's own definition. */
+export type MemberScope = Readonly<{ handoffs: readonly CollaborationHandoff[]; teamDefinitionId: string | null }>;
+
+/**
+ * The scope of an Agent inside a collaborator (Team root): a collaborator Agent has no
+ * enclosing instruction or handoffs; a member of a collaborator Team (or of an extra copy of
+ * it) uses that Team's handoffs and definition. Null for everything else.
+ */
+export const collaboratorMemberScope = (collaborators: readonly CollaboratorEntry[], address: string): MemberScope | null => {
+  if (collaborators.some((entry) => entry.kind === "agent" && entry.address === address)) {
+    return Object.freeze({ handoffs: Object.freeze([]), teamDefinitionId: null });
+  }
+  const parent = getParentAgentTeamAddress(address);
+  const team = collaborators.find((entry) => entry.kind === "agent_team" && entry.address === parent);
+  return team?.kind === "agent_team" ? Object.freeze({ handoffs: team.handoffs, teamDefinitionId: team.teamDefinitionId }) : null;
+};
 
 /** Team subject adapter that prepares the root-neutral AgentRun member context. */
 export class MemberExecutionContextBuilder {
@@ -28,6 +48,8 @@ export class MemberExecutionContextBuilder {
     agentNode: TeamRunAgentNode;
     deliverInterAgentMessage: InterAgentMessageDeliveryHandler;
     taskCommands: MemberTaskCommandCapability;
+    /** Overrides the TeamRun's handoffs and definition for an Agent outside them (a collaborator). */
+    scope?: MemberScope | null;
   }): Promise<MemberExecutionContext> {
     const root = requireRootExecutionIdentityKind(input.teamContext.rootIdentity, "agent_team");
     const identity = createCollaborationMemberExecutionIdentity({
@@ -36,7 +58,7 @@ export class MemberExecutionContextBuilder {
       agentRunId: input.agentNode.agentRunId,
     });
     const collaboration = new MemberCollaborationContext({
-      outgoingHandoffs: input.teamContext.handoffs.filter(
+      outgoingHandoffs: (input.scope?.handoffs ?? input.teamContext.handoffs).filter(
         (handoff) => handoff.from === input.agentNode.address,
       ),
       deliverLogicalMessage: (message) => input.deliverInterAgentMessage({
@@ -52,7 +74,8 @@ export class MemberExecutionContextBuilder {
         referenceFiles: message.referenceFiles ? [...message.referenceFiles] : null,
       }),
     });
-    const summary = await this.resolveSummary(input.teamContext.teamNode.teamDefinitionId);
+    const teamDefinitionId = input.scope ? input.scope.teamDefinitionId : input.teamContext.teamNode.teamDefinitionId;
+    const summary = teamDefinitionId ? await this.resolveSummary(teamDefinitionId) : { instruction: null };
     return new MemberExecutionContext({
       identity,
       teamScoped: true,

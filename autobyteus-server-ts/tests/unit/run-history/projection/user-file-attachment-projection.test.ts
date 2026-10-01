@@ -53,6 +53,17 @@ describe("user file attachment raw/replay/read equivalence", () => {
     expect(dedupeRunProjectionConversationEntries([withIdentity, { ...optional, messageId: "explicit" }])[0].fileAttachments).toEqual(base.fileAttachments);
   });
 
+  it("replays an agent-to-agent delivery as an inter-agent item; an old trace without a sender stays a user message (RD-004)", () => {
+    const delivery = { ...row, id: "delivery", content: "You received a message", file_attachments: undefined, sender_id: "run-researcher" };
+    expect(project(delivery).conversation).toEqual([{
+      kind: "inter_agent_message", role: "user", senderAgentRunId: "run-researcher", senderAddress: null,
+      content: "You received a message", media: null, ts: 20,
+    }]);
+    expect(project({ ...delivery, sender_id: undefined }).conversation).toEqual([{
+      kind: "message", role: "user", content: "You received a message", media: null, ts: 20,
+    }]);
+  });
+
   it.each(["assistant", "reasoning", "tool_result", "system_instruction"])("diagnoses invalid %s raw facts through the normal reader", traceType => {
     expect(() => toMemoryTraceEvent({ ...row, trace_type: traceType })).toThrow("Only user");
   });

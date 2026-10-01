@@ -1,17 +1,14 @@
 import type { CollaboratorRootPort } from "../../../agent-collaboration/collaborators/collaborator-root-port.js";
 import type { RootSubjectKind } from "../../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { AgentOrgExecutionIndex } from "../../../agent-org-execution/services/agent-org-execution-index.js";
 import { agentOrgCollaboratorPortFor } from "../../../agent-org-execution/services/agent-org-run-collaborators.js";
 import { AgentOrgRunManager } from "../../../agent-org-execution/services/agent-org-run-manager.js";
 import { isCollaborationEligibleStandaloneRun } from "../../../agent-execution/services/standalone-agent-run-collaboration-binding.js";
-import { AgentRunCollaborationExecutionIndex } from "../../../agent-run-collaboration/services/agent-run-collaboration-execution-index.js";
 import { agentRunCollaboratorPortFor } from "../../../agent-run-collaboration/services/agent-run-collaboration-collaborators.js";
 import { AgentRunCollaborationRootManager } from "../../../agent-run-collaboration/services/agent-run-collaboration-root-manager.js";
 import { collaboratorSegmentForName } from "../../../agent-collaboration/collaborators/collaborator-address-allocator.js";
 import { createAgentTeamAddress } from "../../../agent-collaboration/domain/agent-team-address.js";
 import { emptyAgentRunCollaborationTree } from "../../../agent-run-collaboration/domain/agent-run-collaboration-tree.js";
-import { TeamExecutionIndex } from "../../../agent-team-execution/services/team-execution-index.js";
 import { teamCollaboratorPortFor } from "../../../agent-team-execution/services/team-run-collaborators.js";
 import { getTeamRunService } from "../../../agent-team-execution/services/team-run-service.js";
 import { appConfigProvider } from "../../../config/app-config-provider.js";
@@ -37,13 +34,13 @@ export const resolveCollaboratorRootPort = async (
       const active = getTeamRunService().getActiveTeamRun(rootRunId);
       if (active) return active.collaboratorPort();
       const tree = await new TeamRunExecutionTreeStore().read(layout.getTeamDirPath({ rootTeamRunId: rootRunId, ancestorTeamRunIds: [] }), rootRunId);
-      return tree ? teamCollaboratorPortFor(tree, new TeamExecutionIndex(tree)) : null;
+      return tree ? teamCollaboratorPortFor(tree) : null;
     }
     case "agent_org": {
       const active = AgentOrgRunManager.getInstance().getActive(rootRunId);
       if (active) return active.collaboratorPort();
       const tree = await new AgentOrgRunExecutionTreeStore().read(layout.getOrgDirPath(rootRunId), rootRunId);
-      return tree ? agentOrgCollaboratorPortFor(tree, new AgentOrgExecutionIndex(tree)) : null;
+      return tree ? agentOrgCollaboratorPortFor(tree) : null;
     }
     case "agent": {
       const active = AgentRunCollaborationRootManager.getInstance().getActive(rootRunId);
@@ -62,7 +59,7 @@ export const resolveCollaboratorRootPort = async (
         host: { address: createAgentTeamAddress([collaboratorSegmentForName(metadata.agentDefinitionId)]), agentRunId: rootRunId, agentDefinitionId: metadata.agentDefinitionId },
         createdAt: new Date().toISOString(),
       });
-      return agentRunCollaboratorPortFor(tree, new AgentRunCollaborationExecutionIndex(tree), launch);
+      return agentRunCollaboratorPortFor(tree, launch);
     }
   }
 };

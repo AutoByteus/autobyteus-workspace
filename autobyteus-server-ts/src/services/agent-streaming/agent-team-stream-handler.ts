@@ -32,10 +32,12 @@ const errorMessage = (
   message: string,
   agentRunId: string | null = null,
   details?: string,
+  collaboratorName?: string,
 ): TeamStreamServerMessage =>
   parseTeamStreamServerMessage({ type: "ERROR", payload: {
     code, message, ...(details ? { details } : {}), change_sequence: null, agent_run_id: agentRunId,
     error_scope: null, error_effect: null, turn_id: null,
+    ...(collaboratorName ? { collaborator_name: collaboratorName } : {}),
   } });
 
 const TEAM_SEND_MESSAGE_REJECTED = "TEAM_SEND_MESSAGE_REJECTED";
@@ -177,7 +179,10 @@ export class AgentTeamStreamHandler {
           mentions: toCollaboratorMentions(payload.mentions),
         });
         if (!admission.admitted) {
-          sink?.send(errorMessage(TEAM_SEND_MESSAGE_REJECTED, admission.message, agentRunId, admission.code));
+          // Nothing was added or posted; the client keeps the draft and shows the notice.
+          sink?.send("collaboratorName" in admission
+            ? errorMessage(admission.code, admission.message, agentRunId, undefined, admission.collaboratorName)
+            : errorMessage(TEAM_SEND_MESSAGE_REJECTED, admission.message, agentRunId, admission.code));
           return;
         }
         content = admission.content;

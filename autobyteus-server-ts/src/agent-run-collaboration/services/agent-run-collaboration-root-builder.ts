@@ -2,6 +2,8 @@ import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-te
 import { getAgentTeamAddressSegments } from "../../agent-collaboration/domain/agent-team-address.js";
 import { RootAgentExecutionRegistry } from "../../agent-collaboration/execution/backends/root-agent-execution-registry.js";
 import { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
+import { prepareCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
+import type { ConfiguredAgentActivationMode } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import {
   MemberCollaborationContext,
@@ -49,7 +51,7 @@ export type AgentRunCollaborationRootBuilderDependencies = Readonly<{
 export class AgentRunCollaborationRootBuilder {
   constructor(private readonly dependencies: AgentRunCollaborationRootBuilderDependencies) {}
 
-  build(input: Readonly<{
+  async build(input: Readonly<{
     tree: AgentRunCollaborationTreeSnapshot;
     messages: AgentRunCollaborationMessagesFileV1;
     packageExists: boolean;
@@ -58,7 +60,7 @@ export class AgentRunCollaborationRootBuilder {
     rootLaunchConfiguration: AgentLaunchConfiguration;
     onPackageCreated(): Promise<void>;
     onTerminated(root: AgentRunCollaborationRoot): void;
-  }>): AgentRunCollaborationRoot {
+  }>): Promise<AgentRunCollaborationRoot> {
     const hostRunId = input.tree.host.agentRunId;
     const root = createAgentRootExecutionIdentity(hostRunId);
     let run: AgentRunCollaborationRoot | null = null;
@@ -99,22 +101,30 @@ export class AgentRunCollaborationRootBuilder {
       onPackageCreated: input.onPackageCreated,
       enterPersistenceFailStop: () => run?.enterPersistenceFailStop(),
     });
+    const rootAgents = new RootAgentExecutionRegistry({
+      root,
+      callbacks,
+      agentRunManager: this.dependencies.agentRunManager,
+      memoryLocator: this.dependencies.memoryLocator,
+      activityInspector: this.dependencies.activityInspector,
+      workspaceManager: this.dependencies.workspaceManager,
+    });
+    const teams = new RootTeamExecutionDirectory(this.dependencies.flatTeamExecutionFactory);
+    // Member contexts read the live tree, so one callback set serves collaborator Teams too.
+    const prepareCollaborators = (entries: AgentRunCollaborationTreeSnapshot["collaborators"], mode: ConfiguredAgentActivationMode) =>
+      prepareCollaboratorHandles({ root, rootAgents, teams, teamCallbacks: callbacks, entries, mode });
+    // Collaborators are restored with the root, without preparing a runtime.
+    const restored = await prepareCollaborators(input.tree.collaborators, "restore");
     run = new AgentRunCollaborationRoot({
       root,
       tree: input.tree,
       messages: input.messages,
       host: input.host,
       rootLaunchConfiguration: input.rootLaunchConfiguration,
-      rootAgents: new RootAgentExecutionRegistry({
-        root,
-        callbacks,
-        agentRunManager: this.dependencies.agentRunManager,
-        memoryLocator: this.dependencies.memoryLocator,
-        activityInspector: this.dependencies.activityInspector,
-        workspaceManager: this.dependencies.workspaceManager,
-      }),
-      teams: new RootTeamExecutionDirectory(this.dependencies.flatTeamExecutionFactory),
+      rootAgents,
+      teams,
       callbacks,
+      prepareCollaboratorHandles: (entries) => prepareCollaborators(entries, "fresh"),
       persistence,
       publisher: new RootEventPublisher<AgentRunCollaborationRootEvent>(),
       taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
@@ -123,14 +133,16 @@ export class AgentRunCollaborationRootBuilder {
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
       onTerminated: () => { if (run) input.onTerminated(run); },
     });
+    restored.commitAfterDurability();
     run.activate();
     retained.splice(0).forEach(([identity, event]) => run!.onAgentExecutionEvent(identity, event));
     return run;
   }
 
   /**
-   * A child directly under the root belongs to no Team (no handoff rules); a member of a
-   * collaborator task Team is Team-scoped with that Team's handoffs and instructions.
+   * A child directly under the root (a collaborator Agent or an extra copy) belongs to no Team
+   * (no handoff rules); a member of a collaborator Team (or of an extra copy of it) is
+   * Team-scoped with that Team's handoffs and instructions.
    */
   private async buildChildContext(input: Readonly<{
     identity: CollaborationMemberExecutionIdentity;

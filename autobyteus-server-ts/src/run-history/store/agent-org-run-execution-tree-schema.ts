@@ -1,3 +1,4 @@
+import { listCollaboratorAgentRunIds } from "../domain/run-execution-tree-shared-records.js";
 import {
   assertAgentTeamAddress,
   getParentAgentTeamAddress,
@@ -25,6 +26,8 @@ import {
   validateCollaboratorInvariants,
   validateConfiguredPlacementUniqueness,
   validateTaskExecutionDelegators,
+  collaboratorTaskOwners,
+  collectTaskExecutionRunIds,
 } from "./run-execution-tree-shared-record-schemas.js";
 
 const parseRootOrg = (value: unknown): RootConfiguredAgentOrgExecutionNode => {
@@ -86,10 +89,20 @@ const validateHandoffEndpoints = (tree: AgentOrgRunExecutionTreeFile): void => {
     tree.rootOrg,
     ...members.flatMap((member) => "teamRunId" in member ? [member] : []),
   ];
-  validateTaskExecutionDelegators(agents.values(), owners);
+  const collaborators = tree.rootOrg.collaborators;
+  validateTaskExecutionDelegators(
+    [...agents.values(), ...listCollaboratorAgentRunIds(collaborators)],
+    [...owners, ...collaboratorTaskOwners(collaborators)],
+  );
   validateCollaboratorInvariants({
-    collaborators: tree.rootOrg.collaborators,
+    collaborators,
     reservedAddresses: [...agents.keys(), ...teams.keys()],
+    otherRunIds: [
+      tree.rootOrg.orgRunId,
+      ...agents.values(),
+      ...members.flatMap((member) => "teamRunId" in member ? [member.teamRunId] : []),
+      ...owners.flatMap((owner) => collectTaskExecutionRunIds(owner.taskExecutions)),
+    ],
     owners,
   });
 };

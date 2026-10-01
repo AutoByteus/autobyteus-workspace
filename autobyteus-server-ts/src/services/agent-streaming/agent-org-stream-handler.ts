@@ -20,6 +20,7 @@ const commandAck = (
   state: "accepted" | "rejected" | "failed",
   code: string | null,
   detail: string | null,
+  collaboratorName?: string,
 ): CollaborationStreamServerMessage => CollaborationStreamServerMessageSchema.parse({
   type: "AGENT_COMMAND_ACK",
   payload: {
@@ -31,6 +32,7 @@ const commandAck = (
     state,
     code,
     message: detail,
+    ...(collaboratorName ? { collaborator_name: collaboratorName } : {}),
   },
 });
 
@@ -128,7 +130,11 @@ export class AgentOrgStreamHandler {
           mentions: toCollaboratorMentions(message.payload.mentions),
         });
         if (!admission.admitted) {
-          session.connection.send(serialize(commandAck(message, "rejected", admission.code, admission.message)));
+          // Nothing was added or posted; the client keeps the draft and shows the notice.
+          session.connection.send(serialize(commandAck(
+            message, "rejected", admission.code, admission.message,
+            "collaboratorName" in admission ? admission.collaboratorName : undefined,
+          )));
           return;
         }
         content = admission.content;
@@ -167,7 +173,8 @@ export class AgentOrgStreamHandler {
             executionKind: null,
           });
       const result = outcome.result;
-      if (message.type === "SEND_MESSAGE" && result.accepted && outcome.executionKind === "configured") {
+      if (message.type === "SEND_MESSAGE" && result.accepted && outcome.executionKind !== null
+        && outcome.executionKind !== "task" && outcome.executionKind !== "task_team_member") {
         const historyCommit = this.service.recordRunActivity(run, { summary: message.payload.content });
         try {
           await historyCommit;

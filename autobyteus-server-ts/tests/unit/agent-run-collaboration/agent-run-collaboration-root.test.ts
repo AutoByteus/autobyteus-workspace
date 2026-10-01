@@ -19,6 +19,12 @@ import { TokenUsageMigrationReadiness } from "../../../src/token-usage/providers
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { flushMicrotasks, observeConfiguredHandles } from "../agent-org-execution/helpers/task-publication-handles.js";
+import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
+
+const runnable = {
+  validate: vi.fn(),
+  validateMany: async (inputs: readonly unknown[]) => inputs.map(() => ({ kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } })),
+} as unknown as RunModelSelectionValidator;
 
 const directories: string[] = [];
 afterEach(async () => {
@@ -110,7 +116,7 @@ const buildManager = async () => {
       teamDefinitions: { getDefinitionById: (id) => catalog.getTeamDefinition(id) },
       memoryLocator: new RootedAgentMemoryLocator({ memoryDir }),
       activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
-      collaboratorAdmission: createCollaboratorMentionAdmission(catalog),
+      collaboratorAdmission: createCollaboratorMentionAdmission(catalog, runnable),
     },
   });
   const hostIdentity = createCollaborationMemberExecutionIdentity({
@@ -134,16 +140,19 @@ describe("Agent root of a standalone run", () => {
     expect(await f.manager.ensureRoot(metadata(f.memoryDir, { launchPurpose: "server_helper" }))).toBeNull();
   });
 
-  it("creates the package only on the first admitted mention, then delegates, messages and restores", async () => {
+  it("creates the package on the first admitted mention, hosts each collaborator once, messages it, copies it and restores", async () => {
     const f = await buildManager();
     const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
     expect(f.directory.resolve(createAgentRootExecutionIdentity(HOST))).toBe(root);
     const dir = new AgentMemoryLayout(f.memoryDir).getAgentRunCollaborationDirPath(HOST);
     expect(await f.store.readTree(dir, HOST)).toBeNull();
 
-    // Before any mention nothing can be delegated to.
+    // Before any mention nothing can be reached or delegated to.
     expect(await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review" }))
       .toEqual({ target_agent_run_id: null, message: "No agents or teams are available to delegate to in this run; the user can bring one in with @." });
+    const policy = createCollaboratorMentionAdmission(definitions().catalog, runnable).policy;
+    expect((await policy.listCandidates(root.collaboratorPort())).candidates.map((c) => c.definitionId))
+      .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
 
     const admitted = await root.admitCollaboratorMentions({
       focusedAgentRunId: HOST, content: "Get a review",
@@ -153,66 +162,77 @@ describe("Agent root of a standalone run", () => {
       { name: "Code Reviewer", kind: "agent", address: "/code_reviewer" },
       { name: "Product Team", kind: "agent_team", address: "/product_team" },
     ] });
-    expect((await f.store.readTree(dir, HOST))!.collaborators.map((entry) => entry.address)).toEqual(["/code_reviewer", "/product_team"]);
+    const stored = (await f.store.readTree(dir, HOST))!;
+    expect(stored.collaborators).toMatchObject([
+      { address: "/code_reviewer", agentRunId: "code-reviewer-run-1", platformAgentRunId: null },
+      { address: "/product_team", teamRunId: expect.any(String), members: [
+        { address: "/product_team/lead", agentRunId: "lead-run-2" }, { address: "/product_team/designer", agentRunId: "designer-run-3" },
+      ], taskExecutions: [] },
+    ]);
+    expect(stored.taskExecutions).toEqual([]);
     expect(await f.store.readMessages(dir, HOST)).toMatchObject({ subjectKind: "agent", hostRunId: HOST, messages: [] });
     expect(f.catalogFlag).toHaveBeenCalledOnce();
-    // The host's own definition is never offered.
-    const policy = createCollaboratorMentionAdmission(definitions().catalog).policy;
-    expect((await policy.listCandidates(root.collaboratorPort())).candidates.map((c) => c.definitionId))
-      .toEqual(["code-reviewer", "lead", "designer", "product-team"]);
-
-    const reviewer = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review it" });
-    expect(reviewer).toEqual({ target_agent_run_id: "code-reviewer-run-1" });
-    const team = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/product_team", description: "Design it" });
-    expect(team).toMatchObject({ target_agent_run_id: expect.stringContaining("lead-run") });
-    await flushMicrotasks();
-    const tree = root.getExecutionTreeSnapshot();
-    expect(tree.taskExecutions.map((task) => task.address)).toEqual(["/code_reviewer", "/product_team"]);
+    // Entries (and a Team's member Agents) are in the run.
     expect((await policy.listCandidates(root.collaboratorPort())).candidates).toEqual([]);
+    // Every collaborator execution is Offline until its first message.
+    expect(root.getAgentStatusSnapshots().map((snapshot) => [snapshot.execution.memberAddress, snapshot.details.status])).toEqual(
+      expect.arrayContaining([["/code_reviewer", "offline"], ["/product_team/lead", "offline"], ["/product_team/designer", "offline"]]),
+    );
 
-    // Children live under the host run directory.
+    // send_message_to by address reaches the one hosted instance and starts it.
     const reviewerHandle = f.handles.get("code-reviewer-run-1")!;
     expect(reviewerHandle.input.physicalScope).toEqual({ root: createAgentRootExecutionIdentity(HOST), ancestorTeamRunIds: [] });
-    const location = await new AgentRunCollaborationLocationService({ memoryDir: f.memoryDir }).findAgent({ agentRunId: "code-reviewer-run-1" });
-    expect(location).toMatchObject({ rootSubjectKind: "agent", rootRunId: HOST, memberAddress: "/code_reviewer",
-      memoryDir: path.join(dir, "code-reviewer-run-1"), launchConfiguration: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-host" } });
-
-    // A task Agent under the root belongs to no Team; a task-Team member does.
-    const reviewerContext = reviewerHandle.input.memberExecutionContext;
-    expect(reviewerContext.teamScoped).toBe(false);
-    const designer = [...f.handles.values()].find((entry) => entry.input.identity.memberAddress === "/product_team/designer");
-    const lead = [...f.handles.values()].find((entry) => entry.input.identity.memberAddress === "/product_team/lead")!;
+    expect(reviewerHandle.input.memberExecutionContext.teamScoped).toBe(false);
+    await expect(root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Please review" }))
+      .resolves.toMatchObject({ accepted: true });
+    expect(reviewerHandle.handle.reserveInput).toHaveBeenCalledOnce();
+    await expect(root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/product_team" as never, content: "Design it" }))
+      .resolves.toMatchObject({ accepted: true });
+    const lead = f.handles.get("lead-run-2")!;
+    expect(lead.handle.reserveInput).toHaveBeenCalledOnce();
     expect(lead.input.memberExecutionContext).toMatchObject({ teamScoped: true, authoredEnclosingScopeInstruction: "Ship the product UI." });
     expect(lead.input.memberExecutionContext.collaboration.outgoingHandoffs).toEqual([{ from: "/product_team/lead", to: "/product_team/designer", rules: ["When UI work is needed."] }]);
-    expect(designer?.input.memberExecutionContext.teamScoped ?? true).toBe(true);
+    // DI-001: the coordinator's authored handoff reaches its teammate's own instance.
+    await expect(root.deliverLogicalMessage(lead.input.identity, { recipientAddress: "/product_team/designer" as never, content: "UI please" }))
+      .resolves.toMatchObject({ accepted: true });
+    expect(f.handles.get("designer-run-3")!.handle.reserveInput).toHaveBeenCalledOnce();
+    expect(root.getExecutionTreeSnapshot().taskExecutions).toEqual([]);
 
-    // Messaging a collaborator address never starts anything.
-    await expect(root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "hi" }))
-      .rejects.toThrow(/delegate_task/);
-    expect(root.getExecutionTreeSnapshot().taskExecutions).toHaveLength(2);
+    // delegate_task to a collaborator address starts an extra copy (REQ-013).
+    const copy = await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review it too" });
+    expect(copy).toEqual({ target_agent_run_id: "code-reviewer-run-4" });
+    // A collaborator Team member's copy of a teammate stays in that Team's entry (host rule).
+    await expect(root.delegateTask({ identity: lead.input.identity }, { recipient_address: "/product_team/designer", description: "Mock it" }))
+      .resolves.toMatchObject({ target_agent_run_id: "designer-run-5" });
+    await flushMicrotasks();
+    const tree = root.getExecutionTreeSnapshot();
+    expect(tree.taskExecutions.map((task) => task.address)).toEqual(["/code_reviewer"]);
+    const team = tree.collaborators[1]!;
+    expect(team.kind === "agent_team" && team.taskExecutions.map((task) => task.address)).toEqual(["/product_team/designer"]);
+    const location = await new AgentRunCollaborationLocationService({ memoryDir: f.memoryDir }).findAgent({ agentRunId: "code-reviewer-run-1" });
+    expect(location).toMatchObject({ rootSubjectKind: "agent", rootRunId: HOST, memberAddress: "/code_reviewer", executionKind: "collaborator",
+      memoryDir: path.join(dir, "code-reviewer-run-1"), launchConfiguration: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-host" } });
 
-    // The host crashes: the root and its children survive; a child's report wakes the host (DS-009).
+    // The host crashes: the root and its children survive; a collaborator's report wakes the host (DS-009).
     f.host.crash();
     expect(f.manager.getActive(HOST)).toBe(root);
-    const delivered = await root.deliverExactAgentMessage({
-      sender: { kind: "agent", identity: reviewerHandle.input.identity, displayName: "code_reviewer" },
-      targetAgentRunId: HOST, content: "Review done.",
-    });
+    const delivered = await root.deliverLogicalMessage(reviewerHandle.input.identity, { recipientAddress: "/research_assistant" as never, content: "Review done." });
     expect(delivered).toMatchObject({ accepted: true });
     expect(f.restores).toHaveBeenCalledOnce();
     expect(f.host.reserved.at(-1)).toContain("Review done.");
-    expect((await f.store.readMessages(dir, HOST))!.messages).toEqual([expect.objectContaining({ senderAgentRunId: "code-reviewer-run-1", receiverAgentRunId: HOST })]);
+    expect((await f.store.readMessages(dir, HOST))!.messages.at(-1)).toEqual(expect.objectContaining({ senderAgentRunId: "code-reviewer-run-1", receiverAgentRunId: HOST }));
     await flushMicrotasks();
     expect(f.host.published).toEqual([expect.objectContaining({ eventType: "INTER_AGENT_MESSAGE", runId: HOST })]);
   });
 
-  it("stops every child only on an explicit Stop, serves the stored view without restoring, and restores on command", async () => {
+  it("stops every collaborator only on an explicit Stop, serves the stored view without restoring, and restores it on command", async () => {
     const f = await buildManager();
     const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
     await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, content: "x", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
-    await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review" });
+    await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Review" });
     await flushMicrotasks();
     const child = f.handles.get("code-reviewer-run-1")!;
+    expect(child.input.activationMode).toBe("fresh");
 
     expect(await f.manager.terminateRoot(HOST)).toBe(true);
     expect(child.finish).toHaveBeenCalled();
@@ -222,19 +242,22 @@ describe("Agent root of a standalone run", () => {
 
     f.host.crash();
     const stored = await f.manager.getInspection(HOST);
-    expect(stored).toMatchObject({ isActive: false, snapshot: { tree: { collaborators: [{ address: "/code_reviewer" }] }, statuses: [] } });
+    expect(stored).toMatchObject({ isActive: false, snapshot: { tree: { collaborators: [{ address: "/code_reviewer", agentRunId: "code-reviewer-run-1" }] }, statuses: [] } });
     expect(f.restores).not.toHaveBeenCalled();
 
-    // Stop -> reopen -> send to a child: the command entry restores the host, re-creates the root,
-    // and the shut-down child wakes to take the message.
+    // Stop -> reopen -> send: the command entry restores the host and re-creates the root, which
+    // re-hosts the collaborator in restore mode with the same run ID.
     const reopened = await f.manager.resolveCommandReadyRoot(HOST);
     expect(f.restores).toHaveBeenCalledOnce();
     expect(reopened).not.toBe(root);
+    const restored = f.handles.get("code-reviewer-run-1")!;
+    expect(restored).not.toBe(child);
+    expect(restored.input.activationMode).toBe("restore");
     const post = await reopened.executeAgentCommand("code-reviewer-run-1", {
       kind: "post_message", message: { content: "Anything else?" } as never,
     });
     expect(post).toMatchObject({ accepted: true });
-    expect(f.handles.get("code-reviewer-run-1")!.handle.getOrCreateAgentRun).toHaveBeenCalled();
+    expect(restored.handle.postMessage).toHaveBeenCalledOnce();
     expect(await reopened.executeAgentCommand(HOST, { kind: "interrupt" })).toMatchObject({ code: "AGENT_ROOT_HOST_COMMAND_REJECTED" });
   });
 
@@ -242,7 +265,7 @@ describe("Agent root of a standalone run", () => {
     const f = await buildManager();
     const root = (await f.manager.ensureRoot(metadata(f.memoryDir)))!;
     await root.admitCollaboratorMentions({ focusedAgentRunId: HOST, content: "x", mentions: [{ kind: "agent", definitionId: "code-reviewer" }] });
-    await root.delegateTask({ identity: f.hostIdentity }, { recipient_address: "/code_reviewer", description: "Review" });
+    await root.deliverLogicalMessage(f.hostIdentity, { recipientAddress: "/code_reviewer" as never, content: "Review" });
     await flushMicrotasks();
     const child = f.handles.get("code-reviewer-run-1")!;
     const runDir = path.join(f.memoryDir, "agents", HOST);

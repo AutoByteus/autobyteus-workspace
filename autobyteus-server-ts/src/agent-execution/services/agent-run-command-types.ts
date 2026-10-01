@@ -31,6 +31,7 @@ export type AgentRunCommandErrorCode =
   | "COLLABORATOR_MENTION_INVALID"
   | "COLLABORATOR_MENTION_UNAVAILABLE"
   | "COLLABORATOR_ADMISSION_FAILED"
+  | "COLLABORATOR_ADD_FAILED"
   | "UNKNOWN_ERROR";
 
 export type SendMessageCommandAckPayload = {
@@ -43,6 +44,8 @@ export type SendMessageCommandAckPayload = {
   duplicate: boolean;
   code?: AgentRunCommandErrorCode;
   message?: string;
+  /** With `COLLABORATOR_ADD_FAILED`: the collaborator that could not be added (the message is the reason). */
+  collaborator_name?: string;
   status?: AgentStatusPayload;
 };
 
@@ -56,6 +59,7 @@ export type AgentRunCommandRecord = {
   terminalAt: string | null;
   code?: AgentRunCommandErrorCode;
   message?: string;
+  collaboratorName?: string;
   turnId: string | null;
 };
 

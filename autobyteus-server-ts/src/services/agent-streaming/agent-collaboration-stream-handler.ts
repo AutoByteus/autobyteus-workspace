@@ -20,6 +20,7 @@ const commandAck = (
   state: "accepted" | "rejected" | "failed",
   code: string | null,
   detail: string | null,
+  collaboratorName?: string,
 ): CollaborationStreamServerMessage => CollaborationStreamServerMessageSchema.parse({
   type: "AGENT_COMMAND_ACK",
   payload: {
@@ -31,6 +32,7 @@ const commandAck = (
     state,
     code,
     message: detail,
+    ...(collaboratorName ? { collaborator_name: collaboratorName } : {}),
   },
 });
 
@@ -116,7 +118,10 @@ export class AgentCollaborationStreamHandler {
             focusedAgentRunId: target, content, mentions: toCollaboratorMentions(message.payload.mentions),
           });
           if (!admission.admitted) {
-            session.connection.send(serialize(commandAck(message, "rejected", admission.code, admission.message)));
+            session.connection.send(serialize(commandAck(
+              message, "rejected", admission.code, admission.message,
+              "collaboratorName" in admission ? admission.collaboratorName : undefined,
+            )));
             return;
           }
           content = admission.content;

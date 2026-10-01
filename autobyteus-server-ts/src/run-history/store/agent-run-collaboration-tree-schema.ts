@@ -4,6 +4,7 @@ import type {
   AgentRunCollaborationMessagesFileV1,
   AgentRunCollaborationTreeFile,
 } from "../../agent-run-collaboration/domain/agent-run-collaboration-tree.js";
+import { listCollaboratorAgentRunIds } from "../domain/run-execution-tree-shared-records.js";
 import {
   canonicalNonRootAddress,
   deepFreeze,
@@ -15,6 +16,8 @@ import {
   requireKeys,
   validateCollaboratorInvariants,
   validateTaskExecutionDelegators,
+  collaboratorTaskOwners,
+  collectTaskExecutionRunIds,
 } from "./run-execution-tree-shared-record-schemas.js";
 
 const validateInvariants = (tree: AgentRunCollaborationTreeFile): void => {
@@ -30,9 +33,13 @@ const validateInvariants = (tree: AgentRunCollaborationTreeFile): void => {
   validateCollaboratorInvariants({
     collaborators: tree.collaborators,
     reservedAddresses: [tree.host.address],
+    otherRunIds: [tree.host.agentRunId, ...collectTaskExecutionRunIds(tree.taskExecutions)],
     owners: [tree],
   });
-  validateTaskExecutionDelegators([tree.host.agentRunId], [{ members: [], taskExecutions: tree.taskExecutions }]);
+  validateTaskExecutionDelegators(
+    [tree.host.agentRunId, ...listCollaboratorAgentRunIds(tree.collaborators)],
+    [{ members: [], taskExecutions: tree.taskExecutions }, ...collaboratorTaskOwners(tree.collaborators)],
+  );
 };
 
 /** Reads an Agent-root collaboration tree tolerantly; the result holds only current fields. */

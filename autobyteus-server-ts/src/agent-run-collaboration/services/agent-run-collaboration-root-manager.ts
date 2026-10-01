@@ -225,7 +225,7 @@ export class AgentRunCollaborationRootManager implements StandaloneAgentRunColla
       },
       createdAt: new Date().toISOString(),
     });
-    const root = this.roots.build({
+    const root = await this.roots.build({
       tree,
       messages: storedMessages ?? emptyAgentRunCollaborationMessages(hostRunId),
       packageExists: Boolean(storedTree),

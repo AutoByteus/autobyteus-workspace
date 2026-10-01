@@ -20,9 +20,8 @@ export interface CollaboratorRootPort {
   rootLaunchConfiguration(): AgentLaunchConfiguration;
   /** The root's own definition(s) and every configured member definition. */
   configuredDefinitionIds(): ConfiguredDefinitionIds;
+  /** One instance per entry; its runs are recorded in the entry. */
   collaborators(): readonly CollaboratorEntry[];
-  /** Whether at least one task execution sits at this address. */
-  hasTaskExecutionAt(address: string): boolean;
   /** Root-level address segments already used by the run (configured, host, collaborators). */
   addressesInUse(): ReadonlySet<string>;
 }

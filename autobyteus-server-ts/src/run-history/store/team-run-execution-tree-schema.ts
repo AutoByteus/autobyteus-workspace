@@ -9,6 +9,7 @@ import type {
   RootConfiguredTeamExecutionNode,
   TeamRunExecutionTreeFile,
 } from "../../agent-team-execution/domain/team-run-execution-tree.js";
+import { listCollaboratorAgentRunIds } from "../domain/run-execution-tree-shared-records.js";
 import {
   canonicalNonRootAddress,
   deepFreeze,
@@ -24,6 +25,8 @@ import {
   requireKeys,
   validateCollaboratorInvariants,
   validateTaskExecutionDelegators,
+  collaboratorTaskOwners,
+  collectTaskExecutionRunIds,
 } from "./run-execution-tree-shared-record-schemas.js";
 
 const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
@@ -78,13 +81,15 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
     if (!byAddress.has(from)) throw new Error(`Handoff sender '${from}' is not a configured Agent.`);
     if (!byAddress.has(to)) throw new Error(`Handoff recipient '${to}' is not a configured Agent.`);
   }
+  const collaborators = tree.rootTeam.collaborators;
   validateTaskExecutionDelegators(
-    tree.rootTeam.members.map((member) => member.agentRunId),
-    [tree.rootTeam],
+    [...tree.rootTeam.members.map((member) => member.agentRunId), ...listCollaboratorAgentRunIds(collaborators)],
+    [tree.rootTeam, ...collaboratorTaskOwners(collaborators)],
   );
   validateCollaboratorInvariants({
-    collaborators: tree.rootTeam.collaborators,
+    collaborators,
     reservedAddresses: byAddress.keys(),
+    otherRunIds: [...runIds, ...collectTaskExecutionRunIds(tree.rootTeam.taskExecutions)],
     owners: [tree.rootTeam],
   });
 };

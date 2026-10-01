@@ -89,6 +89,7 @@ export class AgentRunCommandRegistry {
     messageId: string;
     code: AgentRunCommandErrorCode;
     message?: string;
+    collaboratorName?: string;
   }): AgentRunCommandRecord | null {
     return this.transitionTerminal({ ...input, state: "REJECTED" });
   }
@@ -132,6 +133,7 @@ export class AgentRunCommandRegistry {
     state: "COMPLETED" | "FAILED" | "REJECTED" | "CANCELLED";
     code?: AgentRunCommandErrorCode;
     message?: string;
+    collaboratorName?: string;
     turnId?: string | null;
   }): AgentRunCommandRecord | null {
     return this.updateOutstanding(input.runId, input.messageId, (record) => ({
@@ -140,6 +142,7 @@ export class AgentRunCommandRegistry {
       terminalAt: nowIso(),
       ...(input.code ? { code: input.code } : {}),
       ...(input.message ? { message: input.message } : {}),
+      ...(input.collaboratorName ? { collaboratorName: input.collaboratorName } : {}),
       turnId: input.turnId ?? record.turnId,
     }));
   }

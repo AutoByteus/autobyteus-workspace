@@ -265,37 +265,72 @@ active. See
 ## Collaborators
 
 A collaborator is a shared Agent or Agent Team definition that the user brought
-into a live run with `@` (Team runs, Org runs, and standalone Agent runs). It is
-recorded as a root-level entry in the run's execution tree (`collaborators`), at
-its own root-level address (`/code_reviewer`, `/product_team`, allocated from the
-definition name with `_2`, `_3`, … on collisions). An entry snapshots the run's
-root launch settings, and for a Team, its member layout and Team-local handoffs.
-It has no run of its own; its runs are task executions at its address.
+into a live run with `@` (Team runs, Org runs, and standalone Agent runs). The
+run hosts **one instance per collaborator**, recorded as a root-level entry in
+the run's execution tree (`collaborators`), at its own root-level address
+(`/code_reviewer`, `/product_team`, allocated from the definition name with
+`_2`, `_3`, … on collisions). An entry snapshots the run's root launch settings,
+and for a Team, its member layout and Team-local handoffs. Its runs are recorded
+in the entry: `agentRunId`/`platformAgentRunId` for an Agent; `teamRunId`, one
+`agentRunId` per member and the Team's own `taskExecutions` for a Team.
 
-- **Admission.** A user message with `mentions` (`{kind, definition_id}[]`, at
-  most 8) is admitted by the root before it is posted: every mention is
-  re-validated by the shared candidate policy (shared, not an Org, not a
-  built-in, not already in the run), an entry is created or reused per
-  definition, and a `[Mentioned collaborators]` note with each name, kind and
-  address is appended to the message. Admission is all-or-nothing; a rejected
-  admission posts nothing. The note wording is owned by
-  `@autobyteus/agent-presentation-contracts` (`collaboratorMentionNote`).
-- **Reaching a collaborator.** Only `delegate_task` reaches a collaborator
-  address (see [Agent Tools](./agent_tools.md#server-owned-task-delegation-tool)).
-  `send_message_to` with a collaborator address is rejected with a hint to use
-  `delegate_task`, and it never allocates or records an execution. After the
-  delegation, the started instance is messaged by run ID as usual.
-- **In the run.** A collaborator counts as "in the run" once it has at least one
-  task execution; before that (for example after a failed add) it stays
-  offerable and a new mention reuses its entry and address.
+- **Admission (DS-001).** A user message with `mentions` (`{kind,
+  definition_id}[]`, at most 8) is admitted by the root, inside its operation
+  gate, before it is posted:
+  1. every mention is re-validated by the shared candidate policy (shared, not
+     an Org, not a built-in, not already in the run); a definition that already
+     has an entry reuses it;
+  2. each new placement (an Agent, or every member of a Team) is checked with
+     `RunModelSelectionValidator.validateMany` against the run's runtime, model,
+     model settings and workspace;
+  3. run IDs are allocated (`agentRunId`, `teamRunId`, member run IDs);
+  4. the root prepares the hosted executions, commits all new entries in one
+     tree write, publishes the executions (Offline) and emits
+     `collaborator_added`;
+  5. a `[Mentioned collaborators]` note with each name, kind and address is
+     appended to the message, which is then posted.
+
+  Admission is all-or-nothing. Any failure returns `COLLABORATOR_ADD_FAILED`
+  with the collaborator's name and the reason: nothing is written or posted and
+  the client keeps the draft (agent-stream `AGENT_COMMAND_ACK`, Team-stream
+  `ERROR`, collaboration-stream ack; each carries `collaborator_name`). The note
+  wording is owned by `@autobyteus/agent-presentation-contracts`
+  (`collaboratorMentionNote`).
+- **Reaching a collaborator.** A collaborator and the members of a collaborator
+  Team are reachable with `send_message_to` by address, like configured members:
+  a collaborator Agent, a collaborator Team (its coordinator), or a member of a
+  collaborator Team. The first message starts it (`fresh` on first activation,
+  `restore` after the run is reopened); teammates inside a collaborator Team
+  resolve to their own instance (DI-001). `send_message_to` never allocates.
+- **Extra copies (REQ-013).** `delegate_task` to a collaborator address (or a
+  collaborator Team member address) starts an extra, separate copy: an ordinary
+  task execution with the system task notice and its own run IDs, projected from
+  the entry by the root's task source resolver. It is hosted by the delegator's
+  host (the root for a root-level Agent, the collaborator TeamRun for its
+  members).
+- **In the run.** Every entry, and every member Agent of a collaborator Team,
+  counts as in the run, so it is not offered again. A failed add writes no
+  entry, so the definition stays offerable.
 - **Candidates.** GraphQL `collaboratorMentionCandidates(rootSubjectKind,
   rootRunId)` lists the `@` options of an active or stored root from the same
   policy: shared Agents (minus built-ins such as the Daily Assistant), then
   shared Agent Teams, in catalog order, minus what is in the run.
 
-The shared policy, admission, entry builder, address allocator and source
-projection live in `src/agent-collaboration/collaborators/`; each root implements
-`CollaboratorRootPort`.
+The shared policy, admission, runnability validator, identity allocator, entry
+builder, address allocator and source projection live in
+`src/agent-collaboration/collaborators/`; each root implements
+`CollaboratorRootPort` and hosts its collaborators in its existing backends (see
+[Agent Team Execution](./agent_team_execution.md), [Agent Orgs](./agent_orgs.md)
+and [Agent Run Collaboration](./agent_run_collaboration.md)).
+
+### Sender Of An Agent-To-Agent Message (RD-004)
+
+A `send_message_to` delivery reaches the receiver as input with
+`input_origin: inter_agent_delivery` and `sender_agent_id`. Memory recording
+(native AutoByteus and the external-runtime recorder) stores that sender as the
+user trace's `senderId`; replay projects such a trace as an
+`inter_agent_message` conversation item, and the web shows it as
+"From <Sender>:". See [Run History](./run_history.md).
 
 ## Out Of Scope
 

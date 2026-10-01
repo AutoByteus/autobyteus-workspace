@@ -29,7 +29,9 @@ import type { RootAgentExecutionRegistry } from "../../agent-collaboration/execu
 import type { RootTeamExecutionDirectory } from "../../agent-collaboration/execution/backends/root-team-execution-directory.js";
 import { createFrozenRootTerminationScope, type FrozenRootTerminationScope } from "../../agent-collaboration/execution/backends/frozen-root-termination-scope.js";
 import type { CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
-import type { CollaboratorMentionAdmission, CollaboratorMentionAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import type { CollaboratorMentionAdmission, RootCollaboratorAdmissionResult } from "../../agent-collaboration/collaborators/collaborator-mention-admission.js";
+import type { PreparedCollaboratorHandles } from "../../agent-collaboration/execution/backends/collaborator-handle-preparation.js";
+import type { CollaboratorEntry } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type { CollaborationCommunicationMessageV1 } from "../../agent-collaboration/execution/communication/collaboration-communication-message-v1.js";
 import { buildDirectAgentRunInterAgentEvent } from "../../agent-communication/services/global-agent-run-message-runtime-builders.js";
 import type { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
@@ -103,6 +105,8 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
     activityInspector?: AgentConversationActivityInspector;
     taskExecutionIdleShutdown?: Readonly<{ gracePeriodMs?: () => number; timers?: TaskExecutionIdleTimers }>;
     collaboratorAdmission?: CollaboratorMentionAdmission;
+    /** Prepares hosted handles for new collaborator entries (published after the tree write). */
+    prepareCollaboratorHandles(entries: readonly CollaboratorEntry[]): Promise<PreparedCollaboratorHandles>;
     onTerminated?(): void;
   }>) {
     this.tree = options.tree;
@@ -120,10 +124,11 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
     this.collaborators = new AgentRunCollaborationCollaborators({
       admission: options.collaboratorAdmission,
       rootLaunchConfiguration: options.rootLaunchConfiguration,
+      identities: options.taskExecutionIdentity,
       persistence: options.persistence,
       getTree: () => this.tree,
-      getIndex: () => this.index,
       assertAdmitting: () => this.assertAdmitting(),
+      prepareHandles: (entries) => options.prepareCollaboratorHandles(entries),
       replaceTree: (tree) => this.replaceTree(tree),
       publish: (event) => options.publisher.publish(event),
     });
@@ -173,11 +178,14 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
   getCommunicationSnapshot(): AgentRunCollaborationMessagesFileV1 { return this.messages; }
   /** Children only: every child without a live execution reports `offline`. */
   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
+    // Root-level Teams: task Teams and collaborator Teams (each reports its members and nested children).
+    const teamRunIds = [
+      ...this.tree.taskExecutions.flatMap((task) => "teamRunId" in task ? [task.teamRunId] : []),
+      ...this.tree.collaborators.flatMap((entry) => entry.kind === "agent_team" ? [entry.teamRunId] : []),
+    ];
     const live = [
       ...this.options.rootAgents.getStatusSnapshots(),
-      ...this.tree.taskExecutions.flatMap((task) => "teamRunId" in task && this.options.teams.get(task.teamRunId)
-        ? this.options.teams.require(task.teamRunId).getLeafAgentStatusSnapshots()
-        : []),
+      ...teamRunIds.flatMap((teamRunId) => this.options.teams.get(teamRunId)?.getLeafAgentStatusSnapshots() ?? []),
     ];
     const reported = new Set(live.map((snapshot) => snapshot.execution.agentRunId));
     const dormant = this.index.listChildAgents().filter((agent) => !reported.has(agent.agentRunId))
@@ -191,7 +199,7 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
   hasAgentExecution(agentRunId: string): boolean { return this.index.getAgent(agentRunId.trim()) !== null; }
 
   /** Admits mentions for the focused agent in one gate; the caller posts the returned content. */
-  admitCollaboratorMentions(input: Parameters<AgentRunCollaborationCollaborators["admit"]>[0]): Promise<CollaboratorMentionAdmissionResult> {
+  admitCollaboratorMentions(input: Parameters<AgentRunCollaborationCollaborators["admit"]>[0]): Promise<RootCollaboratorAdmissionResult> {
     return this.operationGate.run(async () => {
       this.assertAdmitting();
       return this.index.getAgent(input.focusedAgentRunId)
@@ -212,12 +220,12 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
     });
   }
 
-  /** `send_message_to` by address: the host is the only ingress; messaging never starts anything. */
+  /** `send_message_to` by address: the host or a collaborator (the first message starts a collaborator). */
   deliverLogicalMessage(sender: CollaborationMemberExecutionIdentity, input: MemberLogicalMessageInput): Promise<AgentOperationResult> {
     return this.operationGate.run(async () => {
       this.authorizeIdentity(sender);
-      const recipient = this.recipients.resolveMessageRecipient(this.index, input.recipientAddress);
-      return this.deliverTo(recipient.agentRunId, {
+      const { receiver } = this.recipients.resolveMessageRecipient(this.index, input.recipientAddress);
+      return this.deliverTo(receiver.agentRunId, {
         senderIdentity: sender,
         senderDisplayName: getAgentTeamAddressBasename(sender.memberAddress) ?? sender.agentRunId,
         content: input.content,
@@ -431,7 +439,10 @@ export class AgentRunCollaborationRoot implements ActiveRootMessageBoundary {
   private isLiveChild(agentRunId: string): boolean {
     const agent = this.index.getAgent(agentRunId);
     if (!agent || agent.executionKind === "host") return false;
-    if (agent.host.hostKind === "root") return this.options.rootAgents.isTaskLive(agentRunId);
+    if (agent.host.hostKind === "root") {
+      // A collaborator Agent keeps its handle (it starts lazily); a task Agent is live while active.
+      return agent.executionKind === "task" ? this.options.rootAgents.isTaskLive(agentRunId) : this.options.rootAgents.get(agentRunId) !== null;
+    }
     const host = this.options.teams.get(agent.host.hostRunId);
     return Boolean(host && (agent.executionKind !== "task" || host.hasLiveDirectTaskExecution({ agentRunId })));
   }

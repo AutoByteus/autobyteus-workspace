@@ -4,6 +4,9 @@ import type { CollaboratorDefinitionCatalog } from "./collaborator-candidate-pol
 import { CollaboratorCandidatePolicy } from "./collaborator-candidate-policy.js";
 import { CollaboratorEntryBuilder } from "./collaborator-entry-builder.js";
 import { CollaboratorMentionAdmission } from "./collaborator-mention-admission.js";
+import { CollaboratorRunnabilityValidator } from "./collaborator-runnability-validator.js";
+import { RunModelSelectionService, type RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
+import { getModelCatalogService } from "../../llm-management/services/model-catalog-service.js";
 
 export const createCollaboratorDefinitionCatalog = (services: Readonly<{
   agents: Pick<AgentDefinitionService, "getAllAgentDefinitions" | "getAgentDefinitionById">;
@@ -16,10 +19,14 @@ export const createCollaboratorDefinitionCatalog = (services: Readonly<{
 });
 
 /** Process wiring: one policy and one admission coordinator over the shared catalogs. */
-export const createCollaboratorMentionAdmission = (catalog: CollaboratorDefinitionCatalog): CollaboratorMentionAdmission =>
+export const createCollaboratorMentionAdmission = (
+  catalog: CollaboratorDefinitionCatalog,
+  modelSelectionValidator: RunModelSelectionValidator,
+): CollaboratorMentionAdmission =>
   new CollaboratorMentionAdmission({
     policy: new CollaboratorCandidatePolicy(catalog),
     entries: new CollaboratorEntryBuilder(catalog),
+    runnability: new CollaboratorRunnabilityValidator(modelSelectionValidator),
   });
 
 let processAdmission: CollaboratorMentionAdmission | null = null;
@@ -28,4 +35,4 @@ export const getCollaboratorMentionAdmission = (): CollaboratorMentionAdmission 
   processAdmission ??= createCollaboratorMentionAdmission(createCollaboratorDefinitionCatalog({
     agents: AgentDefinitionService.getInstance(),
     teams: AgentTeamDefinitionService.getInstance(),
-  }));
+  }), new RunModelSelectionService(getModelCatalogService()));
