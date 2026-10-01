@@ -1,0 +1,2485 @@
+diff --git a/TESTING.md b/TESTING.md
+index 782fb3825..ad162f000 100644
+--- a/TESTING.md
++++ b/TESTING.md
+@@ -28,6 +28,11 @@ package's script from its own directory.
+ 
+ Notes:
+ 
++- **Server E2E and the built server.** Several server E2E files start the built server
++  (`autobyteus-server-ts/dist`) as a separate process, so they test what was last built, not
++  the current source. `pnpm test:e2e` builds first. When you run one of those files directly
++  with Vitest, run `pnpm -C autobyteus-server-ts build` first; without a build they fail with
++  `TEST_SERVER_BUILD_REQUIRED`, and with a stale build they test old code.
+ - **Real-provider credentials** live in the encrypted vault of the target
+   database. Provision them with the importer, never by editing `.env` files:
+   `pnpm secrets:import -- --source <file> --database-url file:<absolute db path>`
+diff --git a/autobyteus-server-ts/tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
+index 6dfa0d9f4..49276dfa7 100644
+--- a/autobyteus-server-ts/tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts
+@@ -90,10 +90,10 @@ const writeTeamDefinition = async (
+           {
+             memberName: payload.coordinator,
+             ref: payload.memberRef,
+-            refType: "agent",
+             refScope: payload.memberRefScope ?? "shared",
+           },
+         ],
++        handoffs: [],
+       },
+       null,
+       2,
+@@ -413,19 +413,31 @@ describe("Agent packages GraphQL e2e", () => {
+       teams: Array<{ id: string; name: string }>;
+       duplicateAgent: { id: string; name: string } | null;
+       duplicateTeam: { id: string; name: string } | null;
++      diagnostics: Array<{ subjectKind: string; definitionId: string | null; code: string; reason: string }>;
+     }>(`
+       query PackageReads {
+         agents: agentDefinitions { id name }
+         teams: agentTeamDefinitions { id name }
+         duplicateAgent: agentDefinition(id: "${duplicateAgentId}") { id name }
+         duplicateTeam: agentTeamDefinition(id: "${duplicateTeamId}") { id name }
++        diagnostics: definitionAdmissionDiagnostics { subjectKind definitionId code reason }
+       }
+     `);
+ 
+     expect(listResult.agents.some((entry) => entry.id === externalAgentId)).toBe(true);
+     expect(listResult.teams.some((entry) => entry.id === externalTeamId)).toBe(true);
+     expect(listResult.duplicateAgent?.name).toBe("Default Duplicate Agent");
+-    expect(listResult.duplicateTeam?.name).toBe("Default Duplicate Team");
++    // A Team identity registered by two packages is admitted from neither; both copies are reported.
++    expect(listResult.duplicateTeam).toBeNull();
++    expect(listResult.teams.some((entry) => entry.id === duplicateTeamId)).toBe(false);
++    const duplicateTeamDiagnostics = listResult.diagnostics.filter(
++      (entry) => entry.subjectKind === "agent_team" && entry.definitionId === duplicateTeamId,
++    );
++    expect(duplicateTeamDiagnostics).toHaveLength(2);
++    for (const diagnostic of duplicateTeamDiagnostics) {
++      expect(diagnostic.code).toBe("DEFINITION_CONTRACT_INVALID");
++      expect(diagnostic.reason).toContain("is registered by multiple packages");
++    }
+ 
+     const copiedAgentPath = path.join(defaultRoot, "agents", externalAgentId);
+     const copiedTeamPath = path.join(defaultRoot, "agent-teams", externalTeamId);
+diff --git a/autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts b/autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts
+index 1e5b2c041..79bf1b22a 100644
+--- a/autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts
+@@ -212,10 +212,10 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
+           category
+           instructions
+           coordinatorMemberName
++          revision
+           nodes {
+             memberName
+             ref
+-            refType
+             refScope
+           }
+         }
+@@ -224,6 +224,7 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
+     const createdTeam = await execGraphql<{
+       createAgentTeamDefinition: {
+         id: string;
++        revision: string | null;
+         name: string;
+         description: string;
+         category: string | null;
+@@ -232,7 +233,6 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
+         nodes: Array<{
+           memberName: string;
+           ref: string;
+-          refType: "AGENT" | "AGENT_TEAM";
+           refScope?: "SHARED" | "TEAM_LOCAL" | null;
+         }>;
+       };
+@@ -247,7 +247,6 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
+           {
+             memberName: "leader",
+             ref: createdAgent.createAgentDefinition.id,
+-            refType: "AGENT",
+             refScope: "SHARED",
+           },
+         ],
+@@ -273,7 +272,7 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
+     expect(teamConfig).toMatchObject({
+       coordinatorMemberName: "leader",
+       members: [
+-        { memberName: "leader", ref: expectedAgentId, refType: "agent", refScope: "shared" },
++        { memberName: "leader", ref: expectedAgentId, refScope: "shared" },
+       ],
+       avatarUrl: null,
+     });
+@@ -290,6 +289,8 @@ describe("JSON file persistence contract e2e (md-centric, no mocks)", () => {
+     await execGraphql(updateTeamMutation, {
+       input: {
+         id: createdTeam.createAgentTeamDefinition.id,
++        // Updates are revision-guarded.
++        expectedRevision: createdTeam.createAgentTeamDefinition.revision,
+         name: `${teamName} renamed`,
+       },
+     });
+diff --git a/autobyteus-server-ts/tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts
+index 2bc78ab35..fc41c9c6d 100644
+--- a/autobyteus-server-ts/tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts
+@@ -6,7 +6,6 @@ import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+ import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
+ import {
+   buildTeamLocalAgentDefinitionId,
+-  buildTeamLocalTeamDefinitionId,
+ } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
+ import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
+ import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
+@@ -52,7 +51,6 @@ async function writeRootTeamFixture(input: {
+   members?: Array<{
+     memberName: string;
+     ref: string;
+-    refType: "agent" | "agent_team";
+     refScope: "shared" | "team_local" | "application_owned";
+   }>;
+   handoffs?: Array<{ from: string; to: string; rules: string[] }>;
+@@ -167,6 +165,14 @@ describe("Agent team definitions GraphQL e2e", () => {
+     return result.data as T;
+   };
+ 
++  // Updates are revision-guarded: each one sends the revision the definition currently has.
++  const currentRevision = async (id: string): Promise<string> => {
++    const result = await execGraphql<{ agentTeamDefinition: { revision: string | null } | null }>(
++      "query Revision($id: String!) { agentTeamDefinition(id: $id) { revision } }", { id });
++    expect(result.agentTeamDefinition?.revision).toBeTruthy();
++    return result.agentTeamDefinition!.revision!;
++  };
++
+   const runGraphql = async (query: string, variables?: Record<string, unknown>) =>
+     graphql({
+       schema,
+@@ -179,36 +185,14 @@ describe("Agent team definitions GraphQL e2e", () => {
+     const dataDir = appConfigProvider.config.getAppDataDir();
+     const initialAgentId = `agent_a_${unique}`;
+     const updatedAgentId = `agent_b_${unique}`;
+-    const initialNestedTeamId = `nested_team_a_${unique}`;
+-    const updatedNestedTeamId = `nested_team_b_${unique}`;
++    const initialHelperAgentId = `helper_agent_a_${unique}`;
++    const updatedHelperAgentId = `helper_agent_b_${unique}`;
+ 
+     for (const supportPath of [
+       await writeSharedAgentFixture(dataDir, initialAgentId, `Agent A ${unique}`),
+       await writeSharedAgentFixture(dataDir, updatedAgentId, `Agent B ${unique}`),
+-      await writeRootTeamFixture({
+-        dataDir,
+-        teamId: initialNestedTeamId,
+-        name: `Nested Team A ${unique}`,
+-        coordinatorMemberName: "coordinator",
+-        members: [{
+-          memberName: "coordinator",
+-          ref: initialAgentId,
+-          refType: "agent",
+-          refScope: "shared",
+-        }],
+-      }),
+-      await writeRootTeamFixture({
+-        dataDir,
+-        teamId: updatedNestedTeamId,
+-        name: `Nested Team B ${unique}`,
+-        coordinatorMemberName: "coordinator",
+-        members: [{
+-          memberName: "coordinator",
+-          ref: updatedAgentId,
+-          refType: "agent",
+-          refScope: "shared",
+-        }],
+-      }),
++      await writeSharedAgentFixture(dataDir, initialHelperAgentId, `Helper Agent A ${unique}`),
++      await writeSharedAgentFixture(dataDir, updatedHelperAgentId, `Helper Agent B ${unique}`),
+     ]) {
+       cleanupPaths.add(supportPath);
+     }
+@@ -231,7 +215,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+           nodes {
+             memberName
+             ref
+-            refType
+             refScope
+           }
+           handoffs { from to rules }
+@@ -256,7 +239,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+         nodes: Array<{
+           memberName: string;
+           ref: string;
+-          refType: "AGENT" | "AGENT_TEAM";
+           refScope?: "SHARED" | "TEAM_LOCAL" | null;
+         }>;
+         handoffs: Array<{ from: string; to: string; rules: string[] }>;
+@@ -280,13 +262,11 @@ describe("Agent team definitions GraphQL e2e", () => {
+           {
+             memberName: "leader",
+             ref: initialAgentId,
+-            refType: "AGENT",
+             refScope: "SHARED",
+           },
+           {
+             memberName: "helper",
+-            ref: initialNestedTeamId,
+-            refType: "AGENT_TEAM",
++            ref: initialHelperAgentId,
+             refScope: "SHARED",
+           },
+         ],
+@@ -336,8 +316,8 @@ describe("Agent team definitions GraphQL e2e", () => {
+         },
+       },
+       members: [
+-        { memberName: "leader", ref: initialAgentId, refType: "agent", refScope: "shared" },
+-        { memberName: "helper", ref: initialNestedTeamId, refType: "agent_team", refScope: "shared" },
++        { memberName: "leader", ref: initialAgentId, refScope: "shared" },
++        { memberName: "helper", ref: initialHelperAgentId, refScope: "shared" },
+       ],
+       handoffs: [{
+         from: "/leader",
+@@ -363,7 +343,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+           nodes {
+             memberName
+             ref
+-            refType
+             refScope
+           }
+           handoffs { from to rules }
+@@ -386,7 +365,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+         nodes: Array<{
+           memberName: string;
+           ref: string;
+-          refType: "AGENT" | "AGENT_TEAM";
+           refScope?: "SHARED" | "TEAM_LOCAL" | null;
+         }>;
+         handoffs: Array<{ from: string; to: string; rules: string[] }>;
+@@ -394,6 +372,7 @@ describe("Agent team definitions GraphQL e2e", () => {
+     }>(updateMutation, {
+       input: {
+         id: created.createAgentTeamDefinition.id,
++        expectedRevision: await currentRevision(created.createAgentTeamDefinition.id),
+         description: "Updated team description",
+         category: "platform",
+         instructions: "You coordinate the updated md-centric team.",
+@@ -410,13 +389,11 @@ describe("Agent team definitions GraphQL e2e", () => {
+           {
+             memberName: "helper",
+             ref: updatedAgentId,
+-            refType: "AGENT",
+             refScope: "SHARED",
+           },
+           {
+             memberName: "subteam",
+-            ref: updatedNestedTeamId,
+-            refType: "AGENT_TEAM",
++            ref: updatedHelperAgentId,
+             refScope: "SHARED",
+           },
+         ],
+@@ -439,7 +416,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+         reasoning_effort: "high",
+       },
+     });
+-    expect(updated.updateAgentTeamDefinition.nodes[1]?.refType).toBe("AGENT_TEAM");
+     expect(updated.updateAgentTeamDefinition.handoffs).toEqual([{
+       from: "/helper",
+       to: "/subteam",
+@@ -454,7 +430,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+       members: Array<{
+         memberName: string;
+         ref: string;
+-        refType: "agent" | "agent_team";
+         refScope?: "shared" | "team_local";
+       }>;
+       handoffs: Array<{ from: string; to: string; rules: string[] }>;
+@@ -486,6 +461,7 @@ describe("Agent team definitions GraphQL e2e", () => {
+     }>(updateMutation, {
+       input: {
+         id: created.createAgentTeamDefinition.id,
++        expectedRevision: await currentRevision(created.createAgentTeamDefinition.id),
+         description: "Updated without clearing launch defaults",
+       },
+     });
+@@ -516,6 +492,7 @@ describe("Agent team definitions GraphQL e2e", () => {
+     const rejected = await runGraphql(updateMutation, {
+       input: {
+         id: created.createAgentTeamDefinition.id,
++        expectedRevision: await currentRevision(created.createAgentTeamDefinition.id),
+         handoffs: [{
+           from: "/missing",
+           to: "/helper",
+@@ -545,6 +522,7 @@ describe("Agent team definitions GraphQL e2e", () => {
+     }>(updateMutation, {
+       input: {
+         id: created.createAgentTeamDefinition.id,
++        expectedRevision: await currentRevision(created.createAgentTeamDefinition.id),
+         defaultLaunchConfig: null,
+         handoffs: [],
+       },
+@@ -582,8 +560,9 @@ describe("Agent team definitions GraphQL e2e", () => {
+         {
+           coordinatorMemberName: "lead",
+           members: [
+-            { memberName: "lead", ref: "template-agent", refType: "agent", refScope: "shared" },
++            { memberName: "lead", ref: "template-agent", refScope: "shared" },
+           ],
++          handoffs: [],
+           avatarUrl: null,
+         },
+         null,
+@@ -667,7 +646,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+         {
+           memberName: "local_reviewer",
+           ref: "reviewer",
+-          refType: "agent",
+           refScope: "team_local",
+         },
+       ],
+@@ -693,7 +671,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+       members: Array<{
+         memberName: string;
+         ref: string;
+-        refType: "agent" | "agent_team";
+         refScope?: "shared" | "team_local";
+       }>;
+     };
+@@ -704,7 +681,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+         {
+           memberName: "local_reviewer",
+           ref: "reviewer",
+-          refType: "agent",
+           refScope: "team_local",
+         },
+       ],
+@@ -721,7 +697,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+           nodes {
+             memberName
+             ref
+-            refType
+             refScope
+           }
+           handoffs { from to rules }
+@@ -736,7 +711,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+         nodes: Array<{
+           memberName: string;
+           ref: string;
+-          refType: "AGENT" | "AGENT_TEAM";
+           refScope?: "SHARED" | "TEAM_LOCAL" | null;
+         }>;
+         handoffs: Array<{ from: string; to: string; rules: string[] }>;
+@@ -747,7 +721,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+       {
+         memberName: "local_reviewer",
+         ref: "reviewer",
+-        refType: "AGENT",
+         refScope: "TEAM_LOCAL",
+       },
+     ]);
+@@ -760,7 +733,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+           nodes {
+             memberName
+             ref
+-            refType
+             refScope
+           }
+           handoffs { from to rules }
+@@ -775,7 +747,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+         nodes: Array<{
+           memberName: string;
+           ref: string;
+-          refType: "AGENT" | "AGENT_TEAM";
+           refScope?: "SHARED" | "TEAM_LOCAL" | null;
+         }>;
+         handoffs: Array<{ from: string; to: string; rules: string[] }>;
+@@ -783,18 +754,17 @@ describe("Agent team definitions GraphQL e2e", () => {
+     }>(updateMutation, {
+       input: {
+         id: teamId,
++        expectedRevision: await currentRevision(teamId),
+         coordinatorMemberName: "shared_lead",
+         nodes: [
+           {
+             memberName: "shared_lead",
+             ref: sharedLeadAgentId,
+-            refType: "AGENT",
+             refScope: "SHARED",
+           },
+           {
+             memberName: "local_reviewer",
+             ref: "reviewer_v2",
+-            refType: "AGENT",
+             refScope: "TEAM_LOCAL",
+           },
+         ],
+@@ -811,13 +781,11 @@ describe("Agent team definitions GraphQL e2e", () => {
+       {
+         memberName: "shared_lead",
+         ref: sharedLeadAgentId,
+-        refType: "AGENT",
+         refScope: "SHARED",
+       },
+       {
+         memberName: "local_reviewer",
+         ref: "reviewer_v2",
+-        refType: "AGENT",
+         refScope: "TEAM_LOCAL",
+       },
+     ]);
+@@ -834,7 +802,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+       members: Array<{
+         memberName: string;
+         ref: string;
+-        refType: "agent" | "agent_team";
+         refScope?: "shared" | "team_local";
+       }>;
+       handoffs?: Array<{ from: string; to: string; rules: string[] }>;
+@@ -846,13 +813,11 @@ describe("Agent team definitions GraphQL e2e", () => {
+         {
+           memberName: "shared_lead",
+           ref: sharedLeadAgentId,
+-          refType: "agent",
+           refScope: "shared",
+         },
+         {
+           memberName: "local_reviewer",
+           ref: "reviewer_v2",
+-          refType: "agent",
+           refScope: "team_local",
+         },
+       ],
+@@ -864,445 +829,46 @@ describe("Agent team definitions GraphQL e2e", () => {
+     });
+   });
+ 
+-  it("exposes team-local subteams in GraphQL with ownership metadata and local member scopes", async () => {
+-    const unique = uniqueId("team_local_subteam_graphql");
++  it("rejects a Team definition whose member references another Team", async () => {
++    // Teams are flat: every member is an agent. Nested Teams belong to Agent Orgs.
++    const unique = uniqueId("flat_team");
+     const dataDir = appConfigProvider.config.getAppDataDir();
+-    const parentTeamId = `company_${unique}`;
+-    const localTeamId = `department_${unique}`;
+-    const canonicalLocalTeamId = buildTeamLocalTeamDefinitionId(parentTeamId, localTeamId);
+-
+-    const parentTeamDir = await writeRootTeamFixture({
++    const agentId = `agent_${unique}`;
++    const otherTeamId = `other_team_${unique}`;
++    cleanupPaths.add(await writeSharedAgentFixture(dataDir, agentId, `Agent ${unique}`));
++    cleanupPaths.add(await writeRootTeamFixture({
+       dataDir,
+-      teamId: parentTeamId,
+-      name: `Company ${unique}`,
+-      description: "Company root team",
+-      instructions: "Coordinate company work.",
+-      coordinatorMemberName: "root_lead",
+-      members: [
+-        {
+-          memberName: "root_lead",
+-          ref: "root-lead",
+-          refType: "agent",
+-          refScope: "team_local",
+-        },
+-        {
+-          memberName: "department",
+-          ref: localTeamId,
+-          refType: "agent_team",
+-          refScope: "team_local",
+-        },
+-      ],
+-    });
+-    cleanupPaths.add(parentTeamDir);
+-    await writeLocalAgentFixture({
+-      ownerTeamDir: parentTeamDir,
+-      agentId: "root-lead",
+-      name: `Root Lead ${unique}`,
+-    });
+-
+-    const localTeamDir = path.join(parentTeamDir, "agent-teams", localTeamId);
+-    await fs.mkdir(localTeamDir, { recursive: true });
+-    await fs.writeFile(
+-      path.join(localTeamDir, "team.md"),
+-      [
+-        "---",
+-        `name: Department ${unique}`,
+-        "description: Local department team",
+-        "---",
+-        "",
+-        "Coordinate department work.",
+-      ].join("\n"),
+-      "utf-8",
+-    );
+-    await fs.writeFile(
+-      path.join(localTeamDir, "team-config.json"),
+-      JSON.stringify(
+-        {
+-          coordinatorMemberName: "planner",
+-          members: [
+-            {
+-              memberName: "planner",
+-              ref: "planner",
+-              refType: "agent",
+-              refScope: "team_local",
+-            },
+-          ],
+-          avatarUrl: null,
+-        },
+-        null,
+-        2,
+-      ),
+-      "utf-8",
+-    );
+-    await writeLocalAgentFixture({
+-      ownerTeamDir: localTeamDir,
+-      agentId: "planner",
+-      name: `Department Planner ${unique}`,
+-    });
+-
++      teamId: otherTeamId,
++      name: `Other Team ${unique}`,
++      coordinatorMemberName: "coordinator",
++      members: [{ memberName: "coordinator", ref: agentId, refScope: "shared" }],
++    }));
+     await agentDefinitionService.refreshCache();
+     await agentTeamDefinitionService.refreshCache();
+ 
+-    const result = await execGraphql<{
+-      agentTeamDefinitions: Array<{
+-        id: string;
+-        name: string;
+-        ownershipScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED";
+-        ownerTeamId: string | null;
+-        ownerTeamName: string | null;
+-        nodes: Array<{
+-          memberName: string;
+-          ref: string;
+-          refType: "AGENT" | "AGENT_TEAM";
+-          refScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED" | null;
+-        }>;
+-      }>;
+-      agentTeamDefinition: {
+-        id: string;
+-        ownershipScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED";
+-        ownerTeamId: string | null;
+-        ownerTeamName: string | null;
+-        nodes: Array<{
+-          memberName: string;
+-          ref: string;
+-          refType: "AGENT" | "AGENT_TEAM";
+-          refScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED" | null;
+-        }>;
+-      } | null;
+-    }>(`
+-      query TeamLocalSubteams($id: String!) {
+-        agentTeamDefinitions {
+-          id
+-          name
+-          ownershipScope
+-          ownerTeamId
+-          ownerTeamName
+-          nodes {
+-            memberName
+-            ref
+-            refType
+-            refScope
+-          }
+-        }
+-        agentTeamDefinition(id: $id) {
+-          id
+-          ownershipScope
+-          ownerTeamId
+-          ownerTeamName
+-          nodes {
+-            memberName
+-            ref
+-            refType
+-            refScope
+-          }
+-        }
+-      }
+-    `, { id: canonicalLocalTeamId });
+-
+-    const parent = result.agentTeamDefinitions.find((team) => team.id === parentTeamId);
+-    const local = result.agentTeamDefinitions.find((team) => team.id === canonicalLocalTeamId);
+-
+-    expect(parent).toMatchObject({
+-      id: parentTeamId,
+-      ownershipScope: "SHARED",
+-      ownerTeamId: null,
+-      nodes: [
+-        {
+-          memberName: "root_lead",
+-          ref: "root-lead",
+-          refType: "AGENT",
+-          refScope: "TEAM_LOCAL",
+-        },
+-        {
+-          memberName: "department",
+-          ref: localTeamId,
+-          refType: "AGENT_TEAM",
+-          refScope: "TEAM_LOCAL",
+-        },
+-      ],
+-    });
+-    expect(local).toMatchObject({
+-      id: canonicalLocalTeamId,
+-      ownershipScope: "TEAM_LOCAL",
+-      ownerTeamId: parentTeamId,
+-      ownerTeamName: `Company ${unique}`,
+-      nodes: [
+-        {
+-          memberName: "planner",
+-          ref: "planner",
+-          refType: "AGENT",
+-          refScope: "TEAM_LOCAL",
+-        },
+-      ],
+-    });
+-    expect(result.agentTeamDefinition).toMatchObject({
+-      id: canonicalLocalTeamId,
+-      ownershipScope: "TEAM_LOCAL",
+-      ownerTeamId: parentTeamId,
+-      ownerTeamName: `Company ${unique}`,
+-    });
+-  });
+-
+-  it("exposes company-level team-local departments and their local agents without promoting departments to root catalog entries", async () => {
+-    const unique = uniqueId("company_local_departments_graphql");
+-    const dataDir = appConfigProvider.config.getAppDataDir();
+-    const parentTeamId = `northstar_${unique}`;
+-    const parentTeamName = `Northstar Operating Company ${unique}`;
+-    const departments = [
+-      {
+-        localId: "engineering-org",
+-        memberName: "engineering_org",
+-        name: `Northstar Engineering Org ${unique}`,
+-        coordinator: "vp_engineering",
+-        agents: [
+-          { memberName: "vp_engineering", localId: "vp-engineering" },
+-          { memberName: "platform_engineering_manager", localId: "platform-engineering-manager" },
+-        ],
+-      },
+-      {
+-        localId: "product-org",
+-        memberName: "product_org",
+-        name: `Northstar Product Org ${unique}`,
+-        coordinator: "vp_product",
+-        agents: [
+-          { memberName: "vp_product", localId: "vp-product" },
+-          { memberName: "ux_research_lead", localId: "ux-research-lead" },
+-        ],
+-      },
+-      {
+-        localId: "revenue-org",
+-        memberName: "revenue_org",
+-        name: `Northstar Revenue Org ${unique}`,
+-        coordinator: "vp_sales",
+-        agents: [
+-          { memberName: "vp_sales", localId: "vp-sales" },
+-          { memberName: "customer_success_lead", localId: "customer-success-lead" },
+-        ],
+-      },
+-      {
+-        localId: "operations-org",
+-        memberName: "operations_org",
+-        name: `Northstar Operations Org ${unique}`,
+-        coordinator: "vp_operations",
+-        agents: [
+-          { memberName: "vp_operations", localId: "vp-operations" },
+-          { memberName: "data_analytics_lead", localId: "data-analytics-lead" },
+-        ],
+-      },
++    const result = await runGraphql(
++      `mutation CreateTeam($input: CreateAgentTeamDefinitionInput!) {
++        createAgentTeamDefinition(input: $input) { id }
++      }`,
+       {
+-        localId: "finance-people-org",
+-        memberName: "finance_people_org",
+-        name: `Northstar Finance People Org ${unique}`,
+-        coordinator: "vp_finance",
+-        agents: [
+-          { memberName: "vp_finance", localId: "vp-finance" },
+-          { memberName: "people_ops_lead", localId: "people-ops-lead" },
+-        ],
+-      },
+-    ];
+-
+-    const parentTeamDir = await writeRootTeamFixture({
+-      dataDir,
+-      teamId: parentTeamId,
+-      name: parentTeamName,
+-      description: "Company root with local department teams",
+-      instructions: "Coordinate company work across local departments.",
+-      coordinatorMemberName: "ceo",
+-      members: [
+-        {
+-          memberName: "ceo",
+-          ref: "ceo",
+-          refType: "agent",
+-          refScope: "team_local",
++        input: {
++          name: `team_${unique}`,
++          description: "Team with a Team member",
++          instructions: "Coordinate.",
++          coordinatorMemberName: "leader",
++          nodes: [
++            { memberName: "leader", ref: agentId, refScope: "SHARED" },
++            { memberName: "department", ref: otherTeamId, refScope: "SHARED" },
++          ],
+         },
+-        ...departments.map((department) => ({
+-          memberName: department.memberName,
+-          ref: department.localId,
+-          refType: "agent_team" as const,
+-          refScope: "team_local" as const,
+-        })),
+-      ],
+-    });
+-    cleanupPaths.add(parentTeamDir);
+-
+-    await writeLocalAgentFixture({
+-      ownerTeamDir: parentTeamDir,
+-      agentId: "ceo",
+-      name: `Northstar CEO ${unique}`,
+-    });
+-
+-    for (const department of departments) {
+-      const localTeamDir = path.join(parentTeamDir, "agent-teams", department.localId);
+-      await fs.mkdir(localTeamDir, { recursive: true });
+-      await fs.writeFile(
+-        path.join(localTeamDir, "team.md"),
+-        [
+-          "---",
+-          `name: ${department.name}`,
+-          "description: Local company department team",
+-          "---",
+-          "",
+-          "Coordinate department work.",
+-        ].join("\n"),
+-        "utf-8",
+-      );
+-      await fs.writeFile(
+-        path.join(localTeamDir, "team-config.json"),
+-        JSON.stringify(
+-          {
+-            coordinatorMemberName: department.coordinator,
+-            members: department.agents.map((agent) => ({
+-              memberName: agent.memberName,
+-              ref: agent.localId,
+-              refType: "agent",
+-              refScope: "team_local",
+-            })),
+-            avatarUrl: null,
+-          },
+-          null,
+-          2,
+-        ),
+-        "utf-8",
+-      );
+-
+-      for (const agent of department.agents) {
+-        await writeLocalAgentFixture({
+-          ownerTeamDir: localTeamDir,
+-          agentId: agent.localId,
+-          name: `${department.name} ${agent.memberName}`,
+-        });
+-      }
+-    }
+-
+-    await agentDefinitionService.refreshCache();
+-    await agentTeamDefinitionService.refreshCache();
+-
+-    const result = await execGraphql<{
+-      agentTeamDefinitions: Array<{
+-        id: string;
+-        name: string;
+-        ownershipScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED";
+-        ownerTeamId: string | null;
+-        ownerTeamName: string | null;
+-        nodes: Array<{
+-          memberName: string;
+-          ref: string;
+-          refType: "AGENT" | "AGENT_TEAM";
+-          refScope: "SHARED" | "TEAM_LOCAL" | "APPLICATION_OWNED" | null;
+-        }>;
+-      }>;
+-      agentDefinitions: Array<{
+-        id: string;
+-        name: string;
+-        ownershipScope: "SHARED" | "TEAM_LOCAL";
+-        ownerTeamId: string | null;
+-        ownerTeamName: string | null;
+-      }>;
+-    }>(`
+-      query CompanyLocalDepartmentDefinitions {
+-        agentTeamDefinitions {
+-          id
+-          name
+-          ownershipScope
+-          ownerTeamId
+-          ownerTeamName
+-          nodes {
+-            memberName
+-            ref
+-            refType
+-            refScope
+-          }
+-        }
+-        agentDefinitions {
+-          id
+-          name
+-          ownershipScope
+-          ownerTeamId
+-          ownerTeamName
+-        }
+-      }
+-    `);
+-
+-    const parent = result.agentTeamDefinitions.find((team) => team.id === parentTeamId);
+-    expect(parent).toMatchObject({
+-      id: parentTeamId,
+-      name: parentTeamName,
+-      ownershipScope: "SHARED",
+-      ownerTeamId: null,
+-      ownerTeamName: null,
+-    });
+-    expect(parent?.nodes).toEqual([
+-      {
+-        memberName: "ceo",
+-        ref: "ceo",
+-        refType: "AGENT",
+-        refScope: "TEAM_LOCAL",
+       },
+-      ...departments.map((department) => ({
+-        memberName: department.memberName,
+-        ref: department.localId,
+-        refType: "AGENT_TEAM" as const,
+-        refScope: "TEAM_LOCAL" as const,
+-      })),
+-    ]);
+-
+-    const rootCatalogTeamIds = result.agentTeamDefinitions
+-      .filter((team) => team.ownershipScope !== "TEAM_LOCAL")
+-      .map((team) => team.id);
+-    expect(rootCatalogTeamIds).toContain(parentTeamId);
+-
+-    const parentLocalCeoId = buildTeamLocalAgentDefinitionId(parentTeamId, "ceo");
+-    expect(result.agentDefinitions.find((agent) => agent.id === parentLocalCeoId)).toMatchObject({
+-      id: parentLocalCeoId,
+-      name: `Northstar CEO ${unique}`,
+-      ownershipScope: "TEAM_LOCAL",
+-      ownerTeamId: parentTeamId,
+-      ownerTeamName: parentTeamName,
+-    });
+-
+-    for (const department of departments) {
+-      const canonicalDepartmentId = buildTeamLocalTeamDefinitionId(
+-        parentTeamId,
+-        department.localId,
+-      );
+-      const localTeam = result.agentTeamDefinitions.find(
+-        (team) => team.id === canonicalDepartmentId,
+-      );
+-
+-      expect(rootCatalogTeamIds).not.toContain(canonicalDepartmentId);
+-      expect(result.agentTeamDefinitions.find((team) => team.id === department.localId)).toBeUndefined();
+-      expect(localTeam).toMatchObject({
+-        id: canonicalDepartmentId,
+-        name: department.name,
+-        ownershipScope: "TEAM_LOCAL",
+-        ownerTeamId: parentTeamId,
+-        ownerTeamName: parentTeamName,
+-      });
+-      expect(localTeam?.nodes).toEqual(
+-        department.agents.map((agent) => ({
+-          memberName: agent.memberName,
+-          ref: agent.localId,
+-          refType: "AGENT" as const,
+-          refScope: "TEAM_LOCAL" as const,
+-        })),
+-      );
++    );
+ 
+-      for (const agent of department.agents) {
+-        const canonicalLocalAgentId = buildTeamLocalAgentDefinitionId(
+-          canonicalDepartmentId,
+-          agent.localId,
+-        );
+-        expect(
+-          result.agentDefinitions.find((definition) => definition.id === canonicalLocalAgentId),
+-        ).toMatchObject({
+-          id: canonicalLocalAgentId,
+-          name: `${department.name} ${agent.memberName}`,
+-          ownershipScope: "TEAM_LOCAL",
+-          ownerTeamId: canonicalDepartmentId,
+-          ownerTeamName: department.name,
+-        });
+-      }
+-    }
++    expect(result.errors?.[0]?.message).toContain(`member 'department' references missing agent '${otherTeamId}'`);
++    const listed = await execGraphql<{ agentTeamDefinitions: Array<{ id: string; name: string }> }>(
++      "query { agentTeamDefinitions { id name } }");
++    expect(listed.agentTeamDefinitions.some((team) => team.name === `team_${unique}`)).toBe(false);
++    expect(listed.agentTeamDefinitions.some((team) => team.id === otherTeamId)).toBe(true);
+   });
+ 
+   it("exposes md-centric team GraphQL output contract", async () => {
+@@ -1377,7 +943,6 @@ describe("Agent team definitions GraphQL e2e", () => {
+           {
+             memberName: "helper",
+             ref: "agent-1",
+-            refType: "AGENT",
+             refScope: "SHARED",
+           },
+         ],
+diff --git a/autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+similarity index 76%
+rename from autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
+rename to autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+index 6ec06c9c8..4dbb3ba31 100644
+--- a/autobyteus-server-ts/tests/e2e/agent-team-runs/hierarchical-team-run-config-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts
+@@ -45,14 +45,14 @@ const createAgentDefinition = async (serverUrl: string, name: string): Promise<s
+   const result = await executeGraphql<{
+     createAgentDefinition: { id: string };
+   }>(serverUrl, `
+-    mutation CreateHierarchyAgent($input: CreateAgentDefinitionInput!) {
++    mutation CreateTeamRunConfigAgent($input: CreateAgentDefinitionInput!) {
+       createAgentDefinition(input: $input) { id }
+     }
+   `, {
+     input: {
+       name,
+-      role: "API/E2E hierarchy fixture",
+-      description: "Owned deterministic hierarchy fixture",
++      role: "API/E2E team run config fixture",
++      description: "Owned deterministic team run config fixture",
+       instructions: "Do not perform work until explicitly messaged.",
+       category: "api-e2e",
+     },
+@@ -63,18 +63,18 @@ const createAgentDefinition = async (serverUrl: string, name: string): Promise<s
+ const createTeamDefinition = async (serverUrl: string, input: {
+   name: string;
+   coordinatorMemberName: string;
+-  nodes: Array<{ memberName: string; ref: string; refType: "AGENT" | "AGENT_TEAM"; refScope: "SHARED" }>;
++  nodes: Array<{ memberName: string; ref: string; refScope: "SHARED" }>;
+ }): Promise<string> => {
+   const result = await executeGraphql<{
+     createAgentTeamDefinition: { id: string };
+   }>(serverUrl, `
+-    mutation CreateHierarchyTeam($input: CreateAgentTeamDefinitionInput!) {
++    mutation CreateTeamRunConfigTeam($input: CreateAgentTeamDefinitionInput!) {
+       createAgentTeamDefinition(input: $input) { id }
+     }
+   `, {
+     input: {
+       ...input,
+-      description: "Owned deterministic hierarchy fixture",
++      description: "Owned deterministic team run config fixture",
+       instructions: "Coordinate only after explicit user input.",
+     },
+   });
+@@ -85,7 +85,7 @@ const firstAutoByteusModel = async (serverUrl: string): Promise<string> => {
+   const result = await executeGraphql<{
+     providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }>;
+   }>(serverUrl, `
+-    query HierarchyModels($runtimeKind: String) {
++    query TeamRunConfigModels($runtimeKind: String) {
+       providerModelCatalogSnapshots(runtimeKind: $runtimeKind) {
+         llmModels { modelIdentifier }
+       }
+@@ -99,33 +99,25 @@ const firstAutoByteusModel = async (serverUrl: string): Promise<string> => {
+   return model;
+ };
+ 
+-const seedHierarchy = async (serverUrl: string, label: string) => {
++// Teams are flat: every member is an agent. Nested Teams are an Agent Org concern.
++const seedTeam = async (serverUrl: string, label: string) => {
+   const coordinatorId = await createAgentDefinition(serverUrl, `${label}-coordinator`);
+   const observerId = await createAgentDefinition(serverUrl, `${label}-observer`);
+-  const researchLeadId = await createAgentDefinition(serverUrl, `${label}-research-lead`);
+   const reviewerId = await createAgentDefinition(serverUrl, `${label}-reviewer`);
+-  const researchTeamId = await createTeamDefinition(serverUrl, {
+-    name: `${label}-research-team`,
+-    coordinatorMemberName: "lead",
+-    nodes: [
+-      { memberName: "lead", ref: researchLeadId, refType: "AGENT", refScope: "SHARED" },
+-      { memberName: "reviewer", ref: reviewerId, refType: "AGENT", refScope: "SHARED" },
+-    ],
+-  });
+   const rootTeamId = await createTeamDefinition(serverUrl, {
+     name: `${label}-root-team`,
+     coordinatorMemberName: "coordinator",
+     nodes: [
+-      { memberName: "coordinator", ref: coordinatorId, refType: "AGENT", refScope: "SHARED" },
+-      { memberName: "observer", ref: observerId, refType: "AGENT", refScope: "SHARED" },
+-      { memberName: "Research", ref: researchTeamId, refType: "AGENT_TEAM", refScope: "SHARED" },
++      { memberName: "coordinator", ref: coordinatorId, refScope: "SHARED" },
++      { memberName: "observer", ref: observerId, refScope: "SHARED" },
++      { memberName: "reviewer", ref: reviewerId, refScope: "SHARED" },
+     ],
+   });
+-  return { rootTeamId, coordinatorId, observerId, researchLeadId, reviewerId };
++  return { rootTeamId, coordinatorId, observerId, reviewerId };
+ };
+ 
+ const createTeamRunMutation = `
+-  mutation CreateHierarchicalTeamRun($input: CreateAgentTeamRunInput!) {
++  mutation CreateConfiguredTeamRun($input: CreateAgentTeamRunInput!) {
+     createAgentTeamRun(input: $input) { success message teamRunId }
+   }
+ `;
+@@ -133,7 +125,7 @@ const createTeamRunMutation = `
+ const resumeConfig = (serverUrl: string, teamRunId: string) => executeGraphql<{
+   getTeamRunResumeConfig: { teamRunId: string; isActive: boolean; executionTree: Record<string, unknown> };
+ }>(serverUrl, `
+-  query HierarchicalTeamRunResume($teamRunId: String!) {
++  query ConfiguredTeamRunResume($teamRunId: String!) {
+     getTeamRunResumeConfig(teamRunId: $teamRunId) { teamRunId isActive executionTree }
+   }
+ `, { teamRunId }).then(({ getTeamRunResumeConfig }) => getTeamRunResumeConfig);
+@@ -196,19 +188,14 @@ const normalizeExactConfigurationTree = (
+       root[defaultKey] as Record<string, unknown>,
+       projection,
+     ),
+-    members: members.map((member): ExactConfigurationNode => {
+-      if (Array.isArray(member.members)) {
+-        return normalizeExactConfigurationTree(member, projection);
+-      }
+-      return {
+-        address: member.address as string,
+-        agentDefinitionId: member[definitionKey] as string,
+-        launchConfiguration: normalizeLaunchConfiguration(
+-          member[launchKey] as Record<string, unknown>,
+-          projection,
+-        ),
+-      };
+-    }),
++    members: members.map((member): ExactConfigurationNode => ({
++      address: member.address as string,
++      agentDefinitionId: member[definitionKey] as string,
++      launchConfiguration: normalizeLaunchConfiguration(
++        member[launchKey] as Record<string, unknown>,
++        projection,
++      ),
++    })),
+   };
+ };
+ 
+@@ -232,15 +219,15 @@ afterEach(async () => {
+   }
+ });
+ 
+-describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+-  it("persists root, nested-Team, and exact-Agent configurations and restores them after process restart", async () => {
+-    const target = makeTarget("hierarchical-team-run-current");
++describe("TeamRun configuration GraphQL and lifecycle", () => {
++  it("persists Team-default and exact-Agent configurations and restores them after process restart", async () => {
++    const target = makeTarget("team-run-config-current");
+     const first = await startServer(target);
+-    const fixture = await seedHierarchy(first.serverUrl, `hierarchy-${Date.now()}`);
++    const fixture = await seedTeam(first.serverUrl, `team-run-config-${Date.now()}`);
+     const model = await firstAutoByteusModel(first.serverUrl);
+     const rootWorkspace = path.join(target.runtimeRoot, "workspaces", "root");
+-    const researchWorkspace = path.join(target.runtimeRoot, "workspaces", "research");
+-    for (const workspace of [rootWorkspace, researchWorkspace]) {
++    const reviewWorkspace = path.join(target.runtimeRoot, "workspaces", "review");
++    for (const workspace of [rootWorkspace, reviewWorkspace]) {
+       fs.mkdirSync(workspace, { recursive: true, mode: 0o700 });
+     }
+     const rootTeamConfiguration: CompleteLaunchConfiguration = {
+@@ -251,14 +238,6 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+       skillAccessMode: "PRELOADED_ONLY",
+       workspaceRootPath: rootWorkspace,
+     };
+-    const researchTeamConfiguration: CompleteLaunchConfiguration = {
+-      runtimeKind: "autobyteus",
+-      llmModelIdentifier: model,
+-      llmConfig: { temperature: 0.2 },
+-      autoExecuteTools: true,
+-      skillAccessMode: "PRELOADED_ONLY",
+-      workspaceRootPath: researchWorkspace,
+-    };
+     const coordinatorConfiguration = { ...rootTeamConfiguration };
+     const observerConfiguration: CompleteLaunchConfiguration = {
+       runtimeKind: "autobyteus",
+@@ -268,14 +247,13 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+       skillAccessMode: "PRELOADED_ONLY",
+       workspaceRootPath: rootWorkspace,
+     };
+-    const leadConfiguration = { ...researchTeamConfiguration };
+     const reviewerConfiguration: CompleteLaunchConfiguration = {
+       runtimeKind: "autobyteus",
+       llmModelIdentifier: model,
+       llmConfig: { temperature: 0.35 },
+       autoExecuteTools: false,
+       skillAccessMode: "PRELOADED_ONLY",
+-      workspaceRootPath: researchWorkspace,
++      workspaceRootPath: reviewWorkspace,
+     };
+     const expectedConfigurationTree: ExactConfigurationNode = {
+       address: "/",
+@@ -292,20 +270,9 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+           launchConfiguration: observerConfiguration,
+         },
+         {
+-          address: "/Research",
+-          defaultLaunchConfiguration: researchTeamConfiguration,
+-          members: [
+-            {
+-              address: "/Research/lead",
+-              agentDefinitionId: fixture.researchLeadId,
+-              launchConfiguration: leadConfiguration,
+-            },
+-            {
+-              address: "/Research/reviewer",
+-              agentDefinitionId: fixture.reviewerId,
+-              launchConfiguration: reviewerConfiguration,
+-            },
+-          ],
++          address: "/reviewer",
++          agentDefinitionId: fixture.reviewerId,
++          launchConfiguration: reviewerConfiguration,
+         },
+       ],
+     };
+@@ -320,10 +287,6 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+             teamAddress: "/",
+             ...rootTeamConfiguration,
+           },
+-          {
+-            teamAddress: "/Research",
+-            ...researchTeamConfiguration,
+-          },
+         ],
+         memberConfigs: [
+           {
+@@ -337,12 +300,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+             ...observerConfiguration,
+           },
+           {
+-            memberAddress: "/Research/lead",
+-            agentDefinitionId: fixture.researchLeadId,
+-            ...leadConfiguration,
+-          },
+-          {
+-            memberAddress: "/Research/reviewer",
++            memberAddress: "/reviewer",
+             agentDefinitionId: fixture.reviewerId,
+             ...reviewerConfiguration,
+           },
+@@ -350,7 +308,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+       },
+     });
+     if (!created.createAgentTeamRun.success) {
+-      throw new Error(`HIERARCHICAL_TEAM_RUN_CREATE_FAILED: ${created.createAgentTeamRun.message}`);
++      throw new Error(`TEAM_RUN_CREATE_FAILED: ${created.createAgentTeamRun.message}`);
+     }
+     expect(created.createAgentTeamRun).toMatchObject({ success: true, teamRunId: expect.any(String) });
+     const teamRunId = created.createAgentTeamRun.teamRunId as string;
+@@ -367,7 +325,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+ 
+     const activeResume = await resumeConfig(first.serverUrl, teamRunId);
+     expect(activeResume).toMatchObject({ teamRunId, isActive: true });
+-    expect((activeResume.executionTree as any).schema_version).toBe(2);
++    expect(activeResume.executionTree).not.toHaveProperty("schema_version");
+     assertExactConfigurationTree(
+       (activeResume.executionTree as any).root_team,
+       "graphql",
+@@ -375,7 +333,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+     );
+ 
+     const terminated = await executeGraphql<{ terminateAgentTeamRun: { success: boolean } }>(first.serverUrl, `
+-      mutation TerminateHierarchicalTeamRun($teamRunId: String!) {
++      mutation TerminateConfiguredTeamRun($teamRunId: String!) {
+         terminateAgentTeamRun(teamRunId: $teamRunId) { success }
+       }
+     `, { teamRunId });
+@@ -385,7 +343,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+     const second = await startServer(target);
+     const restartedResume = await resumeConfig(second.serverUrl, teamRunId);
+     expect(restartedResume).toMatchObject({ teamRunId, isActive: false });
+-    expect((restartedResume.executionTree as any).schema_version).toBe(2);
++    expect(restartedResume.executionTree).not.toHaveProperty("schema_version");
+     assertExactConfigurationTree(
+       (restartedResume.executionTree as any).root_team,
+       "graphql",
+@@ -394,7 +352,7 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+     const restored = await executeGraphql<{
+       restoreAgentTeamRun: { success: boolean; teamRunId: string | null };
+     }>(second.serverUrl, `
+-      mutation RestoreHierarchicalTeamRun($teamRunId: String!) {
++      mutation RestoreConfiguredTeamRun($teamRunId: String!) {
+         restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId }
+       }
+     `, { teamRunId });
+@@ -421,9 +379,9 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+     runtimeKind,
+     graphqlRejected,
+   }) => {
+-    const target = makeTarget(`hierarchical-team-run-invalid-${subject.toLowerCase()}-${label}`);
++    const target = makeTarget(`team-run-config-invalid-${subject.toLowerCase()}-${label}`);
+     const server = await startServer(target);
+-    const fixture = await seedHierarchy(server.serverUrl, `invalid-${label}-${Date.now()}`);
++    const fixture = await seedTeam(server.serverUrl, `invalid-${label}-${Date.now()}`);
+     const model = await firstAutoByteusModel(server.serverUrl);
+     const rejectedWorkspace = path.join(target.runtimeRoot, "must-not-exist", label);
+     const input = {
+@@ -439,20 +397,11 @@ describe("hierarchical TeamRun GraphQL and V2 lifecycle", () => {
+             : { runtimeKind: "autobyteus" }),
+           workspaceRootPath: rejectedWorkspace,
+         },
+-        {
+-          teamAddress: "/Research",
+-          llmModelIdentifier: model,
+-          autoExecuteTools: false,
+-          skillAccessMode: "NONE",
+-          runtimeKind: "autobyteus",
+-          workspaceRootPath: rejectedWorkspace,
+-        },
+       ],
+       memberConfigs: [
+         ["/coordinator", fixture.coordinatorId],
+         ["/observer", fixture.observerId],
+-        ["/Research/lead", fixture.researchLeadId],
+-        ["/Research/reviewer", fixture.reviewerId],
++        ["/reviewer", fixture.reviewerId],
+       ].map(([memberAddress, agentDefinitionId], index) => ({
+         memberAddress,
+         agentDefinitionId,
+diff --git a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+index 835b69271..d0bec7787 100644
+--- a/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts
+@@ -49,6 +49,8 @@ type AttemptLogDetail = {
+ const V1_PROMOTION_MIGRATION_ID = "20260814_team_run_execution_tree_v1";
+ const TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID = "20260823_repair_team_agent_memory_layout";
+ const V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
++// A released Team history that contains a Team member is cut over to the Agent Org family.
++const ORG_FAMILY_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
+ const TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID = "20260819_token_usage_run_records_v1";
+ const HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
+ const REMOVED_CANONICAL_MIGRATION_ID = "20260801_team_canonical_identity";
+@@ -568,6 +570,12 @@ const promotionStatus = async (serverUrl: string): Promise<MigrationStatus> => {
+   return status;
+ };
+ 
++const orgFamilyStatus = async (serverUrl: string): Promise<MigrationStatus> => {
++  const status = (await migrationStatuses(serverUrl)).find(({ migrationId }) => migrationId === ORG_FAMILY_MIGRATION_ID);
++  if (!status) throw new Error("AGENT_ORG_FAMILY_MIGRATION_STATUS_MISSING");
++  return status;
++};
++
+ const currentTreeStatus = async (serverUrl: string): Promise<MigrationStatus> => {
+   const statuses = await migrationStatuses(serverUrl);
+   const status = statuses.find(({ migrationId }) => migrationId === V2_MIGRATION_ID);
+@@ -716,13 +724,21 @@ const terminateAgentRun = async (serverUrl: string, runId: string): Promise<void
+   expect(terminated.terminateAgentRun.success).toBe(true);
+ };
+ 
+-const restoreTeamRun = async (serverUrl: string, teamRunId: string) => executeGraphql<{
+-  restoreAgentTeamRun: { success: boolean; teamRunId: string | null; message: string };
++const restoreOrgRun = async (serverUrl: string, agentOrgRunId: string) => executeGraphql<{
++  restoreAgentOrgRun: { success: boolean; agentOrgRunId: string | null; message: string };
++}>(serverUrl, `
++  mutation RestoreConvertedOrgRun($agentOrgRunId: String!) {
++    restoreAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success agentOrgRunId message }
++  }
++`, { agentOrgRunId });
++
++const terminateOrgRun = async (serverUrl: string, agentOrgRunId: string): Promise<boolean> => (await executeGraphql<{
++  terminateAgentOrgRun: { success: boolean };
+ }>(serverUrl, `
+-  mutation RestoreMigrationLifecycleTeam($teamRunId: String!) {
+-    restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId message }
++  mutation TerminateConvertedOrgRun($agentOrgRunId: String!) {
++    terminateAgentOrgRun(agentOrgRunId: $agentOrgRunId) { success }
+   }
+-`, { teamRunId });
++`, { agentOrgRunId })).terminateAgentOrgRun.success;
+ 
+ const countTokenRows = (databasePath: string): { legacy: number; current: number } => {
+   const database = new DatabaseSync(databasePath, { readOnly: true });
+@@ -737,22 +753,28 @@ const countTokenRows = (databasePath: string): { legacy: number; current: number
+ };
+ 
+ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario>>): void => {
++  // The released Team package is gone from the Team family and lives, converted, in the Org family.
+   expect(fs.existsSync(scenario.supported.metadataPath)).toBe(false);
+-  const tree = JSON.parse(fs.readFileSync(path.join(scenario.supported.rootDir, "team_run_execution_tree.json"), "utf8"));
++  expect(fs.existsSync(scenario.supported.rootDir)).toBe(false);
++  const orgDir = path.join(path.dirname(path.dirname(scenario.supported.rootDir)), "agent_orgs", scenario.rootTeamRunId);
++  const tree = JSON.parse(fs.readFileSync(path.join(orgDir, "agent_org_run_execution_tree.json"), "utf8"));
+   expect(tree).toMatchObject({
+-    schemaVersion: 2,
++    subjectKind: "agent_org",
++    createdAt: "2026-08-16T12:00:00.000Z",
++    archivedAt: null,
+     applicationBinding: GENERAL_PROCESS_APPLICATION_BINDING,
+     handoffs: [{
+       from: "/lead",
+       to: "/research/reviewer",
+       rules: ["Review the migration evidence."],
+     }],
+-    rootTeam: {
++    rootOrg: {
+       address: "/",
+-      teamRunId: scenario.rootTeamRunId,
+-      coordinatorAddress: "/lead",
++      orgRunId: scenario.rootTeamRunId,
++      orgDefinitionId: "synthetic-released-root-definition",
++      orgDefinitionName: "Synthetic Released Team",
+       defaultLaunchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
+-      members: expect.arrayContaining([
++      members: [
+         expect.objectContaining({
+           address: "/lead",
+           agentDefinitionId: "autobyteus-memory-compactor",
+@@ -761,6 +783,7 @@ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario
+         }),
+         expect.objectContaining({
+           address: "/research",
++          teamDefinitionId: "synthetic-released-child-definition",
+           teamRunId: `${scenario.rootTeamRunId}-explicit-child-team-run`,
+           coordinatorAddress: "/research/reviewer",
+           defaultLaunchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
+@@ -774,64 +797,44 @@ const assertConvertedPackage = (scenario: Awaited<ReturnType<typeof seedScenario
+             address: "/research/reviewer",
+             agentRunId: scenario.supported.taskAgentRunId,
+             startedAt: "2026-08-16T12:03:00.000Z",
+-            settledAt: "2026-08-16T12:05:00.000Z",
+           })],
+         }),
+-      ]),
++      ],
+     },
+   });
+-  const messages = JSON.parse(fs.readFileSync(path.join(scenario.supported.rootDir, "team_communication_messages.json"), "utf8"));
++  const messages = JSON.parse(fs.readFileSync(path.join(orgDir, "agent_org_communication_messages.json"), "utf8"));
+   expect(messages).toMatchObject({
+     schemaVersion: 1,
+-    rootTeamRunId: scenario.rootTeamRunId,
++    subjectKind: "agent_org",
++    orgRunId: scenario.rootTeamRunId,
+     messages: [
+       expect.objectContaining({
+         senderAgentRunId: `${scenario.rootTeamRunId}-lead-run`,
+         receiverAgentRunId: `${scenario.rootTeamRunId}-reviewer-run`,
++        content: "address projection",
++        referenceFiles: ["/synthetic/address-evidence.md"],
+       }),
+       expect.objectContaining({
+         senderAgentRunId: `${scenario.rootTeamRunId}-reviewer-run`,
+         receiverAgentRunId: `${scenario.rootTeamRunId}-lead-run`,
++        content: "run ID projection",
++        referenceFiles: ["/synthetic/run-id-evidence.md"],
+       }),
+     ],
+   });
+-  const tasks = JSON.parse(fs.readFileSync(scenario.supported.taskRecordsPath, "utf8"));
+-  expect(tasks).toEqual({
+-    schemaVersion: 1,
+-    rootTeamRunId: scenario.rootTeamRunId,
+-    records: [{
+-      taskId: scenario.supported.taskId,
+-      delegatorAgentRunId: `${scenario.rootTeamRunId}-lead-run`,
+-      recipientAddress: "/research/reviewer",
+-      taskExecution: { agentRunId: scenario.supported.taskAgentRunId },
+-      description: "Review the preserved migration package.",
+-      referenceFiles: ["/synthetic/migration-task.md"],
+-      status: "accepted",
+-      updates: [
+-        {
+-          submissionId: scenario.supported.submissionId,
+-          message: "The preserved migration package is valid.",
+-          referenceFiles: ["/synthetic/migration-result.md"],
+-          createdAt: "2026-08-16T12:04:00.000Z",
+-        },
+-        {
+-          reviewId: `${scenario.supported.taskId}_review_0001`,
+-          reviewedSubmissionId: scenario.supported.submissionId,
+-          decision: "accept",
+-          comment: "Accepted migration evidence.",
+-          referenceFiles: [],
+-          createdAt: "2026-08-16T12:05:00.000Z",
+-        },
+-      ],
+-      createdAt: "2026-08-16T12:02:00.000Z",
+-    }],
+-  });
+-  expect(fs.readFileSync(scenario.supported.memorySentinelPath)).toEqual(scenario.supported.memorySentinel);
++  expect(fs.readFileSync(path.join(orgDir, `${scenario.rootTeamRunId}-lead-run`, "synthetic-memory.bin")))
++    .toEqual(scenario.supported.memorySentinel);
+ };
+ 
++// Migrations registered after the released cohort record one ledger row each on first startup.
++// The three that depend on the Org family cutover run only after it succeeds.
++const NEW_ROWS_WITH_ORG_CUTOVER = 8;
++const NEW_ROWS_WITH_FAILED_ORG_CUTOVER = 6;
++
+ const assertLedgerTransition = (
+   databasePath: string,
+   beforeRows: Array<Record<string, unknown>>,
++  orgCutover: "SUCCEEDED" | "FAILED" = "SUCCEEDED",
+ ): Array<Record<string, unknown>> => {
+   const database = new DatabaseSync(databasePath, { readOnly: true });
+   try {
+@@ -847,7 +850,8 @@ const assertLedgerTransition = (
+     database.close();
+   }
+   const afterRows = readMigrationLedger(databasePath);
+-  expect(afterRows).toHaveLength(beforeRows.length + 4);
++  expect(afterRows).toHaveLength(beforeRows.length
++    + (orgCutover === "SUCCEEDED" ? NEW_ROWS_WITH_ORG_CUTOVER : NEW_ROWS_WITH_FAILED_ORG_CUTOVER));
+   const transitionedBeforeRows = beforeRows.map((row) => {
+     if (typeof row.summary !== "string") return row;
+     const legacy = JSON.parse(row.summary) as ExecutionCounts;
+@@ -871,6 +875,11 @@ const assertLedgerTransition = (
+       status: "SUCCEEDED",
+       attempts: 1,
+     }),
++    expect.objectContaining({
++      migration_id: ORG_FAMILY_MIGRATION_ID,
++      status: orgCutover,
++      attempts: 1,
++    }),
+   ]));
+   expect(afterRows.filter(({ migration_id }) => migration_id === V1_PROMOTION_MIGRATION_ID)).toHaveLength(1);
+   expect(afterRows.filter(({ migration_id }) => migration_id === TEAM_AGENT_MEMORY_LAYOUT_MIGRATION_ID)).toHaveLength(1);
+@@ -888,86 +897,69 @@ const exerciseHistoryAndNewWork = async (
+   runtimeRoot: string,
+   historicalTeamRunId: string,
+ ): Promise<void> => {
+-  const resume = await executeGraphql<{
+-    getTeamRunResumeConfig: { teamRunId: string; isActive: boolean; executionTree: Record<string, unknown> };
++  await exerciseConvertedHistory(serverUrl, historicalTeamRunId);
++  const newTeamRunId = await exerciseNewWork(serverUrl, runtimeRoot);
++  expect(await collaborationRoots(serverUrl)).toEqual(expect.arrayContaining([
++    { root_subject_kind: "agent_org", root_run_id: historicalTeamRunId },
++    { root_subject_kind: "agent_team", root_run_id: newTeamRunId },
++  ]));
++};
++
++const collaborationRoots = async (serverUrl: string) => (await executeGraphql<{
++  listCollaborationRootHistory: Array<{ root_subject_kind: string; root_run_id: string }>;
++}>(serverUrl, `
++  query PostMigrationCollaborationRoots {
++    listCollaborationRootHistory {
++      ... on AgentOrgRootHistoryObject { root_subject_kind root_run_id }
++      ... on AgentTeamRootHistoryObject { root_subject_kind root_run_id }
++    }
++  }
++`)).listCollaborationRootHistory;
++
++const exerciseConvertedHistory = async (serverUrl: string, historicalTeamRunId: string): Promise<void> => {
++  const config = await executeGraphql<{
++    getAgentOrgRunConfig: { orgRunId: string; isActive: boolean; executionTree: Record<string, unknown> };
+   }>(serverUrl, `
+-    query TeamRunV1Resume($teamRunId: String!) {
+-      getTeamRunResumeConfig(teamRunId: $teamRunId) { teamRunId isActive executionTree }
++    query ConvertedOrgRunConfig($orgRunId: String!) {
++      getAgentOrgRunConfig(orgRunId: $orgRunId) { orgRunId isActive executionTree }
+     }
+-  `, { teamRunId: historicalTeamRunId });
+-  expect(resume.getTeamRunResumeConfig).toMatchObject({
+-    teamRunId: historicalTeamRunId,
++  `, { orgRunId: historicalTeamRunId });
++  expect(config.getAgentOrgRunConfig).toMatchObject({
++    orgRunId: historicalTeamRunId,
+     isActive: false,
+     executionTree: {
+-      root_team: {
++      rootOrg: {
+         address: "/",
+-        default_launch_configuration: {
+-          runtime_kind: "autobyteus",
+-          llm_model_identifier: "gpt-5.6-luna",
+-          llm_config: { temperature: 0.15 },
+-          auto_execute_tools: false,
+-          skill_access_mode: "PRELOADED_ONLY",
+-          workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
+-        },
+-        members: expect.arrayContaining([
++        orgRunId: historicalTeamRunId,
++        defaultLaunchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
++        members: [
+           expect.objectContaining({
+             address: "/lead",
+-            agent_definition_id: "autobyteus-memory-compactor",
+-            launch_configuration: {
+-              runtime_kind: "autobyteus",
+-              llm_model_identifier: "gpt-5.6-luna",
+-              llm_config: { temperature: 0.15 },
+-              auto_execute_tools: false,
+-              skill_access_mode: "PRELOADED_ONLY",
+-              workspace_root_path: "/tmp/autobyteus-team-v1-root-workspace",
+-            },
++            agentDefinitionId: "autobyteus-memory-compactor",
++            launchConfiguration: ROOT_COORDINATOR_CONFIGURATION,
+           }),
+           expect.objectContaining({
+             address: "/research",
+-            coordinator_address: "/research/reviewer",
+-            default_launch_configuration: {
+-              runtime_kind: "autobyteus",
+-              llm_model_identifier: "gpt-5.6-luna",
+-              llm_config: null,
+-              auto_execute_tools: true,
+-              skill_access_mode: "NONE",
+-              workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
+-            },
++            coordinatorAddress: "/research/reviewer",
++            defaultLaunchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
+             members: [expect.objectContaining({
+               address: "/research/reviewer",
+-              agent_definition_id: "autobyteus-memory-compactor",
+-              launch_configuration: {
+-                runtime_kind: "autobyteus",
+-                llm_model_identifier: "gpt-5.6-luna",
+-                llm_config: null,
+-                auto_execute_tools: true,
+-                skill_access_mode: "NONE",
+-                workspace_root_path: "/tmp/autobyteus-team-v1-nested-workspace",
+-              },
++              agentDefinitionId: "autobyteus-memory-compactor",
++              launchConfiguration: NESTED_COORDINATOR_CONFIGURATION,
+             })],
+           }),
+-        ]),
++        ],
+       },
+     },
+   });
+ 
+-  const restored = await executeGraphql<{
+-    restoreAgentTeamRun: { success: boolean; teamRunId: string | null; message: string };
+-  }>(serverUrl, `
+-    mutation RestoreTeamRunV1($teamRunId: String!) {
+-      restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId message }
+-    }
+-  `, { teamRunId: historicalTeamRunId });
+-  expect(restored.restoreAgentTeamRun).toMatchObject({ success: true, teamRunId: historicalTeamRunId });
+-  const terminatedRestored = await executeGraphql<{
+-    terminateAgentTeamRun: { success: boolean };
+-  }>(serverUrl, `
+-    mutation TerminateRestoredTeamRunV1($teamRunId: String!) {
+-      terminateAgentTeamRun(teamRunId: $teamRunId) { success }
+-    }
+-  `, { teamRunId: historicalTeamRunId });
+-  expect(terminatedRestored.terminateAgentTeamRun.success).toBe(true);
++  const restored = await restoreOrgRun(serverUrl, historicalTeamRunId);
++  expect(restored.restoreAgentOrgRun).toMatchObject({ success: true, agentOrgRunId: historicalTeamRunId });
++  expect(await terminateOrgRun(serverUrl, historicalTeamRunId)).toBe(true);
++};
+ 
++/** Creates and stops one new Agent run and one new Team run; returns the Team run ID. */
++const exerciseNewWork = async (serverUrl: string, runtimeRoot: string): Promise<string> => {
+   const createdAgent = await executeGraphql<{ createAgentDefinition: { id: string; name: string } }>(serverUrl, `
+     mutation CreatePostMigrationAgent($input: CreateAgentDefinitionInput!) {
+       createAgentDefinition(input: $input) { id name }
+@@ -1034,7 +1026,6 @@ const exerciseHistoryAndNewWork = async (
+       nodes: [{
+         memberName: "worker",
+         ref: createdAgent.createAgentDefinition.id,
+-        refType: "AGENT",
+         refScope: "SHARED",
+       }],
+     },
+@@ -1069,7 +1060,8 @@ const exerciseHistoryAndNewWork = async (
+       }],
+     },
+   });
+-  expect(createdTeamRun.createAgentTeamRun).toMatchObject({ success: true, teamRunId: expect.any(String) });
++  expect(createdTeamRun.createAgentTeamRun, createdTeamRun.createAgentTeamRun.message)
++    .toMatchObject({ success: true, teamRunId: expect.any(String) });
+   const terminatedTeam = await executeGraphql<{ terminateAgentTeamRun: { success: boolean } }>(serverUrl, `
+     mutation TerminatePostMigrationTeam($teamRunId: String!) {
+       terminateAgentTeamRun(teamRunId: $teamRunId) { success }
+@@ -1094,11 +1086,9 @@ const exerciseHistoryAndNewWork = async (
+     workspace.teamDefinitions.flatMap((definition) => definition.runs.map((run) => run.teamRunId)));
+   const agentRunIds = history.listWorkspaceRunHistory.flatMap((workspace) =>
+     workspace.agentDefinitions.flatMap((definition) => definition.runs.map((run) => run.runId)));
+-  expect(teamRunIds).toEqual(expect.arrayContaining([
+-    historicalTeamRunId,
+-    createdTeamRun.createAgentTeamRun.teamRunId,
+-  ]));
++  expect(teamRunIds).toContain(createdTeamRun.createAgentTeamRun.teamRunId);
+   expect(agentRunIds).toContain(createdRun.createAgentRun.runId);
++  return createdTeamRun.createAgentTeamRun.teamRunId!;
+ };
+ 
+ const startScenarioServer = async (target: ReturnType<typeof makeTarget>): Promise<RunningTestServer> => {
+@@ -1123,7 +1113,7 @@ afterEach(async () => {
+   }
+ });
+ 
+-describe("TeamRun released-shape production upgrade to current V2 through actual startup", () => {
++describe("TeamRun released-shape production upgrade to the current run families through actual startup", () => {
+   it("migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch", async () => {
+     const productionBefore = productionProfileMetadata();
+     const target = makeTarget("team-v1-supported-startup");
+@@ -1142,6 +1132,11 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+       attempts: 1,
+       errorMessage: null,
+     });
++    expect(await orgFamilyStatus(first.serverUrl)).toMatchObject({
++      status: "SUCCEEDED",
++      attempts: 1,
++      errorMessage: null,
++    });
+     expect(first.output()).toContain("Server listening on");
+     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
+     assertConvertedPackage(scenario);
+@@ -1150,7 +1145,8 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toEqual([
+       expect.objectContaining({
+         run_id: `${scenario.rootTeamRunId}-lead-run`,
+-        root_team_run_id: scenario.rootTeamRunId,
++        // Usage of a run that now belongs to an Agent Org carries no Team root.
++        root_team_run_id: null,
+         usage_report_count: 1,
+         accounting_input_tokens: 13,
+         accounting_output_tokens: 8,
+@@ -1166,6 +1162,7 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     await expectHealthy(second.serverUrl);
+     expect(await promotionStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
+     expect(await currentTreeStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
++    expect(await orgFamilyStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
+     expect(readMigrationLedger(target.database.databasePath)).toEqual(ledgerAfterFirst);
+     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(1);
+@@ -1173,7 +1170,7 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     expect(productionProfileMetadata()).toEqual(productionBefore);
+   }, 360_000);
+ 
+-  it("isolates mixed root, token, and history warnings while keeping health, history, new work, and relaunch available", async () => {
++  it("isolates mixed root, token, and history warnings, stays healthy, and converts the supported history once the history index is corrected", async () => {
+     const productionBefore = productionProfileMetadata();
+     const target = makeTarget("team-v1-warning-startup");
+     const scenario = await seedScenario(target, true);
+@@ -1211,10 +1208,29 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     expect(first.output()).not.toContain("startup continues with strict current-package admission");
+     expect(first.output()).toContain("Server listening on");
+     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
+-    assertConvertedPackage(scenario);
++    // The Org family cutover needs a readable Team history index. With the unreadable one it fails
++    // closed: the supported history stays, untouched, in the Team family until the index is corrected.
++    const blockedCutover = await orgFamilyStatus(first.serverUrl);
++    expect(blockedCutover).toMatchObject({
++      status: "FAILED",
++      recoveryAction: "RESTART_TO_RETRY",
++      attempts: 1,
++      errorMessage: expect.stringContaining("require correction and restart"),
++    });
++    expect(expectSummaryMatchesAttemptLog(blockedCutover).details).toEqual([
++      expect.objectContaining({
++        itemId: "FAILED_HISTORY",
++        status: "FAILED",
++        message: expect.stringContaining("Invalid team run history index format"),
++      }),
++    ]);
++    const orgDir = path.join(target.runtimeRoot, "memory", "agent_orgs", scenario.rootTeamRunId);
++    expect(fs.existsSync(orgDir)).toBe(false);
++    expect(fs.existsSync(path.join(scenario.supported.rootDir, "team_run_execution_tree.json"))).toBe(true);
++    expect(fs.readFileSync(scenario.supported.memorySentinelPath)).toEqual(scenario.supported.memorySentinel);
+     expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
+     expect(fs.readFileSync(scenario.warningEvidence!.historyPath)).toEqual(scenario.warningEvidence!.historyBytes);
+-    const ledgerAfterFirst = assertLedgerTransition(target.database.databasePath, ledgerBefore);
++    assertLedgerTransition(target.database.databasePath, ledgerBefore, "FAILED");
+     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(tokensBefore.length);
+     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toEqual(expect.arrayContaining([
+@@ -1229,21 +1245,73 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+         accounting_total_tokens: 21,
+       }),
+     ]));
+-    await exerciseHistoryAndNewWork(first.serverUrl, target.runtimeRoot, scenario.rootTeamRunId);
++    const blockedRestore = await restoreOrgRun(first.serverUrl, scenario.rootTeamRunId);
++    expect(blockedRestore.restoreAgentOrgRun).toMatchObject({ success: false, agentOrgRunId: null });
++    // New Agent work is unaffected while the cutover waits for correction.
++    await terminateAgentRun(
++      first.serverUrl,
++      await createCurrentAgentRun(first.serverUrl, target.runtimeRoot, "warning-current-agent"),
++    );
+ 
++    // The user removes the unreadable history index and restarts: the cutover retries and converts.
+     await first.stop();
+     ownedServers.delete(first);
++    fs.rmSync(scenario.warningEvidence!.historyPath);
+     const second = await startScenarioServer(target);
+     await expectHealthy(second.serverUrl);
+     expect(await promotionStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS", attempts: 1 });
+     expect(await currentTreeStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
+-    expect(readMigrationLedger(target.database.databasePath)).toEqual(ledgerAfterFirst);
++    // The supported history converts; the tree-less root stays preserved and is reported as a warning.
++    const retriedCutover = await orgFamilyStatus(second.serverUrl);
++    expect(retriedCutover).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS", attempts: 2 });
++    expect(expectSummaryMatchesAttemptLog(retriedCutover).details).toEqual(expect.arrayContaining([
++      expect.objectContaining({
++        itemId: "FAILED_MISSING_TEAM_EXECUTION_TREE",
++        message: expect.stringContaining("team-v1-preserved-warning-root"),
++      }),
++      expect.objectContaining({
++        itemId: "MIGRATED_ORG_RUN",
++        message: expect.stringContaining(`agent_orgs/${scenario.rootTeamRunId}`),
++      }),
++    ]));
++    assertConvertedPackage(scenario);
++    expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
+     expect(readSyntheticTokenRows(target.database.databasePath)).toEqual([]);
+     expect(readCurrentSyntheticTokenRows(target.database.databasePath)).toHaveLength(tokensBefore.length);
+-    expect(fs.readFileSync(scenario.warningEvidence!.path)).toEqual(scenario.warningEvidence!.bytes);
++    await exerciseHistoryAndNewWork(second.serverUrl, target.runtimeRoot, scenario.rootTeamRunId);
+     expect(productionProfileMetadata()).toEqual(productionBefore);
+   }, 360_000);
+ 
++  // KNOWN DEFECT (found 2026-09-30 while repairing this file; not yet fixed in the product):
++  //  1. createAgentTeamRun refused because the Team history index is unreadable still leaves the new
++  //     run's package (tree + messages) under memory/agent_teams.
++  //  2. When the Org family cutover is retried, it reads that current-format package with the frozen
++  //     released-V2 schema, rejects it ("released Team Run V2 has unsupported or missing field(s)")
++  //     and stays FAILED, so the supported history is never converted.
++  // The body states the intended behavior. `it.fails` keeps the suite honest: this test starts
++  // failing when the defect is fixed, and `.fails` must then be removed.
++  it.fails("leaves no package behind for a Team run refused on an unreadable history index, so the corrected cutover converts the supported history", async () => {
++    const target = makeTarget("team-v1-refused-team-run-startup");
++    const scenario = await seedScenario(target, true);
++    const teamFamilyDir = path.join(target.runtimeRoot, "memory", "agent_teams");
++
++    const first = await startScenarioServer(target);
++    await expectHealthy(first.serverUrl);
++    expect(await orgFamilyStatus(first.serverUrl)).toMatchObject({ status: "FAILED", attempts: 1 });
++    const packagesBefore = fs.readdirSync(teamFamilyDir).sort();
++    await expect(exerciseNewWork(first.serverUrl, target.runtimeRoot))
++      .rejects.toThrow("Invalid team run history index format");
++    expect(fs.readdirSync(teamFamilyDir).sort()).toEqual(packagesBefore);
++
++    await first.stop();
++    ownedServers.delete(first);
++    fs.rmSync(scenario.warningEvidence!.historyPath);
++    const second = await startScenarioServer(target);
++    await expectHealthy(second.serverUrl);
++    expect(await orgFamilyStatus(second.serverUrl)).toMatchObject({ status: "SUCCEEDED_WITH_WARNINGS", attempts: 2 });
++    assertConvertedPackage(scenario);
++  }, 360_000);
++
+   it("keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry", async () => {
+     const target = makeTarget("token-consolidation-retry-startup");
+     const scenario = await seedScenario(target, false);
+@@ -1268,7 +1336,14 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     expectSummaryMatchesAttemptLog(await tokenConsolidationStatus(first.serverUrl));
+     await expectHistoricalAuditTransitioned(first.serverUrl, target.database.databasePath, scenario);
+     await expectTokenHistoryUnavailable(first.serverUrl);
+-    const blockedRestore = await restoreTeamRun(first.serverUrl, scenario.rootTeamRunId);
++    // The Org family cutover waits for token consolidation, so the history is still a Team run here.
++    const blockedRestore = await executeGraphql<{
++      restoreAgentTeamRun: { success: boolean; teamRunId: string | null; message: string };
++    }>(first.serverUrl, `
++      mutation RestoreBeforeTokenConsolidation($teamRunId: String!) {
++        restoreAgentTeamRun(teamRunId: $teamRunId) { success teamRunId message }
++      }
++    `, { teamRunId: scenario.rootTeamRunId });
+     expect(blockedRestore.restoreAgentTeamRun).toMatchObject({
+       success: false,
+       teamRunId: null,
+@@ -1316,17 +1391,12 @@ describe("TeamRun released-shape production upgrade to current V2 through actual
+     expectSummaryMatchesAttemptLog(await tokenConsolidationStatus(second.serverUrl));
+     await expectHistoricalAuditTransitioned(second.serverUrl, target.database.databasePath, scenario);
+     expect(countTokenRows(target.database.databasePath)).toEqual({ legacy: 0, current: 3 });
+-    const restored = await restoreTeamRun(second.serverUrl, scenario.rootTeamRunId);
+-    expect(restored.restoreAgentTeamRun).toMatchObject({
++    const restored = await restoreOrgRun(second.serverUrl, scenario.rootTeamRunId);
++    expect(restored.restoreAgentOrgRun).toMatchObject({
+       success: true,
+-      teamRunId: scenario.rootTeamRunId,
++      agentOrgRunId: scenario.rootTeamRunId,
+     });
+-    const terminated = await executeGraphql<{ terminateAgentTeamRun: { success: boolean } }>(second.serverUrl, `
+-      mutation TerminateMigrationLifecycleTeam($teamRunId: String!) {
+-        terminateAgentTeamRun(teamRunId: $teamRunId) { success }
+-      }
+-    `, { teamRunId: scenario.rootTeamRunId });
+-    expect(terminated.terminateAgentTeamRun.success).toBe(true);
++    expect(await terminateOrgRun(second.serverUrl, scenario.rootTeamRunId)).toBe(true);
+   }, 360_000);
+ 
+   it("rejects a legacy/current run-ID overlap before source cleanup while preserving both stores", async () => {
+diff --git a/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts b/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+index df27f7657..194a099f5 100644
+--- a/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts
+@@ -2,7 +2,9 @@ import fs from "node:fs";
+ import os from "node:os";
+ import path from "node:path";
+ import fastify, { type FastifyInstance } from "fastify";
+-import { afterEach, beforeEach, describe, expect, it } from "vitest";
++import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
++import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
++import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+ import { registerWorkspaceRoutes } from "../../../src/api/rest/workspaces.js";
+ import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
+ 
+@@ -36,6 +38,15 @@ describe("workspace content REST boundary e2e", () => {
+ 
+   afterEach(async () => {
+     await app.close();
++    // Workspace removal asks the process run managers for active runs; this file starts none.
++    vi.spyOn(AgentRunManager, "getInstance").mockReturnValue({
++      listActiveRuns: () => [],
++      getActiveRun: () => null,
++    } as any);
++    vi.spyOn(AgentTeamRunManager, "getInstance").mockReturnValue({
++      listManagedTeamRunIds: () => [],
++      getManagedTeamRun: () => null,
++    } as any);
+     for (const workspace of workspaceManager.getAllWorkspaces()) {
+       if (!initialIds.has(workspace.workspaceId)) {
+         const removal = await workspaceManager.removeRegisteredWorkspace(workspace.workspaceId);
+@@ -46,6 +57,7 @@ describe("workspace content REST boundary e2e", () => {
+         });
+       }
+     }
++    vi.restoreAllMocks();
+     fs.rmSync(tempRoot, { recursive: true, force: true });
+   });
+ 
+diff --git a/autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts b/autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts
+index fce2c1bb7..164e9cfe7 100644
+--- a/autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts
++++ b/autobyteus-server-ts/tests/e2e/helpers/studio-application-api-services.ts
+@@ -1,6 +1,10 @@
+ import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
+ import { AgentTeamDefinitionService } from "../../../src/agent-team-definition/services/agent-team-definition-service.js";
+ import { configureStudioApplicationApiServices } from "../../../src/api/graphql/studio-application-api-services.js";
++import { AgentOrgDefinitionService } from "../../../src/agent-org-definition/services/agent-org-definition-service.js";
++import { DefinitionSourceRegistry } from "../../../src/collaboration-definition-admission/providers/definition-source-registry.js";
++import { DefinitionAdmissionService } from "../../../src/collaboration-definition-admission/services/definition-admission-service.js";
++import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+ 
+ type StudioApplicationApiServices = Parameters<
+   typeof configureStudioApplicationApiServices
+@@ -23,7 +27,7 @@ const unavailableService = <T extends object>(serviceName: string): T =>
+ /**
+  * Registers the complete Studio resolver dependency object for in-process GraphQL E2E tests.
+  *
+- * Definition resolvers use the current process authorities by default. Other boundaries fail
++ * Definition resolvers and definition admission use the current process authorities by default. Other boundaries fail
+  * explicitly if a scenario calls them without supplying the corresponding real or fake service.
+  * This keeps production's complete-service fail-fast guard intact while making each test's used
+  * boundary intentional.
+@@ -47,10 +51,14 @@ export const configureE2eStudioApplicationApiServices = (
+       ?? unavailableService<StudioApplicationApiServices["agentOrgRunService"]>(
+         "agentOrgRunService",
+       ),
++    // Definition resolvers read through admission, so it is built from the same process authorities.
+     definitionAdmissionService: overrides.definitionAdmissionService
+-      ?? unavailableService<StudioApplicationApiServices["definitionAdmissionService"]>(
+-        "definitionAdmissionService",
+-      ),
++      ?? new DefinitionAdmissionService({
++        registry: new DefinitionSourceRegistry({ appConfig: appConfigProvider.config }),
++        agents: agentDefinitionService,
++        teams: agentTeamDefinitionService,
++        orgs: new AgentOrgDefinitionService(undefined, agentDefinitionService, agentTeamDefinitionService),
++      }),
+     collaborationRootHistoryService: overrides.collaborationRootHistoryService
+       ?? unavailableService<StudioApplicationApiServices["collaborationRootHistoryService"]>(
+         "collaborationRootHistoryService",
+diff --git a/autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts b/autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts
+index e2d990f39..23bfdbd85 100644
+--- a/autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts
+@@ -7,7 +7,6 @@ import { execFileSync, spawn, type ChildProcessWithoutNullStreams } from "node:c
+ import { afterAll, beforeAll, describe, expect, it } from "vitest";
+ import {
+   testAgentNode,
+-  testAgentTeamNode,
+   testExecutionTree,
+ } from "../../fixtures/current-team-run-fixtures.js";
+ 
+@@ -18,11 +17,7 @@ const sourceNodeId = "multiprocess-source-node";
+ const sourceRunId = "mp-source-run";
+ const sourceTeamRunId = "mp-source-team-run";
+ const retainedTeamRunId = "mp-retained-team-run";
+-const retainedChildTeamRunId = "mp-retained-child-team-run";
+ const retainedAgentRunId = "mp-retained-agent-run";
+-const conflictTeamRunId = "mp-conflict-team-run";
+-const conflictChildTeamRunId = "mp-conflict-child-team-run";
+-const conflictAgentRunId = "mp-conflict-agent-run";
+ 
+ type ServerProcess = {
+   name: string;
+@@ -38,13 +33,13 @@ const writeText = (filePath: string, content: string) => {
+   fs.writeFileSync(filePath, content, "utf-8");
+ };
+ 
+-const writeCurrentNestedTeamPackage = (input: {
++// A current Team package: flat members under the root package, with the tree and the messages file.
++const writeCurrentTeamPackage = (input: {
+   memoryDir: string;
+   rootTeamRunId: string;
+-  childTeamRunId: string;
+   agentRunId: string;
+   teamDefinitionId: string;
+-}): { rootDir: string; flatDir: string; canonicalDir: string } => {
++}): { rootDir: string; memberDir: string } => {
+   const rootDir = path.join(input.memoryDir, "agent_teams", input.rootTeamRunId);
+   const tree = testExecutionTree({
+     rootTeamRunId: input.rootTeamRunId,
+@@ -53,30 +48,16 @@ const writeCurrentNestedTeamPackage = (input: {
+     coordinatorAddress: "/lead",
+     children: [
+       testAgentNode("/lead"),
+-      testAgentTeamNode({
+-        address: "/nested",
+-        coordinatorAddress: "/nested/member",
+-        teamRunId: input.childTeamRunId,
+-        children: [testAgentNode("/nested/member", { agentRunId: input.agentRunId })],
+-      }),
++      testAgentNode("/member", { agentRunId: input.agentRunId }),
+     ],
+   });
+   writeText(path.join(rootDir, "team_run_execution_tree.json"), `${JSON.stringify(tree, null, 2)}\n`);
+-  writeText(path.join(rootDir, "task_delegation_records.json"), `${JSON.stringify({
+-    schemaVersion: 1,
+-    rootTeamRunId: input.rootTeamRunId,
+-    records: [],
+-  }, null, 2)}\n`);
+   writeText(path.join(rootDir, "team_communication_messages.json"), `${JSON.stringify({
+     schemaVersion: 1,
+     rootTeamRunId: input.rootTeamRunId,
+     messages: [],
+   }, null, 2)}\n`);
+-  return {
+-    rootDir,
+-    flatDir: path.join(rootDir, input.agentRunId),
+-    canonicalDir: path.join(rootDir, input.childTeamRunId, input.agentRunId),
+-  };
++  return { rootDir, memberDir: path.join(rootDir, input.agentRunId) };
+ };
+ 
+ const appendLog = (logs: string[], chunk: Buffer) => {
+@@ -252,48 +233,21 @@ const seedSourceMemory = (sourceDataDir: string): void => {
+ 
+   writeText(path.join(memoryDir, "imports", "already-imported", "agents", "echo.txt"), "must not echo");
+ 
+-  const retained = writeCurrentNestedTeamPackage({
++  const retained = writeCurrentTeamPackage({
+     memoryDir,
+     rootTeamRunId: retainedTeamRunId,
+-    childTeamRunId: retainedChildTeamRunId,
+     agentRunId: retainedAgentRunId,
+     teamDefinitionId: "mp-retained-team-definition",
+   });
+-  writeText(path.join(retained.flatDir, "raw_traces_active.jsonl"), `${JSON.stringify({
+-    id: "mp-retained-flat-trace",
++  writeText(path.join(retained.memberDir, "raw_traces_active.jsonl"), `${JSON.stringify({
++    id: "mp-retained-trace-1",
+     trace_type: "user",
+     source_event: "memory-sync-multiprocess-e2e",
+-    content: "MP_002_PRE_UPGRADE_FLAT_HISTORY",
++    content: "MP_001_TEAM_MEMBER_HISTORY",
+     turn_id: "mp-retained-turn",
+     seq: 1,
+     ts: 1,
+   })}\n`);
+-
+-  const conflict = writeCurrentNestedTeamPackage({
+-    memoryDir,
+-    rootTeamRunId: conflictTeamRunId,
+-    childTeamRunId: conflictChildTeamRunId,
+-    agentRunId: conflictAgentRunId,
+-    teamDefinitionId: "mp-conflict-team-definition",
+-  });
+-  writeText(path.join(conflict.flatDir, "raw_traces_active.jsonl"), `${JSON.stringify({
+-    id: "mp-conflict-flat-trace",
+-    trace_type: "user",
+-    source_event: "memory-sync-multiprocess-e2e",
+-    content: "MP_001_FLAT_CONFLICT_RESIDUE_MUST_NOT_BE_SEMANTIC",
+-    turn_id: "mp-conflict-flat-turn",
+-    seq: 1,
+-    ts: 1,
+-  })}\n`);
+-  writeText(path.join(conflict.canonicalDir, "raw_traces_active.jsonl"), `${JSON.stringify({
+-    id: "mp-conflict-canonical-trace",
+-    trace_type: "assistant",
+-    source_event: "memory-sync-multiprocess-e2e",
+-    content: "MP_001_CANONICAL_IMPORTED_HISTORY",
+-    turn_id: "mp-conflict-canonical-turn",
+-    seq: 1,
+-    ts: 2,
+-  })}\n`);
+ };
+ 
+ describe("Memory Sync multi-process backend e2e", () => {
+@@ -416,35 +370,24 @@ describe("Memory Sync multi-process backend e2e", () => {
+     expect(fs.existsSync(path.join(importRoot, "agents", sourceRunId, "upload.partial"))).toBe(false);
+     expect(fs.existsSync(path.join(importRoot, "agent_teams", sourceTeamRunId, "team_run_metadata.json"))).toBe(true);
+     expect(fs.existsSync(path.join(importRoot, "imports", "already-imported", "agents", "echo.txt"))).toBe(false);
+-    const importedConflictFlatTrace = path.join(
++    const importedMemberTrace = path.join(
+       importRoot,
+       "agent_teams",
+-      conflictTeamRunId,
+-      conflictAgentRunId,
+-      "raw_traces_active.jsonl",
+-    );
+-    const importedConflictCanonicalTrace = path.join(
+-      importRoot,
+-      "agent_teams",
+-      conflictTeamRunId,
+-      conflictChildTeamRunId,
+-      conflictAgentRunId,
++      retainedTeamRunId,
++      retainedAgentRunId,
+       "raw_traces_active.jsonl",
+     );
+-    expect(fs.readFileSync(importedConflictFlatTrace, "utf8"))
+-      .toContain("MP_001_FLAT_CONFLICT_RESIDUE_MUST_NOT_BE_SEMANTIC");
+-    expect(fs.readFileSync(importedConflictCanonicalTrace, "utf8"))
+-      .toContain("MP_001_CANONICAL_IMPORTED_HISTORY");
++    expect(fs.readFileSync(importedMemberTrace, "utf8")).toContain("MP_001_TEAM_MEMBER_HISTORY");
+ 
+-    const importedConflictRuns = await graphql<{
++    const importedTeamRuns = await graphql<{
+       listAgentTeamRunsWithMemory: {
+         total: number;
+         entries: Array<{ teamRunId: string; memberTargets: Array<{ agentRunId: string }> }>;
+       };
+     }>(hubServer, `
+-      query ImportedConflictRuns($source: MemoryExplorerSourceInput!) {
++      query ImportedTeamRuns($source: MemoryExplorerSourceInput!) {
+         listAgentTeamRunsWithMemory(
+-          teamDefinitionId: "mp-conflict-team-definition",
++          teamDefinitionId: "mp-retained-team-definition",
+           source: $source,
+           search: null,
+           page: 1,
+@@ -455,53 +398,39 @@ describe("Memory Sync multi-process backend e2e", () => {
+         }
+       }
+     `, { source: { type: "IMPORTED", sourceNodeId } });
+-    expect(importedConflictRuns.listAgentTeamRunsWithMemory).toEqual({
+-      total: 1,
+-      entries: [{
+-        teamRunId: conflictTeamRunId,
+-        memberTargets: [{ agentRunId: conflictAgentRunId }],
+-      }],
+-    });
++    expect(importedTeamRuns.listAgentTeamRunsWithMemory.total).toBe(1);
++    expect(importedTeamRuns.listAgentTeamRunsWithMemory.entries[0]?.teamRunId).toBe(retainedTeamRunId);
++    expect(importedTeamRuns.listAgentTeamRunsWithMemory.entries[0]?.memberTargets)
++      .toContainEqual({ agentRunId: retainedAgentRunId });
+ 
+-    const importedConflictView = await graphql<{
++    const importedMemberView = () => graphql<{
+       getTeamMemberRunMemoryView: { rawTraces: Array<{ id: string | null; content: string | null }> };
+     }>(hubServer, `
+-      query ImportedConflictView($source: MemoryExplorerSourceInput!) {
++      query ImportedMemberView($source: MemoryExplorerSourceInput!) {
+         getTeamMemberRunMemoryView(
+-          teamRunId: "mp-conflict-team-run",
+-          agentRunId: "mp-conflict-agent-run",
++          teamRunId: "mp-retained-team-run",
++          agentRunId: "mp-retained-agent-run",
+           source: $source,
+           includeRawTraces: true
+         ) { rawTraces { id content } }
+       }
+     `, { source: { type: "IMPORTED", sourceNodeId } });
+-    expect(importedConflictView.getTeamMemberRunMemoryView.rawTraces).toEqual([
+-      expect.objectContaining({
+-        id: "mp-conflict-canonical-trace",
+-        content: "MP_001_CANONICAL_IMPORTED_HISTORY",
+-      }),
++    expect((await importedMemberView()).getTeamMemberRunMemoryView.rawTraces).toEqual([
++      expect.objectContaining({ id: "mp-retained-trace-1", content: "MP_001_TEAM_MEMBER_HISTORY" }),
+     ]);
+-    expect(JSON.stringify(importedConflictView)).not.toContain(
+-      "MP_001_FLAT_CONFLICT_RESIDUE_MUST_NOT_BE_SEMANTIC",
+-    );
+ 
+-    const sourceRetainedFlatDir = path.join(
+-      sourceServer.dataDir,
+-      "memory",
+-      "agent_teams",
+-      retainedTeamRunId,
+-      retainedAgentRunId,
+-    );
+-    const sourceRetainedCanonicalDir = path.join(
+-      sourceServer.dataDir,
+-      "memory",
+-      "agent_teams",
+-      retainedTeamRunId,
+-      retainedChildTeamRunId,
+-      retainedAgentRunId,
+-    );
+-    fs.mkdirSync(path.dirname(sourceRetainedCanonicalDir), { recursive: true });
+-    fs.renameSync(sourceRetainedFlatDir, sourceRetainedCanonicalDir);
++    // The member keeps working on the source; the next sync carries the appended trace.
++    fs.appendFileSync(path.join(
++      sourceServer.dataDir, "memory", "agent_teams", retainedTeamRunId, retainedAgentRunId, "raw_traces_active.jsonl",
++    ), `${JSON.stringify({
++      id: "mp-retained-trace-2",
++      trace_type: "assistant",
++      source_event: "memory-sync-multiprocess-e2e",
++      content: "MP_002_APPENDED_AFTER_FIRST_SYNC",
++      turn_id: "mp-retained-turn",
++      seq: 2,
++      ts: 2,
++    })}\n`);
+ 
+     const secondSync = await graphql<{
+       startMemorySync: {
+@@ -512,7 +441,7 @@ describe("Memory Sync multi-process backend e2e", () => {
+         deferredFiles: number;
+       };
+     }>(sourceServer, `
+-      mutation StartPostRelocationSync {
++      mutation StartSecondSync {
+         startMemorySync { scannedFiles changedFiles committedBatches duplicateBatches deferredFiles }
+       }
+     `);
+@@ -522,44 +451,10 @@ describe("Memory Sync multi-process backend e2e", () => {
+       deferredFiles: 0,
+     });
+     expect(secondSync.startMemorySync.changedFiles).toBeGreaterThanOrEqual(1);
+-
+-    const importedRetainedFlatTrace = path.join(
+-      importRoot,
+-      "agent_teams",
+-      retainedTeamRunId,
+-      retainedAgentRunId,
+-      "raw_traces_active.jsonl",
+-    );
+-    const importedRetainedCanonicalTrace = path.join(
+-      importRoot,
+-      "agent_teams",
+-      retainedTeamRunId,
+-      retainedChildTeamRunId,
+-      retainedAgentRunId,
+-      "raw_traces_active.jsonl",
+-    );
+-    expect(fs.readFileSync(importedRetainedFlatTrace, "utf8"))
+-      .toContain("MP_002_PRE_UPGRADE_FLAT_HISTORY");
+-    expect(fs.readFileSync(importedRetainedCanonicalTrace, "utf8"))
+-      .toContain("MP_002_PRE_UPGRADE_FLAT_HISTORY");
+-
+-    const importedRetainedView = await graphql<{
+-      getTeamMemberRunMemoryView: { rawTraces: Array<{ id: string | null; content: string | null }> };
+-    }>(hubServer, `
+-      query ImportedRetainedView($source: MemoryExplorerSourceInput!) {
+-        getTeamMemberRunMemoryView(
+-          teamRunId: "mp-retained-team-run",
+-          agentRunId: "mp-retained-agent-run",
+-          source: $source,
+-          includeRawTraces: true
+-        ) { rawTraces { id content } }
+-      }
+-    `, { source: { type: "IMPORTED", sourceNodeId } });
+-    expect(importedRetainedView.getTeamMemberRunMemoryView.rawTraces).toEqual([
+-      expect.objectContaining({
+-        id: "mp-retained-flat-trace",
+-        content: "MP_002_PRE_UPGRADE_FLAT_HISTORY",
+-      }),
++    expect(fs.readFileSync(importedMemberTrace, "utf8")).toContain("MP_002_APPENDED_AFTER_FIRST_SYNC");
++    expect((await importedMemberView()).getTeamMemberRunMemoryView.rawTraces).toEqual([
++      expect.objectContaining({ id: "mp-retained-trace-1", content: "MP_001_TEAM_MEMBER_HISTORY" }),
++      expect.objectContaining({ id: "mp-retained-trace-2", content: "MP_002_APPENDED_AFTER_FIRST_SYNC" }),
+     ]);
+ 
+     const sourceMetadata = JSON.parse(fs.readFileSync(path.join(importRoot, "source-node.json"), "utf-8")) as { sourceNodeId: string; displayName: string | null; lastSyncStatus: string };
+diff --git a/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts b/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+index be53e40a1..2608712d5 100644
+--- a/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/run-history/nested-team-history-restart.e2e.test.ts
+@@ -35,6 +35,7 @@ type Projection = {
+ const ROOT_TEAM_RUN_ID = "team-run-root";
+ const LAYOUT_MIGRATION_ID = "20260823_repair_team_agent_memory_layout";
+ const EXECUTION_TREE_V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
++const ORG_FAMILY_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
+ const EXTERNAL_SNAPSHOT_MIGRATION_ID = "20260731_remove_external_runtime_working_context_snapshots";
+ const NATIVE_SNAPSHOT_MIGRATION_ID = "20260731_migrate_native_working_context_snapshots_v5";
+ const FIXTURE_ROOT = path.resolve(
+@@ -201,44 +202,6 @@ const projection = (serverUrl: string, agentRunId: string): Promise<Projection>
+   `, { teamRunId: ROOT_TEAM_RUN_ID, agentRunId })
+     .then(({ getTeamMemberRunProjection }) => getTeamMemberRunProjection);
+ 
+-const eventMonitorPage = (serverUrl: string, agentRunId: string) =>
+-  executeGraphql<{
+-    getTeamMemberEventMonitorActiveTracePage: {
+-      hasEarlier: boolean;
+-      loadedEarlierCount: number;
+-      events: Array<{ eventId: string; visuals: Array<Record<string, unknown>> }>;
+-    };
+-  }>(serverUrl, `
+-    query NestedHistoryEventMonitor($teamRunId: String!, $agentRunId: String!) {
+-      getTeamMemberEventMonitorActiveTracePage(
+-        teamRunId: $teamRunId, agentRunId: $agentRunId, beforeCursor: null
+-      ) {
+-        hasEarlier loadedEarlierCount
+-        events {
+-          eventId
+-          visuals {
+-            __typename
+-            ... on EventMonitorUserVisual { kind text }
+-            ... on EventMonitorAssistantTextVisual { kind content }
+-            ... on EventMonitorThinkingVisual { kind content }
+-            ... on EventMonitorToolCardVisual { kind invocationId toolName statusKey }
+-          }
+-        }
+-      }
+-    }
+-  `, { teamRunId: ROOT_TEAM_RUN_ID, agentRunId })
+-    .then(({ getTeamMemberEventMonitorActiveTracePage }) => getTeamMemberEventMonitorActiveTracePage);
+-
+-const expectProjectionTokenSet = (value: Projection, token: string, expectEarlier: boolean): void => {
+-  const serialized = JSON.stringify({ conversation: value.conversation, activities: value.activities });
+-  for (const suffix of ["TASK_INPUT", "REASONING", "RESULT", "ASSISTANT"]) {
+-    expect(serialized).toContain(`${token}-${suffix}`);
+-  }
+-  expect(value.lastActivityAt).toEqual(expect.any(String));
+-  expect(value.summary).toContain(token);
+-  expect(value.hasEarlierActiveTraceEvents).toBe(expectEarlier);
+-};
+-
+ afterEach(async () => {
+   for (const server of [...ownedServers]) {
+     if (server.child.exitCode === null) {
+@@ -252,7 +215,7 @@ afterEach(async () => {
+ });
+ 
+ describe("nested TeamRun history startup/restart hydration", () => {
+-  it("moves released flat configured/task memory before public reads and remains canonical after process restart", async () => {
++  it("moves released flat configured/task memory to canonical locations, refuses the deeper-nested package clearly, and preserves it across restart", async () => {
+     const target = makeTarget("nested-history-restart-success");
+     const rootDir = seedAuthorityPackage(target.runtimeRoot);
+     const direct = seedMemberDirectory(rootDir, "agent-run-product-manager", "DIRECT_ROOT");
+@@ -296,55 +259,19 @@ describe("nested TeamRun history startup/restart hydration", () => {
+     }
+     expect(fs.readFileSync(path.join(direct.memberDir, "raw_traces_active.jsonl"))).toEqual(direct.traceBytes);
+ 
+-    expectProjectionTokenSet(await projection(first.serverUrl, "agent-run-product-manager"), "DIRECT_ROOT", false);
+-    expectProjectionTokenSet(await projection(first.serverUrl, "agent-run-automation-tester"), "CONFIGURED_DEEP", false);
+-    expectProjectionTokenSet(await projection(first.serverUrl, "nested-task-agent-run-001"), "TASK_AGENT_DEEP", true);
+-    expectProjectionTokenSet(await projection(first.serverUrl, "task-team-agent-run-tester-001"), "TASK_TEAM_MEMBER", false);
+-
+-    const page = await eventMonitorPage(first.serverUrl, "nested-task-agent-run-001");
+-    const serializedPage = JSON.stringify(page.events);
+-    expect(serializedPage).toContain("TASK_AGENT_DEEP-TASK_INPUT");
+-    expect(serializedPage).toContain("TASK_AGENT_DEEP-REASONING");
+-    expect(serializedPage).toContain("submit_task_result");
+-    expect(page.events.length).toBeGreaterThan(100);
+-
+-    expect(await projection(first.serverUrl, "agent-run-reviewer")).toMatchObject({
+-      conversation: [],
+-      activities: [],
+-      summary: null,
+-      lastActivityAt: null,
+-      hasEarlierActiveTraceEvents: false,
++    // This fixture nests a Team inside a nested Team. The Org family model is Org -> Team -> Agent, so
++    // the cutover refuses the package with a named reason instead of flattening it; the repaired
++    // package stays preserved in the Team family and is not served as Team history.
++    const cutover = await requireStatus(first.serverUrl, ORG_FAMILY_MIGRATION_ID);
++    expect(cutover).toMatchObject({
++      status: "FAILED",
++      attempts: 1,
++      recoveryAction: "RESTART_TO_RETRY",
++      errorMessage: expect.stringContaining("require correction and restart"),
+     });
+-
+-    const communication = await executeGraphql<{
+-      getTeamCommunicationMessages: Array<{
+-        messageId: string;
+-        senderAgentRunId: string;
+-        receiverAgentRunId: string;
+-        content: string;
+-        messageType: string;
+-        createdAt: string;
+-        referenceFiles: Array<{ path: string }>;
+-      }>;
+-    }>(first.serverUrl, `
+-      query NestedHistoryCommunication($teamRunId: String!) {
+-        getTeamCommunicationMessages(teamRunId: $teamRunId) {
+-          messageId senderAgentRunId receiverAgentRunId content messageType createdAt
+-          referenceFiles { path }
+-        }
+-      }
+-    `, { teamRunId: ROOT_TEAM_RUN_ID });
+-    expect(communication.getTeamCommunicationMessages).toEqual([expect.objectContaining({
+-      messageId: "message-010",
+-      senderAgentRunId: "nested-task-agent-run-001",
+-      receiverAgentRunId: "task-team-agent-run-qa-lead-001",
+-      content: "The browser run is complete; I submitted the formal result.",
+-      messageType: "agent_message",
+-      createdAt: "2026-08-14T10:31:00.000Z",
+-      referenceFiles: [expect.objectContaining({
+-        path: "/workspace/software-engineering/results/browser.log",
+-      })],
+-    })]);
++    await expect(projection(first.serverUrl, "agent-run-product-manager")).rejects.toThrow("TEST_GRAPHQL_REQUEST_FAILED");
++    expect(fs.existsSync(path.join(target.runtimeRoot, "memory", "agent_orgs", ROOT_TEAM_RUN_ID))).toBe(false);
++    const preservedTree = fs.readFileSync(path.join(rootDir, "team_run_execution_tree.json"));
+ 
+     await stopServer(first);
+     const second = await startServer(target);
+@@ -353,8 +280,13 @@ describe("nested TeamRun history startup/restart hydration", () => {
+       status: "SUCCEEDED",
+       attempts: 1,
+     });
+-    expectProjectionTokenSet(await projection(second.serverUrl, "agent-run-automation-tester"), "CONFIGURED_DEEP", false);
+-    expectProjectionTokenSet(await projection(second.serverUrl, "nested-task-agent-run-001"), "TASK_AGENT_DEEP", true);
++    expect(await requireStatus(second.serverUrl, ORG_FAMILY_MIGRATION_ID)).toMatchObject({
++      status: "FAILED",
++      attempts: 2,
++      recoveryAction: "RESTART_TO_RETRY",
++    });
++    expect(fs.readFileSync(path.join(rootDir, "team_run_execution_tree.json"))).toEqual(preservedTree);
++    expect(fs.readFileSync(path.join(configuredCanonical, "raw_traces_active.jsonl"))).toEqual(configured.traceBytes);
+     expect(fs.existsSync(configured.memberDir)).toBe(false);
+     expect(fs.existsSync(taskAgent.memberDir)).toBe(false);
+     expect(fs.readFileSync(path.join(taskAgentCanonical, "restart-owned-sentinel.bin"))).toEqual(taskAgent.sentinelBytes);
+@@ -453,7 +385,8 @@ describe("nested TeamRun history startup/restart hydration", () => {
+         canRetry: false,
+       },
+     });
+-    expectProjectionTokenSet(await projection(server.serverUrl, "agent-run-architect"), "BLOCKED_UNTIL_RETRY", false);
++    // The retried move is proven on disk above. This deeper-nested package is not served as Team
++    // history (see the first test), so no projection is read here.
+ 
+     const dependent = await executeGraphql<{
+       runAppDataMigration: { success: boolean; migration: MigrationStatus | null };
+diff --git a/autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+index 42deb110d..36c547d67 100644
+--- a/autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts
+@@ -21,8 +21,10 @@ import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime
+ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+ import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
++import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
+ import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
+ import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-run-execution-tree-store.js";
++import { TeamCommunicationV1Store } from "../../../src/services/team-communication/team-communication-v1-store.js";
+ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+ import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+ import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
+@@ -304,6 +306,9 @@ describe("recent run projection GraphQL e2e", () => {
+   });
+ 
+   const execGraphql = async <T>(query: string, variables: Record<string, unknown>): Promise<T> => {
++    // Tests plant run packages on disk as pre-existing history after the process started, so the
++    // admission snapshot is rescanned before each query, as a server start would scan them.
++    await new RootRunPackageReadinessIndex(memoryDir).rebuild();
+     const result = await graphql({ schema, source: query, variableValues: variables });
+     if (result.errors?.length) throw result.errors[0];
+     return result.data as T;
+@@ -352,6 +357,9 @@ describe("recent run projection GraphQL e2e", () => {
+         workspaceRootPath,
+       })],
+     }));
++    // A current Team package needs both the execution tree and the communication messages file.
++    await new TeamCommunicationV1Store().write(rootDir, {
++      schemaVersion: 1, rootTeamRunId: input.teamRunId, messages: [] });
+     return layout.getTeamAgentRunDirPath(
+       { rootTeamRunId: input.teamRunId, ancestorTeamRunIds: [] },
+       input.memberRunId,
+@@ -727,6 +735,10 @@ describe("recent run projection GraphQL e2e", () => {
+     const files = await archivePrefix(memberDir, "page-team", rows);
+     await writeJsonl(files.activePath, rows);
+     const archiveHashBefore = await sha256(files.archivePath);
++    const otherSubjectRunId = "active-page-275-other-subject";
++    const otherSubjectDir = path.join(memoryDir, "agents", otherSubjectRunId);
++    await writeStandaloneMetadata(otherSubjectRunId, otherSubjectDir);
++    await writeJsonl(path.join(otherSubjectDir, path.basename(files.activePath)), rows.slice(0, 3));
+ 
+     const reads = trackRawTraceReads();
+     const pages: ActiveTracePagePayload[] = [];
+@@ -748,9 +760,15 @@ describe("recent run projection GraphQL e2e", () => {
+         beforeCursor = result.getTeamMemberEventMonitorActiveTracePage.beforeCursor;
+       } while (pages.at(-1)?.hasEarlier);
+ 
++      // A Team member is not a standalone run, so the standalone query refuses its id outright.
+       await expect(execGraphql(
+         STANDALONE_ACTIVE_TRACE_PAGE_QUERY,
+         { runId: memberRunId, beforeCursor: pages[0]?.beforeCursor },
++      )).rejects.toThrow(`Run package 'agent:${memberRunId}' is unavailable.`);
++      // The member's cursor is bound to its subject: an existing standalone run rejects it.
++      await expect(execGraphql(
++        STANDALONE_ACTIVE_TRACE_PAGE_QUERY,
++        { runId: otherSubjectRunId, beforeCursor: pages[0]?.beforeCursor },
+       )).rejects.toThrow("does not belong to this run subject");
+     } finally {
+       reads.restore();
+diff --git a/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+index 204221069..1faeffe2c 100644
+--- a/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts
+@@ -12,6 +12,7 @@ import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.j
+ import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
+ import { AgentTeamRunManager } from "../../../src/agent-team-execution/services/agent-team-run-manager.js";
+ import { AgentRunMetadataStore } from "../../../src/run-history/store/agent-run-metadata-store.js";
++import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
+ import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
+ import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
+ import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
+@@ -255,6 +256,9 @@ describe("Run projection tool-call GraphQL e2e", () => {
+     query: string,
+     variables?: Record<string, unknown>,
+   ): Promise<T> => {
++    // Tests plant run packages on disk as pre-existing history after the process started, so the
++    // admission snapshot is rescanned before each query, as a server start would scan them.
++    await new RootRunPackageReadinessIndex(memoryDir).rebuild();
+     const result = await graphql({
+       schema,
+       source: query,
+diff --git a/autobyteus-server-ts/tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+index bfd1bffdc..43265efd1 100644
+--- a/autobyteus-server-ts/tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts
+@@ -50,6 +50,9 @@ describe("token usage analytics GraphQL E2E", () => {
+     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
+     const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
+     graphql = (await import(graphqlPath)).graphql as typeof graphqlFn;
++    // Other token-usage files share this test database and leave daily facets behind. The analytics
++    // queries aggregate every facet in range, so this file starts from an empty facet table.
++    await rootPrismaClient.tokenUsageAnalyticsDailyFacet.deleteMany();
+     await cleanup();
+   });
+ 
+diff --git a/autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts b/autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+index e7a70095e..3aa97ca7f 100644
+--- a/autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
++++ b/autobyteus-server-ts/tests/e2e/workspaces/workspaces-graphql.e2e.test.ts
+@@ -259,6 +259,16 @@ describe("Workspaces GraphQL e2e", () => {
+       };
+     }>(createMutation, { input: { rootPath } });
+     const workspaceId = created.createWorkspace.workspaceId;
++    // Removal asks the process run managers for active runs in the workspace; none are running here.
++    // afterEach restores the spies.
++    vi.spyOn(AgentRunManager, "getInstance").mockReturnValue({
++      listActiveRuns: () => [],
++      getActiveRun: () => null,
++    } as any);
++    vi.spyOn(AgentTeamRunManager, "getInstance").mockReturnValue({
++      listManagedTeamRunIds: () => [],
++      getManagedTeamRun: () => null,
++    } as any);
+ 
+     const removed = await execGraphql<{
+       removeWorkspace: {
+diff --git a/package.json b/package.json
+index ea3167f6c..0ba3490a0 100644
+--- a/package.json
++++ b/package.json
+@@ -4,7 +4,7 @@
+   "scripts": {
+     "secrets:import": "pnpm --filter autobyteus-server-ts build && node autobyteus-server-ts/dist/secret-management/cli/import-local-environment-secrets.js",
+     "dev": "pnpm --filter autobyteus-server-ts build && node scripts/development/run-dev.mjs",
+-    "test:e2e": "pnpm --filter autobyteus-server-ts test --run tests/e2e",
++    "test:e2e": "pnpm --filter autobyteus-server-ts build && pnpm --filter autobyteus-server-ts test --run tests/e2e",
+     "test:e2e:real:preflight": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs --preflight",
+     "test:e2e:real": "pnpm --filter autobyteus-server-ts build && node test-support/live-e2e/run-live-e2e.mjs",
+     "verify:android-profile": "bash scripts/verify-android-profile.sh",

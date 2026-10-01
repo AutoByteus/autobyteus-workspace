@@ -1,0 +1,322 @@
+[
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-definition/github-agent-package-import.integration.test.ts",
+    "test": "GitHub agent package import integration (live) imports AutoByteus/autobyteus-agents into managed storage, exposes it through runtime discovery, and removes it cleanly",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts",
+    "test": "AutoByteusAgentRunBackendFactory live LM Studio integration converts approval and tool lifecycle events through the backend event stream",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts",
+    "test": "AutoByteusAgentRunBackendFactory live LM Studio integration converts a denied approval into TOOL_DENIED and leaves the file absent",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts",
+    "test": "AutoByteusAgentRunBackendFactory live LM Studio integration auto-executes tools without approval and still emits converted execution events",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts",
+    "test": "AutoByteusAgentRunBackendFactory live LM Studio integration publishes an existing workspace file through the live AutoByteus publish_artifacts tool path",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts",
+    "test": "ClaudeAgentRunBackendFactory integration (live transport) converts status and text events for a normal Claude backend turn",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts",
+    "test": "ClaudeAgentRunBackendFactory integration (live transport) converts approval, tool execution, and success events for an approved Claude Write tool turn",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts",
+    "test": "ClaudeAgentRunBackendFactory integration (live transport) converts deny events for a Claude tool approval rejection",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts",
+    "test": "ClaudeAgentRunBackendFactory integration (live transport) auto-executes a Claude Write tool turn without approval events",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts",
+    "test": "ClaudeAgentRunBackendFactory integration (live transport) interrupts a pending Claude tool approval through the backend and emits deny/idle events",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts",
+    "test": "ClaudeAgentRunBackendFactory integration (live transport) restores a Claude backend after a tool-using turn and continues the same conversation",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts",
+    "test": "ClaudeAgentRunBackendFactory integration (live transport) executes open_tab through the live Claude Agent Tools MCP path",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts",
+    "test": "ClaudeAgentRunBackendFactory integration (live transport) executes the full browser tool surface through the live Claude Agent Tools MCP path",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts",
+    "test": "ClaudeSessionManager integration (live Claude SDK) creates a run session, adopts the SDK session id, and serves conversation from the session boundary",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts",
+    "test": "ClaudeSessionManager integration (live Claude SDK) restores a run session against the same Claude session id and continues the conversation",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts",
+    "test": "ClaudeSessionManager integration (live Claude SDK) requests tool approval and completes the tool-backed turn after approval",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts",
+    "test": "ClaudeSessionManager integration (live Claude SDK) requests tool approval and denies the tool-backed turn without creating the target file",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts",
+    "test": "ClaudeSessionManager integration (live Claude SDK) auto-executes a tool-backed turn without emitting approval requests",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts",
+    "test": "ClaudeSessionManager integration (live Claude SDK) interrupts a tool-backed turn while approval is pending and leaves the target file untouched",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts",
+    "test": "ClaudeSessionManager integration (live Claude SDK) terminates a run while approval is pending and removes the run session without creating the target file",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/claude-session-manager.integration.test.ts",
+    "test": "ClaudeSessionManager integration (live Claude SDK) restores the Claude session after an auto-executed tool turn and continues the same conversation",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) converts status and assistant text segments for a normal Codex turn",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) converts approval, tool execution, and terminal tool events for an approved command",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) converts failed terminal execution into TOOL_EXECUTION_FAILED without approval when autoExecuteTools is enabled",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) converts denied approval into TOOL_DENIED and preserves post-deny assistant output",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) converts tool execution events without approval when autoExecuteTools is enabled",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) steers a message posted to a busy Codex AgentRun into the running turn instead of starting a new one (AC-014)",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) emits multiple reasoning segment ids when one turn reasons again between two tool calls",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) converts raw Codex fileChange activity into segment, lifecycle, and artifact events",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) executes open_tab through the live Codex Agent Tools MCP path",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) publishes an existing workspace file through the live Codex Agent Tools MCP path",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-agent-run-backend-factory.integration.test.ts",
+    "test": "CodexAgentRunBackendFactory integration (live transport) executes the full browser tool surface through the live Codex Agent Tools MCP path",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts",
+    "test": "CodexThreadBootstrapper integration (live skill discovery) discovers a real repo-local Codex skill by logical name and skips runtime materialization for the same configured skill",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts",
+    "test": "CodexThreadBootstrapper integration (live skill discovery) repairs a broken canonical link when live Codex discovery already exposes the configured logical name",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/agent-execution/codex-thread-bootstrapper.integration.test.ts",
+    "test": "CodexThreadBootstrapper integration (live skill discovery) materializes a configured skill when live discovery does not already expose the skill name",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/mcp-server-management/mcp-config-service.integration.test.ts",
+    "test": "McpConfigService integration configures and discovers tools for a real sqlite MCP server",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/mcp-server-management/mcp-config-service.integration.test.ts",
+    "test": "McpConfigService integration configures and discovers tools for a real Google Slides MCP server",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/mcp-server-management/mcp-config-service.integration.test.ts",
+    "test": "McpConfigService integration browsers tools without persisting config",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/mcp-server-management/mcp-config-service.integration.test.ts",
+    "test": "McpConfigService integration deletes MCP server configurations and unregisters tools",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/mcp-server-management/mcp-config-service.integration.test.ts",
+    "test": "McpConfigService integration applies MCP config JSON from env and persists configs",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/services/claude-model-catalog.integration.test.ts",
+    "test": "ClaudeModelCatalog integration (live transport) preserves live descriptions and identifiers through the catalog and GraphQL",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/services/codex-model-catalog.integration.test.ts",
+    "test": "Codex model catalog and GraphQL integration (live transport) preserves each live model's advertised reasoning and Fast capabilities through catalog and GraphQL",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/utils/download-utils.integration.test.ts",
+    "test": "downloadFileFromUrl (live) downloads a real file from a live URL",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/terminal/terminal-websocket-wsl.integration.test.ts",
+    "test": "Terminal websocket WSL integration echoes output via WSL session",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts",
+    "test": "ClaudeSdkClient integration (live streaming transport) lists live models, answers consecutive messages on one streaming session, and fetches session messages",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts",
+    "test": "ClaudeSdkClient integration (live streaming transport) loads a project skill from .claude/skills when project skill settings are enabled",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts",
+    "test": "ClaudeSdkClient integration (live streaming transport) resumes a closed streaming session in a new process and retains prior session history",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts",
+    "test": "ClaudeSdkClient integration (live streaming transport) configures a custom MCP server and executes a simple custom MCP tool",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts",
+    "test": "Claude CLI Stop contract (interrupt with cancelQueued) path-claude cancels a queued message atomically with the interrupt and keeps the process usable",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts",
+    "test": "Claude CLI Stop contract (interrupt with cancelQueued) sdk-bundled-claude cancels a queued message atomically with the interrupt and keeps the process usable",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts",
+    "test": "CodexAppServerClientManager integration (live transport) reuses one real app-server client per canonical cwd and round-trips requests",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-management/codex/client/codex-app-server-client-manager.integration.test.ts",
+    "test": "CodexAppServerClientManager integration (live transport) releases the last acquired client and starts a fresh process on the next acquire",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-management/codex/client/codex-app-server-client.integration.test.ts",
+    "test": "CodexAppServerClient integration (live transport) spawns the app-server process and round-trips JSON-RPC requests",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-management/codex/client/codex-app-server-client.integration.test.ts",
+    "test": "CodexAppServerClient integration (live transport) emits a clean close event when the spawned process is closed intentionally",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-long-turn-cadence.probe.test.ts",
+    "test": "Codex long-turn cadence probe runs one oversized Codex task and reports backend event cadence over time",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-raw-vs-backend-cadence.probe.test.ts",
+    "test": "Codex raw-vs-backend cadence probe compares native raw text-delta cadence to backend SEGMENT_CONTENT cadence in the same run",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts",
+    "test": "CodexThreadManager integration (live transport) creates a real Codex thread, registers it, and reaches startup-ready state",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts",
+    "test": "CodexThreadManager integration (live transport) restores an existing remote Codex thread and continues the same thread id",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-thread-manager.integration.test.ts",
+    "test": "CodexThreadManager integration (live transport) reuses one live app-server client for two threads on the same workspace",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts",
+    "test": "CodexThread integration (live transport) creates a real thread, sends a live turn, and reaches completion",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts",
+    "test": "CodexThread integration (live transport) steers the exact active live turn without starting a phantom replacement",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts",
+    "test": "CodexThread integration (live transport) requests terminal approval, approves it, and completes the command",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts",
+    "test": "CodexThread integration (live transport) requests terminal approval, denies it, and leaves the command unapplied",
+    "status": "skipped"
+  },
+  {
+    "file": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/autobyteus-server-ts/tests/integration/runtime-execution/codex-app-server/thread/codex-thread.integration.test.ts",
+    "test": "CodexThread integration (live transport) interrupts an active long-running terminal turn",
+    "status": "skipped"
+  }
+]

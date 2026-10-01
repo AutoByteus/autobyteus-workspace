@@ -1,0 +1,117 @@
+{
+  "startedAt": "2026-09-30T09:23:46.081Z",
+  "steps": {
+    "selectedRightTab": "Activity",
+    "live": [
+      {
+        "title": "view_file",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "delegate_task",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__echo_args",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__json_result",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__always_fails",
+        "status": "FAILED"
+      },
+      {
+        "title": "call_mcp_tool",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "generate_image",
+        "status": "SUCCESS"
+      }
+    ],
+    "conversationHasWrapperOnlyForFallback": 1,
+    "reloaded": [
+      {
+        "title": "view_file",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "delegate_task",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__echo_args",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__json_result",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__always_fails",
+        "status": "FAILED"
+      },
+      {
+        "title": "call_mcp_tool",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "generate_image",
+        "status": "SUCCESS"
+      }
+    ],
+    "reopenedAfterStop": [
+      {
+        "title": "view_file",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "delegate_task",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__echo_args",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__json_result",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__always_fails",
+        "status": "FAILED"
+      },
+      {
+        "title": "call_mcp_tool",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "generate_image",
+        "status": "SUCCESS"
+      }
+    ]
+  },
+  "cleanup": [
+    {
+      "pid": 98661,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 98431,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-activity-13Acq6"
+    }
+  ],
+  "ownedRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/agy-mcp-activity-13Acq6",
+  "backendUrl": "http://127.0.0.1:54513",
+  "frontUrl": "http://127.0.0.1:54514",
+  "browserErrors": [],
+  "runId": "daily_assistant_57ff0e7481f242718e4e811ccba8c511",
+  "result": "Pass",
+  "completedAt": "2026-09-30T09:24:31.696Z"
+}

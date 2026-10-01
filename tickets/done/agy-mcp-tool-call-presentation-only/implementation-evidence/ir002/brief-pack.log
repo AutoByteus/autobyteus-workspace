@@ -1,0 +1,6 @@
+
+> @autobyteus-example/brief-studio-authoring@ build /Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation/applications/brief-studio
+> autobyteus-app pack
+
+sh: autobyteus-app: command not found
+ ELIFECYCLE  Command failed.

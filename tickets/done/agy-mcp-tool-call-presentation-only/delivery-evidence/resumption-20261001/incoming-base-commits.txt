@@ -1,0 +1,42 @@
+b0b077b02 docs(cross-scope-agent-mentions): record completed beta.5 release (DR-005)
+d29d02a45 docs(cross-scope-agent-mentions): record finalization and beta.5 release state
+d057801c8 chore(release): bump workspace release version to 1.4.92-beta.5
+e666d726f chore(cross-scope-agent-mentions): archive ticket, live collaborator tests and docs sync
+bcff48200 feat(web): hosted collaborators, held mention sends, From <Sender> deliveries (SR-010)
+33b0d1eef feat(collaboration): host one instance per collaborator, added at send (SR-010)
+180a2d2d4 feat(memory): record the sender of an agent-to-agent delivery on its user trace (RD-004)
+fdda4a2ed feat(contracts): collaborator entries carry their run IDs; COLLABORATOR_ADD_FAILED rejection
+5dcc5dc82 fix(run-history): end a lingering Agent root before history delete/archive instead of refusing (CR-002)
+c8cd16a2b fix(run-history): a standalone run with a registered Agent root is live for delete and archive (CR-001)
+a7b4ae621 fix(web): Agent-root children read as spaced names in the Team tab and starter labels
+aeb0569f5 refactor(web): drop configuredAgentAtAddress; task sources go through agentSourceSelectors
+99e12c78c docs: collaborators, the Agent run collaboration root and the live-run @ menu
+821ae4295 feat(web): standalone Agent runs show their collaborators; add-failure notice
+9d403f40b feat(web): @ mentions in live runs, collaborator-aware Team and Org views, task-row changes
+2778292fa feat(agent-run-collaboration): serve message reference files of Agent-root children
+c2f69edde feat(agent-run-collaboration): standalone Agent runs host collaborators (Agent root)
+811b09e50 feat(agent-execution): always-on collaboration tools rule and standalone collaboration prompt
+2570d4775 feat(agent-org): bring collaborators into AgentOrg runs
+ec246cdb5 feat(team-run): bring collaborators into Team roots
+c694a1617 feat(collaboration): add the collaborators module (policy, admission, entries, addresses, sources)
+3afdd3615 refactor(collaboration): move root-level Agent/Team hosting out of the Org module
+03dc40c2c feat(collaboration): add the 'agent' root kind with its package, index and location family
+6772e45b3 feat(run-history): add optional collaborators to Team and Org execution trees
+6d7565c27 feat(contracts): add collaborator mentions, collaborator entries and the Agent root view
+8caa610ff chore(release): bump workspace release version to 1.4.92-beta.4
+d15451021 Merge branch 'codex/remove-skill-access-mode' into personal
+5d67d59d1 docs(ticket): archive remove-skill-access-mode with delivery records (user verified)
+3c54e8021 Merge remote-tracking branch 'origin/personal' into codex/remove-skill-access-mode
+d328275d9 docs(ticket): add remove-skill-access-mode round-2 validation and review records (API-REV-002, CRR-004, CRR-005)
+0180457ae docs(implementation): reference the IR-003 commit in the handoff
+a341dad0f test: drop removed skillAccessMode from merged-in background-task tests (IR-003)
+dc399bfea docs(delivery): record remove-skill-access-mode re-integration blocker (DR-002)
+d213b6c33 Merge remote-tracking branch 'origin/personal' into codex/remove-skill-access-mode
+c6af0558c docs(delivery): add remove-skill-access-mode delivery records (DR-001, pre-verification state)
+56817443b docs(server): drop remaining run-level skill access wording from execution and team docs
+6920ea67e Merge remote-tracking branch 'origin/personal' into codex/remove-skill-access-mode
+615a62770 test(e2e): cover removed skillAccessMode history and definition-owned skill loading; add ticket artifacts
+1595b8b2c test: drop removed skillAccessMode from the released-upgrade E2E's current-contract calls
+cf401a563 refactor: remove the run-level skillAccessMode end to end
+f85525ce5 feat(built-in-agents): make Daily Assistant platform-owned and add read_file
+049c54419 refactor(migrations): freeze released skill-access-mode and team-run config shapes

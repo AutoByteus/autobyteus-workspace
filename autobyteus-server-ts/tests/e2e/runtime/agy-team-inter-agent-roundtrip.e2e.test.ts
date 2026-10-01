@@ -490,21 +490,17 @@ Rules:
         const isMatchingMcpCall = (message: { type: string; payload: Record<string, unknown> }): boolean => {
           if (message.type !== "TOOL_EXECUTION_STARTED" ||
               message.payload["agent_run_id"] !== senderRunId ||
-              message.payload["tool_name"] !== "call_mcp_tool") return false;
-          const parameters = message.payload["arguments"];
-          if (!parameters || typeof parameters !== "object" || Array.isArray(parameters)) return false;
-          const args = parameters as Record<string, unknown>;
-          const toolArguments = args["Arguments"];
+              message.payload["tool_name"] !== "send_message_to") return false;
+          const toolArguments = message.payload["arguments"];
           if (!toolArguments || typeof toolArguments !== "object" || Array.isArray(toolArguments)) return false;
           const call = toolArguments as Record<string, unknown>;
-          return args["ServerName"] === "autobyteus_agent_tools" &&
-            args["ToolName"] === "send_message_to" &&
+          return !("ServerName" in call) && !("ToolName" in call) && !("Arguments" in call) &&
             call["recipient_address"] === `/${input.recipientMemberName}` &&
             call["content"] === input.content;
         };
         await waitForTeamStreamEvent(
           (message) => streamMessages.indexOf(message) >= input.startIndex && isMatchingMcpCall(message),
-          `${input.senderMemberName} AGY call_mcp_tool send_message_to start`,
+          `${input.senderMemberName} AGY send_message_to start`,
         );
         const started = streamMessages.find((message) =>
           streamMessages.indexOf(message) >= input.startIndex && isMatchingMcpCall(message));
@@ -513,7 +509,7 @@ Rules:
         expect(typeof invocationId).toBe("string");
         const isMatchingToolTerminal = (message: { type: string; payload: Record<string, unknown> }): boolean =>
           message.payload["agent_run_id"] === senderRunId &&
-          message.payload["tool_name"] === "call_mcp_tool" &&
+          message.payload["tool_name"] === "send_message_to" &&
           message.payload["invocation_id"] === invocationId;
         const isReceipt = (message: { type: string; payload: Record<string, unknown> }): boolean =>
           isE2eTeamCommunicationMessage(message, {
@@ -531,7 +527,7 @@ Rules:
         expect(receiptIndex).toBeGreaterThanOrEqual(input.startIndex);
         await waitForTeamStreamEvent(
           (message) => message.type === "TOOL_EXECUTION_SUCCEEDED" && isMatchingToolTerminal(message),
-          `${input.senderMemberName} AGY call_mcp_tool success`,
+          `${input.senderMemberName} AGY send_message_to success`,
         );
         await waitForTeamStreamEvent(
           (message) => streamMessages.indexOf(message) > receiptIndex &&
@@ -867,9 +863,8 @@ On a teammate message, do not use tools; reply with exactly ACK.`;
             const payload = message?.payload as Record<string, unknown> | undefined;
             return event?.kind === "agent_presentation" && event.member_address === "/director" &&
               event.agent_run_id === direct?.agentRunId && message?.type === type &&
-              payload?.tool_name === "call_mcp_tool" &&
+              payload?.tool_name === "send_message_to" &&
               (invocationId ? payload.invocation_id === invocationId :
-                JSON.stringify(payload.arguments).includes("send_message_to") &&
                 JSON.stringify(payload.arguments).includes(relayContent));
           });
         const toolStart = findDirectorTool("TOOL_EXECUTION_STARTED");

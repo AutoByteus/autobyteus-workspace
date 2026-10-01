@@ -1,0 +1,144 @@
+{
+  "startedAt": "2026-10-01T13:54:46.347Z",
+  "steps": {
+    "fakeLive": [
+      {
+        "title": "view_file",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "delegate_task",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__echo_args",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__json_result",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__always_fails",
+        "status": "FAILED"
+      },
+      {
+        "title": "call_mcp_tool",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "generate_image",
+        "status": "SUCCESS"
+      }
+    ],
+    "fakeReload": [
+      {
+        "title": "view_file",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "delegate_task",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__echo_args",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__json_result",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__always_fails",
+        "status": "FAILED"
+      },
+      {
+        "title": "call_mcp_tool",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "generate_image",
+        "status": "SUCCESS"
+      }
+    ]
+  },
+  "cleanup": [
+    {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-61729-667d",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aZcubh",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    }
+  ],
+  "instance": {
+    "instanceId": "iso-61729-667d",
+    "pid": 90849,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:61730",
+    "graphqlUrl": "http://127.0.0.1:61730/graphql",
+    "controlEndpoint": "http://127.0.0.1:61729",
+    "controlPort": 61729,
+    "serverPort": 61730,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aZcubh",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aZcubh/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61729-667d.log"
+  },
+  "fakeRestart": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "restart",
+    "result": {
+      "instanceId": "iso-61729-667d",
+      "pid": 91936,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:61730",
+      "graphqlUrl": "http://127.0.0.1:61730/graphql",
+      "controlEndpoint": "http://127.0.0.1:61729",
+      "controlPort": 61729,
+      "serverPort": 61730,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aZcubh",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aZcubh/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61729-667d.log"
+    }
+  },
+  "browserVersion": "148.0.7778.265",
+  "initialUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/",
+  "initialDOM": "Opening Chat...",
+  "fakeRunUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=daily_assistant_53eba6b91cce469792ed3cf2f17f5170",
+  "processRestart": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "restart",
+    "result": {
+      "instanceId": "iso-61729-667d",
+      "pid": 94249,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:61730",
+      "graphqlUrl": "http://127.0.0.1:61730/graphql",
+      "controlEndpoint": "http://127.0.0.1:61729",
+      "controlPort": 61729,
+      "serverPort": 61730,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aZcubh",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-aZcubh/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61729-667d.log"
+    }
+  },
+  "result": "Fail",
+  "error": "locator.click: Timeout 45000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('[data-tab-name=\"progress\"]:visible').first()\u001b[22m\n\n    at readActivity (/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/desktop-probe.mjs:44:161)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/desktop-probe.mjs:103:181",
+  "completedAt": "2026-10-01T13:55:53.010Z"
+}

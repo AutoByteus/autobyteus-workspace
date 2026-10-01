@@ -1,0 +1,331 @@
+[
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-memory/agent-memory-location-service.test.ts",
+    "status": "passed",
+    "passed": 7,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-memory/team-memory-explorer-service.test.ts",
+    "status": "passed",
+    "passed": 11,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/agent-run-provisioning-service.test.ts",
+    "status": "passed",
+    "passed": 3,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-packages/package-root-summary.test.ts",
+    "status": "passed",
+    "passed": 2,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-team-execution/team-run-model-selection-save.test.ts",
+    "status": "passed",
+    "passed": 11,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/migrate-native-working-context-snapshots-v5-migration.test.ts",
+    "status": "passed",
+    "passed": 6,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/raw-trace-active-file-name-migration.test.ts",
+    "status": "passed",
+    "passed": 3,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/team-run-execution-tree-v1-app-data-migration.test.ts",
+    "status": "passed",
+    "passed": 4,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-app-data-migration.test.ts",
+    "status": "passed",
+    "passed": 3,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/app-data-migrations/token-usage-run-records-v1-source-token-decoding.test.ts",
+    "status": "passed",
+    "passed": 8,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts",
+    "status": "passed",
+    "passed": 6,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-platform/application-execution-scope-kernel-builder.test.ts",
+    "status": "passed",
+    "passed": 9,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-platform/application-execution-scope.test.ts",
+    "status": "passed",
+    "passed": 8,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/application-platform/application-platform-runtime-isolation.test.ts",
+    "status": "passed",
+    "passed": 2,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/config/streaming-content-flush-interval-setting.test.ts",
+    "status": "passed",
+    "passed": 22,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/file-explorer/file-explorer.test.ts",
+    "status": "passed",
+    "passed": 7,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/logging/prisma-query-log-policy.test.ts",
+    "status": "passed",
+    "passed": 11,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/llm-management/gemini-configuration-service.test.ts",
+    "status": "passed",
+    "passed": 5,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/secret-management/live-e2e-harness.test.ts",
+    "status": "passed",
+    "passed": 19,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/services/media-storage-service.test.ts",
+    "status": "passed",
+    "passed": 4,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/workspaces/workspace-manager-skill-integration.test.ts",
+    "status": "passed",
+    "passed": 3,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/workspaces/workspace-manager.test.ts",
+    "status": "passed",
+    "passed": 12,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/api/graphql/studio-application-api-services.test.ts",
+    "status": "passed",
+    "passed": 14,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/run-history/services/published-artifact-projection-service.test.ts",
+    "status": "passed",
+    "passed": 1,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/run-history/services/team-run-history-catalog-service.test.ts",
+    "status": "passed",
+    "passed": 7,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-customization/processors/response-customization/media-url-transformer-processor.test.ts",
+    "status": "passed",
+    "passed": 4,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/api/graphql/converters/workspace-converter.test.ts",
+    "status": "passed",
+    "passed": 2,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/api/graphql/types/memory-view-member-resolver.test.ts",
+    "status": "passed",
+    "passed": 3,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/codex/events/codex-tool-log-correlation.test.ts",
+    "status": "passed",
+    "passed": 5,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/api/team-communication-api.integration.test.ts",
+    "status": "passed",
+    "passed": 5,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent/agent-websocket.integration.test.ts",
+    "status": "passed",
+    "passed": 8,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-execution/agent-run-service.integration.test.ts",
+    "status": "passed",
+    "passed": 10,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts",
+    "status": "passed",
+    "passed": 1,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-team-execution/team-run-service.integration.test.ts",
+    "status": "passed",
+    "passed": 5,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/api/run-file-changes-api.integration.test.ts",
+    "status": "passed",
+    "passed": 5,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/brief-package-team-prompt.integration.test.ts",
+    "status": "passed",
+    "passed": 1,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/brief-studio-agent-tool-mcp.integration.test.ts",
+    "status": "passed",
+    "passed": 1,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/brief-studio-imported-package.integration.test.ts",
+    "status": "passed",
+    "passed": 3,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/brief-studio-team-config.integration.test.ts",
+    "status": "passed",
+    "passed": 4,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/standalone-application-server.integration.test.ts",
+    "status": "passed",
+    "passed": 2,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/application-backend/standalone-package-portable-defaults.integration.test.ts",
+    "status": "passed",
+    "passed": 9,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/file-explorer/file-explorer.integration.test.ts",
+    "status": "passed",
+    "passed": 6,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/file-explorer/nested-folder-move-watcher.integration.test.ts",
+    "status": "passed",
+    "passed": 1,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/run-history/codex-mcp-tool-args-projection.integration.test.ts",
+    "status": "passed",
+    "passed": 1,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/agent-definition/md-centric-provider.integration.test.ts",
+    "status": "passed",
+    "passed": 7,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/services/media-storage-service.integration.test.ts",
+    "status": "passed",
+    "passed": 11,
+    "failed": 0,
+    "pending": 0
+  },
+  {
+    "path": "autobyteus-server-ts/tests/integration/api/rest/upload-file.integration.test.ts",
+    "status": "passed",
+    "passed": 5,
+    "failed": 0,
+    "pending": 0
+  }
+]

@@ -1,0 +1,43 @@
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/final-fake-agy-transport.log:961: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-failing-files-on-base-converter.log:188: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-failing-files-on-base-converter.log:284: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-failing-files-on-base-converter.log:380: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-failing-files-on-base-converter.log:476: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-failing-files-on-base-converter.log:1899: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:228: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:324: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:420: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:516: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:1461: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:1557: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:1653: trailing whitespace.
++      
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:4314: trailing whitespace.
++[22m[39mprisma:error 
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:4319: trailing whitespace.
++  54 
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:5568: trailing whitespace.
++[32m- Expected:[39m 
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-test-e2e.log:5571: trailing whitespace.
++[31m+ Received:[39m 
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/regression-token-usage-head-alone.log:111: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-001-unit.log:99: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-002-agy-unit-folder.log:114: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-002-fake-transport.log:778: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-003-mcp-transport.log:274: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-003-sensitivity-on-base-converter.log:308: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-004-phase-read-current.log:236: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-004-phase-write-base.log:274: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-005-live-roundtrip.log:398: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-006-real-capture.log:98: new blank line at EOF.
+tickets/in-progress/agy-mcp-tool-call-presentation/api-e2e-evidence/tc-008-native-image.log:277: new blank line at EOF.

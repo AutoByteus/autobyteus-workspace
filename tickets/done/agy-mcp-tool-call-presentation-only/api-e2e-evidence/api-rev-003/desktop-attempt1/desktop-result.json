@@ -1,0 +1,97 @@
+{
+  "startedAt": "2026-10-01T13:50:20.400Z",
+  "steps": {
+    "fakeLive": [
+      {
+        "title": "view_file",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "delegate_task",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__echo_args",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__json_result",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "mcp__shape-test__always_fails",
+        "status": "FAILED"
+      },
+      {
+        "title": "call_mcp_tool",
+        "status": "SUCCESS"
+      },
+      {
+        "title": "generate_image",
+        "status": "SUCCESS"
+      }
+    ]
+  },
+  "cleanup": [
+    {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-61037-b04d",
+        "wasRunning": true,
+        "forced": false,
+        "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-mehDlp",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    }
+  ],
+  "instance": {
+    "instanceId": "iso-61037-b04d",
+    "pid": 67578,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:61038",
+    "graphqlUrl": "http://127.0.0.1:61038/graphql",
+    "controlEndpoint": "http://127.0.0.1:61037",
+    "controlPort": 61037,
+    "serverPort": 61038,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-mehDlp",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-mehDlp/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61037-b04d.log"
+  },
+  "fakeRestart": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "restart",
+    "result": {
+      "instanceId": "iso-61037-b04d",
+      "pid": 69276,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:61038",
+      "graphqlUrl": "http://127.0.0.1:61038/graphql",
+      "controlEndpoint": "http://127.0.0.1:61037",
+      "controlPort": 61037,
+      "serverPort": 61038,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-mehDlp",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-mehDlp/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61037-b04d.log"
+    }
+  },
+  "browserVersion": "148.0.7778.265",
+  "initialUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/",
+  "initialDOM": "",
+  "fakeRunUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=daily_assistant_4413ec881a584626bc42ee6f20da32cb",
+  "result": "Fail",
+  "error": "Error: packaged-reload: incomplete wrapper arguments\n    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/desktop-probe.mjs:20:69)\n    at check (file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/desktop-probe.mjs:76:3)\n    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only/api-e2e-evidence/api-rev-003/desktop-probe.mjs:100:66",
+  "details": [
+    "{\n  \"provider_state\": \"DONE\",\n  \"output\": \"{\\\"accepted\\\": true}\"\n}"
+  ],
+  "completedAt": "2026-10-01T13:51:27.884Z"
+}

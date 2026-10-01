@@ -155,6 +155,22 @@ non-green, even if the overall turn succeeds. A `DONE` step does **not** prove
 that an underlying shell command exited zero: retain provider state/output and
 do not invent an exit code.
 
+AGY carries every MCP call through its own `call_mcp_tool` step with wrapper
+parameters `ServerName`, `ToolName` and `Arguments`. The converter presents
+such a call as the tool that was actually called (`agy-mcp-tool-call.ts`): a
+tool on the run-scoped AutoByteus Agent Tools server keeps its bare canonical
+name (for example `send_message_to` or `delegate_task`), as in other runtimes;
+a tool on any other MCP server is named `mcp__<server>__<tool>`. The event's
+arguments are the wrapper's `Arguments` only (empty when absent), identical on
+the start and terminal events. The result keeps `{ provider_state, output }`;
+output text that is a JSON object or array is presented as structured JSON,
+and any other output is unchanged. A wrapper without a non-blank `ServerName`
+and `ToolName` is presented as AGY reported it (`call_mcp_tool` with the
+provider parameters). Native image handling is decided from the provider's
+tool name, so an MCP tool named `generate_image` is never treated as AGY's
+native image tool. Runs recorded before this behavior keep their stored
+`call_mcp_tool` presentation.
+
 AGY turns have no idle timeout. A turn ends only on AGY `result`, AGY process
 exit/error or a stream protocol violation, or user Stop/Terminate; the 60 s
 startup readiness timeout is the only clock. This matters for background

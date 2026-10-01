@@ -9,6 +9,8 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 | DR-001 | Delivery package from `code_reviewer` (CRR-005, API-REV-002/003, CRR-007) | N/A | Docs synced on the current base; awaiting user verification | `docs-sync-report.md`, `handoff-summary.md`, `release-notes.md`, `release-deployment-report.md`; 9 long-lived docs |
 | DR-002 | Evidence update from `code_reviewer` (CRR-008, API-REV-004 desktop journeys) | DR-001 | Same delivery state; evidence 96%; OBS-D3 carried as an open observation; still awaiting user verification | `handoff-summary.md`, `release-deployment-report.md` |
 | DR-003 | CRR-008 factual correction from `code_reviewer`: OBS-D3 closed | DR-002 | Same delivery state; OBS-D3 removed from the open observations; still awaiting user verification | `handoff-summary.md`, `release-deployment-report.md` |
+| DR-004 | User verification: "finalize and release a new beta version" | DR-003 | Ticket archived; `personal` finalized at `d057801c8`; `v1.4.92-beta.5` tagged; Android/iOS/Docker published; **Desktop Release blocked** (Apple notarization agreement, 403); cleanup done | `handoff-summary.md`, `release-deployment-report.md`, ticket moved to `tickets/done/` |
+| DR-005 | User accepted the Apple agreement; desktop release rerun | DR-004 | Delivery Completed: `v1.4.92-beta.5` fully published (all 4 workflows success); terminal return to `/solution_designer` | `release-deployment-report.md`, `handoff-summary.md` |
 
 ## Revision Entries
 
@@ -82,4 +84,58 @@ The latest docs sync report, handoff summary and release/publication/deployment 
 - Remaining blockers, rollback concerns, or untested scope:
   - Blocker: user verification.
   - Untested: R-4 (Grok) and R-5 (application-owned runs).
+  - Rollback: downgrade rejects trees whose collaborator entries carry run IDs.
+
+### DR-004 — Finalized into personal; beta.5 tagged; desktop release blocked by Apple notarization agreement
+
+- Delivery round and trigger: round 4. The user verified on 2026-10-01: "finalize and release a new beta version."
+- Triggering upstream report, verification, or evidence: the user's message; release workflow runs at `d057801c8`.
+- Prior authoritative result: DR-003 (awaiting user verification).
+- Current authoritative result:
+  - R-1 accepted as-is (no separate instruction; delivery's recommendation).
+  - Ticket moved to `tickets/done/`.
+  - Ticket branch committed and pushed: `e666d726f`.
+  - `personal` fast-forwarded and pushed: `8caa610ff..d057801c8`, with release commit `d057801c8` and tag `v1.4.92-beta.5`.
+  - Android APK, iOS App Store Connect and Server Docker workflows succeeded.
+  - Desktop Release run 36845911969 failed. Both macOS builds were refused at Apple notarization (HTTP 403 "A required agreement is missing or has expired"), so Publish was skipped. The pre-release has only the Android APK, and desktop installs are not offered beta.5.
+  - Ticket worktree and local branch removed.
+- Docs sync report: `docs-sync-report.md` (unchanged)
+- Handoff summary: `handoff-summary.md` (status)
+- Release/publication/deployment report: `release-deployment-report.md` (finalization, release, cleanup, blocker)
+- Integration and post-integration verification: target re-fetched after verification and before the push; still `8caa610ff`, so the fast-forward was clean.
+- User verification/finalization state: verified; repository finalization `Completed`; release `Blocked` (desktop only).
+- Terminal return to `/solution_designer`: `Blocked`. It will be sent once the desktop release completes.
+- Terminal message/reference: N/A
+- Why this delivery revision was recorded: finalization completed, and a release blocker occurred.
+- Next recipient/action:
+  1. The user signs or renews the Apple Developer agreement.
+  2. Delivery runs `gh run rerun 36845911969 --failed`, verifies that the desktop assets and updater files are published, records DR-005, and sends the terminal return.
+- Remaining blockers, rollback concerns, or untested scope:
+  - Blocker: Apple agreement.
+  - Untested: R-4 (Grok) and R-5 (application-owned runs).
+  - Rollback: downgrade rejects trees whose collaborator entries carry run IDs.
+
+### DR-005 — Desktop release published; delivery completed
+
+- Delivery round and trigger: round 5. The user accepted the updated Apple Developer Program License Agreement (developer.apple.com Account banner, deadline 2 October 2026) and said "i just clicked".
+- Triggering upstream report, verification, or evidence: Desktop Release run 36845911969, attempt 2.
+- Prior authoritative result: DR-004 (finalized; desktop release blocked by the Apple notarization 403).
+- Current authoritative result:
+  - `gh run rerun 36845911969 --failed`: macOS ARM64 and x64 both succeeded, notarized on the first try with no retries, and Publish GitHub Release succeeded.
+  - `v1.4.92-beta.5` is a pre-release with every desktop installer, the blockmaps, the updater `latest*.yml` files and the Android APK.
+  - Android, iOS and Docker had already succeeded.
+  - Delivery Completed.
+- Docs sync report: `docs-sync-report.md` (unchanged)
+- Handoff summary: `handoff-summary.md` (status)
+- Release/publication/deployment report: `release-deployment-report.md` (release completed, assets, rollback, follow-ups)
+- Integration and post-integration verification: unchanged. `personal` contains the ticket; this record is committed on top of `d29d02a45`.
+- User verification/finalization state: verified; finalization `Completed`; release `Completed`; cleanup `Completed`.
+- Terminal return to `/solution_designer`: `Sent` immediately after this record was pushed.
+- Terminal message/reference: the terminal completion message to `/software_engineering_team/solution_designer` (package `cross-scope-agent-mentions`).
+- Why this delivery revision was recorded: the last applicable gate (release) completed.
+- Next recipient/action: `/software_engineering_team/solution_designer` verifies the terminal package.
+- Remaining blockers, rollback concerns, or untested scope:
+  - Blockers: none.
+  - Untested: R-4 (Grok live) and R-5 (application-owned runs).
+  - Follow-ups are listed in `release-deployment-report.md`.
   - Rollback: downgrade rejects trees whose collaborator entries carry run IDs.

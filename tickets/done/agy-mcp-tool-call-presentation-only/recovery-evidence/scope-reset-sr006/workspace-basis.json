@@ -1,0 +1,13 @@
+{
+  "package": "agy-mcp-tool-call-presentation-only",
+  "revision": "SR-006",
+  "base": "b0b077b02571098a6bf7993ab46b67a69fdb8f9d",
+  "preserved_expanded_head": "a727971dabab141a39404a00ca6f7db46696f0b9",
+  "preserved_worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation",
+  "candidate_worktree": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only",
+  "candidate_branch": "codex/agy-mcp-tool-call-presentation-only",
+  "new_candidate_source_applied": false,
+  "tests_run_by_solution_designer": false,
+  "parent_package": "agy-mcp-tool-call-presentation",
+  "candidate_ticket": "/Users/normy/autobyteus_org/autobyteus-worktrees/agy-mcp-tool-call-presentation-only/tickets/in-progress/agy-mcp-tool-call-presentation-only"
+}

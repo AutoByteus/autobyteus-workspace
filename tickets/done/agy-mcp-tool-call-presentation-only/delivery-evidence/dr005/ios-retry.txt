@@ -1,0 +1,1 @@
+2026-10-01: Retried only failed iOS jobs on existing beta.6 run 36875245973. First attempt keyboard-focus event-synthesis failure; no iOS code/workflow diff from base, prior beta.5 passed. No source changes, assertions disabled, new tag or duplicate dispatch.

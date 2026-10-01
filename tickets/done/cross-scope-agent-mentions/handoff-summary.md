@@ -2,7 +2,10 @@
 
 ## Status
 
-- Delivery state: **User verified on 2026-10-01**: "finalize and release a new beta version." The ticket is archived, finalized into `personal` and released as a new beta; see `release-deployment-report.md` for the final state (DR-004).
+- Delivery state: **Delivery completed (DR-005).** User verified on 2026-10-01: "finalize and release a new beta version."
+  - The ticket is archived and finalized into `personal` (`d057801c8`, record commits after it).
+  - `v1.4.92-beta.5` is fully published: desktop (macOS, Windows, Linux with updater files), Android, iOS TestFlight and Server Docker.
+  - The first desktop attempt failed at Apple notarization because of an unaccepted Apple Developer Program License Agreement. The user accepted it, and the rerun of the failed jobs succeeded (DR-004 → DR-005).
   - **R-1:** the user gave no separate instruction, so delivery applies its stated recommendation: the host-label casing is accepted as-is.
   - DR-002 added the desktop evidence (API-REV-004, CRR-008).
   - DR-003 closed OBS-D3: a manual user click, not a product issue.

@@ -1,0 +1,22 @@
+{
+  "82996343c": {
+    "run-history/store/team-run-execution-tree-schema.ts": "8d2d3dbe55b042b15c589736faffc3173b76ca1e",
+    "run-history/store/run-execution-tree-shared-record-schemas.ts": "27aeb5b83316a0bfb4815715b769f9b56e4ae447",
+    "run-history/domain/run-execution-tree-shared-records.ts": "72f692df4cd330c5480cf70730bae973839409a9",
+    "agent-team-execution/domain/team-run-config.ts": "a62f0723c8abad65a3861e28660422901bd61059",
+    "agent-team-execution/domain/team-run-execution-tree.ts": "ab3527a112f00ad01b3a009779179047e0b5417b",
+    "agent-collaboration/domain/agent-team-address.ts": "6425fc1ae6b3186e73cb0a9954e26b58913b7a61",
+    "agent-collaboration/domain/collaboration-handoff.ts": "76b2f8f4648497558e916f5866b41630ac90cd54",
+    "runtime-management/runtime-kind-enum.ts": "065b424e8fcd12ba32a129ad3edf6d39a593980a"
+  },
+  "a01cadaea": {
+    "run-history/store/team-run-execution-tree-schema.ts": "bf0bfe713b1d1644a20ea2f163f7fa9d77bd96ae",
+    "run-history/store/run-execution-tree-shared-record-schemas.ts": "b69359837b92b9b36698f2688c99395462ddd56f",
+    "run-history/domain/run-execution-tree-shared-records.ts": "7b9e39f177970e16b77c306faed71a427e3eee1a",
+    "agent-team-execution/domain/team-run-config.ts": "d302586abcf27b402eec00b5aa2bb096c5bb3b2d",
+    "agent-team-execution/domain/team-run-execution-tree.ts": "a10c42b9ed11c82aa51621c5cd87852be52d24cb",
+    "agent-collaboration/domain/agent-team-address.ts": "6425fc1ae6b3186e73cb0a9954e26b58913b7a61",
+    "agent-collaboration/domain/collaboration-handoff.ts": "76b2f8f4648497558e916f5866b41630ac90cd54",
+    "runtime-management/runtime-kind-enum.ts": "065b424e8fcd12ba32a129ad3edf6d39a593980a"
+  }
+}

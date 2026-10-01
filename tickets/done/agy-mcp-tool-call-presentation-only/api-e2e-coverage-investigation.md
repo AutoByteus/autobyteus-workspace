@@ -1,0 +1,44 @@
+# Coverage investigation — API-REV-003, new AGY-only ticket
+
+## Authority / route
+Current basis SR-006 / IR-003; new ticket agy-mcp-tool-call-presentation-only, branch codex/agy-mcp-tool-call-presentation-only at cb7688c4e25d0d990d1f196ea59142dff824d0ea over b0b077b02571098a6bf7993ab46b67a69fdb8f9d. Small/Low; Direct Low-Risk. Current independent architecture/source review N/A — not applicable; proportional test review Not Required — direct low-risk route. API-REV-001/002, CRR-002, ARCH-REV-001 and DR-003 are inherited parent context, not current passes. Parent untouched.
+
+Read current approved requirements, design, investigation including SR-006, solution/implementation histories, user-original-scope approval, implementation scope/import/hash inventory; inherited specialist artifacts retain explicit historical basis. REQ-001..007 / AC-001..008 / SCN-001..004 only. Broad repair/migration/Team-preflight/API-F001 not imported or repaired. Current source diff confirms only two AGY production files; nine AGY paths plus two TESTING rows. Inherited failures need truthful provenance, not waivers or suppression.
+
+## Discovery / setup
+Applicable instructions: root TESTING.md, server/web AGENTS.md, package manifests, server Vitest config and Prisma setup, root/server README testing/local-stack instructions, docs/isolated-app-instances.md and skills/autobyteus-isolated-app/SKILL.md. No closer TESTING.md. Nuxt/Electron scripts and owned-instance rules preserved from base. Run server phases serially: setup resets only this worktree tests/.tmp/autobyteus-server-test.db. Explicitly build before built-server E2E: current root test:e2e does not build, intentionally not changed. Test-owned temporary roots/free ports; no installed user app/data. AGY 1.2.14 installed/auth available subject to live execution; no keys imported. Isolated desktop requires this worktree build, never another branch's artifact.
+
+## Boundaries and validity
+| Coverage / scenario | Decision | Reason / intended action |
+| --- | --- | --- |
+| AGY helper/converter unit folder (TC-001/002) | Still Valid | Explicit independent name/args/result/fallback/native/denial/ID invariants; rerun |
+| MCP transport + fake CLI mcp_calls (TC-003) | Still Valid | Actual server WS/history/Files; emit explicit opt-in; no mocks of changed converter |
+| Native/failure/background fake transports (TC-002) | Still Valid | Preserved native/lifecycle regressions |
+| Live Team/Org and native image guard (TC-005/008) | Still Valid | Native guard forbids qualified MCP names; execute live not count gating as passes |
+| Old-writer → current reader (TC-004) | Use Temporary Executable Probe Only | Fresh real pre-change converter writes same persisted schema; new process current reader must return identical old wrapped projection; no history migration. Temporary compiled baseline clone avoids touching source |
+| Real AGY third-party shape probe (TC-006) | Use Temporary Executable Probe Only | Existing probe/capture remains evidence; current transport covers exact shape; live Team/Org closes model gap |
+| Renderer Activity/reload/reopen (TC-007) | Use Temporary Executable Probe Only | Reuse retained assertion-driven Chrome/Nuxt/built-server probe with NEW worktree/output paths; no frontend code change |
+| Isolated desktop (TC-013) | Use Temporary Executable Probe Only | Current packaged full-product live journey, startup/reopen/cleanup; actual shell boundary |
+| Broad server E2E regression (TC-012) | Still Valid / investigate failures | Fresh build then full configured suite. Compare materially relevant failures to base; do not repair excluded tests/source |
+| API-F001 architecture guards | Out Of Scope for repair, inherited risk | Source/guards unchanged; CRR-002 independently attributed to base, user explicitly deferred. No new Pass implied |
+
+No durable edits/removals currently planned: adequate narrow coverage already committed by IR-003. No legacy compatibility tests introduced. New API/renderer/history impact would trigger scope/design recovery before source work. No contrived scenarios.
+
+## Plan / confidence gate
+Run build → AGY units → explicitly enabled fake transports → full server E2E plus bounded baseline reproduction of failures → post-repository scorecard → old-writer/current-reader, live AGY, renderer and isolated desktop. Broader validation Required: real CLI, persistence across actual process replacement and rendered/full-product surface remain unproven by unit mocks. Score seven categories after repository and final evidence; critical AC proof required regardless of overall percentage. Current result in progress, not Pass.
+
+Cases initialized in canonical ledger before execution. Commands/results/logs recorded under api-e2e-evidence/api-rev-003. Prior files snapshotted there solely as inherited history. No release/finalization in this stage.
+
+## Post-repository checkpoint
+Build Pass; AGY units 168 Pass / 5 opt-in Not Tested; explicit fake transport 9 Pass. Full E2E 195 Pass / 43 Fail / 133 Not Tested; failing files unchanged from base; production-equivalent base comparison recorded separately, no corrections imported. Seven-category repository scores: AC proof 90%, directness 95%, integration realism 75%, environment fidelity 95%, lifecycle/recovery 75%, user surface 50%, durable regression 90% = 81.4%. Broader validation Required: fresh real CLI, old-writer/current-reader, renderer and packaged desktop close material gaps. No current Pass. Browser-automation skill has no runtime-advertised locator/tool; the project-owned Playwright dependency and reported isolated CDP endpoint will be used as temporary executable automation, with identical ownership/surface constraints.
+
+Baseline execution refinement: 41/43 full-suite failures reproduced with exact base converter in source and compiled output, using 12 byte-identical failing files. Two token analytics assertions passed in the selected baseline cohort; current focused rerun selected to distinguish order/flakiness from AGY influence. No unsupported claim that all43 reproduced. Baseline overrides restored byte-for-byte before old-writer and renderer probes.
+
+TC-013 first packaged attempt: seven live projected items passed, reload assertion failed because temporary probe blindly toggled every detail section; captured DOM showed fallback Arguments collapsed, not absent data. ToolActivityItem.vue uses independent v-show section toggles. Correct temporary automation to open only currently-hidden sibling detail and await visibility; keep exact expected values unchanged. Retain failed attempt evidence and rerun a NEW owned instance from the same built package. No production/durable test changes.
+
+## Final investigation / validity resolution
+All43 non-AGY full-suite failures have reproduced under production-equivalent base behavior (41 full suite +2 ordered token cohort). The two previously unresolved analytics results are order/database contamination: existing unit-price/provider-semantics facets survive run-record cleanup and contaminate unfiltered analytics windows. Exact sources/assertions unchanged; no repair. See `api-e2e-evidence/api-rev-003/failure-provenance.md`. Current AGY tests and realistic paths pass. Validity remains Still Valid for narrow AGY tests; excluded historical repair tests remain visibly failing, not deleted/skipped.
+
+Broader validation completed: live AGY Team/Org/native image3 pass, optional imported-package1 Not Tested; fresh real third-party shape capture; current renderer; exact base-converter old-writer→current reader identical projection/bytes; current packaged desktop scripted MCP and real native command, reload/process restart. Desktop temporary automation required opening only hidden sections, selecting Activity explicitly and waiting for initial bootstrap before navigation; all original exact assertions retained, failed attempts and cleanup retained. No product change. Final viewport1440x1000; Electron42.4.1/Chromium148; macOSarm64. Browser-automation unsupported in current tool registration; equivalent project Playwright/CDP automation used only reported owned instance.
+
+Final scores (seven categories):95,100,95,95,95,95,95 =95.7%. Broader decision Required, completed. Critical original AC direct runtime/DOM proof exists; live model selection of delegate_task specifically was not repeated (scripted CLI through actual backend and both renderers verifies it; live actual platform MCP send_message_to closes wrapper realism). Native image live and MCP/native guards retained. No live-denial policy exercise (explicit unit terminals), no future-version promise. All source restored byte-for-byte; no durable test/source edits, no deleted assertions. Small/Low remains valid. Narrow Pass does not imply green full suite, resolution of API-F001, user verification, release, or any parent-ticket Pass.
