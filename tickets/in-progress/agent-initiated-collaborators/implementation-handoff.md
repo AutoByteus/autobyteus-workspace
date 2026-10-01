@@ -26,7 +26,7 @@
 - Related API/E2E revision IDs: `API-REV-001` (Fail: F-01, F-02)
 - Related delivery revision IDs: `N/A`
 - Triggering finding IDs: `DI-01` (REQ-012/AC-013 via SR-007); earlier `CR-001`, `CR-002`
-- Branch `codex/agent-initiated-collaborators`, base `origin/personal` @ `84224a58d`; IR-001 commit `549510977`; IR-002 commit `9b594693b`.
+- Branch `codex/agent-initiated-collaborators`, base `origin/personal` @ `84224a58d`; IR-001 commit `549510977`; IR-002 commit `9b594693b`; IR-003 commit `e2c658e3d`.
 
 IR-003 delta (DI-01 / REQ-012 per SR-007 § Copy Placement By Address): see the revision record. In short:
 - **One owner for copy placement:** `agent-collaboration/execution/task/task-copy-host.ts#resolveTaskCopyHost` (pure,

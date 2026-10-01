@@ -95,6 +95,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   (`code-review-report.md`).
 - Triggering finding IDs: DI-01.
 - Classification: `Design Impact` resolved by SR-007 (requirements SR-007 add REQ-012/AC-013).
+- Commit: `e2c658e3d`.
 - Prior authoritative result: IR-002 passed CRR-004. Org and Agent-root copies were placed under the delegator's host;
   the Team root placed copies by address.
 - Current authoritative result: one pure owner `resolveTaskCopyHost` places every copy by address in all three roots.
