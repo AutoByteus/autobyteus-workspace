@@ -1,0 +1,68 @@
+{
+  "scope": "Implementation local checks only; not API/E2E acceptance",
+  "base": "b0b077b02571098a6bf7993ab46b67a69fdb8f9d",
+  "commands": [
+    {
+      "command": "pnpm install --frozen-lockfile",
+      "exit": 0,
+      "log": "install.log",
+      "notes": "Fresh worktree dependencies; missing unbuilt devkit bin warnings, no tracked lock/package change"
+    },
+    {
+      "command": "pnpm -C autobyteus-server-ts build",
+      "exit": 0,
+      "log": "build.log",
+      "notes": "Build prehooks/shared packages, Prisma generate, tsc build, sanitized bootstrap smoke"
+    },
+    {
+      "command": "pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/antigravity --no-watch --reporter=default --reporter=json --outputFile=../tickets/in-progress/agy-mcp-tool-call-presentation-only/implementation-evidence/ir003/agy-unit-candidate.json",
+      "exit": 0,
+      "log": "agy-unit-candidate.log",
+      "passed": 168,
+      "failed": 0,
+      "skipped": 5
+    },
+    {
+      "command": "node --check autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs",
+      "exit": 0
+    },
+    {
+      "command": "git diff --check",
+      "exit": 0
+    }
+  ],
+  "skipped": [
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts",
+      "title": "calls real scoped AutoByteus MCP send_message_to from an AGY team member",
+      "status": "skipped",
+      "byte_identical_to_base": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-mcp-team-live.test.ts",
+      "title": "calls real scoped AutoByteus MCP send_message_to from an AGY org member",
+      "status": "skipped",
+      "byte_identical_to_base": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-production-live.test.ts",
+      "title": "loads production-generated main agent and targets selected workspace for generic file and shell tasks",
+      "status": "skipped",
+      "byte_identical_to_base": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-production-live.test.ts",
+      "title": "loads an AutoByteus-configured PRELOADED_ONLY skill from the production capsule",
+      "status": "skipped",
+      "byte_identical_to_base": true
+    },
+    {
+      "path": "autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-restore-live.test.ts",
+      "title": "restores the exact AGY conversation, immutable identity and workspace binding",
+      "status": "skipped",
+      "byte_identical_to_base": true
+    }
+  ],
+  "standalone_typecheck": "Not run; source compilation passed via build",
+  "broader_validation": "Not run in this implementation round"
+}

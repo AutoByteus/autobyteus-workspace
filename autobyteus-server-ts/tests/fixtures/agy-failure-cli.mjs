@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 import { randomUUID } from "node:crypto";
+import { writeFileSync } from "node:fs";
 import readline from "node:readline";
 
 const arg = process.argv[2];
@@ -47,6 +48,39 @@ if (arg === "--version") {
       emit({ event: "step_update", step_update: { ...base, state: "ERROR",
         tool_info: { error: "permission denied token=PRIVATE_AGY_SECRET", output: "/private/SECRET_IMAGE" } } });
       emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "Image unavailable." } });
+    } else if (process.env.AGY_FAKE_CASE === "mcp_calls") {
+      // Step shapes as AGY 1.2.14 streams them: ACTIVE and terminal steps both carry the full call_mcp_tool wrapper.
+      const step = (step_index, state, tool_name, parameters, extra = {}) => emit({ event: "step_update",
+        step_update: { conversation_id, step_index, state, step_type: "tool", tool_name,
+          tool_info: { name: tool_name, parameters, ...extra } } });
+      const call = (step_index, tool_name, parameters, state, extra) => {
+        step(step_index, "ACTIVE", tool_name, parameters);
+        step(step_index, state, tool_name, parameters, extra);
+      };
+      const imagePath = process.env.AGY_FAKE_MCP_IMAGE_PATH;
+      call(1, "view_file", { AbsolutePath: "/agy/mcp/autobyteus_agent_tools/delegate_task.json" }, "DONE",
+        { output: "{\"lines\": 1}" });
+      call(2, "call_mcp_tool", { Arguments: { description: "Summarise the report.", recipient_address: "/researcher" },
+        ServerName: "autobyteus_agent_tools", ToolName: "delegate_task" }, "DONE",
+      { output: "{\n  \"target_agent_run_id\": \"run-7318\",\n  \"message\": \"Task delegated.\"\n}" });
+      call(3, "call_mcp_tool", { Arguments: { note: "hello", options: { count: 2, tags: ["a", "b"] } },
+        ServerName: "shape-test", ToolName: "echo_args" }, "DONE", { output: "ECHO:{\"note\": \"hello\"}" });
+      call(4, "call_mcp_tool", { Arguments: {}, ServerName: "shape-test", ToolName: "json_result" }, "DONE",
+        { output: "{\n  \"marker\": \"JSON-MARKER-4471\",\n  \"nested\": {\n    \"ok\": true\n  }\n}" });
+      call(5, "call_mcp_tool", { Arguments: { reason: "probe" }, ServerName: "shape-test", ToolName: "always_fails" },
+        "ERROR", { output: "PROBE-FAILURE-9920: deliberate failure",
+          error: { type: "TOOL_ERROR", message: "PROBE-FAILURE-9920: deliberate failure" } });
+      call(6, "call_mcp_tool", { Arguments: { content: "no server name" }, ToolName: "send_message_to" }, "DONE",
+        { output: "{\"accepted\": true}" });
+      if (imagePath) {
+        const generate = { Arguments: { prompt: "blue dog", output_file_path: imagePath },
+          ServerName: "autobyteus_agent_tools", ToolName: "generate_image" };
+        step(7, "ACTIVE", "call_mcp_tool", generate);
+        writeFileSync(imagePath, "fake image bytes");
+        step(7, "DONE", "call_mcp_tool", generate, { output: JSON.stringify({ file_path: imagePath }) });
+      }
+      reply(8, "MCP_DONE");
+      emit({ event: "result", result: { conversation_id, status: "SUCCESS", response: "MCP_DONE" } });
     } else if (imageDone) {
       const base = { conversation_id, step_index: 1, step_type: "tool", tool_name: "generate_image" };
       emit({ event: "step_update", step_update: { ...base, state: "ACTIVE",
